@@ -20,7 +20,7 @@ def constant_model(model: LineMatcherLine) -> ModelConstructor:
     return integration_check.constant_model(model)
 
 
-_CHECKER = integration_check.MatcherChecker(
+CHECKER = integration_check.MatcherChecker(
     parse_line_matcher.parser(),
     LogicValueType.LINE_MATCHER
 )
@@ -31,12 +31,12 @@ def check(put: unittest.TestCase,
           model_constructor: ModelConstructor,
           arrangement: Optional[SymbolTable] = None,
           expectation: Expectation = Expectation()):
-    _CHECKER.check(put,
-                   source,
-                   model_constructor,
-                   integration_check.arrangement_wo_tcds(arrangement),
-                   expectation,
-                   )
+    CHECKER.check(put,
+                  source,
+                  model_constructor,
+                  integration_check.arrangement_wo_tcds(arrangement),
+                  expectation,
+                  )
 
 
 def check_with_source_variants(put: unittest.TestCase,
@@ -44,9 +44,9 @@ def check_with_source_variants(put: unittest.TestCase,
                                model_constructor: ModelConstructor,
                                arrangement: Optional[SymbolTable] = None,
                                expectation: Expectation = Expectation()):
-    _CHECKER.check_with_source_variants(put,
-                                        arguments,
-                                        model_constructor,
-                                        integration_check.arrangement_wo_tcds(arrangement),
-                                        expectation,
-                                        )
+    CHECKER.check_with_source_variants(put,
+                                       arguments,
+                                       model_constructor,
+                                       integration_check.arrangement_wo_tcds(arrangement),
+                                       expectation,
+                                       )

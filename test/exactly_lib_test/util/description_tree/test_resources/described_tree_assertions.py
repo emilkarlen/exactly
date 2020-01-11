@@ -17,6 +17,22 @@ def matches_node(header: ValueAssertion[str] = asrt.anything_goes(),
     return _MatchesNode(header, data, details, children)
 
 
+def equals_node(expected: Node) -> ValueAssertion[Node]:
+    return matches_node(
+        header=asrt.equals(expected.header),
+        data=asrt.equals(expected.data),
+        details=equals_details(expected.details),
+        children=equals_nodes(expected.children),
+    )
+
+
+def equals_nodes(expected: Sequence[Node]) -> ValueAssertion[Sequence[Node]]:
+    return asrt.matches_sequence([
+        equals_node(n)
+        for n in expected
+    ])
+
+
 def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> ValueAssertion[Node[NODE_DATA]]:
     return matches_node(
         header=asrt.equals(node.header),
@@ -26,6 +42,17 @@ def header_data_and_children_equal_as(node: Node[NODE_DATA]) -> ValueAssertion[N
             for child in node.children
         ])
     )
+
+
+def equals_detail(expected: Detail) -> ValueAssertion[Detail]:
+    return _EqualsDetailAssertion(expected)
+
+
+def equals_details(expected: Sequence[Detail]) -> ValueAssertion[Sequence[Detail]]:
+    return asrt.matches_sequence([
+        equals_detail(d)
+        for d in expected
+    ])
 
 
 def is_string_detail(to_string_object: ValueAssertion[ToStringObject] = asrt.anything_goes(),
@@ -121,7 +148,7 @@ class _IsAnyDetail(asrt.ValueAssertionBase[Detail]):
         assert isinstance(value, Detail)
         self._is_known_sub_class(put, value, message_builder)
 
-        detail_checker = _DetailChecker(put, message_builder)
+        detail_checker = _IsValidDetail(put, message_builder)
         value.accept(detail_checker)
 
     @staticmethod
@@ -140,7 +167,10 @@ class _IsAnyDetail(asrt.ValueAssertionBase[Detail]):
         put.fail(message_builder.for_sub_component('Detail class').apply(msg))
 
 
-class _DetailChecker(DetailVisitor[None]):
+_IS_ANY_DETAIL = _IsAnyDetail()
+
+
+class _IsValidDetail(DetailVisitor[None]):
     def __init__(self,
                  put: unittest.TestCase,
                  message_builder: MessageBuilder):
@@ -163,7 +193,58 @@ class _DetailChecker(DetailVisitor[None]):
         is_tree_detail().apply(self._put, x, self._message_builder)
 
 
-_IS_ANY_DETAIL = _IsAnyDetail()
+class _EqualsDetailChecker(DetailVisitor[None]):
+    def __init__(self,
+                 actual: Detail,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder):
+        self._actual = actual
+        self._put = put
+        self._message_builder = message_builder
+
+    def visit_pre_formatted_string(self, expected: PreFormattedStringDetail) -> None:
+        expectation = is_pre_formatted_string_detail(
+            to_string_object=asrt_to_string.equals(str(expected.object_with_to_string)),
+            string_is_line_ended=asrt.equals(expected.string_is_line_ended),
+        )
+        expectation.apply(self._put, self._actual, self._message_builder)
+
+    def visit_string(self, expected: StringDetail) -> None:
+        expectation = is_string_detail(
+            to_string_object=asrt_to_string.equals(str(expected.string))
+        )
+        expectation.apply(self._put, self._actual, self._message_builder)
+
+    def visit_header_and_value(self, expected: HeaderAndValueDetail) -> None:
+        expectation = is_header_and_value_detail(
+            header=asrt_to_string.equals(str(expected.header)),
+            values=equals_details(expected.values),
+        )
+        expectation.apply(self._put, self._actual, self._message_builder)
+
+    def visit_indented(self, expected: IndentedDetail) -> None:
+        expectation = is_indented_detail(
+            equals_details(expected.details)
+        )
+        expectation.apply(self._put, self._actual, self._message_builder)
+
+    def visit_tree(self, expected: TreeDetail) -> None:
+        expectation = is_tree_detail(
+            equals_node(expected.tree)
+        )
+        expectation.apply(self._put, self._actual, self._message_builder)
+
+
+class _EqualsDetailAssertion(ValueAssertionBase[Detail]):
+    def __init__(self, expected: Detail):
+        self._expected = expected
+
+    def _apply(self,
+               put: unittest.TestCase,
+               actual,
+               message_builder: MessageBuilder):
+        checker = _EqualsDetailChecker(actual, put, message_builder)
+        self._expected.accept(checker)
 
 
 class _MatchesNode(ValueAssertionBase[Node]):

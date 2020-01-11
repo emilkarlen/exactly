@@ -8,7 +8,9 @@ from exactly_lib.test_case_utils.line_matcher import line_matchers as sut, parse
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -34,6 +36,9 @@ class LineMatcherConfiguration(matcher_combinators_check.MatcherConfiguration[Li
 
     def parser(self) -> Parser[MatcherTypeSdv[LineMatcherLine]]:
         return parse_line_matcher.parser()
+
+    def checker(self) -> MatcherChecker[LineMatcherLine]:
+        return integration_check.CHECKER
 
     def irrelevant_model(self) -> LineMatcherLine:
         return 69, 'irrelevant line model'

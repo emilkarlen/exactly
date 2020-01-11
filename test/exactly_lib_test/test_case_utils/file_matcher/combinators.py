@@ -11,6 +11,8 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -32,6 +34,9 @@ class FileMatcherConfiguration(matcher_combinators_check.MatcherConfiguration[Fi
 
     def parser(self) -> Parser[MatcherTypeSdv[FileMatcherModel]]:
         return parse_file_matcher.parser()
+
+    def checker(self) -> MatcherChecker[FileMatcherModel]:
+        return integration_check.CHECKER
 
     def irrelevant_model(self) -> FileMatcherModel:
         return models.new_model(pathlib.Path('irrelevant path'))

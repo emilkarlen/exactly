@@ -1,5 +1,6 @@
 from typing import Sequence, List
 
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -92,7 +93,7 @@ def failing_validation_cases(symbol_name: str = 'file_matcher_symbol') -> Sequen
     ]
 
 
-def _successful_matcher_with_validation(the_validation: ValidationActual):
+def _successful_matcher_with_validation(the_validation: ValidationActual) -> FileMatcherSdv:
     def get_matcher(environment: PathResolvingEnvironmentPreOrPostSds) -> FileMatcher:
         return constant.MatcherWithConstantResult(True)
 

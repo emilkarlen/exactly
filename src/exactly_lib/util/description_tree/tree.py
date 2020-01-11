@@ -26,6 +26,16 @@ class Node(Generic[NODE_DATA]):
         self._details = details
         self._children = children
 
+    @staticmethod
+    def empty(header: str, data: NODE_DATA) -> 'Node[NODE_DATA]':
+        """Gives a node without details and children"""
+        return Node(header, data, (), ())
+
+    @staticmethod
+    def leaf(header: str, data: NODE_DATA, details: Sequence[Detail]) -> 'Node[NODE_DATA]':
+        """Gives a node without children"""
+        return Node(header, data, details, ())
+
     @property
     def header(self) -> str:
         return self._header

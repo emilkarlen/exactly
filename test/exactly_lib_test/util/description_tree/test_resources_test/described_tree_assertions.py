@@ -1,4 +1,6 @@
+import copy
 import unittest
+from typing import Sequence
 
 from exactly_lib.util.description_tree.tree import StringDetail, DetailVisitor, RET
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -23,6 +25,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestIsTreeDetail),
         unittest.makeSuite(TestIsAnyDetail),
         unittest.makeSuite(TestHeaderDataAndChildrenEquals),
+        unittest.makeSuite(TestEqualsDetail),
+        unittest.makeSuite(TestEqualsNode),
     ])
 
 
@@ -423,6 +427,242 @@ class TestIsAnyDetail(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 assert_that_assertion_fails(sut.is_any_detail(), case.value)
+
+
+class _EqDetailCase:
+    def __init__(self,
+                 expected: sut.Detail,
+                 unexpected: Sequence[NameAndValue[sut.Detail]],
+                 ):
+        self.expected = expected
+        self.unexpected = unexpected
+
+
+class _EqNodeCase:
+    def __init__(self,
+                 name: str,
+                 expected: sut.Node,
+                 unexpected: Sequence[NameAndValue[sut.Node]],
+                 ):
+        self.name = name
+        self.expected = expected
+        self.unexpected = unexpected
+
+
+HEADER_e = 'expected header'
+HEADER_ue = 'unexpected header'
+DATA_e = 'expected data'
+DATA_ue = 'unexpected data'
+S_e = 'expected'
+S_ue = 'unexpected'
+STRING_DETAIL_e = sut.StringDetail(S_e)
+STRING_DETAIL_ue = sut.StringDetail(S_ue)
+
+
+class TestEqualsDetail(unittest.TestCase):
+    DETAILS = [
+        _EqDetailCase(
+            sut.StringDetail(S_e),
+            [
+                NameAndValue('unexpected type',
+                             sut.PreFormattedStringDetail(S_e)
+                             ),
+                NameAndValue('unexpected value',
+                             sut.StringDetail(S_ue)
+                             ),
+            ]
+        ),
+        _EqDetailCase(
+            sut.PreFormattedStringDetail(S_e),
+            [
+                NameAndValue('unexpected type',
+                             sut.StringDetail(S_e)
+                             ),
+                NameAndValue('unexpected value',
+                             sut.PreFormattedStringDetail('unexpected')
+                             ),
+            ]
+        ),
+        _EqDetailCase(
+            sut.HeaderAndValueDetail(HEADER_e, ()),
+            [
+                NameAndValue('unexpected type',
+                             sut.StringDetail(HEADER_e)
+                             ),
+                NameAndValue('unexpected header',
+                             sut.HeaderAndValueDetail(HEADER_ue, ())
+                             ),
+                NameAndValue('unexpected details',
+                             sut.HeaderAndValueDetail(HEADER_e, [sut.StringDetail(S_e)])
+                             ),
+            ]
+        ),
+        _EqDetailCase(
+            sut.IndentedDetail([sut.StringDetail(S_e)]),
+            [
+                NameAndValue('unexpected type',
+                             sut.StringDetail(HEADER_e)
+                             ),
+                NameAndValue('unexpected number of children',
+                             sut.IndentedDetail([])
+                             ),
+                NameAndValue('unexpected child',
+                             sut.IndentedDetail([sut.StringDetail(S_ue)])
+                             ),
+            ]
+        ),
+        _EqDetailCase(
+            sut.TreeDetail(sut.Node(HEADER_e, None, [STRING_DETAIL_e], [])),
+            [
+                NameAndValue('unexpected type',
+                             sut.StringDetail(HEADER_e)
+                             ),
+                NameAndValue('unexpected header',
+                             sut.TreeDetail(sut.Node(HEADER_ue, None, [STRING_DETAIL_e], []))
+                             ),
+                NameAndValue('unexpected number of details',
+                             sut.TreeDetail(sut.Node(HEADER_e, None, [], []))
+                             ),
+                NameAndValue('unexpected child detail',
+                             sut.TreeDetail(sut.Node(HEADER_e, None, [STRING_DETAIL_ue], []))
+                             ),
+            ]
+        ),
+    ]
+
+    def test_not_equals(self):
+        for case in self.DETAILS:
+            assertion = sut.equals_detail(case.expected)
+            for unexpected in case.unexpected:
+                with self.subTest(type=type(case.expected),
+                                  unexpected=unexpected.name):
+                    assert_that_assertion_fails(assertion, unexpected.value)
+
+    def test_equals(self):
+        # ARRANGE #
+        for case in self.DETAILS:
+            with self.subTest(type=type(case.expected)):
+                assertion = sut.equals_detail(case.expected)
+                other = copy.deepcopy(case.expected)
+                # ACT & ASSERT #
+                assertion.apply_without_message(self, other)
+
+
+class TestEqualsNode(unittest.TestCase):
+    def test_equals(self):
+        cases = [
+            NameAndValue('empty tree',
+                         sut.Node.empty(HEADER_e, None)
+                         ),
+            NameAndValue('tree with data',
+                         sut.Node.empty(HEADER_e, 'some data')
+                         ),
+            NameAndValue('tree with details',
+                         sut.Node.leaf(HEADER_e, None, [STRING_DETAIL_e])
+                         ),
+            NameAndValue('tree with children',
+                         sut.Node(HEADER_e, 'root data', [], [sut.Node.empty(HEADER_e, 'child data')])
+                         ),
+            NameAndValue('tree with details and children',
+                         sut.Node(HEADER_e, 'root data',
+                                  [STRING_DETAIL_e],
+                                  [sut.Node.empty(HEADER_e, 'child data')])
+                         ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assertion = sut.equals_node(case.value)
+                actual = copy.deepcopy(case.value)
+                assertion.apply_without_message(self, actual)
+
+    def test_not_equals(self):
+        child_e = sut.Node.empty(HEADER_e, DATA_e)
+        child_ue = sut.Node.empty(HEADER_ue, DATA_e)
+        cases = [
+            _EqNodeCase(
+                'empty tree',
+                sut.Node.empty(HEADER_e, DATA_e),
+                [
+                    NameAndValue('unexpected header',
+                                 sut.Node.empty(HEADER_ue, DATA_e)
+                                 ),
+                    NameAndValue('unexpected data',
+                                 sut.Node.empty(HEADER_e, DATA_ue)
+                                 ),
+                ]
+            ),
+            _EqNodeCase(
+                'tree with detail',
+                sut.Node.leaf(HEADER_e, DATA_e, [STRING_DETAIL_e]),
+                [
+                    NameAndValue('no details',
+                                 sut.Node.empty(HEADER_e, DATA_e)
+                                 ),
+                    NameAndValue('too many no details',
+                                 sut.Node.leaf(HEADER_e, DATA_e, [STRING_DETAIL_e, STRING_DETAIL_e])
+                                 ),
+                    NameAndValue('unequal detail',
+                                 sut.Node.leaf(HEADER_e, DATA_e, [STRING_DETAIL_ue])
+                                 ),
+                ]
+            ),
+            _EqNodeCase(
+                'tree with multiple details',
+                sut.Node.leaf(HEADER_e, DATA_e,
+                              [STRING_DETAIL_e, STRING_DETAIL_e]),
+                [
+                    NameAndValue('unequal detail',
+                                 sut.Node.leaf(HEADER_e, DATA_e,
+                                               [STRING_DETAIL_e, STRING_DETAIL_ue])
+                                 ),
+                ]
+            ),
+            _EqNodeCase(
+                'tree with child',
+                sut.Node(HEADER_e, DATA_e, [], [child_e]),
+                [
+                    NameAndValue('no children',
+                                 sut.Node.empty(HEADER_e, DATA_e)
+                                 ),
+                    NameAndValue('too many no children',
+                                 sut.Node(HEADER_e, DATA_e, [], [child_e, child_e])
+                                 ),
+                    NameAndValue('unequal child',
+                                 sut.Node(HEADER_e, DATA_e, [], [child_ue])
+                                 ),
+                ]
+            ),
+            _EqNodeCase(
+                'tree with multiple children',
+                sut.Node(HEADER_e, DATA_e, (),
+                         [child_e, child_e]),
+                [
+                    NameAndValue('unequal child',
+                                 sut.Node(HEADER_e, DATA_e, (),
+                                          [child_e, child_ue])
+                                 ),
+                ]
+            ),
+            _EqNodeCase(
+                'tree with details and children',
+                sut.Node(HEADER_e, DATA_e, [STRING_DETAIL_e], [child_e]),
+                [
+                    NameAndValue('unequal detail',
+                                 sut.Node(HEADER_e, DATA_e, [STRING_DETAIL_ue], [child_e])
+                                 ),
+                    NameAndValue('unequal child',
+                                 sut.Node(HEADER_e, DATA_e, [STRING_DETAIL_e], [child_ue])
+                                 ),
+                ]
+            ),
+        ]
+        for case in cases:
+            assertion = sut.equals_node(case.expected)
+            for unexpected in case.unexpected:
+                with self.subTest(expected=case.name,
+                                  unexpected=unexpected.name):
+                    # ACT & ASSERT #
+                    assert_that_assertion_fails(assertion, unexpected.value)
 
 
 class DetailForTest(sut.Detail):

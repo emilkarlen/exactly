@@ -1,6 +1,6 @@
 import unittest
 from abc import ABC, abstractmethod
-from typing import List, Tuple, TypeVar, Generic
+from typing import List, Tuple, TypeVar, Generic, Callable, Sequence
 
 from exactly_lib.definitions import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -8,15 +8,25 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdv_of_logic_type
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, Arrangement, \
+    ExecutionExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
+from exactly_lib_test.test_case_utils.test_resources.validation import failing_validation_cases, ValidationActual
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
@@ -44,8 +54,15 @@ class MatcherConfiguration(Generic[MODEL], ABC):
     def parser(self) -> Parser[MatcherTypeSdv[MODEL]]:
         pass
 
+    @abstractmethod
+    def checker(self) -> MatcherChecker[MODEL]:
+        pass
+
     def irrelevant_model(self) -> MODEL:
         raise NotImplementedError('abstract method')
+
+    def arbitrary_model(self, environment: FullResolvingEnvironment) -> MODEL:
+        return self.irrelevant_model()
 
     def matcher_with_constant_result(self,
                                      name: str,
@@ -76,6 +93,41 @@ class _AssertionsHelper(Generic[MODEL]):
 
     def is_expected_logic_type_sdv(self) -> ValueAssertion:
         return is_sdv_of_logic_type(self.conf.logic_type())
+
+    def sdv_with_validation(self, validation: ValidationActual) -> MatcherTypeSdv[MODEL]:
+        validator = constant_validator(validation)
+        sdv__generic = matchers.sdv_from_bool(
+            True,
+            (),
+            validator,
+        )
+        return self.conf.mk_logic_type(sdv__generic)
+
+    def bool_matcher__generic(self, result: bool) -> MatcherSdv[MODEL]:
+        return matchers.sdv_from_bool(
+            result,
+            (),
+        )
+
+    def bool_matcher(self, result: bool) -> MatcherTypeSdv[MODEL]:
+        return self.conf.mk_logic_type(self.bool_matcher__generic(result))
+
+    def failing_validation_cases(self, symbol_name: str) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+        return [
+            NExArr(
+                validation_case.name,
+                expected=ExecutionExpectation(
+                    validation=validation_case.expected,
+                ),
+                arrangement=Arrangement(
+                    symbols=symbol_utils.symbol_table_from_name_and_sdvs([
+                        NameAndValue(symbol_name,
+                                     self.sdv_with_validation(validation_case.actual))
+                    ])
+                )
+            )
+            for validation_case in failing_validation_cases()
+        ]
 
 
 MatcherNameAndResult = Tuple[str, bool]
@@ -137,6 +189,34 @@ class TestCaseBase(Generic[MODEL], unittest.TestCase):
         # ASSERT #
         expectation.apply_without_message(self,
                                           actual_result)
+
+    def _integration_check(self,
+                           arguments: Arguments,
+                           model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                           arrangement: Arrangement,
+                           expectation: Expectation):
+        conf = self.configuration
+        conf.checker().check_with_source_variants(
+            self,
+            arguments,
+            model_constructor,
+            arrangement,
+            expectation,
+        )
+
+    def _integration_check__multi(self,
+                                  arguments: Arguments,
+                                  symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                  model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                                  execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                                  ):
+        self.configuration.checker().check_multi_execution(
+            self,
+            arguments,
+            symbol_references,
+            model_constructor,
+            execution,
+        )
 
     def _check_model_argument_SHOULD_be_given_as_argument_to_both_matcher(self,
                                                                           result_of_1st: bool,
@@ -260,32 +340,57 @@ class TestSymbolReferenceBase(Generic[MODEL], TestCaseBase[MODEL], ABC):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.parser().parse(source)
 
-    def test_parse_valid_symbol_reference(self):
+    def test_referenced_symbol_SHOULD_be_validated(self):
         # ARRANGE #
 
         conf = self.configuration
-        source = remaining_source(VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR)
+        helper = _AssertionsHelper(conf)
 
-        # ACT #
+        symbol_name = VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR
 
-        matcher = conf.parser().parse(source)
+        # ACT & ASSERT #
 
-        # ASSERT #
-
-        asrt_helper = self._asrt_helper
-
-        asrt_helper.is_expected_logic_type_sdv().apply_with_message(self,
-                                                                    matcher,
-                                                                    'sdv type')
-
-        references_expectation = asrt.matches_singleton_sequence(
-            asrt_helper.is_sym_ref_to(VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR)
+        conf.checker().check_multi_execution(
+            self,
+            arguments=Arguments(symbol_name),
+            symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
+            model_constructor=conf.arbitrary_model,
+            execution=helper.failing_validation_cases(symbol_name),
         )
 
-        references_expectation.apply_with_message(
+    def test_referenced_SHOULD_apply_referenced_matcher(self):
+        # ARRANGE #
+
+        conf = self.configuration
+        helper = _AssertionsHelper(conf)
+
+        symbol_name = VALID_SYMBOL_NAME_AND_NOT_VALID_PRIMITIVE_OR_OPERATOR
+
+        execution_cases = [
+            NExArr(
+                'matcher that gives ' + str(result),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches(
+                        value=asrt.equals(result),
+                        trace=asrt_trace_rendering.matches_node_renderer()
+                    )
+                ),
+                Arrangement(
+                    symbols=SymbolTable({
+                        symbol_name: symbol_utils.container(helper.bool_matcher(result))
+                    })
+                )
+            )
+            for result in [False, True]
+        ]
+        # ACT & ASSERT #
+
+        conf.checker().check_multi_execution(
             self,
-            matcher.references,
-            'references'
+            arguments=Arguments(symbol_name),
+            symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
+            model_constructor=conf.arbitrary_model,
+            execution=execution_cases,
         )
 
 
