@@ -138,12 +138,14 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
                  ):
         self._name = name
 
+        self._trace_tree = tree.Node(name,
+                                     result,
+                                     (tree.StringDetail(boolean.BOOLEANS[result]),),
+                                     ())
         self._matching_result = MatchingResult(
             result,
             renderers.Constant(
-                tree.Node(name, result,
-                          (tree.StringDetail(boolean.BOOLEANS[result]),),
-                          ())
+                self._trace_tree
             ),
         )
 
@@ -151,11 +153,45 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
     def name(self) -> str:
         return self._name
 
+    @property
+    def trace_tree(self) -> tree.Node[bool]:
+        return self._trace_tree
+
     def structure(self) -> StructureRenderer:
         return renderers.header_only(self._name)
 
     @property
     def negation(self) -> 'MatcherWithConstantResult[MODEL]':
+        return MatcherWithConstantResult(not self._matching_result.value)
+
+    def matches_w_trace(self, model: MODEL) -> MatchingResult:
+        return self._matching_result
+
+
+T = TypeVar('T')
+
+
+class ConstantMatcherWithCustomTrace(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+    def __init__(self,
+                 mk_trace: Callable[[T], tree.Node[T]],
+                 result: bool,
+                 ):
+        self._mk_trace = mk_trace
+
+        self._matching_result = MatchingResult(
+            result,
+            renderers.Constant(mk_trace(result)),
+        )
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def structure(self) -> StructureRenderer:
+        return renderers.Constant(self._mk_trace(None))
+
+    @property
+    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
         return MatcherWithConstantResult(not self._matching_result.value)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:

@@ -11,7 +11,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \
-    MatcherWTrace, MatcherAdv, ApplicationEnvironment
+    MatcherAdv, ApplicationEnvironment
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -335,7 +335,7 @@ class _MatcherExecutionChecker(Generic[MODEL]):
 
     def _resolve_primitive_value(self,
                                  matcher_ddv: MatcherDdv[MODEL],
-                                 application_environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
+                                 application_environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         adv = matcher_ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(MatcherAdv).apply_with_message(self.put,
@@ -343,9 +343,9 @@ class _MatcherExecutionChecker(Generic[MODEL]):
                                                         'adv')
         ret_val = adv.applier(application_environment)
 
-        asrt.is_instance(MatcherWTrace).apply_with_message(self.put,
-                                                           ret_val,
-                                                           'primitive value')
+        asrt.is_instance(MatcherWTraceAndNegation).apply_with_message(self.put,
+                                                                      ret_val,
+                                                                      'primitive value')
 
         return ret_val
 

@@ -75,7 +75,8 @@ def equivalent_source_variants__with_source_check__for_expression_parser(
 
     Assumes that the body of the loop parses using the given source.
     """
-    for following_arguments, source_assertion in _source_variants_with__for_expression_parser():
+    for following_arguments, source_assertion in _source_variants_with__for_expression_parser(
+            original_arguments.num_lines):
         with put.subTest(additional_arguments_on_same_line=repr(following_arguments.first_line),
                          additional_lines=repr(following_arguments.following_lines)):
             source = original_arguments.last_line_followed_by(following_arguments,
@@ -90,6 +91,7 @@ T = TypeVar('T')
 def equivalent_source_variants__with_source_check__for_expression_parser_2(
         original_arguments: Arguments,
 ) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+    num_lines = original_arguments.num_lines
     return [
         NEA(
             name='additional_arguments_on_same_line={}, additional_lines={}'.format(
@@ -101,7 +103,7 @@ def equivalent_source_variants__with_source_check__for_expression_parser_2(
                                                             first_line_separator='').as_remaining_source
 
         )
-        for following_arguments, source_assertion in _source_variants_with__for_expression_parser()
+        for following_arguments, source_assertion in _source_variants_with__for_expression_parser(num_lines)
     ]
 
 
@@ -146,18 +148,19 @@ def _source_variants_with_accepted_following_content_on_same_line(
     ]
 
 
-def _source_variants_with__for_expression_parser() -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
+                                                 ) -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
     space = '  '
     following_argument = 'argumentOfOthers'
     return [
         (Arguments('', []), asrt_source.source_is_at_end),
 
         (Arguments(space, ['following line']),
-         asrt_source.assert_source(current_line_number=asrt.equals(1),
+         asrt_source.assert_source(current_line_number=asrt.equals(num_expression_lines),
                                    remaining_part_of_current_line=asrt.equals(space[1:]))),
 
         (Arguments(space + following_argument, ['  ']),
-         asrt_source.assert_source(current_line_number=asrt.equals(1),
+         asrt_source.assert_source(current_line_number=asrt.equals(num_expression_lines),
                                    remaining_part_of_current_line=asrt.equals(space[1:] + following_argument))),
     ]
 
