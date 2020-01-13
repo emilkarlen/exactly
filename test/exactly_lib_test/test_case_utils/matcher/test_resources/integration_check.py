@@ -186,9 +186,54 @@ class MatcherChecker(Generic[MODEL]):
                 source_case.expected.apply_with_message(put, source, 'source after parse')
 
                 for case in execution:
-                    with put.subTest(case.name):
+                    with put.subTest(source_case=source_case.name,
+                                     execution_case=case.name):
                         checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
                         checker.check(actual)
+
+    def check_single_multi_execution_setup(self,
+                                           put: unittest.TestCase,
+                                           arguments: Arguments,
+                                           parse_expectation: ParseExpectation,
+                                           model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                                           execution: NExArr[ExecutionExpectation, Arrangement],
+                                           ):
+        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self._expected_logic_value_type,
+            parse_expectation.symbol_references
+        )
+
+        source = arguments.as_remaining_source
+        actual = self._parser.parse(source)
+        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
+        parse_expectation.source.apply_with_message(put, source, 'source after parse')
+
+        checker = _MatcherExecutionChecker(put, model_constructor, execution.arrangement, execution.expected)
+        checker.check(actual)
+
+    def check_multi_execution2(self,
+                               put: unittest.TestCase,
+                               arguments: Arguments,
+                               parse_expectation: ParseExpectation,
+                               model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                               execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                               ):
+        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self._expected_logic_value_type,
+            parse_expectation.symbol_references
+        )
+
+        source = arguments.as_remaining_source
+        actual = self._parser.parse(source)
+        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
+        parse_expectation.source.apply_with_message(put, source, 'source after parse')
+
+        for case in execution:
+            with put.subTest(case.name):
+                checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
+                checker.check(actual)
 
 
 class _CheckIsDoneException(Exception):

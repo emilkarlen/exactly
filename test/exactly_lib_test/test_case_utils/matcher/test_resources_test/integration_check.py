@@ -1,6 +1,3 @@
-"""
-Test of test-infrastructure: instruction_check.
-"""
 import pathlib
 import unittest
 from typing import List, Sequence, Optional, Generic
@@ -101,16 +98,15 @@ class TestCaseBase(unittest.TestCase):
                                         arrangement: sut.arrangement_w_tcds,
                                         expectation: sut.Expectation):
         checker = sut.MatcherChecker(parser, EXPECTED_LOGIC_TYPE_FOR_TEST)
-        checker.check_multi_execution(
+        checker.check_single_multi_execution_setup(
             self.tc,
             arguments,
-            expectation.parse.symbol_references,
+            expectation.parse,
             sut.constant_model(model),
-            [
-                NExArr('only execution',
-                       expectation.execution,
-                       arrangement)
-            ])
+            NExArr('only execution',
+                   expectation.execution,
+                   arrangement),
+        )
 
     def _check_line_matcher_type__single_and_multi(self,
                                                    arguments: Arguments,
@@ -125,16 +121,15 @@ class TestCaseBase(unittest.TestCase):
                           sut.constant_model(model),
                           arrangement, expectation)
         with self.subTest('multiple executions'):
-            checker.check_multi_execution(
+            checker.check_single_multi_execution_setup(
                 self.tc,
                 arguments,
-                expectation.parse.symbol_references,
+                expectation.parse,
                 sut.constant_model(model),
-                [
-                    NExArr('the one and only execution',
-                           expectation.execution,
-                           arrangement)
-                ])
+                NExArr('the one and only execution',
+                       expectation.execution,
+                       arrangement),
+            )
 
     def _check_raises_test_error__single_and_multi(self,
                                                    parser: Parser[MatcherTypeSdv[int]],
@@ -258,14 +253,15 @@ class TestTypes(TestCaseBase):
             with self.subTest(arrangement.name,
                               execution_variant='multiple execution'):
                 with self.assertRaises(utils.TestError):
-                    checker.check_multi_execution(self.tc,
-                                                  utils.single_line_arguments(),
-                                                  expectation.parse.symbol_references,
-                                                  ARBITRARY_MODEL_CONSTRUCTOR,
-                                                  [NExArr('the one and only execution',
-                                                          expectation.execution,
-                                                          arrangement.value)],
-                                                  )
+                    checker.check_single_multi_execution_setup(
+                        self.tc,
+                        utils.single_line_arguments(),
+                        expectation.parse,
+                        ARBITRARY_MODEL_CONSTRUCTOR,
+                        NExArr('the one and only execution',
+                               expectation.execution,
+                               arrangement.value),
+                    )
 
 
 class TestDefault(TestCaseBase):
