@@ -26,7 +26,7 @@ def parse_files_matcher(parser: TokenParser,
     if must_be_on_current_line:
         parser.require_is_not_at_eol('Missing ' + syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name)
 
-    mb_file_selector = parse_file_matcher.parse_optional_selection_sdv2(parser)
+    mb_file_selector = parse_file_matcher.parse_optional_selection_sdv(parser)
     expectation_type = parser.consume_optional_negation_operator()
 
     ret_val = _SIMPLE_MATCHER_PARSER.parse(parser)

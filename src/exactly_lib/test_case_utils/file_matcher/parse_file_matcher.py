@@ -68,17 +68,7 @@ class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[Fil
 _PARSER = _Parser()
 
 
-def parse_optional_selection_sdv(parser: TokenParser) -> FileMatcherSdv:
-    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
-        parser,
-        ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    return parser.consume_and_handle_optional_option(
-        CONSTANT_TRUE_MATCHER_SDV,
-        parse_sdv,
-        SELECTION_OPTION.name)
-
-
-def parse_optional_selection_sdv2(parser: TokenParser) -> Optional[FileMatcherSdv]:
+def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv]:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
