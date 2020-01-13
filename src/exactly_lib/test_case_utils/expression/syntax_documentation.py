@@ -51,7 +51,7 @@ class Syntax:
                                   syntax: SimpleExpressionDescription) -> InvokationVariant:
             name_argument = a.Single(a.Multiplicity.MANDATORY,
                                      a.Constant(name))
-            all_arguments = [name_argument] + syntax.argument_usage_list
+            all_arguments = [name_argument] + list(syntax.argument_usage_list)
             return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
                                      syntax.description_rest)
 

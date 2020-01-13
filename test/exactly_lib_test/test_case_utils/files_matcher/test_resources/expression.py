@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check i
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -63,7 +63,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
             with self.subTest(invalid_integer_value=str(invalid_integer_value)):
                 condition_str = int_condition(comparators.EQ, invalid_integer_value)
                 instr_arg = self._conf().arguments_constructor.apply(condition_str)
-                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                for source in equivalent_source_variants__with_source_check__for_expression_parser(
                         self,
                         Arguments(instr_arg)):
                     self._check(
@@ -87,7 +87,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
         for condition_str in test_cases:
             with self.subTest(msg=condition_str):
                 instr_arg = self._conf().arguments_constructor.apply(condition_str)
-                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                for source in equivalent_source_variants__with_source_check__for_expression_parser(
                         self,
                         Arguments(instr_arg)):
                     self._check(
@@ -119,7 +119,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                 arguments = self._conf().arguments_constructor.apply(operand_arg_with_symbol_ref)
                 with self.subTest(argument=arguments,
                                   invalid_symbol_value=invalid_symbol_value):
-                    for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                    for source in equivalent_source_variants__with_source_check__for_expression_parser(
                             self,
                             Arguments(arguments)):
                         self._check(

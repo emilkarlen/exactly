@@ -13,7 +13,6 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
@@ -45,10 +44,6 @@ REG_EX_OPTION = a.OptionName(long_name='regex')
 
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
-
-
-def parse_sdv_from_parse_source(source: ParseSource) -> FileMatcherSdv:
-    return _PARSER.parse(source)
 
 
 def parser() -> parser_classes.Parser[FileMatcherSdv]:

@@ -4,10 +4,11 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxE
     syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, type_string_matcher, symbol_name, symbol_reference, \
-    type_files_matcher, integer, integer_comparison, shell_command_line
+    integer, integer_comparison, shell_command_line
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.value_type import TypeCategory
@@ -35,7 +36,6 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     shell_command_line.DOCUMENTATION,
     symbol_name.DOCUMENTATION,
     symbol_reference.DOCUMENTATION,
-    type_files_matcher.DOCUMENTATION,
 
     type_string.DOCUMENTATION,
     type_list.DOCUMENTATION,
@@ -43,6 +43,9 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     _for_logic_type(syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                     parse_file_matcher.GRAMMAR),
+
+    _for_logic_type(syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
+                    parse_files_matcher.GRAMMAR),
 
     _for_logic_type(syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
                     parse_string_transformer.GRAMMAR),

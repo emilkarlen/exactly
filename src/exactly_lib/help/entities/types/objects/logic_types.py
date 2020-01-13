@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import types, syntax_elements, conf_params, 
 from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.value_type import TypeCategory
@@ -44,10 +45,11 @@ STRING_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
                                                  syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
                                                  docs.empty_section_contents())
 
-FILES_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
-                                                types.FILES_MATCHER_TYPE_INFO,
-                                                syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
-                                                docs.empty_section_contents())
+FILES_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+    types.FILES_MATCHER_TYPE_INFO,
+    syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
+    parse_files_matcher.GRAMMAR,
+    empty_section_contents())
 
 _PROGRAM_DESCRIPTION_REST = """\
 {program_type:a/uq} is executed as an {os_process}.

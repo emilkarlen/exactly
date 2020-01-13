@@ -35,6 +35,7 @@ class _SubsetGetter(PropertyGetter[FilesMatcherModel, FilesMatcherModel],
     NAME = ' '.join([
         option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+        syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
     ])
 
     @staticmethod

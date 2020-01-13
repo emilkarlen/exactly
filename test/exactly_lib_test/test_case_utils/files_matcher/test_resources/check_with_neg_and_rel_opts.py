@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check i
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess, \
@@ -111,7 +111,7 @@ class MatcherChecker:
                 etc = expectation_type_config__non_is_success(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc)
 
-                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                for source in equivalent_source_variants__with_source_check__for_expression_parser(
                         self.put,
                         Arguments(instruction_arguments)):
                     self._check_(

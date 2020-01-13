@@ -8,6 +8,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import selection_arguments
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import arbitrary_model
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_matching_success, \
     is_arbitrary_matching_failure
@@ -27,14 +29,18 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
             case: SourceCase,
             result_of_main: ValueAssertion[MatchingResult]):
         with self.subTest(case.name):
-            integration_check.check(
+            integration_check.CHECKER.check(
                 self,
                 case.source,
                 arbitrary_model(),
-                integration_check.arrangement_w_tcds(),
-                integration_check.Expectation(
-                    main_result=result_of_main,
-                    source=case.source_assertion,
+                arrangement_w_tcds(),
+                Expectation(
+                    ParseExpectation(
+                        source=case.source_assertion,
+                    ),
+                    ExecutionExpectation(
+                        main_result=result_of_main,
+                    ),
                 ))
 
     def test_positive(self):

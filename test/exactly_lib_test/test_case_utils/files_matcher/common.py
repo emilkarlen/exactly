@@ -3,8 +3,11 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import \
+    is_syntax_element_description
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
@@ -18,7 +21,18 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParseInvalidSyntax)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestDocumentation),
+        unittest.makeSuite(TestParseInvalidSyntax),
+    ])
+
+
+class TestDocumentation(unittest.TestCase):
+    def test(self):
+        # ACT #
+        sed = syntax_documentation.syntax_element_description(sut.GRAMMAR)
+        # ASSERT #
+        is_syntax_element_description.apply_without_message(self, sed)
 
 
 class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
