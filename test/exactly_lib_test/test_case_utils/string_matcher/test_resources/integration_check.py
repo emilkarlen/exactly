@@ -1,3 +1,4 @@
+import pathlib
 from typing import Callable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -20,6 +21,16 @@ def empty_model() -> ModelConstructor:
 
 def model_of(contents: str) -> ModelConstructor:
     return _ModelConstructorHelper(contents).construct
+
+
+def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> FileToCheck:
+    return MODEL_THAT_MUST_NOT_BE_USED
+
+
+MODEL_THAT_MUST_NOT_BE_USED = FileToCheck(described_path.new_primitive(pathlib.Path('non-existing-file')),
+                                          IdentityStringTransformer(),
+                                          DestinationFilePathGetter(),
+                                          )
 
 
 class _ModelConstructorHelper:

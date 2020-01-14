@@ -15,10 +15,9 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_fro
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration as tc, \
-    test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration as tc
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as str_trans_syntax
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess

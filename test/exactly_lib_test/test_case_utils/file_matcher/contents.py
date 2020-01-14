@@ -17,9 +17,9 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_t
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args as sm_args, \
-    EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import validation_cases
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args as sm_args, \
+    EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -216,9 +216,11 @@ class TestComplexMatcher(tc.TestWithNegationArgumentBase):
             elements(
                 maybe_not.empty__if_positive__not_option__if_negative +
                 [
+                    '(',
                     argument_syntax.contents_matcher_of(
                         str(EqualsStringAssertionArgumentsConstructor(
                             surrounded_by_hard_quotes_str(checked_file.contents)))),
+                    ')',
                     expression.AND_OPERATOR_NAME,
                     argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
                 ]
@@ -251,9 +253,9 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
                     argument_syntax.contents_matcher_of(
                         str(EqualsStringAssertionArgumentsConstructor(
                             surrounded_by_hard_quotes_str(checked_file.contents)))),
+                    ')',
                     expression.AND_OPERATOR_NAME,
                     argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
-                    ')',
                 ]
             ).as_remaining_source,
             model_constructor=

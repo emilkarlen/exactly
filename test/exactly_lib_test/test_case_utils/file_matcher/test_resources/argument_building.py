@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_args
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.matcher_argument import MatcherArg
 

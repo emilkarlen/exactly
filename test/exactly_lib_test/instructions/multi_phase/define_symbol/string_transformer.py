@@ -76,7 +76,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         replacement_str = 'the_replacement'
 
         symbol = NameAndValue('the_symbol_name',
-                              transformers.CustomStringTransformerTestImpl())
+                              transformers.StringTransformerThatMustNotBeUsedTestImpl())
 
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
                                                                                     replacement_str)

@@ -8,9 +8,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
-from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches.test_resources import \
+from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines.test_resources import \
     InstructionArgumentsConstructorForExpTypeAndQuantifier
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config

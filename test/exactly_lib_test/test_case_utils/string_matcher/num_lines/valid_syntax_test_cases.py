@@ -12,10 +12,8 @@ from exactly_lib_test.symbol.test_resources.string_transformer import is_referen
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
-    InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
-    TestCaseBase
+from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
+    InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases

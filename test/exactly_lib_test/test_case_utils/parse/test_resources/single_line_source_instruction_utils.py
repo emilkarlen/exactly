@@ -45,26 +45,6 @@ def equivalent_source_variants__with_source_check__multi_line(put: unittest.Test
             source_assertion.apply_with_message(put, source, 'source after parse')
 
 
-def equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
-        put: unittest.TestCase,
-        original_arguments: Arguments):
-    """
-    Yields a ParseSource
-
-    Checks that the first line of the source has been consumed.
-
-    Assumes that the body of the loop parses using the given source.
-    """
-    for following_arguments, source_assertion in _source_variants_with_accepted_following_content_on_same_line(
-            original_arguments.num_lines):
-        with put.subTest(additional_arguments_on_same_line=repr(following_arguments.first_line),
-                         additional_lines=repr(following_arguments.following_lines)):
-            source = original_arguments.last_line_followed_by(following_arguments,
-                                                              first_line_separator='').as_remaining_source
-            yield source
-            source_assertion.apply_with_message(put, source, 'source after parse')
-
-
 def equivalent_source_variants__with_source_check__for_expression_parser(
         put: unittest.TestCase,
         original_arguments: Arguments):

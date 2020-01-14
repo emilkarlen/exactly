@@ -10,8 +10,7 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.parse.test_resources import \
     string_argument_syntax, list_argument_syntax, path_argument_syntax
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_syntax
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import \
-    arguments_building as string_matcher_syntax
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as string_matcher_syntax
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     argument_syntax as string_transformers_syntax
 

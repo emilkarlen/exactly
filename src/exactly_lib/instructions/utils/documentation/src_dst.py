@@ -5,7 +5,7 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

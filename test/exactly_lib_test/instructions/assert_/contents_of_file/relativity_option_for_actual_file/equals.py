@@ -25,8 +25,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

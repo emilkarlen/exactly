@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines import \
+from exactly_lib_test.test_case_utils.string_matcher.num_lines import \
     invalid_syntax_test_cases, operand_expression_test_cases, valid_syntax_test_cases
 
 

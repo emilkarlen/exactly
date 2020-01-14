@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
+from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail

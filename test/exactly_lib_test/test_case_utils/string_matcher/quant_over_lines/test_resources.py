@@ -8,11 +8,11 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building, test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+    equivalent_source_variants__with_source_check__for_expression_parser
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, arguments_building, \
+    test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -98,7 +98,7 @@ class TestCaseBase(unittest.TestCase):
                                                                   quantifier)
                 complete_instruction_arguments = test_configuration.arguments_for(args_variant)
 
-                for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+                for source in equivalent_source_variants__with_source_check__for_expression_parser(
                         self,
                         complete_instruction_arguments):
                     integration_check.CHECKER.check(

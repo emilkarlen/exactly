@@ -26,10 +26,10 @@ from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_t
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building as arg_syntax
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as arg_syntax, \
+    model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

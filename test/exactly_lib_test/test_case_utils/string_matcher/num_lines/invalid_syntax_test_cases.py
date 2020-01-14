@@ -6,9 +6,9 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
+from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration
 
 
 def suite() -> unittest.TestSuite:

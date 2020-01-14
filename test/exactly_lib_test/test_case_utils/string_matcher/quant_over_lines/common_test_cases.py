@@ -18,13 +18,13 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_synta
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.string_matcher.parse.line_matches import test_resources as tr
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building, test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import \
+from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import test_resources as tr
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, arguments_building, \
+    test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
     CommonArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation

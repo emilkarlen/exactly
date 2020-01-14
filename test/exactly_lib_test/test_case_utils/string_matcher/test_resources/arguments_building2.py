@@ -1,19 +1,34 @@
+from typing import Sequence
+
 from exactly_lib.definitions import expression
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 
 class StringMatcherArg:
     """Generate source using __str__"""
     pass
 
+    @property
+    def as_arguments(self) -> Arguments:
+        return Arguments(str(self))
+
 
 class Empty(StringMatcherArg):
     def __str__(self):
         return matcher_options.EMPTY_ARGUMENT
+
+
+class SymbolReference(StringMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def __str__(self):
+        return self.symbol_name
 
 
 class Transformed(StringMatcherArg):
@@ -72,3 +87,30 @@ class Not(StringMatcherArg):
 
     def __str__(self):
         return expression.NOT_OPERATOR_NAME + ' ' + str(self.matcher)
+
+
+class Parenthesis(StringMatcherArg):
+    def __init__(self, string_matcher: StringMatcherArg):
+        self.string_matcher = string_matcher
+
+    def __str__(self):
+        return '( {} )'.format(self.string_matcher)
+
+
+class BinaryOperator(StringMatcherArg):
+    def __init__(self,
+                 operator: str,
+                 operands: Sequence[StringMatcherArg]):
+        self.operator = operator
+        self.operands = operands
+
+    def __str__(self):
+        return (' ' + self.operator + ' ').join([str(op) for op in self.operands])
+
+
+def conjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(expression.AND_OPERATOR_NAME, operands)
+
+
+def disjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(expression.AND_OPERATOR_NAME, operands)

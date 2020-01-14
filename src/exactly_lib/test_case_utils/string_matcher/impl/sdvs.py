@@ -1,19 +1,18 @@
 from typing import Sequence, Callable
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.test_case_utils.string_matcher.impl import on_transformed
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def new_maybe_negated(matcher: MatcherSdv[FileToCheck],
+def new_maybe_negated(matcher: GenericStringMatcherSdv,
                       expectation_type: ExpectationType) -> StringMatcherSdv:
     if expectation_type is ExpectationType.NEGATIVE:
         matcher = combinator_sdvs.Negation(matcher)
@@ -22,12 +21,12 @@ def new_maybe_negated(matcher: MatcherSdv[FileToCheck],
 
 
 def new_with_transformation(transformer: StringTransformerSdv,
-                            original: MatcherSdv[FileToCheck]) -> StringMatcherSdv:
+                            original: GenericStringMatcherSdv) -> StringMatcherSdv:
     return StringMatcherSdv(on_transformed.StringMatcherWithTransformationSdv(transformer, original))
 
 
 def new_with_transformation__generic(transformer: StringTransformerSdv,
-                                     original: MatcherSdv[FileToCheck]) -> MatcherSdv[FileToCheck]:
+                                     original: GenericStringMatcherSdv) -> GenericStringMatcherSdv:
     return on_transformed.StringMatcherWithTransformationSdv(transformer, original)
 
 
@@ -41,7 +40,7 @@ def new_reference(name_of_referenced_sdv: str,
 
 
 def new_reference__generic(name_of_referenced_sdv: str,
-                           expectation_type: ExpectationType) -> MatcherSdv[FileToCheck]:
+                           expectation_type: ExpectationType) -> GenericStringMatcherSdv:
     matcher = MatcherReferenceSdv(name_of_referenced_sdv, ValueType.STRING_MATCHER)
     if expectation_type is ExpectationType.NEGATIVE:
         matcher = combinator_sdvs.Negation(matcher)

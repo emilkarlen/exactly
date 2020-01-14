@@ -17,7 +17,6 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker
 from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIGNMENT_TOKEN, CONTENTS_ARGUMENT, \
     InstructionConfig, parse_file_contents, \
@@ -35,6 +34,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionSourceInfo
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation

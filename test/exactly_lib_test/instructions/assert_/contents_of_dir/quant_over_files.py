@@ -32,8 +32,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config

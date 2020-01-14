@@ -589,7 +589,6 @@ Including (but not limited to):
 * file-matcher: Add matcher: ``dir-contents``
 * files-matcher: Add logical operators
 * ``dir-contents``: Check contents of directory recursively.
-* string-matcher: Add logical operators
 * Symbol substitution in files
 * Variables - corresponding to symbol definitions -
   but for variable values

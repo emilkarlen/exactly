@@ -37,8 +37,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_fi
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import arguments_building2 as sm_arg
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.contents_transformation import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.contents_transformation import \
     ToUppercaseStringTransformer
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

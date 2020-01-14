@@ -1,11 +1,10 @@
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, sdv_components
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 
@@ -52,5 +51,5 @@ class EmptinessStringMatcher(StringMatcherImplBase):
         return ''
 
 
-def sdv__generic() -> MatcherSdv[FileToCheck]:
+def sdv__generic() -> GenericStringMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(EmptinessStringMatcher())

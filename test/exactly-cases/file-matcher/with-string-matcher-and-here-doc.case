@@ -1,0 +1,15 @@
+[setup]
+
+file A
+
+[assert]
+
+exists A : type file && ( contents equals <<EOF
+EOF
+) && contents equals <<EOF
+EOF
+
+exists A : type file && contents ( equals <<EOF
+EOF
+) && equals <<EOF
+EOF

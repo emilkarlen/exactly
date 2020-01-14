@@ -13,11 +13,11 @@ from exactly_lib.instructions.assert_.utils.file_contents import parse_instructi
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
-from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path

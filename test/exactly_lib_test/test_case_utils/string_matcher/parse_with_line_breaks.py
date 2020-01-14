@@ -6,13 +6,12 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import SB
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import SB
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_arbitrary_matching_failure, \
     is_matching_success
@@ -51,7 +50,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                      sb.format_lines(['',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.is_at_end_of_line(2),
+                 asrt_source.source_is_at_end,
                  main_result_assertion=
                  is_matching_success(),
                  ),
@@ -62,7 +61,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                                       '{constant_transformation_arguments}',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.is_at_end_of_line(3),
+                 asrt_source.source_is_at_end,
                  main_result_assertion=
                  is_matching_success(),
                  ),
@@ -73,7 +72,7 @@ class TestLineBreaksWithEmptyActualFile(TestCaseBase):
                                       '{not}',
                                       '{empty}'])),
                  source_assertion=
-                 asrt_source.is_at_end_of_line(3),
+                 asrt_source.source_is_at_end,
                  main_result_assertion=
                  is_arbitrary_matching_failure(),
                  ),

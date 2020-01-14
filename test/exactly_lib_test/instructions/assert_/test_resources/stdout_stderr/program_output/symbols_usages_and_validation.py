@@ -19,7 +19,7 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import matcher_arguments
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

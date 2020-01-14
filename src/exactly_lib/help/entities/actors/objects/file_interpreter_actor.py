@@ -12,8 +12,8 @@ from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEM
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render import doc_utils
-from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element_2
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
+from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element_2
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc

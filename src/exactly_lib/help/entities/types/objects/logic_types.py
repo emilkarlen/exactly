@@ -7,9 +7,9 @@ from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpr
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -40,10 +40,11 @@ STRING_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     parse_string_transformer.GRAMMAR,
     empty_section_contents())
 
-STRING_MATCHER_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
-                                                 types.STRING_MATCHER_TYPE_INFO,
-                                                 syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-                                                 docs.empty_section_contents())
+STRING_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+    types.STRING_MATCHER_TYPE_INFO,
+    syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+    parse_string_matcher.GRAMMAR,
+    empty_section_contents())
 
 FILES_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.FILES_MATCHER_TYPE_INFO,

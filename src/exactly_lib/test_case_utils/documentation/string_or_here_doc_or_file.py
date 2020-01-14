@@ -4,15 +4,12 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_elements
+from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_elements
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.test_case_utils.string_matcher.matcher_options import EMPTY_ARGUMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 
 
 class StringOrHereDocOrFile:
@@ -32,6 +29,14 @@ class StringOrHereDocOrFile:
             'expected_file_arg': path_name,
         }
         self._parser = TextParser(format_map)
+
+    @property
+    def path_name(self) -> str:
+        return self._path_name
+
+    @property
+    def path_argument_configuration(self) -> RelOptionArgumentConfiguration:
+        return self._path_argument_configuration
 
     def argument_usage(self, multiplicity: a.Multiplicity) -> a.ArgumentUsage:
         return a.Choice(multiplicity,

@@ -1,0 +1,13 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+file F = "text"
+
+[assert]
+
+contents F -transformed-by TO_UPPER_CASE equals 'TEXT' && equals 'text'
+
+# Both "equals" applies to the transformed model.

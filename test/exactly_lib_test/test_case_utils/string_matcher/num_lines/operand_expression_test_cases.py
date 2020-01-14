@@ -13,10 +13,8 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.validatio
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
-    InstructionArgumentsVariantConstructor
-from exactly_lib_test.test_case_utils.string_matcher.parse.num_lines.test_resources import \
-    TestCaseBase
+from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
+    InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail

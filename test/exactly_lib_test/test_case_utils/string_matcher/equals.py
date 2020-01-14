@@ -14,24 +14,21 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation, \
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, \
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import contents_transformation, \
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.misc import \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.relativity_options import \
-    suite_for__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
-    TestWithRelativityOptionAndNegationBase
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources.test_configuration import \
-    TestWithNegationArgumentBase
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
-    failing_validation_cases
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.relativity_options import \
+    suite_for__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
+    TestWithRelativityOptionAndNegationBase
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
+    TestWithNegationArgumentBase
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -56,7 +53,6 @@ def suite() -> unittest.TestSuite:
         _ContentsEqualsAString(),
         _ContentsEqualsAHereDocumentWithSymbolReferences(),
         _ContentsDoNotEqualAHereDocument(),
-        _StringTransformerShouldBeValidated(),
     ])
 
     return unittest.TestSuite([
@@ -180,7 +176,7 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.is_at_end_of_line(3),
+                    source=asrt_source.source_is_at_end,
                 ),
                 ExecutionExpectation(
                     main_result=maybe_not.pass__if_positive__fail__if_negative,
@@ -232,7 +228,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 })),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.is_at_end_of_line(3),
+                    source=asrt_source.is_at_beginning_of_line(4),
                     symbol_references=equals_symbol_references([
                         SymbolReference(symbol.name, is_any_data_type())
                     ]),
@@ -258,7 +254,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.is_at_end_of_line(3)
+                    source=asrt_source.is_at_beginning_of_line(4)
                 ),
                 ExecutionExpectation(
                     main_result=maybe_not.fail__if_positive__pass_if_negative,
@@ -315,30 +311,3 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                 ),
             ),
         )
-
-
-class _StringTransformerShouldBeValidated(TestWithNegationArgumentBase):
-    def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        for case in failing_validation_cases():
-            expected_contents = 'expected contents'
-            with self.subTest(validation_case=case.name):
-                self._check(
-                    test_configuration.source_for(
-                        args('{transformer_option} {maybe_not} {equals} {expected_contents}',
-                             transformer_option=case.value.transformer_arguments_string,
-                             expected_contents=surrounded_by_hard_quotes_str(expected_contents),
-                             maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
-                    ),
-                    integration_check.model_of(expected_contents),
-                    Arrangement(
-                        symbols=case.value.symbol_context.symbol_table
-                    ),
-                    Expectation(
-                        ParseExpectation(
-                            symbol_references=case.value.symbol_context.references_assertion,
-                        ),
-                        ExecutionExpectation(
-                            validation=case.value.expectation,
-                        ),
-                    ),
-                )

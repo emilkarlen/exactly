@@ -6,7 +6,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__following_content_on_last_line_accepted
+    equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -42,7 +42,7 @@ class TestCaseBase(unittest.TestCase):
                                     model: ModelConstructor,
                                     arrangement: Arrangement,
                                     expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check__following_content_on_last_line_accepted(
+        for source in equivalent_source_variants__with_source_check__for_expression_parser(
                 self, instruction_argument):
             integration_check.CHECKER.check(self,
                                             source,

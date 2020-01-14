@@ -14,7 +14,8 @@ from exactly_lib.test_case_utils.string_transformer.impl.sequence import Sequenc
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv, \
+    GenericStringMatcherSdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerAdv
 from exactly_lib.util.description_tree import renderers, details
@@ -124,7 +125,7 @@ class StringMatcherWithTransformationSdv(MatcherSdv[FileToCheck]):
 
     def __init__(self,
                  transformer: StringTransformerSdv,
-                 original: MatcherSdv[FileToCheck],
+                 original: GenericStringMatcherSdv,
                  ):
         self._transformer = transformer
         self._original = original

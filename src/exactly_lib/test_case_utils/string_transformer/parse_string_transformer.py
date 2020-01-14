@@ -67,8 +67,9 @@ def parse_optional_transformer_sdv_preceding_mandatory_element(parser: TokenPars
     return parse_optional_transformer_sdv2(parser)
 
 
-def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTransformerSdv:
-    return parse_expression.parse(GRAMMAR, parser)
+def parse_string_transformer_from_token_parser(parser: TokenParser,
+                                               must_be_on_current_line: bool = True) -> StringTransformerSdv:
+    return parse_expression.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {

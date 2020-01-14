@@ -7,7 +7,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import arguments_building as args
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_case_utils.string_matcher.parse.test_resources import matcher_arguments
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh
 from exactly_lib_test.test_resources.arguments_building import Stringable

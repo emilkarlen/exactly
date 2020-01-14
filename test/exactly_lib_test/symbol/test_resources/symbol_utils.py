@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Mapping
 
 from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
 from exactly_lib.symbol import sdv_structure
@@ -66,6 +66,14 @@ def symbol_table_from_name_and_sdvs(
     return SymbolTable({
         nar.name: container(nar.value)
         for nar in name_and_sdvs
+    })
+
+
+def symbol_table_from_name_and_sdv_mapping(
+        name_and_sdvs: Mapping[str, SymbolDependentValue]) -> SymbolTable:
+    return SymbolTable({
+        n_sdv[0]: container(n_sdv[1])
+        for n_sdv in name_and_sdvs.items()
     })
 
 

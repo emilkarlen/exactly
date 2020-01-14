@@ -2,6 +2,7 @@ import pathlib
 from contextlib import contextmanager
 from typing import Iterable
 
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherWTraceAndNegation, MatcherAdv
@@ -96,6 +97,8 @@ class FileToCheck:
 
 
 StringMatcher = MatcherWTraceAndNegation[FileToCheck]
+
+GenericStringMatcherSdv = MatcherSdv[FileToCheck]
 
 StringMatcherDdv = MatcherDdv[FileToCheck]
 
