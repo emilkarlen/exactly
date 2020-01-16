@@ -72,7 +72,7 @@ class TypeInfo(tuple):
 
 
 def _standard_type_value_args(type_info: TypeNameAndCrossReferenceId,
-                              value_multiplicity: a.Multiplicity = a.Multiplicity.OPTIONAL) -> List[a.ArgumentUsage]:
+                              value_multiplicity: a.Multiplicity = a.Multiplicity.MANDATORY) -> List[a.ArgumentUsage]:
     return [a.Single(value_multiplicity,
                      a.Named(type_info.syntax_element_name))]
 
@@ -119,22 +119,20 @@ ANY_TYPE_INFO_DICT = {
 
     ValueType.FILES_MATCHER:
         TypeInfo(types.FILES_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.FILES_MATCHER_TYPE_INFO,
-                                           a.Multiplicity.MANDATORY)),
+                 _standard_type_value_args(types.FILES_MATCHER_TYPE_INFO)),
 
     ValueType.STRING_MATCHER:
         TypeInfo(types.STRING_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_MATCHER_TYPE_INFO,
-                                           a.Multiplicity.MANDATORY)),
+                 _standard_type_value_args(types.STRING_MATCHER_TYPE_INFO)),
 
     ValueType.STRING_TRANSFORMER:
         TypeInfo(types.STRING_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO)),
+                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO,
+                                           a.Multiplicity.OPTIONAL)),
 
     ValueType.PROGRAM:
         TypeInfo(types.PROGRAM_TYPE_INFO,
-                 _standard_type_value_args(types.PROGRAM_TYPE_INFO,
-                                           a.Multiplicity.MANDATORY)),
+                 _standard_type_value_args(types.PROGRAM_TYPE_INFO)),
 }
 
 

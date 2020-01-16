@@ -14,6 +14,11 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - primitive `dir-contents`
  - Matcher types - primitive `constant`
 
+### Changed
+
+ - Instruction `def` - LINE-MATCHER argument is mandatory
+ - Instruction `def` - FILE-MATCHER argument is mandatory
+
 ## [0.11.1.0]
 
 ### Added

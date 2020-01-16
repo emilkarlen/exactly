@@ -5,7 +5,6 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -46,51 +45,6 @@ class TestCaseBase(unittest.TestCase):
 
 
 class TestSuccessfulScenarios(TestCaseBase):
-    def test_successful_parse_WHEN_rhs_is_empty_THEN_result_SHOULD_be_constant_True_matcher(self):
-        defined_name = 'defined_name'
-
-        # ARRANGE #
-
-        source = single_line_source(
-            src('{line_match_type} {defined_name} = ',
-                defined_name=defined_name),
-        )
-
-        # EXPECTATION #
-
-        expected_equivalent = constant.MatcherWithConstantResult(True)
-        models_for_equivalence_check = [
-            asrt_matcher.ModelInfo((1, '')),
-            asrt_matcher.ModelInfo((1, '  ')),
-            asrt_matcher.ModelInfo((1, 'non empty')),
-            asrt_matcher.ModelInfo((2, '')),
-            asrt_matcher.ModelInfo((2, '  ')),
-            asrt_matcher.ModelInfo((3, 'non empty')),
-        ]
-
-        expected_container = matches_container(
-            sdv_assertions.matches_sdv_of_line_matcher(
-                references=asrt.is_empty_sequence,
-                primitive_value=asrt_matcher.is_equivalent_to(expected_equivalent,
-                                                              models_for_equivalence_check)
-            )
-        )
-
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                asrt_sym_usage.matches_definition(asrt.equals(defined_name),
-                                                  expected_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                defined_name,
-                expected_container,
-            )
-        )
-
-        # ACT & ASSERT #
-
-        self._check(source, ArrangementWithSds(), expectation)
-
     def test_successful_parse_of_regex(self):
         # ARRANGE #
 
@@ -160,24 +114,28 @@ class TestSuccessfulScenarios(TestCaseBase):
 class TestUnsuccessfulScenarios(TestCaseBase):
     def test_failing_parse(self):
         cases = [
-            (
+            NameAndValue(
                 'single quoted argument',
                 str(surrounded_by_hard_quotes(exactly_lib.definitions.primitives.line_matcher.REGEX_MATCHER_NAME)),
             ),
-            (
+            NameAndValue(
                 'non-transformer name that is not a valid symbol name',
                 NOT_A_VALID_SYMBOL_NAME,
+            ),
+            NameAndValue(
+                'missing matcher',
+                '',
             ),
         ]
         # ARRANGE #
         defined_name = 'defined_name'
         parser = sut.EmbryoParser()
-        for name, rhs_source in cases:
-            with self.subTest(name=name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 source = single_line_source(
                     src('{line_match_type} {defined_name} = {matcher_argument}',
                         defined_name=defined_name,
-                        matcher_argument=rhs_source),
+                        matcher_argument=case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

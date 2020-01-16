@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
-from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -22,14 +22,13 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_synta
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources import described_path
-from exactly_lib_test.type_system.logic.test_resources import file_matcher
 from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestSuccessfulScenarios)
+    return unittest.makeSuite(Test)
 
 
 class TestCaseBase(unittest.TestCase):
@@ -42,7 +41,7 @@ class TestCaseBase(unittest.TestCase):
         embryo_check.check(self, parser, source, arrangement, expectation)
 
 
-class TestSuccessfulScenarios(TestCaseBase):
+class Test(TestCaseBase):
     def test_successful_parse(self):
         name_pattern = 'the name pattern'
         non_matching_name = 'non-matching name'
@@ -53,13 +52,6 @@ class TestSuccessfulScenarios(TestCaseBase):
         expected_glob_pattern_matcher = resolving_helper__fake().resolve(expected_glob_pattern_matcher_sdv)
 
         cases = [
-            NIE('empty RHS SHOULD give selection of all files',
-                asrt_matcher.is_equivalent_to(
-                    constant.MatcherWithConstantResult(True),
-                    [asrt_matcher.ModelInfo(file_matcher.FileMatcherModelThatMustNotBeAccessed())]
-                ),
-                '',
-                ),
             NIE('name pattern in RHS SHOULD give selection of name pattern',
                 asrt_matcher.is_equivalent_to(
                     expected_glob_pattern_matcher,
@@ -109,24 +101,28 @@ class TestSuccessfulScenarios(TestCaseBase):
 
     def test_failing_parse(self):
         cases = [
-            (
+            NameAndValue(
                 'single quoted argument',
                 str(surrounded_by_hard_quotes(NAME_MATCHER_NAME)),
             ),
-            (
+            NameAndValue(
                 'non-selector name that is not a valid symbol name',
                 NOT_A_VALID_SYMBOL_NAME,
+            ),
+            NameAndValue(
+                'missing matcher',
+                '',
             ),
         ]
         # ARRANGE #
         defined_name = 'defined_name'
         parser = sut.EmbryoParser()
-        for name, rhs_source in cases:
-            with self.subTest(name=name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 source = single_line_source(
                     src('{file_matcher_type} {defined_name} = {selector_argument}',
                         defined_name=defined_name,
-                        selector_argument=rhs_source),
+                        selector_argument=case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

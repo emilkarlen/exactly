@@ -19,8 +19,6 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
-from exactly_lib.test_case_utils.file_matcher import sdvs
-from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
@@ -35,8 +33,6 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-CONSTANT_TRUE_MATCHER_SDV = sdvs.file_matcher_constant_sdv(MATCH_EVERY_FILE)
 
 NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 

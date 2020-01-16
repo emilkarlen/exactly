@@ -274,10 +274,7 @@ def _parse_list(fs_location_info: FileSystemLocationInfo,
 
 def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> LineMatcherSdv:
-    if token_parser.is_at_eol:
-        return parse_line_matcher.CONSTANT_TRUE_MATCHER_SDV
-    else:
-        return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
+    return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
 
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
@@ -287,10 +284,7 @@ def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> FileMatcherSdv:
-    if token_parser.is_at_eol:
-        return parse_file_matcher.CONSTANT_TRUE_MATCHER_SDV
-    else:
-        return parse_file_matcher.parse_sdv(token_parser)
+    return parse_file_matcher.parse_sdv(token_parser)
 
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
