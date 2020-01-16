@@ -8,6 +8,8 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
@@ -97,7 +99,8 @@ class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstr
 
 class _ConfigurationPhaseInstructionThat(ConfigurationPhaseInstruction):
     def __init__(self,
-                 main):
+                 main: Callable[[ConfigurationBuilder], sh.SuccessOrHardError],
+                 ):
         self.do_main = main
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
@@ -106,10 +109,16 @@ class _ConfigurationPhaseInstructionThat(ConfigurationPhaseInstruction):
 
 class _SetupPhaseInstructionThat(SetupPhaseInstruction):
     def __init__(self,
-                 validate_pre_sds,
-                 validate_post_setup,
-                 main,
-                 symbol_usages):
+                 validate_pre_sds:
+                 Callable[[InstructionEnvironmentForPreSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 validate_post_setup:
+                 Callable[[InstructionEnvironmentForPostSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 main: Callable[[InstructionEnvironmentForPostSdsStep,
+                                 OsServices,
+                                 SetupSettingsBuilder],
+                                sh.SuccessOrHardError],
+                 symbol_usages: Callable[[], Sequence[SymbolUsage]],
+                 ):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
         self._main = main
@@ -121,13 +130,13 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
         return self._validate_pre_sds(environment)
 
     def main(self,
-             environment: instrs.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self._main(environment, os_services, settings_builder)
 
     def validate_post_setup(self,
-                            environment: instrs.InstructionEnvironmentForPostSdsStep) \
+                            environment: InstructionEnvironmentForPostSdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
@@ -137,9 +146,13 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
 
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
     def __init__(self,
-                 validate_pre_sds,
-                 validate_post_setup,
-                 main,
+                 validate_pre_sds:
+                 Callable[[InstructionEnvironmentForPreSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 validate_post_setup:
+                 Callable[[InstructionEnvironmentForPostSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 main: Callable[[InstructionEnvironmentForPostSdsStep,
+                                 OsServices],
+                                sh.SuccessOrHardError],
                  symbol_usages):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
@@ -155,21 +168,25 @@ class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
         return self._validate_pre_sds(environment)
 
     def validate_post_setup(self,
-                            environment: instrs.InstructionEnvironmentForPostSdsStep
+                            environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
     def main(self,
-             environment: instrs.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return self._main(environment, os_services)
 
 
 class _AssertPhaseInstructionThat(AssertPhaseInstruction):
     def __init__(self,
-                 validate_pre_sds,
-                 validate_post_setup,
-                 main,
+                 validate_pre_sds:
+                 Callable[[InstructionEnvironmentForPreSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 validate_post_setup:
+                 Callable[[InstructionEnvironmentForPostSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 main: Callable[[InstructionEnvironmentForPostSdsStep,
+                                 OsServices],
+                                pfh.PassOrFailOrHardError],
                  symbol_usages):
         self._validate_pre_sds = validate_pre_sds
         self._validate_post_setup = validate_post_setup
@@ -185,20 +202,24 @@ class _AssertPhaseInstructionThat(AssertPhaseInstruction):
         return self._validate_pre_sds(environment)
 
     def validate_post_setup(self,
-                            environment: instrs.InstructionEnvironmentForPostSdsStep) \
+                            environment: InstructionEnvironmentForPostSdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
     def main(self,
-             environment: instrs.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return self._main(environment, os_services)
 
 
 class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
     def __init__(self,
-                 validate_pre_sds,
-                 main,
+                 validate_pre_sds:
+                 Callable[[InstructionEnvironmentForPreSdsStep], svh.SuccessOrValidationErrorOrHardError],
+                 main: Callable[[InstructionEnvironmentForPostSdsStep,
+                                 OsServices,
+                                 PreviousPhase],
+                                sh.SuccessOrHardError],
                  symbol_usages):
         self.do_validate_pre_sds = validate_pre_sds
         self.do_main = main
@@ -213,7 +234,7 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
         return self.do_validate_pre_sds(environment)
 
     def main(self,
-             environment: instrs.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         return self.do_main(environment, os_services, previous_phase)

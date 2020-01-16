@@ -2,10 +2,12 @@ import os
 import re
 import time
 import unittest
+from typing import List
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Result, test__va, Arrangement
@@ -111,7 +113,7 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(recorder.recorded_steps))
 
 
-def _act_phase_instructions_that_are_not_relevant_to_this_test():
+def _act_phase_instructions_that_are_not_relevant_to_this_test() -> List[ActPhaseInstruction]:
     return [act_phase_instruction_with_source(LineSequence(1, ('line',)))]
 
 
@@ -119,12 +121,27 @@ def _unique_variable_name():
     return 'TEST_VAR_' + _time_stamp_string()
 
 
+class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
+    def __init__(self,
+                 phase_step: SimplePhaseStep,
+                 phases_that_contains_the_environment_variable: set,
+                 variable_name: str,
+                 ):
+        self.phase_step = phase_step
+        self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable
+        self.variable_name = variable_name
+
+    def __call__(self, *args, **kwargs):
+        if self.variable_name in os.environ:
+            self.phases_that_contains_the_environment_variable.add(self.phase_step)
+
+
 class _RecorderOfExistenceOfGlobalEnvVar:
     def __init__(self, environment_variable_name: str):
         self.variable_name = environment_variable_name
         self.recorded_steps = set()
 
-    def for_step(self, phase_step: SimplePhaseStep):
+    def for_step(self, phase_step: SimplePhaseStep) -> AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
         return AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess(phase_step,
                                                                       self.recorded_steps,
                                                                       self.variable_name)
@@ -138,18 +155,6 @@ class SetEnvironmentVariableViaInstructionArguments:
                  environment: InstructionEnvironmentForPostSdsStep,
                  *args, **kwargs):
         environment.environ[self.variable_name] = 'value that is not used by the test'
-
-
-class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
-    def __init__(self, phase_step: SimplePhaseStep, phases_that_contains_the_environment_variable: set,
-                 variable_name: str):
-        self.phase_step = phase_step
-        self.phases_that_contains_the_environment_variable = phases_that_contains_the_environment_variable
-        self.variable_name = variable_name
-
-    def __call__(self, *args, **kwargs):
-        if self.variable_name in os.environ:
-            self.phases_that_contains_the_environment_variable.add(self.phase_step)
 
 
 class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(ValueAssertionBase):

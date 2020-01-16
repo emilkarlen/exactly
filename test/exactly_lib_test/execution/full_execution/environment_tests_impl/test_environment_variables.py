@@ -1,6 +1,7 @@
 import pathlib
 import types
 import unittest
+from typing import Dict
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
@@ -189,7 +190,7 @@ class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
         self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict(environment))
 
 
-def env_vars_dict(environment: InstructionEnvironmentForPreSdsStep) -> dict:
+def env_vars_dict(environment: InstructionEnvironmentForPreSdsStep) -> Dict[str, str]:
     ret_val = dict()
     for env_var in environment_variables.ALL_ENV_VARS:
         if env_var in environment.environ:

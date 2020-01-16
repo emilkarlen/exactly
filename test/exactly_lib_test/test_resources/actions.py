@@ -9,21 +9,21 @@ def do_nothing__single_arg(args):
     pass
 
 
-def do_return(x):
+def do_return(x) -> Callable:
     def ret_val(*args, **kwargs):
         return x
 
     return ret_val
 
 
-def do_raise(ex: Exception):
+def do_raise(ex: Exception) -> Callable:
     def ret_val(*args, **kwargs):
         raise ex
 
     return ret_val
 
 
-def action_of(initial_action: Callable, action_that_returns: Callable):
+def action_of(initial_action: Callable, action_that_returns: Callable) -> Callable:
     if initial_action:
         def complete_action(*args, **kwargs):
             initial_action(*args, **kwargs)
