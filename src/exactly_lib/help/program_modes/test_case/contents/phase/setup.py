@@ -10,7 +10,6 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -40,7 +39,6 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_first_phase_executed_in_the_sandbox(),
-                                        EXISTS_AT_SETUP_MAIN,
                                         environment_variables_prologue=self._tp.fnap(ENV_VARS_PROLOGUE))
 
     @property

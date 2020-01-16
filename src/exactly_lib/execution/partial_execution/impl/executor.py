@@ -21,7 +21,6 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.symbol_table import SymbolTable
@@ -144,8 +143,6 @@ class _PartialExecutor:
             return self._continue_from_before_assert()
 
     def _continue_from_before_assert(self) -> PartialExeResult:
-        self._set_assert_environment_variables()
-
         try:
             self._before_assert__main()
         except PhaseStepFailureException as ex:
@@ -203,13 +200,11 @@ class _PartialExecutor:
             self.exe_conf.environ,
             self.conf_values.timeout_in_seconds,
             symbols)
-        self._set_pre_sds_environment_variables()
 
     def _setup_post_sds_environment(self):
         self._construct_and_set_sds()
         self._os_services = new_default()
         self._set_cwd_to_act_dir()
-        self._set_post_sds_environment_variables()
         self.__post_sds_symbol_table = self.exe_conf.predefined_symbols.copy()
 
     def _do_validate_symbols(self) -> SymbolTable:
@@ -348,10 +343,6 @@ class _PartialExecutor:
                 self._os_services),
             self._test_case.before_assert_phase)
 
-    def _set_pre_sds_environment_variables(self):
-        self.exe_conf.environ.update(
-            environment_variables.set_at_setup_pre_validate(self.conf_values.hds))
-
     def _set_cwd_to_act_dir(self):
         os.chdir(str(self._sds.act_dir))
 
@@ -376,12 +367,6 @@ class _PartialExecutor:
                                                            phase.identifier,
                                                            timeout_in_seconds=self.conf_values.timeout_in_seconds,
                                                            symbols=self.__post_sds_symbol_table)
-
-    def _set_post_sds_environment_variables(self):
-        self.exe_conf.environ.update(environment_variables.set_at_setup_main(self._sds))
-
-    def _set_assert_environment_variables(self):
-        self.exe_conf.environ.update(environment_variables.set_at_assert(self._sds))
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
         return PartialExeResult(failure.status,

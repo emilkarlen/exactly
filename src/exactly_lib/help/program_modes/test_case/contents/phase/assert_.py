@@ -14,7 +14,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure.phase_documenta
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phases.assert_ import AssertPhasePurpose, WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
-from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN, ENV_VAR_RESULT
+from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -34,7 +34,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
-            'ENV_VAR_RESULT': ENV_VAR_RESULT,
+            'ENV_VAR_RESULT': SYMBOL_RESULT,
             'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
         })
 
@@ -55,7 +55,6 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
-            EXISTS_AT_BEFORE_ASSERT_MAIN,
             prologue=execution_environment_prologue_for_post_act_phase(),
             environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 

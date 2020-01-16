@@ -5,6 +5,7 @@ from exactly_lib.definitions import test_case_file_structure as tc_fs, formattin
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements, types
+from exactly_lib.definitions.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -58,8 +59,8 @@ class _HdsConcept(ConceptDocumentation):
                           _CONFIGURATION_PARAMETER),
             self._section('Relative paths',
                           _RELATIVITY),
-            self._section(self._tp.format('Builtin {symbols} and environment variables'),
-                          _BUILTIN_SYMBOL_ENVIRONMENT_VARIABLE),
+            self._section(self._tp.format(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.plural.capitalize()),
+                          _BUILTIN_SYMBOL),
         ]
         return DescriptionWithSubSections(self.single_line_description(),
                                           SectionContents(rest_paragraphs, sub_sections))
@@ -72,6 +73,7 @@ class _HdsConcept(ConceptDocumentation):
         ret_val = [
             concepts.TCDS_CONCEPT_INFO.cross_reference_target,
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
+            concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
             types.PATH_TYPE_INFO.cross_reference_target,
         ]
         ret_val += [
@@ -108,9 +110,9 @@ class _HdsConcept(ConceptDocumentation):
                          x.conf_param.configuration_parameter_name_text),
                 prop_row('Set by instruction',
                          instruction_name_text(x.instruction_name)),
-                prop_row('Variable name',
-                         REL_HDS_OPTIONS_MAP[x.relativity_option_type].directory_variable_name_text),
-                prop_row('Relativity option',
+                prop_row(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.singular.capitalize(),
+                         REL_HDS_OPTIONS_MAP[x.relativity_option_type].directory_symbol_name_text),
+                prop_row('Path relativity option',
                          REL_HDS_OPTIONS_MAP[x.relativity_option_type].option_name_text),
             ]
         )
@@ -162,7 +164,7 @@ _RELATIVITY = """
 {PATH} values have an option for referring to each of these directories.
 """
 
-_BUILTIN_SYMBOL_ENVIRONMENT_VARIABLE = """
-There is a builtin {symbol}, and an environment variable with the same name,
+_BUILTIN_SYMBOL = """
+There is a builtin {PATH} {symbol}
 for each of these directories.
 """

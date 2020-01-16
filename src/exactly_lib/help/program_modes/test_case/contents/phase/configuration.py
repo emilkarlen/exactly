@@ -7,8 +7,7 @@ from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    cwd_at_start_of_phase_for_configuration_phase, \
-    env_vars_for_configuration_phase
+    cwd_at_start_of_phase_for_configuration_phase
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
@@ -44,8 +43,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         return self._parser.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_configuration_phase(),
-                                        env_vars_for_configuration_phase())
+        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_configuration_phase())
 
     @property
     def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:

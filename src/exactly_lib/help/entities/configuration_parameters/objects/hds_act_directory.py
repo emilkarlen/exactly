@@ -7,7 +7,7 @@ from exactly_lib.definitions.path import REL_HDS_ACT_OPTION
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HDS_ACT_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HDS_ACT
+from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_HDS_ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -20,7 +20,7 @@ class _HdsActDirectoryConfigurationParameter(ConfigurationParameterDocumentation
         parser = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(conf_params.HDS_ACT_DIRECTORY_CONF_PARAM_INFO),
-            'home_dir_env_var': ENV_VAR_HDS_ACT,
+            'home_dir_env_var': SYMBOL_HDS_ACT,
             'rel_option': formatting.cli_option(REL_HDS_ACT_OPTION),
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
         })

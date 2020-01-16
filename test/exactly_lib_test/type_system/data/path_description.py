@@ -35,7 +35,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                                                       tcds,
                                                                       None)
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_hds_option].directory_variable_sym_ref,
+                    expected = _expected_str(rpo.REL_HDS_OPTIONS_MAP[rel_hds_option].directory_symbol_reference,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 
@@ -52,7 +52,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                                                       tcds,
                                                                       None)
                     # ASSERT #
-                    expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_variable_sym_ref,
+                    expected = _expected_str(rpo.REL_SDS_OPTIONS_MAP[rel_sds_option].directory_symbol_reference,
                                              path_suffix)
                     self.assertEqual(expected, actual)
 
@@ -77,7 +77,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                 for rel_hds_opt in rpo.RelHdsOptionType:
                     rel_hds_option_info = rpo.REL_HDS_OPTIONS_MAP[rel_hds_opt]
                     self._check_cwd_for_single_rel_option_type(rel_hds_option_info,
-                                                               rel_hds_option_info.directory_variable_sym_ref,
+                                                               rel_hds_option_info.directory_symbol_reference,
                                                                path_suffix,
                                                                path_ddv,
                                                                tcds)
@@ -86,7 +86,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                 for rel_sds_opt in rpo.RelSdsOptionType:
                     rel_sds_option_info = rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt]
                     self._check_cwd_for_single_rel_option_type(rel_sds_option_info,
-                                                               rel_sds_option_info.directory_variable_sym_ref,
+                                                               rel_sds_option_info.directory_symbol_reference,
                                                                path_suffix,
                                                                path_ddv,
                                                                tcds)

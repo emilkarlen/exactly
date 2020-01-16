@@ -25,12 +25,12 @@ def path_ddv_with_relativity_name_prefix__rel_tcds_dir(path_ddv: PathDdv) -> str
 
     rel_hds_opt = pr.rel_hds_from_rel_any(relativity_type)
     if rel_hds_opt is not None:
-        return _with_prefix(rpo.REL_HDS_OPTIONS_MAP[rel_hds_opt].directory_variable_sym_ref,
+        return _with_prefix(rpo.REL_HDS_OPTIONS_MAP[rel_hds_opt].directory_symbol_reference,
                             path_ddv)
 
     rel_sds_opt = pr.rel_sds_from_rel_any(relativity_type)
     if rel_sds_opt is not None:
-        return _with_prefix(rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt].directory_variable_sym_ref,
+        return _with_prefix(rpo.REL_SDS_OPTIONS_MAP[rel_sds_opt].directory_symbol_reference,
                             path_ddv)
 
     raise ValueError(
@@ -56,7 +56,7 @@ def path_ddv_with_relativity_name_prefix(path_ddv: PathDdv,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_sds_option_info.root_resolver.from_tcds(tcds),
-                    rel_sds_option_info.directory_variable_sym_ref)
+                    rel_sds_option_info.directory_symbol_reference)
             except ValueError:
                 continue
 
@@ -64,7 +64,7 @@ def path_ddv_with_relativity_name_prefix(path_ddv: PathDdv,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_hds_option_info.root_resolver.from_tcds(tcds),
-                    rel_hds_option_info.directory_variable_sym_ref)
+                    rel_hds_option_info.directory_symbol_reference)
             except ValueError:
                 continue
 

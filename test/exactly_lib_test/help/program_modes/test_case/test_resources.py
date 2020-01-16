@@ -54,10 +54,6 @@ class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhas
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(
             docs.paras('ced_at_start_of_phase'),
-            [
-                'FIRST_ENV_VAR',
-                'SECOND_ENV_VAR',
-            ],
             tuple(docs.paras('prologue')),
         )
 

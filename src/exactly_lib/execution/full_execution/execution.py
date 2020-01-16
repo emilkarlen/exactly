@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
@@ -14,7 +14,6 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.test_case_status import TestCaseStatus
-from exactly_lib.test_case_file_structure import environment_variables
 
 
 def execute(conf: ExecutionConfiguration,
@@ -31,7 +30,6 @@ def execute(conf: ExecutionConfiguration,
         return new_configuration_phase_failure_from(conf_phase_failure)
     if configuration_builder.test_case_status is TestCaseStatus.SKIP:
         return new_skipped()
-    _prepare_environment_variables(conf.environ)
     conf_phase_values = ConfPhaseValues(
         configuration_builder.actor,
         configuration_builder.hds,
@@ -58,12 +56,6 @@ def execute_configuration_phase(phase_environment: ConfigurationBuilder,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.ConfigurationMainExecutor(phase_environment),
                                               phase_step.CONFIGURATION__MAIN)
-
-
-def _prepare_environment_variables(environ: Dict[str, str]):
-    for ev in environment_variables.ALL_ENV_VARS:
-        if ev in environ:
-            del environ[ev]
 
 
 def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullExeResult:

@@ -12,7 +12,6 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
-from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -45,7 +44,6 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
-            EXISTS_AT_BEFORE_ASSERT_MAIN,
             environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property

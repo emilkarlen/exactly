@@ -204,19 +204,19 @@ class TestDescription(unittest.TestCase):
         path_part_component = 'path-part'
         cases = [
             NEA('rel-hds wo path suffix',
-                expected=rpo.REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_CASE].directory_variable_sym_ref,
+                expected=rpo.REL_HDS_OPTIONS_MAP[RelHdsOptionType.REL_HDS_CASE].directory_symbol_reference,
                 actual=sut.of_rel_option(sut.RelOptionType.REL_HDS_CASE,
                                          sut.PathPartDdvAsNothing()),
                 ),
             NEA('rel-hds w path suffix',
                 expected=
                 str(pathlib.Path(rpo.REL_HDS_OPTIONS_MAP[
-                                     RelHdsOptionType.REL_HDS_CASE].directory_variable_sym_ref) / path_part_component),
+                                     RelHdsOptionType.REL_HDS_CASE].directory_symbol_reference) / path_part_component),
                 actual=sut.of_rel_option(sut.RelOptionType.REL_HDS_CASE,
                                          PathPartDdvAsFixedPath(path_part_component)),
                 ),
             NEA('rel-sds',
-                expected=rpo.REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT].directory_variable_sym_ref,
+                expected=rpo.REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT].directory_symbol_reference,
                 actual=sut.of_rel_option(sut.RelOptionType.REL_ACT,
                                          sut.PathPartDdvAsNothing()),
                 ),

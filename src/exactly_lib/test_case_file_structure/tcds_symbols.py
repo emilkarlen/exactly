@@ -5,51 +5,49 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 
-ENV_VAR_HDS_CASE = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHdsOptionType.REL_HDS_CASE].directory_variable_name
-ENV_VAR_HDS_ACT = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHdsOptionType.REL_HDS_ACT].directory_variable_name
+SYMBOL_HDS_CASE = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHdsOptionType.REL_HDS_CASE].directory_name
+SYMBOL_HDS_ACT = rpo.REL_HDS_OPTIONS_MAP[rpo.RelHdsOptionType.REL_HDS_ACT].directory_name
 
-ENV_VAR_ACT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_ACT].directory_variable_name
-ENV_VAR_TMP = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_TMP].directory_variable_name
-ENV_VAR_RESULT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_RESULT].directory_variable_name
+SYMBOL_ACT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_ACT].directory_name
+SYMBOL_TMP = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_TMP].directory_name
+SYMBOL_RESULT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_RESULT].directory_name
 
-SET_AT_SETUP__ENV_VARS = [ENV_VAR_HDS_CASE,
-                          ENV_VAR_HDS_ACT]
+SET_AT_SETUP__SYMBOLS = [SYMBOL_HDS_CASE,
+                         SYMBOL_HDS_ACT]
 
-SET_AT_SDS__ENV_VARS = [ENV_VAR_ACT,
-                        ENV_VAR_TMP]
+SET_AT_SDS__SYMBOLS = [SYMBOL_ACT,
+                       SYMBOL_TMP]
 
-SET_AT_BEFORE_ASSERT__ENV_VARS = [ENV_VAR_RESULT]
+SET_AT_BEFORE_ASSERT__SYMBOLS = [SYMBOL_RESULT]
 
-ALL_ENV_VARS = SET_AT_SETUP__ENV_VARS + SET_AT_SDS__ENV_VARS + SET_AT_BEFORE_ASSERT__ENV_VARS
+EXISTS_AT_SETUP_MAIN = SET_AT_SDS__SYMBOLS + SET_AT_SETUP__SYMBOLS
 
-EXISTS_AT_SETUP_MAIN = SET_AT_SDS__ENV_VARS + SET_AT_SETUP__ENV_VARS
+EXISTS_AT_BEFORE_ASSERT_MAIN = EXISTS_AT_SETUP_MAIN + SET_AT_BEFORE_ASSERT__SYMBOLS
 
-EXISTS_AT_BEFORE_ASSERT_MAIN = EXISTS_AT_SETUP_MAIN + SET_AT_BEFORE_ASSERT__ENV_VARS
-
-ALL_REPLACED_ENV_VARS = EXISTS_AT_SETUP_MAIN
+ALL_REPLACED_SYMBOLS = EXISTS_AT_SETUP_MAIN
 
 
-def env_vars_rel_hds(hds: HomeDirectoryStructure) -> Dict[str, str]:
+def symbols_rel_hds(hds: HomeDirectoryStructure) -> Dict[str, str]:
     return {
-        ENV_VAR_HDS_CASE: str(hds.case_dir),
-        ENV_VAR_HDS_ACT: str(hds.act_dir),
+        SYMBOL_HDS_CASE: str(hds.case_dir),
+        SYMBOL_HDS_ACT: str(hds.act_dir),
     }
 
 
 def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> Dict[str, str]:
-    return env_vars_rel_hds(hds)
+    return symbols_rel_hds(hds)
 
 
 def set_at_setup_main(sds: SandboxDirectoryStructure) -> Dict[str, str]:
     return {
-        ENV_VAR_ACT: str(sds.act_dir),
-        ENV_VAR_TMP: str(sds.user_tmp_dir),
+        SYMBOL_ACT: str(sds.act_dir),
+        SYMBOL_TMP: str(sds.user_tmp_dir),
     }
 
 
 def set_at_assert(sds: SandboxDirectoryStructure) -> Dict[str, str]:
     return {
-        ENV_VAR_RESULT: str(sds.result.root_dir),
+        SYMBOL_RESULT: str(sds.result.root_dir),
     }
 
 

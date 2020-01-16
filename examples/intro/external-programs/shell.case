@@ -11,10 +11,11 @@
 
 [setup]
 
+env EXACTLY_HOME_DIR = @[EXACTLY_HOME]@
 
 $ touch empty-file.txt
 
-$ cp ${EXACTLY_HOME}/shell.case .
+$ cp ${EXACTLY_HOME_DIR}/shell.case .
 
 
 [act]

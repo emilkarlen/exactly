@@ -7,7 +7,7 @@ from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HDS_CASE_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HDS_CASE
+from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_HDS_CASE
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -20,7 +20,7 @@ class _HdsCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentatio
         parser = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(HDS_CASE_DIRECTORY_CONF_PARAM_INFO),
-            'home_dir_env_var': ENV_VAR_HDS_CASE,
+            'home_dir_env_var': SYMBOL_HDS_CASE,
             'rel_option': formatting.cli_option(REL_HDS_CASE_OPTION)
         })
         return from_simple_description(

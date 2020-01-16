@@ -1,6 +1,6 @@
 import os
 
-from exactly_lib.test_case_file_structure import environment_variables
+from exactly_lib.test_case_file_structure import tcds_symbols
 from exactly_lib.test_case_file_structure.tcds import Tcds
 
 
@@ -15,10 +15,10 @@ class ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables:
     """
 
     def __init__(self):
-        self.sorted_env_var_keys = sorted(environment_variables.ALL_REPLACED_ENV_VARS)
+        self.sorted_env_var_keys = sorted(tcds_symbols.ALL_REPLACED_SYMBOLS)
 
     def contents_before_replacement(self, tcds: Tcds) -> str:
-        env_vars_dict = environment_variables.replaced(tcds)
+        env_vars_dict = tcds_symbols.replaced(tcds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         return self._content_from_values(values_in_determined_order,
                                          tcds)
@@ -54,10 +54,10 @@ class ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables:
 
 class ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase:
     def __init__(self,
-                 name_of_parent_dir__rel_hds_env_var: str,
-                 name_of_sub_dir__rel_hds_env_var: str):
-        self.name_of_parent_dir__rel_hds_env_var = name_of_parent_dir__rel_hds_env_var
-        self.name_of_sub_dir__rel_hds_env_var = name_of_sub_dir__rel_hds_env_var
+                 name_of_parent_dir__rel_hds_symbol: str,
+                 name_of_sub_dir__rel_hds_symbol: str):
+        self.name_of_parent_dir__rel_hds_symbol = name_of_parent_dir__rel_hds_symbol
+        self.name_of_sub_dir__rel_hds_symbol = name_of_sub_dir__rel_hds_symbol
 
     """
     Generates contents where one of the rel-home environment variables (home/act, home/case)
@@ -65,23 +65,23 @@ class ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
     """
 
     def contents_before_replacement(self, tcds: Tcds) -> str:
-        env_vars_dict = environment_variables.env_vars_rel_hds(tcds.hds)
+        env_vars_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
 
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
 
         ret_val = '\n'.join([
-            env_vars_dict[self.name_of_parent_dir__rel_hds_env_var],
+            env_vars_dict[self.name_of_parent_dir__rel_hds_symbol],
             just_some_stuff_that_should_not_be_replaced,
-            env_vars_dict[self.name_of_sub_dir__rel_hds_env_var], ])
+            env_vars_dict[self.name_of_sub_dir__rel_hds_symbol], ])
         return ret_val
 
     def expected_contents_after_replacement(self, tcds: Tcds) -> str:
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
 
         ret_val = '\n'.join([
-            self.name_of_parent_dir__rel_hds_env_var,
+            self.name_of_parent_dir__rel_hds_symbol,
             just_some_stuff_that_should_not_be_replaced,
-            self.name_of_sub_dir__rel_hds_env_var,
+            self.name_of_sub_dir__rel_hds_symbol,
         ])
         return ret_val
 
@@ -89,17 +89,17 @@ class ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
         """
         :return: Gives a variation of the expected result, that is not equal to the expected result.
         """
-        env_vars_dict = environment_variables.env_vars_rel_hds(tcds.hds)
+        env_vars_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
 
-        value_of_parent_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_env_var]
-        value_of_sub_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_env_var]
+        value_of_parent_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_symbol]
+        value_of_sub_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_symbol]
         sub_dir_suffix_relative_the_parent_dir = value_of_sub_dir[len(value_of_parent_dir):]
 
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
 
         ret_val = '\n'.join([
-            self.name_of_parent_dir__rel_hds_env_var + sub_dir_suffix_relative_the_parent_dir,
+            self.name_of_parent_dir__rel_hds_symbol + sub_dir_suffix_relative_the_parent_dir,
             just_some_stuff_that_should_not_be_replaced,
-            self.name_of_parent_dir__rel_hds_env_var,
+            self.name_of_parent_dir__rel_hds_symbol,
         ])
         return ret_val

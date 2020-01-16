@@ -224,7 +224,7 @@ def _rel_sds(rel: RelSdsOptionType,
     ri = REL_SDS_OPTIONS_MAP[rel]
 
     return _RelOptionTypeInfo(ri.option_name,
-                              ri.directory_variable_name,
+                              ri.directory_name,
                               description,
                               [ci.SDS_CONCEPT_INFO],
                               )

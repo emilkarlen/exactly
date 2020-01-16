@@ -30,19 +30,10 @@ class _SandboxConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.SDS_CONCEPT_INFO)
 
-        self._tp = TextParser({
-            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'phase': phase_names.PHASE_NAME_DICTIONARY,
-            'instruction': AnyInstructionNameDictionary(),
-            'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-            'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
-            'keep_sandbox_option': formatting.cli_option(command_line_options.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY),
-        })
-
     def purpose(self) -> DescriptionWithSubSections:
         rest_paragraphs = []
         sub_sections = []
-        rest_paragraphs += self._tp.fnap(_SANDBOX_PRE_DIRECTORY_TREE)
+        rest_paragraphs += _TP.fnap(_SANDBOX_PRE_DIRECTORY_TREE)
         sub_sections.append(directory_structure_list_section(sds.DIRECTORIES))
         sub_sections += self._sandbox_directories_info_sections()
         return DescriptionWithSubSections(self.single_line_description(),
@@ -52,7 +43,7 @@ class _SandboxConcept(ConceptDocumentation):
         return [
             concepts.TCDS_CONCEPT_INFO.cross_reference_target,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
-            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
             types.PATH_TYPE_INFO.cross_reference_target,
             phase_infos.SETUP.instruction_cross_reference_target(CHANGE_DIR_INSTRUCTION_NAME),
             PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
@@ -85,37 +76,47 @@ class _SandboxConcept(ConceptDocumentation):
     def _act_dir_description_paragraphs(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT]
         ret_val = []
-        ret_val += self._tp.fnap(_ACT_DIR_DESCRIPTION)
-        ret_val += _dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
-                                                      rel_option=rel_opt_info.option_name_text)
+        ret_val += _TP.fnap(_ACT_DIR_DESCRIPTION)
+        ret_val += _dir_path_and_rel_options(symbol_name=rel_opt_info.directory_symbol_name_text,
+                                             rel_option=rel_opt_info.option_name_text)
         return ret_val
 
     def _result_dir_description_paragraphs(self) -> List[ParagraphItem]:
         ret_val = []
-        ret_val += self._tp.fnap(_RESULT_DIR_DESCRIPTION)
+        ret_val += _TP.fnap(_RESULT_DIR_DESCRIPTION)
         ret_val.append(docs.simple_header_only_list(map(file_name_text, sds.RESULT_FILE_ALL),
                                                     lists.ListType.ITEMIZED_LIST))
-        ret_val += self._result_dir_env_variable_and_rel_option()
+        ret_val += self._result_dir_symbol_and_rel_option()
         return ret_val
 
     def _tmp_user_dir_description_paragraphs(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP]
         ret_val = []
-        ret_val += self._tp.fnap(_USR_TMP_DIR_DESCRIPTION)
-        ret_val += _dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
-                                                      rel_option=rel_opt_info.option_name_text)
+        ret_val += _TP.fnap(_USR_TMP_DIR_DESCRIPTION)
+        ret_val += _dir_path_and_rel_options(symbol_name=rel_opt_info.directory_symbol_name_text,
+                                             rel_option=rel_opt_info.option_name_text)
         return ret_val
 
-    def _result_dir_env_variable_and_rel_option(self) -> List[ParagraphItem]:
+    def _result_dir_symbol_and_rel_option(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT]
-        return [_dir_info_items_table(rel_opt_info.directory_variable_name_text,
+        return [_dir_info_items_table(rel_opt_info.directory_symbol_name_text,
                                       rel_opt_info.option_name_text,
-                                      self._tp.format(_RESULT_DIR_ENV_VARIABLE))
+                                      _TP.format(_RESULT_DIR_SYMBOL))
                 ]
 
     def _internal_dir_description_paragraphs(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_INTERNAL_DIRECTORIES)
+        return _TP.fnap(_INTERNAL_DIRECTORIES)
 
+
+_TP = TextParser({
+    'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+    'phase': phase_names.PHASE_NAME_DICTIONARY,
+    'instruction': AnyInstructionNameDictionary(),
+    'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+    'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
+    'keep_sandbox_option': formatting.cli_option(command_line_options.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY),
+    'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+})
 
 SANDBOX_CONCEPT = _SandboxConcept()
 
@@ -154,31 +155,36 @@ The test case can use it as a place where it is safe to put temporary files with
 the risk of name clashes with files from other program.
 """
 
-_RESULT_DIR_ENV_VARIABLE = """\
-The value of this environment variable
+_RESULT_DIR_SYMBOL = """\
+The value of this {symbol}
 is the absolute path of this directory
 (after the {phase[act]} phase has been executed)."""
 
-
-def _dir_env_variables_and_rel_options(env_var_name: Text,
-                                       rel_option: Text) -> List[ParagraphItem]:
-    return [_dir_info_items_table(env_var_name,
-                                  rel_option,
-                                  'The value of this environment variable is the absolute path of this directory.')
-            ]
+_THE_VAL_OF_THIS_SYMBOL_IS_THE_ABS_PATH_OF_THE_DIRECTORY = _TP.format(
+    'The value of this {symbol} is the absolute path of this directory.'
+)
 
 
-def _dir_info_items_table(env_var_name: Text,
+def _dir_path_and_rel_options(symbol_name: Text,
+                              rel_option: Text) -> List[ParagraphItem]:
+    return [_dir_info_items_table(
+        symbol_name,
+        rel_option,
+        _THE_VAL_OF_THIS_SYMBOL_IS_THE_ABS_PATH_OF_THE_DIRECTORY)
+    ]
+
+
+def _dir_info_items_table(symbol_name: Text,
                           rel_option: Text,
-                          env_var_description: str) -> ParagraphItem:
+                          symbol_description: str) -> ParagraphItem:
     return docs.first_column_is_header_table([
         [
-            docs.cell(docs.paras(env_var_name)),
-            docs.cell(docs.paras(env_var_description)),
+            docs.cell(docs.paras(symbol_name)),
+            docs.cell(docs.paras(symbol_description)),
         ],
         [
             docs.cell(docs.paras(rel_option)),
-            docs.cell(docs.paras('This option (accepted by many instructions) refers to this directory.')),
+            docs.cell(docs.paras('The path relativity option that refers to this directory.')),
         ],
     ])
 

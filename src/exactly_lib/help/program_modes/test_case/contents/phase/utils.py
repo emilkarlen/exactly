@@ -1,13 +1,13 @@
 from typing import List
 
-from exactly_lib.definitions import test_case_file_structure, formatting
+from exactly_lib.definitions import test_case_file_structure, formatting, misc_texts
 from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case.test_case_status import NAME_SKIP
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
-from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, tcds_symbols
+from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.util.textformat.structure import structures as docs, table
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.table import TableCell
@@ -20,9 +20,10 @@ _TEXT_PARSER = TextParser({
     'SKIP': NAME_SKIP,
     'result_subdir': sds.SUB_DIRECTORY__RESULT,
     'sandbox': formatting.concept_(concepts.SDS_CONCEPT_INFO),
-    'ENV_VAR_RESULT': ENV_VAR_RESULT,
+    'SYMBOL_RESULT': SYMBOL_RESULT,
     'phase': PHASE_NAME_DICTIONARY,
-    'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO)
+    'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+    'SYMBOL': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
 })
 
 
@@ -49,16 +50,16 @@ def env_vars_prologue_for_inherited_from_previous_phase() -> List[ParagraphItem]
     return _TEXT_PARSER.fnap(ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE)
 
 
-def env_vars_for_configuration_phase() -> List[str]:
+def symbols_for_configuration_phase() -> List[str]:
     return []
 
 
-def env_vars_up_to_act() -> List[str]:
-    return environment_variables.SET_AT_SETUP__ENV_VARS + environment_variables.SET_AT_SDS__ENV_VARS
+def symbols_up_to_act() -> List[str]:
+    return tcds_symbols.SET_AT_SETUP__SYMBOLS + tcds_symbols.SET_AT_SDS__SYMBOLS
 
 
-def env_vars_after_act() -> List[str]:
-    return env_vars_up_to_act() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
+def symbols_after_act() -> List[str]:
+    return symbols_up_to_act() + tcds_symbols.SET_AT_BEFORE_ASSERT__SYMBOLS
 
 
 def sequence_info__not_executed_if_execution_mode_is_skip() -> List[ParagraphItem]:
@@ -87,7 +88,7 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
                 docs.cell(docs.paras(file_name_text(sds.SUB_DIRECTORY__RESULT + '/' + file_name)))]
 
     rows = [
-        row('exit code', sds.RESULT_FILE__EXITCODE),
+        row(misc_texts.EXIT_CODE.singular, sds.RESULT_FILE__EXITCODE),
         row('stdout', sds.RESULT_FILE__STDOUT),
         row('stderr', sds.RESULT_FILE__STDERR),
     ]
@@ -145,7 +146,7 @@ the files in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE = """\
-The value of the {ENV_VAR_RESULT} environment variable is the absolute path of
+The value of the {SYMBOL_RESULT} {SYMBOL} is the absolute path of
 the {result_subdir}/ directory.
 """
 

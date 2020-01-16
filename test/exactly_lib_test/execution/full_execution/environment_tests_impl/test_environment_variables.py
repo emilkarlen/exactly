@@ -1,5 +1,4 @@
-import pathlib
-import types
+import copy
 import unittest
 from typing import Dict
 
@@ -10,10 +9,8 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
     assert_phase_instruction_that, cleanup_phase_instruction_that, \
@@ -27,8 +24,12 @@ class Test(FullExecutionTestCaseBase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
+        self._expected_environ = {
+            'MY_VAR': 'MY_VAR_VALUE'
+        }
         super().__init__(unittest_case,
-                         dbg_do_not_delete_dir_structure)
+                         dbg_do_not_delete_dir_structure,
+                         environ=copy.copy(self._expected_environ))
         self.recorder = instr_setup.Recorder()
 
     def _actor(self) -> Actor:
@@ -83,7 +84,7 @@ class Test(FullExecutionTestCaseBase):
                                                    phase_step.CLEANUP__MAIN))],
         )
 
-    def __assert_expected_recorded_variables(self, expected):
+    def __assert_expected_recorded_variables(self, expected: Dict[PhaseStep, Dict[str, str]]):
         self._assert_expected_keys(expected,
                                    self.recorder.phaseStep2recording,
                                    'phase-step')
@@ -97,41 +98,22 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        home_case_dir_after_configuration = str(self.initial_hds_dir_path.parent)
-        home_act_dir_after_configuration = str(self.initial_hds_dir_path.parent.parent)
-        for_pre_sds = {
-            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
-        }
-        set_at_sds_creation = {
-            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
-            environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
-        }
-        set_after_act = {
-            environment_variables.ENV_VAR_HDS_CASE: home_case_dir_after_configuration,
-            environment_variables.ENV_VAR_HDS_ACT: home_act_dir_after_configuration,
-            environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
-            environment_variables.ENV_VAR_RESULT: str(self.sds.result.root_dir),
-        }
         expected_recorded_internally = {
-            phase_step.SETUP__VALIDATE_PRE_SDS: for_pre_sds,
-            phase_step.ACT__VALIDATE_PRE_SDS: for_pre_sds,
-            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS: for_pre_sds,
-            phase_step.ASSERT__VALIDATE_PRE_SDS: for_pre_sds,
-            phase_step.CLEANUP__VALIDATE_PRE_SDS: for_pre_sds,
-            phase_step.SETUP__MAIN: set_at_sds_creation,
-            phase_step.SETUP__VALIDATE_POST_SETUP: set_at_sds_creation,
-            phase_step.ACT__VALIDATE_POST_SETUP: set_at_sds_creation,
-            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: set_at_sds_creation,
-            phase_step.ASSERT__VALIDATE_POST_SETUP: set_at_sds_creation,
-            phase_step.ACT__PREPARE: set_at_sds_creation,
-            phase_step.ACT__EXECUTE: set_at_sds_creation,
-            phase_step.BEFORE_ASSERT__MAIN: set_after_act,
-            phase_step.ASSERT__MAIN: set_after_act,
-            phase_step.CLEANUP__MAIN: set_after_act,
+            phase_step.SETUP__VALIDATE_PRE_SDS: self._expected_environ,
+            phase_step.ACT__VALIDATE_PRE_SDS: self._expected_environ,
+            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS: self._expected_environ,
+            phase_step.ASSERT__VALIDATE_PRE_SDS: self._expected_environ,
+            phase_step.CLEANUP__VALIDATE_PRE_SDS: self._expected_environ,
+            phase_step.SETUP__MAIN: self._expected_environ,
+            phase_step.SETUP__VALIDATE_POST_SETUP: self._expected_environ,
+            phase_step.ACT__VALIDATE_POST_SETUP: self._expected_environ,
+            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: self._expected_environ,
+            phase_step.ASSERT__VALIDATE_POST_SETUP: self._expected_environ,
+            phase_step.ACT__PREPARE: self._expected_environ,
+            phase_step.ACT__EXECUTE: self._expected_environ,
+            phase_step.BEFORE_ASSERT__MAIN: self._expected_environ,
+            phase_step.ASSERT__MAIN: self._expected_environ,
+            phase_step.CLEANUP__MAIN: self._expected_environ,
         }
         self.__assert_expected_recorded_variables(expected_recorded_internally)
 
@@ -187,34 +169,4 @@ class _ConfigurationPhaseActionThatSetsHdsActDirToParentParent:
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
-        self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict(environment))
-
-
-def env_vars_dict(environment: InstructionEnvironmentForPreSdsStep) -> Dict[str, str]:
-    ret_val = dict()
-    for env_var in environment_variables.ALL_ENV_VARS:
-        if env_var in environment.environ:
-            ret_val[env_var] = environment.environ[env_var]
-    return ret_val
-
-
-def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
-                                   file_name: str) -> list:
-    """
-    Function that is designed as the execution__generate_script argument to TestCaseSetup, after
-    giving the first two arguments using partial application.
-
-    :param code_using_file_opened_for_writing: function: file_variable: str -> ModulesAndStatements
-    :param file_name: the name of the file to output to.
-    """
-    file_path = pathlib.Path() / file_name
-    file_name = str(file_path)
-    file_var = '_file_var'
-    mas = code_using_file_opened_for_writing(file_var)
-    all_statements = py.with_opened_file(file_name,
-                                         file_var,
-                                         'w',
-                                         mas.statements)
-
-    return py.program_lines(mas.used_modules,
-                            all_statements)
+        self.recorder.set_phase_step_recording(self.my_phase_step, copy.copy(environment.environ))

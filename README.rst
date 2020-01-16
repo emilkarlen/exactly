@@ -583,7 +583,6 @@ Including (but not limited to):
 * More string transformers, file matchers etc
 * Possibility to use "program" values in more places, e.g. in ``[act]``
 * Improved string character escaping
-* Remove setting of ``EXACTLY_...`` environment variables
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
 * ``dir-contents``: Check contents of directory recursively.

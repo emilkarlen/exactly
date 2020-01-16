@@ -10,8 +10,8 @@ class Test(unittest.TestCase):
     def test_current_directory_for_each_phase_step(self):
         test_current_directory.Test(self).execute()
 
-    def test_environment_variables_for_each_phase_step(self):
+    def test_environment_variables_of_environment_SHOULD_not_be_modified_by_executor(self):
         test_environment_variables.Test(self).execute()
 
-    def test_dict_of_global_environment_variables_are_not_modified(self):
+    def test_dict_of_global_environment_variables_SHOULD_not_be_modified(self):
         test_dict_of_global_environment_variables_are_not_modified.Test(self).execute()

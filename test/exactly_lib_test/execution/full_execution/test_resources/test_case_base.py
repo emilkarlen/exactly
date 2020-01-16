@@ -2,6 +2,7 @@ import os
 import pathlib
 import shutil
 import unittest
+from typing import Dict, Optional
 
 from exactly_lib.actors.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
@@ -21,7 +22,8 @@ class FullExecutionTestCaseBase:
                  dbg_do_not_delete_dir_structure=False,
                  actor: Actor = None,
                  atc_os_process_executor: AtcOsProcessExecutor =
-                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR):
+                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                 environ: Optional[Dict[str, str]] = None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
@@ -29,13 +31,19 @@ class FullExecutionTestCaseBase:
         self.__initial_hds_dir_path = None
         self.__actor = actor
         self.__atc_os_process_executor = atc_os_process_executor
+        self.__environ = (
+            dict(os.environ)
+            if environ is None
+            else
+            environ
+        )
 
     def execute(self):
         # SETUP #
         self.__initial_hds_dir_path = pathlib.Path().resolve()
         # ACT #
         initial_hds_dir_path = self.initial_hds_dir_path.resolve()
-        exe_conf = ExecutionConfiguration(dict(os.environ),
+        exe_conf = ExecutionConfiguration(self.__environ,
                                           self.__atc_os_process_executor,
                                           sandbox_root_name_resolver.for_test(),
                                           SymbolTable())

@@ -282,17 +282,12 @@ Part of their environment is controlled by {program_name}.
 # MENTION
 #
 # - Which env vars are available.
-# - Env vars and TCDS
 # - Manipulating env vars
 ############################################################
 _OS_PROC_ENVIRONMENT_VARIABLES = """\
 All OS environment variables
 that are set when {program_name} is started
 are available in {os_process:s} run from the test case.
-
-
-In addition to these, {program_name} sets some environment variables
-that correspond to directories in the {tcds_concept}.
 
 
 Environment variables can be manipulated by the {env} instruction.

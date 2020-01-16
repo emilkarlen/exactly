@@ -41,42 +41,42 @@ class RelOptionInfo:
         return self._informative_name
 
     @property
-    def directory_variable_name(self) -> str:
+    def directory_name(self) -> str:
         raise ValueError('There is no directory that corresponds to this option: ' + self.option_name_text.value)
 
     @property
-    def directory_variable_name_text(self) -> StringText:
-        return syntax_text(self.directory_variable_name)
+    def directory_symbol_name_text(self) -> StringText:
+        return syntax_text(self.directory_name)
 
 
 class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     def __init__(self,
-                 directory_variable_name: str,
+                 directory_symbol_name: str,
                  option_name: argument.OptionName,
                  root_resolver: RelHdsRootResolver,
                  informative_name: str):
         super().__init__(option_name,
                          root_resolver,
                          informative_name)
-        self._directory_name = directory_variable_name
+        self._directory_name = directory_symbol_name
 
     @property
-    def directory_variable_name(self) -> str:
+    def directory_name(self) -> str:
         return self._directory_name
 
     @property
-    def directory_variable_sym_ref(self) -> str:
+    def directory_symbol_reference(self) -> str:
         return symbol_syntax.symbol_reference_syntax_for_name(self._directory_name)
 
 
 class RelHdsOptionInfo(RelOptionInfoCorrespondingToTcDir):
     def __init__(self,
-                 directory_variable_name: str,
+                 directory_name: str,
                  option_name: argument.OptionName,
                  root_resolver: RelHdsRootResolver,
                  cross_ref_info: ConfigurationParameterInfo,
                  informative_name: str):
-        super().__init__(directory_variable_name,
+        super().__init__(directory_name,
                          option_name,
                          root_resolver,
                          informative_name)

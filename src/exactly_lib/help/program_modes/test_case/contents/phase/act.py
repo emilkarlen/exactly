@@ -12,7 +12,7 @@ from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
+    cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, result_sub_dir_files_table, \
     env_vars_prologue_for_inherited_from_previous_phase, sequence_info__succeeding_phase_of_act
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
@@ -70,7 +70,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_for_non_first_phases(),
-            env_vars_up_to_act(),
             environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase(),
             custom_items=self._custom_environment_info_items())
 

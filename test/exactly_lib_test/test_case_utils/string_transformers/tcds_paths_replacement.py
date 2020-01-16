@@ -1,10 +1,10 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure import environment_variables
+from exactly_lib.test_case_file_structure import tcds_symbols
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_transformer.impl import env_vars_replacement as sut
+from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement as sut
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.replaced_env_vars import \
@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 
 
 def _transform_string_to_string(tcds: Tcds, string_input: str) -> str:
-    transformer = sut.EnvVarReplacementStringTransformer('arbitrary custom', tcds)
+    transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
     lines = string_input.splitlines(keepends=True)
     output_lines = transformer.transform(lines)
     return ''.join(output_lines)
@@ -44,8 +44,8 @@ class TestMisc(unittest.TestCase):
                              actual)
 
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.EnvVarReplacementStringTransformer('env-var-replacement',
-                                                             fake_tcds())
+        transformer = sut.TcdsPathsReplacementStringTransformer('env-var-replacement',
+                                                                fake_tcds())
         self.assertFalse(transformer.is_identity_transformer)
 
 
@@ -61,7 +61,7 @@ class TestWhenRelHdsCaseIsEqualToRelHdsActThenVariableWithPrecedenceShouldBeUsed
             # ACT #
             actual = _transform_string_to_string(tcds, contents_before_replacement)
             # ASSERT #
-            expected = sut.HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE
+            expected = sut.HDS_PATH_WITH_REPLACEMENT_PRECEDENCE
             self.assertEqual(expected,
                              actual)
 
@@ -75,8 +75,8 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
                                          act_dir=a_dir)
             tcds = Tcds(hds, sds)
             generator = ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
-                name_of_parent_dir__rel_hds_env_var=environment_variables.ENV_VAR_HDS_CASE,
-                name_of_sub_dir__rel_hds_env_var=environment_variables.ENV_VAR_HDS_ACT,
+                name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,
+                name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
             )
             # ACT #
             actual = _transform_string_to_string(tcds, generator.contents_before_replacement(tcds))
@@ -93,8 +93,8 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
                                          act_dir=a_dir.parent)
             tcds = Tcds(hds, sds)
             generator = ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
-                name_of_parent_dir__rel_hds_env_var=environment_variables.ENV_VAR_HDS_ACT,
-                name_of_sub_dir__rel_hds_env_var=environment_variables.ENV_VAR_HDS_CASE,
+                name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
+                name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,
             )
             # ACT #
             actual = _transform_string_to_string(tcds, generator.contents_before_replacement(tcds))

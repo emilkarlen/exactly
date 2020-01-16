@@ -6,7 +6,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import directory_variable_name_text
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
-from exactly_lib.test_case_file_structure import environment_variables
+from exactly_lib.test_case_file_structure import tcds_symbols
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl.custom import CustomStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -17,10 +17,10 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HDS_CASE
+HDS_PATH_WITH_REPLACEMENT_PRECEDENCE = tcds_symbols.SYMBOL_HDS_CASE
 
 
-class EnvVarReplacementStringTransformer(CustomStringTransformer):
+class TcdsPathsReplacementStringTransformer(CustomStringTransformer):
     def __init__(self,
                  name: str,
                  tcds: Tcds,
@@ -44,7 +44,7 @@ class _Ddv(StringTransformerDdv):
         return renderers.header_only(self._name)
 
     def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
-        return advs.ConstantAdv(EnvVarReplacementStringTransformer(self._name, tcds))
+        return advs.ConstantAdv(TcdsPathsReplacementStringTransformer(self._name, tcds))
 
 
 def replace(tcds: Tcds,
@@ -62,15 +62,15 @@ def _replace(name_and_value_list: Iterable[Tuple[str, str]],
 
 def _derive_name_and_value_list(tcds: Tcds) -> iter:
     hds = tcds.hds
-    all_vars = environment_variables.replaced(tcds)
+    all_symbols = tcds_symbols.replaced(tcds)
     if hds.case_dir == hds.act_dir:
-        return _first_is(HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE, all_vars)
+        return _first_is(HDS_PATH_WITH_REPLACEMENT_PRECEDENCE, all_symbols)
     elif _dir_is_sub_dir_of(hds.case_dir, hds.act_dir):
-        return _first_is(environment_variables.ENV_VAR_HDS_CASE, all_vars)
+        return _first_is(tcds_symbols.SYMBOL_HDS_CASE, all_symbols)
     elif _dir_is_sub_dir_of(hds.act_dir, hds.case_dir):
-        return _first_is(environment_variables.ENV_VAR_HDS_ACT, all_vars)
+        return _first_is(tcds_symbols.SYMBOL_HDS_ACT, all_symbols)
     else:
-        return all_vars.items()
+        return all_symbols.items()
 
 
 def _dir_is_sub_dir_of(potential_sub_dir: pathlib.Path, potential_parent_dir: pathlib.Path) -> bool:
@@ -82,36 +82,37 @@ def _first_is(key_of_first_element: str, all_vars: dict) -> iter:
     return [(key_of_first_element, value_of_first_element)] + list(all_vars.items())
 
 
-def with_replaced_env_vars_help() -> SectionContents:
+def help_section_contents() -> SectionContents:
     text_parser = TextParser({
         'checked_file': 'checked file',
         'program_name': program_info.PROGRAM_NAME,
-        'hds_act_env_var': environment_variables.ENV_VAR_HDS_ACT,
-        'hds_case_env_var': environment_variables.ENV_VAR_HDS_CASE,
-        'hds_env_var_with_replacement_precedence': HDS_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
+        'hds_act_symbol': tcds_symbols.SYMBOL_HDS_ACT,
+        'hds_case_symbol': tcds_symbols.SYMBOL_HDS_CASE,
+        'hds_symbol_with_replacement_precedence': HDS_PATH_WITH_REPLACEMENT_PRECEDENCE,
     })
     prologue = text_parser.fnap(_WITH_REPLACED_TCDS_PATHS_PROLOGUE)
     variables_list = [docs.simple_header_only_list(map(directory_variable_name_text,
-                                                       sorted(environment_variables.ALL_REPLACED_ENV_VARS)),
+                                                       sorted(tcds_symbols.ALL_REPLACED_SYMBOLS)),
                                                    docs.lists.ListType.ITEMIZED_LIST)]
     return SectionContents(prologue + variables_list)
 
 
-def with_replaced_env_vars_see_also() -> Sequence[SeeAlsoTarget]:
+def see_also() -> Sequence[SeeAlsoTarget]:
     return [
-        concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
     ]
 
 
 SINGLE_LINE_DESCRIPTION = """\
 Every occurrence of a string that matches the absolute path of a {TCDS} directory
-is replaced with the name of the corresponding symbol/environment variable.
+is replaced with the name of the corresponding {symbol}.
 """.format(program_name=program_name(program_info.PROGRAM_NAME),
-           TCDS=concepts.TCDS_CONCEPT_INFO.acronym)
+           TCDS=concepts.TCDS_CONCEPT_INFO.acronym,
+           symbol=concepts.SYMBOL_CONCEPT_INFO.singular_name)
 
 _WITH_REPLACED_TCDS_PATHS_PROLOGUE = """\
-If {hds_case_env_var} and {hds_act_env_var} are equal, then paths will be replaced with
-{hds_env_var_with_replacement_precedence}.
+If {hds_case_symbol} and {hds_act_symbol} are equal, then paths will be replaced with
+{hds_symbol_with_replacement_precedence}.
 
 
 Paths that are replaced:

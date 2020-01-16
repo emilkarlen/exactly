@@ -12,7 +12,7 @@ _TO_UPPER_SINGLE_LINE_DESCRIPTION = ''
 ALL = (
     builtin_symbol_of_custom_symbol(EXACTLY_TEST_CASE_DIRS_REPLACEMENT,
                                     custom_transformers.replace_env_vars(EXACTLY_TEST_CASE_DIRS_REPLACEMENT),
-                                    custom_transformers.replace_env_vars_doc(),
+                                    custom_transformers.replace_tcds_paths_doc(),
                                     ),
     builtin_symbol_of_custom_symbol(TO_UPPER_CASE,
                                     custom_transformers.to_upper_case(TO_UPPER_CASE),

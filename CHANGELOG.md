@@ -21,6 +21,10 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `def` - FILE-MATCHER argument is mandatory
  - Instruction `def` - STRING-TRANSFORMER argument is mandatory
 
+### Removed
+
+ - The preset `EXACTLY_...` environment variables
+
 ## [0.11.1.0]
 
 ### Added

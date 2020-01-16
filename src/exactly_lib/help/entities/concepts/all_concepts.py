@@ -4,8 +4,8 @@ from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumen
 from exactly_lib.help.entities.concepts.objects import \
     instruction, \
     action_to_check, actor, \
-    environment_variable, preprocessor, sandbox, shell_syntax, \
-    home_directory_structure, test_case_directory_structure, \
+    environment_variable, preprocessor, sds, shell_syntax, \
+    hds, tcds, \
     suite_reporter, symbol, type_, configuration_parameter, current_working_directory, directive
 
 
@@ -15,9 +15,9 @@ def all_concepts() -> List[ConceptDocumentation]:
         actor.ACTOR_CONCEPT,
         action_to_check.ACTOR_CONCEPT,
         shell_syntax.SHELL_SYNTAX_CONCEPT,
-        test_case_directory_structure.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT,
-        home_directory_structure.HDS_CONCEPT,
-        sandbox.SANDBOX_CONCEPT,
+        tcds.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT,
+        hds.HDS_CONCEPT,
+        sds.SANDBOX_CONCEPT,
         symbol.SYMBOL_CONCEPT,
         current_working_directory.CURRENT_WORKING_DIRECTORY_CONCEPT,
         configuration_parameter.CONFIGURATION_PARAMETER_CONCEPT,
