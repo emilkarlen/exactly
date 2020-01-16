@@ -36,39 +36,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestSuccessfulScenarios(TestCaseBaseForParser):
-    def test_successful_parse_WHEN_rhs_is_empty_THEN_result_SHOULD_be_identity_transformer(self):
-        defined_name = 'defined_name'
-
-        # ARRANGE #
-
-        source = single_line_source(
-            src('{lines_trans_type} {defined_name} = ',
-                defined_name=defined_name),
-        )
-
-        # EXPECTATION #
-
-        expected_container = matches_container(
-            asrt_sdv.resolved_value_matches_string_transformer(
-                asrt_string_transformer.is_identity_transformer()
-            )
-        )
-
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                asrt_sym_usage.matches_definition(asrt.equals(defined_name),
-                                                  expected_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                defined_name,
-                expected_container,
-            )
-        )
-
-        # ACT & ASSERT #
-
-        self._check(source, ArrangementWithSds(), expectation)
-
     def test_successful_parse_of_sequence(self):
         # ARRANGE #
 
@@ -158,24 +125,28 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 class TestUnsuccessfulScenarios(TestCaseBaseForParser):
     def test_failing_parse(self):
         cases = [
-            (
+            NameAndValue(
                 'single quoted argument',
                 str(surrounded_by_hard_quotes(REPLACE_TRANSFORMER_NAME)),
             ),
-            (
+            NameAndValue(
                 'non-transformer name that is not a valid symbol name',
                 NOT_A_VALID_SYMBOL_NAME,
+            ),
+            NameAndValue(
+                'missing transformer',
+                '',
             ),
         ]
         # ARRANGE #
         defined_name = 'defined_name'
         parser = sut.EmbryoParser()
-        for name, rhs_source in cases:
-            with self.subTest(name=name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 source = single_line_source(
                     src('{lines_trans_type} {defined_name} = {transformer_argument}',
                         defined_name=defined_name,
-                        transformer_argument=rhs_source),
+                        transformer_argument=case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

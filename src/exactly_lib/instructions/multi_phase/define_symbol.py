@@ -45,9 +45,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.test_case_utils.string_transformer import sdvs as line_transformer_sdvs, \
-    parse_string_transformer
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -294,9 +292,8 @@ def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
                               token_parser: TokenParser) -> StringTransformerSdv:
-    if token_parser.is_at_eol:
-        return line_transformer_sdvs.StringTransformerSdvConstant(IdentityStringTransformer())
-    return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser)
+    return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser,
+                                                                               must_be_on_current_line=False)
 
 
 def _parse_program(fs_location_info: FileSystemLocationInfo,

@@ -127,8 +127,7 @@ ANY_TYPE_INFO_DICT = {
 
     ValueType.STRING_TRANSFORMER:
         TypeInfo(types.STRING_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO,
-                                           a.Multiplicity.OPTIONAL)),
+                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO)),
 
     ValueType.PROGRAM:
         TypeInfo(types.PROGRAM_TYPE_INFO,
