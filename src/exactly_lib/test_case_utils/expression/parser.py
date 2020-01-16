@@ -40,17 +40,19 @@ class _Parser(Generic[EXPR]):
     def parse_with_complex_expressions(self, must_be_on_current_line: bool = True) -> EXPR:
         expression = self.parse_mandatory_simple(must_be_on_current_line)
 
-        complex_operator_name = self.parse_optional_complex_operator_name()
+        complex_operator_name = self.parse_optional_complex_operator_name(must_be_on_current_line)
 
         while complex_operator_name:
             expression = self.complex_operator_sequence_for_single_operator(complex_operator_name, expression)
-            complex_operator_name = self.parse_optional_complex_operator_name()
+            complex_operator_name = self.parse_optional_complex_operator_name(must_be_on_current_line)
 
         return expression
 
-    def parse_optional_complex_operator_name(self) -> str:
+    def parse_optional_complex_operator_name(self, must_be_on_current_line: bool = True) -> str:
         return self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
-            self.complex_expressions_keys)
+            self.complex_expressions_keys,
+            must_be_on_current_line,
+        )
 
     def complex_operator_sequence_for_single_operator(self,
                                                       complex_operator_name: str,

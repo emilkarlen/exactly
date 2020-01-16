@@ -20,6 +20,7 @@ exists actual-file : type dir && dir-contents empty
 exists non-empty-dir :
     type dir &&
     dir-contents (
-      ! empty &&
+      ! empty
+      &&
       every file : type dir && dir-contents empty
     )

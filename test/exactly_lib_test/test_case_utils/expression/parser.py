@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.expression import parser as sut
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines
 from exactly_lib_test.test_case_utils.expression import test_resources as ast
 from exactly_lib_test.test_case_utils.expression.test_resources import ComplexA, ComplexB, PrefixExprP
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -752,6 +752,24 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
+            (
+                'parentheses around expr should allow binary operator to be on separate ling',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=source_of_lines([
+                        '(',
+                        ast.SIMPLE_SANS_ARG,
+                        ast.COMPLEX_A,
+                        ast.SIMPLE_SANS_ARG,
+                        ')',
+                    ]),
+                ),
+                Expectation(
+                    expression=ComplexA([s, s]),
+                    source=asrt_source.is_at_end_of_line(5),
+                ),
+            ),
+
         ]
         for case_name, arrangement, expectation in cases:
             with self.subTest(name=case_name):
