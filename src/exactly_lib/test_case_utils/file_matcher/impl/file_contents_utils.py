@@ -62,8 +62,8 @@ def sdv__generic(
     )
 
 
-class _FileContentsMatcher(Generic[CONTENTS_MATCHER_MODEL],
-                           FileMatcherImplBase,
+class _FileContentsMatcher(FileMatcherImplBase,
+                           Generic[CONTENTS_MATCHER_MODEL],
                            ABC):
     def __init__(self,
                  setup: Setup[CONTENTS_MATCHER_MODEL],
@@ -107,8 +107,9 @@ class _FileContentsMatcher(Generic[CONTENTS_MATCHER_MODEL],
         )
 
 
-class _FileContentsMatcherAdv(Generic[CONTENTS_MATCHER_MODEL],
-                              FileMatcherAdvImplBase):
+class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
+                              Generic[CONTENTS_MATCHER_MODEL],
+                              ):
     def __init__(self,
                  setup: Setup[CONTENTS_MATCHER_MODEL],
                  contents_matcher: MatcherAdv[CONTENTS_MATCHER_MODEL],
