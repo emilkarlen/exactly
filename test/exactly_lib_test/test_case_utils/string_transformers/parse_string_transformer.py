@@ -10,10 +10,10 @@ from exactly_lib_test.test_case_utils.expression.test_resources import \
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParseLineTransformer)
+    return unittest.makeSuite(TestFailingParse)
 
 
-class TestParseLineTransformer(unittest.TestCase):
+class TestFailingParse(unittest.TestCase):
     def test_failing_parse(self):
         cases = [
             NameAndValue(

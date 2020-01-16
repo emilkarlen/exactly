@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.test_case_utils.string_transformers import env_vars_replacement, replace, \
-    filter, case_converters, sequence
+    filter, case_converters, sequence, identity
 from exactly_lib_test.test_case_utils.string_transformers import \
     parse_string_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources_test import \
@@ -11,6 +11,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources_test im
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources_test.suite())
+    ret_val.addTest(identity.suite())
     ret_val.addTest(replace.suite())
     ret_val.addTest(filter.suite())
     ret_val.addTest(sequence.suite())

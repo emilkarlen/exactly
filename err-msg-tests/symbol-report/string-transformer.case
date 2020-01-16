@@ -1,6 +1,6 @@
 [setup]
 
-def string-transformer IDENTITY =
+def string-transformer IDENTITY = identity
 def string-transformer REPLACE  = replace abc ABC
 def string-transformer SELECT   = select line-num == 3
 def string-transformer SEQUENCE = REPLACE | SELECT

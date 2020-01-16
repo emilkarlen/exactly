@@ -17,8 +17,8 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_tok
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import parse_optional_transformer_sdv, \
-    IDENTITY_TRANSFORMER_SDV
+from exactly_lib.test_case_utils.string_transformer.impl import identity
+from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import parse_optional_transformer_sdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -181,7 +181,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
         contents_transformer = parse_optional_transformer_sdv(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
         return FileMakerForContentsFromExistingFile(instruction_config.source_info,
-                                                    IDENTITY_TRANSFORMER_SDV
+                                                    identity.IDENTITY_TRANSFORMER_SDV
                                                     if contents_transformer is None
                                                     else
                                                     contents_transformer,
