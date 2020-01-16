@@ -21,7 +21,7 @@ class FileMatcherSdv(MatcherTypeSdv[FileMatcherModel]):
         return ValueType.FILE_MATCHER
 
     @property
-    def matcher(self) -> MatcherSdv[FileMatcherModel]:
+    def as_generic(self) -> MatcherSdv[FileMatcherModel]:
         return self._matcher
 
     @property

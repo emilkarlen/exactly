@@ -17,7 +17,7 @@ from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatche
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import files_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdvType
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
@@ -51,7 +51,7 @@ class Setup(Generic[CONTENTS_MATCHER_MODEL], ABC):
 def sdv__generic(
         setup: Setup[CONTENTS_MATCHER_MODEL],
         contents_matcher: MatcherSdv[CONTENTS_MATCHER_MODEL],
-) -> FileMatcherSdvType:
+) -> GenericFileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         contents_matcher_ddv = contents_matcher.resolve(symbols)
         return _FileContentsMatcherDdv(setup, contents_matcher_ddv)

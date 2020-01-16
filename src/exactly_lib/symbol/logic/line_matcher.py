@@ -23,7 +23,7 @@ class LineMatcherSdv(MatcherTypeSdv[LineMatcherLine]):
         return ValueType.LINE_MATCHER
 
     @property
-    def matcher(self) -> MatcherSdv[LineMatcherLine]:
+    def as_generic(self) -> MatcherSdv[LineMatcherLine]:
         return self._matcher
 
     @property

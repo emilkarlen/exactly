@@ -308,7 +308,7 @@ class _Assertion:
     def _file_matcher_for_expectation_type(self) -> FileMatcherSdv:
         return (self.file_matcher
                 if self._is_positive_check()
-                else FileMatcherSdv(combinator_sdvs.Negation(self.file_matcher.matcher))
+                else FileMatcherSdv(combinator_sdvs.Negation(self.file_matcher.as_generic))
                 )
 
     def _is_positive_check(self) -> bool:

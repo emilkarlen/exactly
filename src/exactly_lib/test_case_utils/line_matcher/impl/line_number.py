@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher, pro
     property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdvType
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -20,7 +20,7 @@ def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
     return LineMatcherSdv(parse_line_number__generic(parser))
 
 
-def parse_line_number__generic(parser: TokenParser) -> LineMatcherSdvType:
+def parse_line_number__generic(parser: TokenParser) -> GenericLineMatcherSdv:
     matcher = parse_integer_matcher.parse(
         parser,
         ExpectationType.POSITIVE,

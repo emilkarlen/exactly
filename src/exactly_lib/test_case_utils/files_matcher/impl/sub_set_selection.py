@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSd
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdvType
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import details
@@ -22,7 +22,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sub_set_selection_matcher(selector: FileMatcherSdv,
-                              matcher_on_selection: FilesMatcherSdvType) -> FilesMatcherSdvType:
+                              matcher_on_selection: GenericFilesMatcherSdv) -> GenericFilesMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
         matcher_on_selection,
         _SubsetGetterSdv(selector),

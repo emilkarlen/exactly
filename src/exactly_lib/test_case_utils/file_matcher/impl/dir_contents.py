@@ -3,8 +3,8 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdvType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdvType
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 
 
 class _Setup(file_contents_utils.Setup[FilesMatcherModel]):
@@ -25,7 +25,7 @@ class _Setup(file_contents_utils.Setup[FilesMatcherModel]):
 SETUP = _Setup()
 
 
-def dir_matches_files_matcher_sdv__generic(contents_matcher: FilesMatcherSdvType) -> FileMatcherSdvType:
+def dir_matches_files_matcher_sdv__generic(contents_matcher: GenericFilesMatcherSdv) -> GenericFileMatcherSdv:
     return file_contents_utils.sdv__generic(
         SETUP,
         contents_matcher,

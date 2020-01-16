@@ -14,4 +14,4 @@ LineMatcherAdv = ApplicationEnvironmentDependentValue[LineMatcher]
 
 LineMatcherDdv = MatcherDdv[LineMatcherLine]
 
-LineMatcherSdvType = MatcherSdv[LineMatcherLine]
+GenericLineMatcherSdv = MatcherSdv[LineMatcherLine]

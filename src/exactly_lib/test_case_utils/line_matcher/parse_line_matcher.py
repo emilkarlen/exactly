@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.expression import grammar, parser as parse_expr
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, LineMatcherSdvType
+from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -58,7 +58,7 @@ def parse_line_matcher_from_token_parser(parser: TokenParser,
 
 
 def parse_line_matcher_from_token_parser__generic(parser: TokenParser,
-                                                  must_be_on_current_line: bool = True) -> LineMatcherSdvType:
+                                                  must_be_on_current_line: bool = True) -> GenericLineMatcherSdv:
     return parse_expression.parse(GRAMMAR, parser,
                                   must_be_on_current_line=must_be_on_current_line)
 

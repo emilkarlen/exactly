@@ -98,8 +98,8 @@ class FileToCheck:
 
 StringMatcher = MatcherWTraceAndNegation[FileToCheck]
 
-GenericStringMatcherSdv = MatcherSdv[FileToCheck]
+StringMatcherAdv = MatcherAdv[FileToCheck]
 
 StringMatcherDdv = MatcherDdv[FileToCheck]
 
-StringMatcherAdv = MatcherAdv[FileToCheck]
+GenericStringMatcherSdv = MatcherSdv[FileToCheck]

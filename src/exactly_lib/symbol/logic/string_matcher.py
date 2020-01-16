@@ -22,7 +22,7 @@ class StringMatcherSdv(MatcherTypeSdv[FileToCheck]):
         return ValueType.STRING_MATCHER
 
     @property
-    def matcher(self) -> MatcherSdv[FileToCheck]:
+    def as_generic(self) -> MatcherSdv[FileToCheck]:
         return self._matcher
 
     @property

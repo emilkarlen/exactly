@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.logic import string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdvType
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 
 
@@ -27,7 +27,7 @@ class _Setup(file_contents_utils.Setup[FileToCheck]):
 SETUP = _Setup()
 
 
-def sdv__generic(contents_matcher: GenericStringMatcherSdv) -> FileMatcherSdvType:
+def sdv__generic(contents_matcher: GenericStringMatcherSdv) -> GenericFileMatcherSdv:
     return file_contents_utils.sdv__generic(
         SETUP,
         contents_matcher,

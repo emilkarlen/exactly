@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcher
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl import sdvs
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -21,17 +21,17 @@ def sdv(expectation_type: ExpectationType,
         quantifier: Quantifier,
         line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
     return sdvs.new_maybe_negated(
-        sdv__generic(quantifier, line_matcher_sdv),
+        sdv__generic(quantifier, line_matcher_sdv.as_generic),
         expectation_type,
     )
 
 
-def sdv__generic(quantifier: Quantifier, line_matcher_sdv: LineMatcherSdv) -> GenericStringMatcherSdv:
+def sdv__generic(quantifier: Quantifier, line_matcher_sdv: GenericLineMatcherSdv) -> GenericStringMatcherSdv:
     # TODO Only used by redundant tests - should be removed when the redundant tests are removed
     matcher = quantifier_matchers.sdv(
         ELEMENT_SETUP,
         quantifier,
-        line_matcher_sdv.matcher,
+        line_matcher_sdv,
     )
     return matcher
 

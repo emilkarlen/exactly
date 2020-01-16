@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.files_matcher import documentation
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdvType
+from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -33,12 +33,12 @@ def parse_files_matcher(parser: TokenParser,
 
 
 def parse_files_matcher__generic(parser: TokenParser,
-                                 must_be_on_current_line: bool = True) -> FilesMatcherSdvType:
+                                 must_be_on_current_line: bool = True) -> GenericFilesMatcherSdv:
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
 def _file_quantified_assertion(quantifier: Quantifier,
-                               parser: TokenParser) -> FilesMatcherSdvType:
+                               parser: TokenParser) -> GenericFilesMatcherSdv:
     return parse_quantified_matcher.parse_after_quantifier_token(
         quantifier,
         parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
@@ -47,15 +47,15 @@ def _file_quantified_assertion(quantifier: Quantifier,
     )
 
 
-def _parse_empty_check(parser: TokenParser) -> FilesMatcherSdvType:
+def _parse_empty_check(parser: TokenParser) -> GenericFilesMatcherSdv:
     return emptiness.emptiness_matcher__generic()
 
 
-def _parse_num_files_check(parser: TokenParser) -> FilesMatcherSdvType:
+def _parse_num_files_check(parser: TokenParser) -> GenericFilesMatcherSdv:
     return num_files.parse__generic(ExpectationType.POSITIVE, parser)
 
 
-def _parse_selection(parser: TokenParser) -> FilesMatcherSdvType:
+def _parse_selection(parser: TokenParser) -> GenericFilesMatcherSdv:
     element_matcher = parse_file_matcher.parse_sdv(parser, False)
     matcher_on_selection = parse_files_matcher__generic(parser, False)
 
@@ -63,7 +63,7 @@ def _parse_selection(parser: TokenParser) -> FilesMatcherSdvType:
                                                        matcher_on_selection)
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[FilesMatcherSdvType]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT,

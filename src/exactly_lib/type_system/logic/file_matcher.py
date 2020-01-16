@@ -19,4 +19,4 @@ FileMatcherAdv = MatcherAdv[FileMatcherModel]
 
 FileMatcherDdv = MatcherDdv[FileMatcherModel]
 
-FileMatcherSdvType = MatcherSdv[FileMatcherModel]
+GenericFileMatcherSdv = MatcherSdv[FileMatcherModel]

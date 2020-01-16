@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_in
     property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdvType
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 
@@ -24,7 +24,7 @@ def parse(expectation_type: ExpectationType,
 
 
 def parse__generic(expectation_type: ExpectationType,
-                   token_parser: TokenParser) -> FilesMatcherSdvType:
+                   token_parser: TokenParser) -> GenericFilesMatcherSdv:
     matcher = parse_integer_matcher.parse(
         token_parser,
         expectation_type,
