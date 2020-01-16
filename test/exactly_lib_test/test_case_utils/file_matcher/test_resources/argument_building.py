@@ -80,7 +80,7 @@ class Name(FileMatcherArg):
         return [file_matcher.NAME_MATCHER_NAME] + self.name_matcher.elements
 
 
-class Contents(FileMatcherArg):
+class FileContents(FileMatcherArg):
     def __init__(self, string_matcher: sm_args.StringMatcherArg):
         self.string_matcher = string_matcher
 
@@ -89,6 +89,18 @@ class Contents(FileMatcherArg):
         return [
             parse_file_matcher.REGULAR_FILE_CONTENTS,
             self.string_matcher,
+        ]
+
+
+class DirContents(FileMatcherArg):
+    def __init__(self, files_matcher: MatcherArg):
+        self.files_matcher = files_matcher
+
+    @property
+    def elements(self) -> List:
+        return [
+            parse_file_matcher.DIR_CONTENTS,
+            self.files_matcher,
         ]
 
 

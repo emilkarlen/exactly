@@ -1,0 +1,25 @@
+[setup]
+
+
+dir actual-file
+
+dir non-empty-dir
+dir non-empty-dir/dir-1
+dir non-empty-dir/dir-2
+
+
+[assert]
+
+
+exists actual-file
+
+exists actual-file : type dir
+
+exists actual-file : type dir && dir-contents empty
+
+exists non-empty-dir :
+    type dir &&
+    dir-contents (
+      ! empty &&
+      every file : type dir && dir-contents empty
+    )

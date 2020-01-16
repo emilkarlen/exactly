@@ -1,0 +1,11 @@
+[setup]
+
+file actual-file
+
+[assert]
+
+exists actual-file
+
+exists actual-file : type file
+
+exists actual-file : type file && contents empty

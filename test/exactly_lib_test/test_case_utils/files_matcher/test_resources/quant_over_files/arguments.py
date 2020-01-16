@@ -10,4 +10,4 @@ def file_contents_arg2(
 ) -> fm_args.WithOptionalNegation:
     if transformer is not None:
         contents_variant = sm_arg.Transformed(transformer, contents_variant)
-    return fm_args.WithOptionalNegation(fm_args.Contents(contents_variant))
+    return fm_args.WithOptionalNegation(fm_args.FileContents(contents_variant))

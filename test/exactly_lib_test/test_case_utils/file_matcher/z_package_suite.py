@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.test_case_utils.file_matcher import matching_files_in_dir
 from exactly_lib_test.test_case_utils.file_matcher import name_glob_pattern, name_reg_ex, file_type, std_expr, \
-    contents
+    contents, dir_contents
 
 
 def suite() -> unittest.TestSuite:
@@ -13,6 +13,7 @@ def suite() -> unittest.TestSuite:
         name_reg_ex.suite(),
         file_type.suite(),
         contents.suite(),
+        dir_contents.suite(),
     ])
 
 

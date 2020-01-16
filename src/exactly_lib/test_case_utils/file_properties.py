@@ -10,7 +10,8 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.util import strings
+from exactly_lib.util import strings, name
+from exactly_lib.util.name import NameWithGenderWithFormatting
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
@@ -25,19 +26,26 @@ class FileType(enum.Enum):
 class FileTypeInfo:
     def __init__(self,
                  type_argument: str,
-                 description: str,
+                 name: NameWithGenderWithFormatting,
                  stat_mode_predicate: types.FunctionType,
                  pathlib_path_predicate: Callable[[pathlib.Path], bool]):
         self.type_argument = type_argument
         self.pathlib_path_predicate = pathlib_path_predicate
         self.stat_mode_predicate = stat_mode_predicate
-        self.description = description
+        self.description = name.singular
+        self.name = name
 
 
 TYPE_INFO = {
-    FileType.REGULAR: FileTypeInfo('file', 'regular file', stat.S_ISREG, pathlib.Path.is_file),
-    FileType.DIRECTORY: FileTypeInfo('dir', 'directory', stat.S_ISDIR, pathlib.Path.is_dir),
-    FileType.SYMLINK: FileTypeInfo('symlink', 'symbolic link', stat.S_ISLNK, pathlib.Path.is_symlink),
+    FileType.REGULAR: FileTypeInfo('file',
+                                   NameWithGenderWithFormatting(name.a_name_with_plural_s('regular file')),
+                                   stat.S_ISREG, pathlib.Path.is_file),
+    FileType.DIRECTORY: FileTypeInfo('dir',
+                                     NameWithGenderWithFormatting(name.NameWithGender('a', 'directory', 'directories')),
+                                     stat.S_ISDIR, pathlib.Path.is_dir),
+    FileType.SYMLINK: FileTypeInfo('symlink',
+                                   NameWithGenderWithFormatting(name.a_name_with_plural_s('symbolic link')),
+                                   stat.S_ISLNK, pathlib.Path.is_symlink),
 }
 
 SYNTAX_TOKEN_2_FILE_TYPE = dict([(info.type_argument, ft) for ft, info in TYPE_INFO.items()])

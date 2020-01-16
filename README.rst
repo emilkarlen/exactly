@@ -586,7 +586,6 @@ Including (but not limited to):
 * Remove setting of ``EXACTLY_...`` environment variables
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
-* file-matcher: Add matcher: ``dir-contents``
 * files-matcher: Add logical operators
 * ``dir-contents``: Check contents of directory recursively.
 * Symbol substitution in files

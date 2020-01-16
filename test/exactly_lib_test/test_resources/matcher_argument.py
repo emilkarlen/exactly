@@ -4,6 +4,7 @@ from typing import List
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.parse import token
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 
 class MatcherArg(ABC):
@@ -17,6 +18,10 @@ class MatcherArg(ABC):
     @abstractmethod
     def elements(self) -> List:
         pass
+
+    @property
+    def as_arguments(self) -> Arguments:
+        return Arguments(str(self))
 
 
 class MatcherArgComponent(ABC):

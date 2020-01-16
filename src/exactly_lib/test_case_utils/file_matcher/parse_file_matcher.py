@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
-from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS
+from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -21,7 +21,8 @@ from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import sdvs
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
-from exactly_lib.test_case_utils.file_matcher.impl import name_regex, name_glob_pattern, regular_file_contents
+from exactly_lib.test_case_utils.file_matcher.impl import \
+    name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
@@ -102,8 +103,15 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdvType:
 
 
 def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdvType:
-    string_matcher = parse_string_matcher.parse_string_matcher(parser)
-    return regular_file_contents.regular_file_matches_string_matcher_sdv__generic(string_matcher)
+    string_matcher = parse_string_matcher.parse_string_matcher__generic(parser,
+                                                                        must_be_on_current_line=False)
+    return regular_file_contents.sdv__generic(string_matcher)
+
+
+def _parse_dir_contents(parser: TokenParser) -> FileMatcherSdvType:
+    from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
+    files_matcher = parse_files_matcher.parse_files_matcher__generic(parser)
+    return dir_contents.dir_matches_files_matcher_sdv__generic(files_matcher)
 
 
 def _constant(matcher: file_matchers.FileMatcher) -> FileMatcherSdvType:
@@ -117,44 +125,11 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
-    '_STRING_MATCHER_': syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
     'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
-    'regular_file': file_properties.TYPE_INFO[FileType.REGULAR].description,
     '_GLOB_PATTERN_INFORMATIVE_NAME_': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
     '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
     'MODEL': matcher_model.FILE_MATCHER_MODEL,
 }
-
-_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
-
-_NAME_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} who's ...
-
-
-  * name : matches {_GLOB_PATTERN_INFORMATIVE_NAME_}, or
-  
-  
-  * base name : matches {_REG_EX_PATTERN_INFORMATIVE_NAME_}
-"""
-
-_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION = """\
-Matches regular {MODEL:s} who's contents satisfies {_STRING_MATCHER_}.
-
-
-The result is {HARD_ERROR} for {MODEL:a} that is not a {regular_file}.
-"""
-
-
-def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
-    return _TP.fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
-
-
-_TYPE_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} with the given type. Symbolic links are followed (unless matched type is {_SYMLINK_TYPE_}).
-{_TYPE_} is one of:
-"""
-
-_TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
 
 def _file_types_table() -> docs.ParagraphItem:
@@ -207,25 +182,6 @@ class _TypeSyntaxDescription(grammar.SimpleExpressionDescription):
         return _type_matcher_sed_description()
 
 
-class _RegularFileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
-    @property
-    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [
-            a.Single(a.Multiplicity.MANDATORY,
-                     syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.argument)
-        ]
-
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_REGULAR_FILE_CONTENTS_MATCHER_SED_DESCRIPTION)
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return cross_reference_id_list([
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-        ])
-
-
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_TYPE_INFO.name,
@@ -235,11 +191,46 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     model=matcher_model.FILE_MATCHER_MODEL,
     value_type=ValueType.FILE_MATCHER,
     simple_expressions={
-        NAME_MATCHER_NAME: grammar.SimpleExpression(_parse_name_matcher,
-                                                    _NameSyntaxDescription()),
-        TYPE_MATCHER_NAME: grammar.SimpleExpression(_parse_type_matcher,
-                                                    _TypeSyntaxDescription()),
-        REGULAR_FILE_CONTENTS: grammar.SimpleExpression(_parse_regular_file_contents,
-                                                        _RegularFileContentsSyntaxDescription())
+        NAME_MATCHER_NAME:
+            grammar.SimpleExpression(_parse_name_matcher,
+                                     _NameSyntaxDescription()),
+
+        TYPE_MATCHER_NAME:
+            grammar.SimpleExpression(_parse_type_matcher,
+                                     _TypeSyntaxDescription()),
+
+        REGULAR_FILE_CONTENTS: grammar.SimpleExpression(
+            _parse_regular_file_contents,
+            file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.SETUP)
+        ),
+
+        DIR_CONTENTS: grammar.SimpleExpression(
+            _parse_dir_contents,
+            file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP)
+        ),
     },
 )
+
+_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
+
+_NAME_MATCHER_SED_DESCRIPTION = """\
+Matches {MODEL:s} who's ...
+
+
+  * name : matches {_GLOB_PATTERN_INFORMATIVE_NAME_}, or
+  
+  
+  * base name : matches {_REG_EX_PATTERN_INFORMATIVE_NAME_}
+"""
+
+
+def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
+    return _TP.fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
+
+
+_TYPE_MATCHER_SED_DESCRIPTION = """\
+Matches {MODEL:s} with the given type. Symbolic links are followed (unless matched type is {_SYMLINK_TYPE_}).
+{_TYPE_} is one of:
+"""
+
+_TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
