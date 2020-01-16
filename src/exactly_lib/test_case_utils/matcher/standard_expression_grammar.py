@@ -1,32 +1,36 @@
-from typing import Sequence
+from typing import Sequence, TypeVar
 
 from exactly_lib.definitions import expression
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression.grammar import EXPR
 from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
-from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference
+from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name import NameWithGenderWithFormatting
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
+MODEL = TypeVar('MODEL')
+
 
 def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
-                simple_expressions: Sequence[NameAndValue[grammar.SimpleExpression[EXPR]]],
-                ) -> grammar.Grammar[EXPR]:
+                simple_expressions: Sequence[NameAndValue[grammar.SimpleExpression[MatcherSdv[MODEL]]]],
+                ) -> grammar.Grammar[MatcherSdv[MODEL]]:
     tp = TextParser({
         'model': model,
     })
 
-    def mk_reference(symbol_name: str) -> EXPR:
+    all_simple_expressions = list(simple_expressions) + [parse_constant.CONSTANT_PRIMITIVE]
+
+    def mk_reference(symbol_name: str) -> MatcherSdv[MODEL]:
         return symbol_reference.MatcherReferenceSdv(symbol_name, value_type)
 
     return grammar.Grammar(
         concept,
         mk_reference=mk_reference,
-        simple_expressions=simple_expressions,
+        simple_expressions=all_simple_expressions,
         complex_expressions=[
             NameAndValue(
                 expression.AND_OPERATOR_NAME,

@@ -16,6 +16,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configurat
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestConstant),
         unittest.makeSuite(TestSymbolReference),
         unittest.makeSuite(TestParenthesis),
         unittest.makeSuite(TestNegation),
@@ -51,7 +52,13 @@ class _WithConfiguration:
         return _LINE_MATCHER_CONFIGURATION
 
 
-class TestParenthesis(_WithConfiguration, test_cases.TestParenthesis[LineMatcherLine]):
+class TestConstant(_WithConfiguration, test_cases.TestConstantBase[LineMatcherLine]):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestParenthesis(_WithConfiguration, test_cases.TestParenthesisBase[LineMatcherLine]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass

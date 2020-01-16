@@ -12,6 +12,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` - complex expressions (&& and ||)
  - Type `string-matcher` - complex expressions (&& and ||)
  - Type `file-matcher` - primitive `dir-contents`
+ - Matcher types - primitive `constant`
 
 ## [0.11.1.0]
 

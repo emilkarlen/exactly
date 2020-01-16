@@ -1,5 +1,7 @@
 [setup]
 
+def file-matcher CONSTANT     = constant true
+
 def file-matcher CONTENTS     = contents equals 'expected'
 def file-matcher DIR_CONTENTS = dir-contents num-files == 1
 

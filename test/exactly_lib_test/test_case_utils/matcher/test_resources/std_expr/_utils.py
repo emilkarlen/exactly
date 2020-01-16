@@ -394,5 +394,5 @@ class _MatcherThatShouldBeIgnoredDueToLaziness(Generic[MODEL], MatcherWTraceAndN
         self._put.fail(self._name + ': This matcher must not be applied, due to laziness')
 
 
-def trace_equals(expected: Node) -> ValueAssertion[NodeRenderer[bool]]:
+def trace_equals(expected: Node[bool]) -> ValueAssertion[NodeRenderer[bool]]:
     return asrt_trace_rendering.matches_node_renderer(asrt_d_tree.equals_node(expected))

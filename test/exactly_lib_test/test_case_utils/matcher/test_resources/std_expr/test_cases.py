@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List, Generic, Sequence
 
 from exactly_lib.definitions import expression
+from exactly_lib.definitions.primitives import boolean
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
@@ -13,13 +14,15 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, \
-    ExecutionExpectation, Expectation, ParseExpectation
+    ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import _utils
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr._utils import AssertionsHelper, \
     trace_equals, ConstantIncludedInTrace, IgnoredDueToLaziness, \
     Case, BinaryOperatorApplicationCheckHelper, get_mk_operand_trace, BinaryOperatorValidationCheckHelper
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MODEL, \
     MatcherConfiguration
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -36,7 +39,7 @@ class _TestCaseBase(Generic[MODEL], unittest.TestCase, ABC):
         return AssertionsHelper(self.configuration)
 
 
-class TestParenthesis(Generic[MODEL], _TestCaseBase[MODEL], ABC):
+class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_syntax_is_invalid(self):
         # ARRANGE #
         conf = self.configuration
@@ -122,6 +125,37 @@ class TestParenthesis(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     model_constructor=conf.arbitrary_model,
                     execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
                 )
+
+
+class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
+    def test_parse_SHOULD_fail_WHEN_operand_is_missing(self):
+        source = remaining_source(boolean.CONSTANT_MATCHER)
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self.configuration.parser().parse(source)
+
+    def test_application(self):
+        conf = self.configuration
+        for value in [False, True]:
+            conf.checker().check_with_source_variants(
+                self,
+                arguments=matcher_argument.Constant(value).as_arguments,
+                model_constructor=conf.arbitrary_model,
+                arrangement=arrangement_wo_tcds(),
+                expectation=Expectation(
+                    execution=ExecutionExpectation(
+                        main_result=asrt_matching_result.matches(
+                            asrt.equals(value),
+                            trace=_utils.trace_equals(
+                                tree.Node.leaf(
+                                    boolean.CONSTANT_MATCHER,
+                                    value,
+                                    (tree.StringDetail(boolean.BOOLEANS[value]),)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
 
 
 class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):

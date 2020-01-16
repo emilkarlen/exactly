@@ -1,5 +1,7 @@
 [setup]
 
+def files-matcher CONSTANT = constant true
+
 def files-matcher NUM_FILES = num-files == 1
 
 def files-matcher NEGATION = ! NUM_FILES

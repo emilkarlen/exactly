@@ -15,6 +15,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import integ
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestConstant),
         unittest.makeSuite(TestSymbolReference),
         unittest.makeSuite(TestParenthesis),
         unittest.makeSuite(TestNegation),
@@ -50,7 +51,13 @@ class _WithConfiguration:
         return _STRING_MATCHER_CONFIGURATION
 
 
-class TestParenthesis(_WithConfiguration, test_cases.TestParenthesis[FileToCheck]):
+class TestConstant(_WithConfiguration, test_cases.TestConstantBase[FileToCheck]):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestParenthesis(_WithConfiguration, test_cases.TestParenthesisBase[FileToCheck]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass

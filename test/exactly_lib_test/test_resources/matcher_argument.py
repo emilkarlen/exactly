@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from exactly_lib.definitions import expression
+from exactly_lib.definitions.primitives import boolean
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.parse import token
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -22,6 +23,15 @@ class MatcherArg(ABC):
     @property
     def as_arguments(self) -> Arguments:
         return Arguments(str(self))
+
+
+class Constant(MatcherArg):
+    def __init__(self, value: bool):
+        self.value = value
+
+    @property
+    def elements(self) -> List:
+        return [boolean.CONSTANT_MATCHER, boolean.BOOLEANS[self.value]]
 
 
 class MatcherArgComponent(ABC):

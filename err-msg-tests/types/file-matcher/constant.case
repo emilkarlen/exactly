@@ -1,0 +1,7 @@
+[setup]
+
+file F
+
+[assert]
+
+exists F : constant false

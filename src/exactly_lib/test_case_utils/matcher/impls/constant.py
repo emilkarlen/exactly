@@ -7,20 +7,19 @@ from exactly_lib.util.description_tree import renderers, tree
 
 
 class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
-    NAME = 'constant'
-
     def __init__(self, result: bool):
         self._result = result
         self._matching_result = MatchingResult(
             self._result,
             renderers.Constant(
-                tree.Node(self.NAME, self._result,
+                tree.Node(boolean.CONSTANT_MATCHER,
+                          self._result,
                           (tree.StringDetail(boolean.BOOLEANS[result]),),
                           ())
             ),
         )
         self._structure = renderers.Constant(
-            tree.Node(self.NAME, None,
+            tree.Node(boolean.CONSTANT_MATCHER, None,
                       (tree.StringDetail(boolean.BOOLEANS[result]),),
                       ())
         )
