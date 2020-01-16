@@ -1,6 +1,8 @@
 from typing import Sequence
 
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -8,6 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
@@ -16,8 +19,11 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherA
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerModel, StringTransformerAdv
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse_filter(parser: TokenParser) -> StringTransformerSdv:
@@ -105,3 +111,30 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
                                str(self._line_matcher))
+
+
+class SyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     instruction_arguments.LINE_MATCHER),
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [types.LINE_MATCHER_TYPE_INFO.cross_reference_target]
+
+
+_TEXT_PARSER = TextParser({
+    '_LINE_MATCHER_': types.LINE_MATCHER_TYPE_INFO.name.singular,
+})
+
+_SELECT_TRANSFORMER_SED_DESCRIPTION = """\
+Keeps lines matched by the given {_LINE_MATCHER_},
+and discards lines not matched.
+"""

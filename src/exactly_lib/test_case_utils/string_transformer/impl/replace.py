@@ -1,5 +1,7 @@
 from typing import Pattern, Sequence
 
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -11,6 +13,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
@@ -26,6 +29,10 @@ from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.render import strings
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
+
+REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
@@ -159,3 +166,45 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
                                str(self._compiled_regular_expression))
+
+
+class SyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Single(a.Multiplicity.MANDATORY,
+                     REPLACE_REGEX_ARGUMENT),
+            a.Single(a.Multiplicity.MANDATORY,
+                     REPLACE_REPLACEMENT_ARGUMENT),
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target]
+
+
+_TEXT_PARSER = TextParser({
+    '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
+    '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
+})
+
+_REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
+Replaces parts of the contents of a file.
+
+
+Every occurrence of regular expression {_REG_EX_} - on a single line - is replaced with {_STRING_}.
+
+
+Backslash escapes in {_STRING_} are processed.
+That is, \\n is converted to a single newline character, \\r is converted to a carriage return, and so forth.
+
+
+Unknown escapes such as \\& are left alone.
+
+
+Back-references, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
+"""

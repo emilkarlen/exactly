@@ -1,6 +1,7 @@
 import functools
 from typing import Sequence
 
+from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -8,6 +9,7 @@ from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
@@ -18,6 +20,7 @@ from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransfor
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.functional import compose_first_and_second
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
@@ -120,3 +123,21 @@ class StringTransformerSequenceSdv(StringTransformerSdv):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+
+_SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\
+Sequence of two or more {_TRANSFORMERS_}.
+
+The result of the {_TRANSFORMER_} to the left is feed to the
+{_TRANSFORMER_} to the right.
+"""
+
+_TEXT_PARSER = TextParser({
+    '_TRANSFORMER_': types.STRING_TRANSFORMER_TYPE_INFO.name.singular,
+    '_TRANSFORMERS_': types.STRING_TRANSFORMER_TYPE_INFO.name.plural,
+
+})
+
+SYNTAX_DESCRIPTION = OperatorExpressionDescriptionFromFunctions(
+    _TEXT_PARSER.fnap__fun(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
+)
