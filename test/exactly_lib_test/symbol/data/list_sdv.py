@@ -7,12 +7,12 @@ from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_s
     string_ddv_of_single_path
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_sdv_element
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources.list_ddv_assertions import equals_list_ddv
 

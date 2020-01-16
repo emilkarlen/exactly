@@ -3,10 +3,10 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

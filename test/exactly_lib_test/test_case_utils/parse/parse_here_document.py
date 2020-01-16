@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.parse import parse_here_document as sut
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.element_parsers.optional_description_and_instruction_parser import \
     source_is_at_end
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
@@ -14,7 +15,6 @@ from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils
 from exactly_lib_test.symbol.data.test_resources import references
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     symbol_table_with_string_values_from_name_and_value
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

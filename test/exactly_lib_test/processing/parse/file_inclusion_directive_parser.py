@@ -4,12 +4,12 @@ import unittest
 from exactly_lib.processing.parse import file_inclusion_directive_parser as sut
 from exactly_lib.section_document.section_element_parsing import SectionElementError, \
     RecognizedSectionElementSourceError
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
 from exactly_lib_test.section_document.test_resources.parsed_element_assertions import is_file_inclusion_directive, \
     matches_file_inclusion_directive
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import matches_line_sequence
 

@@ -4,6 +4,7 @@ from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -18,7 +19,6 @@ from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources im
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

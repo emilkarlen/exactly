@@ -4,6 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
     assert_is_single_instruction_invalid_argument_exception
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration
@@ -12,7 +13,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformati
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

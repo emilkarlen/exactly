@@ -6,6 +6,7 @@ from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Arrangement, test__va
 from exactly_lib_test.execution.test_resources.execution_recording import phase_step_recordings as psr
@@ -16,7 +17,6 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

@@ -7,6 +7,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.type_system.data import paths
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -22,7 +23,6 @@ from exactly_lib_test.test_case_utils.test_resources import validation as valida
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

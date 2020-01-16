@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -18,7 +19,6 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.validat
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
 

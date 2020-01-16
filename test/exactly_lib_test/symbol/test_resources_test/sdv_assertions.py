@@ -11,12 +11,12 @@ from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
 from exactly_lib_test.test_resources import test_of_test_resources_util
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

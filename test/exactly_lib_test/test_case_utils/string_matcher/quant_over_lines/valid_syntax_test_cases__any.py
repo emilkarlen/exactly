@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
@@ -12,7 +13,6 @@ from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines.test_resou
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

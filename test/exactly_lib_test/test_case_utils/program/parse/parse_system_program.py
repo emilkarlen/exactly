@@ -16,6 +16,7 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -31,7 +32,6 @@ from exactly_lib_test.test_case_utils.test_resources import arguments_building a
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, DirContents
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val

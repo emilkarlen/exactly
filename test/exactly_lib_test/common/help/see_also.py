@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.common.help import see_also as sut
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId, \
     TestCasePhaseInstructionCrossReference
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.common.help.test_resources.see_also_assertions import is_see_also_item
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

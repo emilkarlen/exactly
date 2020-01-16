@@ -21,6 +21,7 @@ from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
@@ -35,7 +36,6 @@ from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_execu
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir

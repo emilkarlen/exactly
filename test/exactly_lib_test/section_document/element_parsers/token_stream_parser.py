@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.section_document.element_parsers import token_stream_parser as sut
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

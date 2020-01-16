@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct.structure import LineElement, MinorBlock, LineObjectVisitor, ENV, RET, \
     LineObject, ELEMENT_PROPERTIES__NEUTRAL, ElementProperties, MajorBlock, PreFormattedStringLineObject, \
     StringLineObject, \
     StringLinesObject, Indentation, TextStyle, TEXT_STYLE__NEUTRAL, INDENTATION__NEUTRAL
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

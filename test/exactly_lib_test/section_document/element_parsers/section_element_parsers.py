@@ -14,6 +14,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.document_assertions import equals_empty_element, \
     equals_comment_element, matches_instruction
@@ -24,7 +25,6 @@ from exactly_lib_test.section_document.test_resources.element_parsers import Sec
     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 

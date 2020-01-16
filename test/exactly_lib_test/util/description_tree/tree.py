@@ -4,7 +4,7 @@ from exactly_lib.util import strings
 from exactly_lib.util.description_tree import tree as sut
 from exactly_lib.util.description_tree.tree import PreFormattedStringDetail, HeaderAndValueDetail, StringDetail, \
     TreeDetail, IndentedDetail
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

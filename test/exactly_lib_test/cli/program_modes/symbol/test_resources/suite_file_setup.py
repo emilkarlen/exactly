@@ -1,9 +1,9 @@
 from typing import List
 
 from exactly_lib.definitions.test_suite import file_names
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments
 from exactly_lib_test.test_resources.files.file_structure import File
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 class SuiteFileCase:

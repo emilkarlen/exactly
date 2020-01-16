@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     arguments_building as po_ab
@@ -21,7 +22,6 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

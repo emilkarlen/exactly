@@ -1,7 +1,7 @@
 import itertools
 
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 TOKENS_WITH_INVALID_SYNTAX = list(itertools.chain.from_iterable(
     [

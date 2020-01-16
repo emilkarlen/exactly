@@ -17,6 +17,7 @@ from exactly_lib.type_system.data.paths import simple_of_rel_option
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
@@ -37,7 +38,6 @@ from exactly_lib_test.test_case_utils.test_resources import arguments_building a
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

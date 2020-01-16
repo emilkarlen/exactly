@@ -6,9 +6,9 @@ from exactly_lib.processing.test_case_processing import new_executed, \
     TestCaseFileReference, Result
 from exactly_lib.test_suite import processing as sut
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.processing.test_resources.test_case_processing_assertions import equals_test_case_reference
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_reporting_environment
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_suite.processing.basic_scenarios import ReaderThatGivesConstantSuite
 from exactly_lib_test.test_suite.test_resources.processing_utils import \

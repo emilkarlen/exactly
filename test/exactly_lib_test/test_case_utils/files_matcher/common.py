@@ -6,6 +6,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import \
     is_syntax_element_description
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
@@ -17,7 +18,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     pfh_expectation_type_config
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

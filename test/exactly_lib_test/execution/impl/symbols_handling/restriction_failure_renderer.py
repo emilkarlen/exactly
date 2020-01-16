@@ -6,12 +6,12 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureO
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import restriction_failures as sut
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_table_from_names
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:
@@ -26,7 +26,7 @@ class TestRenderFailureOfDirectReference(unittest.TestCase):
         cases = [
             FailureOfDirectReference(_new_em('error message')),
             FailureOfDirectReference(_new_em('error message',
-                                              'how to fix')),
+                                             'how to fix')),
         ]
         for failure in cases:
             with self.subTest(msg=failure.error):

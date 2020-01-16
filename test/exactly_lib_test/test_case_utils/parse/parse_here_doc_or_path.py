@@ -14,6 +14,7 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, singleton_symbol_table_2
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -30,7 +31,6 @@ from exactly_lib_test.test_case_utils.parse.parse_path import path_reference_res
 from exactly_lib_test.test_case_utils.parse.test_resources import relativity_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     OptionStringConfigurationForRelativityOption
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import concrete_path_parts

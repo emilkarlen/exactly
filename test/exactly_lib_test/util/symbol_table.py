@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util import symbol_table as sut
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib.util.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

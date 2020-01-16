@@ -14,6 +14,7 @@ from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import Compari
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherWTrace
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -21,7 +22,6 @@ from exactly_lib_test.symbol.data.test_resources import symbol_reference_asserti
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo

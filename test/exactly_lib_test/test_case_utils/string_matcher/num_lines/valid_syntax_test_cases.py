@@ -5,6 +5,7 @@ from typing import Iterable
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -19,7 +20,6 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.validat
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 

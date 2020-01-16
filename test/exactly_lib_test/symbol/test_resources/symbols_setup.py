@@ -4,9 +4,9 @@ from typing import Dict, Sequence, List, TypeVar, Generic
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

@@ -7,10 +7,10 @@ from exactly_lib.util.description_tree import simple_textstruct_rendering as sut
 from exactly_lib.util.description_tree.simple_textstruct_rendering import RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node, StringDetail, PreFormattedStringDetail, HeaderAndValueDetail, \
     TreeDetail, IndentedDetail
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct

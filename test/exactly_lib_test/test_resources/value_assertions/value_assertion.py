@@ -2,7 +2,7 @@ import os
 import unittest
 from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set, Optional
 
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib.util.name_and_value import NameAndValue
 
 COMPONENT_SEPARATOR = '/'
 

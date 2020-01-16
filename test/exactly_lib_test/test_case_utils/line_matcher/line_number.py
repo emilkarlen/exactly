@@ -6,6 +6,7 @@ from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition__expr
@@ -18,7 +19,6 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import main_result_is_success, \
     main_result_is_failure, ExecutionExpectation, ParseExpectation
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

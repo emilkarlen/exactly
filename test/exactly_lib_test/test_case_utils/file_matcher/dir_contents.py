@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
@@ -13,7 +14,6 @@ from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
     ExecutionExpectation, ParseExpectation, arrangement_wo_tcds
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, empty_dir, Dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result

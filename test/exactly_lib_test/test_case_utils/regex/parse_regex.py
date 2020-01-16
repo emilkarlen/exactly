@@ -13,6 +13,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -26,7 +27,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
@@ -649,8 +649,8 @@ def _check(put: unittest.TestCase,
     sdv_assertion = expectation.matches_regex_sdv(arrangement.symbols, tcds)
 
     sdv_assertion.apply_with_message(put,
-                                          actual_sdv,
-                                          'sdv')
+                                     actual_sdv,
+                                     'sdv')
 
 
 def matches_for_case_insensitive(matches_for_case_sensitive: List[str]) -> List[str]:

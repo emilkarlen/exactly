@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.render import strings as sut
 from exactly_lib.util.render.combinators import ConstantR, ConstantSequenceR
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def suite() -> unittest.TestSuite:

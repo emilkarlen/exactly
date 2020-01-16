@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import StringSdvTestImpl
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
@@ -14,7 +15,6 @@ from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases impo
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
     model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import quoting

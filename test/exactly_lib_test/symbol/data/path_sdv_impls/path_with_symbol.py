@@ -15,6 +15,7 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIO
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.value_type import DataValueType, ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
@@ -25,7 +26,6 @@ from exactly_lib_test.symbol.data.test_resources.sdvs import \
     string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

@@ -3,9 +3,9 @@ import unittest
 
 from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import element_assertions as sut
 from exactly_lib_test.section_document.test_resources.elements import new_empty, new_comment, new_instruction
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 

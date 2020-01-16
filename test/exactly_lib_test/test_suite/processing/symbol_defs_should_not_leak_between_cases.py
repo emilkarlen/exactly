@@ -4,11 +4,11 @@ from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
 from exactly_lib.test_suite import processing as sut
 from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_suite.processing.test_resources import symbol_defs_should_not_leak as tr
 from exactly_lib_test.test_suite.processing.test_resources.processor import new_processor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter

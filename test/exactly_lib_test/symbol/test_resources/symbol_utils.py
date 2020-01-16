@@ -12,8 +12,8 @@ from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.util import line_source
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 def container(value_sdv: SymbolDependentValue,

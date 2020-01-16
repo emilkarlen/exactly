@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatche
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -34,7 +35,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

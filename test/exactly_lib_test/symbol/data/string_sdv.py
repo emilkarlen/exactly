@@ -9,11 +9,11 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv
 from exactly_lib_test.util.test_resources import symbol_tables

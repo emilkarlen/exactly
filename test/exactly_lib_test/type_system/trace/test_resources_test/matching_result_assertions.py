@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as sut

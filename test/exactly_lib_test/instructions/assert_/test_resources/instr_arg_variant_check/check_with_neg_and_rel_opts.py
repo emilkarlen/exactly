@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -22,7 +23,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     SymbolsConfiguration
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

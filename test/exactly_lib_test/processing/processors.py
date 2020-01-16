@@ -18,6 +18,7 @@ from exactly_lib.test_case import phase_identifier, os_services
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.line_source import Line, single_line_sequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
@@ -30,7 +31,6 @@ from exactly_lib_test.section_document.test_resources.source_location_assertions
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 

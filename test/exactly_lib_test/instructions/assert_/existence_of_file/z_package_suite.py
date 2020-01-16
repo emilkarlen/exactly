@@ -15,6 +15,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.existence_of_file import test_resources as args
@@ -45,7 +46,6 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
     conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link, \
     empty_dir_contents
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.test_utils import NEA

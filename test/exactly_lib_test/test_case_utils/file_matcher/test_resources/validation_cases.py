@@ -4,6 +4,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
@@ -11,7 +12,6 @@ from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, \
     ValidationExpectationSvh, ValidationExpectation
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 
 class ValidationCaseSvh:

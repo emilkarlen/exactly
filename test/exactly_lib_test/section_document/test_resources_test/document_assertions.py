@@ -5,9 +5,9 @@ from exactly_lib.section_document.model import InstructionInfo, Instruction, Ele
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction, ParsedNonInstructionElement, \
     ParsedFileInclusionDirective
 from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import document_assertions as sut
 from exactly_lib_test.section_document.test_resources.element_assertions import matches_instruction_info
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence

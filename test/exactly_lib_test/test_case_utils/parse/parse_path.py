@@ -29,6 +29,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -53,7 +54,6 @@ from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
@@ -169,7 +169,7 @@ class TestParsesBase(unittest.TestCase):
                                 arrangement.source_file_path)
         # ASSERT #
         equals_path_sdv(expectation.path_sdv).apply_with_message(self, actual,
-                                                                           'path sdv')
+                                                                 'path sdv')
         expectation.token_stream.apply_with_message(self, ts, 'token-stream')
 
     def _check2(self,
@@ -635,7 +635,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                                     accepted_relativities)))
                 expected_path_sdv = path_sdvs.rel_symbol(expected_symbol_reference,
                                                          path_part_sdvs.from_constant_str(
-                                                                       file_name_argument))
+                                                             file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
                     test_descr = 'path_suffix_is_required={} / source={}'.format(path_suffix_is_required,
@@ -1102,7 +1102,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      entry(symbol_1.name,
                            path_sdvs.constant(paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                                                   paths.constant_path_part(
-                                                                           'suffix-from-path-symbol')))),
+                                                                      'suffix-from-path-symbol')))),
                      entry(symbol_2.name, string_sdvs.str_constant('string-symbol-value')),
                  ]),
                  token_stream=

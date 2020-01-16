@@ -9,6 +9,7 @@ from exactly_lib.section_document.section_parsing import SectionConfiguration, S
 from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
     check, \
     std_conf_arrangement, check_and_expect_exception, \
@@ -29,7 +30,6 @@ from exactly_lib_test.section_document.test_resources.source_location_assertions
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

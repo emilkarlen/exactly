@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConsta
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -32,7 +33,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_bu
     ImplicitActualFileArgumentsConstructor
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

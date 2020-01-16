@@ -6,6 +6,7 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing import exit_values
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
@@ -14,7 +15,6 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_file_setup i
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, empty_dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

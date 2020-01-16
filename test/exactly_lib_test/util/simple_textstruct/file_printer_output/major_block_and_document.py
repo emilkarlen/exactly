@@ -1,10 +1,10 @@
 import unittest
 from typing import Sequence
 
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import TEXT_STYLE__NEUTRAL, ElementProperties, Indentation
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import MINOR_BLOCK_INDENT, \
     LINE_ELEMENT_INDENT, MINOR_BLOCKS_SEPARATOR, check_major_block, \

@@ -6,11 +6,11 @@ from exactly_lib.type_system.data import concrete_strings as strings, paths, str
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsNothing
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string, \
     string_ddv_of_single_path
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 
 

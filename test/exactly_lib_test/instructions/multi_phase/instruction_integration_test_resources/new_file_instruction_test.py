@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
@@ -31,7 +32,6 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
     conf_rel_non_hds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
     command_that_exits_with_code
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \

@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util.description_tree.tree import StringDetail, DetailVisitor, RET
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

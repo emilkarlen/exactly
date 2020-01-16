@@ -4,6 +4,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import parser as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.files_matcher.impl.emptiness import emptiness_matcher
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import instruction_arguments as args
@@ -24,7 +25,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import default_conf_rel_non_hds, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
-from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
