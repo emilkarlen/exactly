@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Sequence
 
 from exactly_lib.definitions import instruction_arguments, matcher_model
 from exactly_lib.definitions.entity import syntax_elements
@@ -19,6 +19,7 @@ from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdvType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
+from exactly_lib.util.name_and_value import NameAndValue
 
 
 def files_matcher_parser() -> Parser[FilesMatcherSdv]:
@@ -62,29 +63,33 @@ def _parse_selection(parser: TokenParser) -> FilesMatcherSdvType:
                                                        matcher_on_selection)
 
 
-def _simple_expressions() -> Dict[str, grammar.SimpleExpression[FilesMatcherSdvType]]:
-    ret_val = {
-        files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[FilesMatcherSdvType]]]:
+    ret_val = [
+        NameAndValue(
+            files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT,
             grammar.SimpleExpression(_parse_empty_check,
-                                     documentation.EmptyDoc()),
-
-        files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT:
-            grammar.SimpleExpression(_parse_num_files_check,
-                                     documentation.NumFilesDoc()),
-
-        option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name):
-            grammar.SimpleExpression(_parse_selection,
-                                     documentation.SelectionDoc()),
-
-    }
-
+                                     documentation.EmptyDoc())
+        ),
+    ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         quant_over_files.ELEMENT_SETUP,
         parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
     )
 
-    ret_val.update(quantification_setup.quantification_grammar_expressions())
+    ret_val += quantification_setup.quantification_grammar_expressions()
 
+    ret_val += [
+        NameAndValue(
+            files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
+            grammar.SimpleExpression(_parse_num_files_check,
+                                     documentation.NumFilesDoc())
+        ),
+        NameAndValue(
+            option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
+            grammar.SimpleExpression(_parse_selection,
+                                     documentation.SelectionDoc())
+        ),
+    ]
     return ret_val
 
 

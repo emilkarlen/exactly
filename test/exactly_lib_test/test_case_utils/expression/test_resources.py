@@ -7,6 +7,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name import NameWithGenderWithFormatting, NameWithGender
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -155,20 +156,32 @@ class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
         return self._see_also_targets
 
 
-SIMPLE_EXPRESSIONS = {
-    SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
-                                              ConstantSimpleExprDescription([], [],
-                                                                            [CROSS_REF_ID])),
-    SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
-                                              ConstantSimpleExprDescription([], [])),
-}
+SIMPLE_EXPRESSIONS = (
+    NameAndValue(
+        SIMPLE_WITH_ARG,
+        grammar.SimpleExpression(parse_simple_with_arg,
+                                 ConstantSimpleExprDescription([], [],
+                                                               [CROSS_REF_ID]))
+    ),
+    NameAndValue(
+        SIMPLE_SANS_ARG,
+        grammar.SimpleExpression(parse_simple_sans_arg,
+                                 ConstantSimpleExprDescription([], []))
+    ),
+)
 
-PREFIX_EXPRESSIONS = {
-    PREFIX_P: grammar.PrefixExpression(PrefixExprP,
-                                       ConstantOperatorExpressionDescription([])),
-    PREFIX_Q: grammar.PrefixExpression(PrefixExprQ,
-                                       ConstantOperatorExpressionDescription([])),
-}
+PREFIX_EXPRESSIONS = (
+    NameAndValue(
+        PREFIX_P,
+        grammar.PrefixExpression(PrefixExprP,
+                                 ConstantOperatorExpressionDescription([]))
+    ),
+    NameAndValue(
+        PREFIX_Q,
+        grammar.PrefixExpression(PrefixExprQ,
+                                 ConstantOperatorExpressionDescription([]))
+    ),
+)
 
 
 def _mk_reference(name: str) -> Expr:
@@ -179,16 +192,20 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
     simple_expressions=SIMPLE_EXPRESSIONS,
-    complex_expressions={
-        COMPLEX_A:
+    complex_expressions=(
+        NameAndValue(
+            COMPLEX_A,
             grammar.ComplexExpression(ComplexA,
                                       ConstantOperatorExpressionDescription([],
-                                                                            [CROSS_REF_ID])),
-        COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME:
+                                                                            [CROSS_REF_ID]))
+        ),
+        NameAndValue(
+            COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
             grammar.ComplexExpression(ComplexB,
                                       ConstantOperatorExpressionDescription([],
-                                                                            [CROSS_REF_ID])),
-    },
+                                                                            [CROSS_REF_ID]))
+        ),
+    ),
     prefix_expressions=PREFIX_EXPRESSIONS,
 )
 
@@ -197,5 +214,5 @@ GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
     mk_reference=_mk_reference,
     simple_expressions=SIMPLE_EXPRESSIONS,
     prefix_expressions=PREFIX_EXPRESSIONS,
-    complex_expressions={},
+    complex_expressions=(),
 )

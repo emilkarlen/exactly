@@ -16,6 +16,7 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, LineMatcherSdvType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -129,12 +130,16 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     _CONCEPT,
     model=matcher_model.LINE_MATCHER_MODEL,
     value_type=ValueType.LINE_MATCHER,
-    simple_expressions={
-        line_matcher.REGEX_MATCHER_NAME:
+    simple_expressions=(
+        NameAndValue(
+            line_matcher.REGEX_MATCHER_NAME,
             grammar.SimpleExpression(matches_regex.parse__generic,
-                                     _RegexSyntaxDescription()),
-        line_matcher.LINE_NUMBER_MATCHER_NAME:
+                                     _RegexSyntaxDescription())
+        ),
+        NameAndValue(
+            line_matcher.LINE_NUMBER_MATCHER_NAME,
             grammar.SimpleExpression(line_number.parse_line_number__generic,
-                                     _LineNumberSyntaxDescription()),
-    },
+                                     _LineNumberSyntaxDescription())
+        ),
+    ),
 )

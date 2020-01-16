@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Dict, Sequence
 
 T = TypeVar('T')
 
@@ -22,3 +22,10 @@ class NameAndValue(tuple, Generic[T]):
     @property
     def value(self) -> T:
         return self[1]
+
+
+def to_dict(name_and_values: Sequence[NameAndValue[T]]) -> Dict[str, T]:
+    return {
+        nav.name: nav.value
+        for nav in name_and_values
+    }

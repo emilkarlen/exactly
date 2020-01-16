@@ -14,6 +14,7 @@ from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -165,19 +166,26 @@ def _mk_reference(name: str) -> StringTransformerSdv:
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions={
-        names.REPLACE_TRANSFORMER_NAME:
+    simple_expressions=(
+        NameAndValue(
+            names.REPLACE_TRANSFORMER_NAME,
             grammar.SimpleExpression(replace.parse_replace,
-                                     _ReplaceSyntaxDescription()),
-        names.SELECT_TRANSFORMER_NAME:
-            grammar.SimpleExpression(filter.parse_filter,
-                                     _SelectSyntaxDescription()),
-    },
-    complex_expressions={
-        names.SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            sequence.StringTransformerSequenceSdv,
-            _SEQUENCE_SYNTAX_DESCRIPTION,
+                                     _ReplaceSyntaxDescription())
         ),
-    },
-    prefix_expressions={},
+        NameAndValue(
+            names.SELECT_TRANSFORMER_NAME,
+            grammar.SimpleExpression(filter.parse_filter,
+                                     _SelectSyntaxDescription())
+        ),
+    ),
+    complex_expressions=[
+        NameAndValue(
+            names.SEQUENCE_OPERATOR_NAME,
+            grammar.ComplexExpression(
+                sequence.StringTransformerSequenceSdv,
+                _SEQUENCE_SYNTAX_DESCRIPTION,
+            )
+        ),
+    ],
+    prefix_expressions=(),
 )

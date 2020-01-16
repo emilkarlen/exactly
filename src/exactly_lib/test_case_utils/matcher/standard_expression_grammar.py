@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Sequence
 
 from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.expression import grammar
@@ -7,13 +7,14 @@ from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpr
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name import NameWithGenderWithFormatting
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
-                simple_expressions: Mapping[str, grammar.SimpleExpression[EXPR]],
+                simple_expressions: Sequence[NameAndValue[grammar.SimpleExpression[EXPR]]],
                 ) -> grammar.Grammar[EXPR]:
     tp = TextParser({
         'model': model,
@@ -26,25 +27,31 @@ def new_grammar(concept: grammar.Concept,
         concept,
         mk_reference=mk_reference,
         simple_expressions=simple_expressions,
-        complex_expressions={
-            expression.AND_OPERATOR_NAME:
+        complex_expressions=[
+            NameAndValue(
+                expression.AND_OPERATOR_NAME,
                 grammar.ComplexExpression(combinator_sdvs.Conjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_AND_SED_DESCRIPTION)
-                                          )),
-            expression.OR_OPERATOR_NAME:
+                                          ))
+            ),
+            NameAndValue(
+                expression.OR_OPERATOR_NAME,
                 grammar.ComplexExpression(combinator_sdvs.Disjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_OR_SED_DESCRIPTION)
-                                          )),
-        },
-        prefix_expressions={
-            expression.NOT_OPERATOR_NAME:
+                                          ))
+            ),
+        ],
+        prefix_expressions=[
+            NameAndValue(
+                expression.NOT_OPERATOR_NAME,
                 grammar.PrefixExpression(combinator_sdvs.Negation,
                                          OperatorExpressionDescriptionFromFunctions(
                                              tp.fnap__fun(_NOT_SED_DESCRIPTION)
                                          ))
-        },
+            )
+        ],
     )
 
 

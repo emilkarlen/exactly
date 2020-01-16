@@ -11,6 +11,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
+from ...definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 
 
 def syntax_element_description(grammar: Grammar) -> SyntaxElementDescription:
@@ -37,16 +38,16 @@ class Syntax:
 
     def invokation_variants(self) -> list:
         return (self.invokation_variants_simple() +
-                self.invokation_variants_symbol_ref() +
                 self.invokation_variants_prefix() +
                 self.invokation_variants_complex() +
+                self.invokation_variants_symbol_ref() +
                 self.invokation_variants_parentheses()
                 )
 
     def global_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_GLOBAL_DESCRIPTION)
 
-    def invokation_variants_simple(self) -> list:
+    def invokation_variants_simple(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
                                   syntax: SimpleExpressionDescription) -> InvokationVariant:
             name_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -56,18 +57,18 @@ class Syntax:
                                      syntax.description_rest)
 
         return [
-            invokation_variant_of(name, self.grammar.simple_expressions[name].syntax)
-            for name in sorted(self.grammar.simple_expressions.keys())
+            invokation_variant_of(expr.name, expr.value.syntax)
+            for expr in self.grammar.simple_expressions_list
         ]
 
-    def invokation_variants_symbol_ref(self) -> list:
+    def invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
         symbol_argument = a.Single(a.Multiplicity.MANDATORY,
                                    SYMBOL_NAME_SYNTAX_ELEMENT.argument)
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args([symbol_argument]),
                                self._symbol_ref_description())
         return [iv]
 
-    def invokation_variants_complex(self) -> list:
+    def invokation_variants_complex(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
                                   syntax: OperatorExpressionDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -77,11 +78,11 @@ class Syntax:
                                      syntax.description_rest)
 
         return [
-            invokation_variant_of(name, self.grammar.complex_expressions[name].syntax)
-            for name in sorted(self.grammar.complex_expressions.keys())
+            invokation_variant_of(expr.name, expr.value.syntax)
+            for expr in self.grammar.complex_expressions_list
         ]
 
-    def invokation_variants_prefix(self) -> list:
+    def invokation_variants_prefix(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
                                   syntax: OperatorExpressionDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -91,11 +92,11 @@ class Syntax:
                                      syntax.description_rest)
 
         return [
-            invokation_variant_of(name, self.grammar.prefix_expressions[name].syntax)
-            for name in sorted(self.grammar.prefix_expressions.keys())
+            invokation_variant_of(expr.name, expr.value.syntax)
+            for expr in self.grammar.prefix_expressions_list
         ]
 
-    def invokation_variants_parentheses(self) -> list:
+    def invokation_variants_parentheses(self) -> List[InvokationVariant]:
         arguments = [
             a.Single(a.Multiplicity.MANDATORY,
                      a.Constant('(')),
@@ -106,9 +107,9 @@ class Syntax:
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments))
         return [iv]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
-        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
+        :returns: A new list, which may contain duplicate elements.
         """
         expression_dicts = [
             self.grammar.simple_expressions,

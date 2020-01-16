@@ -1,4 +1,4 @@
-from typing import Sequence, Generic, Dict
+from typing import Sequence, Generic
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document import parser_classes
@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.matcher.impls.quantifier_matchers import MODEL, ELEMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import Quantifier
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -45,24 +46,27 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
     def parse_exists(self, parser: TokenParser) -> MatcherSdv[MODEL]:
         return parse_after_quantifier_token(Quantifier.EXISTS, self._element_predicate_parser, self._setup, parser)
 
-    def quantification_grammar_expressions(self) -> Dict[str, grammar.SimpleExpression[MatcherSdv[MODEL]]]:
-        return {
-            instruction_arguments.ALL_QUANTIFIER_ARGUMENT:
+    def quantification_grammar_expressions(self) -> Sequence[NameAndValue[grammar.SimpleExpression[MatcherSdv[MODEL]]]]:
+        return (
+            NameAndValue(
+                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
                 grammar.SimpleExpression(
                     self.parse_all,
                     QuantificationDoc(Quantifier.ALL,
                                       self._setup.rendering.type_name,
                                       self._setup.rendering.element_matcher_syntax_name)
-                ),
-
-            instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT:
+                )
+            ),
+            NameAndValue(
+                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
                 grammar.SimpleExpression(
                     self.parse_exists,
                     QuantificationDoc(Quantifier.EXISTS,
                                       self._setup.rendering.type_name,
                                       self._setup.rendering.element_matcher_syntax_name)
-                ),
-        }
+                )
+            ),
+        )
 
 
 class QuantificationDoc(grammar.SimpleExpressionDescription):

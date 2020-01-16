@@ -31,6 +31,7 @@ from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdvType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -190,25 +191,35 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     ),
     model=matcher_model.FILE_MATCHER_MODEL,
     value_type=ValueType.FILE_MATCHER,
-    simple_expressions={
-        NAME_MATCHER_NAME:
+    simple_expressions=(
+        NameAndValue(
+            NAME_MATCHER_NAME,
             grammar.SimpleExpression(_parse_name_matcher,
-                                     _NameSyntaxDescription()),
+                                     _NameSyntaxDescription())
+        ),
 
-        TYPE_MATCHER_NAME:
+        NameAndValue(
+            TYPE_MATCHER_NAME,
             grammar.SimpleExpression(_parse_type_matcher,
-                                     _TypeSyntaxDescription()),
-
-        REGULAR_FILE_CONTENTS: grammar.SimpleExpression(
-            _parse_regular_file_contents,
-            file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.SETUP)
+                                     _TypeSyntaxDescription())
         ),
 
-        DIR_CONTENTS: grammar.SimpleExpression(
-            _parse_dir_contents,
-            file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP)
+        NameAndValue(
+            REGULAR_FILE_CONTENTS,
+            grammar.SimpleExpression(
+                _parse_regular_file_contents,
+                file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.SETUP)
+            )
         ),
-    },
+
+        NameAndValue(
+            DIR_CONTENTS,
+            grammar.SimpleExpression(
+                _parse_dir_contents,
+                file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP)
+            )
+        ),
+    ),
 )
 
 _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'

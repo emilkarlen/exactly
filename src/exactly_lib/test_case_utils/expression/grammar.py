@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Mapping, Optional, Sequence, TypeVar, Generic, Callable
+from typing import Optional, Sequence, TypeVar, Generic, Callable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.util import name_and_value
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name import NameWithGenderWithFormatting
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -76,11 +78,14 @@ class Grammar(Generic[EXPR]):
     def __init__(self,
                  concept: Concept,
                  mk_reference: Callable[[str], EXPR],
-                 simple_expressions: Mapping[str, SimpleExpression[EXPR]],
-                 complex_expressions: Mapping[str, ComplexExpression[EXPR]],
-                 prefix_expressions: Optional[Mapping[str, PrefixExpression[EXPR]]] = None):
+                 simple_expressions: Sequence[NameAndValue[SimpleExpression[EXPR]]],
+                 complex_expressions: Sequence[NameAndValue[ComplexExpression[EXPR]]],
+                 prefix_expressions: Optional[Sequence[NameAndValue[PrefixExpression[EXPR]]]] = None):
         self.concept = concept
         self.mk_reference = mk_reference
-        self.simple_expressions = simple_expressions
-        self.complex_expressions = complex_expressions
-        self.prefix_expressions = prefix_expressions if prefix_expressions else {}
+        self.simple_expressions_list = simple_expressions
+        self.simple_expressions = name_and_value.to_dict(simple_expressions)
+        self.complex_expressions_list = complex_expressions
+        self.complex_expressions = name_and_value.to_dict(complex_expressions)
+        self.prefix_expressions = name_and_value.to_dict(prefix_expressions) if prefix_expressions else {}
+        self.prefix_expressions_list = prefix_expressions if prefix_expressions else ()

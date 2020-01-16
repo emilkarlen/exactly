@@ -1,4 +1,3 @@
-from typing import Dict
 from typing import Sequence
 
 from exactly_lib.definitions import instruction_arguments, matcher_model
@@ -26,6 +25,7 @@ from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -70,36 +70,44 @@ class _OnTransformedDescription(grammar.SimpleExpressionDescription):
         return syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
 
 
-def _simple_expressions() -> Dict[str, grammar.SimpleExpression[GenericStringMatcherSdv]]:
-    ret_val = {
-        matcher_options.EMPTY_ARGUMENT:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericStringMatcherSdv]]]:
+    ret_val = [
+        NameAndValue(
+            matcher_options.EMPTY_ARGUMENT,
             grammar.SimpleExpression(emptieness.parse__generic,
-                                     emptieness.Description()),
-
-        matcher_options.EQUALS_ARGUMENT:
+                                     emptieness.Description())
+        ),
+        NameAndValue(
+            matcher_options.EQUALS_ARGUMENT,
             grammar.SimpleExpression(equality.parse__generic,
-                                     equality.Description()),
-
-        matcher_options.MATCHES_ARGUMENT:
+                                     equality.Description())
+        ),
+        NameAndValue(
+            matcher_options.MATCHES_ARGUMENT,
             grammar.SimpleExpression(matches.parse__generic,
-                                     matches.Description()),
-
-        matcher_options.NUM_LINES_ARGUMENT:
-            grammar.SimpleExpression(num_lines.parse__generic,
-                                     num_lines.Description()),
-
-        option_syntax.option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME):
-            grammar.SimpleExpression(_parse_on_transformed__generic,
-                                     _OnTransformedDescription()),
-
-    }
+                                     matches.Description())
+        ),
+    ]
 
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         line_matches.line_matches.ELEMENT_SETUP,
         parse_line_matcher.ParserOfGenericMatcherOnArbitraryLine(),
     )
 
-    ret_val.update(quantification_setup.quantification_grammar_expressions())
+    ret_val += quantification_setup.quantification_grammar_expressions()
+
+    ret_val += [
+        NameAndValue(
+            matcher_options.NUM_LINES_ARGUMENT,
+            grammar.SimpleExpression(num_lines.parse__generic,
+                                     num_lines.Description())
+        ),
+        NameAndValue(
+            option_syntax.option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            grammar.SimpleExpression(_parse_on_transformed__generic,
+                                     _OnTransformedDescription())
+        ),
+    ]
 
     return ret_val
 
