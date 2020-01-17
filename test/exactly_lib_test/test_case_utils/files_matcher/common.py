@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
@@ -11,6 +10,8 @@ from exactly_lib_test.common.help.test_resources.syntax_contents_structure_asser
     is_syntax_element_description
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.test_resources.symbol_syntax import \
+    NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     AssertionVariantArgumentsConstructor
@@ -46,15 +47,17 @@ class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
         parser = sut.files_matcher_parser()
         cases = [
             NameAndValue(
-                'valid file argument, but no operator',
+                'Matcher is missing',
                 args.complete_arguments_constructor(
                     InvalidAssertionVariantArgumentsConstructor('')
                 ),
             ),
             NameAndValue(
-                'valid file argument, invalid check',
+                'Matcher has invalid syntax',
                 args.complete_arguments_constructor(
-                    InvalidAssertionVariantArgumentsConstructor(symbol_reference_syntax_for_name('invalidCheck'))
+                    InvalidAssertionVariantArgumentsConstructor(
+                        NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
+                    )
                 ),
             ),
         ]

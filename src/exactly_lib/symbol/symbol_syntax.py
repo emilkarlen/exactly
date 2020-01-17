@@ -25,7 +25,7 @@ class SymbolWithReferenceSyntax:
         return symbol_reference_syntax_for_name(self.name)
 
 
-def parse_symbol_reference(path_argument: Token) -> Optional[str]:
+def parse_symbol_reference(token: Token) -> Optional[str]:
     """
     Gives the name of the referenced symbol,
     if the token has the syntax of a symbol reference.
@@ -35,18 +35,33 @@ def parse_symbol_reference(path_argument: Token) -> Optional[str]:
     :raise SingleInstructionInvalidArgumentException The token is a symbol reference, but the
     symbol name has invalid syntax.
     """
-    if path_argument.is_quoted:
-        return None
-    s = path_argument.string
-    if s[:len(SYMBOL_REFERENCE_BEGIN)] == SYMBOL_REFERENCE_BEGIN:
-        s = s[len(SYMBOL_REFERENCE_BEGIN):]
-        if s[-len(SYMBOL_REFERENCE_END):] == SYMBOL_REFERENCE_END:
-            s = s[:-len(SYMBOL_REFERENCE_END)]
-            if is_symbol_name(s):
-                return s
+    return (
+        None
+        if token.is_quoted
+        else
+        parse_symbol_reference__from_str(token.string)
+    )
+
+
+def parse_symbol_reference__from_str(token: str) -> Optional[str]:
+    """
+    Gives the name of the referenced symbol,
+    if the token has the syntax of a symbol reference.
+    :returns: None if the token (as a whole) is not a symbol reference,
+    otherwise the name of the referenced symbol.
+
+    :raise SingleInstructionInvalidArgumentException The token is a symbol reference, but the
+    symbol name has invalid syntax.
+    """
+    if token[:len(SYMBOL_REFERENCE_BEGIN)] == SYMBOL_REFERENCE_BEGIN:
+        token = token[len(SYMBOL_REFERENCE_BEGIN):]
+        if token[-len(SYMBOL_REFERENCE_END):] == SYMBOL_REFERENCE_END:
+            token = token[:-len(SYMBOL_REFERENCE_END)]
+            if is_symbol_name(token):
+                return token
             else:
                 raise SingleInstructionInvalidArgumentException(
-                    'Illegal symbol name: `{}\''.format(s))
+                    'Illegal symbol name: `{}\''.format(token))
     return None
 
 

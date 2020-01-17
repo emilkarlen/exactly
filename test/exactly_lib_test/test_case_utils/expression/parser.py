@@ -3,7 +3,9 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.expression import parser as sut
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines
 from exactly_lib_test.test_case_utils.expression import test_resources as ast
@@ -488,51 +490,77 @@ class TestSingleRefExpression(TestCaseBase):
         symbol_name = 'the_symbol_name'
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
+        symbol_ref_syntax_cases = [
+            NameAndValue('plain',
+                         symbol_name,
+                         ),
+            NameAndValue('reference syntax',
+                         symbol_reference_syntax_for_name(symbol_name),
+                         ),
+        ]
         for grammar_description, grammar in self.grammars:
-            cases = [
-                SourceCase(
-                    'first line is only simple expr',
-                    source=
-                    remaining_source('{symbol_name}'.format(
-                        symbol_name=symbol_name,
-                    )),
-                    source_assertion=
-                    asrt_source.is_at_end_of_line(1)
-                ),
-                SourceCase(
-                    'first line is simple expr with space around',
-                    source=
-                    remaining_source('  {symbol_name}{space_after}'.format(
-                        symbol_name=symbol_name,
-                        space_after=space_after)),
-                    source_assertion=
-                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                     remaining_part_of_current_line=asrt.equals(space_after[1:]))
-                ),
-                SourceCase(
-                    'expression is followed by non-expression',
-                    source=
-                    remaining_source('{symbol_name} {token_after}'.format(
-                        symbol_name=symbol_name,
-                        token_after=token_after)),
-                    source_assertion=
-                    asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
-                                                     remaining_part_of_current_line=asrt.equals(token_after))
-                ),
-            ]
+            for symbol_ref_syntax in symbol_ref_syntax_cases:
+                cases = [
+                    SourceCase(
+                        'first line is only simple expr',
+                        source=
+                        remaining_source('{symbol_name}'.format(
+                            symbol_name=symbol_ref_syntax.value,
+                        )),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(1)
+                    ),
+                    SourceCase(
+                        'first line is simple expr with space around',
+                        source=
+                        remaining_source('  {symbol_name}{space_after}'.format(
+                            symbol_name=symbol_ref_syntax.value,
+                            space_after=space_after)),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                         remaining_part_of_current_line=asrt.equals(space_after[1:]))
+                    ),
+                    SourceCase(
+                        'expression is followed by non-expression',
+                        source=
+                        remaining_source('{symbol_name} {token_after}'.format(
+                            symbol_name=symbol_ref_syntax.value,
+                            token_after=token_after)),
+                        source_assertion=
+                        asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                                         remaining_part_of_current_line=asrt.equals(token_after))
+                    ),
+                ]
 
-            for case in cases:
-                with self.subTest(grammar=grammar_description,
-                                  name=case.name):
-                    self._check(
-                        Arrangement(
-                            grammar=grammar,
-                            source=case.source),
-                        Expectation(
-                            expression=ast.RefExpr(symbol_name),
-                            source=case.source_assertion,
+                for case in cases:
+                    with self.subTest(grammar=grammar_description,
+                                      symbol_ref_syntax=symbol_ref_syntax.name,
+                                      name=case.name):
+                        self._check(
+                            Arrangement(
+                                grammar=grammar,
+                                source=case.source),
+                            Expectation(
+                                expression=ast.RefExpr(symbol_name),
+                                source=case.source_assertion,
+                            )
                         )
+
+    def test_token_SHOULD_be_interpreted_as_sym_ref_WHEN_sym_ref_syntax_is_used_for_existing_primitive(self):
+        for grammar_description, grammar in self.grammars:
+            with self.subTest(grammar=grammar_description):
+                self._check(
+                    Arrangement(
+                        grammar=grammar,
+                        source=remaining_source(
+                            symbol_reference_syntax_for_name(ast.SIMPLE_SANS_ARG)
+                        ),
+                    ),
+                    Expectation(
+                        expression=ast.RefExpr(ast.SIMPLE_SANS_ARG),
+                        source=asrt_source.is_at_end_of_line(1),
                     )
+                )
 
     def test_fail(self):
         symbol_name = 'the_symbol_name'
@@ -541,6 +569,14 @@ class TestSingleRefExpression(TestCaseBase):
                 (
                     'symbol name is quoted',
                     remaining_source(str(surrounded_by_hard_quotes(symbol_name))),
+                ),
+                (
+                    'symbol reference syntax with invalid symbol name character: space',
+                    remaining_source(symbol_reference_syntax_for_name('the symbol')),
+                ),
+                (
+                    'symbol reference syntax with invalid symbol name character: &',
+                    remaining_source(symbol_reference_syntax_for_name('the&symbol')),
                 ),
             ]
             for case_name, source in cases:

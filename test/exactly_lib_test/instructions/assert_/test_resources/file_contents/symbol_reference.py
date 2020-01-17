@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_matcher.impl.emptiness import EmptinessStringMatcher
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.name_and_value import NameAndValue
@@ -15,6 +14,8 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     is_reference_to_string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.symbol_syntax import \
+    NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
@@ -66,7 +67,7 @@ class ParseShouldFailWhenSymbolNameHasInvalidSyntax(TestWithConfigurationAndNega
                     args('{maybe_with_transformer_option} {maybe_not} {symbol_reference}',
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative,
-                         symbol_reference=symbol_reference_syntax_for_name(SYMBOL_FOR_EMPTINESS_MATCHER.name)),
+                         symbol_reference=NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)

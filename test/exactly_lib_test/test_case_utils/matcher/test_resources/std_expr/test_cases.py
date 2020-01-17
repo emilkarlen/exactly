@@ -6,6 +6,7 @@ from exactly_lib.definitions import expression
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
@@ -174,13 +175,15 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi_execution(
-            self,
-            arguments=Arguments(symbol_name),
-            symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-            model_constructor=conf.arbitrary_model,
-            execution=helper.failing_validation_cases(symbol_name),
-        )
+        for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
+            with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
+                conf.checker().check_multi_execution(
+                    self,
+                    arguments=Arguments(symbol_name),
+                    symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
+                    model_constructor=conf.arbitrary_model,
+                    execution=helper.failing_validation_cases(symbol_name),
+                )
 
     def test_reference_SHOULD_apply_referenced_matcher(self):
         # ARRANGE #
@@ -192,13 +195,26 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi_execution(
-            self,
-            arguments=Arguments(symbol_name),
-            symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-            model_constructor=conf.arbitrary_model,
-            execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
-        )
+        for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
+            with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
+                conf.checker().check_multi_execution(
+                    self,
+                    arguments=Arguments(symbol_ref_syntax.value),
+                    symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
+                    model_constructor=conf.arbitrary_model,
+                    execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
+                )
+
+    @staticmethod
+    def _symbol_ref_syntax_cases(symbol_name: str) -> Sequence[NameAndValue[str]]:
+        return [
+            NameAndValue('plain',
+                         symbol_name,
+                         ),
+            NameAndValue('reference syntax',
+                         symbol_reference_syntax_for_name(symbol_name),
+                         ),
+        ]
 
 
 class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):

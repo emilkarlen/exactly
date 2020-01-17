@@ -91,6 +91,11 @@ class _Parser(Generic[EXPR]):
                     must_be_on_current_line=must_be_on_current_line)
 
     def parse_simple(self, simple_name: str) -> EXPR:
+        symbol_name_of_symbol_reference = symbol_syntax.parse_symbol_reference__from_str(simple_name)
+
+        if symbol_name_of_symbol_reference is not None:
+            return self.grammar.mk_reference(symbol_name_of_symbol_reference)
+
         if simple_name in self.grammar.simple_expressions:
             return self.grammar.simple_expressions[simple_name].parse_arguments(self.parser)
         elif not symbol_syntax.is_symbol_name(simple_name):
