@@ -589,6 +589,7 @@ Including (but not limited to):
 * Symbol substitution in files
 * Variables - corresponding to symbol definitions -
   but for variable values
+* Dynamic symbol values - e.g. contents of dir, current date
 * Macros and functions
 * Ability to embed Python code in test cases
 * Python library for running cases and suites from within Python as a DSEL
