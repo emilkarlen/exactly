@@ -16,7 +16,7 @@ status = FAIL
 [setup]
 
 
-def path SCRIPTS_DIR            =  -rel-act-home
+def path SCRIPTS_DIR            =  -rel-act-home .
 
 
 def file-matcher IS_SQL_FILE    = name *.sql

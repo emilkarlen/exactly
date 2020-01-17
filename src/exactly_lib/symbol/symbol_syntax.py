@@ -1,5 +1,5 @@
 from itertools import takewhile
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -25,7 +25,7 @@ class SymbolWithReferenceSyntax:
         return symbol_reference_syntax_for_name(self.name)
 
 
-def parse_symbol_reference(path_argument: Token) -> str:
+def parse_symbol_reference(path_argument: Token) -> Optional[str]:
     """
     Gives the name of the referenced symbol,
     if the token has the syntax of a symbol reference.

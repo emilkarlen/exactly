@@ -13,6 +13,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativi
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -43,19 +44,23 @@ def suite() -> unittest.TestSuite:
 class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
-            ('Invalid path syntax',
-             src('{path_type} name = {invalid_option} x',
-                 invalid_option=option_syntax.long_option_syntax('invalid-option'))
-             ),
-            ('Superfluous arguments',
-             src('{path_type} name = {rel_opt} x superfluous-arg',
-                 rel_opt=REL_ACT_OPTION)
-             ),
+            NameAndValue('Invalid path syntax',
+                         src('{path_type} name = {invalid_option} x',
+                             invalid_option=option_syntax.long_option_syntax('invalid-option'))
+                         ),
+            NameAndValue('Superfluous arguments',
+                         src('{path_type} name = {rel_opt} x superfluous-arg',
+                             rel_opt=REL_ACT_OPTION)
+                         ),
+            NameAndValue('Missing PATH',
+                         src('{path_type} name = ',
+                             rel_opt=REL_ACT_OPTION)
+                         ),
         ]
         parser = sut.EmbryoParser()
-        for (case_name, source_str) in test_cases:
-            source = remaining_source(source_str)
-            with self.subTest(msg=case_name):
+        for case in test_cases:
+            source = remaining_source(case.value)
+            with self.subTest(msg=case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
