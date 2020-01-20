@@ -28,7 +28,7 @@ class InstructionTestConfiguration:
     def arrangement_for_contents(self,
                                  actual_contents: str,
                                  post_sds_population_action: TcdsAction = TcdsAction(),
-                                 home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 tcds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()

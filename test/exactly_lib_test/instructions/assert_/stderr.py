@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     ProgramOutputInstructionConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromTcds2Str
-from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment
+from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \

@@ -300,7 +300,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                     relativity_option=self.rel_opt.option_argument)),
             self.configuration.arrangement_for_contents(
                 contents_generator.original,
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
+                tcds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
                     File('expected.txt', contents_generator.transformed)
                 ])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,

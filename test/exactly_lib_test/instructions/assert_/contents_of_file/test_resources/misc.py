@@ -8,7 +8,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.test_case.test_resources.arrangements import ActEnvironment, ActResultProducer
+from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
@@ -32,12 +32,12 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: TcdsAction = TcdsAction(),
-                                 home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 tcds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             sds_contents=self._populator_for_actual(actual_contents),
-            tcds_contents=home_or_sds_contents,
+            tcds_contents=tcds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

@@ -2,9 +2,9 @@ import os
 import unittest
 from typing import Sequence
 
-from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
@@ -17,14 +17,29 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActEnvironment
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, \
     all_validations_passes__svh
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    tcds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+class SourceArrangement:
+    def __init__(self,
+                 arguments: Arguments,
+                 fs_location_info: FileSystemLocationInfo,
+                 ):
+        self.arguments = arguments
+        self.fs_location_info = fs_location_info
+
+
+def source_arr_w_arbitrary_fs_location(arguments: Arguments) -> SourceArrangement:
+    return SourceArrangement(arguments, ARBITRARY_FS_LOCATION_INFO)
 
 
 class Expectation:
@@ -49,6 +64,26 @@ class Expectation:
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
         self.source = source
         self.symbol_usages = symbol_usages
+
+
+class ExecutionExpectation:
+    def __init__(
+            self,
+            validation_post_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            validation_pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            main_result: ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
+            main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+            main_side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
+    ):
+        self.validation_post_sds = validation_post_sds
+        self.validation_pre_sds = validation_pre_sds
+        self.main_result = main_result
+        self.main_side_effects_on_sds = main_side_effects_on_sds
+        self.main_side_effects_on_tcds = main_side_effects_on_tcds
 
 
 def expectation(
@@ -90,6 +125,46 @@ def check(put: unittest.TestCase,
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
+class Checker:
+    def __init__(self, parser: InstructionParser):
+        self._parser = parser
+
+    def check(self,
+              put: unittest.TestCase,
+              source: ParseSource,
+              arrangement: ArrangementPostAct,
+              expectation: Expectation,
+              ):
+        Executor(put, arrangement, expectation).execute(self._parser, source)
+
+    def check_multi__with_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: SourceArrangement,
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
+            execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
+    ):
+        for parse_source in equivalent_source_variants__with_source_check(put, source.arguments.as_single_string):
+            instruction = self._parser.parse(source.fs_location_info, parse_source)
+
+            put.assertIsNotNone(instruction,
+                                'Result from parser cannot be None')
+            put.assertIsInstance(instruction,
+                                 AssertPhaseInstruction,
+                                 'The instruction must be an instance of ' + str(AssertPhaseInstruction))
+
+            assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
+
+            symbol_usages.apply_with_message(put,
+                                             instruction.symbol_usages(),
+                                             'symbol usages')
+
+            for case in execution:
+                with put.subTest(execution_case=case.name):
+                    checker = ExecutionChecker(put, case.arrangement, case.expected)
+                    checker.check(instruction)
+
+
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
@@ -113,27 +188,44 @@ class Executor:
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages(),
                                                           'symbol-usages after parse')
-        with tcds_with_act_as_curr_dir(
-                pre_contents_population_action=self.arrangement.pre_contents_population_action,
-                hds_contents=self.arrangement.hds_contents,
-                sds_contents=self.arrangement.sds_contents,
-                non_hds_contents=self.arrangement.non_hds_contents,
-                tcds_contents=self.arrangement.tcds_contents,
-                symbols=self.arrangement.symbols) as path_resolving_environment:
-            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-            tcds = path_resolving_environment.tcds
 
+        ex = self.expectation
+        exe_checker = ExecutionChecker(self.put,
+                                       self.arrangement.as_arrangement_2(),
+                                       ExecutionExpectation(
+                                           ex.validation_post_sds,
+                                           ex.validation_pre_sds,
+                                           ex.main_result,
+                                           ex.main_side_effects_on_sds,
+                                           ex.main_side_effects_on_tcds,
+                                       ))
+        exe_checker.check(instruction)
+        return
+
+
+class ExecutionChecker:
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: ArrangementPostAct2,
+                 expectation: ExecutionExpectation,
+                 ):
+        self.put = put
+        self.arrangement = arrangement
+        self.expectation = expectation
+
+    def check(self, instruction: AssertPhaseInstruction):
+        with tcds_with_act_as_curr_dir__post_act(self.arrangement.tcds) as tcds:
             with preserved_cwd():
                 os.chdir(str(tcds.hds.case_dir))
 
-                environment = i.InstructionEnvironmentForPreSdsStep(tcds.hds,
-                                                                    self.arrangement.process_execution_settings.environ,
-                                                                    symbols=self.arrangement.symbols)
+                proc_execution = self.arrangement.process_execution
+                environment = i.InstructionEnvironmentForPreSdsStep(
+                    tcds.hds,
+                    environ=proc_execution.process_execution_settings.environ,
+                    timeout_in_seconds=proc_execution.process_execution_settings.timeout_in_seconds,
+                    symbols=self.arrangement.symbols,
+                )
                 validate_result = self._execute_validate_pre_sds(environment, instruction)
-                self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                  instruction.symbol_usages(),
-                                                                  'symbol-usages after ' +
-                                                                  phase_step.STEP__VALIDATE_PRE_SDS)
                 if not validate_result.is_success:
                     return
 
@@ -142,26 +234,17 @@ class Executor:
                 environment.environ,
                 tcds.sds,
                 phase_identifier.ASSERT.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                symbols=self.arrangement.symbols)
+                timeout_in_seconds=proc_execution.process_execution_settings.timeout_in_seconds,
+                symbols=self.arrangement.symbols,
+            )
             validate_result = self._execute_validate_post_setup(environment, instruction)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__VALIDATE_POST_SETUP)
             if not validate_result.is_success:
                 return
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
-            write_act_result(tcds.sds, act_result)
 
             self._execute_main(environment, instruction)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__MAIN)
 
     def _execute_validate_pre_sds(self,
                                   environment: InstructionEnvironmentForPreSdsStep,
@@ -186,7 +269,7 @@ class Executor:
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, self.arrangement.os_services)
+        main_result = instruction.main(environment, self.arrangement.process_execution.os_services)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)

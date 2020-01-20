@@ -1,7 +1,7 @@
 from typing import Callable
 
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
 
 
 class ActResultProducerFromTcds2Str(ActResultProducer):

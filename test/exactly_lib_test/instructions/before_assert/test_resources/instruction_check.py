@@ -18,8 +18,9 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
-    ActEnvironment, ActResultProducerFromActResult
+from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer, \
+    ActResultProducerFromActResult
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result

@@ -29,7 +29,7 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducerFromActResult
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_contents_check, \
     hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents

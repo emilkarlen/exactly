@@ -48,6 +48,19 @@ class TcdsActionFromPlainTcdsAction(TcdsAction):
         return self.plain_action.apply(environment.tcds)
 
 
+class PlainTcdsActionFromTcdsAction(PlainTcdsAction):
+    def __init__(self,
+                 action: TcdsAction,
+                 symbols: SymbolTable,
+                 ):
+        self.symbols = symbols
+        self.action = action
+
+    def apply(self, tcds: Tcds):
+        environment = PathResolvingEnvironmentPreOrPostSds(tcds, self.symbols)
+        return self.action.apply(environment)
+
+
 @contextmanager
 def tcds_with_act_as_curr_dir(
         hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),

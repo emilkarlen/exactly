@@ -20,7 +20,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.process import SubProcessResult

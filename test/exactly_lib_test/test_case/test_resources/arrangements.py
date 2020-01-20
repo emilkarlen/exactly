@@ -1,37 +1,16 @@
+from typing import Optional
+
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
-from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    TcdsAction
-
-
-class ActEnvironment(tuple):
-    def __new__(cls,
-                tcds: Tcds):
-        return tuple.__new__(cls, (tcds,))
-
-    @property
-    def tcds(self) -> Tcds:
-        return self[0]
-
-
-class ActResultProducer:
-    def apply(self, act_environment: ActEnvironment) -> SubProcessResult:
-        raise NotImplementedError()
-
-
-class ActResultProducerFromActResult(ActResultProducer):
-    def __init__(self, act_result: SubProcessResult = SubProcessResult()):
-        self.act_result = act_result
-
-    def apply(self, act_environment: ActEnvironment) -> SubProcessResult:
-        return self.act_result
+    TcdsAction, PlainTcdsActionFromTcdsAction
 
 
 class ArrangementBase:
@@ -69,6 +48,26 @@ class ArrangementWithSds(ArrangementBase):
         self.fs_location_info = fs_location_info
 
 
+class ProcessExecutionArrangement:
+    def __init__(self,
+                 os_services: OsServices = new_default(),
+                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 ):
+        self.os_services = os_services
+        self.process_execution_settings = process_execution_settings
+
+
+class ArrangementPostAct2:
+    def __init__(self,
+                 tcds: TcdsArrangementPostAct,
+                 symbols: Optional[SymbolTable] = None,
+                 process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
+                 ):
+        self.symbols = symbol_table_from_none_or_value(symbols)
+        self.tcds = tcds
+        self.process_execution = process_execution
+
+
 class ArrangementPostAct(ArrangementWithSds):
     def __init__(self,
                  pre_contents_population_action: TcdsAction = TcdsAction(),
@@ -94,3 +93,23 @@ class ArrangementPostAct(ArrangementWithSds):
                          symbols=symbols,
                          fs_location_info=fs_location_info)
         self.act_result_producer = act_result_producer
+
+    def as_arrangement_2(self) -> ArrangementPostAct2:
+        return ArrangementPostAct2(
+            TcdsArrangementPostAct(
+                self.tcds_contents,
+                self.hds_contents,
+                non_hds_populator.multiple([self.non_hds_contents,
+                                            self.sds_contents]),
+                self.act_result_producer,
+                PlainTcdsActionFromTcdsAction(self.pre_contents_population_action,
+                                              self.symbols),
+                PlainTcdsActionFromTcdsAction(self.post_sds_population_action,
+                                              self.symbols),
+            ),
+            self.symbols,
+            ProcessExecutionArrangement(
+                self.os_services,
+                self.process_execution_settings,
+            )
+        )

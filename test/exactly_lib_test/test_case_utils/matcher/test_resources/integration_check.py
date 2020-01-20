@@ -15,14 +15,13 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, Mat
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case.test_resources.arrangements import ActResultProducer, ActEnvironment
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
     tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -314,8 +313,6 @@ class _MatcherExecutionChecker(Generic[MODEL]):
 
             self.tcds = tcds
 
-            self._produce_act_result()
-
             self._check_with_sds(matcher_ddv)
 
     def _tcds_with_act_as_curr_dir(self) -> ContextManager[Tcds]:
@@ -330,12 +327,6 @@ class _MatcherExecutionChecker(Generic[MODEL]):
     @contextmanager
     def _dummy_tcds_setup(self) -> ContextManager[Tcds]:
         yield self.FAKE_TCDS
-
-    def _produce_act_result(self):
-        tcds = self.arrangement.tcds
-        if tcds and tcds.act_result:
-            act_result = tcds.act_result.apply(ActEnvironment(self.tcds))
-            write_act_result(self.tcds.sds, act_result)
 
     def _check_with_hds(self, ddv: MatcherDdv[MODEL]):
         self._check_validation_pre_sds(ddv)
