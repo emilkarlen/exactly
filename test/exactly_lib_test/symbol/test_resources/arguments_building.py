@@ -1,5 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, Stringable
 
 
 class SymbolReferenceArgument(ArgumentElementRenderer):
@@ -12,3 +14,7 @@ class SymbolReferenceArgument(ArgumentElementRenderer):
 
     def __str__(self, *args, **kwargs):
         return symbol_syntax.symbol_reference_syntax_for_name(self.name)
+
+    @property
+    def arguments(self) -> Sequence[Stringable]:
+        return [self]

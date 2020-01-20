@@ -13,11 +13,11 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     file_matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
-from exactly_lib_test.test_resources.matcher_argument import MatcherArg
+from exactly_lib_test.test_resources.matcher_argument import ArgumentList
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class FilesMatcherArg(MatcherArg, ABC):
+class FilesMatcherArg(ArgumentList, ABC):
     pass
 
 

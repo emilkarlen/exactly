@@ -5,10 +5,10 @@ from exactly_lib.definitions import expression
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources import matcher_argument
-from exactly_lib_test.test_resources.matcher_argument import MatcherArg
+from exactly_lib_test.test_resources.matcher_argument import ArgumentList
 
 
-class LineMatcherArg(MatcherArg, ABC):
+class LineMatcherArg(ArgumentList, ABC):
     pass
 
 

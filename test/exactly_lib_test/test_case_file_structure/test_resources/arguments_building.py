@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import List
 
 from exactly_lib.definitions import path as path_texts
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -27,11 +27,6 @@ class PathArgument(SequenceOfArgumentsBase, ABC):
     def name(self) -> str:
         pass
 
-    @property
-    @abstractmethod
-    def arguments(self) -> Sequence[Stringable]:
-        pass
-
 
 class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
     """
@@ -49,7 +44,7 @@ class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
         return self._name
 
     @property
-    def arguments(self) -> Sequence[Stringable]:
+    def arguments(self) -> List[Stringable]:
         if self.relativity_argument is None:
             return [self.name]
         else:
@@ -86,7 +81,7 @@ class RelOptPathArgument(PathArgument):
         return self._relativity_option
 
     @property
-    def arguments(self) -> Sequence[Stringable]:
+    def arguments(self) -> List[Stringable]:
         if self._relativity_option is None:
             return [self.name]
         else:

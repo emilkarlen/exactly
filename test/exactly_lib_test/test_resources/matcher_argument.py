@@ -8,7 +8,7 @@ from exactly_lib.util.parse import token
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 
 
-class MatcherArg(ABC):
+class ArgumentList(ABC):
     """Generate source using __str__"""
     pass
 
@@ -25,7 +25,7 @@ class MatcherArg(ABC):
         return Arguments(str(self))
 
 
-class Constant(MatcherArg):
+class Constant(ArgumentList):
     def __init__(self, value: bool):
         self.value = value
 
@@ -76,24 +76,24 @@ def quote_if_unquoted_with_space(s: str) -> str:
 
 
 def value_error_if_empty(operator_name: str,
-                         matchers: List[MatcherArg]):
+                         matchers: List[ArgumentList]):
     if len(matchers) == 0:
         raise ValueError(operator_name +
                          ' must have at least one matcher')
 
 
-def value_error_if_empty__and(matchers: List[MatcherArg]):
+def value_error_if_empty__and(matchers: List[ArgumentList]):
     value_error_if_empty(expression.AND_OPERATOR_NAME,
                          matchers)
 
 
-def value_error_if_empty__or(matchers: List[MatcherArg]):
+def value_error_if_empty__or(matchers: List[ArgumentList]):
     value_error_if_empty(expression.OR_OPERATOR_NAME,
                          matchers)
 
 
 def concat_and_intersperse_non_empty_list(operator_name: str,
-                                          matchers: List[MatcherArg]) -> List:
+                                          matchers: List[ArgumentList]) -> List:
     ret_val = matchers[0].elements
     for matcher in matchers[1:]:
         ret_val.append(operator_name)
