@@ -8,6 +8,7 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.instructions.assert_.utils import file_or_dir_contents
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
@@ -20,6 +21,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -50,7 +52,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return 'Tests the contents of a file'
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
+        return file_or_dir_contents.description(
+            ACTUAL_PATH_ARGUMENT.name,
+            FileType.REGULAR,
+        )
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__file(self.actual_file_arg)
@@ -89,7 +94,3 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
         RelOptionType.REL_CWD),
     ACTUAL_PATH_ARGUMENT.name,
     True)
-
-_MAIN_DESCRIPTION_REST = """\
-The result is {HARD_ERROR} if {checked_file} is not an existing regular file.
-"""

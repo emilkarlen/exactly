@@ -59,7 +59,7 @@ class ProcessExecutionArrangement:
 
 class ArrangementPostAct2:
     def __init__(self,
-                 tcds: TcdsArrangementPostAct,
+                 tcds: TcdsArrangementPostAct = TcdsArrangementPostAct(),
                  symbols: Optional[SymbolTable] = None,
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
                  ):

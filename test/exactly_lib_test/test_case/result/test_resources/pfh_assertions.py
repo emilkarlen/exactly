@@ -28,6 +28,15 @@ def is_fail__with_arbitrary_message() -> ValueAssertion[pfh.PassOrFailOrHardErro
     return is_fail()
 
 
+def is_non_hard_error(is_pass_: bool) -> ValueAssertion[pfh.PassOrFailOrHardError]:
+    return (
+        is_pass()
+        if is_pass_
+        else
+        is_fail__with_arbitrary_message()
+    )
+
+
 def is_hard_error(assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_renderer.is_renderer_of_major_blocks()
                   ) -> ValueAssertion[pfh.PassOrFailOrHardError]:
     return asrt.And([

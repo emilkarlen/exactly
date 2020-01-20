@@ -8,7 +8,6 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import \
     is_syntax_element_description
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
@@ -36,7 +35,7 @@ class TestDocumentation(unittest.TestCase):
         is_syntax_element_description.apply_without_message(self, sed)
 
 
-class TestParseInvalidSyntax(tr.TestCaseBaseForParser):
+class TestParseInvalidSyntax(unittest.TestCase):
     def test_raise_exception_WHEN_no_arguments(self):
         parser = sut.files_matcher_parser()
         for source in equivalent_source_variants(self, ''):

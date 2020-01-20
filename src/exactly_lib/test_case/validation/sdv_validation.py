@@ -239,7 +239,6 @@ def validator_resolver_of_constant_success(symbols: SymbolTable) -> DdvValidator
 class SdvValidatorFromDdvValidator(SdvValidator):
     def __init__(self, get_value_validator: DdvValidatorResolver):
         self._get_value_validator = get_value_validator
-        self._value_validator = None
         self._hds = None
 
     def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[TextRenderer]:
@@ -250,7 +249,4 @@ class SdvValidatorFromDdvValidator(SdvValidator):
         return self._get_validator(environment.symbols).validate_post_sds_if_applicable(tcds)
 
     def _get_validator(self, symbols: SymbolTable) -> DdvValidator:
-        if self._value_validator is None:
-            self._value_validator = self._get_value_validator(symbols)
-
-        return self._value_validator
+        return self._get_value_validator(symbols)

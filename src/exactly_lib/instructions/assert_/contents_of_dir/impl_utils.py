@@ -47,7 +47,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
                                  expect_existing_dir),
             path_resolving_env)
         if failure_message is not None:
-            raise pfh_ex_method.PfhFailException(failure_message)
+            raise pfh_ex_method.PfhHardErrorException(failure_message)
         else:
             return files_source
 

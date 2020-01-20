@@ -37,9 +37,9 @@ class SourceArrangement:
         self.arguments = arguments
         self.fs_location_info = fs_location_info
 
-
-def source_arr_w_arbitrary_fs_location(arguments: Arguments) -> SourceArrangement:
-    return SourceArrangement(arguments, ARBITRARY_FS_LOCATION_INFO)
+    @staticmethod
+    def new_w_arbitrary_fs_location(arguments: Arguments) -> 'SourceArrangement':
+        return SourceArrangement(arguments, ARBITRARY_FS_LOCATION_INFO)
 
 
 class Expectation:

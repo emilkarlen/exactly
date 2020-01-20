@@ -106,6 +106,20 @@ class InstructionChecker:
                     ),
                 ))
 
+    def check__with_source_variants(
+            self,
+            instruction_arguments: str,
+            arrangement: ArrangementPostAct,
+            expectation: Expectation):
+
+        for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
+            instruction_check.check(
+                self.put,
+                self.parser,
+                source,
+                arrangement,
+                expectation)
+
     def check_parsing_with_different_source_variants(
             self,
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
