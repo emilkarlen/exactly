@@ -2,7 +2,7 @@ from typing import Sequence, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_resources.arguments_building import Stringable
+from exactly_lib_test.test_resources.strings import WithToString
 
 
 class Arguments:
@@ -95,17 +95,17 @@ class ArgumentElements:
         self._following_lines = list(following_lines)
 
     @staticmethod
-    def new_with_following_lines_as_single_elements(first_line: List[Stringable],
-                                                    following_lines: List[Stringable]):
+    def new_with_following_lines_as_single_elements(first_line: List[WithToString],
+                                                    following_lines: List[WithToString]):
         return ArgumentElements(first_line,
                                 [[line] for line in following_lines])
 
     @property
-    def first_line(self) -> List[Stringable]:
+    def first_line(self) -> List[WithToString]:
         return self._first_line
 
     @property
-    def following_lines(self) -> List[List[Stringable]]:
+    def following_lines(self) -> List[List[WithToString]]:
         return self._following_lines
 
     @property
@@ -118,7 +118,7 @@ class ArgumentElements:
         return [self.first_line] + self.following_lines
 
     @property
-    def all_lines(self) -> List[List[Stringable]]:
+    def all_lines(self) -> List[List[WithToString]]:
         return [self.first_line] + self.following_lines
 
     @property
@@ -179,7 +179,7 @@ class ArgumentElements:
         return 1 + len(self.following_lines)
 
 
-def elements(elems: List[Stringable]) -> ArgumentElements:
+def elements(elems: List[WithToString]) -> ArgumentElements:
     return ArgumentElements(elems)
 
 

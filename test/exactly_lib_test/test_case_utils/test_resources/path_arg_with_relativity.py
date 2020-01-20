@@ -1,5 +1,5 @@
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 
 
 class PathArgumentWithRelativity:
@@ -22,5 +22,5 @@ class PathArgumentWithRelativity:
         return self.relativity.option_argument_str + ' ' + self.file_name
 
     @property
-    def as_argument_element(self) -> ArgumentElementRenderer:
+    def as_argument_element(self) -> ArgumentElementsRenderer:
         return self.relativity.file_argument_with_option(self.file_name)

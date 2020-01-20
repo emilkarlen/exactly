@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_exec
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -144,7 +144,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                                         ))
 
 
-def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
+def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
 

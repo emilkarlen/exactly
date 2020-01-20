@@ -29,7 +29,7 @@ class PathArg(Argument):
 
     @property
     def elements(self) -> List:
-        return list(self.path.arguments)
+        return list(self.path.elements)
 
 
 class CompleteInstructionArg(Argument):

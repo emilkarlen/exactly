@@ -8,13 +8,13 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
-from exactly_lib_test.test_resources.arguments_building import Stringable
+from exactly_lib_test.test_resources.strings import WithToString
 
 
-def from_program(file: Stringable,
+def from_program(file: WithToString,
                  output_variant: ProcOutputFile,
                  program: ArgumentElements,
-                 transformation: Stringable = None) -> ArgumentElements:
+                 transformation: WithToString = None) -> ArgumentElements:
     program_with_pgm_option = program.prepend_to_first_line([
         ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[output_variant])
     ])

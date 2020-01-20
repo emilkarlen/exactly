@@ -9,10 +9,10 @@ from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
-from exactly_lib_test.test_resources.matcher_argument import ArgumentList
+from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 
 
-class FileMatcherArg(ArgumentList, ABC):
+class FileMatcherArg(MatcherArgument, ABC):
     pass
 
 
@@ -93,7 +93,7 @@ class FileContents(FileMatcherArg):
 
 
 class DirContents(FileMatcherArg):
-    def __init__(self, files_matcher: ArgumentList):
+    def __init__(self, files_matcher: MatcherArgument):
         self.files_matcher = files_matcher
 
     @property

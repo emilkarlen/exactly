@@ -1,23 +1,23 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.definitions import path as path_texts
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import SequenceOfArgumentsBase, ArgumentElementRenderer, \
-    Stringable
+from exactly_lib_test.test_resources.arguments_building import SequenceOfElementsBase, ArgumentElementsRenderer
+from exactly_lib_test.test_resources.strings import WithToString
 
 
-def rel_symbol_arg(symbol_name: str) -> ArgumentElementRenderer:
-    return arguments_building.SequenceOfArguments([
+def rel_symbol_arg(symbol_name: str) -> ArgumentElementsRenderer:
+    return arguments_building.SequenceOfElements([
         arguments_building.OptionArgument(path_texts.REL_SYMBOL_OPTION_NAME),
         symbol_name,
     ])
 
 
-class PathArgument(SequenceOfArgumentsBase, ABC):
+class PathArgument(SequenceOfElementsBase, ABC):
     """
     Renders a path argument with optional relativity option.
     """
@@ -35,7 +35,7 @@ class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
 
     def __init__(self,
                  name: str,
-                 relativity: ArgumentElementRenderer = None):
+                 relativity: Optional[ArgumentElementsRenderer] = None):
         self._name = name
         self.relativity_argument = relativity
 
@@ -44,7 +44,7 @@ class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
         return self._name
 
     @property
-    def arguments(self) -> List[Stringable]:
+    def elements(self) -> List[WithToString]:
         if self.relativity_argument is None:
             return [self.name]
         else:
@@ -53,7 +53,7 @@ class _PathArgumentWithRelativityOptionFromRenderer(PathArgument):
 
 
 def path_argument(name: str,
-                  relativity: ArgumentElementRenderer = None) -> PathArgument:
+                  relativity: Optional[ArgumentElementsRenderer] = None) -> PathArgument:
     return _PathArgumentWithRelativityOptionFromRenderer(name, relativity)
 
 
@@ -81,7 +81,7 @@ class RelOptPathArgument(PathArgument):
         return self._relativity_option
 
     @property
-    def arguments(self) -> List[Stringable]:
+    def elements(self) -> List[WithToString]:
         if self._relativity_option is None:
             return [self.name]
         else:
@@ -89,5 +89,5 @@ class RelOptPathArgument(PathArgument):
                     self.name]
 
 
-def rel_option_type_arg(relativity: RelOptionType) -> ArgumentElementRenderer:
+def rel_option_type_arg(relativity: RelOptionType) -> ArgumentElementsRenderer:
     return arguments_building.OptionArgument(REL_OPTIONS_MAP[relativity].option_name)

@@ -30,7 +30,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as cmd_line_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -175,7 +175,7 @@ class TestSuccessfulParse(unittest.TestCase):
 
 def check_parsing_of_program(put: unittest.TestCase,
                              parser: Parser[ProgramSdv],
-                             mk_argument_elements: Callable[[ArgumentElementRenderer], ArgumentElements],
+                             mk_argument_elements: Callable[[ArgumentElementsRenderer], ArgumentElements],
                              program_case: ProgramNameCase,
                              argument_case: ArgumentsCase,
                              symbols: SymbolTable):
@@ -325,7 +325,7 @@ class TestValidationAfterSuccessfulParse(unittest.TestCase):
         )
 
 
-def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
+def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
 

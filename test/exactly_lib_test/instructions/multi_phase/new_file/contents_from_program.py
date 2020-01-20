@@ -49,11 +49,11 @@ from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
+from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
@@ -352,7 +352,7 @@ class TestFailingValidation(TestCaseBase):
 
 
 class TestFailingScenarios(TestCaseBase):
-    def _expect_failure(self, failing_program_as_single_line: Stringable):
+    def _expect_failure(self, failing_program_as_single_line: WithToString):
         failing_program = ArgumentElements([failing_program_as_single_line])
         transformer = NameAndValue('TRANSFORMER',
                                    StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))

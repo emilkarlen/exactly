@@ -36,7 +36,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
     TcdsPopulator, \
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -89,11 +89,11 @@ class OptionStringConfiguration:
     Configuration for the relativity option (for a path cli argument).
     """
 
-    def __init__(self, argument: ArgumentElementRenderer):
+    def __init__(self, argument: ArgumentElementsRenderer):
         self._argument = argument
 
     @property
-    def argument(self) -> ArgumentElementRenderer:
+    def argument(self) -> ArgumentElementsRenderer:
         return self._argument
 
     @property
@@ -189,7 +189,7 @@ class RelativityOptionConfiguration:
                              self._cli_option.file_argument(file_name))
 
     @property
-    def option_argument(self) -> ArgumentElementRenderer:
+    def option_argument(self) -> ArgumentElementsRenderer:
         return self._cli_option.argument
 
     def file_argument_with_option(self, file_name: str) -> PathArgument:

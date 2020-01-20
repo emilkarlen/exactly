@@ -10,8 +10,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh
-from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.programs import py_programs
+from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -47,10 +47,10 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
             self,
             expectation_of_positive: ExpectationTypeConfigForPfh,
             program: ArgumentElements,
-            contents_matcher: List[Stringable],
+            contents_matcher: List[WithToString],
             expectation_without_main_result_assertion: Expectation,
             arrangement: ArrangementPostAct = ArrangementPostAct(),
-            transformation: Stringable = None):
+            transformation: WithToString = None):
         expectation = expectation_without_main_result_assertion
 
         for case in expectation_of_positive.cases():

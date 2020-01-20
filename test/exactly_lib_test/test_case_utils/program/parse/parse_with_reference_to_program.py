@@ -37,7 +37,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -131,7 +131,7 @@ class TestSymbolReferences(unittest.TestCase):
 class ValidationPreSdsCase:
     def __init__(self,
                  name: str,
-                 source: ArgumentElementRenderer,
+                 source: ArgumentElementsRenderer,
                  home_contents: HdsPopulator,
                  ):
         self.name = name
@@ -142,7 +142,7 @@ class ValidationPreSdsCase:
 class ValidationPostSdsCase:
     def __init__(self,
                  name: str,
-                 source: ArgumentElementRenderer,
+                 source: ArgumentElementsRenderer,
                  sds_contents: SdsPopulator,
                  ):
         self.name = name
@@ -448,7 +448,7 @@ class TestResolving(unittest.TestCase):
                                                                    'resolved value')
 
 
-def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
+def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
 

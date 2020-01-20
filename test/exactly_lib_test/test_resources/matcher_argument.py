@@ -5,27 +5,28 @@ from exactly_lib.definitions import expression
 from exactly_lib.definitions.primitives import boolean
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.parse import token
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.strings import WithToString
 
 
-class ArgumentList(ABC):
+class MatcherArgument(ArgumentElementsRenderer, ABC):
     """Generate source using __str__"""
     pass
 
-    def __str__(self):
-        return ' '.join([str(element) for element in self.elements])
+
+class OfArgumentList(ArgumentElementsRenderer):
+    def __init__(self, argument_list: MatcherArgument):
+        self.argument_list = argument_list
+
+    def __str__(self) -> str:
+        return str(self.argument_list)
 
     @property
-    @abstractmethod
-    def elements(self) -> List:
-        pass
-
-    @property
-    def as_arguments(self) -> Arguments:
-        return Arguments(str(self))
+    def elements(self) -> List[WithToString]:
+        return self.argument_list.elements
 
 
-class Constant(ArgumentList):
+class Constant(MatcherArgument):
     def __init__(self, value: bool):
         self.value = value
 
@@ -76,24 +77,24 @@ def quote_if_unquoted_with_space(s: str) -> str:
 
 
 def value_error_if_empty(operator_name: str,
-                         matchers: List[ArgumentList]):
+                         matchers: List[MatcherArgument]):
     if len(matchers) == 0:
         raise ValueError(operator_name +
                          ' must have at least one matcher')
 
 
-def value_error_if_empty__and(matchers: List[ArgumentList]):
+def value_error_if_empty__and(matchers: List[MatcherArgument]):
     value_error_if_empty(expression.AND_OPERATOR_NAME,
                          matchers)
 
 
-def value_error_if_empty__or(matchers: List[ArgumentList]):
+def value_error_if_empty__or(matchers: List[MatcherArgument]):
     value_error_if_empty(expression.OR_OPERATOR_NAME,
                          matchers)
 
 
 def concat_and_intersperse_non_empty_list(operator_name: str,
-                                          matchers: List[ArgumentList]) -> List:
+                                          matchers: List[MatcherArgument]) -> List:
     ret_val = matchers[0].elements
     for matcher in matchers[1:]:
         ret_val.append(operator_name)

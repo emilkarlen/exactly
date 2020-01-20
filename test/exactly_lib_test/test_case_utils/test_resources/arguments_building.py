@@ -8,20 +8,20 @@ from exactly_lib_test.test_case_file_structure.test_resources import arguments_b
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument, \
     PathArgument, path_argument
 from exactly_lib_test.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, QuotedStringArgument
-from exactly_lib_test.test_resources.arguments_building import Stringable
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, QuotedStringArgument
+from exactly_lib_test.test_resources.strings import WithToString
 
 
-def empty() -> ArgumentElementRenderer:
+def empty() -> ArgumentElementsRenderer:
     return ab.EmptyArgument()
 
 
-def sequence(arguments: Sequence[Stringable],
-             separator: Stringable = None) -> ArgumentElementRenderer:
+def sequence(arguments: Sequence[WithToString],
+             separator: WithToString = None) -> ArgumentElementsRenderer:
     if separator is not None:
-        return ab.SequenceOfArgumentsSeparatedByArgument(separator, arguments)
+        return ab.SequenceOfElementsSeparatedByElement(separator, arguments)
     else:
-        return ab.SequenceOfArguments(arguments)
+        return ab.SequenceOfElements(arguments)
 
 
 def quoted_string(string_value: str,
@@ -30,27 +30,27 @@ def quoted_string(string_value: str,
 
 
 def option(option_name: OptionName,
-           argument: Stringable = None) -> ArgumentElementRenderer:
+           argument: WithToString = None) -> ArgumentElementsRenderer:
     if argument is None:
         return ab.OptionArgument(option_name)
     else:
         return ab.OptionWithArgument(option_name, argument)
 
 
-def symbol_reference(symbol_name: str) -> ArgumentElementRenderer:
+def symbol_reference(symbol_name: str) -> ArgumentElementsRenderer:
     return sym_ab.SymbolReferenceArgument(symbol_name)
 
 
-def rel_option_type(relativity: RelOptionType) -> ArgumentElementRenderer:
+def rel_option_type(relativity: RelOptionType) -> ArgumentElementsRenderer:
     return fr_ab.rel_option_type_arg(relativity)
 
 
-def rel_symbol_option(symbol_name: str) -> ArgumentElementRenderer:
+def rel_symbol_option(symbol_name: str) -> ArgumentElementsRenderer:
     return fr_ab.rel_symbol_arg(symbol_name)
 
 
-def path(file_name: Stringable,
-         relativity: ArgumentElementRenderer = None) -> PathArgument:
+def path(file_name: WithToString,
+         relativity: ArgumentElementsRenderer = None) -> PathArgument:
     return path_argument(file_name, relativity)
 
 
