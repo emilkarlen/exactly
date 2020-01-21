@@ -13,12 +13,14 @@ from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util import name
 from exactly_lib.util.file_printer import FilePrinter, file_printer_with_color_if_terminal
 from exactly_lib.util.std import StdOutputFiles
-from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
 SUCCESS_STATUSES = {FullExeResultStatus.PASS,
                     FullExeResultStatus.SKIPPED,
                     FullExeResultStatus.XFAIL
                     }
+
+_TIME_FORMAT = '%.3fs'
+_TIME_FORMAT__CASE = '(' + _TIME_FORMAT + ') '
 
 
 class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
@@ -44,7 +46,7 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
                  case: test_case_processing.TestCaseFileReference,
                  processing_info: TestCaseProcessingInfo):
         exit_value = test_case_exit_values.from_result(processing_info.result)
-        self.output_file.write('(%fs) ' % processing_info.duration.total_seconds())
+        self.output_file.write(_TIME_FORMAT__CASE % processing_info.duration.total_seconds())
         self.output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
 
     def _file_path_pres(self, file: pathlib.Path):
@@ -158,7 +160,7 @@ def format_final_result_for_valid_suite(num_cases: int,
             'Ran',
             _NUMBER_OF_TESTS.of(num_cases),
             'in',
-            ''.join(elapsed_time_value_and_unit(elapsed_time)),
+            _TIME_FORMAT % elapsed_time.total_seconds(),
         ])
 
     def num_unsuccessful_lines() -> List[str]:
