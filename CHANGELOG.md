@@ -27,6 +27,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Removed
 
  - The preset `EXACTLY_...` environment variables
+ - The "post setup validation" execution step
 
 ## [0.11.1.0]
 

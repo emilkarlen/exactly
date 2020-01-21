@@ -45,10 +45,6 @@ def singe_exit_value_display(exit_value: ExitValue) -> ParagraphItem:
     ])
 
 
-def post_setup_validation_step_name(setup: Setup) -> str:
-    return 'post {phase[setup]:syntax} validation'.format(phase=setup.phase_names)
-
-
 def step_with_single_exit_value(purpose_paragraphs: List[ParagraphItem],
                                 failure_condition: ParagraphItem,
                                 exit_value_on_error: ExitValue) -> List[ParagraphItem]:

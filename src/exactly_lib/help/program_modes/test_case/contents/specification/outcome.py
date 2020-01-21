@@ -10,7 +10,6 @@ from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.help.program_modes.test_case.contents.specification.processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
-    post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
@@ -182,12 +181,6 @@ _INTERRUPTED_EXECUTION_CAUSES = """The execution may be interrupted by the follo
 
 def interrupted_execution_list(setup: Setup) -> ParagraphItem:
     items = [
-        list_item('Failure of ' + post_setup_validation_step_name(setup),
-                  step_with_single_exit_value(
-                      [],
-                      _failure_condition_of_post_setup_validation(setup),
-                      exit_values.EXECUTION__VALIDATION_ERROR)
-                  ),
         list_item('Hard error',
                   step_with_single_exit_value(
                       [],
@@ -277,10 +270,6 @@ ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER = 'Summary of exit codes and identifiers'
 def all_exit_values_summary_table() -> ParagraphItem:
     return _exit_value_table_for(sorted(exit_values.ALL_EXIT_VALUES,
                                         key=ExitValue.exit_identifier.fget))
-
-
-def _failure_condition_of_post_setup_validation(setup: Setup) -> ParagraphItem:
-    return para("""An instruction's """ + post_setup_validation_step_name(setup) + ' fails.')
 
 
 def _failure_condition_of_hard_error(setup: Setup) -> ParagraphItem:

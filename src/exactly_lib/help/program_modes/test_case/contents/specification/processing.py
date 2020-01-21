@@ -6,7 +6,6 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts, directives
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
-    post_setup_validation_step_name, \
     step_with_single_exit_value, step_with_multiple_exit_values
 from exactly_lib.help.render import see_also
 from exactly_lib.processing import exit_values
@@ -29,8 +28,7 @@ class ContentsConstructor(SectionContentsConstructor):
             'instructions': concepts.INSTRUCTION_CONCEPT_INFO.name.plural,
             'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name,
             'act_phase': phase_infos.ACT.name,
-            'symbol': concepts.SYMBOL_CONCEPT_INFO.name.singular,
-            'symbols': concepts.SYMBOL_CONCEPT_INFO.name.plural,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'cli_option_for_preprocessor': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
             'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
@@ -76,24 +74,13 @@ class ContentsConstructor(SectionContentsConstructor):
                                exit_values.EXECUTION__VALIDATION_ERROR)
                            ),
             docs.list_item('Execution',
-                           self._tp.fnap(EXECUTION_DESCRIPTION) +
-                           [self.execution_sub_steps_description()] +
-                           self._tp.fnap(OUTCOME_OF_EXECUTION)),
+                           self._tp.fnap(EXECUTION_DESCRIPTION)
+                           ),
         ]
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.ORDERED_LIST,
                                                     custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS)
                                        )
-
-    def execution_sub_steps_description(self) -> docs.ParagraphItem:
-        return lists.HeaderContentList([
-            docs.list_item(self._tp.text('execution of {phase[setup]:syntax}')),
-            docs.list_item(docs.text(post_setup_validation_step_name(self._setup))),
-            docs.list_item(docs.text('execution of remaining phases')),
-        ],
-            lists.Format(lists.ListType.ORDERED_LIST,
-                         custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS)
-        )
 
 
 def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
@@ -150,17 +137,7 @@ or if a {directive} fails.
 """
 
 PURPOSE_OF_VALIDATION = """\
-Checks references to {symbols} and external resources (files etc).
-
-
-Validation is actually done in two steps.
-Fist this step, and then one step directly after the {phase[setup]} phase has executed.
-
-This second step validates the effect of the {phase[setup]} phase.
-
-
-The reason for having this second step is to make it easier to find errors caused by errors
-in the setup, rather than errors in the tested program.
+Checks references to {symbol:s} and external resources (files etc).
 """
 
 FAILURE_CONDITION_OF_VALIDATION = """\
@@ -184,14 +161,4 @@ in the order they appear in the test case file.
 The execution halts if an {instruction} encounters an error,
 or, in the case of assertion instructions, if the
 assertion fails. 
-
-
-One validation step is embedded in the execution:"""
-
-OUTCOME_OF_EXECUTION = """\
-If the "post {phase[setup]:syntax} validation" fails,
-then the outcome of the test will be the same as a failure in
-the validation step before execution (see above).
-
-Otherwise, the outcome depends on the outcome of the {phase[assert]} phase.
 """
