@@ -15,6 +15,7 @@ from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.render.renderer import Renderer
+from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.strings import ToStringObject
 
 _EXPECTED = 'Expected'
@@ -28,9 +29,11 @@ _REGEX_FULL_MATCH = 'Full match'
 _REGEX_CONTAINS = 'Contains'
 _REGEX_IGNORE_CASE = 'Case insensitive'
 
+_STANDARD_HEADER_TEXT_STYLE = structure.TextStyle(font_style=structure.FontStyle.ITALIC)
+
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_EXPECTED, value)
+    return HeaderAndValue(_EXPECTED, value, _STANDARD_HEADER_TEXT_STYLE)
 
 
 def rhs(value: DetailsRenderer) -> DetailsRenderer:
@@ -38,15 +41,15 @@ def rhs(value: DetailsRenderer) -> DetailsRenderer:
 
 
 def actual(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_ACTUAL, value)
+    return HeaderAndValue(_ACTUAL, value, _STANDARD_HEADER_TEXT_STYLE)
 
 
 def actual_lhs(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_ACTUAL_LHS, value)
+    return HeaderAndValue(_ACTUAL_LHS, value, _STANDARD_HEADER_TEXT_STYLE)
 
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_MATCH, matching_object)
+    return HeaderAndValue(_MATCH, matching_object, _STANDARD_HEADER_TEXT_STYLE)
 
 
 class PathDdvDetailsRenderer(DetailsRenderer):
