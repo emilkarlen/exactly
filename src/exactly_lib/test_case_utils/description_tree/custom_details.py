@@ -1,15 +1,16 @@
 import re
-from typing import Sequence, Iterable, Pattern, Match
+from typing import Sequence, Iterable, Pattern, Match, Any
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -31,6 +32,8 @@ _REGEX_IGNORE_CASE = 'Case insensitive'
 
 _STANDARD_HEADER_TEXT_STYLE = structure.TextStyle(font_style=structure.FontStyle.ITALIC)
 
+_STRUCTURE_TREE_HEADER_TEXT_STYLE = structure.TextStyle(color=structure_rendering.STRUCTURE_NODE_TEXT_COLOR)
+
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_EXPECTED, value, _STANDARD_HEADER_TEXT_STYLE)
@@ -42,6 +45,10 @@ def rhs(value: DetailsRenderer) -> DetailsRenderer:
 
 def actual(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_ACTUAL, value, _STANDARD_HEADER_TEXT_STYLE)
+
+
+def actual__custom(header: ToStringObject, value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(header, value, _STANDARD_HEADER_TEXT_STYLE)
 
 
 def actual_lhs(value: DetailsRenderer) -> DetailsRenderer:
@@ -249,12 +256,25 @@ class ComparatorExpression(DetailsRenderer):
         ]
 
 
+class TreeStructure(DetailsRenderer):
+    def __init__(self, tree_structure: StructureRenderer):
+        self._tree_structure = tree_structure
+
+    def render(self) -> Sequence[Detail]:
+        return [structure_tree_detail(self._tree_structure.render())]
+
+
 class WithTreeStructure(DetailsRenderer):
     def __init__(self, tree_structured: WithTreeStructureDescription):
         self._tree_structured = tree_structured
 
     def render(self) -> Sequence[Detail]:
-        return [tree.TreeDetail(self._tree_structured.structure().render())]
+        return [structure_tree_detail(self._tree_structured.structure().render())]
+
+
+def structure_tree_detail(structure_tree: tree.Node[Any]) -> tree.Detail:
+    return tree.TreeDetail(structure_tree,
+                           _STRUCTURE_TREE_HEADER_TEXT_STYLE)
 
 
 class ExpectedAndActual(DetailsRenderer):

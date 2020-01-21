@@ -1,0 +1,4 @@
+[assert]
+
+dir-contents .
+             ! empty || ( any file : contents empty ) || ( any file : contents ! empty )

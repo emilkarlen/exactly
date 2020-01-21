@@ -161,7 +161,7 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
 
     def _explanation_when_no_element_matcher_trace(self, explanation: ToStringObject) -> DetailsRenderer:
         return custom_details.ExpectedAndActual(
-            details.Tree(self._conf.predicate.structure()),
+            custom_details.TreeStructure(self._conf.predicate.structure()),
             details.String(explanation),
         )
 
@@ -211,7 +211,7 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
                                      tot_num_elements,
                                      )
         )
-        expected = details.Tree(self._conf.predicate.structure())
+        expected = custom_details.TreeStructure(self._conf.predicate.structure())
         return (
             tb
                 .append_details(custom_details.expected(expected))

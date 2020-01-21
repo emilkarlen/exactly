@@ -1,3 +1,6 @@
+from typing import Sequence, List
+
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherDescriber
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, TraceRenderer
@@ -29,8 +32,8 @@ class GetterWithMatcherAsChild(PropertyMatcherDescriber):
             def render(self) -> Node[NODE_DATA]:
                 getter = property_getter.render()
                 matcher = matcher_result.trace.render()
-                details = list(getter.details)
-                details += [tree.TreeDetail(c) for c in getter.children]
+                details = _details_list(getter.details)
+                details += [custom_details.structure_tree_detail(c) for c in getter.children]
                 return Node(
                     getter.header,
                     matcher_result.value,
@@ -69,8 +72,8 @@ class GetterWithMatcherAsDetail(PropertyMatcherDescriber):
             def render(self) -> Node[NODE_DATA]:
                 getter = property_getter.render()
                 matcher = matcher_result.trace.render()
-                details = list(getter.details)
-                details += [tree.TreeDetail(c) for c in getter.children]
+                details = _details_list(getter.details)
+                details += [custom_details.structure_tree_detail(c) for c in getter.children]
                 details.append(tree.TreeDetail(matcher))
                 return Node(
                     getter.header,
@@ -100,3 +103,17 @@ class GetterWithMatcherAsDetail(PropertyMatcherDescriber):
                 )
 
         return _Renderer()
+
+
+def _details_list(details: Sequence[tree.Detail]) -> List[tree.Detail]:
+    return [
+        _format_structure_detail(detail)
+        for detail in details
+    ]
+
+
+def _format_structure_detail(detail: tree.Detail) -> tree.Detail:
+    if isinstance(detail, tree.TreeDetail):
+        return custom_details.structure_tree_detail(detail.tree)
+    else:
+        return detail

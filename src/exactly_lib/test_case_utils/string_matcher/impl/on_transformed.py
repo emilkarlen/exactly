@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
     StringMatcherAdvImplBase
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
@@ -34,7 +35,7 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
         super().__init__()
         self._transformer = transformer
         self._on_transformed = on_transformed
-        self._transformer_detail = details.Tree(self._transformer.structure())
+        self._transformer_detail = custom_details.WithTreeStructure(self._transformer)
 
     @property
     def name(self) -> str:

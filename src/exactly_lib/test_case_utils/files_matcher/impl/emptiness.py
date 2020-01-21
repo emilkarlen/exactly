@@ -10,7 +10,7 @@ from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherM
     GenericFilesMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types, strings
-from exactly_lib.util.description_tree import details, renderers
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -87,7 +87,7 @@ class _FailureTraceRenderer(NodeRenderer[bool]):
         )
 
     def _details(self) -> Sequence[tree.Detail]:
-        renderer = details.HeaderAndValue(
+        renderer = custom_details.actual__custom(
             strings.FormatPositional(
                 'Actual contents ({} files)', len(self._actual_contents),
             ),
