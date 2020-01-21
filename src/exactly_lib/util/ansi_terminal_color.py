@@ -17,6 +17,7 @@ class ForegroundColor(IntEnum):
 
 class FontStyle(IntEnum):
     BOLD = 1
+    ITALIC = 3
     UNDERLINE = 4
 
 
