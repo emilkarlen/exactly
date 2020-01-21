@@ -149,7 +149,7 @@ that is the current directory at the start of the execution::
 
     [act]
 
-    filter-lines "text to find" actual.txt
+    my-grep-tool "text to find" actual.txt
 
     [assert]
 
@@ -174,7 +174,7 @@ The following case does the same thing as the one above::
 
     [act]
 
-    filter-lines "text to find" actual.txt
+    my-grep-tool "text to find" actual.txt
 
     [assert]
 
@@ -212,7 +212,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
-    def string-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
+    def string-transformer GET_TIMING_LINES   = filter IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
     [act]
 

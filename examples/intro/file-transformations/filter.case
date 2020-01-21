@@ -1,0 +1,39 @@
+#
+# The "filter" transformer removes lines that does not match a given LINE-MATCHER,
+#
+# all other lines are discarded.
+#
+
+
+[setup]
+
+
+file my-file.txt = <<EOF
+first
+second
+third
+EOF
+
+def line-matcher THIRD = matches third
+
+
+[assert]
+
+
+contents my-file.txt -transformed-by ( filter matches 'second' ) equals <<EOF
+second
+EOF
+
+contents my-file.txt -transformed-by filter THIRD equals <<EOF
+third
+EOF
+
+contents my-file.txt -transformed-by ( filter matches first || matches third ) equals <<EOF
+first
+third
+EOF
+
+contents my-file.txt -transformed-by ( filter ! matches second ) equals <<EOF
+first
+third
+EOF
