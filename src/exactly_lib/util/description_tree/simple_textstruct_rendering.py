@@ -1,11 +1,14 @@
-from typing import Sequence, Generic, Callable, Optional
+from typing import Generic, Callable, Optional
+from typing import Sequence
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
     NODE_DATA, HeaderAndValueDetail, TreeDetail, IndentedDetail
 from exactly_lib.util.render import combinators as rend_comb
-from exactly_lib.util.render.renderer import SequenceRenderer, Renderer
+from exactly_lib.util.render.renderer import Renderer
+from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import elements
+from exactly_lib.util.simple_textstruct.rendering.elements import CustomIncreasedIndentRenderer
+from exactly_lib.util.simple_textstruct.structure import Indentation
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties, \
     TextStyle
 
@@ -14,10 +17,12 @@ class RenderingConfiguration(Generic[NODE_DATA]):
     def __init__(self,
                  header: Callable[[Node[NODE_DATA]], str],
                  header_style: Callable[[Node[NODE_DATA]], ElementProperties],
+                 minor_block_indent: Indentation,
                  detail_indent: str,
                  ):
         self.header = header
         self.header_style = header_style
+        self.minor_block_indent = minor_block_indent
         self.detail_indent = detail_indent
 
 
@@ -42,9 +47,11 @@ class TreeRendererToMinorBlocks(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
         self._configuration = configuration
 
     def render_sequence(self) -> Sequence[MinorBlock]:
+        renderer = CustomIncreasedIndentRenderer(self._children_renderer(),
+                                                 self._configuration.minor_block_indent)
         return (
                 [self._root()] +
-                list(elements.IncreasedIndentRenderer(self._children_renderer()).render_sequence())
+                list(renderer.render_sequence())
         )
 
     def _root(self) -> MinorBlock:

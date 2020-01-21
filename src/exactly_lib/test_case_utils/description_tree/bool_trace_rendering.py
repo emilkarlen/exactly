@@ -3,7 +3,8 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.simple_textstruct_rendering import TreeRenderer, RenderingConfiguration
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.render.renderer import Renderer
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties, INDENTATION__NEUTRAL, TextStyle
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, ElementProperties, INDENTATION__NEUTRAL, TextStyle, \
+    Indentation
 
 
 class BoolTraceRenderer(Renderer[MajorBlock]):
@@ -26,6 +27,7 @@ def bool_string(b: bool) -> str:
 
 # Makes details at level 0 appear aligned with the node header
 DETAILS_INDENT = ' ' * len('(B) ')
+MINOR_BLOCKS_INDENT_INCREASE = Indentation(1, '  ')
 
 _HEADER_PROPERTIES_FOR_F = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_RED))
 _HEADER_PROPERTIES_FOR_T = ElementProperties(INDENTATION__NEUTRAL, TextStyle(color=ForegroundColor.BRIGHT_GREEN))
@@ -43,5 +45,6 @@ def _get_header_style(node: Node[bool]) -> ElementProperties:
 _RENDERING_CONFIGURATION = RenderingConfiguration(
     _make_header,
     _get_header_style,
+    MINOR_BLOCKS_INDENT_INCREASE,
     DETAILS_INDENT,
 )

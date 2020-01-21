@@ -496,6 +496,7 @@ def _get_header_style(node: Node[bool]) -> ElementProperties:
 RENDERING_CONFIGURATION = RenderingConfiguration(
     _get_header,
     _get_header_style,
+    Indentation(2, '<MINOR-BLOCK-CUSTOM-INDENT>'),
     '<DETAIL-INDENT>',
 )
 
@@ -587,10 +588,14 @@ def _expected_header_color(node: Node[bool]) -> ForegroundColor:
     )
 
 
+def expected_node_indentation(depth: int) -> Indentation:
+    return Indentation(depth * RENDERING_CONFIGURATION.minor_block_indent.level,
+                       depth * RENDERING_CONFIGURATION.minor_block_indent.suffix)
+
+
 def expected_node_properties(depth: int) -> s.ElementProperties:
     return s.ElementProperties(
-        Indentation(depth,
-                    ''),
+        expected_node_indentation(depth),
         TEXT_STYLE__NEUTRAL,
     )
 
