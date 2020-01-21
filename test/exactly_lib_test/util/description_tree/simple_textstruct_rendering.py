@@ -11,6 +11,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
+from exactly_lib_test.test_resources.test_utils import NIE, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct
@@ -209,23 +210,40 @@ class TestRenderingOfDetail(unittest.TestCase):
 
     def test_header_and_value_detail(self):
         # ARRANGE #
-        value_detail = StringDetail('the value detail')
-        header_and_value_detail = HeaderAndValueDetail('the header', [value_detail])
-        root = Node('the root', False, [header_and_value_detail], ())
+        text_style__non_neutral = TextStyle(font_style=FontStyle.UNDERLINE)
+        cases = [
+            NIE(
+                'without text style',
+                TEXT_STYLE__NEUTRAL,
+                TEXT_STYLE__NEUTRAL,
+            ),
+            NIE(
+                'with text style',
+                text_style__non_neutral,
+                text_style__non_neutral,
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                value_detail = StringDetail('the value detail')
+                header_and_value_detail = HeaderAndValueDetail('the header', [value_detail], case.input_value)
+                root = Node('the root', False, [header_and_value_detail], ())
 
-        # EXPECTATION #
+                # EXPECTATION #
 
-        expectation = matches_trace_with_details(
-            root,
-            [
-                matches_detail_line_element(header_and_value_detail.header, depth=0),
-                matches_string_detail_line_element(value_detail, depth=1),
-            ],
-        )
+                expectation = matches_trace_with_details(
+                    root,
+                    [
+                        matches_detail_line_element(header_and_value_detail.header,
+                                                    depth=0,
+                                                    text_style=case.expected_value),
+                        matches_string_detail_line_element(value_detail, depth=1),
+                    ],
+                )
 
-        # ACT & ASSERT #
+                # ACT & ASSERT #
 
-        _check(self, root, expectation)
+                _check(self, root, expectation)
 
     def test_indented_detail(self):
         # ARRANGE #
@@ -252,23 +270,42 @@ class TestRenderingOfDetail(unittest.TestCase):
 class TestTreeDetail(unittest.TestCase):
     def test_node_with_no_details_or_children(self):
         # ARRANGE #
-
         tree_in_detail = Node('the contained tree root', None, (), ())
-        tree_detail = TreeDetail(tree_in_detail)
-        root = Node('the root', False, [tree_detail], ())
 
-        # EXPECTATION #
+        text_style__non_neutral = TextStyle(font_style=FontStyle.BOLD)
 
-        expectation = matches_trace_with_details(
-            root,
-            [
-                matches_detail_line_element(tree_in_detail.header, depth=0),
-            ],
-        )
+        header_text_style_cases = [
+            NEA(
+                'default text style',
+                TEXT_STYLE__NEUTRAL,
+                TreeDetail(tree_in_detail),
+            ),
+            NEA(
+                'custom text style',
+                text_style__non_neutral,
+                TreeDetail(tree_in_detail, text_style__non_neutral),
+            ),
+        ]
 
-        # ACT & ASSERT #
+        for header_text_style_case in header_text_style_cases:
+            with self.subTest(header_text_style_case.name):
+                tree_detail = header_text_style_case.actual
+                root = Node('the root', False, [tree_detail], ())
 
-        _check(self, root, expectation)
+                # EXPECTATION #
+
+                expectation = matches_trace_with_details(
+                    root,
+                    [
+                        matches_detail_line_element(tree_in_detail.header,
+                                                    depth=0,
+                                                    text_style=header_text_style_case.expected),
+                    ],
+                )
+
+                # ACT & ASSERT #
+
+                _check(self, root, expectation)
 
     def test_node_with_detail(self):
         # ARRANGE #
@@ -300,23 +337,44 @@ class TestTreeDetail(unittest.TestCase):
         child = Node('the child', None, (), ())
         tree_in_detail = Node('the contained tree root', None, (), (child,))
 
-        tree_detail = TreeDetail(tree_in_detail)
+        text_style__non_neutral = TextStyle(font_style=FontStyle.BOLD)
 
-        root = Node('the root', False, [tree_detail], ())
+        header_text_style_cases = [
+            NEA(
+                'default text style',
+                TEXT_STYLE__NEUTRAL,
+                TreeDetail(tree_in_detail),
+            ),
+            NEA(
+                'custom text style',
+                text_style__non_neutral,
+                TreeDetail(tree_in_detail, text_style__non_neutral),
+            ),
+        ]
 
-        # EXPECTATION #
+        for header_text_style_case in header_text_style_cases:
+            with self.subTest(header_text_style_case.name):
+                tree_detail = header_text_style_case.actual
 
-        expectation = matches_trace_with_details(
-            root,
-            [
-                matches_detail_line_element(tree_in_detail.header, depth=0),
-                matches_detail_line_element(child.header, depth=1),
-            ],
-        )
+                root = Node('the root', False, [tree_detail], ())
 
-        # ACT & ASSERT #
+                # EXPECTATION #
 
-        _check(self, root, expectation)
+                expectation = matches_trace_with_details(
+                    root,
+                    [
+                        matches_detail_line_element(tree_in_detail.header,
+                                                    depth=0,
+                                                    text_style=header_text_style_case.expected),
+                        matches_detail_line_element(child.header,
+                                                    depth=1,
+                                                    text_style=header_text_style_case.expected),
+                    ],
+                )
+
+                # ACT & ASSERT #
+
+                _check(self, root, expectation)
 
     def test_node_with_detail_and_child(self):
         # ARRANGE #
@@ -481,11 +539,13 @@ def matches_string_detail_line_element(detail: StringDetail, depth: int) -> Valu
     )
 
 
-def matches_detail_line_element(string: str, depth: int) -> ValueAssertion[s.LineElement]:
+def matches_detail_line_element(string: str,
+                                depth: int,
+                                text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> ValueAssertion[s.LineElement]:
     return asrt_struct.matches_line_element(
         line_object=asrt_struct.is_string__not_line_ended(
             asrt.equals(string)),
-        properties=matches_detail_properties(depth=depth),
+        properties=matches_detail_properties(depth=depth, text_style=text_style),
     )
 
 
@@ -539,16 +599,18 @@ def matches_node_properties(depth: int) -> ValueAssertion[s.ElementProperties]:
     return asrt_struct.equals_element_properties(expected_node_properties(depth))
 
 
-def expected_detail_properties(depth: int) -> s.ElementProperties:
+def expected_detail_properties(depth: int,
+                               text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> s.ElementProperties:
     return s.ElementProperties(
         Indentation(depth + 1,
                     RENDERING_CONFIGURATION.detail_indent),
-        TEXT_STYLE__NEUTRAL,
+        text_style,
     )
 
 
-def matches_detail_properties(depth: int) -> ValueAssertion[s.ElementProperties]:
-    return asrt_struct.equals_element_properties(expected_detail_properties(depth))
+def matches_detail_properties(depth: int,
+                              text_style: TextStyle = TEXT_STYLE__NEUTRAL) -> ValueAssertion[s.ElementProperties]:
+    return asrt_struct.equals_element_properties(expected_detail_properties(depth, text_style))
 
 
 STRING_OBJECT_CASES = [

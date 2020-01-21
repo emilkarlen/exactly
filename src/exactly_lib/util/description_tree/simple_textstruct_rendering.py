@@ -1,4 +1,4 @@
-from typing import Sequence, Generic, Callable
+from typing import Sequence, Generic, Callable, Optional
 
 from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, StringDetail, PreFormattedStringDetail, \
     NODE_DATA, HeaderAndValueDetail, TreeDetail, IndentedDetail
@@ -6,7 +6,8 @@ from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer, Renderer
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering import elements
-from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties
+from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement, ElementProperties, \
+    TextStyle
 
 
 class RenderingConfiguration(Generic[NODE_DATA]):
@@ -117,7 +118,7 @@ class _LineElementRendererForDetail(SequenceRenderer[LineElement],
 
         ret_val = [
             LineElement(structure.StringLineObject(str(x.header)),
-                        self._root_element_properties)
+                        self._text_styled_root_element_properties(x.header_text_style))
         ]
 
         ret_val += value_elements_renderer.render_sequence()
@@ -141,13 +142,13 @@ class _LineElementRendererForDetail(SequenceRenderer[LineElement],
         ])
 
         children_renderer = rend_comb.ConcatenationR([
-            self._renderer_for_next_depth(TreeDetail(child))
+            self._renderer_for_next_depth(TreeDetail(child, x.header_text_style))
             for child in tree.children
         ])
 
         ret_val = [
             LineElement(structure.StringLineObject(str(tree.header)),
-                        self._root_element_properties)
+                        self._text_styled_root_element_properties(x.header_text_style))
         ]
         ret_val += details_renderer.render_sequence()
         ret_val += children_renderer.render_sequence()
@@ -156,3 +157,13 @@ class _LineElementRendererForDetail(SequenceRenderer[LineElement],
 
     def _renderer_for_next_depth(self, detail: Detail) -> SequenceRenderer[LineElement]:
         return _LineElementRendererForDetail(self._configuration, self._depth + 1, detail)
+
+    def _text_styled_root_element_properties(self, text_style: Optional[TextStyle]) -> ElementProperties:
+        return (
+            self._root_element_properties
+            if text_style is None
+            else ElementProperties(
+                self._root_element_properties.indentation,
+                text_style,
+            )
+        )

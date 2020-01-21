@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Any
+from typing import Sequence, TypeVar, Generic, Any, Optional
 
+from exactly_lib.util.simple_textstruct.structure import TextStyle, TEXT_STYLE__NEUTRAL
 from exactly_lib.util.strings import ToStringObject
 
 RET = TypeVar('RET')
@@ -91,9 +92,11 @@ class HeaderAndValueDetail(Detail):
     def __init__(self,
                  header: ToStringObject,
                  values: Sequence[Detail],
+                 header_text_style: TextStyle = TEXT_STYLE__NEUTRAL,
                  ):
         self._header = header
         self._values = values
+        self._header_text_style = header_text_style
 
     def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
         return visitor.visit_header_and_value(self)
@@ -105,6 +108,10 @@ class HeaderAndValueDetail(Detail):
     @property
     def values(self) -> Sequence[Detail]:
         return self._values
+
+    @property
+    def header_text_style(self) -> Optional[TextStyle]:
+        return self._header_text_style
 
 
 class IndentedDetail(Detail):
@@ -122,14 +129,20 @@ class IndentedDetail(Detail):
 class TreeDetail(Detail):
     """Makes a Detail of a Node."""
 
-    def __init__(self, tree: Node[Any]):
+    def __init__(self,
+                 tree: Node[Any],
+                 header_text_style: TextStyle = TEXT_STYLE__NEUTRAL,
+                 ):
         self._tree = tree
-        if not isinstance(tree, Node):
-            raise ValueError('not a node')
+        self._header_text_style = header_text_style
 
     @property
     def tree(self) -> Node[Any]:
         return self._tree
+
+    @property
+    def header_text_style(self) -> TextStyle:
+        return self._header_text_style
 
     def accept(self, visitor: 'DetailVisitor[RET]') -> RET:
         return visitor.visit_tree(self)

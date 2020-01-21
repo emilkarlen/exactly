@@ -3,6 +3,7 @@ from typing import Sequence, Any
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
 from exactly_lib.util.description_tree.tree import Detail
+from exactly_lib.util.simple_textstruct.structure import TextStyle, TEXT_STYLE__NEUTRAL
 from exactly_lib.util.strings import ToStringObject
 
 
@@ -39,15 +40,18 @@ class HeaderAndValue(DetailsRenderer):
     def __init__(self,
                  header: ToStringObject,
                  value: DetailsRenderer,
+                 header_text_style: TextStyle = TEXT_STYLE__NEUTRAL
                  ):
         self._header = header
         self._value = value
+        self._header_text_style = header_text_style
 
     def render(self) -> Sequence[Detail]:
         return [
             tree.HeaderAndValueDetail(
                 self._header,
                 self._value.render(),
+                self._header_text_style,
             )
         ]
 
