@@ -5,39 +5,6 @@
 * "copy" instruction should be able to copy files from sandbox
 <2018-05-12 Sat>
 Currently, the SOURCE argument must be in the HDS.
-* dir-contents: make FILE-MATCHER able to check contents
-<2017-11-20 mån>
-Dagens E kan inte testa ett scenario från ETI: (<2017-11-25 Sat> FEL!)
-Test av sql-scripten: test att alla script har korrekt filnamn.
-Problem: testet ska validera filnamn - men inte på alla filer, utan enbart på dem
-som heter "*.sql" - ty det är dessa som anses vara SQL-script. Utöver SQL-scripten
-finns fler filer, och dessa måste filtreras bort.
-Vad som behövs är möjligheten att validera fil-namn på ett urval av filer:
-alla-som-heter-.sql-ska-också-heta-valid-ddl-el-dml
-
---------------------
-dir-contents @[SCRIPT_DIR]@ --selection IS_SQL_SCRIPT every file : HAS_VALID_FILE_NAME
-
-where
-def file-matcher HAS_VALID_FILE_NAME = name ...
---------------------
-
-Det enklaste ser ut att vara att en FILE-MATCHER även kan kika på innehållet
-i en fil.  Därmed kan vi köra FILE-MATCHER istället för FILE-CONTENTS-ASSERTION
-för "(any|every) file ..."
-
---------------------
-dir-contents PATH [--selection FILE-MATCHER] [!] FILES-ASSERTION
-
-FILE-MATCHER == name ...
-             =| type ...
-             =| contents [TRANSFORMATION] [!] FILE-CONTENTS-ASSERTION
-
-FILES-ASSERTION == empty
-                =| num-files
-                =| (any|every) file : FILE-MATCHER
---------------------
-
 * null actor: features to set it explicitly
 <2017-08-17 tor>
 ** actor intruction
@@ -65,7 +32,7 @@ It might be useful when the test tests properties of the os-environment,
 rather than a program under development.
 In such cases, the "python actor" may be used to implement a tool that
 gathers the information to check.
-* env: Assign the output from a shell command to an env var
+* env: Assign the output from a program to an env var
 <2016-12-22 tor>
 A way to allow more complex expressions.
 * "fixture" as an alternative to "setup" + "cleanup"

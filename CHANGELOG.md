@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html),
 with exception of a "0." prefix until version 1 is released.
 
-## [next-release]
+## [0.12.0]
 
 ### Added
 
@@ -23,13 +23,14 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `def` - STRING-TRANSFORMER argument is mandatory
  - Instruction `def` - PATH argument is mandatory
  - Type `string-transformer` - Rename `select` to `filter`
+ - Improved error messages
 
 ### Removed
 
  - The preset `EXACTLY_...` environment variables
  - The "post setup validation" execution step
 
-## [0.11.1.0]
+## [0.11.1.0] - 2019-12-31
 
 ### Added
 
