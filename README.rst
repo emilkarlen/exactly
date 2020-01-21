@@ -239,7 +239,7 @@ it just applies the assertion to a transformed version of it.
 Using external helper programs
 ------------------------------------------------------------
 
-External programs can with help with setup and assertions etc.
+External programs can help with setup and assertions etc.
 
 Exactly can run executable files, shell commands  and programs in the OS PATH,
 using ``run``, ``$``, ``%``.
