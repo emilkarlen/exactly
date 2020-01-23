@@ -25,7 +25,7 @@ class TestFileType(unittest.TestCase):
                dir_contents: DirContents):
 
         # ACT #
-        integration_check.CHECKER.check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
             self,
             ArgumentElements(arg.Type(file_type_to_check_for).elements).as_arguments,
             integration_check.constant_relative_file_name(base_name_of_file_to_check),

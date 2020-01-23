@@ -35,7 +35,7 @@ def suite() -> unittest.TestSuite:
 class TestFilesMatcherShouldBeValidated(unittest.TestCase):
     def runTest(self):
         fsm_symbol_name = 'the_files_matcher'
-        integration_check.CHECKER.check_multi_execution(
+        integration_check.CHECKER.check_multi__w_source_variants(
             self,
             args.DirContents(args.SymbolReference(fsm_symbol_name)
                              ).as_arguments,
@@ -61,7 +61,7 @@ class TestHardError(unittest.TestCase):
         location = RelSdsOptionType.REL_TMP
         model_file_name = 'the-checked-file'
 
-        integration_check.CHECKER.check_multi_execution(
+        integration_check.CHECKER.check_multi__w_source_variants(
             self,
             arguments=
             args.DirContents(
@@ -102,7 +102,7 @@ class TestApplication(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi_execution(
+        integration_check.CHECKER.check_multi__w_source_variants(
             self,
             arguments=fm_args.DirContents(
                 fms_args.SymbolReference(files_matcher_name)
@@ -149,7 +149,7 @@ class TestFilesOfModel(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi_execution2(
+        integration_check.CHECKER.check_multi(
             self,
             arguments=fm_args.DirContents(
                 fms_args.SymbolReference(model_checker_symbol_name)
@@ -190,7 +190,7 @@ class TestConcreteMatcher(unittest.TestCase):
         location = RelSdsOptionType.REL_ACT
         checked_dir_name = 'checked-dir'
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi_execution(
+        integration_check.CHECKER.check_multi__w_source_variants(
             self,
             arguments=fm_args.DirContents(
                 fms_args.Empty()

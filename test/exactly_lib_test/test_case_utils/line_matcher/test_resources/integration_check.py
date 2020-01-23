@@ -44,9 +44,9 @@ def check_with_source_variants(put: unittest.TestCase,
                                model_constructor: ModelConstructor,
                                arrangement: Optional[SymbolTable] = None,
                                expectation: Expectation = Expectation()):
-    CHECKER.check_with_source_variants(put,
-                                       arguments,
-                                       model_constructor,
-                                       integration_check.arrangement_wo_tcds(arrangement),
-                                       expectation,
-                                       )
+    CHECKER.check__w_source_variants(put,
+                                     arguments,
+                                     model_constructor,
+                                     integration_check.arrangement_wo_tcds(arrangement),
+                                     expectation,
+                                     )

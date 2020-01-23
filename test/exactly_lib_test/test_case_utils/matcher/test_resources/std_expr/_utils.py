@@ -240,7 +240,7 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
             cases_with_same_number_of_operands,
         )
 
-        self.conf.checker().check_multi_execution(
+        self.conf.checker().check_multi__w_source_variants(
             self.put,
             source,
             self.helper.is_sym_refs_to(operand_symbol_names),

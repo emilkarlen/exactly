@@ -154,23 +154,23 @@ class MatcherChecker(Generic[MODEL]):
                                  expectation)
         checker.check(source)
 
-    def check_with_source_variants(self,
-                                   put: unittest.TestCase, arguments: Arguments,
-                                   model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                                   arrangement: Arrangement,
-                                   expectation: Expectation,
-                                   ):
+    def check__w_source_variants(self,
+                                 put: unittest.TestCase, arguments: Arguments,
+                                 model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                                 arrangement: Arrangement,
+                                 expectation: Expectation,
+                                 ):
         for source in equivalent_source_variants__with_source_check__for_expression_parser(
                 put, arguments):
             self.check(put, source, model_constructor, arrangement, expectation)
 
-    def check_multi_execution(self,
-                              put: unittest.TestCase,
-                              arguments: Arguments,
-                              symbol_references: ValueAssertion[Sequence[SymbolReference]],
-                              model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                              execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
-                              ):
+    def check_multi__w_source_variants(self,
+                                       put: unittest.TestCase,
+                                       arguments: Arguments,
+                                       symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                       model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                                       execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                                       ):
         is_valid_sdv = asrt_matcher.matches_matcher_attributes(
             MatcherTypeSdv,
             self._expected_logic_value_type,
@@ -189,6 +189,29 @@ class MatcherChecker(Generic[MODEL]):
                                      execution_case=case.name):
                         checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
                         checker.check(actual)
+
+    def check_multi(self,
+                    put: unittest.TestCase,
+                    arguments: Arguments,
+                    parse_expectation: ParseExpectation,
+                    model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                    execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                    ):
+        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self._expected_logic_value_type,
+            parse_expectation.symbol_references
+        )
+
+        source = arguments.as_remaining_source
+        actual = self._parser.parse(source)
+        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
+        parse_expectation.source.apply_with_message(put, source, 'source after parse')
+
+        for case in execution:
+            with put.subTest(case.name):
+                checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
+                checker.check(actual)
 
     def check_single_multi_execution_setup(self,
                                            put: unittest.TestCase,
@@ -210,29 +233,6 @@ class MatcherChecker(Generic[MODEL]):
 
         checker = _MatcherExecutionChecker(put, model_constructor, execution.arrangement, execution.expected)
         checker.check(actual)
-
-    def check_multi_execution2(self,
-                               put: unittest.TestCase,
-                               arguments: Arguments,
-                               parse_expectation: ParseExpectation,
-                               model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                               execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
-                               ):
-        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
-            MatcherTypeSdv,
-            self._expected_logic_value_type,
-            parse_expectation.symbol_references
-        )
-
-        source = arguments.as_remaining_source
-        actual = self._parser.parse(source)
-        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
-        parse_expectation.source.apply_with_message(put, source, 'source after parse')
-
-        for case in execution:
-            with put.subTest(case.name):
-                checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
-                checker.check(actual)
 
 
 class _CheckIsDoneException(Exception):

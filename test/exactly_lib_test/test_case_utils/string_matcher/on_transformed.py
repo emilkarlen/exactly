@@ -58,7 +58,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi_execution(
+        integration_check.CHECKER.check_multi__w_source_variants(
             self,
             args2.Transformed(
                 _TRANSFORMER_SYMBOL_NAME,
@@ -96,7 +96,7 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
         for case in string_matcher_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
                 symbol_context = case.value.symbol_context
-                integration_check.CHECKER.check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
                     self,
                     args2.Transformed(
                         string_transformer.name,
@@ -127,7 +127,7 @@ class TestValidationShouldFailWhenValidationOfStringTransformerFails(unittest.Te
     def runTest(self):
         for case in string_transformer_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
-                integration_check.CHECKER.check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
                     self,
                     args2.Transformed(
                         case.value.symbol_context.name,
@@ -160,7 +160,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             transformed='TEXT',
         )
 
-        integration_check.CHECKER.check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
             self,
             args2.Transformed(
                 to_upper_transformer.name,
@@ -198,7 +198,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             transformed='TEXT',
         )
 
-        integration_check.CHECKER.check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
             self,
             args2.conjunction([
                 args2.Parenthesis(
@@ -240,7 +240,7 @@ class TestWithBinaryOperators(unittest.TestCase):
         model__upper = model__original.upper()
         model_num_upper_chars = str(len(model__upper))
 
-        integration_check.CHECKER.check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
             self,
             args2.Transformed(
                 to_upper_transformer.name,

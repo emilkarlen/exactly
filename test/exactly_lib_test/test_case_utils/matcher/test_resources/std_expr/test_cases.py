@@ -83,7 +83,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi_execution(
+        conf.checker().check_multi__w_source_variants(
             self,
             arguments=ArgumentElements(['(', symbol_name, ')']).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -119,7 +119,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for source_case in source_cases:
             with self.subTest(source_case.name):
-                conf.checker().check_multi_execution(
+                conf.checker().check_multi__w_source_variants(
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -137,7 +137,7 @@ class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_application(self):
         conf = self.configuration
         for value in [False, True]:
-            conf.checker().check_with_source_variants(
+            conf.checker().check__w_source_variants(
                 self,
                 arguments=matcher_argument.Constant(value).as_arguments,
                 model_constructor=conf.arbitrary_model,
@@ -177,7 +177,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
-                conf.checker().check_multi_execution(
+                conf.checker().check_multi__w_source_variants(
                     self,
                     arguments=Arguments(symbol_name),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -197,7 +197,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
-                conf.checker().check_multi_execution(
+                conf.checker().check_multi__w_source_variants(
                     self,
                     arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -233,7 +233,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi_execution(
+        conf.checker().check_multi__w_source_variants(
             self,
             arguments=ArgumentElements([expression.NOT_OPERATOR_NAME, symbol_name]).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -299,7 +299,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for source_case in source_cases:
             with self.subTest(source_case.name):
-                conf.checker().check_multi_execution(
+                conf.checker().check_multi__w_source_variants(
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -334,7 +334,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                                                      ['_op1_', '_op2_'],
                                                      self.configuration)
 
-        self.configuration.checker().check_multi_execution(
+        self.configuration.checker().check_multi__w_source_variants(
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
@@ -347,7 +347,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                                                      ['_op1_', '_op2_', '_op3_'],
                                                      self.configuration)
 
-        self.configuration.checker().check_multi_execution(
+        self.configuration.checker().check_multi__w_source_variants(
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
@@ -610,7 +610,7 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         conf = self.configuration
         helper = self._asrt_helper
 
-        conf.checker().check_with_source_variants(
+        conf.checker().check__w_source_variants(
             self,
             arguments.as_arguments,
             conf.arbitrary_model,
