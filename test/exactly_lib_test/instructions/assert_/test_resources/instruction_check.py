@@ -164,6 +164,32 @@ class Checker:
                     checker = ExecutionChecker(put, case.arrangement, case.expected)
                     checker.check(instruction)
 
+    def check_multi(
+            self,
+            put: unittest.TestCase,
+            source: SourceArrangement,
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
+            execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
+    ):
+        instruction = self._parser.parse(source.fs_location_info, source.arguments.as_remaining_source)
+
+        put.assertIsNotNone(instruction,
+                            'Result from parser cannot be None')
+        put.assertIsInstance(instruction,
+                             AssertPhaseInstruction,
+                             'The instruction must be an instance of ' + str(AssertPhaseInstruction))
+
+        assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
+
+        symbol_usages.apply_with_message(put,
+                                         instruction.symbol_usages(),
+                                         'symbol usages')
+
+        for case in execution:
+            with put.subTest(execution_case=case.name):
+                checker = ExecutionChecker(put, case.arrangement, case.expected)
+                checker.check(instruction)
+
 
 class Executor:
     def __init__(self,

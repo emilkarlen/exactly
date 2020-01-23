@@ -21,15 +21,17 @@ from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import path_argument, \
     RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import dir_contents as dir_contents_tr
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, empty_dir, sym_link
+from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, empty_dir, sym_link, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -40,6 +42,7 @@ def suite() -> unittest.TestSuite:
         TestReferencedMatcherShouldBeValidated(),
         TestHardError(),
         TestApplication(),
+        TestFilesOfModel(),
         TestMultiLineSyntax(),
     ])
 
@@ -250,6 +253,55 @@ class TestApplication(unittest.TestCase):
                     )
                 )
                 for matcher_result in [False, True]
+            ],
+        )
+
+
+class TestFilesOfModel(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        checked_dir_location = RelOptionType.REL_TMP
+        checked_dir_name = 'the-model-dir'
+        model_checker_symbol_name = 'symbol_that_checks_model'
+
+        arguments = _arguments(
+            RelOptPathArgument(checked_dir_name, checked_dir_location),
+            SymbolReferenceArgument(model_checker_symbol_name),
+        )
+
+        contents_cases = [
+            dir_contents_tr.expected_is_actual_with_empty_dirs(case.name, case.value)
+            for case in dir_contents_tr.model_contents_cases()
+        ]
+
+        # ACT & ASSERT #
+
+        INSTRUCTION_CHECKER.check_multi(
+            self,
+            SourceArrangement.new_w_arbitrary_fs_location(arguments.as_arguments),
+            symbol_usages=asrt.matches_singleton_sequence(
+                is_reference_to_files_matcher(model_checker_symbol_name)
+            ),
+            execution=[
+                NExArr(
+                    contents_case.name,
+                    ExecutionExpectation(),
+                    ArrangementPostAct2(
+                        tcds=TcdsArrangementPostAct(
+                            tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
+                                checked_dir_location,
+                                DirContents([
+                                    Dir(checked_dir_name, contents_case.actual)
+                                ])
+                            )
+                        ),
+                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
+                            model_checker_symbol_name:
+                                dir_contents_tr.model_contents_checker(self, contents_case.expected)
+                        })
+                    ),
+                )
+                for contents_case in contents_cases
             ],
         )
 
