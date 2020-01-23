@@ -6,17 +6,20 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import dir_contents as test_resources
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
-    ExecutionExpectation, ParseExpectation, arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, \
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, empty_dir, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
 def suite() -> unittest.TestSuite:
@@ -24,102 +27,68 @@ def suite() -> unittest.TestSuite:
         TestFilesMatcherShouldBeValidated(),
         unittest.makeSuite(TestHardError),
         TestApplication(),
+        TestFilesOfModel(),
         TestConcreteMatcher(),
     ])
 
 
 class TestFilesMatcherShouldBeValidated(unittest.TestCase):
     def runTest(self):
-        for case in validation_cases.failing_validation_cases():
-            symbol_context = case.value.symbol_context
-            symbols = symbol_context.symbol_table
-
-            with self.subTest(case.name):
-                integration_check.CHECKER.check_with_source_variants(
-                    self,
-                    arguments=
-                    fm_args.DirContents(fms_args.SymbolReference(symbol_context.name)).as_arguments,
-                    model_constructor=
-                    integration_check.constant_relative_file_name('arbitrary-file-argument'),
-                    arrangement=
-                    arrangement_wo_tcds(
-                        symbols=symbols,
-                    ),
-                    expectation=
-                    Expectation(
-                        ParseExpectation(
-                            symbol_references=symbol_context.references_assertion,
-                        ),
-                        ExecutionExpectation(
-                            validation=case.value.expectation,
-                        ),
-                    ),
-                )
+        fsm_symbol_name = 'the_files_matcher'
+        integration_check.CHECKER.check_multi_execution(
+            self,
+            args.DirContents(args.SymbolReference(fsm_symbol_name)
+                             ).as_arguments,
+            symbol_references=asrt.matches_singleton_sequence(
+                is_reference_to_files_matcher__ref(fsm_symbol_name)
+            ),
+            model_constructor=
+            integration_check.constant_relative_file_name('arbitrary-file-argument'),
+            execution=validation_cases.failing_validation_cases__multi_exe(fsm_symbol_name)
+        )
 
 
 class TestHardError(unittest.TestCase):
-    UNCONDITIONALLY_CONSTANT_TRUE = NameAndValue(
-        'unconditionally_constant_true',
-        FilesMatcherSdv(
-            matchers.sdv_from_bool(True)
+    def runTest(self):
+        unconditionally_constant_true = NameAndValue(
+            'unconditionally_constant_true',
+            FilesMatcherSdv(
+                matchers.sdv_from_bool(True)
+            )
         )
-    )
+        symbols = symbol_utils.symbol_table_from_name_and_sdvs([unconditionally_constant_true])
 
-    def test_WHEN_file_does_not_exist(self):
-        integration_check.CHECKER.check_with_source_variants(
+        location = RelSdsOptionType.REL_TMP
+        model_file_name = 'the-checked-file'
+
+        integration_check.CHECKER.check_multi_execution(
             self,
-            arguments=fm_args.DirContents(
-                fms_args.SymbolReference(self.UNCONDITIONALLY_CONSTANT_TRUE.name)
+            arguments=
+            args.DirContents(
+                args.SymbolReference(unconditionally_constant_true.name)
             ).as_arguments,
+            symbol_references=
+            asrt.matches_singleton_sequence(
+                is_reference_to_files_matcher__ref(unconditionally_constant_true.name)
+            ),
             model_constructor=
-            integration_check.constant_relative_file_name('non-existing-file'),
-            arrangement=
-            arrangement_w_tcds(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([self.UNCONDITIONALLY_CONSTANT_TRUE]),
-            ),
-            expectation=
-            Expectation(
-                ParseExpectation(
-                    symbol_references=asrt.matches_singleton_sequence(
-                        is_reference_to_files_matcher__ref(self.UNCONDITIONALLY_CONSTANT_TRUE.name)
+            integration_check.file_in_sds(location, model_file_name),
+            execution=[
+                NExArr(
+                    invalid_file_case.name,
+                    ExecutionExpectation(
+                        is_hard_error=asrt_renderer.is_renderer_of_major_blocks()
+                    ),
+                    arrangement_w_tcds(
+                        symbols=symbols,
+                        non_hds_contents=sds_populator.contents_in(
+                            location,
+                            invalid_file_case.value
+                        )
                     )
-                ),
-                ExecutionExpectation(
-                    is_hard_error=asrt.anything_goes()
-                ),
-            ),
-        )
-
-    def test_WHEN_file_is_not_a_directory(self):
-        actual_regular_file = empty_file('regular-file')
-
-        file_location = RelSdsOptionType.REL_ACT
-        integration_check.CHECKER.check_with_source_variants(
-            self,
-            arguments=fm_args.DirContents(
-                fms_args.SymbolReference(self.UNCONDITIONALLY_CONSTANT_TRUE.name)
-            ).as_arguments,
-            model_constructor=
-            integration_check.file_in_sds(file_location, actual_regular_file.name),
-            arrangement=
-            arrangement_w_tcds(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([self.UNCONDITIONALLY_CONSTANT_TRUE]),
-                non_hds_contents=sds_populator.contents_in(
-                    file_location,
-                    DirContents([actual_regular_file]),
-                ),
-            ),
-            expectation=
-            Expectation(
-                ParseExpectation(
-                    symbol_references=asrt.matches_singleton_sequence(
-                        is_reference_to_files_matcher__ref(self.UNCONDITIONALLY_CONSTANT_TRUE.name)
-                    )
-                ),
-                ExecutionExpectation(
-                    is_hard_error=asrt.anything_goes()
-                ),
-            ),
+                )
+                for invalid_file_case in test_resources.invalid_file_cases(model_file_name)
+            ]
         )
 
 
@@ -161,6 +130,56 @@ class TestApplication(unittest.TestCase):
                     ),
                 )
                 for matcher_result in [False, True]
+            ],
+        )
+
+
+class TestFilesOfModel(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        model_location = RelSdsOptionType.REL_TMP
+        model_name = 'the-model-dir'
+
+        model_checker_symbol_name = 'symbol_that_checks_model'
+
+        contents_cases = [
+            test_resources.expected_is_actual_with_empty_dirs(case.name, case.value)
+            for case in test_resources.model_contents_cases()
+        ]
+
+        # ACT & ASSERT #
+
+        integration_check.CHECKER.check_multi_execution2(
+            self,
+            arguments=fm_args.DirContents(
+                fms_args.SymbolReference(model_checker_symbol_name)
+            ).as_arguments,
+            parse_expectation=
+            ParseExpectation(
+                symbol_references=asrt.matches_singleton_sequence(
+                    is_reference_to_files_matcher__ref(model_checker_symbol_name)
+                ),
+            ),
+            model_constructor=
+            integration_check.file_in_sds(model_location, model_name),
+            execution=[
+                NExArr(
+                    contents_case.name,
+                    ExecutionExpectation(),
+                    arrangement_w_tcds(
+                        non_hds_contents=sds_populator.contents_in(
+                            model_location,
+                            DirContents([
+                                Dir(model_name, contents_case.actual)
+                            ])
+                        ),
+                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
+                            model_checker_symbol_name:
+                                test_resources.model_contents_checker(self, contents_case.expected)
+                        })
+                    ),
+                )
+                for contents_case in contents_cases
             ],
         )
 

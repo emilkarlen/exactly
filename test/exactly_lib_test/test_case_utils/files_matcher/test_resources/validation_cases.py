@@ -6,9 +6,12 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
     files_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import ExecutionExpectation, \
+    arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, ValidationExpectation
+from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -62,4 +65,19 @@ def failing_validation_cases(symbol_name: str = 'files_matcher_symbol'
                            symbol_name)
         )
         for case in validation.failing_validation_cases()
+    ]
+
+
+def failing_validation_cases__multi_exe(symbol_name: str = 'files_matcher_symbol'):
+    return [
+        NExArr(
+            case.name,
+            ExecutionExpectation(
+                validation=case.value.expectation,
+            ),
+            arrangement_wo_tcds(
+                symbols=case.value.symbol_context.symbol_table,
+            ),
+        )
+        for case in failing_validation_cases(symbol_name)
     ]
