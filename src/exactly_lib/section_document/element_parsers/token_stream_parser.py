@@ -311,15 +311,6 @@ class TokenParser:
         else:
             return return_value_if_no_match
 
-    def consume_and_handle_optional_option2(self,
-                                            argument_parser: Callable[['TokenParser'], T],
-                                            return_value_if_no_match: T,
-                                            option_name: OptionName,
-                                            ) -> T:
-        return self.consume_and_handle_optional_option(return_value_if_no_match,
-                                                       argument_parser,
-                                                       option_name)
-
     def consume_and_handle_optional_option3(self,
                                             argument_parser: Callable[['TokenParser'], T],
                                             option_name: OptionName,

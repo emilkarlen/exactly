@@ -39,9 +39,9 @@ def parse_optional_transformer_sdv(token_parser: TokenParser) -> StringTransform
     """
     :return: The identity transformer, if transformer option is not given.
     """
-    return token_parser.consume_and_handle_optional_option2(
-        parse_string_transformer_from_token_parser,
+    return token_parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_SDV,
+        parse_string_transformer_from_token_parser,
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
