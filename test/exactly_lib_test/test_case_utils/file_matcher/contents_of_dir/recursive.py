@@ -1,21 +1,24 @@
 import unittest
 
+from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
+    files_matcher_integration
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import model_contents_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import dir_contents as test_resources
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, \
     ExecutionExpectation, ParseExpectation
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -28,7 +31,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestHardError),
         TestApplication(),
         TestFilesOfModel(),
-        TestConcreteMatcher(),
+        unittest.makeSuite(TestConcreteMatcher),
     ])
 
 
@@ -87,7 +90,7 @@ class TestHardError(unittest.TestCase):
                         )
                     )
                 )
-                for invalid_file_case in test_resources.invalid_file_cases(model_file_name)
+                for invalid_file_case in invalid_model.cases(model_file_name)
             ]
         )
 
@@ -137,14 +140,15 @@ class TestApplication(unittest.TestCase):
 class TestFilesOfModel(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        model_location = RelSdsOptionType.REL_TMP
+        model_location = RelOptionType.REL_TMP
         model_name = 'the-model-dir'
+        model_path = path_sdvs.of_rel_option_with_const_file_name(model_location, model_name)
 
         model_checker_symbol_name = 'symbol_that_checks_model'
 
         contents_cases = [
-            test_resources.identical_expected_and_actual(case.name, case.value)
-            for case in test_resources.model_contents_cases()
+            model_contents_check.identical_expected_and_actual(case.name, case.value)
+            for case in model_contents_check.cases()
         ]
 
         # ACT & ASSERT #
@@ -161,13 +165,13 @@ class TestFilesOfModel(unittest.TestCase):
                 ),
             ),
             model_constructor=
-            integration_check.file_in_sds(model_location, model_name),
+            integration_check.file_in_tcds(model_location, model_name),
             execution=[
                 NExArr(
                     contents_case.name,
                     ExecutionExpectation(),
                     arrangement_w_tcds(
-                        non_hds_contents=sds_populator.contents_in(
+                        tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
                             model_location,
                             DirContents([
                                 Dir(model_name, contents_case.actual)
@@ -175,7 +179,7 @@ class TestFilesOfModel(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             model_checker_symbol_name:
-                                test_resources.model_contents_checker(self, contents_case.expected)
+                                model_contents_check.checker(self, model_path, contents_case.expected)
                         })
                     ),
                 )
@@ -185,46 +189,38 @@ class TestFilesOfModel(unittest.TestCase):
 
 
 class TestConcreteMatcher(unittest.TestCase):
-    def runTest(self):
+    def test_wo_selection(self):
         # ARRANGE #
-        location = RelSdsOptionType.REL_ACT
-        checked_dir_name = 'checked-dir'
+        helper = files_matcher_integration.NumFilesWoSelectionTestCaseHelper(
+            files_matcher_integration.MODEL_CONTENTS__RECURSIVE,
+            RelSdsOptionType.REL_ACT,
+            'checked-dir',
+        )
         # ACT & ASSERT #
         integration_check.CHECKER.check_multi__w_source_variants(
             self,
-            arguments=fm_args.DirContentsRecursive(
-                fms_args.Empty()
-            ).as_arguments,
+            arguments=helper.arg__recursive().as_arguments,
             model_constructor=
-            integration_check.file_in_sds(location, checked_dir_name),
+            integration_check.file_in_sds(helper.checked_dir_location,
+                                          helper.checked_dir_name),
             symbol_references=asrt.is_empty_sequence,
-            execution=[
-                NExArr(
-                    'checked dir is empty',
-                    ExecutionExpectation(
-                        main_result=asrt_matching_result.matches_value(True)
-                    ),
-                    arrangement_w_tcds(
-                        non_hds_contents=sds_populator.contents_in(
-                            location,
-                            DirContents([empty_dir(checked_dir_name)])
-                        )
-                    ),
-                ),
-                NExArr(
-                    'checked dir is not empty',
-                    ExecutionExpectation(
-                        main_result=asrt_matching_result.matches_value(False)
-                    ),
-                    arrangement_w_tcds(
-                        non_hds_contents=sds_populator.contents_in(
-                            location,
-                            DirContents([
-                                Dir(checked_dir_name,
-                                    [empty_file('file-in-checked-dir')])
-                            ])
-                        )
-                    ),
-                ),
-            ],
+            execution=helper.execution_cases()
+        )
+
+    def test_w_selection(self):
+        # ARRANGE #
+        helper = files_matcher_integration.NumFilesWFileTypeSelectionTestCaseHelper(
+            files_matcher_integration.MODEL_CONTENTS__NON_RECURSIVE__SELECTION_TYPE_FILE,
+            RelSdsOptionType.REL_TMP,
+            'checked-dir',
+        )
+        # ACT & ASSERT #
+        integration_check.CHECKER.check_multi__w_source_variants(
+            self,
+            arguments=helper.arg__recursive().as_arguments,
+            model_constructor=
+            integration_check.file_in_sds(helper.checked_dir_location,
+                                          helper.checked_dir_name),
+            symbol_references=asrt.is_empty_sequence,
+            execution=helper.execution_cases()
         )

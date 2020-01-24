@@ -2,7 +2,7 @@ import pathlib
 from typing import Callable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import DescribedPath
@@ -31,6 +31,14 @@ def constant_relative_file_name(file_name: str) -> ModelConstructor:
 def file_in_sds(relativity: RelSdsOptionType, file_name: str) -> ModelConstructor:
     def ret_val(environment: FullResolvingEnvironment) -> FileMatcherModel:
         ddv = paths.rel_sandbox(relativity, paths.constant_path_part(file_name))
+        return file_matcher_models.new_model__of_described(ddv.value_of_any_dependency__d(environment.tcds))
+
+    return ret_val
+
+
+def file_in_tcds(relativity: RelOptionType, file_name: str) -> ModelConstructor:
+    def ret_val(environment: FullResolvingEnvironment) -> FileMatcherModel:
+        ddv = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
         return file_matcher_models.new_model__of_described(ddv.value_of_any_dependency__d(environment.tcds))
 
     return ret_val

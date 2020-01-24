@@ -1,13 +1,15 @@
 import pathlib
+from abc import abstractmethod, ABC
 from typing import Sequence, List
 
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.files import executable_files
 from exactly_lib_test.test_resources.files.file_utils import write_file
 from exactly_lib_test.test_resources.programs import python_program_execution
 
 
-class FileSystemElement:
+class FileSystemElement(ABC):
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         raise NotImplementedError()
@@ -15,6 +17,11 @@ class FileSystemElement:
     @property
     def name(self) -> str:
         return ''
+
+    @property
+    @abstractmethod
+    def file_type(self) -> FileType:
+        pass
 
     @property
     def name_as_path(self) -> pathlib.Path:
@@ -31,6 +38,10 @@ class File(FileSystemElement):
     @property
     def name(self) -> str:
         return self.file_name
+
+    @property
+    def file_type(self) -> FileType:
+        return FileType.REGULAR
 
     def write_to(self,
                  parent_dir_path: pathlib.Path):
@@ -91,6 +102,10 @@ class Dir(FileSystemElement):
     def name(self) -> str:
         return self.file_name
 
+    @property
+    def file_type(self) -> FileType:
+        return FileType.DIRECTORY
+
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         dir_path = parent_dir_path / self.file_name
@@ -113,6 +128,10 @@ class Link(FileSystemElement):
     @property
     def name(self) -> str:
         return self.file_name
+
+    @property
+    def file_type(self) -> FileType:
+        return FileType.SYMLINK
 
     def write_to(self,
                  parent_dir_path: pathlib.Path):

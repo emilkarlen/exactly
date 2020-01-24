@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.files_matcher import new_model_impl
+from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
@@ -63,7 +63,7 @@ def model_constructor__from_embryo__non_recursive(embryo: ModelEmbryo) -> ModelC
             else resolving_helper__of_full_env(environment).resolve(fs)
         )
 
-        model = new_model_impl.model__non_recursive(resolved_path)
+        model = models.non_recursive(resolved_path)
         if resolved_selection is not None:
             model = model.sub_set(resolved_selection)
 

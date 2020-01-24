@@ -37,6 +37,18 @@ class Empty(FilesMatcherArg):
         return [files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT]
 
 
+class NumFiles(FilesMatcherArg):
+    def __init__(self, int_expr: str):
+        self.int_expr = int_expr
+
+    @property
+    def elements(self) -> List:
+        return [
+            files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
+            self.int_expr,
+        ]
+
+
 class Quantification(FilesMatcherArg):
     def __init__(self,
                  quantifier: Quantifier,

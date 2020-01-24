@@ -67,11 +67,11 @@ class _FilesMatcherModelForDir(FilesMatcherModel):
             )
 
 
-def model__recursive(dir_path: DescribedPath) -> FilesMatcherModel:
+def recursive(dir_path: DescribedPath) -> FilesMatcherModel:
     return _FilesMatcherModelForDir(dir_path, _FilesGeneratorForRecursive(), None)
 
 
-def model__non_recursive(dir_path: DescribedPath) -> FilesMatcherModel:
+def non_recursive(dir_path: DescribedPath) -> FilesMatcherModel:
     return _FilesMatcherModelForDir(dir_path, _FilesGeneratorForNonRecursive(), None)
 
 
