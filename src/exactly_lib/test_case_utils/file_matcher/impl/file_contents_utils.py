@@ -13,10 +13,8 @@ from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
-from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic import files_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
@@ -98,13 +96,6 @@ class _FileContentsMatcher(FileMatcherImplBase,
         mb_failure = path_check.failure_message_or_none(self._expected_file_check, model.path)
         if mb_failure:
             raise HardErrorException(mb_failure)
-
-    @staticmethod
-    def _files_matcher_model(model: FileMatcherModel) -> files_matcher.FilesMatcherModel:
-        return FilesMatcherModelForDir(
-            model.path,
-            None,
-        )
 
 
 class _FileContentsMatcherAdv(FileMatcherAdvImplBase,

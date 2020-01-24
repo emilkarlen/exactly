@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import List
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import expression, instruction_arguments
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -100,6 +100,19 @@ class DirContents(FileMatcherArg):
     def elements(self) -> List:
         return [
             parse_file_matcher.DIR_CONTENTS,
+            self.files_matcher,
+        ]
+
+
+class DirContentsRecursive(FileMatcherArg):
+    def __init__(self, files_matcher: MatcherArgument):
+        self.files_matcher = files_matcher
+
+    @property
+    def elements(self) -> List:
+        return [
+            parse_file_matcher.DIR_CONTENTS,
+            option_syntax.option_syntax(instruction_arguments.RECURSIVE_OPTION.name),
             self.files_matcher,
         ]
 

@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.test_case_utils.files_matcher import new_model_impl
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.render import combinators as rend_comb
 
@@ -75,7 +75,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         )
 
         helper = resolving_helper_for_instruction_env(environment)
-        model = FilesMatcherModelForDir(path_to_check)
+        model = new_model_impl.model__non_recursive(path_to_check)
         matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)

@@ -27,6 +27,7 @@ from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -105,10 +106,29 @@ def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
     return regular_file_contents.sdv__generic(string_matcher)
 
 
-def _parse_dir_contents(parser: TokenParser) -> GenericFileMatcherSdv:
+def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
+    return token_parser.parse_choice_of_optional_option(
+        _parse_dir_contents__recursive,
+        _parse_dir_contents__non_recursive,
+        instruction_arguments.RECURSIVE_OPTION.name,
+    )
+
+
+def _parse_dir_contents__non_recursive(token_parser: TokenParser) -> GenericFileMatcherSdv:
+    return _parse_dir_contents__for_setup(dir_contents.SETUP__NON_RECURSIVE, token_parser)
+
+
+def _parse_dir_contents__recursive(token_parser: TokenParser) -> GenericFileMatcherSdv:
+    return _parse_dir_contents__for_setup(dir_contents.SETUP__RECURSIVE, token_parser)
+
+
+def _parse_dir_contents__for_setup(setup: file_contents_utils.Setup[FilesMatcherModel],
+                                   token_parser: TokenParser,
+                                   ) -> GenericFileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-    files_matcher = parse_files_matcher.parse_files_matcher__generic(parser)
-    return dir_contents.dir_matches_files_matcher_sdv__generic(files_matcher)
+    files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser)
+    return dir_contents.dir_matches_files_matcher_sdv__generic(setup,
+                                                               files_matcher)
 
 
 def _constant(matcher: file_matchers.FileMatcher) -> GenericFileMatcherSdv:
@@ -212,7 +232,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             DIR_CONTENTS,
             grammar.SimpleExpression(
                 _parse_dir_contents,
-                file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP)
+                file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP__NON_RECURSIVE)
             )
         ),
     ),

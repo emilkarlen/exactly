@@ -1,7 +1,8 @@
 from exactly_lib.definitions import expression
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -22,3 +23,11 @@ def positive_or_negative(expectation_type: ExpectationType,
         else
         negation(original)
     )
+
+
+class WithTreeStructure(NodeRenderer[None]):
+    def __init__(self, tree_structured: WithTreeStructureDescription):
+        self._tree_structured = tree_structured
+
+    def render(self) -> Node[None]:
+        return self._tree_structured.structure().render()

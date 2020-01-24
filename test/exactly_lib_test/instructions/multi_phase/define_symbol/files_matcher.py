@@ -8,7 +8,7 @@ from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.test_case_utils.files_matcher import new_model_impl
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
@@ -260,7 +260,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
         self._populate_root_dir(rel_opt_conf, environment)
 
-        return FilesMatcherModelForDir(
+        return new_model_impl.model__non_recursive(
             rel_opt_conf.path_sdv_for_root_dir().resolve(environment.symbols)
                 .value_of_any_dependency__d(environment.tcds),
         )

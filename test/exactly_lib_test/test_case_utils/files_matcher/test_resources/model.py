@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.files_matcher.new_model_impl import FilesMatcherModelForDir
+from exactly_lib.test_case_utils.files_matcher import new_model_impl
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
@@ -26,12 +26,12 @@ ModelConstructorFromRelOptConf = Callable[[RelativityOptionConfiguration], Model
 
 
 def model_with_rel_root_as_source_path(root_dir_of_dir_contents: RelativityOptionConfiguration) -> ModelConstructor:
-    return model_constructor__from_embryo(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for()))
+    return model_constructor__from_embryo__non_recursive(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for()))
 
 
 def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> ModelConstructorFromRelOptConf:
     def ret_val(root_dir_of_dir_contents: RelativityOptionConfiguration) -> ModelConstructor:
-        return model_constructor__from_embryo(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for(subdir)))
+        return model_constructor__from_embryo__non_recursive(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for(subdir)))
 
     return ret_val
 
@@ -44,12 +44,12 @@ def arbitrary_model_constructor() -> ModelConstructorFromRelOptConf:
 
 
 def arbitrary_model() -> ModelConstructor:
-    return model_constructor__from_embryo(ModelEmbryo(
+    return model_constructor__from_embryo__non_recursive(ModelEmbryo(
         path_sdvs.of_rel_option(RelOptionType.REL_ACT),
         None))
 
 
-def model_constructor__from_embryo(embryo: ModelEmbryo) -> ModelConstructor:
+def model_constructor__from_embryo__non_recursive(embryo: ModelEmbryo) -> ModelConstructor:
     def ret_val(environment: FullResolvingEnvironment) -> FilesMatcherModel:
         fs = embryo.files_selection
         resolved_path = (
@@ -62,9 +62,11 @@ def model_constructor__from_embryo(embryo: ModelEmbryo) -> ModelConstructor:
             if fs is None
             else resolving_helper__of_full_env(environment).resolve(fs)
         )
-        return FilesMatcherModelForDir(
-            resolved_path,
-            resolved_selection,
-        )
+
+        model = new_model_impl.model__non_recursive(resolved_path)
+        if resolved_selection is not None:
+            model = model.sub_set(resolved_selection)
+
+        return model
 
     return ret_val
