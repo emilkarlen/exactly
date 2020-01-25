@@ -125,7 +125,8 @@ def _parse_dir_contents__for_setup(setup: file_contents_utils.Setup[FilesMatcher
                                    token_parser: TokenParser,
                                    ) -> GenericFileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-    files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser)
+    files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser,
+                                                                     False)
     return dir_contents.dir_matches_files_matcher_sdv__generic(setup,
                                                                files_matcher)
 

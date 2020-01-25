@@ -1,0 +1,12 @@
+[setup]
+
+file a-dir/file-1
+
+[assert]
+
+exists . : dir-contents -recursive
+                        num-files == 2
+
+exists . : dir-contents -recursive
+                        -selection type file
+                        num-files == 1
