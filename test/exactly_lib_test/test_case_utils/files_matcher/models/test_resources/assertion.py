@@ -13,10 +13,10 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class ModelContentsAssertion(ValueAssertionBase[FilesMatcherModel]):
     def __init__(self,
                  contents_root: pathlib.Path,
-                 _expected_paths__rel_root: List[pathlib.Path],
+                 expected_paths__rel_root: List[pathlib.Path],
                  ):
         self._contents_root = contents_root
-        self._expected_paths__rel_root = _expected_paths__rel_root
+        self._expected_paths__rel_root = sorted(expected_paths__rel_root)
 
     def _apply(self,
                put: unittest.TestCase,

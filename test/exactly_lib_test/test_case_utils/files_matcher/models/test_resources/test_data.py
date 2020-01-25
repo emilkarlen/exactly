@@ -77,6 +77,40 @@ def strip_file_type_info(x: Sequence[NEA[List[FileElementForTest], List[FileSyst
     ]
 
 
+def filter_on_file_type(file_type_to_include: FileType,
+                        x: Sequence[NEA[List[FileElementForTest], List[FileSystemElement]]],
+                        ) -> Sequence[NEA[List[FileElementForTest], List[FileSystemElement]]]:
+    return [
+        NEA(
+            nea.name,
+            [
+                element
+                for element in nea.expected
+                if element.file_type is file_type_to_include
+            ],
+            nea.actual,
+        )
+        for nea in x
+    ]
+
+
+def filter_on_base_name_prefix(prefix_to_include: str,
+                               x: Sequence[NEA[List[FileElementForTest], List[FileSystemElement]]],
+                               ) -> Sequence[NEA[List[FileElementForTest], List[FileSystemElement]]]:
+    return [
+        NEA(
+            nea.name,
+            [
+                element
+                for element in nea.expected
+                if element.relative_path.name.startswith(prefix_to_include)
+            ],
+            nea.actual,
+        )
+        for nea in x
+    ]
+
+
 def identical_expected_and_actual(name: str,
                                   actual: List[FileSystemElement],
                                   ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
