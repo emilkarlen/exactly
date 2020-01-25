@@ -21,8 +21,8 @@ def is_matching_success() -> ValueAssertion[MatchingResult]:
     return asrt_matching_result.matches_value(True)
 
 
-def is_hard_error() -> Optional[ValueAssertion[TextRenderer]]:
-    return asrt_text_doc.is_string_for_test(asrt.is_instance(str))
+def is_hard_error(error_message: ValueAssertion[str] = asrt.anything_goes()) -> Optional[ValueAssertion[TextRenderer]]:
+    return asrt_text_doc.is_string_for_test(asrt.is_instance_with(str, error_message))
 
 
 class Expectation:

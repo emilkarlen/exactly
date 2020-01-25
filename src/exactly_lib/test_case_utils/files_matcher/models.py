@@ -3,11 +3,13 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator, Optional
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 
 
 class FileModelForDir(FileModel):
@@ -91,12 +93,20 @@ class _FilesGeneratorForRecursive(_FilesGenerator):
                         root_dir_path)
         ]
 
+        def add_dir_to_process_if_is_dir(maybe_dir):
+            try:
+                if maybe_dir.is_dir():
+                    remaining_dirs.append(fid.new_for_sub_dir(maybe_dir))
+            except OSError as ex:
+                raise HardErrorException(
+                    text_docs.os_exception_error_message(ex)
+                )
+
         while remaining_dirs:
             fid = remaining_dirs.pop(0)
             for dir_entry in fid.dir_entries():
                 yield fid.file_model(dir_entry)
-                if dir_entry.is_dir():
-                    remaining_dirs.append(fid.new_for_sub_dir(dir_entry))
+                add_dir_to_process_if_is_dir(dir_entry)
 
 
 class _FilesInDir:

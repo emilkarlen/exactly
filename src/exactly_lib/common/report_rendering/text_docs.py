@@ -2,6 +2,7 @@ from typing import Any, Sequence
 
 from exactly_lib.common.err_msg.definitions import Blocks, Block
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.util import strings
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
@@ -20,6 +21,22 @@ def single_pre_formatted_line_object(x: Any,
     """
     return blocks.MajorBlocksOfSingleLineObject(
         line_objects.PreFormattedString(x, is_line_ended)
+    )
+
+
+def os_exception_error_message(ex: OSError) -> TextRenderer:
+    return blocks.MajorBlocksOfSingleLineObject(
+        line_objects.PreFormattedString(
+            strings.FormatMap(
+                _OS_EXCEPTION_ERROR_MESSAGE,
+                {
+                    'msg': ex.strerror,
+                    'errno': ex.errno,
+                    'filename': ex.filename,
+                    'filename2': ex.filename2,
+                }
+            )
+        )
     )
 
 
@@ -84,3 +101,13 @@ def _mk_minor_block(lines: Block) -> MinorBlock:
         for line in lines
     ]
     )
+
+
+_OS_EXCEPTION_ERROR_MESSAGE = """\
+{msg}
+
+errno={errno}
+
+filename={filename}
+filename2={filename2}
+"""

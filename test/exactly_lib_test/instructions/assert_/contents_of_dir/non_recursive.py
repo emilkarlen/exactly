@@ -8,7 +8,8 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_error import HardErrorHelper
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_error import \
+    HardErrorDueToInvalidPathArgumentHelper, HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.validation import ValidationHelper
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import SourceArrangement, \
@@ -41,7 +42,8 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestInvalidSyntax(),
         TestReferencedMatcherShouldBeValidated(),
-        TestHardError(),
+        TestHardErrorDueToInvalidPathArgument(),
+        TestErrorDueToHardErrorFromFilesMatcher(),
         unittest.makeSuite(TestApplication),
         TestFilesOfModel(),
         TestMultiLineSyntax(),
@@ -96,11 +98,11 @@ class TestReferencedMatcherShouldBeValidated(unittest.TestCase):
         )
 
 
-class TestHardError(unittest.TestCase):
+class TestHardErrorDueToInvalidPathArgument(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
-        helper = HardErrorHelper()
+        helper = HardErrorDueToInvalidPathArgumentHelper()
 
         arguments = _arguments(
             helper.path_argument(),
@@ -114,6 +116,23 @@ class TestHardError(unittest.TestCase):
             SourceArrangement.new_w_arbitrary_fs_location(arguments.as_arguments),
             symbol_usages=helper.expected_symbol_usages(),
             execution=helper.execution_cases(),
+        )
+
+
+class TestErrorDueToHardErrorFromFilesMatcher(unittest.TestCase):
+    def runTest(self):
+        helper = HardErrorDueToHardErrorFromFilesMatcherHelper()
+
+        arguments = _arguments(
+            helper.path_argument(),
+            helper.files_matcher_reference_argument(),
+        )
+
+        INSTRUCTION_CHECKER.check(
+            self,
+            arguments.as_remaining_source,
+            helper.arrangement(),
+            helper.expectation(),
         )
 
 

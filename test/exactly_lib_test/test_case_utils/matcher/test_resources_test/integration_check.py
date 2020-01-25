@@ -43,7 +43,6 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import Mat
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_hard_error
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion
@@ -219,7 +218,7 @@ class TestHardError(TestCaseBase):
                     arrangement.value,
                     sut.Expectation(
                         execution=ExecutionExpectation(
-                            is_hard_error=is_hard_error(),
+                            is_hard_error=matcher_assertions.is_hard_error(),
                         ),
                     ),
                 )
@@ -229,7 +228,7 @@ class TestHardError(TestCaseBase):
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
             sut.Expectation(
                 execution=ExecutionExpectation(
-                    is_hard_error=is_hard_error(),
+                    is_hard_error=matcher_assertions.is_hard_error(),
                 ),
             )
         )

@@ -9,6 +9,8 @@ from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
     files_matcher_integration
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
+    HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
     matcher_checker
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
@@ -30,7 +32,8 @@ from exactly_lib_test.util.simple_textstruct.test_resources import renderer_asse
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestFilesMatcherShouldBeValidated(),
-        unittest.makeSuite(TestHardError),
+        TestHardErrorDueToInvalidModel(),
+        TestHardErrorDueToHardErrorFromFilesMatcher(),
         TestApplication(),
         TestFilesOfModel(),
         unittest.makeSuite(TestConcreteMatcher),
@@ -53,7 +56,7 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
         )
 
 
-class TestHardError(unittest.TestCase):
+class TestHardErrorDueToInvalidModel(unittest.TestCase):
     def runTest(self):
         unconditionally_constant_true = NameAndValue(
             'unconditionally_constant_true',
@@ -97,6 +100,21 @@ class TestHardError(unittest.TestCase):
         )
 
 
+class TestHardErrorDueToHardErrorFromFilesMatcher(unittest.TestCase):
+    def runTest(self):
+        helper = HardErrorDueToHardErrorFromFilesMatcherHelper()
+
+        integration_check.CHECKER.check(
+            self,
+            source=fm_args.DirContents(
+                fms_args.SymbolReference(helper.files_matcher_name)
+            ).as_remaining_source,
+            model_constructor=helper.model_constructor(),
+            arrangement=helper.arrangement(),
+            expectation=helper.expectation()
+        )
+
+
 class TestApplication(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
@@ -131,7 +149,7 @@ class TestApplication(unittest.TestCase):
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             files_matcher_name:
                                 FilesMatcherSdv(matchers.sdv_from_bool(matcher_result))
-                        })
+                        }),
                     ),
                 )
                 for matcher_result in [False, True]
