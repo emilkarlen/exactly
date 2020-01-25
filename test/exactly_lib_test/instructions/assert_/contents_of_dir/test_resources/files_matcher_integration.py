@@ -33,9 +33,9 @@ class NumFilesTestCaseHelperBase(ABC):
 
     def argument__recursive(self) -> ArgumentElementsRenderer:
         return SequenceOfArguments([
-            OptionArgument(instruction_arguments.RECURSIVE_OPTION.name),
             RelOptPathArgument(self.checked_dir_name,
                                self.checked_dir_location),
+            OptionArgument(instruction_arguments.RECURSIVE_OPTION.name),
             self._files_matcher_arg(),
         ]
         )

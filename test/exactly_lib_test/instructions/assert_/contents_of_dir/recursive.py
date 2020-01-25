@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -31,7 +32,8 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments
+from exactly_lib_test.test_resources.arguments_building import SequenceOfArguments, \
+    OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -57,15 +59,19 @@ INSTRUCTION_CHECKER = instruction_check.Checker(
     PARSER
 )
 
+RECURSION_OPTION_ARG = OptionArgument(instruction_arguments.RECURSIVE_OPTION.name)
+RECURSION_OPTION_STR = str(RECURSION_OPTION_ARG)
+
 
 class TestInvalidSyntax(unittest.TestCase):
     def runTest(self):
         cases = [
             NameAndValue('Missing arguments',
-                         '',
+                         RECURSION_OPTION_STR,
                          ),
             NameAndValue('Missing matcher argument',
-                         'file',
+                         ' '.join([RECURSION_OPTION_STR,
+                                   'file']),
                          ),
         ]
         for case in cases:
@@ -81,10 +87,11 @@ class TestReferencedMatcherShouldBeValidated(unittest.TestCase):
 
         helper = ValidationHelper()
 
-        arguments = _arguments(
+        arguments = SequenceOfArguments([
             helper.path_argument(),
+            RECURSION_OPTION_ARG,
             helper.files_matcher_reference_argument(),
-        )
+        ])
 
         # ACT & ASSERT #
 
@@ -102,10 +109,11 @@ class TestHardError(unittest.TestCase):
 
         helper = HardErrorHelper()
 
-        arguments = _arguments(
+        arguments = SequenceOfArguments([
             helper.path_argument(),
+            RECURSION_OPTION_ARG,
             helper.files_matcher_reference_argument(),
-        )
+        ])
 
         # ACT & ASSERT #
 
@@ -121,14 +129,14 @@ class TestApplication(unittest.TestCase):
     def test_wo_selection(self):
         # ARRANGE #
         helper = files_matcher_integration.NumFilesWoSelectionTestCaseHelper(
-            fm_tr.MODEL_CONTENTS__NON_RECURSIVE,
+            fm_tr.MODEL_CONTENTS__RECURSIVE,
             RelOptionType.REL_ACT,
             'checked-dir',
         )
         # ACT & ASSERT #
         INSTRUCTION_CHECKER.check_multi__with_source_variants(
             self,
-            SourceArrangement.new_w_arbitrary_fs_location(helper.argument__non_recursive().as_arguments),
+            SourceArrangement.new_w_arbitrary_fs_location(helper.argument__recursive().as_arguments),
             symbol_usages=asrt.is_empty_sequence,
             execution=helper.execution_cases()
         )
@@ -136,14 +144,14 @@ class TestApplication(unittest.TestCase):
     def test_w_selection(self):
         # ARRANGE #
         helper = files_matcher_integration.NumFilesWFileTypeSelectionTestCaseHelper(
-            fm_tr.MODEL_CONTENTS__NON_RECURSIVE__SELECTION_TYPE_FILE,
+            fm_tr.MODEL_CONTENTS__RECURSIVE__SELECTION_TYPE_FILE,
             RelOptionType.REL_ACT,
             'checked-dir',
         )
         # ACT & ASSERT #
         INSTRUCTION_CHECKER.check_multi__with_source_variants(
             self,
-            SourceArrangement.new_w_arbitrary_fs_location(helper.argument__non_recursive().as_arguments),
+            SourceArrangement.new_w_arbitrary_fs_location(helper.argument__recursive().as_arguments),
             symbol_usages=asrt.is_empty_sequence,
             execution=helper.execution_cases()
         )
@@ -158,14 +166,16 @@ class TestFilesOfModel(unittest.TestCase):
 
         model_checker_symbol_name = 'symbol_that_checks_model'
 
-        arguments = _arguments(
+        arguments = SequenceOfArguments([
             RelOptPathArgument(checked_dir_name, checked_dir_location),
+            RECURSION_OPTION_ARG,
             SymbolReferenceArgument(model_checker_symbol_name),
+        ]
         )
 
         contents_cases = test_data.strip_file_type_info(
             [
-                test_data.expected_is_first_level_of_actual(case.name, case.value)
+                test_data.identical_expected_and_actual(case.name, case.value)
                 for case in test_data.cases()
             ]
         )
@@ -220,15 +230,20 @@ class TestMultiLineSyntax(unittest.TestCase):
 
         source_cases = [
             NameAndValue(
-                'Dir on first line, matcher on following line',
+                'All arguments on separate lines',
                 Arguments(checked_dir.name,
-                          [matcher_argument]
+                          [
+                              RECURSION_OPTION_STR,
+                              matcher_argument
+                          ]
                           ),
             ),
             NameAndValue(
                 'Empty lines between arguments',
                 Arguments(checked_dir.name,
                           [
+                              '',
+                              RECURSION_OPTION_STR,
                               '',
                               matcher_argument,
                           ]),
@@ -254,7 +269,7 @@ class TestMultiLineSyntax(unittest.TestCase):
         # ACT & ASSERT #
 
         for source_case in source_cases:
-            with self.subTest(source_case=source_case):
+            with self.subTest(source_case=source_case.name):
                 INSTRUCTION_CHECKER.check_multi__with_source_variants(
                     self,
                     SourceArrangement.new_w_arbitrary_fs_location(source_case.value),
@@ -263,11 +278,6 @@ class TestMultiLineSyntax(unittest.TestCase):
                     ),
                     execution=execution_cases,
                 )
-
-
-def _arguments(path: ArgumentElementsRenderer,
-               files_matcher: ArgumentElementsRenderer) -> ArgumentElementsRenderer:
-    return SequenceOfArguments([path, files_matcher])
 
 
 if __name__ == '__main__':

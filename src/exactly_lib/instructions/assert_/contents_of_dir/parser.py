@@ -1,3 +1,4 @@
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import impl_utils
 from exactly_lib.instructions.assert_.contents_of_dir.impl_utils import FilesSource
 from exactly_lib.instructions.assert_.utils import assertion_part
@@ -12,7 +13,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.validation.sdv_validation import ConstantSuccessSdvValidator
-from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher import config, models
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.parse import parse_path
 
@@ -29,15 +30,20 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
         with token_stream_parser.from_parse_source(
                 source,
                 consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            assert isinstance(token_parser,
-                              token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
             token_parser = token_parser_with_additional_error_message_format_map(token_parser,
                                                                                  self.format_map)
+
             if must_be_on_current_line:
                 token_parser.require_is_not_at_eol('Missing {PATH} argument')
 
             path_to_check = parse_path.parse_path_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
                                                                     token_parser)
+
+            files_matcher_model_constructor = token_parser.consume_and_handle_optional_option(
+                models.non_recursive,
+                lambda tp: models.recursive,
+                instruction_arguments.RECURSIVE_OPTION.name,
+            )
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
@@ -49,7 +55,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,
-                impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_sdv),
+                impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_sdv,
+                                                                  files_matcher_model_constructor),
             )
 
             return assertion_part.AssertionInstructionFromAssertionPart(assertions,

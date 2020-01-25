@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
@@ -13,7 +13,8 @@ from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.files_matcher import models
+from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.render import combinators as rend_comb
 
@@ -53,11 +54,15 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 
 
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
-    def __init__(self, files_matcher: FilesMatcherSdv):
+    def __init__(self,
+                 files_matcher: FilesMatcherSdv,
+                 files_matcher_model_constructor: Callable[[DescribedPath], FilesMatcherModel],
+                 ):
         super().__init__(sdv_validation.SdvValidatorFromDdvValidator(
             lambda symbols: files_matcher.resolve(symbols).validator
         ))
         self._files_matcher = files_matcher
+        self._files_matcher_model_constructor = files_matcher_model_constructor
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -75,7 +80,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         )
 
         helper = resolving_helper_for_instruction_env(environment)
-        model = models.non_recursive(path_to_check)
+        model = self._files_matcher_model_constructor(path_to_check)
         matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)

@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -520,7 +520,7 @@ def token_parser_with_additional_error_message_format_map(parser: TokenParser,
 @contextmanager
 def from_parse_source(source: ParseSource,
                       consume_last_line_if_is_at_eol_after_parse: bool = False,
-                      consume_last_line_if_is_at_eof_after_parse: bool = False):
+                      consume_last_line_if_is_at_eof_after_parse: bool = False) -> ContextManager[TokenParser]:
     """
     Gives a :class:`TokenParserPrime` backed by the given :class:`ParseSource`.
 
