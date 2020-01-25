@@ -585,7 +585,7 @@ Including (but not limited to):
 * Improved string character escaping
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
-* ``dir-contents``: Check contents of directory recursively.
+* ``dir-contents -recursive``: Add options to limit traversal depth
 * Symbol substitution in files
 * Variables - corresponding to symbol definitions -
   but for variable values
