@@ -8,7 +8,6 @@ from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.assert_.utils import file_or_dir_contents
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
@@ -21,6 +20,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
+from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -52,7 +52,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return 'Tests the contents of a file'
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return file_or_dir_contents.description(
+        return file_or_dir_contents_doc.description(
             ACTUAL_PATH_ARGUMENT.name,
             FileType.REGULAR,
         )

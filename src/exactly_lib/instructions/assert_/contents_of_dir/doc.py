@@ -9,12 +9,12 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.instructions.assert_.utils import file_or_dir_contents
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
+from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -41,18 +41,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return _SINGLE_LINE_DESCRIPTION
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return file_or_dir_contents.description(
+        ret_val = file_or_dir_contents_doc.get_recursion_option_description()
+        ret_val += file_or_dir_contents_doc.description(
             _PATH_ARGUMENT.name,
             FileType.DIRECTORY
         )
+
+        return ret_val
 
     def invokation_variants(self) -> List[InvokationVariant]:
         files_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                      syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.argument)
 
-        arguments = [self.actual_file,
-                     files_matcher_arg,
-                     ]
+        arguments = [self.actual_file]
+        arguments += file_or_dir_contents_doc.RECURSION_OPTIONS
+        arguments += [files_matcher_arg]
 
         return [
             invokation_variant_from_args(arguments,

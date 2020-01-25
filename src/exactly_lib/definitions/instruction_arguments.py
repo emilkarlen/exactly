@@ -46,8 +46,7 @@ STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT = 'MATCHER'
 MATCHER_ARGUMENT = a.Named(types.FILE_MATCHER_TYPE_INFO.syntax_element_name)
 SELECTION_OPTION = a.option('selection',
                             argument=MATCHER_ARGUMENT.name)
-RECURSIVE_OPTION = a.option('recursive',
-                            argument=MATCHER_ARGUMENT.name)
+RECURSIVE_OPTION = a.option('recursive')
 SELECTION = a.Named('SELECTION')
 
 LINE_MATCHER = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Optional, Callable
 
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -11,6 +11,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc import MATCHER_FILE_HANDLING_DESCRIPTION
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
@@ -28,7 +29,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
 
 
-class Setup(Generic[CONTENTS_MATCHER_MODEL], ABC):
+class NamesSetup:
     def __init__(self,
                  primitive_name: str,
                  accepted_file_type: file_properties.FileType,
@@ -40,6 +41,22 @@ class Setup(Generic[CONTENTS_MATCHER_MODEL], ABC):
         self.name = ' '.join((primitive_name,
                               contents_matcher_syntax_element.singular_name)
                              )
+
+
+class DocumentationSetup:
+    def __init__(self,
+                 names: NamesSetup,
+                 options: Sequence[a.ArgumentUsage],
+                 description_extra: Optional[Callable[[], Sequence[ParagraphItem]]] = None,
+                 ):
+        self.names = names
+        self.options = options
+        self.description_extra = description_extra
+
+
+class Setup(Generic[CONTENTS_MATCHER_MODEL], ABC):
+    def __init__(self, names: NamesSetup):
+        self.names = names
 
     @abstractmethod
     def make_model(self, model: FileMatcherModel) -> CONTENTS_MATCHER_MODEL:
@@ -69,13 +86,13 @@ class _FileContentsMatcher(FileMatcherImplBase,
                  ):
         super().__init__()
         self._setup = setup
-        self._expected_file_check = file_properties.must_exist_as(setup.accepted_file_type,
+        self._expected_file_check = file_properties.must_exist_as(setup.names.accepted_file_type,
                                                                   follow_symlinks=True)
         self._contents_matcher = contents_matcher
 
     @property
     def name(self) -> str:
-        return self._setup.name
+        return self._setup.names.name
 
     def _structure(self) -> StructureRenderer:
         return _new_structure_tree(self.name,
@@ -123,7 +140,7 @@ class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
 
     def structure(self) -> StructureRenderer:
         return _new_structure_tree(
-            self._setup.name,
+            self._setup.names.name,
             self._contents_matcher,
         )
 
@@ -137,30 +154,37 @@ class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
 
 
 class FileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
-    def __init__(self, setup: Setup):
-        self._setup = setup
+    def __init__(self, documentation: DocumentationSetup):
+        self._documentation = documentation
 
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [
+        matcher_arguments = [
             a.Single(a.Multiplicity.MANDATORY,
-                     self._setup.contents_matcher_syntax_element.argument)
+                     self._documentation.names.contents_matcher_syntax_element.argument)
         ]
+        return list(self._documentation.options) + matcher_arguments
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
-            '_file_type_': file_properties.TYPE_INFO[self._setup.accepted_file_type].name,
-            '_matcher_type_': self._setup.contents_matcher_syntax_element.singular_name,
+            '_file_type_': file_properties.TYPE_INFO[self._documentation.names.accepted_file_type].name,
+            '_matcher_type_': self._documentation.names.contents_matcher_syntax_element.singular_name,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'MODEL': matcher_model.FILE_MATCHER_MODEL,
         })
-        return tp.fnap(_FILE_CONTENTS_MATCHER_SED_DESCRIPTION)
+
+        ret_val = tp.fnap(_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION)
+        if self._documentation.description_extra:
+            ret_val += self._documentation.description_extra()
+        ret_val += tp.fnap(MATCHER_FILE_HANDLING_DESCRIPTION)
+
+        return ret_val
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
         return cross_reference_id_list([
-            self._setup.contents_matcher_syntax_element,
+            self._documentation.names.contents_matcher_syntax_element,
         ])
 
 
@@ -173,9 +197,6 @@ def _new_structure_tree(name: str, contents_matcher: MatcherWTraceAndNegation) -
     )
 
 
-_FILE_CONTENTS_MATCHER_SED_DESCRIPTION = """\
+_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION = """\
 Matches {_file_type_:s} who's contents satisfies {_matcher_type_}.
-
-
-The result is {HARD_ERROR} for {MODEL:a} that is not {_file_type_:a}.
 """

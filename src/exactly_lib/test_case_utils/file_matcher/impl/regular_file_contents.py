@@ -7,14 +7,16 @@ from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 
+NAMES = file_contents_utils.NamesSetup(
+    file_check_properties.REGULAR_FILE_CONTENTS,
+    file_properties.FileType.REGULAR,
+    syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
+)
+
 
 class _Setup(file_contents_utils.Setup[FileToCheck]):
     def __init__(self):
-        super().__init__(
-            file_check_properties.REGULAR_FILE_CONTENTS,
-            file_properties.FileType.REGULAR,
-            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT,
-        )
+        super().__init__(NAMES)
 
     def make_model(self, model: FileMatcherModel) -> FileToCheck:
         return string_matcher.FileToCheck(
@@ -25,6 +27,11 @@ class _Setup(file_contents_utils.Setup[FileToCheck]):
 
 
 SETUP = _Setup()
+
+DOCUMENTATION_SETUP = file_contents_utils.DocumentationSetup(
+    NAMES,
+    ()
+)
 
 
 def sdv__generic(contents_matcher: GenericStringMatcherSdv) -> GenericFileMatcherSdv:

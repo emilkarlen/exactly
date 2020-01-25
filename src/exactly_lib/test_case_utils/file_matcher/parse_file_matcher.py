@@ -224,7 +224,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             REGULAR_FILE_CONTENTS,
             grammar.SimpleExpression(
                 _parse_regular_file_contents,
-                file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.SETUP)
+                file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.DOCUMENTATION_SETUP)
             )
         ),
 
@@ -232,7 +232,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             DIR_CONTENTS,
             grammar.SimpleExpression(
                 _parse_dir_contents,
-                file_contents_utils.FileContentsSyntaxDescription(dir_contents.SETUP__NON_RECURSIVE)
+                file_contents_utils.FileContentsSyntaxDescription(dir_contents.DOCUMENTATION_SETUP)
             )
         ),
     ),
