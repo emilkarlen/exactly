@@ -30,7 +30,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import model_contents_check
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
+    matcher_checker
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat
@@ -261,10 +263,12 @@ class TestFilesOfModel(unittest.TestCase):
             SymbolReferenceArgument(model_checker_symbol_name),
         )
 
-        contents_cases = [
-            model_contents_check.expected_is_actual_with_empty_dirs(case.name, case.value)
-            for case in model_contents_check.cases()
-        ]
+        contents_cases = test_data.strip_file_type_info(
+            [
+                test_data.expected_is_first_level_of_actual(case.name, case.value)
+                for case in test_data.cases()
+            ]
+        )
 
         # ACT & ASSERT #
 
@@ -289,7 +293,7 @@ class TestFilesOfModel(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             model_checker_symbol_name:
-                                model_contents_check.checker(self, checked_dir_path, contents_case.expected)
+                                matcher_checker.matcher(self, checked_dir_path, contents_case.expected)
                         })
                     ),
                 )

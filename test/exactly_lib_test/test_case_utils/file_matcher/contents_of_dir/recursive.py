@@ -9,10 +9,12 @@ from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
     files_matcher_integration
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import model_contents_check
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
+    matcher_checker
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -146,10 +148,12 @@ class TestFilesOfModel(unittest.TestCase):
 
         model_checker_symbol_name = 'symbol_that_checks_model'
 
-        contents_cases = [
-            model_contents_check.identical_expected_and_actual(case.name, case.value)
-            for case in model_contents_check.cases()
-        ]
+        contents_cases = test_data.strip_file_type_info(
+            [
+                test_data.identical_expected_and_actual(case.name, case.value)
+                for case in test_data.cases()
+            ]
+        )
 
         # ACT & ASSERT #
 
@@ -179,7 +183,7 @@ class TestFilesOfModel(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             model_checker_symbol_name:
-                                model_contents_check.checker(self, model_path, contents_case.expected)
+                                matcher_checker.matcher(self, model_path, contents_case.expected)
                         })
                     ),
                 )

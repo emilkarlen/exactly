@@ -131,6 +131,27 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         )
 
 
+class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
+    def __init__(self,
+                 make_adv: Callable[[Tcds], MatcherAdv[MODEL]],
+                 structure_renderer: StructureRenderer,
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 ):
+        self._make_adv = make_adv
+        self._validator = validator
+        self._structure_renderer = structure_renderer
+
+    def structure(self) -> StructureRenderer:
+        return self._structure_renderer
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
+
+    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+        return self._make_adv(tcds)
+
+
 class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
     def __init__(self,
                  name: str,

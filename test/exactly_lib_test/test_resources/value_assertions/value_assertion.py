@@ -17,6 +17,10 @@ class MessageBuilder:
                  head: str = ''):
         self.head = head
 
+    @staticmethod
+    def new_empty() -> 'MessageBuilder':
+        return MessageBuilder('')
+
     def apply(self, tail: str) -> str:
         msg_head = self.head
         if msg_head:
