@@ -15,7 +15,8 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-transformer` - primitive `identity`
  - Matcher types - primitive `constant`
  - Matcher and `string-transformer` types - alternative syntax for sym-refs: `SYMBOL-REFERENCE`
-
+ - Instruction `dir-contents` - `-recursive` option
+ 
 ### Changed
 
  - Instruction `def` - LINE-MATCHER argument is mandatory
