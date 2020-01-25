@@ -86,11 +86,17 @@ class _FilesGeneratorForNonRecursive(_FilesGenerator):
 
 class _FilesGeneratorForRecursive(_FilesGenerator):
     def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
-        def mk_model(file_name: str) -> FileModel:
-            return FileModelForDir(pathlib.Path(file_name),
-                                   root_dir_path.child(file_name))
+        remaining_dirs = [
+            _FilesInDir(pathlib.Path(),
+                        root_dir_path)
+        ]
 
-        return map(mk_model, os.listdir(str(root_dir_path.primitive)))
+        while remaining_dirs:
+            fid = remaining_dirs.pop(0)
+            for dir_entry in fid.dir_entries():
+                yield fid.file_model(dir_entry)
+                if dir_entry.is_dir():
+                    remaining_dirs.append(fid.new_for_sub_dir(dir_entry))
 
 
 class _FilesInDir:
@@ -101,11 +107,17 @@ class _FilesInDir:
         self._relative_parent = relative_parent
         self._absolute_parent = absolute_parent
 
+    def new_for_sub_dir(self, dir_entry) -> '_FilesInDir':
+        return _FilesInDir(
+            self._relative_parent / dir_entry.name,
+            self._absolute_parent.child(dir_entry.name)
+        )
+
     def file_model(self, dir_entry) -> FileModel:
         return FileModelForDir(
             self._relative_parent / dir_entry.name,
             self._absolute_parent.child(dir_entry.name),
         )
 
-    def dir_entries_for_dir(self) -> Iterator:  # Iterator[os.DirEntry]
+    def dir_entries(self) -> Iterator:  # Iterator[os.DirEntry]
         return os.scandir(str(self._absolute_parent.primitive))

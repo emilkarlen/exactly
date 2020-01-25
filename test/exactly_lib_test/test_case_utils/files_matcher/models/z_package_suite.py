@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.files_matcher.models import non_recursive
+from exactly_lib_test.test_case_utils.files_matcher.models import non_recursive, recursive
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         non_recursive.suite(),
+        recursive.suite(),
     ])
 
 

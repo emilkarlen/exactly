@@ -214,7 +214,7 @@ class TestConcreteMatcher(unittest.TestCase):
     def test_w_selection(self):
         # ARRANGE #
         helper = files_matcher_integration.NumFilesWFileTypeSelectionTestCaseHelper(
-            files_matcher_integration.MODEL_CONTENTS__NON_RECURSIVE__SELECTION_TYPE_FILE,
+            files_matcher_integration.MODEL_CONTENTS__RECURSIVE__SELECTION_TYPE_FILE,
             RelSdsOptionType.REL_TMP,
             'checked-dir',
         )

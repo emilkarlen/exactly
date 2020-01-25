@@ -18,7 +18,6 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
-from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
@@ -26,7 +25,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv, FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -131,7 +130,7 @@ def _parse_dir_contents__for_setup(setup: file_contents_utils.Setup[FilesMatcher
                                                                files_matcher)
 
 
-def _constant(matcher: file_matchers.FileMatcher) -> GenericFileMatcherSdv:
+def _constant(matcher: FileMatcher) -> GenericFileMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(matcher)
 
 
