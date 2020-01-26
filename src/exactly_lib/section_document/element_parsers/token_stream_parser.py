@@ -1,5 +1,6 @@
+from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -488,6 +489,12 @@ class TokenParser:
 
 
 ParserFromTokenParser = Callable[[TokenParser], T]
+
+
+class ParserFromTokens(Generic[T], ABC):
+    @abstractmethod
+    def parse(self, token_parser: TokenParser) -> T:
+        pass
 
 
 def new_token_parser(source: str,

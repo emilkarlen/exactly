@@ -1,0 +1,16 @@
+[setup]
+
+file f0a
+file f0b
+file d0/f1
+file d0/d1/f2
+file d0/d1/d2/f3a
+file d0/d1/d2/f3b
+
+
+[assert]
+
+exists . : dir-contents -recursive
+                        -min-depth 1 -max-depth 1+1
+                          -selection type file
+                            num-files == 2

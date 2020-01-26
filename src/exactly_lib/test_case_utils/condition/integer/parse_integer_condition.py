@@ -5,7 +5,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
-    token_parser_with_additional_error_message_format_map
+    token_parser_with_additional_error_message_format_map, ParserFromTokens
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.condition import comparators
@@ -31,14 +31,27 @@ def parse_integer_comparison_operator_and_rhs(
         parser: TokenParser,
         custom_integer_restriction: Optional[CustomIntegerValidator] = None,
 ) -> IntegerComparisonOperatorAndRightOperandSdv:
-    my_parser = token_parser_with_additional_error_message_format_map(parser, {'INTEGER': INTEGER_ARGUMENT.name})
+    operator = parse_comparison_operator(parser)
+    integer_parser = MandatoryIntegerParser(custom_integer_restriction)
 
-    operator = parse_comparison_operator(my_parser)
-    integer_token = my_parser.consume_mandatory_token('Missing {INTEGER} expression')
-
-    sdv = integer_sdv_of(integer_token, custom_integer_restriction)
+    sdv = integer_parser.parse(parser)
     return IntegerComparisonOperatorAndRightOperandSdv(operator,
                                                        sdv)
+
+
+class MandatoryIntegerParser(ParserFromTokens[IntegerSdv]):
+    def __init__(self,
+                 custom_integer_restriction: Optional[CustomIntegerValidator] = None,
+                 integer_argument_name_in_err_msg: str = INTEGER_ARGUMENT.name,
+                 ):
+        self._custom_integer_restriction = custom_integer_restriction
+        self._integer_argument_name_in_err_msg = integer_argument_name_in_err_msg
+
+    def parse(self, token_parser: TokenParser) -> IntegerSdv:
+        my_parser = token_parser_with_additional_error_message_format_map(token_parser, {
+            'INTEGER': self._integer_argument_name_in_err_msg})
+        integer_token = my_parser.consume_mandatory_token('Missing {INTEGER} expression')
+        return integer_sdv_of(integer_token, self._custom_integer_restriction)
 
 
 def integer_sdv_of(value_token: Token,

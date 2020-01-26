@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -60,6 +60,22 @@ class ConstantSdv(Generic[PRIMITIVE], Sdv[PRIMITIVE]):
 
     def resolve(self, symbols: SymbolTable) -> Ddv[PRIMITIVE]:
         return self._ddv
+
+
+class SdvFromParts(Generic[PRIMITIVE], Sdv[PRIMITIVE]):
+    def __init__(self,
+                 make_ddv: Callable[[SymbolTable], Ddv[PRIMITIVE]],
+                 symbol_references: Sequence[SymbolReference] = (),
+                 ):
+        self._make_ddv = make_ddv
+        self._symbol_references = symbol_references
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._symbol_references
+
+    def resolve(self, symbols: SymbolTable) -> Ddv[PRIMITIVE]:
+        return self._make_ddv(symbols)
 
 
 def sdv_of_constant_primitive(primitive: PRIMITIVE) -> Sdv[PRIMITIVE]:

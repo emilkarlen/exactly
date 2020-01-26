@@ -7,7 +7,6 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION
-from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
 from exactly_lib.processing import exit_values
@@ -19,16 +18,15 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
+from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv, FileMatcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -108,26 +106,8 @@ def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
 
 
 def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
-    return token_parser.parse_choice_of_optional_option(
-        _parse_dir_contents__recursive,
-        _parse_dir_contents__non_recursive,
-        file_or_dir_contents.RECURSIVE_OPTION.name,
-    )
-
-
-def _parse_dir_contents__non_recursive(token_parser: TokenParser) -> GenericFileMatcherSdv:
-    return _parse_dir_contents__for_model_constructor(dir_contents.MODEL_CONSTRUCTOR__NON_RECURSIVE, token_parser)
-
-
-def _parse_dir_contents__recursive(token_parser: TokenParser) -> GenericFileMatcherSdv:
-    return _parse_dir_contents__for_model_constructor(dir_contents.MODEL_CONSTRUCTOR__RECURSIVE, token_parser)
-
-
-def _parse_dir_contents__for_model_constructor(
-        model_constructor: Sdv[file_contents_utils.ModelConstructor[FilesMatcherModel]],
-        token_parser: TokenParser,
-) -> GenericFileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
+    model_constructor = parse_dir_contents_model.parse(token_parser)
     files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser,
                                                                      False)
     return dir_contents.dir_matches_files_matcher_sdv__generic(model_constructor,

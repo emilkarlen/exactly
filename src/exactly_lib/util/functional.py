@@ -1,4 +1,5 @@
 import types
+from typing import TypeVar, Optional, Callable, List, Sequence
 
 
 def compose_first_and_second(f, g):
@@ -31,3 +32,33 @@ class _AndPredicate:
             if not predicate(*args, **kwargs):
                 return False
         return True
+
+
+T = TypeVar('T')
+U = TypeVar('U')
+
+
+def map_optional(f: Callable[[T], U], x: Optional[T]) -> Optional[U]:
+    return (
+        None
+        if x is None
+        else
+        f(x)
+    )
+
+
+def reduce_optional(f: Callable[[T], U], value_if_none: U, x: Optional[T]) -> U:
+    return (
+        value_if_none
+        if x is None
+        else
+        f(x)
+    )
+
+
+def filter_not_none(xs: Sequence[Optional[T]]) -> List[T]:
+    return [
+        x
+        for x in xs
+        if x is not None
+    ]

@@ -10,6 +10,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
@@ -50,7 +51,7 @@ class TestParseShouldFailWhenInvalidLimitOption(unittest.TestCase):
             integration_check.CHECKER.parser.parse(
                 fm_args.InvalidDirContentsRecursive(
                     OptionArgument(a.OptionName('invalid-option'))
-                )
+                ).as_remaining_source
             )
 
 
@@ -60,16 +61,19 @@ class TestValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAn
         helper = IntegrationCheckHelper()
         for int_expr_case in failing_integer_validation_cases():
             arguments_cases = [
-                NameAndValue(
+                NEA(
                     'min',
+                    int_expr_case.reference_assertions,
                     DepthArgs(min_depth=int_expr_case.integer_expr_string),
                 ),
-                NameAndValue(
+                NEA(
                     'max',
+                    int_expr_case.reference_assertions,
                     DepthArgs(max_depth=int_expr_case.integer_expr_string),
                 ),
-                NameAndValue(
+                NEA(
                     'min & max',
+                    int_expr_case.reference_assertions * 2,
                     DepthArgs(min_depth=int_expr_case.integer_expr_string,
                               max_depth=int_expr_case.integer_expr_string,
                               ),
@@ -84,16 +88,18 @@ class TestValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAn
                         source=
                         fm_args.DirContentsRecursive(
                             _ARBITRARY_NON_SYMBOL_FILES_MATCHER,
-                            min_depth=arguments_case.value.min_depth,
-                            max_depth=arguments_case.value.max_depth,
+                            min_depth=arguments_case.actual.min_depth,
+                            max_depth=arguments_case.actual.max_depth,
                         ).as_remaining_source,
                         model_constructor=helper.model_constructor_for_checked_dir(),
                         arrangement=
-                        int_expr_case.symbol_table,
+                        Arrangement(
+                            symbols=int_expr_case.symbol_table,
+                        ),
                         expectation=
                         Expectation(
                             ParseExpectation(
-                                symbol_references=int_expr_case.symbol_references_expectation,
+                                symbol_references=asrt.matches_sequence(arguments_case.expected),
                             ),
                             ExecutionExpectation(
                                 validation=int_expr_case.expectation,
@@ -131,7 +137,7 @@ class TestValidationPreSdsShouldFailWhenLimitsAreIntegerOutOfRange(unittest.Test
             ),
         ]
         for arguments_case in arguments_cases:
-            with self.subTest(invalid_value=arguments_case.case):
+            with self.subTest(invalid_value=arguments_case.name):
                 # ACT & ASSERT #
                 integration_check.CHECKER.check(
                     self,
@@ -223,7 +229,7 @@ class TestFilesOfModel(unittest.TestCase):
                             files_matcher_symbol_value=
                             model_checker.matcher(self,
                                                   helper.checked_dir_path(),
-                                                  case.data.expected,
+                                                  test_data.strip_file_type_info(case.data.expected),
                                                   ),
                         ),
                     ),
@@ -250,21 +256,11 @@ class TestSymbolReferencesShouldBeReported(unittest.TestCase):
 
         integration_check.CHECKER.check(
             self,
-            arguments=fm_args.DirContentsRecursive(
+            source=fm_args.DirContentsRecursive(
                 helper.files_matcher_sym_ref_arg(),
-                min_depth=fms_args.SymbolReference(min_depth.name),
-                max_depth=fms_args.SymbolReference(max_depth.name),
-            ).as_arguments,
-            parse_expectation=
-            ParseExpectation(
-                symbol_references=asrt.matches_sequence([
-                    equals_symbol_reference(SymbolReference(min_depth.name,
-                                                            string_made_up_by_just_strings())),
-                    equals_symbol_reference(SymbolReference(max_depth.name,
-                                                            string_made_up_by_just_strings())),
-                    is_reference_to_files_matcher__ref(helper.files_matcher_name),
-                ])
-            ),
+                min_depth=SymbolReferenceArgument(min_depth.name),
+                max_depth=SymbolReferenceArgument(max_depth.name),
+            ).as_remaining_source,
             model_constructor=
             helper.model_constructor_for_checked_dir(),
             arrangement=
@@ -274,7 +270,7 @@ class TestSymbolReferencesShouldBeReported(unittest.TestCase):
                     helper.files_matcher_name:
                         model_checker.matcher(self,
                                               helper.checked_dir_path(),
-                                              expected_and_actual.expected,
+                                              test_data.strip_file_type_info(expected_and_actual.expected),
                                               ),
                     min_depth.name:
                         symbol_utils.string_sdvs.str_constant(str(min_depth.value)),
@@ -282,6 +278,18 @@ class TestSymbolReferencesShouldBeReported(unittest.TestCase):
                         symbol_utils.string_sdvs.str_constant(str(max_depth.value)),
                 })
             ),
+            expectation=
+            Expectation(
+                ParseExpectation(
+                    symbol_references=asrt.matches_sequence([
+                        equals_symbol_reference(SymbolReference(min_depth.name,
+                                                                string_made_up_by_just_strings())),
+                        equals_symbol_reference(SymbolReference(max_depth.name,
+                                                                string_made_up_by_just_strings())),
+                        is_reference_to_files_matcher__ref(helper.files_matcher_name),
+                    ])
+                ),
+            )
         )
 
 
@@ -343,14 +351,14 @@ class TestSelectorShouldBeApplied(unittest.TestCase):
                 max_depth=max_depth,
             ).as_arguments,
             parse_expectation=
-            helper.parse_expectation_of_symbol_references(),
+            ParseExpectation(),
             model_constructor=
             helper.model_constructor_for_checked_dir(),
             execution=[
                 NExArr(
                     num_files_setup.name,
                     ExecutionExpectation(
-                        main_result=asrt_matching_result.matches(num_files_setup.expected)
+                        main_result=asrt_matching_result.matches_value(num_files_setup.expected)
                     ),
                     Arrangement(
                         tcds=helper.tcds_arrangement_for_contents_of_model(
