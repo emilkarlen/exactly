@@ -6,6 +6,52 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.test_utils import NEA
 
+FILE_SYS__EMPTY = ()
+
+FILE_SYS__WITH_4_LEVELS = (
+    empty_file('a1'),
+    empty_dir('b1 - no sub levels'),
+    Dir('c1 - with sub dirs and files until depth 1', [
+        empty_file('ca2'),
+        empty_dir('cb2'),
+    ]),
+    Dir('d1 - with sub dirs until depth 4', [
+        empty_file('da2'),
+        empty_dir('db2'),
+        Dir('dc2', [
+            empty_file('dca3'),
+            empty_dir('dcb3'),
+            Dir('dcc3', [
+                empty_dir('dcca4'),
+                empty_file('dccb4'),
+            ])
+        ])
+    ]),
+    Dir('e1 - dir with only dirs until depth 4',
+        [Dir('ea2',
+             [Dir('eaa3',
+                  [empty_dir('eaaa4')])])]
+        ),
+    Dir('f1 - dir with only dirs until depth 3',
+        [Dir('fa2',
+             [empty_dir('faa3')])]
+        ),
+    Dir('g1 - dir with only dirs until depth 2',
+        [empty_dir('ga2')]
+        ),
+)
+
+DEPTH_TEST_MODELS = (
+    NameAndValue(
+        'empty',
+        FILE_SYS__EMPTY,
+    ),
+    NameAndValue(
+        'with 4 levels',
+        FILE_SYS__WITH_4_LEVELS,
+    )
+)
+
 
 def cases() -> Sequence[NameAndValue[List[FileSystemElement]]]:
     return [
@@ -114,34 +160,85 @@ def filter_on_base_name_prefix(prefix_to_include: str,
 def identical_expected_and_actual(name: str,
                                   actual: List[FileSystemElement],
                                   ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
-    expected = _flatten_directories(pathlib.Path('.'), actual)
+    expected = _flatten_directories(pathlib.Path(), actual)
 
     return NEA(name, expected, actual)
 
 
-def expected_is_first_level_of_actual(name: str,
+def expected_is_direct_contents_of_actual(name: str,
+                                          actual: List[FileSystemElement],
+                                          ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
+    return expected_is_actual_down_to_max_depth(name, 0, actual)
+
+
+def expected_is_actual_down_to_max_depth(name: str,
+                                         depth: int,
+                                         actual: List[FileSystemElement],
+                                         ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
+    expected = _flatten_directories(pathlib.Path(),
+                                    include_until_max_depth(depth, actual))
+
+    return NEA(name, expected, actual)
+
+
+def expected_is_actual_from_min_depth(name: str,
+                                      min_depth: int,
                                       actual: List[FileSystemElement],
                                       ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
-    expected = [
-        FileElementForTest(pathlib.Path(element.name),
-                           element.file_type)
-        for element in actual
-    ]
+    expected = _flatten_directories(pathlib.Path(),
+                                    actual,
+                                    inclusion_min_depth=min_depth,
+                                    )
 
     return NEA(name, expected, actual)
+
+
+def expected_is_actual_within_depth_limits(name: str,
+                                           min_depth: int,
+                                           max_depth: int,
+                                           actual: List[FileSystemElement],
+                                           ) -> NEA[List[FileElementForTest], List[FileSystemElement]]:
+    expected = _flatten_directories(pathlib.Path(),
+                                    include_until_max_depth(max_depth, actual),
+                                    inclusion_min_depth=min_depth,
+                                    )
+
+    return NEA(name, expected, actual)
+
+
+def include_until_max_depth(n: int,
+                            elements: List[FileSystemElement]) -> List[FileSystemElement]:
+    if n == -1:
+        return []
+    else:
+        return [
+            (
+                Dir(e.name, include_until_max_depth(n - 1, e.file_system_element_contents))
+                if isinstance(e, Dir)
+                else
+                e
+            )
+            for e in elements
+        ]
 
 
 def _flatten_directories(root: pathlib.Path,
-                         contents: List[FileSystemElement],
+                         elements: List[FileSystemElement],
+                         inclusion_min_depth: int = 0,
+                         current_depth: int = 0,
                          ) -> List[FileElementForTest]:
     ret_val = []
-    for element in contents:
-        ret_val.append(
-            FileElementForTest(root / element.name,
-                               element.file_type)
-        )
+    satisfies_min_depth_limit = current_depth >= inclusion_min_depth
+    for element in elements:
+        if satisfies_min_depth_limit:
+            ret_val.append(
+                FileElementForTest(root / element.name,
+                                   element.file_type)
+            )
         if isinstance(element, Dir):
             ret_val += _flatten_directories(root / element.name,
-                                            element.file_system_element_contents)
+                                            element.file_system_element_contents,
+                                            inclusion_min_depth=inclusion_min_depth,
+                                            current_depth=current_depth + 1)
 
     return ret_val

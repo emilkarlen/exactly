@@ -1,7 +1,7 @@
 import os
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Iterator, Optional
+from typing import Iterator, Optional, List
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
@@ -69,8 +69,15 @@ class _FilesMatcherModelForDir(FilesMatcherModel):
             )
 
 
-def recursive(dir_path: DescribedPath) -> FilesMatcherModel:
-    return _FilesMatcherModelForDir(dir_path, _FilesGeneratorForRecursive(), None)
+def recursive(dir_path: DescribedPath,
+              min_depth: Optional[int] = None,
+              max_depth: Optional[int] = None) -> FilesMatcherModel:
+    """
+    Depth 0 is the direct contents of the model.
+    """
+    return _FilesMatcherModelForDir(dir_path,
+                                    _FilesGeneratorForRecursive(min_depth, max_depth),
+                                    None)
 
 
 def non_recursive(dir_path: DescribedPath) -> FilesMatcherModel:
@@ -87,40 +94,70 @@ class _FilesGeneratorForNonRecursive(_FilesGenerator):
 
 
 class _FilesGeneratorForRecursive(_FilesGenerator):
-    def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
-        remaining_dirs = [
-            _FilesInDir(pathlib.Path(),
-                        root_dir_path)
-        ]
+    def __init__(self,
+                 min_depth: Optional[int] = None,
+                 max_depth: Optional[int] = None,
+                 ):
+        self._min_depth = min_depth
+        self._max_depth = max_depth
 
-        def add_dir_to_process_if_is_dir(maybe_dir):
+    def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
+        def add_dir_to_process_if_is_dir(maybe_entry_for_dir):
             try:
-                if maybe_dir.is_dir():
-                    remaining_dirs.append(fid.new_for_sub_dir(maybe_dir))
+                if maybe_entry_for_dir.is_dir():
+                    remaining_dirs.append(current_file.new_for_sub_dir(maybe_entry_for_dir))
             except OSError as ex:
                 raise HardErrorException(
                     text_docs.os_exception_error_message(ex)
                 )
 
+        remaining_dirs = self._initialize_for_depth_0(root_dir_path)
+
         while remaining_dirs:
-            fid = remaining_dirs.pop(0)
-            for dir_entry in fid.dir_entries():
-                yield fid.file_model(dir_entry)
-                add_dir_to_process_if_is_dir(dir_entry)
+            current_file = remaining_dirs.pop(0)
+
+            is_within_min_depth_limit = self._is_within_min_depth_limit(current_file.depth)
+            is_not_at_max_depth = not self._is_at_max_depth_limit(current_file.depth)
+
+            for dir_entry in current_file.dir_entries():
+                if is_within_min_depth_limit:
+                    yield current_file.file_model(dir_entry)
+                if is_not_at_max_depth:
+                    add_dir_to_process_if_is_dir(dir_entry)
+
+    @staticmethod
+    def _initialize_for_depth_0(root_dir_path: DescribedPath) -> List['_FilesInDir']:
+        return [
+            _FilesInDir(pathlib.Path(),
+                        root_dir_path,
+                        0)
+        ]
+
+    def _is_within_min_depth_limit(self, depth: int) -> bool:
+        return self._min_depth is None or depth >= self._min_depth
+
+    def _is_within_max_depth_limit(self, depth: int) -> bool:
+        return self._max_depth is None or depth <= self._max_depth
+
+    def _is_at_max_depth_limit(self, depth: int) -> bool:
+        return self._max_depth is not None and depth == self._max_depth
 
 
 class _FilesInDir:
     def __init__(self,
                  relative_parent: pathlib.Path,
                  absolute_parent: DescribedPath,
+                 depth: int,
                  ):
         self._relative_parent = relative_parent
         self._absolute_parent = absolute_parent
+        self.depth = depth
 
     def new_for_sub_dir(self, dir_entry) -> '_FilesInDir':
         return _FilesInDir(
             self._relative_parent / dir_entry.name,
-            self._absolute_parent.child(dir_entry.name)
+            self._absolute_parent.child(dir_entry.name),
+            self.depth + 1,
         )
 
     def file_model(self, dir_entry) -> FileModel:

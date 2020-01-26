@@ -29,7 +29,7 @@ class TestCase(unittest.TestCase):
 
         cases = test_data.strip_file_type_info(
             [
-                test_data.expected_is_first_level_of_actual(case.name, case.value)
+                test_data.expected_is_direct_contents_of_actual(case.name, case.value)
                 for case in test_data.cases()
             ]
         )
@@ -47,7 +47,7 @@ class TestCase(unittest.TestCase):
             test_data.filter_on_file_type(
                 FileType.REGULAR,
                 [
-                    test_data.expected_is_first_level_of_actual(case.name, case.value)
+                    test_data.expected_is_direct_contents_of_actual(case.name, case.value)
                     for case in test_data.cases()
                 ]
             )
@@ -113,7 +113,7 @@ class TestCase(unittest.TestCase):
                 test_data.filter_on_base_name_prefix(
                     prefix_to_include,
                     [
-                        test_data.expected_is_first_level_of_actual(case.name, case.value)
+                        test_data.expected_is_direct_contents_of_actual(case.name, case.value)
                         for case in actual_cases
                     ]
                 )

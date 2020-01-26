@@ -19,11 +19,90 @@ from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestCase),
+        unittest.makeSuite(TestUnlimitedDepth),
+        unittest.makeSuite(TestMaxDepth),
+        unittest.makeSuite(TestMinDepth),
+        unittest.makeSuite(TestMinAndMaxDepth),
     ])
 
 
-class TestCase(unittest.TestCase):
+class TestMaxDepth(unittest.TestCase):
+    def runTest(self):
+        for max_depth in range(4):
+
+            def make_model(path: DescribedPath) -> FilesMatcherModel:
+                return sut.recursive(path,
+                                     max_depth=max_depth)
+
+            for model_case in test_data.DEPTH_TEST_MODELS:
+                with self.subTest(model=model_case.name,
+                                  max_depth=max_depth):
+                    case = test_data.expected_is_actual_down_to_max_depth(
+                        'the one and only case',
+                        max_depth,
+                        model_case.value,
+                    )
+
+                    cases = test_data.strip_file_type_info([case])
+
+                    check(self,
+                          make_model,
+                          cases)
+
+
+class TestMinDepth(unittest.TestCase):
+    def runTest(self):
+        for min_depth in range(4):
+
+            def make_model(path: DescribedPath) -> FilesMatcherModel:
+                return sut.recursive(path,
+                                     min_depth=min_depth)
+
+            for model_case in test_data.DEPTH_TEST_MODELS:
+                with self.subTest(model=model_case.name,
+                                  min_depth=min_depth):
+                    case = test_data.expected_is_actual_from_min_depth(
+                        'the one and only case',
+                        min_depth,
+                        model_case.value,
+                    )
+
+                    cases = test_data.strip_file_type_info([case])
+
+                    check(self,
+                          make_model,
+                          cases)
+
+
+class TestMinAndMaxDepth(unittest.TestCase):
+    def runTest(self):
+        for min_depth in range(4):
+            for max_depth in range(4):
+
+                def make_model(path: DescribedPath) -> FilesMatcherModel:
+                    return sut.recursive(path,
+                                         min_depth=min_depth,
+                                         max_depth=max_depth)
+
+                for model_case in test_data.DEPTH_TEST_MODELS:
+                    with self.subTest(model=model_case.name,
+                                      min_depth=min_depth,
+                                      max_depth=max_depth):
+                        case = test_data.expected_is_actual_within_depth_limits(
+                            'the one and only case',
+                            min_depth,
+                            max_depth,
+                            model_case.value,
+                        )
+
+                        cases = test_data.strip_file_type_info([case])
+
+                        check(self,
+                              make_model,
+                              cases)
+
+
+class TestUnlimitedDepth(unittest.TestCase):
     def test_WHEN_no_selector_THEN_all_files_SHOULD_be_in_model(self):
         # ARRANGE #
 

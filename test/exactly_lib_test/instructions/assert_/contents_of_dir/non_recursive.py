@@ -184,7 +184,7 @@ class TestFilesOfModel(unittest.TestCase):
 
         contents_cases = test_data.strip_file_type_info(
             [
-                test_data.expected_is_first_level_of_actual(case.name, case.value)
+                test_data.expected_is_direct_contents_of_actual(case.name, case.value)
                 for case in test_data.cases()
             ]
         )
