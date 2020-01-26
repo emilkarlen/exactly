@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 from typing import List
 
@@ -11,25 +12,24 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assert
     ModelContentsAssertion
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertion_applier import ApplicationAssertionSetup
-from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def matcher(put: unittest.TestCase,
             model_dir: PathSdv,
-            expected_contents: List[FileSystemElement]) -> FilesMatcherSdv:
+            expected_contents: List[pathlib.Path]) -> FilesMatcherSdv:
     return FilesMatcherSdv(
         assertion_applier.matcher(
             put,
-            application_assertion=_ModeCheckerAssertionSetup(model_dir, expected_contents)
+            application_assertion=_ModelCheckerAssertionSetup(model_dir, expected_contents)
         )
     )
 
 
-class _ModeCheckerAssertionSetup(ApplicationAssertionSetup[FilesMatcherModel, FilesMatcherModel]):
+class _ModelCheckerAssertionSetup(ApplicationAssertionSetup[FilesMatcherModel, FilesMatcherModel]):
     def __init__(self,
                  model_dir: PathSdv,
-                 expected_contents: List[FileSystemElement],
+                 expected_contents: List[pathlib.Path],
                  ):
         self._model_dir = model_dir
         self._expected_contents = expected_contents

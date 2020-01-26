@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
-    matcher_checker
+    model_checker
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
@@ -166,7 +166,7 @@ class TestFilesOfModel(unittest.TestCase):
 
         model_checker_symbol_name = 'symbol_that_checks_model'
 
-        contents_cases = test_data.strip_file_type_info(
+        contents_cases = test_data.strip_file_type_info_s(
             [
                 test_data.identical_expected_and_actual(case.name, case.value)
                 for case in test_data.cases()
@@ -201,7 +201,7 @@ class TestFilesOfModel(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             model_checker_symbol_name:
-                                matcher_checker.matcher(self, model_path, contents_case.expected)
+                                model_checker.matcher(self, model_path, contents_case.expected)
                         })
                     ),
                 )

@@ -6,12 +6,12 @@ ACTUAL = TypeVar('ACTUAL')
 ARRANGEMENT = TypeVar('ARRANGEMENT')
 
 
-class EA:
+class EA(Generic[EXPECTED, ACTUAL]):
     """One expected value and one actual value."""
 
     def __init__(self,
-                 expected,
-                 actual):
+                 expected: EXPECTED,
+                 actual: ACTUAL):
         self.expected = expected
         self.actual = actual
 

@@ -1,4 +1,5 @@
 import unittest
+from typing import List, Callable
 
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -11,9 +12,11 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
-from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.checker import check
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.checker import check, check_single
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.test_data import FileElementForTest
 from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, \
-    empty_dir
+    empty_dir, FileSystemElement
+from exactly_lib_test.test_resources.test_utils import EA
 from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 
@@ -38,16 +41,11 @@ class TestMaxDepth(unittest.TestCase):
                 with self.subTest(model=model_case.name,
                                   max_depth=max_depth):
                     case = test_data.expected_is_actual_down_to_max_depth(
-                        'the one and only case',
                         max_depth,
                         model_case.value,
                     )
 
-                    cases = test_data.strip_file_type_info([case])
-
-                    check(self,
-                          make_model,
-                          cases)
+                    _check_single(self, make_model, case)
 
 
 class TestMinDepth(unittest.TestCase):
@@ -62,16 +60,11 @@ class TestMinDepth(unittest.TestCase):
                 with self.subTest(model=model_case.name,
                                   min_depth=min_depth):
                     case = test_data.expected_is_actual_from_min_depth(
-                        'the one and only case',
                         min_depth,
                         model_case.value,
                     )
 
-                    cases = test_data.strip_file_type_info([case])
-
-                    check(self,
-                          make_model,
-                          cases)
+                    _check_single(self, make_model, case)
 
 
 class TestMinAndMaxDepth(unittest.TestCase):
@@ -89,24 +82,19 @@ class TestMinAndMaxDepth(unittest.TestCase):
                                       min_depth=min_depth,
                                       max_depth=max_depth):
                         case = test_data.expected_is_actual_within_depth_limits(
-                            'the one and only case',
                             min_depth,
                             max_depth,
                             model_case.value,
                         )
 
-                        cases = test_data.strip_file_type_info([case])
-
-                        check(self,
-                              make_model,
-                              cases)
+                    _check_single(self, make_model, case)
 
 
 class TestUnlimitedDepth(unittest.TestCase):
     def test_WHEN_no_selector_THEN_all_files_SHOULD_be_in_model(self):
         # ARRANGE #
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             [
                 test_data.identical_expected_and_actual(case.name, case.value)
                 for case in test_data.cases()
@@ -122,7 +110,7 @@ class TestUnlimitedDepth(unittest.TestCase):
     def test_WHEN_single_selector_THEN_all_files_satisfying_the_selector_SHOULD_be_in_model(self):
         # ARRANGE #
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             test_data.filter_on_file_type(
                 FileType.REGULAR,
                 [
@@ -192,7 +180,7 @@ class TestUnlimitedDepth(unittest.TestCase):
             ),
         ]
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             test_data.filter_on_file_type(
                 file_type_to_include,
                 test_data.filter_on_base_name_prefix(
@@ -250,6 +238,17 @@ class BaseNameStartsWithMatcher(FileMatcherTestImplBase):
         return matching_result.of(
             model.path.primitive.name.startswith(self._base_name_prefix)
         )
+
+
+def _check_single(put: unittest.TestCase,
+                  make_model: Callable[[DescribedPath], FilesMatcherModel],
+                  case: EA[List[FileElementForTest], List[FileSystemElement]],
+                  ):
+    prepared_case = test_data.strip_file_type_info__ea(case)
+    check_single(put,
+                 make_model,
+                 prepared_case.actual,
+                 prepared_case.expected)
 
 
 if __name__ == '__main__':

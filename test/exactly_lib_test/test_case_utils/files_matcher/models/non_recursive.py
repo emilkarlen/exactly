@@ -27,7 +27,7 @@ class TestCase(unittest.TestCase):
     def test_WHEN_no_selector_THEN_all_files_SHOULD_be_in_model(self):
         # ARRANGE #
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             [
                 test_data.expected_is_direct_contents_of_actual(case.name, case.value)
                 for case in test_data.cases()
@@ -43,7 +43,7 @@ class TestCase(unittest.TestCase):
     def test_WHEN_single_selector_THEN_all_files_satisfying_the_selector_SHOULD_be_in_model(self):
         # ARRANGE #
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             test_data.filter_on_file_type(
                 FileType.REGULAR,
                 [
@@ -107,7 +107,7 @@ class TestCase(unittest.TestCase):
             ),
         ]
 
-        cases = test_data.strip_file_type_info(
+        cases = test_data.strip_file_type_info_s(
             test_data.filter_on_file_type(
                 file_type_to_include,
                 test_data.filter_on_base_name_prefix(

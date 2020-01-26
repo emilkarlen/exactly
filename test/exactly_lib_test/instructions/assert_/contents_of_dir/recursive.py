@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
-    matcher_checker
+    model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -193,7 +193,7 @@ class TestFilesOfModel(unittest.TestCase):
         ]
         )
 
-        contents_cases = test_data.strip_file_type_info(
+        contents_cases = test_data.strip_file_type_info_s(
             [
                 test_data.identical_expected_and_actual(case.name, case.value)
                 for case in test_data.cases()
@@ -223,7 +223,7 @@ class TestFilesOfModel(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             model_checker_symbol_name:
-                                matcher_checker.matcher(self, checked_dir_path, contents_case.expected)
+                                model_checker.matcher(self, checked_dir_path, contents_case.expected)
                         })
                     ),
                 )
