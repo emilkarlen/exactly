@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.definitions import expression
 from exactly_lib.definitions.primitives import file_matcher
@@ -10,7 +10,9 @@ from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
+from exactly_lib_test.test_resources.arguments_building import OptionArgument
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
+from exactly_lib_test.test_resources.strings import WithToString
 
 
 class FileMatcherArg(MatcherArgument, ABC):
@@ -105,17 +107,67 @@ class DirContents(FileMatcherArg):
         ]
 
 
-class DirContentsRecursive(FileMatcherArg):
-    def __init__(self, files_matcher: MatcherArgument):
-        self.files_matcher = files_matcher
+class InvalidDirContents(FileMatcherArg):
+    def __init__(self,
+                 invalid_argument: WithToString,
+                 ):
+        self.invalid_argument = invalid_argument
 
     @property
     def elements(self) -> List:
         return [
             parse_file_matcher.DIR_CONTENTS,
-            option_syntax.option_syntax(file_or_dir_contents.RECURSIVE_OPTION.name),
-            self.files_matcher,
+            self.invalid_argument,
         ]
+
+
+class InvalidDirContentsRecursive(FileMatcherArg):
+    def __init__(self,
+                 invalid_argument: WithToString,
+                 ):
+        self.invalid_argument = invalid_argument
+
+    @property
+    def elements(self) -> List:
+        return [
+            parse_file_matcher.DIR_CONTENTS,
+            OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
+            self.invalid_argument,
+        ]
+
+
+class DirContentsRecursive(FileMatcherArg):
+    def __init__(self,
+                 files_matcher: MatcherArgument,
+                 min_depth: Optional[WithToString] = None,
+                 max_depth: Optional[WithToString] = None,
+                 ):
+        self.files_matcher = files_matcher
+        self.min_depth = min_depth
+        self.max_depth = max_depth
+
+    @property
+    def elements(self) -> List:
+        ret_val = [
+            parse_file_matcher.DIR_CONTENTS,
+            OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
+        ]
+
+        if self.min_depth is not None:
+            ret_val += [
+                OptionArgument(file_or_dir_contents.MIN_DEPTH_OPTION.name),
+                str(self.min_depth),
+            ]
+
+        if self.max_depth is not None:
+            ret_val += [
+                OptionArgument(file_or_dir_contents.MAX_DEPTH_OPTION.name),
+                str(self.max_depth),
+            ]
+
+        ret_val.append(self.files_matcher)
+
+        return ret_val
 
 
 class Not(FileMatcherArg):

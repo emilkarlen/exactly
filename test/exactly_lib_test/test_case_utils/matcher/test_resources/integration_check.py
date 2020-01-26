@@ -139,6 +139,10 @@ class MatcherChecker(Generic[MODEL]):
         self._parser = parser
         self._expected_logic_value_type = expected_logic_value_type
 
+    @property
+    def parser(self) -> Parser[MatcherTypeSdv[MODEL]]:
+        return self._parser
+
     def check(self,
               put: unittest.TestCase,
               source: ParseSource,

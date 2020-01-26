@@ -196,11 +196,11 @@ def expected_is_direct_contents_of_actual(name: str,
     return NEA(name, ea.expected, ea.actual)
 
 
-def expected_is_actual_down_to_max_depth(depth: int,
+def expected_is_actual_down_to_max_depth(max_depth: int,
                                          actual: List[FileSystemElement],
                                          ) -> EA[List[FileElementForTest], List[FileSystemElement]]:
     expected = _flatten_directories(pathlib.Path(),
-                                    include_until_max_depth(depth, actual))
+                                    include_until_max_depth(max_depth, actual))
 
     return EA(expected, actual)
 

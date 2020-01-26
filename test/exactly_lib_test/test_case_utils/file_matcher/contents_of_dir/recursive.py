@@ -1,16 +1,20 @@
 import unittest
 
-from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
     files_matcher_integration
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToHardErrorFromFilesMatcherHelper
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.helper_utils import \
+    IntegrationCheckHelper
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
     model_checker
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
@@ -21,8 +25,9 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, \
-    ExecutionExpectation, ParseExpectation
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
+    ExecutionExpectation
+from exactly_lib_test.test_resources.arguments_building import OptionArgument
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -31,6 +36,7 @@ from exactly_lib_test.util.simple_textstruct.test_resources import renderer_asse
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        TestParseShouldFailWhenInvalidOption(),
         TestFilesMatcherShouldBeValidated(),
         TestHardErrorDueToInvalidModel(),
         TestHardErrorDueToHardErrorFromFilesMatcher(),
@@ -38,6 +44,16 @@ def suite() -> unittest.TestSuite:
         TestFilesOfModel(),
         unittest.makeSuite(TestConcreteMatcher),
     ])
+
+
+class TestParseShouldFailWhenInvalidOption(unittest.TestCase):
+    def runTest(self):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            integration_check.CHECKER.parser.parse(
+                fm_args.InvalidDirContents(
+                    OptionArgument(a.OptionName('invalid-option'))
+                )
+            )
 
 
 class TestFilesMatcherShouldBeValidated(unittest.TestCase):
@@ -160,11 +176,7 @@ class TestApplication(unittest.TestCase):
 class TestFilesOfModel(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        model_location = RelOptionType.REL_TMP
-        model_name = 'the-model-dir'
-        model_path = path_sdvs.of_rel_option_with_const_file_name(model_location, model_name)
-
-        model_checker_symbol_name = 'symbol_that_checks_model'
+        helper = IntegrationCheckHelper()
 
         contents_cases = test_data.strip_file_type_info_s(
             [
@@ -178,31 +190,23 @@ class TestFilesOfModel(unittest.TestCase):
         integration_check.CHECKER.check_multi(
             self,
             arguments=fm_args.DirContentsRecursive(
-                fms_args.SymbolReference(model_checker_symbol_name)
+                helper.files_matcher_sym_ref_arg()
             ).as_arguments,
             parse_expectation=
-            ParseExpectation(
-                symbol_references=asrt.matches_singleton_sequence(
-                    is_reference_to_files_matcher__ref(model_checker_symbol_name)
-                ),
-            ),
+            helper.parse_expectation_of_symbol_references(),
             model_constructor=
-            integration_check.file_in_tcds(model_location, model_name),
+            helper.model_constructor_for_checked_dir(),
             execution=[
                 NExArr(
                     contents_case.name,
                     ExecutionExpectation(),
-                    arrangement_w_tcds(
-                        tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
-                            model_location,
-                            DirContents([
-                                Dir(model_name, contents_case.actual)
-                            ])
-                        ),
-                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                            model_checker_symbol_name:
-                                model_checker.matcher(self, model_path, contents_case.expected)
-                        })
+                    helper.arrangement_for_contents_of_model(
+                        checked_dir_contents=contents_case.actual,
+                        files_matcher_symbol_value=
+                        model_checker.matcher(self,
+                                              helper.checked_dir_path(),
+                                              contents_case.expected,
+                                              ),
                     ),
                 )
                 for contents_case in contents_cases
