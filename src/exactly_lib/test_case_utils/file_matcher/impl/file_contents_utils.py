@@ -7,6 +7,8 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
@@ -14,6 +16,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc import MATCHER_FILE_HANDLING_DESCRIPTION
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
+from exactly_lib.test_case_utils.generic_dependent_value import Sdv, Ddv, Adv
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
@@ -54,25 +57,25 @@ class DocumentationSetup:
         self.description_extra = description_extra
 
 
-class Setup(Generic[CONTENTS_MATCHER_MODEL], ABC):
-    def __init__(self, names: NamesSetup):
-        self.names = names
-
+class ModelConstructor(Generic[CONTENTS_MATCHER_MODEL], ABC):
     @abstractmethod
     def make_model(self, model: FileMatcherModel) -> CONTENTS_MATCHER_MODEL:
         pass
 
 
 def sdv__generic(
-        setup: Setup[CONTENTS_MATCHER_MODEL],
+        names: NamesSetup,
+        model_constructor: Sdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
         contents_matcher: MatcherSdv[CONTENTS_MATCHER_MODEL],
 ) -> GenericFileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
-        contents_matcher_ddv = contents_matcher.resolve(symbols)
-        return _FileContentsMatcherDdv(setup, contents_matcher_ddv)
+        return _FileContentsMatcherDdv(names,
+                                       model_constructor.resolve(symbols),
+                                       contents_matcher.resolve(symbols))
 
     return sdv_components.MatcherSdvFromParts(
-        contents_matcher.references,
+        references_from_objects_with_symbol_references((model_constructor,
+                                                        contents_matcher)),
         make_ddv,
     )
 
@@ -81,18 +84,20 @@ class _FileContentsMatcher(FileMatcherImplBase,
                            Generic[CONTENTS_MATCHER_MODEL],
                            ABC):
     def __init__(self,
-                 setup: Setup[CONTENTS_MATCHER_MODEL],
+                 names: NamesSetup,
+                 model_constructor: ModelConstructor[CONTENTS_MATCHER_MODEL],
                  contents_matcher: MatcherWTraceAndNegation[CONTENTS_MATCHER_MODEL],
                  ):
         super().__init__()
-        self._setup = setup
-        self._expected_file_check = file_properties.must_exist_as(setup.names.accepted_file_type,
+        self._names = names
+        self._model_constructor = model_constructor
+        self._expected_file_check = file_properties.must_exist_as(names.accepted_file_type,
                                                                   follow_symlinks=True)
         self._contents_matcher = contents_matcher
 
     @property
     def name(self) -> str:
-        return self._setup.names.name
+        return self._names.name
 
     def _structure(self) -> StructureRenderer:
         return _new_structure_tree(self.name,
@@ -101,7 +106,7 @@ class _FileContentsMatcher(FileMatcherImplBase,
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         self._hard_error_if_file_is_not_existing_of_expected_type(model)
 
-        contents_matcher_model = self._setup.make_model(model)
+        contents_matcher_model = self._model_constructor.make_model(model)
         contents_matcher_model_result = self._contents_matcher.matches_w_trace(contents_matcher_model)
         return (
             self._new_tb()
@@ -119,37 +124,45 @@ class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
                               Generic[CONTENTS_MATCHER_MODEL],
                               ):
     def __init__(self,
-                 setup: Setup[CONTENTS_MATCHER_MODEL],
+                 names: NamesSetup,
+                 model_constructor: Adv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
                  contents_matcher: MatcherAdv[CONTENTS_MATCHER_MODEL],
                  ):
-        self._setup = setup
+        self._names = names
+        self._model_constructor = model_constructor
         self._contents_matcher = contents_matcher
 
     def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-        return _FileContentsMatcher(self._setup,
+        return _FileContentsMatcher(self._names,
+                                    self._model_constructor.primitive(environment),
                                     self._contents_matcher.applier(environment))
 
 
 class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
-                 setup: Setup[CONTENTS_MATCHER_MODEL],
+                 names: NamesSetup,
+                 model_constructor: Ddv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
                  contents_matcher: MatcherDdv[CONTENTS_MATCHER_MODEL],
                  ):
-        self._setup = setup
+        self._names = names
+        self._model_constructor = model_constructor
         self._contents_matcher = contents_matcher
+        self._validators = ddv_validators.all_of((model_constructor.validator,
+                                                  contents_matcher.validator))
 
     def structure(self) -> StructureRenderer:
         return _new_structure_tree(
-            self._setup.names.name,
+            self._names.name,
             self._contents_matcher,
         )
 
     @property
     def validator(self) -> DdvValidator:
-        return self._contents_matcher.validator
+        return self._validators
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
-        return _FileContentsMatcherAdv(self._setup,
+        return _FileContentsMatcherAdv(self._names,
+                                       self._model_constructor.value_of_any_dependency(tcds),
                                        self._contents_matcher.value_of_any_dependency(tcds))
 
 

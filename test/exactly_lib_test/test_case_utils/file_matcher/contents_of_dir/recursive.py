@@ -52,7 +52,7 @@ class TestParseShouldFailWhenInvalidOption(unittest.TestCase):
             integration_check.CHECKER.parser.parse(
                 fm_args.InvalidDirContents(
                     OptionArgument(a.OptionName('invalid-option'))
-                )
+                ).as_remaining_source
             )
 
 
