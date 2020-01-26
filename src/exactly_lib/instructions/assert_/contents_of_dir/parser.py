@@ -1,4 +1,4 @@
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.instructions.assert_.contents_of_dir import impl_utils
 from exactly_lib.instructions.assert_.contents_of_dir.impl_utils import FilesSource
 from exactly_lib.instructions.assert_.utils import assertion_part
@@ -42,7 +42,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             files_matcher_model_constructor = token_parser.consume_and_handle_optional_option(
                 models.non_recursive,
                 lambda tp: models.recursive,
-                instruction_arguments.RECURSIVE_OPTION.name,
+                file_or_dir_contents.RECURSIVE_OPTION.name,
             )
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
@@ -35,7 +35,7 @@ class NumFilesTestCaseHelperBase(ABC):
         return SequenceOfArguments([
             RelOptPathArgument(self.checked_dir_name,
                                self.checked_dir_location),
-            OptionArgument(instruction_arguments.RECURSIVE_OPTION.name),
+            OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
             self._files_matcher_arg(),
         ]
         )

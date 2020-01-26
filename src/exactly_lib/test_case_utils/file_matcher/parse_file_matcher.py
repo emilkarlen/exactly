@@ -7,6 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
 from exactly_lib.processing import exit_values
@@ -109,7 +110,7 @@ def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
     return token_parser.parse_choice_of_optional_option(
         _parse_dir_contents__recursive,
         _parse_dir_contents__non_recursive,
-        instruction_arguments.RECURSIVE_OPTION.name,
+        file_or_dir_contents.RECURSIVE_OPTION.name,
     )
 
 

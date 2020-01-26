@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType, TYPE_INFO
@@ -9,7 +9,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-RECURSION_OPTIONS = (a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.RECURSIVE_OPTION),)
+RECURSION_OPTIONS = (a.Single(a.Multiplicity.OPTIONAL, file_or_dir_contents.RECURSIVE_OPTION),)
 
 
 def description(
@@ -26,7 +26,7 @@ def description(
 
 def get_recursion_option_description() -> List[ParagraphItem]:
     tp = TextParser({
-        'recursion_option': option_syntax.option_syntax(instruction_arguments.RECURSIVE_OPTION.name),
+        'recursion_option': option_syntax.option_syntax(file_or_dir_contents.RECURSIVE_OPTION.name),
         'directory': file_properties.TYPE_INFO[FileType.DIRECTORY].name,
     })
 

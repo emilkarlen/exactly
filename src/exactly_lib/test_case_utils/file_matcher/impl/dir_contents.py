@@ -1,5 +1,5 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc
@@ -28,7 +28,7 @@ SETUP__NON_RECURSIVE = _SetupNonRecursive()
 
 NAMES__RECURSIVE = file_contents_utils.NamesSetup(
     ' '.join((file_check_properties.DIR_CONTENTS,
-              option_syntax.option_syntax(instruction_arguments.RECURSIVE_OPTION.name))),
+              option_syntax.option_syntax(file_or_dir_contents.RECURSIVE_OPTION.name))),
     file_properties.FileType.DIRECTORY,
     syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
 )

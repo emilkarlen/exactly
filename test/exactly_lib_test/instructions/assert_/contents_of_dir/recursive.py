@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -61,7 +61,7 @@ INSTRUCTION_CHECKER = instruction_check.Checker(
     PARSER
 )
 
-RECURSION_OPTION_ARG = OptionArgument(instruction_arguments.RECURSIVE_OPTION.name)
+RECURSION_OPTION_ARG = OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name)
 RECURSION_OPTION_STR = str(RECURSION_OPTION_ARG)
 
 
