@@ -1,0 +1,45 @@
+# Equals set
+dir-contents output/bad equals {
+  a
+  b : type file
+  c : type dir
+}
+
+# Contains set
+dir-contents output/bad contains {
+  a
+  b : type file
+  c : type dir
+}
+
+# Multiple items on single line - with common condition
+dir-contents output/bad contains {
+  a b   : type file
+  c     : type dir
+  d
+}
+
+# Item repeated - to add conditions.
+dir-contents output/bad contains {
+  a b : type file
+  b   : contents matches "hej"
+  d   : type dir
+}
+
+dir-contents output/bad == {
+  a : type file
+  c.txt : type file
+  d     : type dir
+}
+
+dir-contents output/bad ⊇ {
+  b.txt : type file
+  c.txt : type file
+  d     : type dir
+}
+
+dir-contents output/bad ⊆ {
+  b.txt : type file
+  c.txt : type file
+  d     : type dir
+}
