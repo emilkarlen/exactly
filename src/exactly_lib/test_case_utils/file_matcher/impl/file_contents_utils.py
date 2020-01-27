@@ -24,7 +24,8 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.description_tree import renderers
+from exactly_lib.util.description_tree import renderers, details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -58,6 +59,10 @@ class DocumentationSetup:
 
 
 class ModelConstructor(Generic[CONTENTS_MATCHER_MODEL], ABC):
+    @property
+    def structure(self) -> DetailsRenderer:
+        return details.empty()
+
     @abstractmethod
     def make_model(self, model: FileMatcherModel) -> CONTENTS_MATCHER_MODEL:
         pass
@@ -101,6 +106,7 @@ class _FileContentsMatcher(FileMatcherImplBase,
 
     def _structure(self) -> StructureRenderer:
         return _new_structure_tree(self.name,
+                                   self._model_constructor.structure,
                                    self._contents_matcher)
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
@@ -110,6 +116,7 @@ class _FileContentsMatcher(FileMatcherImplBase,
         contents_matcher_model_result = self._contents_matcher.matches_w_trace(contents_matcher_model)
         return (
             self._new_tb()
+                .append_details(self._model_constructor.structure)
                 .append_child(contents_matcher_model_result.trace)
                 .build_result(contents_matcher_model_result.value)
         )
@@ -153,6 +160,7 @@ class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
     def structure(self) -> StructureRenderer:
         return _new_structure_tree(
             self._names.name,
+            self._model_constructor.describer,
             self._contents_matcher,
         )
 
@@ -201,11 +209,13 @@ class FileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
         ])
 
 
-def _new_structure_tree(name: str, contents_matcher: MatcherWTraceAndNegation) -> StructureRenderer:
+def _new_structure_tree(name: str,
+                        options: DetailsRenderer,
+                        contents_matcher: MatcherWTraceAndNegation) -> StructureRenderer:
     return renderers.NodeRendererFromParts(
         name,
         None,
-        (),
+        (options,),
         (contents_matcher.structure(),),
     )
 

@@ -6,6 +6,7 @@ def file-matcher CONTENTS       = contents equals 'expected'
 
 def file-matcher DIR_CONTENTS   = dir-contents num-files == 1
 def file-matcher DIR_CONTENTS_R = dir-contents -recursive num-files == 2
+def file-matcher DIR_CONTENTS_R_LIMITED = dir-contents -recursive -min-depth 1 -max-depth 2 num-files == 2
 
 def file-matcher NAME_GLOB   = name *.txt
 def file-matcher NAME_REGEX  = name -regex [a-z]+

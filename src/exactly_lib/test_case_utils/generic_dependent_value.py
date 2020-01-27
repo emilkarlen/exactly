@@ -7,6 +7,8 @@ from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 PRIMITIVE = TypeVar('PRIMITIVE')
@@ -19,6 +21,10 @@ class Adv(Generic[PRIMITIVE], ABC):
 
 
 class Ddv(Generic[PRIMITIVE], ABC):
+    @property
+    def describer(self) -> DetailsRenderer:
+        return details.empty()
+
     @property
     def validator(self) -> DdvValidator:
         return ddv_validation.constant_success_validator()

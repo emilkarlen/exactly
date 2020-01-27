@@ -1,3 +1,4 @@
+import itertools
 from typing import Sequence, Any
 
 from exactly_lib.util.description_tree import tree
@@ -8,11 +9,28 @@ from exactly_lib.util.strings import ToStringObject
 
 
 class DetailsRendererOfConstant(DetailsRenderer):
-    def __init__(self, detail: Detail):
-        self._detail = detail
+    def __init__(self, details: Sequence[Detail]):
+        self._details = details
 
     def render(self) -> Sequence[Detail]:
-        return [self._detail]
+        return self._details
+
+
+def empty() -> DetailsRenderer:
+    return DetailsRendererOfConstant(())
+
+
+class SequenceRenderer(DetailsRenderer):
+    def __init__(self, details: Sequence[DetailsRenderer]):
+        self._details = details
+
+    def render(self) -> Sequence[Detail]:
+        return list(
+            itertools.chain.from_iterable([
+                detail.render()
+                for detail in self._details
+            ])
+        )
 
 
 class String(DetailsRenderer):
