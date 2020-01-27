@@ -44,7 +44,7 @@ def name_and_ref_target(name: str,
 
 
 def _name_and_ref_target_of_type(type_info: types.TypeNameAndCrossReferenceId) -> SyntaxElementInfo:
-    return name_and_ref_target(type_info.syntax_element_name,
+    return name_and_ref_target(type_info.syntax_element_identifier,
                                type_info.single_line_description_str)
 
 

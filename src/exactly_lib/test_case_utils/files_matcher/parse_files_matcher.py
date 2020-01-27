@@ -1,8 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions import instruction_arguments, matcher_model
-from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.entity.types import FILES_MATCHER_TYPE_INFO
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -95,8 +94,8 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
 
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
-        name=FILES_MATCHER_TYPE_INFO.name,
-        type_system_type_name=FILES_MATCHER_TYPE_INFO.identifier,
+        name=types.FILES_MATCHER_TYPE_INFO.name,
+        type_system_type_name=types.FILES_MATCHER_TYPE_INFO.identifier,
         syntax_element_name=syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.argument,
     ),
     model=matcher_model.FILES_MATCHER_MODEL,

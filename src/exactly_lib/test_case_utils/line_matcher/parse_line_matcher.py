@@ -123,7 +123,7 @@ class _LineNumberSyntaxDescription(grammar.SimpleExpressionDescription):
 _CONCEPT = grammar.Concept(
     types.LINE_MATCHER_TYPE_INFO.name,
     types.LINE_MATCHER_TYPE_INFO.identifier,
-    LINE_MATCHER_ARGUMENT,
+    syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.argument,
 )
 
 GRAMMAR = standard_expression_grammar.new_grammar(

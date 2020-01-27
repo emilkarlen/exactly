@@ -86,7 +86,7 @@ class _Parser(Generic[EXPR]):
                 return mk_prefix_expr(expression)
             else:
                 return self.parser.parse_mandatory_string_that_must_be_unquoted(
-                    self.grammar.concept.name.singular,
+                    self.grammar.concept.syntax_element.name,
                     self.parse_simple,
                     must_be_on_current_line=must_be_on_current_line)
 

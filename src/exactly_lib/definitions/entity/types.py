@@ -45,6 +45,11 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
         return self._single_string_type_name
 
     @property
+    def syntax_element_identifier(self) -> str:
+        """The syntax element name"""
+        return self._single_string_type_name.upper()
+
+    @property
     def syntax_element_name(self) -> str:
         return formatting.syntax_element(self.singular_name)
 

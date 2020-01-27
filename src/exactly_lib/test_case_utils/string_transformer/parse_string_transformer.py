@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -69,7 +69,7 @@ def parse_string_transformer_from_token_parser(parser: TokenParser,
 _CONCEPT = grammar.Concept(
     types.STRING_TRANSFORMER_TYPE_INFO.name,
     types.STRING_TRANSFORMER_TYPE_INFO.identifier,
-    STRING_TRANSFORMER_ARGUMENT,
+    syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.argument,
 )
 
 

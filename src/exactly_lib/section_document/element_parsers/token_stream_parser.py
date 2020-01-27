@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping
 
 from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -14,8 +14,18 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.strings import ToStringObject
 
 T = TypeVar('T')
+
+
+class ErrorMessageConfiguration:
+    def __init__(self,
+                 format_string: str,
+                 extra_format_map: Optional[Mapping[str, ToStringObject]] = None,
+                 ):
+        self.format_string = format_string
+        self.extra_format_map = extra_format_map
 
 
 class TokenParser:
@@ -73,6 +83,10 @@ class TokenParser:
                               extra_format_map: dict = None):
         if self.is_at_eol:
             self.error(error_message_format_string, extra_format_map)
+
+    def require_is_not_at_eol__conf(self, error_message_conf: ErrorMessageConfiguration):
+        self.require_is_not_at_eol(error_message_conf.format_string,
+                                   error_message_conf.extra_format_map)
 
     def require_head_token_has_valid_syntax(self, error_message_format_string: str = ''):
         if self._lookahead_token_has_invalid_syntax():
@@ -191,11 +205,11 @@ class TokenParser:
         """
 
         if self.token_stream.is_null:
-            return self.error('Missing argument for ' + syntax_element_name)
+            return self.error('Missing ' + syntax_element_name)
         if self._lookahead_token_has_invalid_syntax():
             return self.error('Invalid syntax of ' + syntax_element_name)
         if self.is_at_eol and must_be_on_current_line:
-            return self.error('Missing argument for ' + syntax_element_name)
+            return self.error('Missing ' + syntax_element_name)
 
         head = self.token_stream.head
         if head.is_quoted:
@@ -493,7 +507,9 @@ ParserFromTokenParser = Callable[[TokenParser], T]
 
 class ParserFromTokens(Generic[T], ABC):
     @abstractmethod
-    def parse(self, token_parser: TokenParser) -> T:
+    def parse(self,
+              token_parser: TokenParser,
+              must_be_on_current_line: bool = False) -> T:
         pass
 
 

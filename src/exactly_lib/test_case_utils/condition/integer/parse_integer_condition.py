@@ -47,7 +47,8 @@ class MandatoryIntegerParser(ParserFromTokens[IntegerSdv]):
         self._custom_integer_restriction = custom_integer_restriction
         self._integer_argument_name_in_err_msg = integer_argument_name_in_err_msg
 
-    def parse(self, token_parser: TokenParser) -> IntegerSdv:
+    def parse(self, token_parser: TokenParser,
+              must_be_on_current_line: bool = False) -> IntegerSdv:
         my_parser = token_parser_with_additional_error_message_format_map(token_parser, {
             'INTEGER': self._integer_argument_name_in_err_msg})
         integer_token = my_parser.consume_mandatory_token('Missing {INTEGER} expression')

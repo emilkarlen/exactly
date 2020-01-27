@@ -185,7 +185,7 @@ is interpreted as the name of {symbol_concept:a}.
 """
 
 _GLOBAL_DESCRIPTION = """\
-All operators have the same precedence.
+All binary operators have the same precedence.
 
 
 Operators and parentheses must be separated by whitespace.

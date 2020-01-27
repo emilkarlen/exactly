@@ -52,7 +52,7 @@ class IndividualTypeConstructor(ArticleContentsConstructor):
             sub_sections.append(synopsis_section(
                 invokation_variants_content(None,
                                             self.doc.invokation_variants(),
-                                            [])))
+                                            self.doc.syntax_elements())))
         append_section_if_contents_is_non_empty(sub_sections,
                                                 'Description',
                                                 self.doc.main_description_rest())

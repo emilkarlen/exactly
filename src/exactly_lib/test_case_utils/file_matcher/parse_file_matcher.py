@@ -5,9 +5,8 @@ from exactly_lib.definitions import doc_format, matcher_model
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
-from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION
+from exactly_lib.definitions.entity import syntax_elements, types
+from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
 from exactly_lib.processing import exit_values
@@ -69,7 +68,7 @@ def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv
     return parser.consume_and_handle_optional_option(
         None,
         parse_sdv,
-        SELECTION_OPTION.name)
+        instruction_arguments.SELECTION_OPTION.name)
 
 
 def parse_sdv(parser: TokenParser,
@@ -108,7 +107,7 @@ def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
 
 def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-    model_constructor = parse_dir_contents_model.parse(token_parser)
+    model_constructor = _DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
     files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser,
                                                                      False)
     return dir_contents.dir_matches_files_matcher_sdv__generic(model_constructor,
@@ -120,7 +119,7 @@ def _constant(matcher: FileMatcher) -> GenericFileMatcherSdv:
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_MATCHER_': FILE_MATCHER_TYPE_INFO.name.singular,
+    '_MATCHER_': types.FILE_MATCHER_TYPE_INFO.name.singular,
     '_NAME_MATCHER_': NAME_MATCHER_NAME,
     '_TYPE_MATCHER_': TYPE_MATCHER_NAME,
     '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
@@ -185,9 +184,9 @@ class _TypeSyntaxDescription(grammar.SimpleExpressionDescription):
 
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
-        name=FILE_MATCHER_TYPE_INFO.name,
-        type_system_type_name=FILE_MATCHER_TYPE_INFO.identifier,
-        syntax_element_name=MATCHER_ARGUMENT,
+        name=types.FILE_MATCHER_TYPE_INFO.name,
+        type_system_type_name=types.FILE_MATCHER_TYPE_INFO.identifier,
+        syntax_element_name=syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.argument,
     ),
     model=matcher_model.FILE_MATCHER_MODEL,
     value_type=ValueType.FILE_MATCHER,
@@ -227,6 +226,16 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 )
 
 _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
+
+_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG = token_stream_parser.ErrorMessageConfiguration(
+    'Missing {_CONTENTS_OPTIONS_} or {_FILES_MATCHER_}',
+    {
+        '_CONTENTS_OPTIONS_': file_or_dir_contents.DIR_FILE_SET_OPTIONS.name,
+        '_FILES_MATCHER_': syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
+    }
+)
+
+_DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser(_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG)
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} who's ...
