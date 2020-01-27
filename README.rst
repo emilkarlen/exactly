@@ -606,7 +606,7 @@ Including (but not limited to):
 * Improved string character escaping
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
-* ``dir-contents -recursive``: Add options to limit traversal depth
+* ``dir-contents``: Add convenience matcher for containment of set of files
 * Symbol substitution in files
 * Variables - corresponding to symbol definitions -
   but for variable values
