@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -122,10 +123,13 @@ class ConstantSimpleExprDescription(grammar.SimpleExpressionDescription):
     def __init__(self,
                  argument_usage_list: Sequence[a.ArgumentUsage],
                  description_rest: Sequence[ParagraphItem],
-                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
+                 syntax_elements: Sequence[SyntaxElementDescription] = (),
+                 see_also_targets: Sequence[SeeAlsoTarget] = (),
+                 ):
         self._argument_usage_list = argument_usage_list
         self._description_rest = description_rest
         self._see_also_targets = list(see_also_targets)
+        self._syntax_elements = syntax_elements
 
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -136,6 +140,10 @@ class ConstantSimpleExprDescription(grammar.SimpleExpressionDescription):
         return self._description_rest
 
     @property
+    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
+        return self._syntax_elements
+
+    @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
         return self._see_also_targets
 
@@ -143,13 +151,20 @@ class ConstantSimpleExprDescription(grammar.SimpleExpressionDescription):
 class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
     def __init__(self,
                  description_rest: Sequence[ParagraphItem],
-                 see_also_targets: Sequence[SeeAlsoTarget] = ()):
+                 syntax_elements: Sequence[SyntaxElementDescription] = (),
+                 see_also_targets: Sequence[SeeAlsoTarget] = (),
+                 ):
         self._description_rest = description_rest
         self._see_also_targets = list(see_also_targets)
+        self._syntax_elements = syntax_elements
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
         return self._description_rest
+
+    @property
+    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
+        return self._syntax_elements
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
@@ -161,6 +176,7 @@ SIMPLE_EXPRESSIONS = (
         SIMPLE_WITH_ARG,
         grammar.SimpleExpression(parse_simple_with_arg,
                                  ConstantSimpleExprDescription([], [],
+                                                               [SyntaxElementDescription(SIMPLE_WITH_ARG + '-SED', ())],
                                                                [CROSS_REF_ID]))
     ),
     NameAndValue(
@@ -196,13 +212,13 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
         NameAndValue(
             COMPLEX_A,
             grammar.ComplexExpression(ComplexA,
-                                      ConstantOperatorExpressionDescription([],
+                                      ConstantOperatorExpressionDescription([], [],
                                                                             [CROSS_REF_ID]))
         ),
         NameAndValue(
             COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
             grammar.ComplexExpression(ComplexB,
-                                      ConstantOperatorExpressionDescription([],
+                                      ConstantOperatorExpressionDescription([], [],
                                                                             [CROSS_REF_ID]))
         ),
     ),

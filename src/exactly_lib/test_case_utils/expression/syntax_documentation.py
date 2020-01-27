@@ -9,9 +9,10 @@ from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
+from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription, ExpressionWithDescription
 from ...definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from ...definitions.entity.syntax_elements import SyntaxElementInfo
+from ...util.name_and_value import NameAndValue
 
 
 def syntax_element_description(grammar: Grammar) -> SyntaxElementDescription:
@@ -36,18 +37,42 @@ class Syntax:
             self.invokation_variants()
         )
 
-    def invokation_variants(self) -> list:
-        return (self.invokation_variants_simple() +
-                self.invokation_variants_prefix() +
-                self.invokation_variants_complex() +
-                self.invokation_variants_symbol_ref() +
-                self.invokation_variants_parentheses()
+    def invokation_variants(self) -> List[InvokationVariant]:
+        return (self._invokation_variants_simple() +
+                self._invokation_variants_prefix() +
+                self._invokation_variants_complex() +
+                self._invokation_variants_symbol_ref() +
+                self._invokation_variants_parentheses()
                 )
 
     def global_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_GLOBAL_DESCRIPTION)
 
-    def invokation_variants_simple(self) -> List[InvokationVariant]:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
+        expression_lists = [
+            self.grammar.simple_expressions_list,
+            self.grammar.prefix_expressions_list,
+            self.grammar.complex_expressions_list,
+        ]
+        return list(itertools.chain.from_iterable(
+            map(_seds_for_expr, expression_lists)
+        ))
+
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        """
+        :returns: A new list, which may contain duplicate elements.
+        """
+        expression_dicts = [
+            self.grammar.simple_expressions,
+            self.grammar.prefix_expressions,
+            self.grammar.complex_expressions,
+        ]
+        return list(itertools.chain.from_iterable(
+            map(_see_also_targets_for_expr,
+                expression_dicts)
+        ))
+
+    def _invokation_variants_simple(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
                                   syntax: SimpleExpressionDescription) -> InvokationVariant:
             name_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -61,7 +86,7 @@ class Syntax:
             for expr in self.grammar.simple_expressions_list
         ]
 
-    def invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
+    def _invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
         def invokation_variant(syntax_element: SyntaxElementInfo,
                                description: Sequence[ParagraphItem]) -> InvokationVariant:
             return InvokationVariant(cl_syntax.cl_syntax_for_args([
@@ -83,7 +108,7 @@ class Syntax:
                                ),
         ]
 
-    def invokation_variants_complex(self) -> List[InvokationVariant]:
+    def _invokation_variants_complex(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
                                   syntax: OperatorExpressionDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -97,7 +122,7 @@ class Syntax:
             for expr in self.grammar.complex_expressions_list
         ]
 
-    def invokation_variants_prefix(self) -> List[InvokationVariant]:
+    def _invokation_variants_prefix(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
                                   syntax: OperatorExpressionDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -111,7 +136,7 @@ class Syntax:
             for expr in self.grammar.prefix_expressions_list
         ]
 
-    def invokation_variants_parentheses(self) -> List[InvokationVariant]:
+    def _invokation_variants_parentheses(self) -> List[InvokationVariant]:
         arguments = [
             a.Single(a.Multiplicity.MANDATORY,
                      a.Constant('(')),
@@ -122,20 +147,6 @@ class Syntax:
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments))
         return [iv]
 
-    def see_also_targets(self) -> List[SeeAlsoTarget]:
-        """
-        :returns: A new list, which may contain duplicate elements.
-        """
-        expression_dicts = [
-            self.grammar.simple_expressions,
-            self.grammar.prefix_expressions,
-            self.grammar.complex_expressions,
-        ]
-        return list(itertools.chain.from_iterable(
-            map(_see_also_targets_for_expr,
-                expression_dicts)
-        ))
-
     def _symbol_ref_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_SYMBOL_REF_DESCRIPTION)
 
@@ -143,7 +154,7 @@ class Syntax:
         return self._tp.fnap(_SYMBOL_NAME_ADDITIONAL_DESCRIPTION)
 
 
-def _see_also_targets_for_expr(expressions_dict: dict) -> iter:
+def _see_also_targets_for_expr(expressions_dict: dict) -> List[SeeAlsoTarget]:
     from_expressions = list(itertools.chain.from_iterable(
         map(lambda expr: expr.syntax.see_also_targets,
             expressions_dict.values())))
@@ -154,6 +165,13 @@ def _see_also_targets_for_expr(expressions_dict: dict) -> iter:
     ]
 
     return from_expressions + always
+
+
+def _seds_for_expr(expressions: List[NameAndValue[ExpressionWithDescription]]) -> List[SyntaxElementDescription]:
+    return list(itertools.chain.from_iterable([
+        expr.value.description().syntax_elements
+        for expr in expressions
+    ]))
 
 
 _SYMBOL_REF_DESCRIPTION = """\

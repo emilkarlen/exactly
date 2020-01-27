@@ -22,7 +22,7 @@ def _for_logic_type(type_info: SingularNameAndCrossReferenceId,
                                         type_info,
                                         syntax.global_description(),
                                         syntax.invokation_variants(),
-                                        [],
+                                        syntax.syntax_element_descriptions(),
                                         syntax.see_also_targets())
 
 
