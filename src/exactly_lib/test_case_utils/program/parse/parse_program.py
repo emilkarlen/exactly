@@ -14,11 +14,13 @@ def program_parser() -> Parser[ProgramSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_program)
 
 
-def parse_program(parser: TokenParser) -> ProgramSdv:
+def parse_program(parser: TokenParser,
+                  must_be_on_current_line=False) -> ProgramSdv:
     """
     Consumes whole lines, so that the parser will be at the start of the following line, after the parse.
     """
-    program = _parse_simple_program(parser)
+    program = _parse_simple_program(parser,
+                                    must_be_on_current_line)
 
     def parse_transformer(_parser: TokenParser) -> ProgramSdv:
         transformer = parse_string_transformer.parse_string_transformer_from_token_parser(_parser)
@@ -31,10 +33,11 @@ def parse_program(parser: TokenParser) -> ProgramSdv:
                                                      instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def _parse_simple_program(parser: TokenParser) -> ProgramSdv:
+def _parse_simple_program(parser: TokenParser,
+                          must_be_on_current_line=False) -> ProgramSdv:
     return parser.parse_default_or_optional_command(parse_executable_file.parse_as_program,
                                                     _PROGRAM_VARIANT_SETUPS,
-                                                    False)
+                                                    must_be_on_current_line)
 
 
 _PROGRAM_VARIANT_SETUPS = {

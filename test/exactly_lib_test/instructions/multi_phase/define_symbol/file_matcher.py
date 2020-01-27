@@ -71,33 +71,44 @@ class Test(TestCaseBase):
         ]
         # ARRANGE #
         defined_name = 'defined_name'
+        argument_cases = [
+            NameAndValue('value on same line',
+                         '{file_matcher_type} {defined_name} = {selector_argument}'
+                         ),
+            NameAndValue('value on following line',
+                         '{file_matcher_type} {defined_name} = {new_line} {selector_argument}'
+                         ),
+        ]
+
         for case in cases:
-            with self.subTest(case.name):
-                source = single_line_source(
-                    src('{file_matcher_type} {defined_name} = {selector_argument}',
-                        defined_name=defined_name,
-                        selector_argument=case.input_value),
-                )
-
-                expected_container = matches_container(
-                    sdv_assertions.matches_sdv_of_file_matcher(
-                        references=asrt.is_empty_sequence,
-                        primitive_value=case.expected_value
+            for argument_case in argument_cases:
+                with self.subTest(case.name,
+                                  arguments=argument_case.name):
+                    source = single_line_source(
+                        src(argument_case.value,
+                            defined_name=defined_name,
+                            selector_argument=case.input_value),
                     )
-                )
 
-                expectation = Expectation(
-                    symbol_usages=asrt.matches_sequence([
-                        asrt_sym_usage.matches_definition(asrt.equals(defined_name),
-                                                          expected_container)
-                    ]),
-                    symbols_after_main=assert_symbol_table_is_singleton(
-                        defined_name,
-                        expected_container,
+                    expected_container = matches_container(
+                        sdv_assertions.matches_sdv_of_file_matcher(
+                            references=asrt.is_empty_sequence,
+                            primitive_value=case.expected_value
+                        )
                     )
-                )
-                # ACT & ASSERT #
-                self._check(source, ArrangementWithSds(), expectation)
+
+                    expectation = Expectation(
+                        symbol_usages=asrt.matches_sequence([
+                            asrt_sym_usage.matches_definition(asrt.equals(defined_name),
+                                                              expected_container)
+                        ]),
+                        symbols_after_main=assert_symbol_table_is_singleton(
+                            defined_name,
+                            expected_container,
+                        )
+                    )
+                    # ACT & ASSERT #
+                    self._check(source, ArrangementWithSds(), expectation)
 
     def test_failing_parse(self):
         cases = [

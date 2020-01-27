@@ -44,6 +44,7 @@ _STD_FORMAT_MAP = {
     'rel_act_home': path.REL_HDS_ACT_OPTION,
     'rel_symbol': path.REL_symbol_OPTION,
     'rel_source_file': path.REL_source_file_dir_OPTION,
+    'new_line': '\n',
 }
 
 TYPE_IDENT_2_VALID_VALID = {
@@ -63,6 +64,11 @@ TYPE_IDENT_2_VALID_VALID = {
 
 def single_line_source(s: str,
                        **kwargs) -> ParseSource:
+    return remaining_source(src(s, **kwargs))
+
+
+def arbitrary_string_source(s: str,
+                            **kwargs) -> ParseSource:
     return remaining_source(src(s, **kwargs))
 
 

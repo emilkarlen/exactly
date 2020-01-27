@@ -55,32 +55,43 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         # ARRANGE #
 
-        source = single_line_source(
-            src('{files_matcher_type} {defined_name} = {matcher_argument}',
-                defined_name=defined_name,
-                matcher_argument=arg_syntax.arbitrary_single_line_value_that_must_not_be_quoted()),
-        )
+        argument_cases = [
+            NameAndValue('value on same line',
+                         '{files_matcher_type} {defined_name} = {matcher_argument}'
+                         ),
+            NameAndValue('value on following line',
+                         '{files_matcher_type} {defined_name} = {new_line} {matcher_argument}'
+                         ),
+        ]
 
-        # EXPECTATION #
+        for case in argument_cases:
+            with self.subTest(case.name):
+                source = single_line_source(
+                    src(case.value,
+                        defined_name=defined_name,
+                        matcher_argument=arg_syntax.arbitrary_single_line_value_that_must_not_be_quoted()),
+                )
 
-        expected_container = matches_container(
-            sdv_assertions.matches_sdv_of_files_matcher()
-        )
+                # EXPECTATION #
 
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                asrt_sym_usage.matches_definition(asrt.equals(defined_name),
-                                                  expected_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                defined_name,
-                expected_container,
-            )
-        )
+                expected_container = matches_container(
+                    sdv_assertions.matches_sdv_of_files_matcher()
+                )
 
-        # ACT & ASSERT #
+                expectation = Expectation(
+                    symbol_usages=asrt.matches_sequence([
+                        asrt_sym_usage.matches_definition(asrt.equals(defined_name),
+                                                          expected_container)
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        defined_name,
+                        expected_container,
+                    )
+                )
 
-        self._check(source, ArrangementWithSds(), expectation)
+                # ACT & ASSERT #
+
+                self._check(source, ArrangementWithSds(), expectation)
 
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'

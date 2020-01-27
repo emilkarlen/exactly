@@ -68,47 +68,58 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         defined_name = 'defined_name'
 
-        source = remaining_source(
-            src('{line_match_type} {defined_name} = {matcher_argument}',
-                defined_name=defined_name,
-                matcher_argument=matcher_argument),
-            following_lines=['following line'],
-        )
+        argument_cases = [
+            NameAndValue('value on same line',
+                         '{line_match_type} {defined_name} = {matcher_argument}'
+                         ),
+            NameAndValue('value on following line',
+                         '{line_match_type} {defined_name} = {new_line} {matcher_argument}'
+                         ),
+        ]
 
-        # EXPECTATION #
+        for argument_case in argument_cases:
+            with self.subTest(argument_case.name):
+                source = remaining_source(
+                    src(argument_case.value,
+                        defined_name=defined_name,
+                        matcher_argument=matcher_argument),
+                    following_lines=['following line'],
+                )
 
-        symbol_table = SymbolTable({symbol.name: container(symbol.value), })
+                # EXPECTATION #
 
-        expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
+                symbol_table = SymbolTable({symbol.name: container(symbol.value), })
 
-        expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
+                expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 
-        expected_container = matches_container(
-            assertion_on_sdv=
-            sdv_assertions.matches_sdv_of_line_matcher(
-                references=asrt.matches_sequence([
-                    is_line_matcher_reference_to(symbol.name),
-                ]),
-                primitive_value=asrt_matcher.is_equivalent_to(expected_matcher,
-                                                              models_for_equivalence_check),
-                symbols=symbol_table,
-            )
-        )
+                expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
 
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                asrt_sym_usage.matches_definition(asrt.equals(defined_name),
-                                                  expected_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                defined_name,
-                expected_container,
-            )
-        )
+                expected_container = matches_container(
+                    assertion_on_sdv=
+                    sdv_assertions.matches_sdv_of_line_matcher(
+                        references=asrt.matches_sequence([
+                            is_line_matcher_reference_to(symbol.name),
+                        ]),
+                        primitive_value=asrt_matcher.is_equivalent_to(expected_matcher,
+                                                                      models_for_equivalence_check),
+                        symbols=symbol_table,
+                    )
+                )
 
-        # ACT & ASSERT #
+                expectation = Expectation(
+                    symbol_usages=asrt.matches_sequence([
+                        asrt_sym_usage.matches_definition(asrt.equals(defined_name),
+                                                          expected_container)
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        defined_name,
+                        expected_container,
+                    )
+                )
 
-        self._check(source, ArrangementWithSds(), expectation)
+                # ACT & ASSERT #
+
+                self._check(source, ArrangementWithSds(), expectation)
 
 
 class TestUnsuccessfulScenarios(TestCaseBase):

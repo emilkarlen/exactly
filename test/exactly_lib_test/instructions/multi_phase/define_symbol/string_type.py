@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -52,18 +53,29 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
 
 class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_single_constant_word(self):
-        source = single_line_source('{string_type} name1 = v1')
-        expected_definition = SymbolDefinition('name1', string_constant_container('v1'))
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                'name1',
-                equals_container(string_constant_container('v1')),
-            )
-        )
-        self._check(source, ArrangementWithSds(), expectation)
+        argument_cases = [
+            NameAndValue('value on same line',
+                         '{string_type} name1 = v1'
+                         ),
+            NameAndValue('value on following line',
+                         '{string_type} name1 = {new_line} v1'
+                         ),
+        ]
+
+        for argument_case in argument_cases:
+            with self.subTest(argument_case.name):
+                source = arbitrary_string_source(argument_case.value)
+                expected_definition = SymbolDefinition('name1', string_constant_container('v1'))
+                expectation = Expectation(
+                    symbol_usages=asrt.matches_sequence([
+                        vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        'name1',
+                        equals_container(string_constant_container('v1')),
+                    )
+                )
+                self._check(source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #

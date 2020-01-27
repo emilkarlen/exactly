@@ -272,7 +272,8 @@ def _parse_list(fs_location_info: FileSystemLocationInfo,
 
 def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> LineMatcherSdv:
-    return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
+    return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser,
+                                                                   must_be_on_current_line=False)
 
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
@@ -282,12 +283,14 @@ def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
                         token_parser: TokenParser) -> FileMatcherSdv:
-    return parse_file_matcher.parse_sdv(token_parser)
+    return parse_file_matcher.parse_sdv(token_parser,
+                                        must_be_on_current_line=False)
 
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
                          token_parser: TokenParser) -> FilesMatcherSdv:
-    return parse_files_matcher.parse_files_matcher(token_parser)
+    return parse_files_matcher.parse_files_matcher(token_parser,
+                                                   must_be_on_current_line=False)
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,

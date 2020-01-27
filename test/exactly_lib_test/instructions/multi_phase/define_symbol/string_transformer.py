@@ -64,6 +64,19 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                        ),
                        source_assertion=asrt_source.is_at_beginning_of_line(2)
                        ),
+            SourceCase('Expression on following line',
+                       source=
+                       remaining_source(
+                           src('{lines_trans_type} {defined_name} = {new_line} {transformer_argument}',
+                               defined_name=defined_name,
+                               transformer_argument=argument_syntax.syntax_for_sequence_of_transformers([
+                                   symbol.name,
+                                   replace_transformer_syntax,
+                               ])),
+                           following_lines=['following line'],
+                       ),
+                       source_assertion=asrt_source.is_at_beginning_of_line(3)
+                       ),
             SourceCase('1st expr on first line followed by operator, 2nd expr on next line',
                        source=
                        remaining_source(

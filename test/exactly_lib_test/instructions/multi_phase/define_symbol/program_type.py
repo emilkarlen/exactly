@@ -16,6 +16,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
+from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program
@@ -48,29 +49,46 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
 
         program = pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
             referred_symbol.name))
-        source = multi_line_source('{program_type} {defined_symbol} = {program}',
-                                   ['following line'],
-                                   defined_symbol=name_of_defined_symbol,
-                                   program=program)
-        expected_symbol_container = asrt_rs.matches_container(
-            assertion_on_sdv=asrt_sdv.matches_sdv_of_program(
-                references=asrt.matches_sequence([
-                    is_program_reference_to(referred_symbol.name)
-                ]),
-                resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value__with_adv(
-                    lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
-                symbols=symbols
-            ))
-        expectation = Expectation(
-            source=asrt_source.is_at_beginning_of_line(2),
-            symbol_usages=asrt.matches_sequence([
-                asrt_sym_usage.matches_definition(
-                    name=asrt.equals(name_of_defined_symbol),
-                    container=expected_symbol_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                expected_name=name_of_defined_symbol,
-                value_assertion=expected_symbol_container,
-            )
-        )
-        self._check(source, ArrangementWithSds(), expectation)
+
+        argument_cases = [
+            NIE('value on same line',
+                asrt_source.is_at_beginning_of_line(2),
+                multi_line_source('{program_type} {defined_symbol} = {program}',
+                                  ['following line'],
+                                  defined_symbol=name_of_defined_symbol,
+                                  program=program)
+                ),
+            NIE('value on following line',
+                asrt_source.is_at_beginning_of_line(3),
+                multi_line_source('{program_type} {defined_symbol} =',
+                                  ['{program}',
+                                   'following line'],
+                                  defined_symbol=name_of_defined_symbol,
+                                  program=program)
+                ),
+        ]
+
+        for argument_case in argument_cases:
+            with self.subTest(argument_case.name):
+                expected_symbol_container = asrt_rs.matches_container(
+                    assertion_on_sdv=asrt_sdv.matches_sdv_of_program(
+                        references=asrt.matches_sequence([
+                            is_program_reference_to(referred_symbol.name)
+                        ]),
+                        resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value__with_adv(
+                            lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
+                        symbols=symbols
+                    ))
+                expectation = Expectation(
+                    source=argument_case.expected_value,
+                    symbol_usages=asrt.matches_sequence([
+                        asrt_sym_usage.matches_definition(
+                            name=asrt.equals(name_of_defined_symbol),
+                            container=expected_symbol_container)
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        expected_name=name_of_defined_symbol,
+                        value_assertion=expected_symbol_container,
+                    )
+                )
+                self._check(argument_case.input_value, ArrangementWithSds(), expectation)

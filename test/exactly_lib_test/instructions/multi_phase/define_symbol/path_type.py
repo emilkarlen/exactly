@@ -67,22 +67,33 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
 
 class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = src('{path_type} name = {rel_act} component')
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_path_sdv = path_sdvs.constant(
-                paths.rel_act(paths.constant_path_part('component')))
-            expected_container = symbol_container(expected_path_sdv)
-            self._check(source,
-                        ArrangementWithSds(),
-                        Expectation(
-                            symbol_usages=assert_symbol_usages_is_singleton_list(
-                                vs_asrt.equals_symbol(
-                                    SymbolDefinition('name', expected_container))),
-                            symbols_after_main=assert_symbol_table_is_singleton(
-                                'name',
-                                equals_container(expected_container))
-                        )
-                        )
+        argument_cases = [
+            NameAndValue('value on same line',
+                         '{path_type} name = {rel_act} component'
+                         ),
+            NameAndValue('value on following line',
+                         '{path_type} name = {new_line} {rel_act} component'
+                         ),
+        ]
+
+        for argument_case in argument_cases:
+            with self.subTest(arguments=argument_case.name):
+                instruction_argument = src(argument_case.value)
+                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                    expected_path_sdv = path_sdvs.constant(
+                        paths.rel_act(paths.constant_path_part('component')))
+                    expected_container = symbol_container(expected_path_sdv)
+                    self._check(source,
+                                ArrangementWithSds(),
+                                Expectation(
+                                    symbol_usages=assert_symbol_usages_is_singleton_list(
+                                        vs_asrt.equals_symbol(
+                                            SymbolDefinition('name', expected_container))),
+                                    symbols_after_main=assert_symbol_table_is_singleton(
+                                        'name',
+                                        equals_container(expected_container))
+                                )
+                                )
 
 
 class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
