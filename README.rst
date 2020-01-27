@@ -373,7 +373,7 @@ The following case checks your hierarchy of software projects.
 
 The projects are rooted at the directory 'my-projects'.
 Each 'project' sub directory contains a project,
-and must contain a 'Makefile' with a 'all' target::
+and must contain a 'Makefile' with a target 'all'::
 
     [assert]
 
@@ -384,18 +384,25 @@ and must contain a 'Makefile' with a 'all' target::
     def path   MY_PROJECTS_ROOT_DIR = -rel-act-home 'my-projects'
     def string MY_PROJECT_DIR_NAME  = 'project'
 
-    def file-matcher IS_VALID_MAKEFILE = type file &&
-                                         contents
-                                           any line : matches '^all:$'
+    def file-matcher IS_VALID_MAKEFILE =
 
-    def file-matcher IS_VALID_PROJECT_DIR = type dir &&
-                                            dir-contents
-                                               any file : name 'Makefile' && @[IS_VALID_MAKEFILE]@
+        type file &&
+        contents
+          any line : matches '^all:$'
 
 
-    def file-matcher ALL_PROJECT_DIRS_ARE_VALID = dir-contents -recursive
-                                                    -selection name @[MY_PROJECT_DIR_NAME]@
-                                                      every file : @[IS_VALID_PROJECT_DIR]@
+    def file-matcher IS_VALID_PROJECT_DIR =
+
+        type dir &&
+        dir-contents
+           any file : name 'Makefile' && @[IS_VALID_MAKEFILE]@
+
+
+    def file-matcher ALL_PROJECT_DIRS_ARE_VALID =
+
+        dir-contents -recursive
+          -selection name @[MY_PROJECT_DIR_NAME]@
+            every file : @[IS_VALID_PROJECT_DIR]@
 
 
 Testing a git commit hook
