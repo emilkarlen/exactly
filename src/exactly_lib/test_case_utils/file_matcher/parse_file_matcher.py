@@ -1,5 +1,6 @@
 from typing import List, Optional, Sequence
 
+import exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc
 from exactly_lib.definitions import doc_format, matcher_model
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -18,7 +19,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
-from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model
+from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
@@ -207,7 +208,9 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             REGULAR_FILE_CONTENTS,
             grammar.SimpleExpression(
                 _parse_regular_file_contents,
-                file_contents_utils.FileContentsSyntaxDescription(regular_file_contents.DOCUMENTATION_SETUP)
+                file_contents_utils.FileContentsSyntaxDescription(
+                    exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc.REGULAR_FILE_DOCUMENTATION_SETUP
+                )
             )
         ),
 
@@ -215,7 +218,9 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             DIR_CONTENTS,
             grammar.SimpleExpression(
                 _parse_dir_contents,
-                file_contents_utils.FileContentsSyntaxDescription(dir_contents.DOCUMENTATION_SETUP)
+                file_contents_utils.FileContentsSyntaxDescription(
+                    file_or_dir_contents_doc.DIR_DOCUMENTATION
+                )
             )
         ),
     ),

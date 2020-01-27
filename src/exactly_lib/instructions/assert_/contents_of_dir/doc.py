@@ -54,7 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                      syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.argument)
 
         arguments = [self.actual_file]
-        arguments += file_or_dir_contents_doc.RECURSION_OPTIONS
+        arguments += file_or_dir_contents_doc.TRAVERSAL_OPTION_USAGES
         arguments += [files_matcher_arg]
 
         return [

@@ -10,7 +10,6 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, generic_dependent_value
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
-from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
@@ -29,12 +28,6 @@ NAMES = file_contents_utils.NamesSetup(
     file_check_properties.DIR_CONTENTS,
     file_properties.FileType.DIRECTORY,
     syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT,
-)
-
-DOCUMENTATION_SETUP = file_contents_utils.DocumentationSetup(
-    NAMES,
-    file_or_dir_contents_doc.RECURSION_OPTIONS,
-    file_or_dir_contents_doc.get_recursion_option_description,
 )
 
 

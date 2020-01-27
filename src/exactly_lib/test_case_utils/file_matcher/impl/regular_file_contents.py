@@ -24,12 +24,6 @@ class _ModelConstructor(file_contents_utils.ModelConstructor[FileToCheck]):
         )
 
 
-DOCUMENTATION_SETUP = file_contents_utils.DocumentationSetup(
-    NAMES,
-    ()
-)
-
-
 def sdv__generic(contents_matcher: GenericStringMatcherSdv) -> GenericFileMatcherSdv:
     return file_contents_utils.sdv__generic(
         NAMES,

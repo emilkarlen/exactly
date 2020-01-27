@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Sequence, Optional, Callable
+from typing import TypeVar, Generic, Sequence, Callable
 
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -13,7 +14,6 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc import MATCHER_FILE_HANDLING_DESCRIPTION
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.generic_dependent_value import Sdv, Ddv, Adv
@@ -47,15 +47,19 @@ class NamesSetup:
                              )
 
 
+def _empty_sed_list() -> Sequence[SyntaxElementDescription]:
+    return ()
+
+
 class DocumentationSetup:
     def __init__(self,
                  names: NamesSetup,
                  options: Sequence[a.ArgumentUsage],
-                 description_extra: Optional[Callable[[], Sequence[ParagraphItem]]] = None,
+                 get_syntax_elements: Callable[[], Sequence[SyntaxElementDescription]] = _empty_sed_list,
                  ):
         self.names = names
         self.options = options
-        self.description_extra = description_extra
+        self.get_syntax_elements = get_syntax_elements
 
 
 class ModelConstructor(Generic[CONTENTS_MATCHER_MODEL], ABC):
@@ -196,11 +200,13 @@ class FileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
         })
 
         ret_val = tp.fnap(_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION)
-        if self._documentation.description_extra:
-            ret_val += self._documentation.description_extra()
         ret_val += tp.fnap(MATCHER_FILE_HANDLING_DESCRIPTION)
 
         return ret_val
+
+    @property
+    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
+        return self._documentation.get_syntax_elements()
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
@@ -222,4 +228,10 @@ def _new_structure_tree(name: str,
 
 _FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION = """\
 Matches {_file_type_:s} who's contents satisfies {_matcher_type_}.
+"""
+
+MATCHER_FILE_HANDLING_DESCRIPTION = """\
+The result is {HARD_ERROR} for {MODEL:a} that is not {_file_type_:a}.
+
+Symbolic links are followed.
 """
