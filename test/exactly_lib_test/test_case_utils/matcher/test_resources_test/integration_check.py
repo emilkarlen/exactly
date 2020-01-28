@@ -97,7 +97,7 @@ class TestCaseBase(unittest.TestCase):
                                         arrangement: sut.arrangement_w_tcds,
                                         expectation: sut.Expectation):
         checker = sut.MatcherChecker(parser, EXPECTED_LOGIC_TYPE_FOR_TEST)
-        checker.check_single_multi_execution_setup(
+        checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
             arguments,
             expectation.parse,
@@ -120,7 +120,7 @@ class TestCaseBase(unittest.TestCase):
                           sut.constant_model(model),
                           arrangement, expectation)
         with self.subTest('multiple executions'):
-            checker.check_single_multi_execution_setup(
+            checker.check_single_multi_execution_setup__for_test_of_test_resources(
                 self.tc,
                 arguments,
                 expectation.parse,
@@ -252,7 +252,7 @@ class TestTypes(TestCaseBase):
             with self.subTest(arrangement.name,
                               execution_variant='multiple execution'):
                 with self.assertRaises(utils.TestError):
-                    checker.check_single_multi_execution_setup(
+                    checker.check_single_multi_execution_setup__for_test_of_test_resources(
                         self.tc,
                         utils.single_line_arguments(),
                         expectation.parse,

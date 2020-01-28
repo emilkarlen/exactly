@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_e
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.validation import ValidationHelper
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import SourceArrangement, \
-    ExecutionExpectation
+    ExecutionExpectation, ParseExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -205,9 +205,10 @@ class TestFilesOfModel(unittest.TestCase):
         INSTRUCTION_CHECKER.check_multi(
             self,
             SourceArrangement.new_w_arbitrary_fs_location(arguments.as_arguments),
-            symbol_usages=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher(model_checker_symbol_name)
-            ),
+            ParseExpectation(
+                symbol_usages=asrt.matches_singleton_sequence(
+                    is_reference_to_files_matcher(model_checker_symbol_name)
+                )),
             execution=[
                 NExArr(
                     contents_case.name,

@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
-    ExecutionExpectation, arrangement_wo_tcds, Arrangement
+    ExecutionExpectation, arrangement_wo_tcds, Arrangement, EXECUTION_IS_PASS
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, empty_dir
@@ -210,28 +210,28 @@ class TestFilesOfModel(unittest.TestCase):
 
         for case in cases:
             with self.subTest(case.name):
-                integration_check.CHECKER.check_single_multi_execution_setup(
+                integration_check.CHECKER.check(
                     self,
-                    arguments=fm_args.DirContentsRecursive(
+                    source=fm_args.DirContentsRecursive(
                         helper.files_matcher_sym_ref_arg(),
                         min_depth=case.depth_args.min_depth,
                         max_depth=case.depth_args.max_depth,
-                    ).as_arguments,
-                    parse_expectation=
-                    helper.parse_expectation_of_symbol_references(),
+                    ).as_remaining_source,
                     model_constructor=
                     helper.model_constructor_for_checked_dir(),
-                    execution=NExArr(
-                        case.name,
-                        ExecutionExpectation(),
-                        helper.arrangement_for_contents_of_model(
-                            checked_dir_contents=the_checked_dir_contents,
-                            files_matcher_symbol_value=
-                            model_checker.matcher(self,
-                                                  helper.checked_dir_path(),
-                                                  test_data.strip_file_type_info(case.data.expected),
-                                                  ),
-                        ),
+                    arrangement=
+                    helper.arrangement_for_contents_of_model(
+                        checked_dir_contents=the_checked_dir_contents,
+                        files_matcher_symbol_value=
+                        model_checker.matcher(self,
+                                              helper.checked_dir_path(),
+                                              test_data.strip_file_type_info(case.data.expected),
+                                              ),
+                    ),
+                    expectation=
+                    Expectation(
+                        helper.parse_expectation_of_symbol_references(),
+                        EXECUTION_IS_PASS,
                     ),
                 )
 
@@ -289,6 +289,7 @@ class TestSymbolReferencesShouldBeReported(unittest.TestCase):
                         is_reference_to_files_matcher__ref(helper.files_matcher_name),
                     ])
                 ),
+                EXECUTION_IS_PASS,
             )
         )
 

@@ -66,6 +66,16 @@ class Expectation:
         self.symbol_usages = symbol_usages
 
 
+class ParseExpectation:
+    def __init__(
+            self,
+            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+    ):
+        self.source = source
+        self.symbol_usages = symbol_usages
+
+
 class ExecutionExpectation:
     def __init__(
             self,
@@ -84,6 +94,15 @@ class ExecutionExpectation:
         self.main_result = main_result
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.main_side_effects_on_tcds = main_side_effects_on_tcds
+
+
+class Expectation2:
+    def __init__(self,
+                 parse: ParseExpectation,
+                 execution: ExecutionExpectation,
+                 ):
+        self.parse = parse
+        self.execution = execution
 
 
 def expectation(
@@ -122,12 +141,13 @@ def check(put: unittest.TestCase,
           source: ParseSource,
           arrangement: ArrangementPostAct,
           expectation: Expectation):
-    Executor(put, arrangement, expectation).execute(parser, source)
+    Executor(put, ParserChecker(parser), arrangement, expectation).execute(source)
 
 
 class Checker:
     def __init__(self, parser: InstructionParser):
         self._parser = parser
+        self._parse_checker = ParserChecker(parser)
 
     def check(self,
               put: unittest.TestCase,
@@ -135,7 +155,25 @@ class Checker:
               arrangement: ArrangementPostAct,
               expectation: Expectation,
               ):
-        Executor(put, arrangement, expectation).execute(self._parser, source)
+        Executor(put, self._parse_checker, arrangement, expectation).execute(source)
+
+    def check_2(self,
+                put: unittest.TestCase,
+                source: ParseSource,
+                arrangement: ArrangementPostAct2,
+                expectation: Expectation2,
+                ):
+        instruction = self._parse_checker.parse(put,
+                                                ARBITRARY_FS_LOCATION_INFO,
+                                                source,
+                                                expectation.parse,
+                                                )
+        execution_checker = ExecutionChecker(
+            put,
+            arrangement,
+            expectation.execution,
+        )
+        execution_checker.check(instruction)
 
     def check_multi__with_source_variants(
             self,
@@ -145,19 +183,13 @@ class Checker:
             execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
     ):
         for parse_source in equivalent_source_variants__with_source_check(put, source.arguments.as_single_string):
-            instruction = self._parser.parse(source.fs_location_info, parse_source)
-
-            put.assertIsNotNone(instruction,
-                                'Result from parser cannot be None')
-            put.assertIsInstance(instruction,
-                                 AssertPhaseInstruction,
-                                 'The instruction must be an instance of ' + str(AssertPhaseInstruction))
-
-            assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
-
-            symbol_usages.apply_with_message(put,
-                                             instruction.symbol_usages(),
-                                             'symbol usages')
+            instruction = self._parse_checker.parse(
+                put,
+                source.fs_location_info,
+                parse_source,
+                ParseExpectation(
+                    symbol_usages=symbol_usages,
+                ))
 
             for case in execution:
                 with put.subTest(execution_case=case.name):
@@ -168,10 +200,36 @@ class Checker:
             self,
             put: unittest.TestCase,
             source: SourceArrangement,
-            symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
+            parse_expectation: ParseExpectation,
             execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
     ):
-        instruction = self._parser.parse(source.fs_location_info, source.arguments.as_remaining_source)
+        parse_source = source.arguments.as_remaining_source
+        instruction = self._parse_checker.parse(
+            put,
+            source.fs_location_info,
+            parse_source,
+            parse_expectation,
+        )
+
+        for case in execution:
+            with put.subTest(execution_case=case.name):
+                checker = ExecutionChecker(put, case.arrangement, case.expected)
+                checker.check(instruction)
+
+
+class ParserChecker:
+    def __init__(self,
+                 parser: InstructionParser,
+                 ):
+        self._parser = parser
+
+    def parse(self,
+              put: unittest.TestCase,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource,
+              expectation: ParseExpectation,
+              ) -> AssertPhaseInstruction:
+        instruction = self._parser.parse(fs_location_info, source)
 
         put.assertIsNotNone(instruction,
                             'Result from parser cannot be None')
@@ -181,39 +239,35 @@ class Checker:
 
         assert isinstance(instruction, AssertPhaseInstruction)  # Type info for IDE
 
-        symbol_usages.apply_with_message(put,
-                                         instruction.symbol_usages(),
-                                         'symbol usages')
+        expectation.source.apply_with_message(put, source, 'source after parse')
+        expectation.symbol_usages.apply_with_message(put,
+                                                     instruction.symbol_usages(),
+                                                     'symbol usages after parse')
 
-        for case in execution:
-            with put.subTest(execution_case=case.name):
-                checker = ExecutionChecker(put, case.arrangement, case.expected)
-                checker.check(instruction)
+        return instruction
 
 
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
+                 parse_checker: ParserChecker,
                  arrangement: ArrangementPostAct,
                  expectation: Expectation):
         self.put = put
+        self.parse_checker = parse_checker
         self.arrangement = arrangement
         self.expectation = expectation
 
-    def execute(self,
-                parser: InstructionParser,
-                source: ParseSource):
-        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-        self.put.assertIsNotNone(instruction,
-                                 'Result from parser cannot be None')
-        self.put.assertIsInstance(instruction,
-                                  AssertPhaseInstruction,
-                                  'The instruction must be an instance of ' + str(AssertPhaseInstruction))
-        self.expectation.source.apply_with_message(self.put, source, 'source')
-        assert isinstance(instruction, AssertPhaseInstruction)
-        self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          instruction.symbol_usages(),
-                                                          'symbol-usages after parse')
+    def execute(self, source: ParseSource):
+        instruction = self.parse_checker.parse(
+            self.put,
+            ARBITRARY_FS_LOCATION_INFO,
+            source,
+            ParseExpectation(
+                self.expectation.source,
+                self.expectation.symbol_usages,
+            ),
+        )
 
         ex = self.expectation
         exe_checker = ExecutionChecker(self.put,

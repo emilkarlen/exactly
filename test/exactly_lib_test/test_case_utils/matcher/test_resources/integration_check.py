@@ -111,6 +111,7 @@ class Expectation:
 
 
 is_pass = Expectation
+EXECUTION_IS_PASS = ExecutionExpectation()
 
 
 def main_result_is_success() -> ValueAssertion[MatchingResult]:
@@ -150,12 +151,12 @@ class MatcherChecker(Generic[MODEL]):
               arrangement: Arrangement,
               expectation: Expectation,
               ):
-        checker = _ParserChecker(put,
-                                 model_constructor,
-                                 self._parser,
-                                 arrangement,
-                                 self._expected_logic_value_type,
-                                 expectation)
+        checker = _ParseAndExecutionChecker(put,
+                                            model_constructor,
+                                            self._parser,
+                                            arrangement,
+                                            self._expected_logic_value_type,
+                                            expectation)
         checker.check(source)
 
     def check__w_source_variants(self,
@@ -167,6 +168,29 @@ class MatcherChecker(Generic[MODEL]):
         for source in equivalent_source_variants__with_source_check__for_expression_parser(
                 put, arguments):
             self.check(put, source, model_constructor, arrangement, expectation)
+
+    def check_multi(self,
+                    put: unittest.TestCase,
+                    arguments: Arguments,
+                    parse_expectation: ParseExpectation,
+                    model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+                    execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
+                    ):
+        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
+            MatcherTypeSdv,
+            self._expected_logic_value_type,
+            parse_expectation.symbol_references
+        )
+
+        source = arguments.as_remaining_source
+        actual = self._parser.parse(source)
+        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
+        parse_expectation.source.apply_with_message(put, source, 'source after parse')
+
+        for case in execution:
+            with put.subTest(case.name):
+                checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
+                checker.check(actual)
 
     def check_multi__w_source_variants(self,
                                        put: unittest.TestCase,
@@ -194,36 +218,14 @@ class MatcherChecker(Generic[MODEL]):
                         checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
                         checker.check(actual)
 
-    def check_multi(self,
-                    put: unittest.TestCase,
-                    arguments: Arguments,
-                    parse_expectation: ParseExpectation,
-                    model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                    execution: Sequence[NExArr[ExecutionExpectation, Arrangement]],
-                    ):
-        is_valid_sdv = asrt_matcher.matches_matcher_attributes(
-            MatcherTypeSdv,
-            self._expected_logic_value_type,
-            parse_expectation.symbol_references
-        )
-
-        source = arguments.as_remaining_source
-        actual = self._parser.parse(source)
-        is_valid_sdv.apply_with_message(put, actual, 'parsed object')
-        parse_expectation.source.apply_with_message(put, source, 'source after parse')
-
-        for case in execution:
-            with put.subTest(case.name):
-                checker = _MatcherExecutionChecker(put, model_constructor, case.arrangement, case.expected)
-                checker.check(actual)
-
-    def check_single_multi_execution_setup(self,
-                                           put: unittest.TestCase,
-                                           arguments: Arguments,
-                                           parse_expectation: ParseExpectation,
-                                           model_constructor: Callable[[FullResolvingEnvironment], MODEL],
-                                           execution: NExArr[ExecutionExpectation, Arrangement],
-                                           ):
+    def check_single_multi_execution_setup__for_test_of_test_resources(
+            self,
+            put: unittest.TestCase,
+            arguments: Arguments,
+            parse_expectation: ParseExpectation,
+            model_constructor: Callable[[FullResolvingEnvironment], MODEL],
+            execution: NExArr[ExecutionExpectation, Arrangement],
+    ):
         is_valid_sdv = asrt_matcher.matches_matcher_attributes(
             MatcherTypeSdv,
             self._expected_logic_value_type,
@@ -243,7 +245,7 @@ class _CheckIsDoneException(Exception):
     pass
 
 
-class _ParserChecker(Generic[MODEL]):
+class _ParseAndExecutionChecker(Generic[MODEL]):
     FAKE_TCDS = fake_tcds()
 
     def __init__(self,

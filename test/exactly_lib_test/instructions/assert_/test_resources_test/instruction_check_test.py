@@ -14,6 +14,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check as sut
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import is_pass, \
     Expectation
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
@@ -148,6 +149,16 @@ class TestMiscCases(TestCaseBase):
             utils.single_line_source(),
             sut.ArrangementPostAct(),
             is_pass())
+
+    def test_fail_due_to_unexpected_source_after_parse(self):
+        with self.assertRaises(utils.TestError):
+            self._check(utils.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+                        utils.single_line_source(),
+                        sut.ArrangementPostAct(),
+                        Expectation(
+                            source=asrt_source.is_at_beginning_of_line(10),
+                        )
+                        )
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(utils.TestError):
