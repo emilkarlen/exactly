@@ -23,7 +23,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir
@@ -115,7 +115,7 @@ class Arrangement(ArrangementWithSds):
 class Expectation:
     def __init__(self,
                  result: ValueAssertion[ResultWithTransformationData] = assert_process_result_data(),
-                 validation: ValidationExpectation = all_validations_passes(),
+                 validation: ValidationAssertions = all_validations_passes(),
                  symbol_references: ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),

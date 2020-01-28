@@ -10,7 +10,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -21,13 +21,15 @@ class IntegerValidationCase:
                  integer_expr_string: str,
                  symbols: List[NameAndValue[SymbolDependentValue]],
                  reference_assertions: List[ValueAssertion[SymbolReference]],
-                 expectation: ValidationExpectation,
+                 expectations: Expectation,
+                 assertions: ValidationAssertions,
                  ):
         self.case_name = case_name
         self.integer_expr_string = integer_expr_string
         self.symbols = symbols
         self.reference_assertions = reference_assertions
-        self.expectation = expectation
+        self.expectations = expectations
+        self.assertions = assertions
 
     @property
     def symbol_table(self) -> SymbolTable:
@@ -55,6 +57,7 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               expr_str,
                               [],
                               [],
+                              validation.PRE_SDS_FAILURE_EXPECTATION,
                               validation.pre_sds_validation_fails__w_any_msg(),
                               )
         for expr_str in
@@ -66,12 +69,14 @@ def failing_integer_validation_cases(symbol_in_integer_name: str = 'symbol_in_in
                               symbol_reference_syntax_for_name(non_int_string_symbol.name),
                               [non_int_string_symbol],
                               [is_reference_to_symbol_in_expression(non_int_string_symbol.name)],
+                              validation.PRE_SDS_FAILURE_EXPECTATION,
                               validation.pre_sds_validation_fails__w_any_msg(),
                               ),
         IntegerValidationCase('failing validation/pre sds: non-iterable string ref',
                               'len({})'.format(symbol_reference_syntax_for_name(non_iterable_string_symbol.name)),
                               [non_iterable_string_symbol],
                               [is_reference_to_symbol_in_expression(non_iterable_string_symbol.name)],
+                              validation.PRE_SDS_FAILURE_EXPECTATION,
                               validation.pre_sds_validation_fails__w_any_msg(),
                               ),
     ]

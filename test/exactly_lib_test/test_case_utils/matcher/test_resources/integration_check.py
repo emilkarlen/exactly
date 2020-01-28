@@ -27,7 +27,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser, \
     equivalent_source_variants__with_source_check__for_expression_parser_2
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -91,7 +91,7 @@ class ParseExpectation:
 class ExecutionExpectation:
     def __init__(
             self,
-            validation: ValidationExpectation = all_validations_passes(),
+            validation: ValidationAssertions = all_validations_passes(),
             main_result: ValueAssertion[MatchingResult] = asrt_matching_result.matches_value(True),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
     ):

@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configurat
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, failing_validation_cases, \
-    ValidationExpectation
+    ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -188,7 +188,7 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
         return self.helper.is_sym_refs_to(self.operands)
 
     def failing_validation_cases(self) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
-        def cases_for(validation_case: NEA[ValidationExpectation, ValidationActual]
+        def cases_for(validation_case: NEA[ValidationAssertions, ValidationActual]
                       ) -> List[NExArr[ExecutionExpectation, Arrangement]]:
             validations = [validation_case.actual] + ([ValidationActual.passes()] * (len(self.operands) - 1))
             return [

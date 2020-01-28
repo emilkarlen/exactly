@@ -37,11 +37,9 @@ class DepthArgs:
 
 class LimitationCase:
     def __init__(self,
-                 name: str,
                  depth_args: DepthArgs,
                  data: EA[List[FileElementForTest], List[FileSystemElement]]
                  ):
-        self.name = name
         self.depth_args = depth_args
         self.data = data
 

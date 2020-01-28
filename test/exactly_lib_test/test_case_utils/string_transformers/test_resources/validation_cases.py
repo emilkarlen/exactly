@@ -6,13 +6,13 @@ from exactly_lib_test.symbol.test_resources.string_transformer import StringTran
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationActual
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationActual
 
 
 class ValidationCase:
     def __init__(self,
                  symbol_name: str,
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
@@ -40,7 +40,7 @@ class ValidationCase:
         return self._symbol_context
 
     @property
-    def expectation(self) -> ValidationExpectation:
+    def expectation(self) -> ValidationAssertions:
         return self._expectation
 
 

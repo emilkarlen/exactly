@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_dep_value_asse
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import \
     PreOrPostSdsValueValidationAssertion
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -22,7 +22,7 @@ def matches_regex_sdv(
         primitive_value: Callable[[Tcds], ValueAssertion[Pattern]] = lambda tcds: asrt.anything_goes(),
         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
         dir_dependencies: DirDependencies = DirDependencies.NONE,
-        validation: ValidationExpectation = all_validations_passes(),
+        validation: ValidationAssertions = all_validations_passes(),
         symbols: symbol_table.SymbolTable = None,
         tcds: Tcds = fake_tcds(),
 ) -> ValueAssertion[RegexSdv]:

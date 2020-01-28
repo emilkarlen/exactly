@@ -7,7 +7,7 @@ from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationExpectation, \
+from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationAssertions, \
     ValidationActual
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
@@ -78,7 +78,7 @@ def constant_validator(result: ValidationActual) -> DdvValidator:
 
 class PreOrPostSdsValidatorAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  tcds: Tcds):
         self.expectation = expectation
         self.tcds = tcds
@@ -102,7 +102,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[DdvValidator]):
 class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
                  tcds: Tcds,
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  ):
         self.tcds = tcds
         self.expectation = expectation

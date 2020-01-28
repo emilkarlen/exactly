@@ -7,6 +7,7 @@ from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
@@ -121,22 +122,44 @@ class InvalidDirContents(FileMatcherArg):
         ]
 
 
-class InvalidDirContentsRecursive(FileMatcherArg):
+class DirContentsRecursive(FileMatcherArg):
     def __init__(self,
-                 invalid_argument: WithToString,
+                 files_matcher: MatcherArgument,
+                 min_depth: Optional[WithToString] = None,
+                 max_depth: Optional[WithToString] = None,
                  ):
-        self.invalid_argument = invalid_argument
+        self.files_matcher = files_matcher
+        self.recursive_args = DirContentsRecursiveArgs(
+            files_matcher,
+            min_depth,
+            max_depth,
+        )
+
+    @property
+    def elements(self) -> List:
+        return [
+            parse_file_matcher.DIR_CONTENTS,
+            self.recursive_args,
+        ]
+
+
+class DirContentsRecursiveInvalidOptionArgs(FileMatcherArg):
+    def __init__(self,
+                 invalid_option_name: str,
+                 ):
+        self.invalid_option_name = invalid_option_name
 
     @property
     def elements(self) -> List:
         return [
             parse_file_matcher.DIR_CONTENTS,
             OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
-            self.invalid_argument,
+            OptionArgument(a.OptionName(self.invalid_option_name)),
+            SymbolReference('valid_files_matcher_arg'),
         ]
 
 
-class DirContentsRecursive(FileMatcherArg):
+class DirContentsRecursiveArgs(FileMatcherArg):
     def __init__(self,
                  files_matcher: MatcherArgument,
                  min_depth: Optional[WithToString] = None,
@@ -149,7 +172,6 @@ class DirContentsRecursive(FileMatcherArg):
     @property
     def elements(self) -> List:
         ret_val = [
-            parse_file_matcher.DIR_CONTENTS,
             OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
         ]
 

@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -18,7 +18,7 @@ class RegexValidationCase:
                  regex_string: str,
                  symbols: List[NameAndValue[SymbolDependentValue]],
                  reference_assertions: List[ValueAssertion[SymbolReference]],
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  ):
         self.case_name = case_name
         self.regex_string = regex_string

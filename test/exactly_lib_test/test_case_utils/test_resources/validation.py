@@ -35,6 +35,10 @@ class Expectation:
         self.passes_post_sds = passes_post_sds
 
 
+PRE_SDS_FAILURE_EXPECTATION = Expectation(False, True)
+POST_SDS_FAILURE_EXPECTATION = Expectation(True, False)
+
+
 class ValidationActual:
     def __init__(self,
                  pre_sds: Optional[str] = None,
@@ -63,13 +67,28 @@ def expect_validation_pre_eds(result: bool) -> Expectation:
     return Expectation(result, True)
 
 
-class ValidationExpectation:
+class ValidationAssertions:
     def __init__(self,
                  pre_sds: ValidationResultAssertion,
                  post_sds: ValidationResultAssertion,
                  ):
         self._pre_sds = pre_sds
         self._post_sds = post_sds
+
+    @staticmethod
+    def of_expectation(expectation: Expectation) -> 'ValidationAssertions':
+        def mk_assertion(passes: bool) -> ValidationResultAssertion:
+            return (
+                asrt.is_none
+                if passes
+                else
+                asrt.is_not_none_and(asrt_text_doc.is_any_text())
+            )
+
+        return ValidationAssertions(
+            pre_sds=mk_assertion(expectation.passes_pre_sds),
+            post_sds=mk_assertion(expectation.passes_post_sds),
+        )
 
     @property
     def pre_sds(self) -> ValidationResultAssertion:
@@ -80,7 +99,7 @@ class ValidationExpectation:
         return self._post_sds
 
 
-def failing_validation_cases() -> Sequence[NEA[ValidationExpectation, ValidationActual]]:
+def failing_validation_cases() -> Sequence[NEA[ValidationAssertions, ValidationActual]]:
     err_msg_pre_sds = 'validation err msg/pre sds'
     err_msg_post_sds = 'validation err msg/post sds'
     return [
@@ -96,38 +115,38 @@ def failing_validation_cases() -> Sequence[NEA[ValidationExpectation, Validation
     ]
 
 
-def all_validations_passes() -> ValidationExpectation:
-    return ValidationExpectation(
+def all_validations_passes() -> ValidationAssertions:
+    return ValidationAssertions(
         pre_sds=asrt.is_none,
         post_sds=asrt.is_none,
     )
 
 
-def pre_sds_validation_fails__w_any_msg() -> ValidationExpectation:
-    return ValidationExpectation(
+def pre_sds_validation_fails__w_any_msg() -> ValidationAssertions:
+    return ValidationAssertions(
         pre_sds=asrt.is_not_none_and(asrt_text_doc.is_any_text()),
         post_sds=asrt.is_none,
     )
 
 
 def pre_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anything_goes()
-                             ) -> ValidationExpectation:
-    return ValidationExpectation(
+                             ) -> ValidationAssertions:
+    return ValidationAssertions(
         pre_sds=asrt.is_not_none_and(asrt_text_doc.is_string_for_test(expected_err_msg)),
         post_sds=asrt.is_none,
     )
 
 
 def post_sds_validation_fails(expected_err_msg: ValueAssertion[str] = asrt.anything_goes()
-                              ) -> ValidationExpectation:
-    return ValidationExpectation(
+                              ) -> ValidationAssertions:
+    return ValidationAssertions(
         pre_sds=asrt.is_none,
         post_sds=asrt.is_not_none_and(asrt_text_doc.is_string_for_test(expected_err_msg)),
     )
 
 
-def post_sds_validation_fails__w_any_msg() -> ValidationExpectation:
-    return ValidationExpectation(
+def post_sds_validation_fails__w_any_msg() -> ValidationAssertions:
+    return ValidationAssertions(
         pre_sds=asrt.is_none,
         post_sds=asrt.is_not_none_and(asrt_text_doc.is_any_text()),
     )

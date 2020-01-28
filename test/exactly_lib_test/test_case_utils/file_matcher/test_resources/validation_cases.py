@@ -11,7 +11,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, \
-    ValidationExpectationSvh, ValidationExpectation
+    ValidationExpectationSvh, ValidationAssertions
 
 
 class ValidationCaseSvh:
@@ -62,7 +62,7 @@ def failing_validation_cases__svh(symbol_name: str = 'file_matcher_symbol'
 
 class ValidationCase:
     def __init__(self,
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  actual: ValidationActual,
                  symbol_name: str = 'file_matcher_symbol',
                  ):
@@ -77,7 +77,7 @@ class ValidationCase:
         return self._symbol_context
 
     @property
-    def expectation(self) -> ValidationExpectation:
+    def expectation(self) -> ValidationAssertions:
         return self._expectation
 
 

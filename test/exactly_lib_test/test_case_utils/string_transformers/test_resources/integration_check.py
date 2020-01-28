@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
@@ -33,7 +33,7 @@ class Expectation:
             self,
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-            validation: ValidationExpectation = all_validations_passes(),
+            validation: ValidationAssertions = all_validations_passes(),
             main_result: ValueAssertion[StringTransformerModel] = asrt.anything_goes(),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
             is_identity_transformer: ValueAssertion[bool] = asrt.equals(False)

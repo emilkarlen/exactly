@@ -6,8 +6,9 @@ from typing import ContextManager, Optional
 from exactly_lib import program_info
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.functional import reduce_optional
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer, \
-    ActResultProducerFromActResult
+    ActResultProducerFromActResult, NULL_ACT_RESULT_PRODUCER
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator, non_hds_populator, \
     tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
@@ -48,6 +49,17 @@ class TcdsArrangementPostAct:
         self.act_result = act_result
         self.pre_population_action = pre_population_action
         self.post_population_action = post_population_action
+
+    @staticmethod
+    def of_tcds(a: TcdsArrangement) -> 'TcdsArrangementPostAct':
+        return TcdsArrangementPostAct(
+            tcds_contents=a.tcds_contents,
+            hds_contents=a.hds_contents,
+            non_hds_contents=a.non_hds_contents,
+            act_result=reduce_optional(lambda x: x, NULL_ACT_RESULT_PRODUCER, a.act_result),
+            pre_population_action=a.pre_population_action,
+            post_population_action=a.post_population_action,
+        )
 
 
 def tcds_with_act_as_curr_dir_3(arrangement: TcdsArrangement) -> ContextManager[Tcds]:

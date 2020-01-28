@@ -134,7 +134,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                             symbol_references=case.symbol_references_expectation,
                         ),
                         ExecutionExpectation(
-                            validation=case.expectation,
+                            validation=case.assertions,
                         ),
                     )
                 )

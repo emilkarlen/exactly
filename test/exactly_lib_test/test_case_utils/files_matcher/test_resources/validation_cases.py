@@ -10,7 +10,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check i
     arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, ValidationExpectation
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -33,7 +33,7 @@ class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherSdv]):
 
 class ValidationCase:
     def __init__(self,
-                 expectation: ValidationExpectation,
+                 expectation: ValidationAssertions,
                  actual: ValidationActual,
                  symbol_name: str = 'files_matcher_symbol',
                  ):
@@ -51,7 +51,7 @@ class ValidationCase:
         return self._symbol_context
 
     @property
-    def expectation(self) -> ValidationExpectation:
+    def expectation(self) -> ValidationAssertions:
         return self._expectation
 
 

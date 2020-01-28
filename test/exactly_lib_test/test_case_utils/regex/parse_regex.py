@@ -26,7 +26,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, all_validations_passes
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
@@ -56,7 +56,7 @@ class Expectation:
     def __init__(self,
                  pattern: ValueAssertion[Pattern] = asrt.anything_goes(),
                  token_stream: ValueAssertion[TokenStream] = asrt.anything_goes(),
-                 validation: ValidationExpectation = all_validations_passes(),
+                 validation: ValidationAssertions = all_validations_passes(),
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  ):
         self.pattern = pattern
@@ -96,7 +96,7 @@ def option_case_for_ignore_case(expectation: ValueAssertion[Pattern]) -> OptionC
 class ExpectationExceptPattern:
     def __init__(self,
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-                 validation: ValidationExpectation = all_validations_passes(),
+                 validation: ValidationAssertions = all_validations_passes(),
                  ):
         self.references = references
         self.validation = validation

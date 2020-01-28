@@ -23,3 +23,6 @@ class ActResultProducerFromActResult(ActResultProducer):
 
     def apply(self, act_environment: ActEnvironment) -> SubProcessResult:
         return self.act_result
+
+
+NULL_ACT_RESULT_PRODUCER = ActResultProducerFromActResult()

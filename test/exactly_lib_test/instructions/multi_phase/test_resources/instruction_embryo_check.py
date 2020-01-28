@@ -15,7 +15,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectation, ValidationResultAssertion
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -57,7 +57,7 @@ class Expectation:
         self.assertion_on_instruction_environment = assertion_on_instruction_environment
 
 
-def expectation(validation: ValidationExpectation = validation_utils.all_validations_passes(),
+def expectation(validation: ValidationAssertions = validation_utils.all_validations_passes(),
                 main_result: ValueAssertion = asrt.anything_goes(),
                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),

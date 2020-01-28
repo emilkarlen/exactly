@@ -36,6 +36,10 @@ class SymbolTable:
     def __init__(self, initial_values: Dict[str, SymbolTableValue] = None):
         self._key_2_value = {} if initial_values is None else initial_values
 
+    @staticmethod
+    def empty() -> 'SymbolTable':
+        return SymbolTable()
+
     def add(self, entry: Entry):
         self._key_2_value[entry.key] = entry.value
 
