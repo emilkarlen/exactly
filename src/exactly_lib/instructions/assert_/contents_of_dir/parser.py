@@ -1,4 +1,3 @@
-from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.instructions.assert_.contents_of_dir import impl_utils
 from exactly_lib.instructions.assert_.contents_of_dir.impl_utils import FilesSource
 from exactly_lib.instructions.assert_.utils import assertion_part
@@ -13,7 +12,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.validation.sdv_validation import ConstantSuccessSdvValidator
-from exactly_lib.test_case_utils.files_matcher import config, models
+from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.parse import parse_path
 
@@ -39,11 +39,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             path_to_check = parse_path.parse_path_from_token_parser(config.ACTUAL_RELATIVITY_CONFIGURATION,
                                                                     token_parser)
 
-            files_matcher_model_constructor = token_parser.consume_and_handle_optional_option(
-                models.non_recursive,
-                lambda tp: models.recursive,
-                file_or_dir_contents.RECURSIVE_OPTION.name,
-            )
+            files_matcher_model_constructor = parse_file_matcher.DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
@@ -55,8 +51,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             assertions = assertion_part.compose(
                 actual_path_checker_assertion_part,
-                impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_sdv,
-                                                                  files_matcher_model_constructor),
+                impl_utils.FilesMatcherAsDirContentsAssertionPart(files_matcher_model_constructor,
+                                                                  files_matcher_sdv),
             )
 
             return assertion_part.AssertionInstructionFromAssertionPart(assertions,

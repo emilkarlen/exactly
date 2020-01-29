@@ -107,7 +107,7 @@ def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
 
 def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-    model_constructor = _DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
+    model_constructor = DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
     files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser,
                                                                      False)
     return dir_contents.dir_matches_files_matcher_sdv__generic(model_constructor,
@@ -235,7 +235,7 @@ _DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG = token_stream_parser.ErrorMessa
     }
 )
 
-_DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser(_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG)
+DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser(_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG)
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} who's ...

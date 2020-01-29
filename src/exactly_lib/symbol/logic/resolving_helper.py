@@ -5,6 +5,7 @@ from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.generic_dependent_value import Sdv, PRIMITIVE
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherModel
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
@@ -41,6 +42,13 @@ class LogicTypeResolvingHelper:
     @property
     def file_space(self) -> TmpDirFileSpace:
         return self.application_environment.tmp_files_space
+
+    def resolve_generic_sdv(self, sdv: Sdv[PRIMITIVE]) -> PRIMITIVE:
+        return (
+            sdv.resolve(self.symbols)
+                .value_of_any_dependency(self.tcds)
+                .primitive(self.application_environment)
+        )
 
     def resolve(self, sdv: MatcherTypeSdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
         return (

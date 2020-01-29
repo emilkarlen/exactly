@@ -1,10 +1,11 @@
 import unittest
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.result import svh
+from exactly_lib.util.functional import reduce_optional
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
@@ -12,7 +13,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct, \
+    TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.case_generator import \
     SingleCaseGenerator, ExecutionResult, FullExecutionResult, RecWLimArguments, ModelFile, ValidationFailure, \
     MultipleExecutionCasesGenerator
@@ -43,7 +45,7 @@ def execute_single(put: unittest.TestCase,
         ).as_remaining_source,
         arrangement=
         ArrangementPostAct2(
-            tcds=TcdsArrangementPostAct.of_tcds(case.tcds_arrangement()),
+            tcds=_mk_tcds_arrangement_post_act(case.tcds_arrangement()),
             symbols=case.symbols(put),
         ),
         expectation=
@@ -80,13 +82,22 @@ def execute_multi(put: unittest.TestCase,
                 case.name,
                 _execution_expectation_of(case.expected),
                 ArrangementPostAct2(
-                    tcds=TcdsArrangementPostAct.of_tcds(case.arrangement.tcds),
+                    tcds=_mk_tcds_arrangement_post_act(case.arrangement.tcds),
                     symbols=case.arrangement.symbols,
                 ),
             )
             for case in generator.execution_cases()
         ],
     )
+
+
+def _mk_tcds_arrangement_post_act(tcds: Optional[TcdsArrangement]) -> TcdsArrangementPostAct:
+    return reduce_optional(TcdsArrangementPostAct.of_tcds,
+                           _NEUTRAL_TCDS_POST_ACT,
+                           tcds)
+
+
+_NEUTRAL_TCDS_POST_ACT = TcdsArrangementPostAct()
 
 
 def _symbol_usages_assertion(reference_assertions: Sequence[ValueAssertion[SymbolReference]]
