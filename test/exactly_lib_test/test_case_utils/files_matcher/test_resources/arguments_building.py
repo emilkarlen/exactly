@@ -170,7 +170,7 @@ class FilesMatcherArgumentsConstructor(ABC):
         pass
 
 
-class SelectionAndMaterArgumentsConstructor(FilesMatcherArgumentsConstructor):
+class SelectionAndMatcherArgumentsConstructor(FilesMatcherArgumentsConstructor):
     def __init__(self,
                  selection,
                  files_matcher):

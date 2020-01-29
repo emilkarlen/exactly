@@ -205,7 +205,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
             int_args.int_condition(comparators.EQ, 1)
         )
 
-        args = fsm_args.SelectionAndMaterArgumentsConstructor(
+        args = fsm_args.SelectionAndMatcherArgumentsConstructor(
             file_matcher_arg__begins_with_a,
             files_matcher_args__num_files_eq_1,
         )

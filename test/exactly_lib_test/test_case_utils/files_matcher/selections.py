@@ -128,7 +128,7 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
             int_args.int_condition(comparators.EQ, 1)
         )
 
-        files_matcher_args__num_files_ending_with_x_eq_1 = fsm_args.SelectionAndMaterArgumentsConstructor(
+        files_matcher_args__num_files_ending_with_x_eq_1 = fsm_args.SelectionAndMatcherArgumentsConstructor(
             file_matcher_arg__ends_with_x,
             files_matcher_args__num_files_eq_1,
         )
@@ -139,7 +139,7 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
 
         symbol_name = 'FILES_MATCHER_SYMBOL'
 
-        files_matcher_args__begins_with_a__symbol = fsm_args.SelectionAndMaterArgumentsConstructor(
+        files_matcher_args__begins_with_a__symbol = fsm_args.SelectionAndMatcherArgumentsConstructor(
             file_matcher_arg__begins_with_a,
             fsm_args.symbol_reference(symbol_name),
         )
