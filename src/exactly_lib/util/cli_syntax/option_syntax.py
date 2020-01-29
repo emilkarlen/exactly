@@ -1,8 +1,10 @@
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 
+OPTION_PREFIX_CHARACTER = '-'
 
-def is_option_string(string: str) -> str:
-    return string and string[0] == '-'
+
+def is_option_string(string: str) -> bool:
+    return string and string[0] == OPTION_PREFIX_CHARACTER
 
 
 def long_option_syntax(name: str) -> str:
@@ -10,7 +12,7 @@ def long_option_syntax(name: str) -> str:
     Syntax for a long option.
     :param name: The option name without any "option" syntax prefix ("--).
     """
-    return '-' + name
+    return OPTION_PREFIX_CHARACTER + name
 
 
 def option_syntax(option_name: OptionName) -> str:

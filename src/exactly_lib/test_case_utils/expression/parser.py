@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from .grammar import Grammar, EXPR
+from ...util.cli_syntax import option_syntax
 
 
 def parse_from_parse_source(grammar: Grammar[EXPR],
@@ -99,8 +100,13 @@ class _Parser(Generic[EXPR]):
         if simple_name in self.grammar.simple_expressions:
             return self.grammar.simple_expressions[simple_name].parse_arguments(self.parser)
         elif not symbol_syntax.is_symbol_name(simple_name):
-            err_msg = symbol_syntax.invalid_symbol_name_error(simple_name)
-            raise SingleInstructionInvalidArgumentException(err_msg)
+            if simple_name.startswith(option_syntax.OPTION_PREFIX_CHARACTER):
+                raise SingleInstructionInvalidArgumentException(
+                    'Invalid option: ' + simple_name
+                )
+            else:
+                err_msg = symbol_syntax.invalid_symbol_name_error(simple_name)
+                raise SingleInstructionInvalidArgumentException(err_msg)
         else:
             return self.grammar.mk_reference(simple_name)
 
