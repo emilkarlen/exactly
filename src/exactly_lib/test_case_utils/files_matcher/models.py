@@ -4,29 +4,12 @@ from abc import ABC, abstractmethod
 from typing import Iterator, Optional, List
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel, FileTypeAccess
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-
-
-class FileModelForDir(FileModel):
-    def __init__(self,
-                 relative_to_root_dir: pathlib.Path,
-                 path: DescribedPath,
-                 ):
-        self._relative_to_root_dir = relative_to_root_dir
-        self._path = path
-
-    @property
-    def path(self) -> DescribedPath:
-        return self._path
-
-    @property
-    def relative_to_root_dir(self) -> pathlib.Path:
-        return self._relative_to_root_dir
 
 
 class _FilesGenerator(ABC):
@@ -65,7 +48,7 @@ class _FilesMatcherModelForDir(FilesMatcherModel):
             return (
                 file_model
                 for file_model in file_models
-                if self._files_selection.matches_w_trace(FileMatcherModelForDescribedPath(file_model.path)).value
+                if self._files_selection.matches_w_trace(file_model.as_file_matcher_model()).value
             )
 
 
@@ -86,11 +69,12 @@ def non_recursive(dir_path: DescribedPath) -> FilesMatcherModel:
 
 class _FilesGeneratorForNonRecursive(_FilesGenerator):
     def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
-        def mk_model(file_name: str) -> FileModel:
-            return FileModelForDir(pathlib.Path(file_name),
-                                   root_dir_path.child(file_name))
+        def mk_model(dir_entry) -> FileModel:
+            return _FileModelForDirEntry(dir_entry,
+                                         pathlib.Path(dir_entry.name),
+                                         root_dir_path.child(dir_entry.name))
 
-        return map(mk_model, os.listdir(str(root_dir_path.primitive)))
+        return map(mk_model, os.scandir(str(root_dir_path.primitive)))
 
 
 class _FilesGeneratorForRecursive(_FilesGenerator):
@@ -161,10 +145,69 @@ class _FilesInDir:
         )
 
     def file_model(self, dir_entry) -> FileModel:
-        return FileModelForDir(
+        return _FileModelForDirEntry(
+            dir_entry,
             self._relative_parent / dir_entry.name,
             self._absolute_parent.child(dir_entry.name),
         )
 
     def dir_entries(self) -> Iterator:  # Iterator[os.DirEntry]
         return os.scandir(str(self._absolute_parent.primitive))
+
+
+class _FileModelForDirEntry(FileModel):
+    def __init__(self,
+                 dir_entry,  # os.DirEntry
+                 relative_to_root_dir: pathlib.Path,
+                 path: DescribedPath,
+                 ):
+        self._relative_to_root_dir = relative_to_root_dir
+        self._path = path
+        self._file_matcher_model = _FileMatcherModel(path, dir_entry)
+
+    @property
+    def path(self) -> DescribedPath:
+        return self._path
+
+    @property
+    def relative_to_root_dir(self) -> pathlib.Path:
+        return self._relative_to_root_dir
+
+    def as_file_matcher_model(self) -> FileMatcherModel:
+        return self._file_matcher_model
+
+
+class _FileTypeAccessForDirEntry(FileTypeAccess):
+    def __init__(self,
+                 dir_entry,  # os.DirEntry
+                 ):
+        self._dir_entry = dir_entry
+
+    def is_type(self, expected: FileType) -> bool:
+        if expected is FileType.REGULAR:
+            return self._dir_entry.is_file()
+        elif expected is FileType.DIRECTORY:
+            return self._dir_entry.is_dir()
+        else:
+            return self._dir_entry.is_symlink()
+
+    def stat(self, follow_sym_links=True) -> os.stat_result:
+        return self._dir_entry.stat(follow_symlinks=follow_sym_links)
+
+
+class _FileMatcherModel(FileMatcherModel):
+    def __init__(self,
+                 path: DescribedPath,
+                 dir_entry,
+                 ):
+        self._path = path
+        self._file_type_access = _FileTypeAccessForDirEntry(dir_entry)
+
+    @property
+    def path(self) -> DescribedPath:
+        """Path of the file to match. May or may not exist."""
+        return self._path
+
+    @property
+    def file_type_access(self) -> FileTypeAccess:
+        return self._file_type_access

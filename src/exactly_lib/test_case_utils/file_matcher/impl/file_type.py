@@ -1,4 +1,3 @@
-import pathlib
 from typing import Optional
 
 from exactly_lib.definitions.entity import types
@@ -20,9 +19,7 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
     def __init__(self, file_type: file_properties.FileType):
         super().__init__()
         self._file_type = file_type
-        self._stat_method = (pathlib.Path.lstat
-                             if file_type is file_properties.FileType.SYMLINK
-                             else pathlib.Path.stat)
+        self._is_follow_sym_links = file_type is not file_properties.FileType.SYMLINK
         self._renderer_of_expected_value = details.String(
             file_properties.TYPE_INFO[self._file_type].description)
 
@@ -44,16 +41,20 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
         )
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        path = model.path.primitive
         try:
-            stat_result = self._stat_method(path)
+            if model.file_type_access.is_type(self._file_type):
+                return self.__tb_with_expected().build_result(True)
         except OSError as ex:
             return self._result_for_exception(model.path, ex)
-        actual_file_type = file_properties.lookup_file_type(stat_result)
-        if actual_file_type is self._file_type:
-            return self.__tb_with_expected().build_result(True)
-        else:
-            return self._result_for_unexpected(actual_file_type)
+
+        return self._result_for_unexpected(model)
+
+    def _result_for_unexpected(self, model: FileMatcherModel) -> MatchingResult:
+        try:
+            stat_result = model.file_type_access.stat(self._is_follow_sym_links)
+            return self._result_for_unexpected_type(file_properties.lookup_file_type(stat_result))
+        except OSError as ex:
+            return self._result_for_exception(model.path, ex)
 
     def _result_for_exception(self, path: DescribedPath, ex: Exception) -> MatchingResult:
         tb = (
@@ -66,8 +67,8 @@ class FileMatcherType(MatcherImplBase[FileMatcherModel]):
         )
         return tb.build_result(False)
 
-    def _result_for_unexpected(self,
-                               actual: Optional[file_properties.FileType]) -> MatchingResult:
+    def _result_for_unexpected_type(self,
+                                    actual: Optional[file_properties.FileType]) -> MatchingResult:
         actual_type_description = (
             'unknown'
             if actual is None

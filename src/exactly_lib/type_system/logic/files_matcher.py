@@ -4,7 +4,7 @@ from typing import Iterator
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherWTraceAndNegation, MatcherDdv
 
 
@@ -17,6 +17,10 @@ class FileModel(ABC):
     @property
     @abstractmethod
     def relative_to_root_dir(self) -> pathlib.Path:
+        pass
+
+    @abstractmethod
+    def as_file_matcher_model(self) -> FileMatcherModel:
         pass
 
 
