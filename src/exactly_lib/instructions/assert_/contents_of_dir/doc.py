@@ -41,13 +41,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return _SINGLE_LINE_DESCRIPTION
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        ret_val = file_or_dir_contents_doc.get_recursion_option_description()
-        ret_val += file_or_dir_contents_doc.description(
+        return file_or_dir_contents_doc.description(
             _PATH_ARGUMENT.name,
             FileType.DIRECTORY
         )
-
-        return ret_val
 
     def invokation_variants(self) -> List[InvokationVariant]:
         files_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -70,6 +67,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
         return [
             actual_file_arg_sed,
+            file_or_dir_contents_doc.get_traversal_options_sed(),
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
