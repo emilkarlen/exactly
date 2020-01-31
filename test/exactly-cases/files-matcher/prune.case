@@ -1,0 +1,9 @@
+[setup]
+
+file PRUNE/regular
+
+[assert]
+
+dir-contents . -recursive
+               ( -prune name 'PRUNE' num-files == 1 ) &&
+               num-files == 2
