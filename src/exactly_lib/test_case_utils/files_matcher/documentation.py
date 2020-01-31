@@ -3,7 +3,6 @@ from typing import Sequence
 from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -33,9 +32,7 @@ class SelectionDoc(grammar.SimpleExpressionDescription):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
-            a.Single(a.Multiplicity.MANDATORY,
-                     a.Named(config.SELECTION_OPTION.argument),
-                     ),
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
             syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.single_mandatory,
         )
 
@@ -48,9 +45,7 @@ class PruneDoc(grammar.SimpleExpressionDescription):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
-            a.Single(a.Multiplicity.MANDATORY,
-                     a.Named(config.SELECTION_OPTION.argument),
-                     ),
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
             syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.single_mandatory,
         )
 

@@ -2,9 +2,8 @@ import itertools
 from typing import List, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
-    cli_argument_syntax_element_description
+    cli_argument_syntax_element_description, invokation_variant_from_args
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -78,8 +77,8 @@ class Syntax:
             name_argument = a.Single(a.Multiplicity.MANDATORY,
                                      a.Constant(name))
             all_arguments = [name_argument] + list(syntax.argument_usage_list)
-            return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
-                                     syntax.description_rest)
+            return invokation_variant_from_args(all_arguments,
+                                                syntax.description_rest)
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
@@ -89,10 +88,10 @@ class Syntax:
     def _invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
         def invokation_variant(syntax_element: SyntaxElementInfo,
                                description: Sequence[ParagraphItem]) -> InvokationVariant:
-            return InvokationVariant(cl_syntax.cl_syntax_for_args([
+            return invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY,
                          syntax_element.argument)
-            ]),
+            ],
                 description
             )
 
@@ -114,8 +113,8 @@ class Syntax:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
                                          a.Constant(operator_name))
             all_arguments = [self.concept_argument, operator_argument, self.concept_argument]
-            return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
-                                     syntax.description_rest)
+            return invokation_variant_from_args(all_arguments,
+                                                syntax.description_rest)
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
@@ -128,8 +127,8 @@ class Syntax:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
                                          a.Constant(operator_name))
             all_arguments = [operator_argument, self.concept_argument]
-            return InvokationVariant(cl_syntax.cl_syntax_for_args(all_arguments),
-                                     syntax.description_rest)
+            return invokation_variant_from_args(all_arguments,
+                                                syntax.description_rest)
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
@@ -144,7 +143,7 @@ class Syntax:
             a.Single(a.Multiplicity.MANDATORY,
                      a.Constant(')')),
         ]
-        iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments))
+        iv = invokation_variant_from_args(arguments)
         return [iv]
 
     def _symbol_ref_description(self) -> List[ParagraphItem]:
