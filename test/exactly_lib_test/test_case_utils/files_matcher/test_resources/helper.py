@@ -13,3 +13,6 @@ class IntegrationCheckHelper(IntegrationCheckWFilesMatcherHelperBase):
         return model.model_constructor__recursive(self.dir_arg.path_sdv,
                                                   min_depth,
                                                   max_depth)
+
+    def model_constructor_for_checked_dir__non_recursive(self) -> ModelConstructor:
+        return model.model_constructor__non_recursive(self.dir_arg.path_sdv)

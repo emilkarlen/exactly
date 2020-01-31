@@ -88,3 +88,16 @@ def model_constructor__recursive(checked_dir: PathSdv,
                                 max_depth)
 
     return ret_val
+
+
+def model_constructor__non_recursive(checked_dir: PathSdv) -> ModelConstructor:
+    def ret_val(environment: FullResolvingEnvironment) -> FilesMatcherModel:
+        checked_dir_path = (
+            checked_dir
+                .resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.tcds)
+        )
+
+        return models.non_recursive(checked_dir_path)
+
+    return ret_val

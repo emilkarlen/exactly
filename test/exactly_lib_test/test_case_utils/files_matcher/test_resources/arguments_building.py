@@ -103,7 +103,6 @@ class Prune(FilesMatcherArg):
                 self.on_resulting_contents.elements
         )
 
-
 class AssertionVariantArgumentsConstructor:
     """"
     Constructs a string for the arguments that are specific for one of the assertion variants:

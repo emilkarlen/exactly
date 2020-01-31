@@ -5,7 +5,7 @@ from typing import Iterator, Optional, List
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
+from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, constant
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel, FileTypeAccess
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
@@ -114,12 +114,17 @@ class _FilesGeneratorForRecursive(_FilesGenerator):
                  root_dir_path: DescribedPath,
                  directory_prune: Optional[FileMatcher],
                  ) -> Iterator[FileModel]:
-        def current_file_model_should_be_pruned() -> bool:
-            return directory_prune is not None and directory_prune.matches_w_trace(current_file_model).value
+        directory_prune = (
+            constant.MatcherWithConstantResult(False)
+            if directory_prune is None
+            else
+            directory_prune
+        )
 
         def add_dir_to_process_if_is_dir(maybe_entry_for_dir):
             try:
-                if maybe_entry_for_dir.is_dir() and not current_file_model_should_be_pruned():
+                if (maybe_entry_for_dir.is_dir() and
+                        not directory_prune.matches_w_trace(current_file_model.as_file_matcher_model()).value):
                     remaining_dirs.append(current_file.new_for_sub_dir(maybe_entry_for_dir))
             except OSError as ex:
                 raise HardErrorException(

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import matcher_model
+from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.files_matcher import config
@@ -64,6 +64,7 @@ _TP = TextParser({
     'FILES_MATCHER': syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
     'model': matcher_model.FILES_MATCHER_MODEL,
     'element': matcher_model.FILE_MATCHER_MODEL,
+    'NOTE': misc_texts.NOTE_LINE_HEADER,
 })
 
 _SELECTION_DESCRIPTION = """\
@@ -72,6 +73,9 @@ Applies {FILES_MATCHER} to the sub set of {element:s} matched by {FILE_MATCHER}.
 
 _PRUNE_DESCRIPTION = """\
 Excludes contents of directories matched by {FILE_MATCHER}.
+
+
+{NOTE} {FILE_MATCHER} is only applied to directories.
 """
 
 _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\

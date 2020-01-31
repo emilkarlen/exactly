@@ -57,6 +57,15 @@ class EmptyArgument(ArgumentElementsRenderer):
         return []
 
 
+class Singleton(ArgumentElementsRenderer):
+    def __init__(self, value: WithToString):
+        self.value = value
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return [self.value]
+
+
 class SequenceOfElementsBase(ArgumentElementsRenderer, ABC):
     """
     A sequence of arguments separated by space.

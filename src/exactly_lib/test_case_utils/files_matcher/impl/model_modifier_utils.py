@@ -1,12 +1,10 @@
 from typing import Sequence, Callable
 
-from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv, PropertyGetterDdv, MODEL, T, \
@@ -16,7 +14,6 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -50,12 +47,6 @@ class _ModelGetter(PropertyGetter[FilesMatcherModel, FilesMatcherModel],
         super().__init__()
         self._configuration = configuration
         self._predicate = predicate
-
-    NAME = ' '.join([
-        option_syntax.option_syntax(config.PRUNE_OPTION.name),
-        syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
-        syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
-    ])
 
     @staticmethod
     def new_structure_renderer(name: str, predicate: StructureRenderer) -> StructureRenderer:

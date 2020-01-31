@@ -123,7 +123,7 @@ Specifies a default {interpreter_actor} {actor} to use for every test case in th
 {interpreter_program} {is_a_shell_cmd}
 
 
-Note: An {actor} specified in the test suite or individual test cases
+{NOTE} An {actor} specified in the test suite or individual test cases
 will have precedence over the {actor} specified by this option.
 """
 
@@ -163,4 +163,5 @@ _TP = TextParser({
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
+    'NOTE': misc_texts.NOTE_LINE_HEADER,
 })

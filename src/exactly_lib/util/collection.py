@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, TypeVar, List
 
 
 class FrozenSetBasedOnEquality(tuple):
@@ -30,3 +30,14 @@ def intersperse_list(element_between, l: list) -> list:
         return l
     else:
         return [l[0]] + [element_between] + intersperse_list(element_between, l[1:])
+
+
+T = TypeVar('T')
+
+
+def concat_list(list_of_lists: Sequence[Sequence[T]]) -> List[T]:
+    ret_val = []
+    for element_list in list_of_lists:
+        ret_val += element_list
+
+    return ret_val

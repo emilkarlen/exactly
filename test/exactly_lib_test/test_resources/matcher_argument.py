@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.definitions import logic
 from exactly_lib.test_case_utils.regex import parse_regex
+from exactly_lib.util import collection
 from exactly_lib.util.parse import token
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton
 from exactly_lib_test.test_resources.strings import WithToString
+
+PAREN_R = Singleton(')')
+
+PAREN_L = Singleton('(')
 
 
 class MatcherArgument(ArgumentElementsRenderer, ABC):
@@ -32,6 +37,43 @@ class Constant(MatcherArgument):
     @property
     def elements(self) -> List:
         return [logic.CONSTANT_MATCHER, logic.BOOLEANS[self.value]]
+
+
+class _BinaryOperatorBase(MatcherArgument, ABC):
+    def __init__(self,
+                 operator_name: str,
+                 matchers: List[MatcherArgument]):
+        self.matchers = matchers
+        self.operator_name = operator_name
+        value_error_if_empty(operator_name, matchers)
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return concat_and_intersperse_non_empty_list(self.operator_name,
+                                                     self.matchers)
+
+
+class Conjunction(_BinaryOperatorBase):
+    def __init__(self, matchers: List[MatcherArgument]):
+        super().__init__(logic.AND_OPERATOR_NAME, matchers)
+
+
+class Disjunction(_BinaryOperatorBase):
+    def __init__(self, matchers: List[MatcherArgument]):
+        super().__init__(logic.OR_OPERATOR_NAME, matchers)
+
+
+class Parenthesis(MatcherArgument):
+    def __init__(self, expression: MatcherArgument):
+        self.expression = expression
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return concat_elements([
+            PAREN_L,
+            self.expression,
+            PAREN_R,
+        ])
 
 
 class MatcherArgComponent(ABC):
@@ -93,9 +135,16 @@ def value_error_if_empty__or(matchers: List[MatcherArgument]):
 
 
 def concat_and_intersperse_non_empty_list(operator_name: str,
-                                          matchers: List[MatcherArgument]) -> List:
+                                          matchers: List[MatcherArgument]) -> List[WithToString]:
     ret_val = matchers[0].elements
     for matcher in matchers[1:]:
         ret_val.append(operator_name)
         ret_val += matcher.elements
     return ret_val
+
+
+def concat_elements(matchers: Sequence[MatcherArgument]) -> List[WithToString]:
+    return collection.concat_list([
+        matcher.elements
+        for matcher in matchers
+    ])

@@ -1,6 +1,7 @@
 from typing import List, Dict, Any
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
@@ -21,7 +22,10 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
                  instruction_name: str,
                  format_map: Dict[str, Any]):
         super().__init__(instruction_name)
-        fm = {'instruction_name': InstructionName(instruction_name)}
+        fm = {
+            'instruction_name': InstructionName(instruction_name),
+            'NOTE': misc_texts.NOTE_LINE_HEADER,
+        }
         fm.update(format_map)
         self._tp = TextParser(fm)
 
@@ -80,7 +84,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
 
 
 _NOT_AN_ASSERTION_IN_ASSERT_PHASE = """\
-Note:
+{NOTE}
 In the {assert_phase} phase, this instruction is mostly useful as a helper for writing
 assertions.  The instruction is not an assertion on its own.
 """

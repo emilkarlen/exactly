@@ -89,7 +89,7 @@ def matcher(put: unittest.TestCase,
     def make_ddv(symbols: SymbolTable) -> MatcherDdv[MODEL]:
         def make_adv(tcds: Tcds) -> MatcherAdv[MODEL]:
             def make_matcher(environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-                return _MatcherThatAppliesValueAssertion(
+                return MatcherThatAppliesValueAssertion(
                     put,
                     application_assertion.get_assertion(symbols, tcds, environment),
                     application_assertion.get_actual,
@@ -101,7 +101,7 @@ def matcher(put: unittest.TestCase,
 
         return MatcherDdvFromParts2TestImpl(
             make_adv,
-            _MatcherThatAppliesValueAssertion.STRUCTURE,
+            MatcherThatAppliesValueAssertion.STRUCTURE,
             ValidatorThatAppliesValueAssertions(put, validation_assertion, message_builder)
         )
 
@@ -140,7 +140,7 @@ class ValidatorThatAppliesValueAssertions(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SD
         return None
 
 
-class _MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTraceAndNegation[MODEL]):
+class MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTraceAndNegation[MODEL]):
     NAME = 'MatcherThatAppliesValueAssertion'
     STRUCTURE = renderers.header_only(NAME)
 
@@ -166,11 +166,11 @@ class _MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTraceAnd
 
     @property
     def negation(self) -> MatcherWTraceAndNegation[FilesMatcherModel]:
-        return _MatcherThatAppliesValueAssertion(self.put,
-                                                 self.assertion,
-                                                 self.get_actual,
-                                                 self.message_builder,
-                                                 not self.matching_result)
+        return MatcherThatAppliesValueAssertion(self.put,
+                                                self.assertion,
+                                                self.get_actual,
+                                                self.message_builder,
+                                                not self.matching_result)
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         self._apply_assertion(model)

@@ -38,7 +38,6 @@ class DirArgumentHelper(ABC):
                                            ) -> TcdsArrangement:
         return TcdsArrangement(
             tcds_contents=self.tcds_populator_for_dir_with_contents(
-                [
-                    Dir(self.name, checked_dir_contents)
-                ]),
+                checked_dir_contents
+            ),
         )
