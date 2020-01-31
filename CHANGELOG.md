@@ -10,6 +10,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Added
 
  - Type `files-matcher` - complex expressions (&& and ||)
+ - Type `files-matcher` - `-prune`
  - Type `string-matcher` - complex expressions (&& and ||)
  - Type `file-matcher` - primitive `dir-contents`
  - Type `string-transformer` - primitive `identity`
