@@ -601,15 +601,14 @@ Future development
 More functionality is needed, smaller and larger.
 Including (but not limited to):
 
-* More string transformers, file matchers etc
-* Possibility to use "program" values in more places, e.g. in ``[act]``
 * Improved string character escaping
+* More string transformers, matchers, etc
+* Possibility to use PROGRAM in more places,
+  e.g. in ``[act]``, as matchers and as a string-transformer
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
 * ``dir-contents``: Add convenience matcher for containment of set of files
 * Symbol substitution in files
-* Variables - corresponding to symbol definitions -
-  but for variable values
 * Dynamic symbol values - e.g. contents of dir, current date
 * Macros and functions
 * Ability to embed Python code in test cases
