@@ -44,6 +44,19 @@ class NExArr(Generic[EXPECTED, ACTUAL]):
         self.arrangement = arrangement
 
 
+class NArrEx(Generic[ACTUAL, EXPECTED]):
+    """A name, one expected value and one actual value."""
+
+    def __init__(self,
+                 name: str,
+                 arrangement: ARRANGEMENT,
+                 expectation: EXPECTED,
+                 ):
+        self.name = name
+        self.arrangement = arrangement
+        self.expectation = expectation
+
+
 class NIE(Generic[INPUT, EXPECTED]):
     """A name, one expected value and one input value."""
 

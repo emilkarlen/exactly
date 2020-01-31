@@ -11,6 +11,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_utils.expression import test_resources as ast
 from exactly_lib_test.test_case_utils.expression.test_resources import ComplexA, ComplexB, PrefixExprP
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
+from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
@@ -25,6 +26,18 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestComplexExpression),
         unittest.makeSuite(TestCombinedExpressions),
     ])
+
+
+GRAMMARS = [
+    NameAndValue(
+        'sans complex expressions',
+        ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+    ),
+    NameAndValue(
+        'with complex expressions',
+        ast.GRAMMAR_WITH_ALL_COMPONENTS,
+    ),
+]
 
 
 class Arrangement:
@@ -82,59 +95,38 @@ def _check(put: unittest.TestCase,
 
 class TestFailuresCommonToAllGrammars(TestCaseBase):
     def test(self):
-        grammars = [
-            (
-                'sans complex expressions',
-                ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
-            ),
-            (
-                'with complex expressions',
-                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-            ),
-        ]
-        for grammar_description, grammar in grammars:
+        for grammar in GRAMMARS:
             cases = [
-                (
+                NameAndValue(
                     'source is just space',
                     remaining_source('   '),
                 ),
-                (
+                NameAndValue(
                     'first token quoted/soft',
                     remaining_source(str(surrounded_by_soft_quotes('token'))),
                 ),
-                (
+                NameAndValue(
                     'first token quoted/hard',
                     remaining_source(str(surrounded_by_hard_quotes('token'))),
                 ),
-                (
+                NameAndValue(
                     'missing )',
                     remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG)),
                 ),
             ]
-            for case_name, source in cases:
-                with self.subTest(grammar=grammar_description,
-                                  case_name=case_name):
+            for case in cases:
+                with self.subTest(grammar=grammar.name,
+                                  case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_from_parse_source(grammar,
-                                                    source)
+                        sut.parse_from_parse_source(grammar.value,
+                                                    case.value)
 
 
 class TestSingleSimpleExpression(TestCaseBase):
-    grammars = [
-        (
-            'sans complex expressions',
-            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
-        ),
-        (
-            'with complex expressions',
-            ast.GRAMMAR_WITH_ALL_COMPONENTS,
-        ),
-    ]
-
     def test_successful_parse_of_expr_sans_argument(self):
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
-        for grammar_description, grammar in self.grammars:
+        for grammar in GRAMMARS:
             cases = [
                 SourceCase(
                     'first line is only simple expr',
@@ -186,11 +178,11 @@ class TestSingleSimpleExpression(TestCaseBase):
             ]
 
             for case in cases:
-                with self.subTest(grammar=grammar_description,
+                with self.subTest(grammar=grammar.name,
                                   name=case.name):
                     self._check(
                         Arrangement(
-                            grammar=grammar,
+                            grammar=grammar.value,
                             source=case.source),
                         Expectation(
                             expression=ast.SimpleSansArg(),
@@ -202,7 +194,7 @@ class TestSingleSimpleExpression(TestCaseBase):
         the_argument = 'the-argument'
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
-        for grammar_description, grammar in self.grammars:
+        for grammar_description, grammar in GRAMMARS:
             cases = [
                 SourceCase(
                     'first line is only simple expr',
@@ -270,32 +262,32 @@ class TestSingleSimpleExpression(TestCaseBase):
                     )
 
     def test_fail(self):
-        for grammar_description, grammar in self.grammars:
+        for grammar_description, grammar in GRAMMARS:
             cases = [
-                (
+                NameAndValue(
                     'token is not the name of a simple expression',
                     remaining_source(ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
                 ),
-                (
+                NameAndValue(
                     'token is the name of a simple expression, but it is quoted/soft',
                     remaining_source(str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG))),
                 ),
-                (
+                NameAndValue(
                     'token is the name of a simple expression, but it is quoted/hard',
                     remaining_source(str(surrounded_by_hard_quotes(ast.SIMPLE_SANS_ARG))),
                 ),
-                (
+                NameAndValue(
                     'token is the name of a simple expression, but it is on the next line',
                     remaining_source('',
                                      [ast.SIMPLE_SANS_ARG]),
                 ),
             ]
-            for case_name, source in cases:
+            for case in cases:
                 with self.subTest(grammar=grammar_description,
-                                  case_name=case_name):
+                                  case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         sut.parse_from_parse_source(grammar,
-                                                    source)
+                                                    case.value)
 
 
 class TestSinglePrefixExpression(TestCaseBase):
@@ -310,17 +302,6 @@ class TestSinglePrefixExpression(TestCaseBase):
         ),
     ]
 
-    grammars = [
-        (
-            'sans complex expressions',
-            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
-        ),
-        (
-            'with complex expressions',
-            ast.GRAMMAR_WITH_ALL_COMPONENTS,
-        ),
-    ]
-
     def test_successful_parse_with_simple_expr(self):
 
         space_after = '           '
@@ -329,7 +310,7 @@ class TestSinglePrefixExpression(TestCaseBase):
         simple_expr = ast.SimpleSansArg()
         simple_expr_src = ast.SIMPLE_SANS_ARG
 
-        for grammar_description, grammar in self.grammars:
+        for grammar in GRAMMARS:
             for prefix_operator, mk_prefix_expr in self.prefix_operators:
                 cases = [
                     SourceCase(
@@ -395,12 +376,12 @@ class TestSinglePrefixExpression(TestCaseBase):
                 ]
 
                 for case in cases:
-                    with self.subTest(grammar=grammar_description,
+                    with self.subTest(grammar=grammar.name,
                                       prefix_operator=prefix_operator,
                                       name=case.name):
                         self._check(
                             Arrangement(
-                                grammar=grammar,
+                                grammar=grammar.value,
                                 source=case.source),
                             Expectation(
                                 expression=mk_prefix_expr(simple_expr),
@@ -411,7 +392,7 @@ class TestSinglePrefixExpression(TestCaseBase):
     def test_successful_parse_with_complex_expressions(self):
         s = ast.SimpleSansArg()
         cases = [
-            (
+            NArrEx(
                 'prefix operator binds to following simple expression (single complex ops)',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -426,7 +407,7 @@ class TestSinglePrefixExpression(TestCaseBase):
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
-            (
+            NArrEx(
                 'prefix operator binds to following simple expression (different complex ops)',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -443,49 +424,38 @@ class TestSinglePrefixExpression(TestCaseBase):
                 ),
             ),
         ]
-        for case_name, arrangement, expectation in cases:
-            with self.subTest(name=case_name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 self._check(
-                    arrangement,
-                    expectation
+                    case.arrangement,
+                    case.expectation
                 )
 
     def test_fail(self):
-        for grammar_description, grammar in self.grammars:
+        for grammar_description, grammar in GRAMMARS:
             for prefix_operator, mk_prefix_expr in self.prefix_operators:
                 cases = [
-                    (
+                    NameAndValue(
                         'no source after operator',
                         remaining_source(prefix_operator),
                     ),
-                    (
+                    NameAndValue(
                         'operator followed by non-expression',
                         remaining_source('{op} {non_expr}'.format(
                             op=prefix_operator,
                             non_expr=str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG)))),
                     ),
                 ]
-                for case_name, source in cases:
+                for case in cases:
                     with self.subTest(grammar=grammar_description,
                                       prefix_operator=prefix_operator,
-                                      case_name=case_name):
+                                      case_name=case.name):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
                             sut.parse_from_parse_source(grammar,
-                                                        source)
+                                                        case.value)
 
 
 class TestSingleRefExpression(TestCaseBase):
-    grammars = [
-        (
-            'sans complex expressions',
-            ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
-        ),
-        (
-            'with complex expressions',
-            ast.GRAMMAR_WITH_ALL_COMPONENTS,
-        ),
-    ]
-
     def test_successful_parse(self):
         symbol_name = 'the_symbol_name'
         space_after = '           '
@@ -498,7 +468,7 @@ class TestSingleRefExpression(TestCaseBase):
                          symbol_reference_syntax_for_name(symbol_name),
                          ),
         ]
-        for grammar_description, grammar in self.grammars:
+        for grammar in GRAMMARS:
             for symbol_ref_syntax in symbol_ref_syntax_cases:
                 cases = [
                     SourceCase(
@@ -533,12 +503,12 @@ class TestSingleRefExpression(TestCaseBase):
                 ]
 
                 for case in cases:
-                    with self.subTest(grammar=grammar_description,
+                    with self.subTest(grammar=grammar.name,
                                       symbol_ref_syntax=symbol_ref_syntax.name,
                                       name=case.name):
                         self._check(
                             Arrangement(
-                                grammar=grammar,
+                                grammar=grammar.value,
                                 source=case.source),
                             Expectation(
                                 expression=ast.RefExpr(symbol_name),
@@ -547,7 +517,7 @@ class TestSingleRefExpression(TestCaseBase):
                         )
 
     def test_token_SHOULD_be_interpreted_as_sym_ref_WHEN_sym_ref_syntax_is_used_for_existing_primitive(self):
-        for grammar_description, grammar in self.grammars:
+        for grammar_description, grammar in GRAMMARS:
             with self.subTest(grammar=grammar_description):
                 self._check(
                     Arrangement(
@@ -564,27 +534,27 @@ class TestSingleRefExpression(TestCaseBase):
 
     def test_fail(self):
         symbol_name = 'the_symbol_name'
-        for grammar_description, grammar in self.grammars:
+        for grammar_description, grammar in GRAMMARS:
             cases = [
-                (
+                NameAndValue(
                     'symbol name is quoted',
                     remaining_source(str(surrounded_by_hard_quotes(symbol_name))),
                 ),
-                (
+                NameAndValue(
                     'symbol reference syntax with invalid symbol name character: space',
                     remaining_source(symbol_reference_syntax_for_name('the symbol')),
                 ),
-                (
+                NameAndValue(
                     'symbol reference syntax with invalid symbol name character: &',
                     remaining_source(symbol_reference_syntax_for_name('the&symbol')),
                 ),
             ]
-            for case_name, source in cases:
+            for case in cases:
                 with self.subTest(grammar=grammar_description,
-                                  case_name=case_name):
+                                  case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         sut.parse_from_parse_source(grammar,
-                                                    source)
+                                                    case.value)
 
 
 class TestComplexExpression(unittest.TestCase):
@@ -745,7 +715,7 @@ class TestComplexExpression(unittest.TestCase):
     def test_success_of_expression_within_parentheses(self):
         s = ast.SimpleSansArg()
         cases = [
-            (
+            NArrEx(
                 'parentheses around first expr to make nested expr instead of "linear" args to op',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -759,7 +729,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
-            (
+            NArrEx(
                 'parentheses around final (second) expr to make first op have precedence',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -773,7 +743,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
-            (
+            NArrEx(
                 '"linear" (sequence) of OPA, by embedding OPB inside parentheses',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -788,7 +758,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
-            (
+            NArrEx(
                 'parentheses around expr should allow binary operator to be on separate ling',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -807,17 +777,17 @@ class TestComplexExpression(unittest.TestCase):
             ),
 
         ]
-        for case_name, arrangement, expectation in cases:
-            with self.subTest(name=case_name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 _check(self,
-                       arrangement,
-                       expectation
+                       case.arrangement,
+                       case.expectation
                        )
 
     def test_success_of_expression_within_parentheses_spanning_several_lines(self):
         s = ast.SimpleSansArg()
         cases = [
-            (
+            NArrEx(
                 'simple expr and ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -829,7 +799,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
-            (
+            NArrEx(
                 'simple expr and ) on following line, followed by non-expr',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -842,7 +812,7 @@ class TestComplexExpression(unittest.TestCase):
                                                             remaining_part_of_current_line=asrt.equals('non-expr')),
                 ),
             ),
-            (
+            NArrEx(
                 'simple expr with ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -854,7 +824,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
-            (
+            NArrEx(
                 'simple expr with ) on following line, and non-expr on line after that',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -867,7 +837,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
-            (
+            NArrEx(
                 'binary op with only ( on first line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -881,7 +851,7 @@ class TestComplexExpression(unittest.TestCase):
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
-            (
+            NArrEx(
                 'binary op with ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -895,11 +865,11 @@ class TestComplexExpression(unittest.TestCase):
                 ),
             ),
         ]
-        for case_name, arrangement, expectation in cases:
-            with self.subTest(name=case_name):
+        for case in cases:
+            with self.subTest(name=case.name):
                 _check(self,
-                       arrangement,
-                       expectation
+                       case.arrangement,
+                       case.expectation
                        )
 
     def test_fail_parse_of_complex_expression(self):
@@ -916,14 +886,14 @@ class TestComplexExpression(unittest.TestCase):
         for valid_simple_expr in valid_simple_expressions:
             for operator in operators:
                 cases = [
-                    (
+                    NameAndValue(
                         'operator not followed by expression',
                         remaining_source('{simple_expr} {operator}'.format(
                             simple_expr=valid_simple_expr,
                             operator=operator,
                         )),
                     ),
-                    (
+                    NameAndValue(
                         'operator followed by non-expression',
                         remaining_source('{simple_expr} {operator} {non_expr}'.format(
                             simple_expr=valid_simple_expr,
@@ -931,7 +901,7 @@ class TestComplexExpression(unittest.TestCase):
                             non_expr=ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
                         )),
                     ),
-                    (
+                    NameAndValue(
                         'operator followed by non-expression/two operators',
                         remaining_source('{simple_expr} {operator} {simple_expr} {operator} {non_expr}'.format(
                             simple_expr=valid_simple_expr,
@@ -939,14 +909,14 @@ class TestComplexExpression(unittest.TestCase):
                             non_expr=ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
                         )),
                     ),
-                    (
+                    NameAndValue(
                         '( at start of expr: missing )',
                         remaining_source('( {simple_expr} {operator} {simple_expr} '.format(
                             simple_expr=valid_simple_expr,
                             operator=operator),
                             []),
                     ),
-                    (
+                    NameAndValue(
                         '( in middle of expr: missing )',
                         remaining_source('( {simple_expr} {operator} ( {simple_expr} '.format(
                             simple_expr=valid_simple_expr,
@@ -954,13 +924,13 @@ class TestComplexExpression(unittest.TestCase):
                             []),
                     ),
                 ]
-                for case_name, source in cases:
-                    with self.subTest(case_name=case_name,
+                for case in cases:
+                    with self.subTest(case_name=case.name,
                                       operator=operator,
                                       valid_simple_expr=valid_simple_expr):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
                             sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                        source)
+                                                        case.value)
 
 
 class TestCombinedExpressions(TestCaseBase):
