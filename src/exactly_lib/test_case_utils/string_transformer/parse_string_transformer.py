@@ -1,7 +1,7 @@
 from typing import Optional
 
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types, syntax_elements
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -42,7 +42,7 @@ def parse_optional_transformer_sdv(token_parser: TokenParser) -> StringTransform
     return token_parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_SDV,
         parse_string_transformer_from_token_parser,
-        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+        string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
 def parse_optional_transformer_sdv2(token_parser: TokenParser) -> Optional[StringTransformerSdv]:
@@ -51,7 +51,7 @@ def parse_optional_transformer_sdv2(token_parser: TokenParser) -> Optional[Strin
     """
     return token_parser.consume_and_handle_optional_option3(
         parse_string_transformer_from_token_parser,
-        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+        string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
 def parse_optional_transformer_sdv_preceding_mandatory_element(parser: TokenParser,

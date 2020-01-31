@@ -1,5 +1,5 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
@@ -30,7 +30,7 @@ def parse_program(parser: TokenParser,
 
     return parser.consume_and_handle_optional_option(program,
                                                      parse_transformer,
-                                                     instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+                                                     string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
 def _parse_simple_program(parser: TokenParser,

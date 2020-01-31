@@ -3,11 +3,11 @@ from typing import List
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     cli_argument_syntax_element_description, invokation_variant_from_args
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -114,10 +114,11 @@ def transformation_syntax_element_description(the_tested_file: str) -> SyntaxEle
         'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     })
     return cli_argument_syntax_element_description(
-        instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
+        string_transformer.STRING_TRANSFORMATION_ARGUMENT,
         text_parser.fnap(_TRANSFORMATION_DESCRIPTION),
         [
-            InvokationVariant(cl_syntax.arg_syntax(instruction_arguments.TRANSFORMATION_OPTION)),
+            InvokationVariant(cl_syntax.arg_syntax(
+                string_transformer.TRANSFORMATION_OPTION)),
         ]
     )
 

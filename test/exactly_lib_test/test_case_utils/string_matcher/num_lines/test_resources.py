@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_matcher import matcher_options
@@ -41,7 +41,10 @@ class InstructionArgumentsVariantConstructor:
     def construct(self, expectation_type: ExpectationType) -> str:
         transformation = ''
         if self.transformer:
-            transformation = option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME) + ' ' + self.transformer
+            transformation = ' '.join([
+                option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                self.transformer
+            ])
 
         superfluous_args_str = self.superfluous_args_str
         if superfluous_args_str:

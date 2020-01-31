@@ -4,6 +4,7 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.entity import syntax_elements, types
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -47,7 +48,7 @@ class FileContentsDocumentation:
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'program_type': types.PROGRAM_TYPE_INFO.name,
-            'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
+            'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'SRC_PATH_ARGUMENT': _SRC_PATH_ARGUMENT.name,
@@ -72,7 +73,7 @@ class FileContentsDocumentation:
 
     def _file_contents_sed(self) -> SyntaxElementDescription:
         optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
-                                                  instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
+                                                  string_transformer.STRING_TRANSFORMATION_ARGUMENT)
 
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
                                 instruction_arguments.HERE_DOCUMENT)
@@ -110,11 +111,11 @@ class FileContentsDocumentation:
 
     def _transformation_sed(self) -> SyntaxElementDescription:
         return cli_argument_syntax_element_description(
-            instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
+            string_transformer.STRING_TRANSFORMATION_ARGUMENT,
             self._tp.fnap(_TRANSFORMATION_DESCRIPTION),
             [
                 invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
-                                                       instruction_arguments.TRANSFORMATION_OPTION)]),
+                                                       string_transformer.TRANSFORMATION_OPTION)]),
             ]
         )
 

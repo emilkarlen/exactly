@@ -1,9 +1,10 @@
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments, matcher_model
+from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
@@ -103,7 +104,8 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
                                      num_lines.Description())
         ),
         NameAndValue(
-            option_syntax.option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            option_syntax.option_syntax(
+                string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
             grammar.SimpleExpression(_parse_on_transformed__generic,
                                      _OnTransformedDescription())
         ),

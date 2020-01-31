@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -26,7 +26,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class StringMatcherWithTransformation(StringMatcherImplBase):
     """Applies a string transformer to the file to check."""
 
-    NAME = ' '.join((instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
+    NAME = ' '.join((string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION,
                      syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name))
 
     def __init__(self,

@@ -1,6 +1,7 @@
 from typing import Set, List, Sequence
 
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType, RelSdsOptionType
@@ -97,7 +98,7 @@ class TransformableContentsConstructor:
                             with_transformer_on_separate_line: bool = True
                             ) -> ArgumentElements:
         transformer_elements = [
-            ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            ab.option(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
             transformer,
         ]
 

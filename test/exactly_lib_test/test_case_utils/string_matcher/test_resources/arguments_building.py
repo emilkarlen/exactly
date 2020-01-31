@@ -1,6 +1,6 @@
 import exactly_lib.definitions.logic
 from exactly_lib.definitions import path as path_texts
-from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -41,7 +41,9 @@ class CommonArgumentsConstructor:
 
     def _empty_if_no_file_transformer_otherwise_selection(self) -> str:
         if self._file_transformer:
-            return option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME) + ' ' + self._file_transformer
+            return ' '.join([option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                             self._file_transformer,
+                             ])
         else:
             return ''
 
@@ -123,7 +125,7 @@ _FORMAT_MAP = {
     'file_option': option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
     'full_match': FULL_MATCH_ARGUMENT,
     'not': matcher_options.NOT_ARGUMENT,
-    'transform_option': option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+    'transform_option': option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
     'rel_hds_case_option': path_texts.REL_HDS_CASE_OPTION,
     'rel_cwd_option': path_texts.REL_CWD_OPTION,
     'rel_tmp_option': path_texts.REL_TMP_OPTION,

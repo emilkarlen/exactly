@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -8,14 +8,14 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 
 def syntax_for_transformer_option(transformer_expression: str) -> str:
     return ' '.join([
-        option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+        option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
         transformer_expression,
     ])
 
 
 def arguments_for_transformer_option(transformer_expression: str) -> List[str]:
     return [
-        option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+        option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
         transformer_expression,
     ]
 

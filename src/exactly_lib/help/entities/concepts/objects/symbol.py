@@ -1,13 +1,14 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import instruction_arguments, formatting, logic
+from exactly_lib.definitions import formatting, logic
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.type_system import TYPE_INFO_DICT
@@ -56,7 +57,7 @@ class _SymbolConcept(ConceptDocumentation):
             'exists_file': instruction_names.TEST_CASE_STATUS_INSTRUCTION_NAME,
 
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
-            'transformed': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
+            'transformed': string_transformer.STRING_TRANSFORMATION_ARGUMENT,
         })
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -101,7 +102,7 @@ class _SymbolConcept(ConceptDocumentation):
             'ref_syntax_of_symbol_name': symbol_reference_syntax_for_name('SYMBOL_NAME'),
 
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
-            'transformed': instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
+            'transformed': string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION,
             'select_transformer': SELECT_TRANSFORMER_NAME,
             'not': logic.NOT_OPERATOR_NAME,
             'empty': EMPTINESS_CHECK_ARGUMENT,

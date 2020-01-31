@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions import logic
-from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
@@ -39,7 +39,7 @@ class Transformed(StringMatcherArg):
 
     def __str__(self):
         return ' '.join([
-            option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            option_syntax(string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
             self.transformer,
             str(self.on_transformed),
         ])

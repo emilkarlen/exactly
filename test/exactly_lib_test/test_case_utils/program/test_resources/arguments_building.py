@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -63,8 +63,9 @@ def program(program_arg: WithToString,
             transformation=None) -> ArgumentElements:
     extra = []
     if transformation:
-        extra.append([ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
-                                transformation)])
+        extra.append([ab.option(
+            string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
+            transformation)])
 
     return ArgumentElements([program_arg], extra)
 

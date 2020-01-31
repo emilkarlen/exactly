@@ -9,6 +9,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
@@ -36,7 +37,8 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY, self._pgm_and_args.element),
-                a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.STRING_TRANSFORMATION_ARGUMENT),
+                a.Single(a.Multiplicity.OPTIONAL,
+                         string_transformer.STRING_TRANSFORMATION_ARGUMENT),
             ]),
         ]
 
@@ -48,11 +50,11 @@ class _Documentation(SyntaxElementDocumentation):
 
     def _transformation_sed(self) -> SyntaxElementDescription:
         return cli_argument_syntax_element_description(
-            instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
+            string_transformer.STRING_TRANSFORMATION_ARGUMENT,
             _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION),
             [
                 invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
-                                                       instruction_arguments.TRANSFORMATION_OPTION)]),
+                                                       string_transformer.TRANSFORMATION_OPTION)]),
             ]
         )
 
@@ -275,7 +277,7 @@ _TEXT_PARSER = TextParser({
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'hds': concepts.HDS_CONCEPT_INFO.name,
     'SYMBOL_REFERENCE_SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT),
-    'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
+    'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
     'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
     'TEXT_UNTIL_END_OF_LINE': instruction_arguments.TEXT_UNTIL_END_OF_LINE_ARGUMENT.name,
     'SYMBOL_NAME': formatting.syntax_element_(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT),

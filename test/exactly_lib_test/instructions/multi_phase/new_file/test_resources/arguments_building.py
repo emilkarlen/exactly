@@ -1,4 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -24,9 +25,10 @@ def from_program(file: WithToString,
     if transformation is None:
         return ret_val
     else:
-        return ret_val.followed_by(elements([ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                                             transformation
-                                             ]))
+        return ret_val.followed_by(elements([ab.option(
+            string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            transformation
+        ]))
 
 
 def complete_arguments(dst_file: PathArgumentWithRelativity,
