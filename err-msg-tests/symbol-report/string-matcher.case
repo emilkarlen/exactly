@@ -22,6 +22,6 @@ def string-matcher NOT_MATCHES     = ! MATCHES
 def string-matcher NUM_LINES     = num-lines == 4+1
 def string-matcher NOT_NUM_LINES = ! NUM_LINES
 
-def string-matcher TRANSFORMED = -transformed-by select line-num == 1 NUM_LINES
+def string-matcher TRANSFORMED = -transformed-by filter line-num == 1 NUM_LINES
 
 def string-matcher SYM_REF     = NOT_NUM_LINES

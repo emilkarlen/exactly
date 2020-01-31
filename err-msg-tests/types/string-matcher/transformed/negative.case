@@ -11,5 +11,5 @@ EOF
 
 
 contents checked-file
-  -transformed-by select line-num > 1
+  -transformed-by filter line-num > 1
   ! num-lines == 1

@@ -9,13 +9,13 @@ def program PYTHON_FILE = -python -existing-file -rel-home print-args.py "a b" c
 def program EXE_FILE    = my-program "quoted arg1" arg2
 
 def program TRANSFORMED = @ SYSTEM
-                          -transformed-by select line-num > 1
+                          -transformed-by filter line-num > 1
 
 def program ACCUMULATED = @ TRANSFORMED "X Y" z
-                          -transformed-by select line-num > 2
+                          -transformed-by filter line-num > 2
 
 def program ACCUMULATED_SHELL = @ SHELL "X Y" z
-                                -transformed-by select line-num > 2
+                                -transformed-by filter line-num > 2
 
 file py-output.txt = -stdout-from @ PYTHON_FILE
 
