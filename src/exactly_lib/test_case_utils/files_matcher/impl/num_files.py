@@ -42,4 +42,8 @@ class _PropertyGetter(PropertyGetter[FilesMatcherModel, int], WithCachedTreeStru
         return renderers.header_only(_NAME)
 
     def get_from(self, model: FilesMatcherModel) -> int:
-        return len(list(model.files()))
+        ret_val = 0
+        for _ in model.files():
+            ret_val += 1
+
+        return ret_val

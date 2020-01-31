@@ -1,6 +1,6 @@
 import pathlib
 from contextlib import contextmanager
-from typing import Iterable
+from typing import Iterable, ContextManager
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
@@ -74,7 +74,7 @@ class FileToCheck:
         return self._transformed_file_path
 
     @contextmanager
-    def lines(self) -> Iterable[str]:
+    def lines(self) -> ContextManager[Iterable[str]]:
         """
         Gives the lines of the file contents to check.
 
