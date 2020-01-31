@@ -36,6 +36,13 @@ class FilesMatcherModel(ABC):
         """
         pass
 
+    @abstractmethod
+    def prune(self, dir_selector: FileMatcher) -> 'FilesMatcherModel':
+        """
+        :return a new object that represents a variant of this object with pruned directories.
+        """
+        pass
+
 
 FilesMatcher = MatcherWTraceAndNegation[FilesMatcherModel]
 

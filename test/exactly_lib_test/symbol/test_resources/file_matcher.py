@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, GenericFileMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -63,6 +63,13 @@ class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherSdv]):
                  sdv: FileMatcherSdv):
         super().__init__(name)
         self._sdv = sdv
+
+    @staticmethod
+    def of_generic(name: str, sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolContext':
+        return FileMatcherSymbolContext(
+            name,
+            FileMatcherSdv(sdv)
+        )
 
     @property
     def sdv(self) -> FileMatcherSdv:

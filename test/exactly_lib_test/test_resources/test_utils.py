@@ -27,6 +27,10 @@ class NEA(Generic[EXPECTED, ACTUAL]):
         self.expected = expected
         self.actual = actual
 
+    @staticmethod
+    def new_identical_expected_and_actual(name: str, expected: EXPECTED) -> 'NEA[EXPECTED, ACTUAL]':
+        return NEA(name, expected, expected)
+
 
 class NExArr(Generic[EXPECTED, ACTUAL]):
     """A name, one expected value and one actual value."""

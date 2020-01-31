@@ -1,9 +1,9 @@
-from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.definitions.primitives.str_matcher import MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-NOT_ARGUMENT = NEGATION_ARGUMENT_STR
+NOT_ARGUMENT = logic.NOT_OPERATOR_NAME
 EMPTY_ARGUMENT = EMPTINESS_CHECK_ARGUMENT
 EQUALS_ARGUMENT = 'equals'
 MATCHES_ARGUMENT = MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT

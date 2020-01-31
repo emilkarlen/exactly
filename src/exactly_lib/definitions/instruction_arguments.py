@@ -2,7 +2,6 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.path import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.logic_types import Quantifier
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
 
@@ -14,8 +13,6 @@ REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME,
 
 COMMAND_ARGUMENT = a.Named('SHELL-COMMAND-LINE')
 TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
-
-PROGRAM_ARGUMENT = a.Named('PROGRAM')
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
@@ -39,14 +36,8 @@ RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
 
 OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
-NEGATION_ARGUMENT_STR = '!'
-
-STRING_MATCHER_PRIMITIVE_SYNTAX_ELEMENT = 'MATCHER'
 
 MATCHER_ARGUMENT = a.Named(types.FILE_MATCHER_TYPE_INFO.syntax_element_name)
-SELECTION_OPTION = a.option('selection',
-                            argument=MATCHER_ARGUMENT.name)
-SELECTION = a.Named('SELECTION')
 
 LINE_MATCHER = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
@@ -59,16 +50,6 @@ TRANSFORMATION_OPTION = a.Option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
                                  argument=types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 ASSIGNMENT_OPERATOR = '='
-
-ALL_QUANTIFIER_ARGUMENT = 'every'
-EXISTS_QUANTIFIER_ARGUMENT = 'any'
-
-QUANTIFICATION_SEPARATOR_ARGUMENT = ':'
-
-QUANTIFIER_ARGUMENTS = {
-    Quantifier.ALL: ALL_QUANTIFIER_ARGUMENT,
-    Quantifier.EXISTS: EXISTS_QUANTIFIER_ARGUMENT,
-}
 
 DESTINATION_PATH_ARGUMENT = a.Named('DESTINATION')
 SOURCE_PATH_ARGUMENT = a.Named('SOURCE')

@@ -125,7 +125,7 @@ class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
         self._matcher = matcher
         self._property_getter = property_getter
         self._describer = describer
-        self._references = list(matcher.references) + list(property_getter.references)
+        self._references = list(property_getter.references) + list(matcher.references)
 
     @property
     def references(self) -> Sequence[SymbolReference]:

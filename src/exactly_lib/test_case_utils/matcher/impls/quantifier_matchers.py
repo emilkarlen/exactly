@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequence
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
@@ -85,9 +85,9 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
     @staticmethod
     def __name(quantifier: Quantifier,
                element_rendering: ElementRendering) -> str:
-        return ' '.join((instruction_arguments.QUANTIFIER_ARGUMENTS[quantifier],
+        return ' '.join((logic.QUANTIFIER_ARGUMENTS[quantifier],
                          element_rendering.type_name,
-                         instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                         logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
                          element_rendering.element_matcher_syntax_name,
                          ))
 

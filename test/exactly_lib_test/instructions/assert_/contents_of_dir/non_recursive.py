@@ -27,9 +27,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
-    model_checker
-from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data, model_checker
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments

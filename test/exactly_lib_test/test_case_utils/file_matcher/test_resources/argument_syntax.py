@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -33,7 +33,7 @@ def file_matcher_arguments(name_pattern: str = '',
     if contents_string_matcher:
         matchers.append(contents_matcher_of(contents_string_matcher))
 
-    and_combinator = ' ' + expression.AND_OPERATOR_NAME + ' '
+    and_combinator = ' ' + logic.AND_OPERATOR_NAME + ' '
     return and_combinator.join(matchers)
 
 
@@ -55,7 +55,7 @@ def base_name_reg_ex_pattern_matcher_of(regex_args: List[str]) -> str:
 
 
 def and_(matchers: List[str]) -> str:
-    and_combinator = ' ' + expression.AND_OPERATOR_NAME + ' '
+    and_combinator = ' ' + logic.AND_OPERATOR_NAME + ' '
     return and_combinator.join(matchers)
 
 

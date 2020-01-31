@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Generic, Sequence, Callable
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -23,7 +23,7 @@ class _CombinatorBase(Generic[MODEL],
 
 
 class Negation(_CombinatorBase[MODEL]):
-    NAME = expression.NOT_OPERATOR_NAME
+    NAME = logic.NOT_OPERATOR_NAME
 
     @staticmethod
     def new_structure_tree(negated: WithTreeStructureDescription) -> StructureRenderer:
@@ -113,7 +113,7 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
 
 
 class Conjunction(_CombinatorBase[MODEL]):
-    NAME = expression.AND_OPERATOR_NAME
+    NAME = logic.AND_OPERATOR_NAME
 
     @staticmethod
     def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
@@ -174,7 +174,7 @@ class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
 
 
 class Disjunction(_CombinatorBase[MODEL]):
-    NAME = expression.OR_OPERATOR_NAME
+    NAME = logic.OR_OPERATOR_NAME
 
     @staticmethod
     def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:

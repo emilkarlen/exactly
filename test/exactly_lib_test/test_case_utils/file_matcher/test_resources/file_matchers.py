@@ -1,33 +1,47 @@
-from typing import Sequence, Callable
-
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_sdv_from_ddv_parts
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
+from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.util.description_tree import renderers
+from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 
-def file_matcher_sdv_from_parts(references: Sequence[SymbolReference],
-                                validator: DdvValidator,
-                                matcher: Callable[[PathResolvingEnvironmentPreOrPostSds], FileMatcher],
-                                ) -> FileMatcherSdv:
-    def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
-        def make_primitive(tcds: Tcds) -> FileMatcher:
-            return matcher(PathResolvingEnvironmentPreOrPostSds(
-                tcds,
-                symbols
-            ))
+class FileMatcherTestImplBase(FileMatcherImplBase):
+    @property
+    def name(self) -> str:
+        return str(type(self))
 
-        return matchers.MatcherDdvFromPartsTestImpl(
-            make_primitive,
-            validator,
+    def _structure(self) -> StructureRenderer:
+        return renderers.header_only(self.name)
+
+
+class IsRegularFileMatcher(FileMatcherTestImplBase):
+    def __init__(self):
+        super().__init__()
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        return matching_result.of(
+            model.file_type_access.is_type(FileType.REGULAR)
         )
 
-    return file_matcher_sdv_from_ddv_parts(
-        references,
-        make_ddv,
-    )
+
+class IsDirectoryMatcher(FileMatcherTestImplBase):
+    def __init__(self):
+        super().__init__()
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        return matching_result.of(
+            model.file_type_access.is_type(FileType.DIRECTORY)
+        )
+
+
+class BaseNameStartsWithMatcher(FileMatcherTestImplBase):
+    def __init__(self, base_name_prefix: str):
+        super().__init__()
+        self._base_name_prefix = base_name_prefix
+
+    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        return matching_result.of(
+            model.path.primitive.name.startswith(self._base_name_prefix)
+        )

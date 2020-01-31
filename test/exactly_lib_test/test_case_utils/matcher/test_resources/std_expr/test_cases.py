@@ -2,8 +2,7 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import List, Generic, Sequence
 
-from exactly_lib.definitions import expression
-from exactly_lib.definitions.primitives import boolean
+from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -130,7 +129,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
 class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_operand_is_missing(self):
-        source = remaining_source(boolean.CONSTANT_MATCHER)
+        source = remaining_source(logic.CONSTANT_MATCHER)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.parser().parse(source)
 
@@ -148,9 +147,9 @@ class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                             asrt.equals(value),
                             trace=_utils.trace_equals(
                                 tree.Node.leaf(
-                                    boolean.CONSTANT_MATCHER,
+                                    logic.CONSTANT_MATCHER,
                                     value,
-                                    (tree.StringDetail(boolean.BOOLEANS[value]),)
+                                    (tree.StringDetail(logic.BOOLEANS[value]),)
                                 )
                             )
                         )
@@ -219,7 +218,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
 class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_operand_is_missing(self):
-        source = remaining_source(expression.NOT_OPERATOR_NAME)
+        source = remaining_source(logic.NOT_OPERATOR_NAME)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.configuration.parser().parse(source)
 
@@ -235,7 +234,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         conf.checker().check_multi__w_source_variants(
             self,
-            arguments=ArgumentElements([expression.NOT_OPERATOR_NAME, symbol_name]).as_arguments,
+            arguments=ArgumentElements([logic.NOT_OPERATOR_NAME, symbol_name]).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
             model_constructor=conf.arbitrary_model,
             execution=helper.failing_validation_cases(symbol_name),
@@ -253,7 +252,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             operand_matcher = helper.logic_type_matcher_from_primitive(
                 matchers.ConstantMatcherWithCustomTrace(mk_operand_trace, operand_result)
             )
-            trace = tree.Node(expression.NOT_OPERATOR_NAME,
+            trace = tree.Node(logic.NOT_OPERATOR_NAME,
                               not operand_result,
                               (),
                               [mk_operand_trace(operand_result)]
@@ -282,13 +281,13 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             NameAndValue(
                 'operand on same line',
                 ArgumentElements(
-                    [expression.NOT_OPERATOR_NAME, symbol_name],
+                    [logic.NOT_OPERATOR_NAME, symbol_name],
                 )
             ),
             NameAndValue(
                 'operand on following line',
                 ArgumentElements(
-                    [expression.NOT_OPERATOR_NAME],
+                    [logic.NOT_OPERATOR_NAME],
                     [
                         [symbol_name],
                     ])
@@ -359,7 +358,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 class TestConjunctionBase(_TestBinaryOperatorBase[MODEL], ABC):
     @property
     def operator_name(self) -> str:
-        return expression.AND_OPERATOR_NAME
+        return logic.AND_OPERATOR_NAME
 
     def test_application_of_2_operands(self):
         # ARRANGE #
@@ -439,7 +438,7 @@ class TestConjunctionBase(_TestBinaryOperatorBase[MODEL], ABC):
 class TestDisjunctionBase(_TestBinaryOperatorBase[MODEL], ABC):
     @property
     def operator_name(self) -> str:
-        return expression.OR_OPERATOR_NAME
+        return logic.OR_OPERATOR_NAME
 
     def test_application_of_2_operands(self):
         # ARRANGE #
@@ -527,26 +526,26 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         all_symbols = [sym_a, sym_b, sym_c]
 
         arguments = ArgumentElements([
-            expression.NOT_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_a.name,
-            expression.AND_OPERATOR_NAME,
-            expression.NOT_OPERATOR_NAME,
+            logic.AND_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_b.name,
-            expression.OR_OPERATOR_NAME,
-            expression.NOT_OPERATOR_NAME,
+            logic.OR_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_c.name,
         ])
 
         expected_trace = tree.Node(
-            expression.OR_OPERATOR_NAME, True, (),
+            logic.OR_OPERATOR_NAME, True, (),
             [
                 tree.Node(
-                    expression.AND_OPERATOR_NAME, False, (),
+                    logic.AND_OPERATOR_NAME, False, (),
                     [
-                        tree.Node(expression.NOT_OPERATOR_NAME, True, (), [sym_a.value.trace_tree]),
-                        tree.Node(expression.NOT_OPERATOR_NAME, False, (), [sym_b.value.trace_tree]),
+                        tree.Node(logic.NOT_OPERATOR_NAME, True, (), [sym_a.value.trace_tree]),
+                        tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_b.value.trace_tree]),
                     ]),
-                tree.Node(expression.NOT_OPERATOR_NAME, True, (), [sym_c.value.trace_tree]),
+                tree.Node(logic.NOT_OPERATOR_NAME, True, (), [sym_c.value.trace_tree]),
             ]
         )
 
@@ -569,26 +568,26 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         all_symbols = [sym_a, sym_b, sym_c]
 
         arguments = ArgumentElements([
-            expression.NOT_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_a.name,
-            expression.OR_OPERATOR_NAME,
-            expression.NOT_OPERATOR_NAME,
+            logic.OR_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_b.name,
-            expression.AND_OPERATOR_NAME,
-            expression.NOT_OPERATOR_NAME,
+            logic.AND_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             sym_c.name,
         ])
 
         expected_trace = tree.Node(
-            expression.AND_OPERATOR_NAME, False, (),
+            logic.AND_OPERATOR_NAME, False, (),
             [
                 tree.Node(
-                    expression.OR_OPERATOR_NAME, True, (),
+                    logic.OR_OPERATOR_NAME, True, (),
                     [
-                        tree.Node(expression.NOT_OPERATOR_NAME, False, (), [sym_a.value.trace_tree]),
-                        tree.Node(expression.NOT_OPERATOR_NAME, True, (), [sym_b.value.trace_tree]),
+                        tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_a.value.trace_tree]),
+                        tree.Node(logic.NOT_OPERATOR_NAME, True, (), [sym_b.value.trace_tree]),
                     ]),
-                tree.Node(expression.NOT_OPERATOR_NAME, False, (), [sym_c.value.trace_tree]),
+                tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_c.value.trace_tree]),
             ]
         )
 

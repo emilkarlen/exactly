@@ -18,11 +18,11 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     NumFilesSetup
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.helper_utils import DepthArgs, \
     LimitationCase
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import model_checker
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.case_generator import \
     SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
     MultipleExecutionCasesGenerator, FullExecutionResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement

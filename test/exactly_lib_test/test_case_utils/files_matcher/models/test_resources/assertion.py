@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
 
 
-class ModelContentsAssertion(ValueAssertionBase[FilesMatcherModel]):
+class FilesMatcherModelContentsAssertion(ValueAssertionBase[FilesMatcherModel]):
     def __init__(self,
                  contents_root: pathlib.Path,
                  expected_paths__rel_root: List[pathlib.Path],

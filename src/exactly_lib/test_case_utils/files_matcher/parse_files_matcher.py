@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments, matcher_model
+from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.section_document import parser_classes
@@ -10,8 +10,10 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import documentation
-from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, sub_set_selection
+from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, \
+    sub_set_selection, prune
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
@@ -58,8 +60,16 @@ def _parse_selection(parser: TokenParser) -> GenericFilesMatcherSdv:
     element_matcher = parse_file_matcher.parse_sdv(parser, False)
     matcher_on_selection = parse_files_matcher__generic(parser, False)
 
-    return sub_set_selection.sub_set_selection_matcher(element_matcher,
-                                                       matcher_on_selection)
+    return sub_set_selection.matcher(element_matcher,
+                                     matcher_on_selection)
+
+
+def _parse_prune(parser: TokenParser) -> GenericFilesMatcherSdv:
+    element_matcher = parse_file_matcher.parse_sdv(parser, False)
+    matcher_on_selection = parse_files_matcher__generic(parser, False)
+
+    return prune.matcher(element_matcher,
+                         matcher_on_selection)
 
 
 def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
@@ -84,9 +94,14 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
                                      documentation.NumFilesDoc())
         ),
         NameAndValue(
-            option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name),
+            option_syntax.option_syntax(config.SELECTION_OPTION.name),
             grammar.SimpleExpression(_parse_selection,
                                      documentation.SelectionDoc())
+        ),
+        NameAndValue(
+            option_syntax.option_syntax(config.PRUNE_OPTION.name),
+            grammar.SimpleExpression(_parse_prune,
+                                     documentation.PruneDoc())
         ),
     ]
     return ret_val

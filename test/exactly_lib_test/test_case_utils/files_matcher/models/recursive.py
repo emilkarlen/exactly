@@ -1,23 +1,19 @@
 import unittest
 from typing import List, Callable
 
-from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import models as sut
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import IsRegularFileMatcher, \
+    IsDirectoryMatcher, BaseNameStartsWithMatcher
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.checker import check, check_single
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.test_data import FileElementForTest
 from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, \
     empty_dir, FileSystemElement
 from exactly_lib_test.test_resources.test_utils import EA
-from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 
 def suite() -> unittest.TestSuite:
@@ -205,39 +201,6 @@ class TestUnlimitedDepth(unittest.TestCase):
         check(self,
               make_model,
               cases)
-
-
-class FileMatcherTestImplBase(FileMatcherImplBase):
-    @property
-    def name(self) -> str:
-        return str(type(self))
-
-    def _structure(self) -> StructureRenderer:
-        return renderers.header_only(self.name)
-
-
-class IsRegularFileMatcher(FileMatcherTestImplBase):
-    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        return matching_result.of(
-            model.path.primitive.is_file()
-        )
-
-
-class IsDirectoryMatcher(FileMatcherTestImplBase):
-    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        return matching_result.of(
-            model.path.primitive.is_dir()
-        )
-
-
-class BaseNameStartsWithMatcher(FileMatcherTestImplBase):
-    def __init__(self, base_name_prefix: str):
-        self._base_name_prefix = base_name_prefix
-
-    def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        return matching_result.of(
-            model.path.primitive.name.startswith(self._base_name_prefix)
-        )
 
 
 def _check_single(put: unittest.TestCase,

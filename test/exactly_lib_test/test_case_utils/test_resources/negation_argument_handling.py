@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Sequence, TypeVar, Generic
 
-from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.definitions import logic
 from exactly_lib.test_case.result import pfh
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
@@ -28,11 +28,11 @@ def choice(expectation_type: ExpectationType,
 
 
 def with_negation_argument(instruction_arguments: str) -> str:
-    return NEGATION_ARGUMENT_STR + ' ' + instruction_arguments
+    return logic.NOT_OPERATOR_NAME + ' ' + instruction_arguments
 
 
 def nothing__if_positive__not_option__if_negative(expectation_type: ExpectationType) -> str:
-    return choice(expectation_type, '', NEGATION_ARGUMENT_STR)
+    return choice(expectation_type, '', logic.NOT_OPERATOR_NAME)
 
 
 def prepend_not_operator_if_expectation_is_negative(instruction_arguments_without_not_option: str,
@@ -64,7 +64,7 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
             Case(ExpectationType.POSITIVE, [],
                  self.pass__if_positive__fail__if_negative
                  ),
-            Case(ExpectationType.NEGATIVE, [NEGATION_ARGUMENT_STR],
+            Case(ExpectationType.NEGATIVE, [logic.NOT_OPERATOR_NAME],
                  self.fail__if_positive__pass_if_negative
                  ),
         ]
@@ -82,11 +82,11 @@ class ExpectationTypeConfig(Generic[RET_TYPE], ABC):
 
     @property
     def nothing__if_positive__not_option__if_negative(self) -> str:
-        return self._value('', NEGATION_ARGUMENT_STR)
+        return self._value('', logic.NOT_OPERATOR_NAME)
 
     @property
     def empty__if_positive__not_option__if_negative(self) -> List[str]:
-        return self._value([], [NEGATION_ARGUMENT_STR])
+        return self._value([], [logic.NOT_OPERATOR_NAME])
 
     @property
     def pass__if_positive__fail__if_negative(self) -> ValueAssertion[RET_TYPE]:

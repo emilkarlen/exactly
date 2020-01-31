@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import List
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources import matcher_argument
@@ -60,7 +60,7 @@ class Not(LineMatcherArg):
 
     @property
     def elements(self) -> List:
-        return [expression.NOT_OPERATOR_NAME,
+        return [logic.NOT_OPERATOR_NAME,
                 str(self.matcher),
                 ]
 
@@ -81,12 +81,12 @@ class _BinaryOperatorBase(LineMatcherArg):
 
 class And(_BinaryOperatorBase):
     def __init__(self, matchers: List[LineMatcherArg]):
-        super().__init__(expression.AND_OPERATOR_NAME, matchers)
+        super().__init__(logic.AND_OPERATOR_NAME, matchers)
 
 
 class Or(_BinaryOperatorBase):
     def __init__(self, matchers: List[LineMatcherArg]):
-        super().__init__(expression.OR_OPERATOR_NAME, matchers)
+        super().__init__(logic.OR_OPERATOR_NAME, matchers)
 
 
 class WithOptionalNegation:

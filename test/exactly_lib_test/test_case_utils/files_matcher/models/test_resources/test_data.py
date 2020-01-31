@@ -244,6 +244,12 @@ def include_until_max_depth(n: int,
         ]
 
 
+def flatten_directories(elements: List[FileSystemElement],
+                        ) -> List[FileElementForTest]:
+    return _flatten_directories(pathlib.Path(),
+                                elements)
+
+
 def _flatten_directories(root: pathlib.Path,
                          elements: List[FileSystemElement],
                          inclusion_min_depth: int = 0,

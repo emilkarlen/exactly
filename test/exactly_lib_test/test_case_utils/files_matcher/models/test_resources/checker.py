@@ -12,7 +12,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_action import \
     MK_DIR_AND_CHANGE_TO_IT_INSIDE_OF_SDS_BUT_OUTSIDE_OF_ANY_OF_THE_RELATIVITY_OPTION_DIRS
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
     tcds_with_act_as_curr_dir_3
-from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import ModelContentsAssertion
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
+    FilesMatcherModelContentsAssertion
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NEA
 
@@ -62,8 +63,8 @@ def check_single(put: unittest.TestCase,
 
                 # ASSERT #
 
-                expectation = ModelContentsAssertion(model_path.primitive,
-                                                     expected_model_contents)
+                expectation = FilesMatcherModelContentsAssertion(model_path.primitive,
+                                                                 expected_model_contents)
 
                 expectation.apply_without_message(put, actual)
 

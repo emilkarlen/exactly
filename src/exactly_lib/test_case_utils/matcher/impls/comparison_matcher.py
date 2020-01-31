@@ -1,7 +1,7 @@
 import operator
 from typing import TypeVar, Generic, Optional, Sequence, Callable
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
@@ -124,7 +124,7 @@ class _TraceRenderer(Generic[T], NodeRenderer[bool]):
             if self._expectation_type is ExpectationType.POSITIVE
             else
             Node(
-                expression.NOT_OPERATOR_NAME,
+                logic.NOT_OPERATOR_NAME,
                 not self._result__wo_expectation_type,
                 (),
                 [comparison_node]
@@ -165,7 +165,7 @@ class _StructureRenderer(Generic[T], NodeRenderer[T]):
             if self._expectation_type is ExpectationType.POSITIVE
             else
             Node(
-                expression.NOT_OPERATOR_NAME,
+                logic.NOT_OPERATOR_NAME,
                 self._negate_data(self._data),
                 (),
                 (comparison_node,)

@@ -1,7 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import expression
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -74,9 +73,9 @@ class LineMatches(StringMatcherArg):
 
     def __str__(self):
         return '{any_or_every} {line} {quantifier_separator} {condition}'.format(
-            any_or_every=instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
+            any_or_every=logic.QUANTIFIER_ARGUMENTS[self.quantifier],
             line=matcher_options.LINE_ARGUMENT,
-            quantifier_separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            quantifier_separator=logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
             condition=self._condition,
         )
 
@@ -86,7 +85,7 @@ class Not(StringMatcherArg):
         self.matcher = matcher
 
     def __str__(self):
-        return expression.NOT_OPERATOR_NAME + ' ' + str(self.matcher)
+        return logic.NOT_OPERATOR_NAME + ' ' + str(self.matcher)
 
 
 class Parenthesis(StringMatcherArg):
@@ -109,8 +108,8 @@ class BinaryOperator(StringMatcherArg):
 
 
 def conjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
-    return BinaryOperator(expression.AND_OPERATOR_NAME, operands)
+    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
 
 
 def disjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
-    return BinaryOperator(expression.AND_OPERATOR_NAME, operands)
+    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)

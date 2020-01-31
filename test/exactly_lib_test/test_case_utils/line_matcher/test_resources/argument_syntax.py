@@ -1,5 +1,5 @@
 import exactly_lib.definitions.primitives.line_matcher
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.test_case_utils.condition import comparators
 
 
@@ -20,7 +20,7 @@ def syntax_for_line_number_matcher(comparator: comparators.ComparisonOperator,
 
 
 def syntax_for_and(matchers: list) -> str:
-    return (' ' + expression.AND_OPERATOR_NAME + ' ').join(matchers)
+    return (' ' + logic.AND_OPERATOR_NAME + ' ').join(matchers)
 
 
 def syntax_for_arbitrary_line_matcher() -> str:

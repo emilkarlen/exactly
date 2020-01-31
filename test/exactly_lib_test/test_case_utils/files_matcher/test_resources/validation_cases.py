@@ -2,6 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
     files_matcher_sdv_constant_test_impl
@@ -21,6 +22,13 @@ class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherSdv]):
                  sdv: FilesMatcherSdv):
         super().__init__(name)
         self._sdv = sdv
+
+    @staticmethod
+    def of_generic(name: str, sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolContext':
+        return FilesMatcherSymbolContext(
+            name,
+            FilesMatcherSdv(sdv)
+        )
 
     @property
     def sdv(self) -> FilesMatcherSdv:

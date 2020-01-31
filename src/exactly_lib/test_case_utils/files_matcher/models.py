@@ -14,7 +14,10 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 
 class _FilesGenerator(ABC):
     @abstractmethod
-    def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
+    def generate(self,
+                 root_dir_path: DescribedPath,
+                 directory_prune: Optional[FileMatcher],
+                 ) -> Iterator[FileModel]:
         pass
 
 
@@ -23,25 +26,43 @@ class _FilesMatcherModelForDir(FilesMatcherModel):
                  dir_path: DescribedPath,
                  files_generator: _FilesGenerator,
                  files_selection: Optional[FileMatcher] = None,
+                 directory_prune: Optional[FileMatcher] = None,
                  ):
         self._dir_path = dir_path
         self._files_generator = files_generator
         self._files_selection = files_selection
+        self._directory_prune = directory_prune
 
     def sub_set(self, selector: FileMatcher) -> FilesMatcherModel:
-        new_file_selector = (selector
-                             if self._files_selection is None
-                             else combinator_matchers.Conjunction([self._files_selection,
-                                                                   selector])
-                             )
+        new_file_selector = (
+            selector
+            if self._files_selection is None
+            else combinator_matchers.Conjunction([self._files_selection,
+                                                  selector])
+        )
 
         return _FilesMatcherModelForDir(self._dir_path,
                                         self._files_generator,
                                         new_file_selector,
+                                        self._directory_prune,
+                                        )
+
+    def prune(self, dir_selector: FileMatcher) -> FilesMatcherModel:
+        new_dir_selector = (
+            dir_selector
+            if self._directory_prune is None
+            else combinator_matchers.Disjunction([self._directory_prune,
+                                                  dir_selector])
+        )
+
+        return _FilesMatcherModelForDir(self._dir_path,
+                                        self._files_generator,
+                                        self._files_selection,
+                                        new_dir_selector,
                                         )
 
     def files(self) -> Iterator[FileModel]:
-        file_models = self._files_generator.generate(self._dir_path)
+        file_models = self._files_generator.generate(self._dir_path, self._directory_prune)
         if self._files_selection is None:
             return file_models
         else:
@@ -54,7 +75,8 @@ class _FilesMatcherModelForDir(FilesMatcherModel):
 
 def recursive(dir_path: DescribedPath,
               min_depth: Optional[int] = None,
-              max_depth: Optional[int] = None) -> FilesMatcherModel:
+              max_depth: Optional[int] = None,
+              ) -> FilesMatcherModel:
     """
     Depth 0 is the direct contents of the model.
     """
@@ -68,7 +90,10 @@ def non_recursive(dir_path: DescribedPath) -> FilesMatcherModel:
 
 
 class _FilesGeneratorForNonRecursive(_FilesGenerator):
-    def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
+    def generate(self,
+                 root_dir_path: DescribedPath,
+                 directory_prune: Optional[FileMatcher],
+                 ) -> Iterator[FileModel]:
         def mk_model(dir_entry) -> FileModel:
             return _FileModelForDirEntry(dir_entry,
                                          pathlib.Path(dir_entry.name),
@@ -85,10 +110,16 @@ class _FilesGeneratorForRecursive(_FilesGenerator):
         self._min_depth = min_depth
         self._max_depth = max_depth
 
-    def generate(self, root_dir_path: DescribedPath) -> Iterator[FileModel]:
+    def generate(self,
+                 root_dir_path: DescribedPath,
+                 directory_prune: Optional[FileMatcher],
+                 ) -> Iterator[FileModel]:
+        def current_file_model_should_be_pruned() -> bool:
+            return directory_prune is not None and directory_prune.matches_w_trace(current_file_model).value
+
         def add_dir_to_process_if_is_dir(maybe_entry_for_dir):
             try:
-                if maybe_entry_for_dir.is_dir():
+                if maybe_entry_for_dir.is_dir() and not current_file_model_should_be_pruned():
                     remaining_dirs.append(current_file.new_for_sub_dir(maybe_entry_for_dir))
             except OSError as ex:
                 raise HardErrorException(
@@ -104,8 +135,9 @@ class _FilesGeneratorForRecursive(_FilesGenerator):
             is_not_at_max_depth = not self._is_at_max_depth_limit(current_file.depth)
 
             for dir_entry in current_file.dir_entries():
+                current_file_model = current_file.file_model(dir_entry)
                 if is_within_min_depth_limit:
-                    yield current_file.file_model(dir_entry)
+                    yield current_file_model
                 if is_not_at_max_depth:
                     add_dir_to_process_if_is_dir(dir_entry)
 

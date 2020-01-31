@@ -1,6 +1,6 @@
 from typing import Generic
 
-from exactly_lib.definitions.primitives import boolean
+from exactly_lib.definitions import logic
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MODEL, MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
@@ -12,15 +12,15 @@ class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL])
         self._matching_result = MatchingResult(
             self._result,
             renderers.Constant(
-                tree.Node(boolean.CONSTANT_MATCHER,
+                tree.Node(logic.CONSTANT_MATCHER,
                           self._result,
-                          (tree.StringDetail(boolean.BOOLEANS[result]),),
+                          (tree.StringDetail(logic.BOOLEANS[result]),),
                           ())
             ),
         )
         self._structure = renderers.Constant(
-            tree.Node(boolean.CONSTANT_MATCHER, None,
-                      (tree.StringDetail(boolean.BOOLEANS[result]),),
+            tree.Node(logic.CONSTANT_MATCHER, None,
+                      (tree.StringDetail(logic.BOOLEANS[result]),),
                       ())
         )
 

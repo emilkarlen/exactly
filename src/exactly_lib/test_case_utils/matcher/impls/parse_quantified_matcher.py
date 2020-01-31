@@ -1,6 +1,6 @@
 from typing import Sequence, Generic
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import logic
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -24,7 +24,7 @@ def parse_after_quantifier_token(
         setup.rendering.type_name,
         must_be_on_current_line=True)
     token_parser.consume_mandatory_constant_unquoted_string(
-        instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+        logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
         must_be_on_current_line=True)
 
     element_predicate = element_predicate_parser.parse_from_token_parser(token_parser)
@@ -49,7 +49,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
     def quantification_grammar_expressions(self) -> Sequence[NameAndValue[grammar.SimpleExpression[MatcherSdv[MODEL]]]]:
         return (
             NameAndValue(
-                instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
+                logic.ALL_QUANTIFIER_ARGUMENT,
                 grammar.SimpleExpression(
                     self.parse_all,
                     QuantificationDoc(Quantifier.ALL,
@@ -58,7 +58,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
                 )
             ),
             NameAndValue(
-                instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
+                logic.EXISTS_QUANTIFIER_ARGUMENT,
                 grammar.SimpleExpression(
                     self.parse_exists,
                     QuantificationDoc(Quantifier.EXISTS,
@@ -85,7 +85,7 @@ class QuantificationDoc(grammar.SimpleExpressionDescription):
                                a.Constant(self._element_name)
                                )
         separator_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 a.Constant(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT)
+                                 a.Constant(logic.QUANTIFICATION_SEPARATOR_ARGUMENT)
                                  )
         element_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
                                        a.Named(self._element_matcher_syntax_name)
@@ -98,7 +98,7 @@ class QuantificationDoc(grammar.SimpleExpressionDescription):
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
-            'quantifier_description': instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
+            'quantifier_description': logic.QUANTIFIER_ARGUMENTS[self._quantifier],
             'element': self._element_name,
             'element_matcher': self._element_matcher_syntax_name,
         })

@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments, formatting, logic
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -103,7 +103,7 @@ class _SymbolConcept(ConceptDocumentation):
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
             'transformed': instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION,
             'select_transformer': SELECT_TRANSFORMER_NAME,
-            'not': instruction_arguments.NEGATION_ARGUMENT_STR,
+            'not': logic.NOT_OPERATOR_NAME,
             'empty': EMPTINESS_CHECK_ARGUMENT,
             'equals': EQUALS_ARGUMENT,
             'file_option': option_syntax.option_syntax(FILE_ARGUMENT_OPTION),

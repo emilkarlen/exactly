@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping
 
-from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
@@ -133,7 +133,7 @@ class TokenParser:
         return token.string
 
     def consume_optional_negation_operator(self) -> logic_types.ExpectationType:
-        is_negated = self.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_ARGUMENT_STR)
+        is_negated = self.consume_and_return_true_if_first_argument_is_unquoted_and_equals(logic.NOT_OPERATOR_NAME)
         return logic_types.from_is_negated(is_negated)
 
     def consume_and_return_true_if_first_argument_is_unquoted_and_equals(self, expected: str) -> bool:

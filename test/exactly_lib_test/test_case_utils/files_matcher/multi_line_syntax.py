@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives.files_matcher import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -77,13 +77,13 @@ class TestParseValidMultiLineSyntax(unittest.TestCase):
         cases = [
             SourceCase('Dir on 1st line, Negation and DIR-CONTENTS-MATCHER on 2nd line',
                        source=remaining_source_lines([
-                           instruction_arguments.NEGATION_ARGUMENT_STR + ' ' + EMPTINESS_CHECK_ARGUMENT,
+                           logic.NOT_OPERATOR_NAME + ' ' + EMPTINESS_CHECK_ARGUMENT,
                        ]),
                        source_assertion=asrt_source.is_at_end_of_line(1)
                        ),
             SourceCase('Dir on 1st line, Negation and DIR-CONTENTS-MATCHER on 2nd line, followed by non-instr lines',
                        source=remaining_source_lines([
-                           instruction_arguments.NEGATION_ARGUMENT_STR,
+                           logic.NOT_OPERATOR_NAME,
                            EMPTINESS_CHECK_ARGUMENT,
                            'following line',
                        ]),

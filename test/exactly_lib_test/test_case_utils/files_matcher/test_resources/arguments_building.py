@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Dict, List
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
@@ -61,9 +62,9 @@ class Quantification(FilesMatcherArg):
     def elements(self) -> List:
         return (
                 [
-                    instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
+                    logic.QUANTIFIER_ARGUMENTS[self.quantifier],
                     files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
-                    instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                    logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
                 ] +
                 self.element_matcher.elements
         )
@@ -80,9 +81,26 @@ class Selection(FilesMatcherArg):
     @property
     def elements(self) -> List:
         return (
-                [option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name)]
+                [option_syntax.option_syntax(config.SELECTION_OPTION.name)]
                 + self.selector.elements +
                 self.on_selection.elements
+        )
+
+
+class Prune(FilesMatcherArg):
+    def __init__(self,
+                 prune: fm_args.FileMatcherArg,
+                 on_resulting_contents: FilesMatcherArg,
+                 ):
+        self.prune = prune
+        self.on_resulting_contents = on_resulting_contents
+
+    @property
+    def elements(self) -> List:
+        return (
+                [option_syntax.option_syntax(config.PRUNE_OPTION.name)]
+                + self.prune.elements +
+                self.on_resulting_contents.elements
         )
 
 
@@ -134,9 +152,9 @@ class FileQuantificationAssertionVariant(AssertionVariantArgumentsConstructor):
 
     def __str__(self):
         return '{quantifier} {file} {separator} {file_assertion}'.format(
-            quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
+            quantifier=logic.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
-            separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            separator=logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
             file_assertion=str(self._file_assertion)
         )
 
@@ -296,7 +314,7 @@ def selection_arguments(name_pattern: str = '',
 
 
 def selection_arguments_for_matcher(matcher: str) -> str:
-    return (option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name) +
+    return (option_syntax.option_syntax(config.SELECTION_OPTION.name) +
             ' ' +
             matcher)
 

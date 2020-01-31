@@ -9,7 +9,7 @@ from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
-    ModelContentsAssertion
+    FilesMatcherModelContentsAssertion
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertion_applier import ApplicationAssertionSetup
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -39,7 +39,7 @@ class _ModelCheckerAssertionSetup(ApplicationAssertionSetup[FilesMatcherModel, F
                       tcds: Tcds,
                       env: ApplicationEnvironment,
                       ) -> ValueAssertion[FilesMatcherModel]:
-        return ModelContentsAssertion(
+        return FilesMatcherModelContentsAssertion(
             self._model_dir.resolve(symbols).value_of_any_dependency(tcds),
             self._expected_contents,
         )

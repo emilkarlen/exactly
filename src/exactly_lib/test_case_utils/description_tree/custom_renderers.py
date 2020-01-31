@@ -1,4 +1,4 @@
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
@@ -8,7 +8,7 @@ from exactly_lib.util.logic_types import ExpectationType
 
 def negation(negated: NodeRenderer[None]) -> NodeRenderer[None]:
     return renderers.NodeRendererFromParts(
-        expression.NOT_OPERATOR_NAME,
+        logic.NOT_OPERATOR_NAME,
         None,
         (),
         (negated,),

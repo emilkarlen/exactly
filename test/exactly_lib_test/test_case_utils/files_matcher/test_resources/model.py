@@ -70,3 +70,21 @@ def model_constructor__from_embryo__non_recursive(embryo: ModelEmbryo) -> ModelC
         return model
 
     return ret_val
+
+
+def model_constructor__recursive(checked_dir: PathSdv,
+                                 min_depth: Optional[int] = None,
+                                 max_depth: Optional[int] = None,
+                                 ) -> ModelConstructor:
+    def ret_val(environment: FullResolvingEnvironment) -> FilesMatcherModel:
+        checked_dir_path = (
+            checked_dir
+                .resolve(environment.symbols)
+                .value_of_any_dependency__d(environment.tcds)
+        )
+
+        return models.recursive(checked_dir_path,
+                                min_depth,
+                                max_depth)
+
+    return ret_val

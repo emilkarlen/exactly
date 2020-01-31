@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import List, Optional
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils import file_properties
@@ -199,7 +199,7 @@ class Not(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            expression.NOT_OPERATOR_NAME,
+            logic.NOT_OPERATOR_NAME,
             self.matcher,
         ]
 
@@ -220,12 +220,12 @@ class _BinaryOperatorBase(FileMatcherArg):
 
 class And(_BinaryOperatorBase):
     def __init__(self, matchers: List[FileMatcherArg]):
-        super().__init__(expression.AND_OPERATOR_NAME, matchers)
+        super().__init__(logic.AND_OPERATOR_NAME, matchers)
 
 
 class Or(_BinaryOperatorBase):
     def __init__(self, matchers: List[FileMatcherArg]):
-        super().__init__(expression.OR_OPERATOR_NAME, matchers)
+        super().__init__(logic.OR_OPERATOR_NAME, matchers)
 
 
 class WithOptionalNegation:

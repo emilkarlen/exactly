@@ -1,6 +1,7 @@
 from typing import List, Optional, Sequence
 
 import exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc
+import exactly_lib.test_case_utils.files_matcher.config
 from exactly_lib.definitions import doc_format, matcher_model
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -68,7 +69,7 @@ def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv
     return parser.consume_and_handle_optional_option(
         None,
         parse_sdv,
-        instruction_arguments.SELECTION_OPTION.name)
+        exactly_lib.test_case_utils.files_matcher.config.SELECTION_OPTION.name)
 
 
 def parse_sdv(parser: TokenParser,

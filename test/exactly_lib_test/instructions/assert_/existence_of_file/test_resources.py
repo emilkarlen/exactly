@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.instructions.assert_ import existence_of_file
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument
@@ -46,7 +46,7 @@ class CompleteInstructionArg(Argument):
         ret_val = []
 
         if self.expectation_type is ExpectationType.NEGATIVE:
-            ret_val += [expression.NOT_OPERATOR_NAME]
+            ret_val += [logic.NOT_OPERATOR_NAME]
 
         ret_val += self.path.elements
 

@@ -5,7 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import instruction_arguments, logic
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -56,9 +56,9 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-NEGATION_OPERATOR = instruction_arguments.NEGATION_ARGUMENT_STR
+NEGATION_OPERATOR = logic.NOT_OPERATOR_NAME
 
-PROPERTIES_SEPARATOR = instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT
+PROPERTIES_SEPARATOR = logic.QUANTIFICATION_SEPARATOR_ARGUMENT
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 

@@ -41,8 +41,8 @@ class TestSymbolReferenceFromBothSelectorAndFilesMatcherShouldBeReported(unittes
         name_of_referenced_files_matcher = 'FILES_MATCHER'
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_reference_to_files_matcher__ref(name_of_referenced_files_matcher),
             is_file_matcher_reference_to__ref(name_of_referenced_selector),
+            is_reference_to_files_matcher__ref(name_of_referenced_files_matcher),
         ])
 
         arguments = fsm_args.argument_constructor_for_symbol_reference(

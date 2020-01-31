@@ -2,14 +2,16 @@ from abc import ABC
 from typing import Generic, Callable
 from typing import TypeVar, Sequence, List
 
-from exactly_lib.definitions.primitives import boolean
+from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
@@ -57,6 +59,25 @@ def sdv_from_bool(
 
 def sdv_of_unconditionally_matching_matcher() -> MatcherSdv[MODEL]:
     return MatcherSdvOfConstantDdvTestImpl(ddv_of_unconditionally_matching_matcher())
+
+
+def sdv_from_parts(references: Sequence[SymbolReference],
+                   validator: DdvValidator,
+                   matcher: Callable[[SymbolTable, Tcds], MatcherWTraceAndNegation[MODEL]],
+                   ) -> MatcherSdv[MODEL]:
+    def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
+        def make_primitive(tcds: Tcds) -> FileMatcher:
+            return matcher(symbols, tcds)
+
+        return MatcherDdvFromPartsTestImpl(
+            make_primitive,
+            validator,
+        )
+
+    return sdv_components.MatcherSdvFromParts(
+        references,
+        make_ddv,
+    )
 
 
 def ddv_of_unconditionally_matching_matcher() -> MatcherDdv[MODEL]:
@@ -161,7 +182,7 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
 
         self._trace_tree = tree.Node(name,
                                      result,
-                                     (tree.StringDetail(boolean.BOOLEANS[result]),),
+                                     (tree.StringDetail(logic.BOOLEANS[result]),),
                                      ())
         self._matching_result = MatchingResult(
             result,

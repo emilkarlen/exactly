@@ -6,7 +6,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
@@ -57,6 +57,13 @@ class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherSdv]):
                  sdv: StringMatcherSdv):
         super().__init__(name)
         self._sdv = sdv
+
+    @staticmethod
+    def of_generic(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
+        return StringMatcherSymbolContext(
+            name,
+            StringMatcherSdv(sdv)
+        )
 
     @property
     def sdv(self) -> StringMatcherSdv:

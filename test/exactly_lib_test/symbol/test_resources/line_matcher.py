@@ -5,7 +5,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant, ddv_components
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -78,6 +78,13 @@ class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherSdv]):
                  sdv: LineMatcherSdv):
         super().__init__(name)
         self._sdv = sdv
+
+    @staticmethod
+    def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
+        return LineMatcherSymbolContext(
+            name,
+            LineMatcherSdv(sdv)
+        )
 
     @property
     def sdv(self) -> LineMatcherSdv:

@@ -1,6 +1,6 @@
 from typing import Sequence, TypeVar
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
@@ -33,14 +33,14 @@ def new_grammar(concept: grammar.Concept,
         simple_expressions=all_simple_expressions,
         complex_expressions=[
             NameAndValue(
-                expression.AND_OPERATOR_NAME,
+                logic.AND_OPERATOR_NAME,
                 grammar.ComplexExpression(combinator_sdvs.Conjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_AND_SED_DESCRIPTION)
                                           ))
             ),
             NameAndValue(
-                expression.OR_OPERATOR_NAME,
+                logic.OR_OPERATOR_NAME,
                 grammar.ComplexExpression(combinator_sdvs.Disjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_OR_SED_DESCRIPTION)
@@ -49,7 +49,7 @@ def new_grammar(concept: grammar.Concept,
         ],
         prefix_expressions=[
             NameAndValue(
-                expression.NOT_OPERATOR_NAME,
+                logic.NOT_OPERATOR_NAME,
                 grammar.PrefixExpression(combinator_sdvs.Negation,
                                          OperatorExpressionDescriptionFromFunctions(
                                              tp.fnap__fun(_NOT_SED_DESCRIPTION)

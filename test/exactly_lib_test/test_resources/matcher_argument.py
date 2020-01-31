@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from exactly_lib.definitions import expression
-from exactly_lib.definitions.primitives import boolean
+from exactly_lib.definitions import logic
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util.parse import token
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
@@ -32,7 +31,7 @@ class Constant(MatcherArgument):
 
     @property
     def elements(self) -> List:
-        return [boolean.CONSTANT_MATCHER, boolean.BOOLEANS[self.value]]
+        return [logic.CONSTANT_MATCHER, logic.BOOLEANS[self.value]]
 
 
 class MatcherArgComponent(ABC):
@@ -84,12 +83,12 @@ def value_error_if_empty(operator_name: str,
 
 
 def value_error_if_empty__and(matchers: List[MatcherArgument]):
-    value_error_if_empty(expression.AND_OPERATOR_NAME,
+    value_error_if_empty(logic.AND_OPERATOR_NAME,
                          matchers)
 
 
 def value_error_if_empty__or(matchers: List[MatcherArgument]):
-    value_error_if_empty(expression.OR_OPERATOR_NAME,
+    value_error_if_empty(logic.OR_OPERATOR_NAME,
                          matchers)
 
 

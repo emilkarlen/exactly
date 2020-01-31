@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 
-from exactly_lib.definitions import expression
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
@@ -221,7 +221,7 @@ class TestComplexMatcher(tc.TestWithNegationArgumentBase):
                         str(EqualsStringAssertionArgumentsConstructor(
                             surrounded_by_hard_quotes_str(checked_file.contents)))),
                     ')',
-                    expression.AND_OPERATOR_NAME,
+                    logic.AND_OPERATOR_NAME,
                     argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
                 ]
             ).as_remaining_source,
@@ -254,7 +254,7 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
                         str(EqualsStringAssertionArgumentsConstructor(
                             surrounded_by_hard_quotes_str(checked_file.contents)))),
                     ')',
-                    expression.AND_OPERATOR_NAME,
+                    logic.AND_OPERATOR_NAME,
                     argument_syntax.name_glob_pattern_matcher_of(checked_file.name),
                 ]
             ).as_remaining_source,
@@ -282,7 +282,7 @@ class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
             elements(
                 [
                     argument_syntax.type_matcher_of(FileType.REGULAR),
-                    expression.AND_OPERATOR_NAME,
+                    logic.AND_OPERATOR_NAME,
                     argument_syntax.contents_matcher_of(
                         str(EqualsStringAssertionArgumentsConstructor(
                             surrounded_by_hard_quotes_str('expected contents')))),

@@ -11,11 +11,10 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     files_matcher_integration
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToHardErrorFromFilesMatcherHelper
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.model_contents import \
-    model_checker
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases

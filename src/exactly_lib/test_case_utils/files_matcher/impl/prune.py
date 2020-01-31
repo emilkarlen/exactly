@@ -16,13 +16,13 @@ def matcher(dir_selector: FileMatcherSdv,
     )
 
 
-def _get_model(file_selector: FileMatcher, model: FilesMatcherModel) -> FilesMatcherModel:
-    return model.sub_set(file_selector)
+def _get_model(dir_selector: FileMatcher, model: FilesMatcherModel) -> FilesMatcherModel:
+    return model.prune(dir_selector)
 
 
 _CONFIGURATION = model_modifier_utils.Configuration(
     ' '.join([
-        option_syntax.option_syntax(config.SELECTION_OPTION.name),
+        option_syntax.option_syntax(config.PRUNE_OPTION.name),
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
         syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
     ]),
