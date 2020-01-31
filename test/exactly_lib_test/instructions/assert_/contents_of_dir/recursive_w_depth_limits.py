@@ -4,8 +4,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.test_case_execution import \
-    ExecutorOfCaseGeneratorForDirContents
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import generated_case_execution
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import recursive_w_depth_limits
@@ -75,4 +74,4 @@ class TestSelectorShouldBeApplied(unittest.TestCase):
         _EXECUTOR.execute_multi(self, recursive_w_depth_limits.SelectorShouldBeApplied())
 
 
-_EXECUTOR = ExecutorOfCaseGeneratorForDirContents()
+_EXECUTOR = generated_case_execution.ExecutorOfCaseGeneratorForDirContents()

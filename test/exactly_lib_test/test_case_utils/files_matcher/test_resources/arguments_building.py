@@ -89,7 +89,7 @@ class Selection(FilesMatcherArg):
 
 class Prune(FilesMatcherArg):
     def __init__(self,
-                 prune: fm_args.FileMatcherArg,
+                 prune: MatcherArgument,
                  on_resulting_contents: FilesMatcherArg,
                  ):
         self.prune = prune

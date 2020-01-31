@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 from pathlib import Path
 from typing import Sequence, Mapping
@@ -26,9 +27,10 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.helper import
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import ExecutionExpectation, Expectation, \
     ParseExpectation, Arrangement, EXECUTION_IS_PASS
+from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, sym_link, Dir, FileSystemElement
 from exactly_lib_test.test_resources.matcher_argument import Conjunction, Parenthesis
-from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE
+from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import matching_result
@@ -41,6 +43,8 @@ def suite() -> unittest.TestSuite:
         TestRecursiveWithPruneAndDepthLimitations(),
         TestRecursiveWithPruneAndBinaryOperator(),
         TestPruneShouldBeIgnoredWhenModelIsNotRecursive(),
+        TestDetectionOfSymLink(),
+        TestBrokenSymLinksShouldBeTreatedAsNonDirFiles(),
     ])
 
 
@@ -270,6 +274,34 @@ NON_RECURSIVE__ACTUAL = [
     sym_link('broken-sym-link', 'non-existing'),
 ]
 
+PRUNE_TYPE_SYM_LINK = EA(
+    [
+        pathlib.Path('non-empty-dir'),
+        pathlib.Path('non-empty-dir') / 'regular-in-non-empty-dir',
+        pathlib.Path('sym-link-to-non-empty-dir'),
+    ],
+    [
+        Dir('non-empty-dir', [
+            empty_file('regular-in-non-empty-dir'),
+        ]),
+        sym_link('sym-link-to-non-empty-dir', 'non-empty-dir')
+    ]
+)
+
+BROKEN_SYM_LINKS_SHOULD_BE_TREATED_AS_NON_DIR_FILES = EA(
+    [
+        pathlib.Path('non-empty-dir'),
+        pathlib.Path('non-empty-dir') / 'regular-in-non-empty-dir',
+        pathlib.Path('broken-sym-link'),
+    ],
+    [
+        Dir('non-empty-dir', [
+            empty_file('regular-in-non-empty-dir'),
+        ]),
+        sym_link('broken-sym-link', 'non-existing-target')
+    ]
+)
+
 
 class TestRecursiveWithJustPrune(unittest.TestCase):
     def test_single_prune(self):
@@ -327,6 +359,74 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
             ]
             ),
             execution_cases=MULTIPLE_PRUNE_CASES,
+        )
+
+
+class TestDetectionOfSymLink(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+
+        helper = IntegrationCheckHelper()
+
+        # ACT & ASSERT #
+
+        integration_check.CHECKER.check(
+            self,
+            source=fms_args.Prune(
+                fm_args.Type(FileType.SYMLINK),
+                helper.files_matcher_sym_ref_arg(),
+            ).as_remaining_source,
+            model_constructor=
+            helper.model_constructor_for_checked_dir__recursive(),
+            arrangement=helper.arrangement_for_contents_of_model(
+                checked_dir_contents=PRUNE_TYPE_SYM_LINK.actual,
+                files_matcher_symbol_value=
+                model_checker.matcher(
+                    self,
+                    helper.dir_arg.path_sdv,
+                    PRUNE_TYPE_SYM_LINK.expected,
+                ),
+            ),
+            expectation=Expectation(
+                ParseExpectation(
+                    symbol_references=helper.symbol_references_expectation(),
+                ),
+                EXECUTION_IS_PASS,
+            ),
+        )
+
+
+class TestBrokenSymLinksShouldBeTreatedAsNonDirFiles(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+
+        helper = IntegrationCheckHelper()
+
+        # ACT & ASSERT #
+
+        integration_check.CHECKER.check(
+            self,
+            source=fms_args.Prune(
+                matcher_argument.Constant(False),
+                helper.files_matcher_sym_ref_arg(),
+            ).as_remaining_source,
+            model_constructor=
+            helper.model_constructor_for_checked_dir__recursive(),
+            arrangement=helper.arrangement_for_contents_of_model(
+                checked_dir_contents=BROKEN_SYM_LINKS_SHOULD_BE_TREATED_AS_NON_DIR_FILES.actual,
+                files_matcher_symbol_value=
+                model_checker.matcher(
+                    self,
+                    helper.dir_arg.path_sdv,
+                    BROKEN_SYM_LINKS_SHOULD_BE_TREATED_AS_NON_DIR_FILES.expected,
+                ),
+            ),
+            expectation=Expectation(
+                ParseExpectation(
+                    symbol_references=helper.symbol_references_expectation(),
+                ),
+                EXECUTION_IS_PASS,
+            ),
         )
 
 

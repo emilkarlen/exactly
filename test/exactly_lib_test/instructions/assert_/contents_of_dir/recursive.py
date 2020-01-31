@@ -9,6 +9,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
+from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import generated_case_execution
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToInvalidPathArgumentHelper, HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.validation import ValidationHelper
@@ -28,6 +29,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data, model_checker
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -46,6 +48,7 @@ def suite() -> unittest.TestSuite:
         TestErrorDueToHardErrorFromFilesMatcher(),
         unittest.makeSuite(TestApplication),
         TestFilesOfModel(),
+        unittest.makeSuite(TestDetectionOfFileType),
         TestMultiLineSyntax(),
     ])
 
@@ -298,6 +301,22 @@ class TestMultiLineSyntax(unittest.TestCase):
                     execution=execution_cases,
                 )
 
+
+class TestDetectionOfFileType(unittest.TestCase):
+    def test_depth_0(self):
+        _EXECUTOR.execute_list(
+            self,
+            file_type.file_type_detection__recursive__depth_0()
+        )
+
+    def test_depth_1(self):
+        _EXECUTOR.execute_list(
+            self,
+            file_type.file_type_detection__recursive__depth_1()
+        )
+
+
+_EXECUTOR = generated_case_execution.ExecutorOfCaseGeneratorForDirContents()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

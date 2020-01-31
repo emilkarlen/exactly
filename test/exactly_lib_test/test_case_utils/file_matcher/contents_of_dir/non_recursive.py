@@ -8,7 +8,8 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
-    files_matcher_integration
+    files_matcher_integration, executor_for_dir_contents
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
@@ -36,6 +37,7 @@ def suite() -> unittest.TestSuite:
         TestApplication(),
         TestFilesOfModel(),
         unittest.makeSuite(TestConcreteMatcher),
+        TestDetectionOfFileType(),
     ])
 
 
@@ -245,3 +247,14 @@ class TestConcreteMatcher(unittest.TestCase):
             symbol_references=asrt.is_empty_sequence,
             execution=helper.execution_cases()
         )
+
+
+class TestDetectionOfFileType(unittest.TestCase):
+    def runTest(self):
+        _EXECUTOR.execute_list(
+            self,
+            file_type.file_type_detection__non_recursive()
+        )
+
+
+_EXECUTOR = executor_for_dir_contents.ExecutorOfCaseGeneratorForDirContents()
