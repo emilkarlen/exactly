@@ -28,6 +28,14 @@ def remaining_source(remaining_contents_of_first_line: str,
     return ret_val
 
 
+def remaining_source_string(pre_formatted: str) -> ParseSource:
+    previous_content = 'previous content '
+    ret_val = ParseSource(previous_content + pre_formatted)
+    ret_val.consume_part_of_current_line(len(previous_content))
+
+    return ret_val
+
+
 def remaining_source_lines(lines: List[str]) -> ParseSource:
     """
     A variant of 'remaining_source'.
@@ -67,6 +75,9 @@ class ParseSourceBuilder:
     def single_line(self, first_line: str, **kwargs) -> ParseSource:
         return self.lines([first_line], **kwargs)
 
+    def pre_formatted(self, pre_formatted: str) -> ParseSource:
+        return remaining_source_string(self.format(pre_formatted))
+
     def multi_line(self,
                    first_line: str,
                    following_lines: List[str],
@@ -79,5 +90,5 @@ class ParseSourceBuilder:
     def format_lines(self, lines: List[str], **kwargs) -> List[str]:
         return self._string_formatter.format_strings(lines, **kwargs)
 
-    def new_with(self, **kwargs):
+    def new_with(self, **kwargs) -> 'ParseSourceBuilder':
         return ParseSourceBuilder(self._string_formatter.format_dict(**kwargs))

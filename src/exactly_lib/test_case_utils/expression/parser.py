@@ -11,9 +11,10 @@ from ...util.cli_syntax import option_syntax
 
 
 def parse_from_parse_source(grammar: Grammar[EXPR],
-                            source: ParseSource) -> EXPR:
+                            source: ParseSource,
+                            must_be_on_current_line: bool = True) -> EXPR:
     with token_stream_parser.from_parse_source(source) as tp:
-        return parse(grammar, tp)
+        return parse(grammar, tp, must_be_on_current_line)
 
 
 def parse(grammar: Grammar[EXPR],
@@ -76,7 +77,7 @@ class _Parser(Generic[EXPR]):
         if must_be_on_current_line:
             self.parser.require_is_not_at_eol(self.missing_expression)
 
-        if self.consume_optional_start_parentheses():
+        if self.consume_optional_start_parentheses(must_be_on_current_line):
             expression = self.parse(must_be_on_current_line=False)
             self.consume_mandatory_end_parentheses()
             return expression
@@ -120,8 +121,10 @@ class _Parser(Generic[EXPR]):
         else:
             return None
 
-    def consume_optional_start_parentheses(self) -> bool:
-        start_parenthesis = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(['('])
+    def consume_optional_start_parentheses(self, must_be_on_current_line: bool) -> bool:
+        start_parenthesis = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
+            ['('],
+            must_be_on_current_line)
         return start_parenthesis is not None
 
     def consume_mandatory_end_parentheses(self) -> None:
