@@ -15,10 +15,12 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct, \
     TcdsArrangement
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.case_generator import \
-    SingleCaseGenerator, ExecutionResult, FullExecutionResult, RecWLimArguments, ModelFile, ValidationFailure, \
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_executor import \
+    ExecutorOfCaseGenerator
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
+    SingleCaseGenerator, ExecutionResult, FullExecutionResult, ModelFile, ValidationFailure, \
     MultipleExecutionCasesGenerator
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_resources.arguments_building import SequenceOfArguments, ArgumentElementsRenderer, \
     OptionArgument
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -31,64 +33,66 @@ INSTRUCTION_CHECKER = instruction_check.Checker(
     PARSER
 )
 RECURSION_OPTION_ARG = OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name)
-RECURSION_OPTION_STR = str(RECURSION_OPTION_ARG)
 
 
-def execute_single(put: unittest.TestCase,
-                   case: SingleCaseGenerator,
-                   ):
-    INSTRUCTION_CHECKER.check_2(
-        put,
-        source=_arguments(
-            case.model_file,
-            case.arguments(),
-        ).as_remaining_source,
-        arrangement=
-        ArrangementPostAct2(
-            tcds=_mk_tcds_arrangement_post_act(case.tcds_arrangement()),
-            symbols=case.symbols(put),
-        ),
-        expectation=
-        Expectation2(
-            ParseExpectation(
-                symbol_usages=_symbol_usages_assertion(case.expected_symbols())
+class ExecutorOfCaseGeneratorForDirContents(ExecutorOfCaseGenerator):
+
+    def execute_single(self,
+                       put: unittest.TestCase,
+                       case: SingleCaseGenerator,
+                       ):
+        INSTRUCTION_CHECKER.check_2(
+            put,
+            source=_arguments(
+                case.model_file,
+                case.arguments(),
+            ).as_remaining_source,
+            arrangement=
+            ArrangementPostAct2(
+                tcds=_mk_tcds_arrangement_post_act(case.tcds_arrangement()),
+                symbols=case.symbols(put),
             ),
-            _execution_expectation_of(case.execution_result())
-        )
-    )
-
-
-def execute_list(put: unittest.TestCase,
-                 cases: Sequence[NameAndValue[SingleCaseGenerator]]):
-    for case in cases:
-        with put.subTest(case.name):
-            execute_single(put, case.value)
-
-
-def execute_multi(put: unittest.TestCase,
-                  generator: MultipleExecutionCasesGenerator):
-    INSTRUCTION_CHECKER.check_multi(
-        put,
-        source=
-        SourceArrangement.new_w_arbitrary_fs_location(
-            _arguments(generator.model_file,
-                       generator.arguments()).as_arguments
-        ),
-        parse_expectation=ParseExpectation(
-            symbol_usages=_symbol_usages_assertion(generator.expected_symbols())
-        ),
-        execution=[
-            NExArr(
-                case.name,
-                _execution_expectation_of(case.expected),
-                ArrangementPostAct2(
-                    tcds=_mk_tcds_arrangement_post_act(case.arrangement.tcds),
-                    symbols=case.arrangement.symbols,
+            expectation=
+            Expectation2(
+                ParseExpectation(
+                    symbol_usages=_symbol_usages_assertion(case.expected_symbols())
                 ),
+                _execution_expectation_of(case.execution_result())
             )
-            for case in generator.execution_cases()
-        ],
-    )
+        )
+
+    def execute_list(self,
+                     put: unittest.TestCase,
+                     cases: Sequence[NameAndValue[SingleCaseGenerator]]):
+        for case in cases:
+            with put.subTest(case.name):
+                self.execute_single(put, case.value)
+
+    def execute_multi(self,
+                      put: unittest.TestCase,
+                      generator: MultipleExecutionCasesGenerator):
+        INSTRUCTION_CHECKER.check_multi(
+            put,
+            source=
+            SourceArrangement.new_w_arbitrary_fs_location(
+                _arguments(generator.model_file,
+                           generator.arguments()).as_arguments
+            ),
+            parse_expectation=ParseExpectation(
+                symbol_usages=_symbol_usages_assertion(generator.expected_symbols())
+            ),
+            execution=[
+                NExArr(
+                    case.name,
+                    _execution_expectation_of(case.expected),
+                    ArrangementPostAct2(
+                        tcds=_mk_tcds_arrangement_post_act(case.arrangement.tcds),
+                        symbols=case.arrangement.symbols,
+                    ),
+                )
+                for case in generator.execution_cases()
+            ],
+        )
 
 
 def _mk_tcds_arrangement_post_act(tcds: Optional[TcdsArrangement]) -> TcdsArrangementPostAct:
@@ -127,16 +131,12 @@ def _execution_expectation_of(expected: ExecutionResult) -> ExecutionExpectation
 
 
 def _arguments(model_file: ModelFile,
-               generic_arguments: RecWLimArguments) -> ArgumentElementsRenderer:
+               generic_arguments: FileMatcherArg) -> ArgumentElementsRenderer:
     return SequenceOfArguments([
         RelOptPathArgument(model_file.name,
                            model_file.location,
                            ),
-        fm_args.DirContentsRecursiveArgs(
-            generic_arguments.files_matcher,
-            generic_arguments.min_depth,
-            generic_arguments.max_depth
-        ),
+        generic_arguments,
     ])
 
 

@@ -2,12 +2,9 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.case_generator import \
-    SingleCaseGenerator, ExecutionResult, FullExecutionResult, ValidationFailure, MultipleExecutionCasesGenerator, \
-    RecWLimArguments
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
+    SingleCaseGenerator, ExecutionResult, FullExecutionResult, ValidationFailure, MultipleExecutionCasesGenerator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation, Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -21,7 +18,7 @@ def execute_single(put: unittest.TestCase,
                    ):
     integration_check.CHECKER.check(
         put,
-        source=_arguments(case.arguments()).as_remaining_source,
+        source=case.arguments().as_remaining_source,
         model_constructor=
         integration_check.file_in_tcds(
             case.model_file.location,
@@ -53,7 +50,7 @@ def execute_multi(put: unittest.TestCase,
                   generator: MultipleExecutionCasesGenerator):
     integration_check.CHECKER.check_multi(
         put,
-        _arguments(generator.arguments()).as_arguments,
+        generator.arguments().as_arguments,
         parse_expectation=ParseExpectation(
             symbol_references=asrt.matches_sequence(generator.expected_symbols())
         ),
@@ -70,14 +67,6 @@ def execute_multi(put: unittest.TestCase,
             )
             for case in generator.execution_cases()
         ],
-    )
-
-
-def _arguments(args: RecWLimArguments) -> FileMatcherArg:
-    return fm_args.DirContentsRecursive(
-        args.files_matcher,
-        args.min_depth,
-        args.max_depth
     )
 
 

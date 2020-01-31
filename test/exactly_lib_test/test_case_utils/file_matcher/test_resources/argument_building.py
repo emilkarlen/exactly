@@ -11,7 +11,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
-from exactly_lib_test.test_resources.arguments_building import OptionArgument
+from exactly_lib_test.test_resources.arguments_building import OptionArgument, ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 
@@ -141,6 +141,19 @@ class DirContentsRecursive(FileMatcherArg):
             parse_file_matcher.DIR_CONTENTS,
             self.recursive_args,
         ]
+
+
+class DirContentsGeneric(FileMatcherArg):
+    def __init__(self,
+                 arguments: ArgumentElementsRenderer,
+                 ):
+        self.arguments = arguments
+
+    @property
+    def elements(self) -> List:
+        return ([parse_file_matcher.DIR_CONTENTS]
+                + self.arguments.elements
+                )
 
 
 class DirContentsRecursiveInvalidOptionArgs(FileMatcherArg):

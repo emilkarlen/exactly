@@ -9,6 +9,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg, \
     SymbolReference
@@ -110,7 +111,7 @@ class TestCaseGenerator(ABC):
         self._helper = Helper(model_file, files_matcher_name)
 
     @abstractmethod
-    def arguments(self) -> RecWLimArguments:
+    def arguments(self) -> FileMatcherArg:
         pass
 
     @abstractmethod

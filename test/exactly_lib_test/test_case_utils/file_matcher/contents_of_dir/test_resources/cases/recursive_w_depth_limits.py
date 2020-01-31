@@ -14,14 +14,15 @@ from exactly_lib_test.symbol.test_resources.arguments_building import SymbolRefe
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
+    SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
+    MultipleExecutionCasesGenerator, FullExecutionResult
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.files_matcher_integration import \
     NumFilesSetup
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.helper_utils import DepthArgs, \
     LimitationCase
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.case_generator import \
-    SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
-    MultipleExecutionCasesGenerator, FullExecutionResult
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
@@ -44,12 +45,13 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
         actual=the_checked_dir_contents,
     )
 
-    def arguments(self) -> RecWLimArguments:
-        return RecWLimArguments(
-            self._helper.files_matcher_sym_ref_arg(),
-            SymbolReferenceArgument(self.min_depth.name),
-            SymbolReferenceArgument(self.max_depth.name),
-        )
+    def arguments(self) -> FileMatcherArg:
+        return _as_arguments(
+            RecWLimArguments(
+                self._helper.files_matcher_sym_ref_arg(),
+                SymbolReferenceArgument(self.min_depth.name),
+                SymbolReferenceArgument(self.max_depth.name),
+            ))
 
     def tcds_arrangement(self) -> Optional[TcdsArrangement]:
         return self._helper.tcds_arrangement_for_contents_of_checked_dir(
@@ -271,14 +273,16 @@ class SelectorShouldBeApplied(MultipleExecutionCasesGenerator):
         ]
     )
 
-    def arguments(self) -> RecWLimArguments:
-        return RecWLimArguments(
-            fms_args.Selection(
-                fm_args.Type(FileType.REGULAR),
-                self.num_files_setup.num_files_arg()
-            ),
-            self.min_depth,
-            self.max_depth,
+    def arguments(self) -> FileMatcherArg:
+        return _as_arguments(
+            RecWLimArguments(
+                fms_args.Selection(
+                    fm_args.Type(FileType.REGULAR),
+                    self.num_files_setup.num_files_arg()
+                ),
+                self.min_depth,
+                self.max_depth,
+            )
         )
 
     def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
@@ -310,11 +314,13 @@ class _ValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAnInt
         self._symbols = symbols
         self._symbol_references = symbol_references
 
-    def arguments(self) -> RecWLimArguments:
-        return RecWLimArguments(
-            _ARBITRARY_NON_SYMBOL_FILES_MATCHER,
-            self._depth_args.min_depth,
-            self._depth_args.max_depth,
+    def arguments(self) -> FileMatcherArg:
+        return _as_arguments(
+            RecWLimArguments(
+                _ARBITRARY_NON_SYMBOL_FILES_MATCHER,
+                self._depth_args.min_depth,
+                self._depth_args.max_depth,
+            )
         )
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
@@ -335,11 +341,13 @@ class _ValidationPreSdsShouldFailWhenLimitsAreIntegerOutOfRange(SingleCaseGenera
         super().__init__()
         self._depth_args = depth_args
 
-    def arguments(self) -> RecWLimArguments:
-        return RecWLimArguments(
-            _ARBITRARY_NON_SYMBOL_FILES_MATCHER,
-            self._depth_args.min_depth,
-            self._depth_args.max_depth,
+    def arguments(self) -> FileMatcherArg:
+        return _as_arguments(
+            RecWLimArguments(
+                _ARBITRARY_NON_SYMBOL_FILES_MATCHER,
+                self._depth_args.min_depth,
+                self._depth_args.max_depth,
+            )
         )
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
@@ -364,11 +372,13 @@ class _TestFilesOfModel(SingleCaseGenerator):
         self._checked_dir_contents = checked_dir_contents
         self._case = case
 
-    def arguments(self) -> RecWLimArguments:
-        return RecWLimArguments(
-            self._helper.files_matcher_sym_ref_arg(),
-            self._case.depth_args.min_depth,
-            self._case.depth_args.max_depth,
+    def arguments(self) -> FileMatcherArg:
+        return _as_arguments(
+            RecWLimArguments(
+                self._helper.files_matcher_sym_ref_arg(),
+                self._case.depth_args.min_depth,
+                self._case.depth_args.max_depth,
+            )
         )
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
@@ -392,6 +402,14 @@ class _TestFilesOfModel(SingleCaseGenerator):
 
     def execution_result(self) -> ExecutionResult:
         return RESULT__MATCHES
+
+
+def _as_arguments(args: RecWLimArguments) -> FileMatcherArg:
+    return fm_args.DirContentsRecursiveArgs(
+        args.files_matcher,
+        args.min_depth,
+        args.max_depth
+    )
 
 
 _ARBITRARY_NON_SYMBOL_FILES_MATCHER = fms_args.Empty()

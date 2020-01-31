@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits import cases
-from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.w_depth_limits.test_case_execution import \
-    execute_single, execute_list, execute_multi
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import recursive_w_depth_limits
+from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.executor_for_dir_contents import \
+    ExecutorOfCaseGeneratorForDirContents
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 
@@ -33,33 +33,36 @@ class TestParseShouldFailWhenInvalidLimitOption(unittest.TestCase):
 
 class TestValidationPreSdsShouldFailWhenLimitsAreNotExpressionsThatEvaluatesToAnInteger(unittest.TestCase):
     def runTest(self):
-        execute_list(
+        _EXECUTOR.execute_list(
             self,
-            cases.validation_pre_sds_should_fail_when_limits_are_not_expressions_that_evaluates_to_an_integer()
+            recursive_w_depth_limits.validation_pre_sds_should_fail_when_limits_are_not_expressions_that_evaluates_to_an_integer()
         )
 
 
 class TestValidationPreSdsShouldFailWhenLimitsAreIntegerOutOfRange(unittest.TestCase):
     def runTest(self):
-        execute_list(
+        _EXECUTOR.execute_list(
             self,
-            cases.validation_pre_sds_should_fail_when_limits_are_integer_out_of_range()
+            recursive_w_depth_limits.validation_pre_sds_should_fail_when_limits_are_integer_out_of_range()
         )
 
 
 class TestFilesOfModel(unittest.TestCase):
     def runTest(self):
-        execute_list(
+        _EXECUTOR.execute_list(
             self,
-            cases.files_of_model()
+            recursive_w_depth_limits.files_of_model()
         )
 
 
 class TestSymbolReferencesShouldBeReported(unittest.TestCase):
     def runTest(self):
-        execute_single(self, cases.SymbolReferencesShouldBeReported())
+        _EXECUTOR.execute_single(self, recursive_w_depth_limits.SymbolReferencesShouldBeReported())
 
 
 class TestSelectorShouldBeApplied(unittest.TestCase):
     def runTest(self):
-        execute_multi(self, cases.SelectorShouldBeApplied())
+        _EXECUTOR.execute_multi(self, recursive_w_depth_limits.SelectorShouldBeApplied())
+
+
+_EXECUTOR = ExecutorOfCaseGeneratorForDirContents()
