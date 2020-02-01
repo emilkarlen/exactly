@@ -1,6 +1,9 @@
 [setup]
 
 
+def string ISSUE_ID            = ABC-123
+def string MESSAGE_WO_ISSUE_ID = "commit message without issue id"
+
 def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
 
 
@@ -23,7 +26,7 @@ copy prepare-commit-msg .git/hooks
 ## Setup a branch, with issue number in its name,
 # and a file to commit.
 
-$ git checkout -b "AB-123-branch-with-issue-number"
+$ git checkout -b "@[ISSUE_ID]@-branch-with-issue-id"
 
 file file-to-add = "A file to add on the branch"
 
@@ -33,7 +36,7 @@ $ git add file-to-add
 [act]
 
 
-$ git commit -m "commit message without issue number"
+$ git commit -m "@[MESSAGE_WO_ISSUE_ID]@"
 
 
 [assert]
@@ -43,5 +46,5 @@ stdout -from
        @ GET_LOG_MESSAGE_OF_LAST_COMMIT
        equals
 <<-
-AB-123 : commit message without issue number
+@[ISSUE_ID]@ : @[MESSAGE_WO_ISSUE_ID]@
 -

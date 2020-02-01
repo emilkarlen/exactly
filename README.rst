@@ -101,11 +101,11 @@ appropriate directory::
 
     dir-contents input empty
 
-    exists output/good/a.txt : type file
-    dir-contents output/good num-files == 1
+    exists       output/good/a.txt : type file
+    dir-contents output/good         num-files == 1
 
-    exists output/bad/b.txt : type file
-    dir-contents output/bad num-files == 1
+    exists       output/bad/b.txt : type file
+    dir-contents output/bad         num-files == 1
 
 
 ``file`` and ``dir`` makes files in the current directory (by default).
@@ -408,10 +408,16 @@ and must contain a 'Makefile' with a target 'all'::
 Testing a git commit hook
 ------------------------------------------------------------
 
-The following tests a git commit hook (`prepare-commit-msg`)::
+The following tests a git commit hook (`prepare-commit-msg`).
+
+The hook should add the issue id in the branch name,
+to commit messages::
 
     [setup]
 
+
+    def string ISSUE_ID            = ABC-123
+    def string MESSAGE_WO_ISSUE_ID = "commit message without issue id"
 
     def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
 
@@ -435,7 +441,7 @@ The following tests a git commit hook (`prepare-commit-msg`)::
     ## Setup a branch, with issue number in its name,
     # and a file to commit.
 
-    $ git checkout -b "AB-123-branch-with-issue-number"
+    $ git checkout -b "@[ISSUE_ID]@-branch-with-issue-id"
 
     file file-to-add = "A file to add on the branch"
 
@@ -445,7 +451,7 @@ The following tests a git commit hook (`prepare-commit-msg`)::
     [act]
 
 
-    $ git commit -m "commit message without issue number"
+    $ git commit -m "@[MESSAGE_WO_ISSUE_ID]@"
 
 
     [assert]
@@ -455,7 +461,7 @@ The following tests a git commit hook (`prepare-commit-msg`)::
            @ GET_LOG_MESSAGE_OF_LAST_COMMIT
            equals
     <<-
-    AB-123 : commit message without issue number
+    @[ISSUE_ID]@ : @[MESSAGE_WO_ISSUE_ID]@
     -
 
 
