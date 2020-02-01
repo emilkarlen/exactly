@@ -34,7 +34,7 @@ class _SymbolConcept(ConceptDocumentation):
         ]
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),
+            'symbol': SYMBOL_CONCEPT_INFO.name,
             'symbol_name_syntax_element': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'data': type_system.DATA_TYPE_CATEGORY_NAME,
             'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
@@ -128,10 +128,14 @@ class _SymbolConcept(ConceptDocumentation):
 SYMBOL_CONCEPT = _SymbolConcept()
 
 _REST_DESCRIPTION = """\
-A {symbol} corresponds to a named constant, found in most programming languages.
+A {symbol:/q} corresponds to a named constant, found in most programming languages.
 
 
 Every {symbol} has a type according to {program_name}'s type system.
+
+
+The name of a {symbol} must be unique within the whole
+test case - {symbol} names share a global name space.
 
 
 A {symbol} name ({symbol_name_syntax_element}) is: {symbol_name_syntax}
@@ -166,7 +170,13 @@ _REFERENCE_1 = """\
 A {symbol} must be defined before it is referenced.
 
 
-A {symbol} reference may appear as an instruction argument,
+Once defined, a {symbol} is available to all instructions
+following the definition - both in the phase where it is defined
+and in following phases.
+
+
+A {symbol} reference may appear in {string_type:s} and
+as instruction arguments,
 in most places where an argument of a certain type is expected.
 
 

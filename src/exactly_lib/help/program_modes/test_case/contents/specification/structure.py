@@ -23,6 +23,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE,
         'act': phase_infos.ACT.name,
+        'assert': phase_infos.ASSERT.name,
         'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
         'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.acronym,
         'actor': concepts.ACTOR_CONCEPT_INFO.name,
@@ -177,6 +178,7 @@ A test case configures which {actor} to use.
 
 The special "{null_actor}" {actor}
 specifies a no-operations {ATC}.
+It is used if the test case does not contain an {act} phase.
 """
 
 # ACT EXAMPLES exists as test cases in examples/
@@ -211,6 +213,13 @@ All phases except {act:syntax} is a sequence of instructions, zero or more.
 
 Executing a phase with instructions means executing all it's instructions,
 in the order they appear in the test case.
+
+
+Instructions in different phases serve different purposes.
+
+
+For example, the instruction set for the {assert:syntax} phase
+contains instructions that serve as assertions.
 """
 
 _SUITE_CONTENTS_INCLUSION = """\

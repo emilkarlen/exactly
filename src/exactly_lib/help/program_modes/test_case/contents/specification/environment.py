@@ -172,7 +172,7 @@ It consists of two parts:
 # - CD can be changed
 ############################################################
 _SDS_AND_CD = """\
-The {sds_concept} ({SDS}) is created in a platform dependent location for temporary files.
+The {SDS} is created in a platform dependent location for temporary files.
 
 
 The current directory is set to one of the directories inside the {SDS}
@@ -196,18 +196,18 @@ A change of {CD} stay in effect for all following instructions and phases.
 # - Set in [conf]
 ############################################################
 _HDS = """\
-The {hds_concept} ({HDS}) organizes files that exist before the execution
+The {HDS} organizes files that exist before the execution
 and that should probably not be modified.
 
 
 One of the directories in the {HDS} is the {act_hds_conf_param} directory.
-It is the default location of the executable program file
-that is tested, i.e. the location of files referenced from the {act_phase} phase.
+It is the location of the executable program file
+that is tested - i.e. the location of files referenced from the {act_phase} phase.
 
 
 All directories in the {HDS} are initialized to the directory
-that contains the test case file,
-and can be changed in the {conf_phase} phase.
+that contains the test case file.
+They can be changed by the {conf_phase} phase.
 """
 
 ############################################################
@@ -254,11 +254,21 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     ]
 
 
+############################################################
+# MENTION
+#
+# - unique name
+# - global name space
+# - type
+# - constant
+# - availability by following instructions
+############################################################
 _SYMBOLS = """\
 A {symbol_concept} is a named constant defined by the {def_instruction:emphasis} instruction.
 
 
-Once defined, it is available to all following instructions and in all following phases.
+Once defined, it is available to all following instructions
+in the phase where it is defined, and in all following phases.
 
 
 Symbols may be used to define reusable values used by instructions and the {act_phase} phase.

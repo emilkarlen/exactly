@@ -60,7 +60,7 @@ EOF
 ```
 
 
-If the file '{test_case_file}' contains this test case,
+If the file "{test_case_file}" contains this test case,
 then {program_name} can execute it:
 
 
@@ -70,11 +70,12 @@ then {program_name} can execute it:
 ```
 
 
-"{PASS}" means that all assertions are satisfied.
+"{PASS}" means that {program_name} was able to execute the "{action_to_check}" program,
+and that all assertions were satisfied.
 
 
-It also means that '{action_to_check}'
-is an executable program located in the same directory as the test case file.
+It also means that the executable "{action_to_check}" file
+was found in in the same directory as the test case file.
 """
 
 _FILE_STRUCTURE = """\
@@ -94,7 +95,8 @@ The file must be located in the same directory as the test case file (by default
 {assert:syntax} marks the beginning of the {assert} phase.
 
 
-The {assert} phase contains assertions, such as "exit-code" and "stdout".
+The {assert} phase contains assertions,
+such as "{exit_code_instruction}" and "{stdout_instruction}".
 
 
 The assertions determines the outcome of the test case.
