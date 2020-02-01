@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.definitions import matcher_model
+from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
@@ -197,6 +197,7 @@ class FileContentsSyntaxDescription(grammar.SimpleExpressionDescription):
             '_matcher_type_': self._documentation.names.contents_matcher_syntax_element.singular_name,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'MODEL': matcher_model.FILE_MATCHER_MODEL,
+            'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
         })
 
         ret_val = tp.fnap(_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION)
@@ -233,5 +234,5 @@ Matches {_file_type_:s} who's contents satisfies {_matcher_type_}.
 MATCHER_FILE_HANDLING_DESCRIPTION = """\
 The result is {HARD_ERROR} for {MODEL:a} that is not {_file_type_:a}.
 
-Symbolic links are followed.
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
 """

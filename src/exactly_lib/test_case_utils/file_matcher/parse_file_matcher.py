@@ -2,7 +2,7 @@ from typing import List, Optional, Sequence
 
 import exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc
 import exactly_lib.test_case_utils.files_matcher.config
-from exactly_lib.definitions import doc_format, matcher_model
+from exactly_lib.definitions import doc_format, matcher_model, misc_texts
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -130,6 +130,7 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_GLOB_PATTERN_INFORMATIVE_NAME_': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
     '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
     'MODEL': matcher_model.FILE_MATCHER_MODEL,
+    'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
 }
 
 
@@ -254,7 +255,7 @@ def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
 
 
 _TYPE_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} with the given type. Symbolic links are followed (unless matched type is {_SYMLINK_TYPE_}).
+Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {_SYMLINK_TYPE_}).
 {_TYPE_} is one of:
 """
 

@@ -45,3 +45,5 @@ SYMBOL_COMMAND_SINGLE_LINE_DESCRIPTION = (
 SUITE_COMMAND_SINGLE_LINE_DESCRIPTION = 'Runs a test suite'
 
 SYSTEM_PROGRAM_DESCRIPTION = 'A program installed on the current system - a program in the OS PATH.'
+
+SYMBOLIC_LINKS_ARE_FOLLOWED = 'Symbolic links are followed'

@@ -2,6 +2,7 @@ from typing import Sequence
 
 from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -60,6 +61,8 @@ _TP = TextParser({
     'model': matcher_model.FILES_MATCHER_MODEL,
     'element': matcher_model.FILE_MATCHER_MODEL,
     'NOTE': misc_texts.NOTE_LINE_HEADER,
+    'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    'symbolic_link': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK].name,
 })
 
 _SELECTION_DESCRIPTION = """\
@@ -70,7 +73,10 @@ _PRUNE_DESCRIPTION = """\
 Excludes contents of directories matched by {FILE_MATCHER}.
 
 
-{NOTE} {FILE_MATCHER} is only applied to directories.
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
+
+
+{NOTE} {FILE_MATCHER} is only applied to directories (and {symbolic_link:s} to directories).
 """
 
 _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\

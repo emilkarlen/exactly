@@ -1,6 +1,7 @@
 from typing import List, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils import file_properties
@@ -22,7 +23,8 @@ def description(
     tp = TextParser({
         'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         'checked_file': checked_file,
-        'file_type': TYPE_INFO[expected_file_type].name
+        'file_type': TYPE_INFO[expected_file_type].name,
+        'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     })
     return tp.fnap(_ERROR_WHEN_INVALID_FILE_DESCRIPTION)
 
@@ -82,7 +84,7 @@ DIR_DOCUMENTATION = file_contents_utils.DocumentationSetup(
 _ERROR_WHEN_INVALID_FILE_DESCRIPTION = """\
 The result is {HARD_ERROR} if {checked_file} is not an existing {file_type}.
 
-Symbolic links are followed.
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
 """
 
 MATCHER_FILE_HANDLING_DESCRIPTION = file_contents_utils.MATCHER_FILE_HANDLING_DESCRIPTION
