@@ -605,6 +605,7 @@ Including (but not limited to):
 * More string transformers, matchers, etc
 * Possibility to use PROGRAM in more places,
   e.g. in ``[act]``, as matchers and as a string-transformer
+* Type for REG-EX
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
 * ``dir-contents``: Add convenience matcher for containment of set of files
