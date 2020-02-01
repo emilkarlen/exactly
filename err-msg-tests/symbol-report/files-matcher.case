@@ -12,5 +12,8 @@ def files-matcher FOR_ALL = every file : type dir
 
 def files-matcher EXISTS = any file : contents empty
 
-def files-matcher SELECTION   = -selection type file
-                                empty
+def files-matcher SELECTION = -selection type file
+                               empty
+
+def files-matcher PRUNE     = -prune type symlink
+                               empty
