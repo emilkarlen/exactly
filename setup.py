@@ -1,6 +1,6 @@
+import os
 import sys
 
-import os
 from setuptools import setup, find_packages
 
 
@@ -43,7 +43,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS :: MacOS X',
     ],
-    python_requires='>=3.5.4',
+    python_requires='>={}'.format(program_info.PYTHON_VERSION__MIN),
     entry_points={
         'console_scripts': [
             program_info.PROGRAM_NAME + ' = exactly_lib.default.default_main_program_setup:main',
