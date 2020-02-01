@@ -7,3 +7,5 @@ file-selection.case
 file-selection--with-defined-matcher.case
 
 file-contents.case
+
+recursive.case

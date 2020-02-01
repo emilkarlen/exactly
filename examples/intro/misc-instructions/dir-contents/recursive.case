@@ -1,0 +1,26 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+
+file f0a
+file d0a/f1
+file d0a/d1/f2
+file d0a/d1/d2/f3
+dir  d0b/f1b
+
+
+[assert]
+
+
+def file-matcher DIR_CONTAINS_NON_EMPTY_DIRS =
+
+    dir-contents -recursive -min-depth 1 -max-depth 1
+    ! empty
+
+
+dir-contents . -recursive
+    -prune DIR_CONTAINS_NON_EMPTY_DIRS
+    empty
