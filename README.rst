@@ -574,10 +574,6 @@ Exactly requires Python >= 3.5.4.
 
 Use ``pip`` or ``pip3`` to install::
 
-    > pip install exactly
-
-or::
-
     > pip3 install exactly
 
 The program can also be run from a source distribution::
@@ -592,10 +588,9 @@ DEVELOPMENT STATUS
 Current version is fully functional, but some syntax and semantics is inconsistent:
 
 * Some instructions allow arguments to span multiple lines, some do not.
-* Most instructions interpret symbol references in arguments, some do not.
 * Support for escapes characters in strings is missing.
 
-Incompatible changes to syntax and semantics may occur in every release until v 1.0.
+Incompatible changes to syntax and semantics may occur in every 0.x release.
 
 
 Comments are welcome!
