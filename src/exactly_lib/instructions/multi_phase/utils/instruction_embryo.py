@@ -82,25 +82,3 @@ class InstructionEmbryoParserFromTokensWoFileSystemLocationInfo(Generic[T], Inst
     @abstractmethod
     def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[T]:
         pass
-
-
-class InstructionEmbryoParserThatConsumesCurrentLine(Generic[T], InstructionEmbryoParser[T]):
-    """
-    A parser that unconditionally consumes the current line,
-    and that uses the remaining part of the current line for
-    constructing the parsed instruction.
-
-    The parser cannot consume any more than the current line.
-
-    Precondition: The source must have a current line.
-    """
-
-    def parse(self,
-              fs_location_info: FileSystemLocationInfo,
-              source: ParseSource) -> InstructionEmbryo[T]:
-        rest_of_line = source.remaining_part_of_current_line
-        source.consume_current_line()
-        return self._parse(rest_of_line)
-
-    def _parse(self, rest_of_line: str) -> InstructionEmbryo[T]:
-        raise NotImplementedError()
