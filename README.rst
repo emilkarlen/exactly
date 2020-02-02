@@ -644,6 +644,7 @@ Thanks for the great
 * Python language
 * Linux
 * Emacs
+* Rembrandt Harmenszoon van Rijn's "De Staalmeesters"
 
 
 DEDICATION
