@@ -1,6 +1,9 @@
 import os
+import pathlib
 import unittest
+from typing import Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import path as path_syntax
 from exactly_lib.instructions.multi_phase import change_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -8,25 +11,32 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.multi_phase.test_resources import \
+    instruction_embryo_check as embryo_check, path_name_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
+    MessageBuilder
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestParse),
         unittest.makeSuite(TestSuccessfulScenarios),
         unittest.makeSuite(TestFailingScenarios),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
@@ -41,19 +51,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestParseSet(unittest.TestCase):
-    def test_no_argument_should_denote_act_dir(self):
-        for is_after_act_phase in [False, True]:
-            with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = format_rel_options('{rel_act}')
-                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
-                # ACT #
-                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
-                # ASSERT #
-                expected_path = _path_of(RelOptionType.REL_ACT)
-                assertion = matches_path_sdv(expected_path, asrt.is_empty)
-                assertion.apply_without_message(self, actual.destination)
-
+class TestParse(unittest.TestCase):
     def test_no_relativity_option_should_use_default_option(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
@@ -67,22 +65,19 @@ class TestParseSet(unittest.TestCase):
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
-    def test_no_arguments_is_rel_default_option(self):
-        for is_after_act_phase in [False, True]:
-            with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = ''
-                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
-                # ACT #
-                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
-                # ASSERT #
-                expected_path = _path_of(RelOptionType.REL_CWD)
-                assertion = matches_path_sdv(expected_path, asrt.is_empty)
-                assertion.apply_without_message(self, actual.destination)
-
     def test_fail_when_superfluous_arguments(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 arguments = 'expected-argument superfluous-argument'
+                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
+                # ACT & ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
+
+    def test_fail_when_no_arguments(self):
+        for is_after_act_phase in [False, True]:
+            with self.subTest(is_after_act_phase=is_after_act_phase):
+                arguments = ''
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT & ASSERT #
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -114,18 +109,6 @@ class TestParseSet(unittest.TestCase):
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
-    def test_rel_tmp_without_argument(self):
-        for is_after_act_phase in [False, True]:
-            with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = path_syntax.REL_TMP_OPTION
-                parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
-                # ACT #
-                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
-                # ASSERT #
-                expected_path = _path_of(RelOptionType.REL_TMP)
-                assertion = matches_path_sdv(expected_path, asrt.is_empty)
-                assertion.apply_without_message(self, actual.destination)
-
     def test_rel_tmp_with_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
@@ -154,6 +137,34 @@ class TestParseSet(unittest.TestCase):
             parser = sut.EmbryoParser(is_after_act_phase=False)
             # ACT #
             parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
+
+    def test_with_explicit_non_cd_relativity_and_source_layout_variants(self):
+        # ARRANGE #
+        relativity = RelOptionType.REL_TMP
+        for is_after_act_phase in [False, True]:
+            checker = embryo_checker(is_after_act_phase)
+            for case in path_name_variants.SOURCE_LAYOUT_CASES:
+                path_argument = RelOptPathArgument(case.input_value, relativity)
+                with self.subTest(case.name,
+                                  is_after_act_phase=is_after_act_phase):
+                    with self.subTest(case.name):
+                        # ACT & ASSERT #
+                        checker.check__w_source_variants(
+                            self,
+                            path_argument.as_str,
+                            ArrangementWithSds(
+                                tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
+                                    relativity,
+                                    DirContents([empty_dir(case.expected_value)])
+                                )
+                            ),
+                            embryo_check.Expectation(
+                                side_effects_on_tcds=CwdAssertion(
+                                    relativity,
+                                    case.expected_value,
+                                )
+                            )
+                        )
 
 
 class ParseAndChangeDirAction(sds_env_utils.SdsAction):
@@ -235,6 +246,31 @@ class CwdIs(sds_test.PostActionCheck):
                         'Current Working Directory')
 
 
+class CwdAssertion(ValueAssertionBase[Tcds]):
+    def __init__(self,
+                 expected_location: RelOptionType,
+                 expected_base_name: str,
+                 ):
+        self.expected_location = expected_location
+        self.expected_base_name = expected_base_name
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Tcds,
+               message_builder: MessageBuilder):
+        expected = (
+            paths.simple_of_rel_option(self.expected_location,
+                                       self.expected_base_name)
+                .value_of_any_dependency__d(value)
+                .primitive
+        )
+        actual = pathlib.Path().cwd()
+
+        put.assertEqual(expected,
+                        actual,
+                        message_builder.apply('current directory'))
+
+
 class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_argument_should_change_dir_relative_to_cwd__from_act_dir(self):
         self._check_argument('existing-dir',
@@ -262,19 +298,6 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                       lambda sds: sds.user_tmp_dir / 'sub1' / 'sub2')
                                                   ))
 
-    def test_no_argument_should_have_no_effect(self):
-        self._check_argument('',
-                             sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
-                                                  sds_contents_before=contents_in(
-                                                      RelSdsOptionType.REL_ACT,
-                                                      DirContents([
-                                                          empty_dir('sub-dir')
-                                                      ]))
-                                                  ),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
-                                                  ))
-
     def test_single_dot_argument_should_have_no_effect(self):
         self._check_argument('.',
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
@@ -287,13 +310,6 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir / 'sub-dir')
                                                   ))
 
-    def test_act_root_option_should_change_to_act_dir(self):
-        self._check_argument(format_rel_options('{rel_act}'),
-                             sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.root_dir)),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  post_action_check=CwdIs(lambda sds: sds.act_dir)
-                                                  ))
-
     def test_act_root_option_should_change_to_act_dir__dot_arg(self):
         self._check_argument(format_rel_options('{rel_act} .'),
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.root_dir)),
@@ -301,14 +317,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir)
                                                   ))
 
-    def test_relative_tmp__without_argument(self):
-        self._check_argument(format_rel_options('{rel_tmp}'),
-                             sds_test.Arrangement(),
-                             sds_test.Expectation(expected_action_result=is_success(),
-                                                  post_action_check=CwdIs(lambda sds: sds.user_tmp_dir)
-                                                  ))
-
-    def test_relative_tmp__without_argument__dot_arg(self):
+    def test_relative_tmp__with_argument__dot_arg(self):
         self._check_argument(format_rel_options('{rel_tmp} .'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
@@ -331,7 +340,7 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_result__after_act_phase(self):
         self._check_argument_for_single_case(
             True,
-            format_rel_options('{rel_result}'),
+            format_rel_options('{rel_result} .'),
             sds_test.Arrangement(),
             sds_test.Expectation(expected_action_result=is_success(),
                                  post_action_check=CwdIs(lambda sds: sds.result.root_dir)
@@ -350,6 +359,10 @@ class TestFailingScenarios(TestCaseBase):
 
 def _path_of(relativity=RelOptionType.REL_ACT) -> PathDdv:
     return paths.of_rel_option(relativity, paths.empty_path_part())
+
+
+def embryo_checker(is_after_act_phase: bool) -> embryo_check.Checker[Optional[TextRenderer]]:
+    return embryo_check.Checker(sut.EmbryoParser(is_after_act_phase))
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ from exactly_lib.instructions.multi_phase.utils import instruction_embryo as emb
 from exactly_lib.instructions.multi_phase.utils import instruction_part_utils
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -23,9 +23,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -48,12 +48,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return self._tp.format('Sets the {cwd_concept}')
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_NO_DIR_ARG_MEANING)
+        return []
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
             invokation_variant_from_args([
-                a.Single(a.Multiplicity.OPTIONAL,
+                a.Single(a.Multiplicity.MANDATORY,
                          _DIR_ARGUMENT),
             ]),
         ]
@@ -68,11 +68,6 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             syntax_elements.PATH_SYNTAX_ELEMENT,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
         ])
-
-
-_NO_DIR_ARG_MEANING = """\
-Omitting the {dir_argument} is the same as giving ".".
-"""
 
 
 class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
@@ -112,17 +107,16 @@ class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
         return None
 
 
-class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
+class EmbryoParser(embryo.InstructionEmbryoParserFromTokensWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, is_after_act_phase: bool):
         self.is_after_act_phase = is_after_act_phase
 
-    def _parse(self, rest_of_line: str) -> InstructionEmbryo:
+    def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo:
         rel_opt_arg_conf = relativity_options(self.is_after_act_phase)
-        tokens = TokenParserExtra(TokenStream(rest_of_line))
 
-        target_path = tokens.consume_path(rel_opt_arg_conf)
-        tokens.report_superfluous_arguments_if_not_at_eol()
-        return InstructionEmbryo(target_path)
+        path = parse_path.parse_path_from_token_parser(rel_opt_arg_conf, token_parser)
+        token_parser.report_superfluous_arguments_if_not_at_eol()
+        return InstructionEmbryo(path)
 
 
 def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
@@ -144,4 +138,4 @@ def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfigurati
     return RelOptionArgumentConfiguration(RelOptionsConfiguration(variants,
                                                                   RelOptionType.REL_CWD),
                                           _DIR_ARGUMENT.name,
-                                          False)
+                                          True)

@@ -26,6 +26,8 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `def` - PATH argument is mandatory
  - Instruction `env` - Accepts multi line syntax
  - Instruction `dir` - Accepts multi line syntax
+ - Instruction `cd` - Accepts multi line syntax
+ - Instruction `cd` - PATH argument is mandatory
  - Type `string-transformer` - Rename `select` to `filter`
  - Improved error messages
 

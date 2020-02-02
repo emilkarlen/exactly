@@ -1,6 +1,5 @@
 import functools
 import pathlib
-import types
 from typing import Sequence, Optional, Callable, Union
 
 from exactly_lib.common.report_rendering import text_docs
@@ -210,7 +209,7 @@ def _without_explicit_relativity(path_argument: Token, conf: RelOptionArgumentCo
 
 
 def _with_explicit_relativity(path_argument: Token,
-                              path_part_2_path_sdv: types.FunctionType) -> PathSdv:
+                              path_part_2_path_sdv: Callable[[PathPartSdv], PathSdv]) -> PathSdv:
     string_sdv = _parse_string_sdv(path_argument)
     if string_sdv.is_string_constant:
         path_argument_str = string_sdv.string_constant
