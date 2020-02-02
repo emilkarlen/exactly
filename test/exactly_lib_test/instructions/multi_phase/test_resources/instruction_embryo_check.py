@@ -1,11 +1,11 @@
 import pathlib
 import unittest
-from typing import Optional, Sequence, Dict
+from typing import Optional, Sequence, Dict, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
-    InstructionEmbryo
+    InstructionEmbryo, T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -14,6 +14,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -103,6 +105,28 @@ def check(put: unittest.TestCase,
           arrangement: ArrangementWithSds,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
+
+
+class Checker(Generic[T]):
+    def __init__(self, parser: InstructionEmbryoParser[T]):
+        self.parser = parser
+
+    def check(self,
+              put: unittest.TestCase,
+              source: ParseSource,
+              arrangement: ArrangementWithSds,
+              expectation: Expectation,
+              ):
+        Executor(put, arrangement, expectation).execute(self.parser, source)
+
+    def check__w_source_variants(self,
+                                 put: unittest.TestCase,
+                                 source: str,
+                                 arrangement: ArrangementWithSds,
+                                 expectation: Expectation,
+                                 ):
+        for source in equivalent_source_variants__with_source_check(put, source):
+            Executor(put, arrangement, expectation).execute(self.parser, source)
 
 
 class Executor:
