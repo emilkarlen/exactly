@@ -10,7 +10,7 @@ Exactly has a `Wiki
 It also has a built in help system,
 which can, among other things,
 generate this `Reference manual
-<https://emilkarlen.github.io/exactly/reference-manual.html>`_.
+<https://emilkarlen.github.io/exactly/reference-manual/0-12-0.html>`_.
 
 
 .. contents::
