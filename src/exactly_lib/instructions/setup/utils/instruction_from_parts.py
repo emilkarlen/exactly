@@ -31,12 +31,16 @@ class SetupPhaseInstructionFromParts(SetupPhaseInstruction):
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment_pre_or_post_sds)
+        return svh.new_svh_success()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+        validation_result = self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
+        if not validation_result.is_success:
+            return sh.new_sh_hard_error(validation_result.failure_message)
+
         return self.setup.executor.apply_as_non_assertion(environment,
                                                           environment.phase_logging,
                                                           os_services)

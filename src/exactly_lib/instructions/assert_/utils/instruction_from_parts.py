@@ -32,11 +32,15 @@ class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
+        return svh.new_svh_success()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        validation_result = self._validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
+        if not validation_result.is_success:
+            return pfh.new_pfh_hard_error(validation_result.failure_message)
+
         return self.setup.executor.apply_as_assertion(environment,
                                                       environment.phase_logging,
                                                       os_services)

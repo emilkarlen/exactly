@@ -1,0 +1,5 @@
+[setup]
+
+dir my-dir
+
+run % stat -existing-file -rel-act my-dir

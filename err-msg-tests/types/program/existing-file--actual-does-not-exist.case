@@ -1,0 +1,3 @@
+[setup]
+
+run % stat -existing-file -rel-act non-existing

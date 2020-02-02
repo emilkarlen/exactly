@@ -24,8 +24,8 @@ class TheConfiguration(SetupConfigurationBase, tr.Configuration):
     def step_sequence_of_successful_execution(self) -> list:
         return [
             tr.VALIDATE_STEP_PRE_SDS_IF_APPLICABLE,
-            tr.MAIN_STEP_AS_NON_ASSERTION,
             tr.VALIDATE_STEP_POST_SETUP_IF_APPLICABLE,
+            tr.MAIN_STEP_AS_NON_ASSERTION,
         ]
 
     def instruction_parser_from_parts_parser(self,

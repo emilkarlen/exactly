@@ -193,8 +193,8 @@ class TestFailureOfValidatePostSetupOfInstructionFromParser(TestCaseBase):
                                        parser,
                                        source,
                                        self.conf.arrangement(),
-                                       self.conf.expect_failing_validation_post_setup(
-                                           error_message=asrt_text_doc.is_string_for_test_that_equals(the_error_message)
+                                       self.conf.expect_hard_error_of_main(
+                                           assertion_on_error_message=asrt.equals(the_error_message)
                                        ))
 
 
