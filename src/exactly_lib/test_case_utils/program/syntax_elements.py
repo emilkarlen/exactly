@@ -17,5 +17,7 @@ PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NA
 
 REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER = ':>'
 EXISTING_FILE_OPTION_NAME = a.OptionName(long_name='existing-file')
+EXISTING_DIR_OPTION_NAME = a.OptionName(long_name='existing-dir')
+EXISTING_PATH_OPTION_NAME = a.OptionName(long_name='existing-path')
 
 ARGUMENT_SYNTAX_ELEMENT_NAME = a.Named('ARGUMENT')

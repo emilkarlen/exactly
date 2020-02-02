@@ -1,0 +1,3 @@
+[setup]
+
+run % stat -existing-path -rel-act non-existing

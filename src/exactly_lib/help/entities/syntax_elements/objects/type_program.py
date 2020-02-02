@@ -211,18 +211,30 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
             self._string(),
             self._list(),
             self._text_until_end_of_line(),
-            self._existing_file(),
+            self._existing_path(
+                pgm_syntax_elements.EXISTING_FILE_OPTION_NAME,
+                _ARGUMENT__EXISTING_FILE_DESCRIPTION,
+            ),
+            self._existing_path(
+                pgm_syntax_elements.EXISTING_DIR_OPTION_NAME,
+                _ARGUMENT__EXISTING_DIR_DESCRIPTION,
+            ),
+            self._existing_path(
+                pgm_syntax_elements.EXISTING_PATH_OPTION_NAME,
+                _ARGUMENT__EXISTING_PATH_DESCRIPTION,
+            ),
         ]
 
     @staticmethod
-    def _existing_file() -> InvokationVariant:
+    def _existing_path(option: a.OptionName,
+                       description_rest: str) -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY,
-                     a.Option(pgm_syntax_elements.EXISTING_FILE_OPTION_NAME)),
+                     a.Option(option)),
             a.Single(a.Multiplicity.MANDATORY,
                      PATH_OF_EXISTING_FILE_OPT_CONFIG.argument)
         ],
-            _TEXT_PARSER.fnap(_ARGUMENT__EXISTING_FILE_DESCRIPTION)
+            _TEXT_PARSER.fnap(description_rest)
         )
 
     @staticmethod
@@ -260,7 +272,7 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
         ]
 
 
-PATH_OF_EXISTING_FILE_OPT_CONFIG = arg_config_with_name('PATH-OF-EXISTING-FILE',
+PATH_OF_EXISTING_FILE_OPT_CONFIG = arg_config_with_name('PATH-OF-EXISTING',
                                                         pgm_syntax_elements.REL_OPTION_ARG_CONF)
 
 EXECUTABLE_ARG = a.Named('EXECUTABLE')
@@ -367,6 +379,31 @@ A {path_se}, with additional check for existence.
 
 It is an error - not {FAIL} - if the file does not exist,
 or it is not a regular file.
+
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
+
+
+Values are rendered as absolute paths.
+"""
+
+_ARGUMENT__EXISTING_DIR_DESCRIPTION = """\
+A {path_se}, with additional check for existence.
+
+
+It is an error - not {FAIL} - if the file does not exist,
+or it is not a directory.
+
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
+
+
+Values are rendered as absolute paths.
+"""
+
+_ARGUMENT__EXISTING_PATH_DESCRIPTION = """\
+A {path_se}, with additional check for existence.
+
+
+It is an error - not {FAIL} - if the path does not exist.
 
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 

@@ -33,7 +33,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, sym_link
+from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, sym_link, empty_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -221,7 +221,7 @@ class TestSingleElement(unittest.TestCase):
         # ACT & ASSERT #
         _test_cases(self, cases)
 
-    def test_existing_file(self):
+    def test_existing_regular_file(self):
         # ARRANGE #
         plain_file_name = 'file-name.txt'
         symbol_name = 'symbol_name'
@@ -310,6 +310,234 @@ class TestSingleElement(unittest.TestCase):
                                                      DirContents([
                                                          sym_link(plain_file_name, 'target-file'),
                                                          empty_file('target-file'),
+                                                     ])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                        ]
+                        ),
+                    )
+                )
+                _test_case(self, _case)
+
+    def test_existing_dir(self):
+        # ARRANGE #
+        checked_file_name = 'should-be-a-dir'
+        symbol_name = 'symbol_name'
+
+        relativity_cases = [
+            PathCase('default relativity SHOULD be CASE_HOME',
+                     rel_opts.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+                     list_element_for_path(RelOptionType.REL_HDS_CASE, checked_file_name),
+                     ),
+            PathCase('relativity in SDS should be validated post SDS',
+                     rel_opts.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
+                     list_element_for_path(RelOptionType.REL_TMP, checked_file_name),
+                     ),
+            PathCase('rel symbol',
+                     rel_opts.symbol_conf_rel_hds(RelHdsOptionType.REL_HDS_ACT,
+                                                  symbol_name,
+                                                  sut.REL_OPTIONS_CONF.accepted_relativity_variants),
+                     list_sdvs.string_element(
+                         string_sdvs.from_path_sdv(
+                             path_sdvs.rel_symbol_with_const_file_name(
+                                 SymbolReference(symbol_name,
+                                                 reference_restrictions_for_path_symbol(
+                                                     sut.REL_OPTIONS_CONF.accepted_relativity_variants
+                                                 )),
+                                 checked_file_name))),
+                     ),
+        ]
+        for case in relativity_cases:
+            with self.subTest(case.name):
+                rel_opt_conf = case.relativity_variant
+                assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
+
+                _case = Case(
+                    'default relativity SHOULD be CASE_HOME',
+                    ab.sequence([ab.option(
+                        syntax_elements.EXISTING_DIR_OPTION_NAME),
+                        rel_opt_conf.file_argument_with_option(
+                            checked_file_name)]
+                    ).as_str,
+                    Arrangement(rel_opt_conf.symbols.in_arrangement()),
+                    Expectation(
+                        elements=[case.expected_list_element],
+                        references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
+                        validators=is_single_validator_with([
+                            NameAndValue('fail when file is missing',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=tcds_populators.empty()),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('fail when file is is a regular file',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         empty_file(checked_file_name),
+                                                     ])
+                                                 )
+                                             ),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('fail when file is a broken sym link',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(checked_file_name, 'non-existing-target-file'),
+                                                     ])
+                                                 )
+                                             ),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('succeed when file exists (as a dir)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         empty_dir(checked_file_name),
+                                                     ])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                            NameAndValue('succeed when file exists (as symlink to dir)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(checked_file_name, 'target-file'),
+                                                         empty_dir('target-file'),
+                                                     ])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                        ]
+                        ),
+                    )
+                )
+                _test_case(self, _case)
+
+    def test_existing_path(self):
+        # ARRANGE #
+        plain_file_name = 'path-name'
+        symbol_name = 'symbol_name'
+
+        relativity_cases = [
+            PathCase('default relativity SHOULD be CASE_HOME',
+                     rel_opts.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
+                     list_element_for_path(RelOptionType.REL_HDS_CASE, plain_file_name),
+                     ),
+            PathCase('relativity in SDS should be validated post SDS',
+                     rel_opts.conf_rel_non_hds(RelNonHdsOptionType.REL_TMP),
+                     list_element_for_path(RelOptionType.REL_TMP, plain_file_name),
+                     ),
+            PathCase('rel symbol',
+                     rel_opts.symbol_conf_rel_hds(RelHdsOptionType.REL_HDS_ACT,
+                                                  symbol_name,
+                                                  sut.REL_OPTIONS_CONF.accepted_relativity_variants),
+                     list_sdvs.string_element(
+                         string_sdvs.from_path_sdv(
+                             path_sdvs.rel_symbol_with_const_file_name(
+                                 SymbolReference(symbol_name,
+                                                 reference_restrictions_for_path_symbol(
+                                                     sut.REL_OPTIONS_CONF.accepted_relativity_variants
+                                                 )),
+                                 plain_file_name))),
+                     ),
+        ]
+        for case in relativity_cases:
+            with self.subTest(case.name):
+                rel_opt_conf = case.relativity_variant
+                assert isinstance(rel_opt_conf, RelativityOptionConfiguration)  # Type info for IDE
+
+                _case = Case(
+                    'default relativity SHOULD be CASE_HOME',
+                    ab.sequence([ab.option(
+                        syntax_elements.EXISTING_PATH_OPTION_NAME),
+                        rel_opt_conf.file_argument_with_option(
+                            plain_file_name)]
+                    ).as_str,
+                    Arrangement(rel_opt_conf.symbols.in_arrangement()),
+                    Expectation(
+                        elements=[case.expected_list_element],
+                        references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
+                        validators=is_single_validator_with([
+                            NameAndValue('fail when file is missing',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=tcds_populators.empty()),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('fail when file is a broken sym link',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(plain_file_name, 'non-existing-target-file'),
+                                                     ])
+                                                 )
+                                             ),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('succeed when file exists (as regular file)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents(
+                                                         [empty_file(plain_file_name)])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                            NameAndValue('succeed when file exists (as symlink to regular file)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(plain_file_name, 'target-file'),
+                                                         empty_file('target-file'),
+                                                     ])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                            NameAndValue('succeed when file exists (as a dir)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         empty_dir(plain_file_name),
                                                      ])
                                                  )),
                                              expectation=

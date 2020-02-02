@@ -7,6 +7,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_path
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
@@ -51,6 +52,14 @@ class _Parser(Parser[ArgumentsSdv]):
                 token_matchers.is_option(syntax_elements.EXISTING_FILE_OPTION_NAME),
                 _parse_existing_file,
             ),
+            parsing.TokenSyntaxSetup(
+                token_matchers.is_option(syntax_elements.EXISTING_DIR_OPTION_NAME),
+                _parse_existing_dir,
+            ),
+            parsing.TokenSyntaxSetup(
+                token_matchers.is_option(syntax_elements.EXISTING_PATH_OPTION_NAME),
+                _parse_existing_path,
+            ),
         ]
 
     def parse_from_token_parser(self, token_parser: TokenParser) -> ArgumentsSdv:
@@ -81,7 +90,17 @@ def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> Argument
 
 def _parse_existing_file(token_parser: TokenParser) -> ArgumentsSdv:
     path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
-    return arguments_sdvs.ref_to_file_that_must_exist(path)
+    return arguments_sdvs.ref_to_file_that_must_exist(path, FileType.REGULAR)
+
+
+def _parse_existing_dir(token_parser: TokenParser) -> ArgumentsSdv:
+    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    return arguments_sdvs.ref_to_file_that_must_exist(path, FileType.DIRECTORY)
+
+
+def _parse_existing_path(token_parser: TokenParser) -> ArgumentsSdv:
+    path = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, token_parser)
+    return arguments_sdvs.ref_to_path_that_must_exist(path)
 
 
 def _parse_plain_list_element(parser: TokenParser) -> ArgumentsSdv:

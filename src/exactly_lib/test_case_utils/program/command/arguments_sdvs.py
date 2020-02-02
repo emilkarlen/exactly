@@ -27,3 +27,12 @@ def ref_to_file_that_must_exist(file_that_must_exist: PathSdv,
 
     return ArgumentsSdv(list_sdvs.from_string(string_sdvs.from_path_sdv(file_that_must_exist)),
                         (get_file_validator,))
+
+
+def ref_to_path_that_must_exist(file_that_must_exist: PathSdv) -> ArgumentsSdv:
+    def get_file_validator(symbols: SymbolTable) -> DdvValidator:
+        return PathCheckDdvValidator(PathCheckDdv(file_that_must_exist.resolve(symbols),
+                                                  file_properties.must_exist()))
+
+    return ArgumentsSdv(list_sdvs.from_string(string_sdvs.from_path_sdv(file_that_must_exist)),
+                        (get_file_validator,))

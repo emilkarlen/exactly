@@ -14,6 +14,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-matcher` - complex expressions (&& and ||)
  - Type `file-matcher` - primitive `dir-contents`
  - Type `string-transformer` - primitive `identity`
+ - Type `program` - options `-existing-dir`, `-existing-path`
  - Matcher types - primitive `constant`
  - Matcher and `string-transformer` types - alternative syntax for sym-refs: `SYMBOL-REFERENCE`
  - Instruction `dir-contents` - `-recursive` option

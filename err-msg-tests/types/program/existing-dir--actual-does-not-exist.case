@@ -1,0 +1,3 @@
+[setup]
+
+run % stat -existing-dir -rel-act non-existing
