@@ -288,7 +288,7 @@ _TEXT_PARSER = TextParser({
     'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
     'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
     'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
-
+    'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
 })
 
 DOCUMENTATION = _Documentation()
@@ -365,7 +365,10 @@ _ARGUMENT__EXISTING_FILE_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
 
-It is an error - not {FAIL} - if the file does not exist.
+It is an error - not {FAIL} - if the file does not exist,
+or it is not a regular file.
+
+{SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
 Values are rendered as absolute paths.

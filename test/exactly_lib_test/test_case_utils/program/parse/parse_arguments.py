@@ -33,7 +33,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -275,7 +275,21 @@ class TestSingleElement(unittest.TestCase):
                                              validation_check.fails_on(rel_opt_conf.directory_structure_partition),
 
                                          )),
-                            NameAndValue('succeed when file exists',
+                            NameAndValue('fail when file is a broken sym link',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(plain_file_name, 'non-existing-target-file'),
+                                                     ])
+                                                 )
+                                             ),
+                                             expectation=
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
+
+                                         )),
+                            NameAndValue('succeed when file exists (as regular file)',
                                          validation_check.assert_with_files(
                                              arrangement=
                                              validation_check.Arrangement(
@@ -283,6 +297,20 @@ class TestSingleElement(unittest.TestCase):
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents(
                                                          [empty_file(plain_file_name)])
+                                                 )),
+                                             expectation=
+                                             validation_check.is_success())
+                                         ),
+                            NameAndValue('succeed when file exists (as symlink to regular file)',
+                                         validation_check.assert_with_files(
+                                             arrangement=
+                                             validation_check.Arrangement(
+                                                 dir_contents=
+                                                 rel_opt_conf.populator_for_relativity_option_root(
+                                                     DirContents([
+                                                         sym_link(plain_file_name, 'target-file'),
+                                                         empty_file('target-file'),
+                                                     ])
                                                  )),
                                              expectation=
                                              validation_check.is_success())
