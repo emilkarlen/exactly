@@ -25,6 +25,7 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `def` - STRING-TRANSFORMER argument is mandatory
  - Instruction `def` - PATH argument is mandatory
  - Instruction `env` - Accepts multi line syntax
+ - Instruction `dir` - Accepts multi line syntax
  - Type `string-transformer` - Rename `select` to `filter`
  - Improved error messages
 

@@ -4,12 +4,18 @@ from exactly_lib.instructions.multi_phase import new_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.util.string import StringFormatter
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.multi_phase.test_resources import \
+    instruction_embryo_check as embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import cwd_contents
@@ -22,10 +28,12 @@ from exactly_lib_test.test_resources.tcds_and_symbols import sds_test
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_test import Arrangement, Expectation
+from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
 
 def suite() -> unittest.TestSuite:
@@ -38,6 +46,30 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParse(unittest.TestCase):
+    SINGLE_TOKEN_NAME = 'dir-to-create'
+    MULTI_LINE_NAME = 'a\nname\nthat\nspans\nmultiple\nlines\n'
+    SF = StringFormatter({
+        'single_token_name': SINGLE_TOKEN_NAME,
+        'quoted_multi_line_name': surrounded_by_hard_quotes(MULTI_LINE_NAME),
+    })
+    SOURCE_LAYOUT_CASES = [
+        NIE(
+            'all arguments on first line',
+            input_value=SF.format('{single_token_name}'),
+            expected_value=SINGLE_TOKEN_NAME,
+        ),
+        NIE(
+            'path argument on following line',
+            input_value=SF.format('\n {single_token_name}'),
+            expected_value=SINGLE_TOKEN_NAME,
+        ),
+        NIE(
+            'multi line path argument on following line',
+            input_value=SF.format('\n {quoted_multi_line_name}'),
+            expected_value=MULTI_LINE_NAME,
+        ),
+    ]
+
     def _parse_arguments(self, arguments: str) -> sut.TheInstructionEmbryo:
         return sut.EmbryoParser().parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
@@ -73,6 +105,43 @@ class TestParse(unittest.TestCase):
         equals_path_part_string('expected-argument').apply_with_message(self,
                                                                         path.path_suffix(),
                                                                         'path_suffix')
+
+    def test_create_dir_with_default_relativity(self):
+        # ARRANGE #
+        for case in self.SOURCE_LAYOUT_CASES:
+            with self.subTest(case.name):
+                # ACT & ASSERT #
+                _CHECKER.check__w_source_variants(
+                    self,
+                    case.input_value,
+                    ArrangementWithSds(),
+                    embryo_check.Expectation(
+                        main_result=asrt.is_none,
+                        side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
+                            sut.RELATIVITY_VARIANTS.options.default_option,
+                            DirContents([empty_dir(case.expected_value)])
+                        )
+                    )
+                )
+
+    def test_create_dir_with_explicit_relativity(self):
+        # ARRANGE #
+        for case in self.SOURCE_LAYOUT_CASES:
+            path_argument = RelOptPathArgument(case.input_value, RelOptionType.REL_TMP)
+            with self.subTest(case.name):
+                # ACT & ASSERT #
+                _CHECKER.check__w_source_variants(
+                    self,
+                    path_argument.as_str,
+                    ArrangementWithSds(),
+                    embryo_check.Expectation(
+                        main_result=asrt.is_none,
+                        side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
+                            path_argument.relativity_option,
+                            DirContents([empty_dir(case.expected_value)])
+                        )
+                    )
+                )
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
@@ -310,6 +379,8 @@ def arrangement_with_cwd_as_none_of_the_relativity_roots(
 
 
 SETUP_CWD_ACTION = mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs()
+
+_CHECKER = embryo_check.Checker(sut.EmbryoParser())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
