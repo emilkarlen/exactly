@@ -15,6 +15,10 @@ class NameAndValue(tuple, Generic[T]):
                 value: T):
         return tuple.__new__(cls, (name, value))
 
+    @staticmethod
+    def as_dict(elements: 'Sequence[NameAndValue[T]]') -> Dict[str, T]:
+        return to_dict(elements)
+
     @property
     def name(self):
         return self[0]

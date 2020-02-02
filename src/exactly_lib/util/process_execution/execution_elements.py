@@ -30,6 +30,10 @@ def with_environ(environ: dict) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=environ)
 
 
+def with_environ_copy(environ_to_copy: dict) -> ProcessExecutionSettings:
+    return ProcessExecutionSettings(environ=dict(environ_to_copy))
+
+
 class Executable:
     """
     A thing that can be executed in a process.

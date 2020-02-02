@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic
 
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -64,6 +66,22 @@ class InstructionEmbryoParserWoFileSystemLocationInfo(Generic[T], InstructionEmb
 
     def _parse(self, source: ParseSource) -> InstructionEmbryo[T]:
         raise NotImplementedError('abstract method')
+
+
+class InstructionEmbryoParserFromTokensWoFileSystemLocationInfo(Generic[T], InstructionEmbryoParser[T], ABC):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionEmbryo[T]:
+        return self._parse(source)
+
+    def _parse(self, source: ParseSource) -> InstructionEmbryo[T]:
+        with token_stream_parser.from_parse_source(source,
+                                                   consume_last_line_if_is_at_eol_after_parse=True) as token_parser:
+            return self._parse_from_tokens(token_parser)
+
+    @abstractmethod
+    def _parse_from_tokens(self, token_parser: TokenParser) -> InstructionEmbryo[T]:
+        pass
 
 
 class InstructionEmbryoParserThatConsumesCurrentLine(Generic[T], InstructionEmbryoParser[T]):

@@ -28,6 +28,12 @@ class ErrorMessageConfiguration:
         self.extra_format_map = extra_format_map
 
 
+class ErrorMessageGenerator(ABC):
+    @abstractmethod
+    def message(self) -> str:
+        pass
+
+
 class TokenParser:
     """
     Utility for implementing parsers backed by a :class:`TokenStream`.
@@ -57,6 +63,13 @@ class TokenParser:
         if self._token_stream.is_null:
             self.error('Missing ' + syntax_element_name)
         self.require_head_token_has_valid_syntax(syntax_element_name)
+
+    def has_valid_head_token(self) -> bool:
+        return not (
+                self._token_stream.is_null
+                or
+                self._lookahead_token_has_invalid_syntax()
+        )
 
     @property
     def head(self) -> Token:
@@ -192,6 +205,7 @@ class TokenParser:
     def consume_mandatory_unquoted_string(self,
                                           syntax_element_name: str,
                                           must_be_on_current_line: bool,
+                                          error_message: Optional[ErrorMessageGenerator] = None,
                                           ) -> str:
         """
         Consumes the first token that must be an unquoted string.
@@ -205,11 +219,11 @@ class TokenParser:
         """
 
         if self.token_stream.is_null:
-            return self.error('Missing ' + syntax_element_name)
+            return self.error('Expecting ' + syntax_element_name)
         if self._lookahead_token_has_invalid_syntax():
             return self.error('Invalid syntax of ' + syntax_element_name)
         if self.is_at_eol and must_be_on_current_line:
-            return self.error('Missing ' + syntax_element_name)
+            return self.error('Expecting ' + syntax_element_name)
 
         head = self.token_stream.head
         if head.is_quoted:
@@ -217,6 +231,33 @@ class TokenParser:
                 syntax_element_name,
                 head.source_string)
             raise SingleInstructionInvalidArgumentException(err_msg)
+
+        self.token_stream.consume()
+        return head.string
+
+    def consume_mandatory_unquoted_string__w_err_msg(self,
+                                                     must_be_on_current_line: bool,
+                                                     error_message: ErrorMessageGenerator,
+                                                     ) -> str:
+        """
+        Consumes the first token that must be an unquoted string.
+
+        :type must_be_on_current_line: Tells if the string must be found on the current line.
+        :return: The unquoted string
+
+        :raises :class:`SingleInstructionInvalidArgumentException' The parser is at end of file,
+        or if the must_be_on_current_line is True but the current line is empty,
+        or if the parsed token is not an unquoted string.
+        """
+
+        if self.token_stream.is_null or self.is_at_eol and must_be_on_current_line:
+            return self.error_from('Missing argument', error_message)
+        if self._lookahead_token_has_invalid_syntax():
+            return self.error_from('Invalid syntax of argument', error_message)
+
+        head = self.token_stream.head
+        if head.is_quoted:
+            return self.error_from('Argument must not be quoted', error_message)
 
         self.token_stream.consume()
         return head.string
@@ -238,6 +279,16 @@ class TokenParser:
         if actual_string != expected_string:
             raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines_str(
                 expected_string,
+                actual_string))
+
+    def consume_mandatory_keyword(self,
+                                  keyword: str,
+                                  must_be_on_current_line: bool,
+                                  ):
+        actual_string = self.consume_mandatory_unquoted_string('keyword ' + keyword, must_be_on_current_line)
+        if actual_string != keyword:
+            raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines_str(
+                keyword,
                 actual_string))
 
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self,
@@ -496,6 +547,19 @@ class TokenParser:
 
         err_msg = error_message_format_string.format_map(format_map)
 
+        raise SingleInstructionInvalidArgumentException(err_msg)
+
+    def error_from(self,
+                   header: Optional[str],
+                   err_msg_generator: ErrorMessageGenerator):
+
+        line_separated_parts = []
+        if header:
+            line_separated_parts.append(header)
+
+        line_separated_parts.append(err_msg_generator.message())
+
+        err_msg = '\n'.join(line_separated_parts)
         raise SingleInstructionInvalidArgumentException(err_msg)
 
     def _lookahead_token_has_invalid_syntax(self) -> bool:

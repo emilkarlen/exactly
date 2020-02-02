@@ -8,4 +8,5 @@ dir-contents
 file-contents
 stdout_stderr
 file-existence
+env-var
 run

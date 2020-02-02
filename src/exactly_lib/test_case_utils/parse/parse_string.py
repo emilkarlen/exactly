@@ -88,7 +88,7 @@ def parse_fragments_from_tokens(tokens: TokenStream,
     """
 
     if tokens.is_null:
-        raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(conf.argument_name))
+        raise SingleInstructionInvalidArgumentException('Expecting {} argument'.format(conf.argument_name))
     string_token = tokens.consume()
     return parse_fragments_from_token(string_token)
 
