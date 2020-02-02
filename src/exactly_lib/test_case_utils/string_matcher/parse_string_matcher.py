@@ -126,5 +126,5 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 )
 
 _DESCRIPTION__ON_TRANSFORMED = """\
-Applies a matcher to a transformed variant of the original string.
+Applies a matcher to a transformed variant of the string.
 """
