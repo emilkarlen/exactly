@@ -70,14 +70,14 @@ TCDS_CONCEPT_INFO = name_and_ref_target(
 
 HDS_CONCEPT_INFO = name_and_ref_target(
     a_name_with_plural_s('home directory structure'),
-    'Persistent directories for files used in every execution of a test case.',
+    'A set of persistent directories for files used by every execution of a test case.',
     'HDS',
 )
 
 SDS_CONCEPT_INFO = name_and_ref_target(
     a_name_with_plural_s('sandbox directory structure'),
-    _format('Temporary directories used in a single execution of a test case, '
-            'one of which is the initial {current_directory_concept}.'),
+    _format('A set of temporary directories used by a single execution of a test case. '
+            'One of them is the initial {current_directory_concept}.'),
     'SDS',
 )
 

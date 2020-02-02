@@ -47,8 +47,8 @@ class _SandboxConcept(ConceptDocumentation):
             types.PATH_TYPE_INFO.cross_reference_target,
             phase_infos.SETUP.instruction_cross_reference_target(CHANGE_DIR_INSTRUCTION_NAME),
             PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
-            SeeAlsoUrlInfo('Platform dependent location of sandbox',
-                           'https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir')
+            SeeAlsoUrlInfo(_TP.format('Platform dependent location of {SDS}'),
+                           _PYTHON_TMP_FILE_LOCATION_URL)
         ]
 
     def _sandbox_directories_info_sections(self) -> List[docs.SectionItem]:
@@ -109,6 +109,8 @@ class _SandboxConcept(ConceptDocumentation):
 
 
 _TP = TextParser({
+    'SDS': concepts.SDS_CONCEPT_INFO.acronym,
+    'sds_concept': formatting.concept_(concepts.SDS_CONCEPT_INFO),
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
     'instruction': AnyInstructionNameDictionary(),
@@ -119,50 +121,6 @@ _TP = TextParser({
 })
 
 SANDBOX_CONCEPT = _SandboxConcept()
-
-_SANDBOX_PRE_DIRECTORY_TREE = """\
-Each execution of a test case uses its own sandbox.
-
-
-It is created in a platform dependent location for temporary files.
-
-
-The sandbox is created just before the {phase[setup]} phase is executed,
-and deleted when test case execution ends
-(unless {keep_sandbox_option} is used).
-"""
-
-_ACT_DIR_DESCRIPTION = """\
-It will be the {cwd} for the {phase[act]} phase, and following phases,
-unless it is changed by the {cd_instruction} instruction.
-
-
-(Files and directories that {phase[setup]:syntax} creates
-are installed into the {cwd}, if no instruction options are used to change this.)
-"""
-
-_RESULT_DIR_DESCRIPTION = """\
-This directory is initially empty.
-
-It is populated when the {phase[act]} phase is executed
-with the following files (with obvious contents):
-"""
-
-_USR_TMP_DIR_DESCRIPTION = """\
-{program_name} does not touch this directory.
-
-The test case can use it as a place where it is safe to put temporary files without
-the risk of name clashes with files from other program.
-"""
-
-_RESULT_DIR_SYMBOL = """\
-The value of this {symbol}
-is the absolute path of this directory
-(after the {phase[act]} phase has been executed)."""
-
-_THE_VAL_OF_THIS_SYMBOL_IS_THE_ABS_PATH_OF_THE_DIRECTORY = _TP.format(
-    'The value of this {symbol} is the absolute path of this directory.'
-)
 
 
 def _dir_path_and_rel_options(symbol_name: Text,
@@ -204,6 +162,54 @@ def _directory_structure_list(dir_with_sub_dir_list: List[DirWithSubDirs]) -> Pa
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
 
+
+_PYTHON_TMP_FILE_LOCATION_URL = (
+    'https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir'
+)
+
+_SANDBOX_PRE_DIRECTORY_TREE = """\
+Each execution of a test case uses its own {sds_concept} (SDS).
+
+
+It is created in a platform dependent location for temporary files.
+
+
+The {SDS} is created just before the {phase[setup]} phase is executed,
+and deleted when test case execution ends
+(unless {keep_sandbox_option} is used).
+"""
+
+_ACT_DIR_DESCRIPTION = """\
+It will be the {cwd} for the {phase[act]} phase, and following phases,
+unless it is changed by the {cd_instruction} instruction.
+
+
+(Files and directories that {phase[setup]:syntax} creates
+are installed into the {cwd}, if no instruction options are used to change this.)
+"""
+
+_RESULT_DIR_DESCRIPTION = """\
+This directory is initially empty.
+
+It is populated when the {phase[act]} phase is executed
+with the following files (with obvious contents):
+"""
+
+_USR_TMP_DIR_DESCRIPTION = """\
+{program_name} does not touch this directory.
+
+The test case can use it as a place where it is safe to put temporary files without
+the risk of name clashes with files from other program.
+"""
+
+_RESULT_DIR_SYMBOL = """\
+The value of this {symbol}
+is the absolute path of this directory
+(after the {phase[act]} phase has been executed)."""
+
+_THE_VAL_OF_THIS_SYMBOL_IS_THE_ABS_PATH_OF_THE_DIRECTORY = _TP.format(
+    'The value of this {symbol} is the absolute path of this directory.'
+)
 
 _INTERNAL_DIRECTORIES = """\
 Root directory for files that are reserved for {program_name}.

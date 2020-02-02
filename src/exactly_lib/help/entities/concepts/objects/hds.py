@@ -40,7 +40,8 @@ class _HdsConcept(ConceptDocumentation):
         super().__init__(concepts.HDS_CONCEPT_INFO)
 
         self._tp = TextParser({
-            'HDS': formatting.concept_(concepts.HDS_CONCEPT_INFO),
+            'HDS': concepts.HDS_CONCEPT_INFO.acronym,
+            'hds_concept': formatting.concept_(concepts.HDS_CONCEPT_INFO),
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
@@ -146,7 +147,7 @@ _ALL_DIRECTORIES = (
 )
 
 _MAIN_DESCRIPTION_REST = """\
-Typically, the directories in the {HDS} exist before the test case is executed.
+Typically, the directories in the {hds_concept} ({HDS}) exist before the test case is executed.
 They contain files read by, but not modified by, the test case.
 
 
