@@ -639,12 +639,35 @@ from
 has greatly helped the development of this software.
 
 
+Thanks for the great
+
+* Python language
+* Linux
+* Emacs
+
+
 DEDICATION
 ========================================
 
+Project dedications
+----------------------------------------
 
 Aron Karlén
 
 Tommy Karlsson
 
 Götabergsgatan 10, lägenhet 4
+
+
+Release dedications
+----------------------------------------
+
+Elizabeth Wulcan
+
+Sven Karlén
+
+
+Release soundtrack
+----------------------------------------
+
+"Reachy Prints" by "Plaid"
