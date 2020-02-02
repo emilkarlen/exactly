@@ -96,7 +96,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return [syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target] + self._file_contents_doc.see_also_targets()
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self,
                  path_to_create: PathSdv,
                  file_maker: FileMaker):
@@ -118,7 +118,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> Optional[TextRenderer]:
+             os_services: OsServices,
+             ) -> Optional[TextRenderer]:
         described_path = (
             self._path_to_create.resolve(environment.symbols)
                 .value_of_any_dependency__d(environment.tcds)
@@ -126,7 +127,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         return self._file_maker.make(environment, os_services, described_path)
 
 
-class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
+class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self,
                  instruction_name: str,
                  phase_is_after_act: bool):

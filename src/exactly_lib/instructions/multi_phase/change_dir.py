@@ -75,7 +75,7 @@ Omitting the {dir_argument} is the same as giving ".".
 """
 
 
-class InstructionEmbryo(embryo.InstructionEmbryo):
+class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self, destination: PathSdv):
         self.destination = destination
 
@@ -86,7 +86,8 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> Optional[TextRenderer]:
+             os_services: OsServices,
+             ) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)
 
     def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:

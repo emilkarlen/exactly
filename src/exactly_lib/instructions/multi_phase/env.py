@@ -84,7 +84,7 @@ class Executor:
         raise NotImplementedError()
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
     def __init__(self,
                  executor: Executor,
                  symbol_references: Sequence[SymbolReference]):
@@ -98,9 +98,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices):
-        return self.executor.execute(environment.environ,
-                                     environment.path_resolving_environment_pre_or_post_sds)
+             os_services: OsServices,
+             ):
+        self.executor.execute(environment.environ,
+                              environment.path_resolving_environment_pre_or_post_sds)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):

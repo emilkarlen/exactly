@@ -143,7 +143,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return docs.first_row_is_header_table(rows)
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
     def __init__(self, symbol: SymbolDefinition):
         self.symbol = symbol
 
@@ -154,9 +154,9 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices):
+             os_services: OsServices,
+             ):
         self.custom_main(environment.symbols)
-        return None
 
     def custom_main(self, symbols: SymbolTable):
         symbols.put(self.symbol.name,

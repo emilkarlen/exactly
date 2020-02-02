@@ -1,6 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as sut
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -63,3 +65,10 @@ class TestInstructionParserThatConsumesRestOfCurrentLine(unittest.TestCase):
 class InstructionEmbryoThatRecordingParseArgument(sut.InstructionEmbryo):
     def __init__(self, argument: str):
         self.argument = argument
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices,
+             ):
+        raise NotImplementedError('should not be invoked')

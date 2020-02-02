@@ -60,7 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self, dir_path_sdv: PathSdv):
         self.dir_path_sdv = dir_path_sdv
 
@@ -71,7 +71,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> Optional[TextRenderer]:
+             os_services: OsServices,
+             ) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)
 
     def custom_main(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:

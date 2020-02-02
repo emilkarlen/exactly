@@ -3,8 +3,10 @@ Test of test-infrastructure: instruction_embryo_check.
 """
 import pathlib
 import unittest
+from typing import Generic
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase.utils.instruction_embryo import T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
@@ -390,27 +392,27 @@ class TestMiscCases(TestCaseBase):
         )
 
 
-class ParserThatGives(embryo.InstructionEmbryoParser):
-    def __init__(self,
-                 instruction: embryo.InstructionEmbryo):
+class ParserThatGives(Generic[T], embryo.InstructionEmbryoParser[T]):
+    def __init__(self, instruction: embryo.InstructionEmbryo[T]):
         self.instruction = instruction
 
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
-              source: ParseSource) -> embryo.InstructionEmbryo:
+              source: ParseSource) -> embryo.InstructionEmbryo[T]:
         return self.instruction
 
 
 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = ParserThatGives(instruction_embryo_that())
 
 
-class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo):
+class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo[None]):
     def __init__(self, variable: NameAndValue):
         self.variable = variable
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices):
+             os_services: OsServices,
+             ):
         variable = self.variable
         environment.environ[variable.name] = variable.value
 

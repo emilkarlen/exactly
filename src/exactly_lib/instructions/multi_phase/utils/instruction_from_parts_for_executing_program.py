@@ -19,7 +19,7 @@ from exactly_lib.util.process_execution import sub_process_execution as spe
 from exactly_lib.util.process_execution.sub_process_execution import ResultAndStderr, failure_message_for_nonzero_status
 
 
-class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
+class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ResultAndStderr]):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  program: ProgramSdv):
@@ -39,7 +39,8 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> ResultAndStderr:
+             os_services: OsServices,
+             ) -> ResultAndStderr:
         command = resolving_helper_for_instruction_env(environment).resolve_program_command(self._program)
         executable = os_services.executable_factory__detect_ex().make(command)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
@@ -47,11 +48,11 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
         return spe.execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
 
 
-class ResultAndStderrTranslator(MainStepResultTranslator):
-    def translate_for_non_assertion(self, main_result) -> sh.SuccessOrHardError:
+class ResultAndStderrTranslator(MainStepResultTranslator[ResultAndStderr]):
+    def translate_for_non_assertion(self, main_result: ResultAndStderr) -> sh.SuccessOrHardError:
         return result_to_sh(main_result)
 
-    def translate_for_assertion(self, main_result) -> pfh.PassOrFailOrHardError:
+    def translate_for_assertion(self, main_result: ResultAndStderr) -> pfh.PassOrFailOrHardError:
         return result_to_pfh(main_result)
 
 

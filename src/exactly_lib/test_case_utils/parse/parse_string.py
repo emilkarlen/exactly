@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -66,7 +66,7 @@ def parse_rest_of_line_as_single_string_and_consume_line(token_parser: TokenPars
 
 
 def parse_string_sdv(tokens: TokenStream,
-                          conf: Configuration = DEFAULT_CONFIGURATION) -> StringSdv:
+                     conf: Configuration = DEFAULT_CONFIGURATION) -> StringSdv:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
@@ -75,7 +75,7 @@ def parse_string_sdv(tokens: TokenStream,
 
 
 def parse_string_sdv_from_token(token: Token,
-                                     reference_restrictions: ReferenceRestrictions = None) -> StringSdv:
+                                reference_restrictions: ReferenceRestrictions = None) -> StringSdv:
     fragments = parse_fragments_from_token(token)
     return string_sdv_from_fragments(fragments, reference_restrictions)
 
@@ -107,7 +107,7 @@ def string_sdv_from_string(source: str,
 
 
 def fragment_sdv_from_fragment(fragment: symbol_syntax.Fragment,
-                                    reference_restrictions: ReferenceRestrictions) -> StringFragmentSdv:
+                               reference_restrictions: ReferenceRestrictions) -> StringFragmentSdv:
     if fragment.is_constant:
         return string_sdvs.str_fragment(fragment.value)
     else:
@@ -115,11 +115,9 @@ def fragment_sdv_from_fragment(fragment: symbol_syntax.Fragment,
         return string_sdvs.symbol_fragment(sr)
 
 
-def string_sdv_from_fragments(fragments,
-                              reference_restrictions: ReferenceRestrictions = None) -> StringSdv:
-    """
-    :type fragments: List of `symbol_syntax.Fragment`
-    """
+def string_sdv_from_fragments(fragments: Sequence[symbol_syntax.Fragment],
+                              reference_restrictions: Optional[ReferenceRestrictions] = None,
+                              ) -> StringSdv:
     if reference_restrictions is None:
         reference_restrictions = is_any_data_type()
     return StringSdv(tuple([fragment_sdv_from_fragment(f, reference_restrictions)

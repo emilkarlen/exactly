@@ -1,8 +1,11 @@
 """
 Utilities for helping with integrate multi-phase instruction into different phases.
 """
+from typing import Generic
+
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import MainStepExecutorEmbryo, \
-    InstructionEmbryo, InstructionEmbryoParser
+    InstructionEmbryo, InstructionEmbryoParser, T
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import MainStepExecutor, \
     InstructionParts, InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -12,33 +15,33 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, sh
 
 
-class MainStepResultTranslator:
+class MainStepResultTranslator(Generic[T]):
     """
     Translates a custom result to the form that is expected by instructions in different phases.
 
     This is a utility for constructing a `MainStepExecutor` from a generic main-step-executor.
     """
 
-    def translate_for_non_assertion(self, main_result) -> sh.SuccessOrHardError:
+    def translate_for_non_assertion(self, main_result: T) -> sh.SuccessOrHardError:
         raise NotImplementedError()
 
-    def translate_for_assertion(self, main_result) -> pfh.PassOrFailOrHardError:
+    def translate_for_assertion(self, main_result: T) -> pfh.PassOrFailOrHardError:
         raise NotImplementedError()
 
 
-class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepResultTranslator):
+class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepResultTranslator[str]):
     """
     Translates a str to HARD_ERROR, and None to success.
     """
 
-    def translate_for_non_assertion(self, error_message) -> sh.SuccessOrHardError:
+    def translate_for_non_assertion(self, error_message: str) -> sh.SuccessOrHardError:
         return (
             sh.new_sh_success()
             if error_message is None
             else sh.new_sh_hard_error__str(error_message)
         )
 
-    def translate_for_assertion(self, error_message) -> pfh.PassOrFailOrHardError:
+    def translate_for_assertion(self, error_message: str) -> pfh.PassOrFailOrHardError:
         return (
             pfh.new_pfh_pass()
             if error_message is None
@@ -46,19 +49,15 @@ class MainStepResultTranslatorForErrorMessageStringResultAsHardError(MainStepRes
         )
 
 
-class MainStepResultTranslatorForTextRendererAsHardError(MainStepResultTranslator):
-    """
-    Translates a str to HARD_ERROR, and None to success.
-    """
-
-    def translate_for_non_assertion(self, error_message) -> sh.SuccessOrHardError:
+class MainStepResultTranslatorForTextRendererAsHardError(MainStepResultTranslator[TextRenderer]):
+    def translate_for_non_assertion(self, error_message: TextRenderer) -> sh.SuccessOrHardError:
         return (
             sh.new_sh_success()
             if error_message is None
             else sh.new_sh_hard_error(error_message)
         )
 
-    def translate_for_assertion(self, error_message) -> pfh.PassOrFailOrHardError:
+    def translate_for_assertion(self, error_message: TextRenderer) -> pfh.PassOrFailOrHardError:
         return (
             pfh.new_pfh_pass()
             if error_message is None
@@ -74,24 +73,26 @@ class MainStepResultTranslatorForUnconditionalSuccess(MainStepResultTranslator):
         return pfh.new_pfh_pass()
 
 
-class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
+class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
     def __init__(self,
-                 main_step_embryo: MainStepExecutorEmbryo,
-                 result_translator: MainStepResultTranslator):
+                 main_step_embryo: MainStepExecutorEmbryo[T],
+                 result_translator: MainStepResultTranslator[T]):
         self.result_translator = result_translator
         self.main_step_embryo = main_step_embryo
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
                                logging_paths: PhaseLoggingPaths,
-                               os_services: OsServices) -> sh.SuccessOrHardError:
+                               os_services: OsServices,
+                               ) -> sh.SuccessOrHardError:
         result = self.main_step_embryo.main(environment, logging_paths, os_services)
         return self.result_translator.translate_for_non_assertion(result)
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
                            logging_paths: PhaseLoggingPaths,
-                           os_services: OsServices) -> pfh.PassOrFailOrHardError:
+                           os_services: OsServices,
+                           ) -> pfh.PassOrFailOrHardError:
         result = self.main_step_embryo.main(environment, logging_paths, os_services)
         return self.result_translator.translate_for_assertion(result)
 
