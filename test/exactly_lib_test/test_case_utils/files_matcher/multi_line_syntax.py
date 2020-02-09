@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.definitions import logic
-from exactly_lib.definitions.primitives.files_matcher import EMPTINESS_CHECK_ARGUMENT
+from exactly_lib.test_case_utils.files_matcher.config import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines

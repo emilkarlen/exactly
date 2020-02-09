@@ -2,7 +2,6 @@ from typing import Sequence
 
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
-from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
@@ -75,7 +74,7 @@ def _parse_prune(parser: TokenParser) -> GenericFilesMatcherSdv:
 def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
     ret_val = [
         NameAndValue(
-            files_matcher_primitives.EMPTINESS_CHECK_ARGUMENT,
+            config.EMPTINESS_CHECK_ARGUMENT,
             grammar.SimpleExpression(_parse_empty_check,
                                      documentation.EmptyDoc())
         ),
@@ -89,7 +88,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
 
     ret_val += [
         NameAndValue(
-            files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
+            config.NUM_FILES_CHECK_ARGUMENT,
             grammar.SimpleExpression(_parse_num_files_check,
                                      documentation.NumFilesDoc())
         ),

@@ -2,9 +2,9 @@ import contextlib
 from typing import Iterator
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
@@ -29,7 +29,7 @@ def _file_elements_from_model(tcds: Tcds,
 
 ELEMENT_SETUP = quantifier_matchers.ElementSetup(
     quantifier_matchers.ElementRendering(
-        files_matcher_primitives.QUANTIFICATION_OVER_FILE_ARGUMENT,
+        config.QUANTIFICATION_OVER_FILE_ARGUMENT,
         syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
         _element_detail_renderer,
     ),

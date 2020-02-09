@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.definitions.primitives import files_matcher as files_matcher_primitives
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -53,7 +53,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
               condition_str: str,
               ) -> str:
         return '{num_files} {condition}'.format(
-            num_files=files_matcher_primitives.NUM_FILES_CHECK_ARGUMENT,
+            num_files=config.NUM_FILES_CHECK_ARGUMENT,
             condition=condition_str)
 
 
