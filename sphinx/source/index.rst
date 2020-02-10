@@ -10,8 +10,10 @@ Exactly Documentation
    :maxdepth: 2
    :caption: Contents:
 
+   source/index
+   test/index
 
-
+		  
 Indices and tables
 ==================
 
