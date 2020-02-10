@@ -78,9 +78,9 @@ class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
         self._property_getter = property_getter
         self._describer = describer
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return PropertyMatcher(
-            self._matcher.applier(environment),
+            self._matcher.primitive(environment),
             self._property_getter.applier(environment),
             self._describer,
         )

@@ -36,7 +36,7 @@ def matches_matcher_sdv(type_: Type[LogicTypeSdv],
         return ddv.value_of_any_dependency(tcds)
 
     def resolve_primitive_value(adv: MatcherAdv):
-        return adv.applier(ApplicationEnvironment(tmp_file_space))
+        return adv.primitive(ApplicationEnvironment(tmp_file_space))
 
     adv_assertion = asrt.is_instance_with__many(
         MatcherAdv,

@@ -51,7 +51,7 @@ class MatcherAdv(Generic[MODEL],
     """Application Environment Dependent Matcher"""
 
     @abstractmethod
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         pass
 
 

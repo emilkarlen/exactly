@@ -24,17 +24,16 @@ VALUE_TYPE = TypeVar('VALUE_TYPE')
 
 
 class ApplicationEnvironmentDependentValue(Generic[VALUE_TYPE], ABC):
-    """Application Environment Dependent Matcher"""
+    """A value that may depend on :class:`ApplicationEnvironment`"""
 
     @abstractmethod
-    def applier(self, environment: ApplicationEnvironment) -> VALUE_TYPE:
+    def primitive(self, environment: ApplicationEnvironment) -> VALUE_TYPE:
         pass
 
 
-class LogicTypeDdv(Generic[VALUE_TYPE],
-                   DirDependentValue[ApplicationEnvironmentDependentValue[VALUE_TYPE]],
-                   WithTreeStructureDescription,
-                   ABC):
+class LogicDdv(Generic[VALUE_TYPE],
+               DirDependentValue[ApplicationEnvironmentDependentValue[VALUE_TYPE]],
+               ABC):
     @property
     def validator(self) -> DdvValidator:
         return ddv_validation.constant_success_validator()
@@ -42,3 +41,11 @@ class LogicTypeDdv(Generic[VALUE_TYPE],
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
         pass
+
+
+class LogicTypeDdv(Generic[VALUE_TYPE],
+                   LogicDdv[VALUE_TYPE],
+                   WithTreeStructureDescription,
+                   ABC):
+    """A :class:`LogicDdv` that represents a value of a type in the type system"""
+    pass

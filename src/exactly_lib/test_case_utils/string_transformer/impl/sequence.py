@@ -74,9 +74,9 @@ class _StringTransformerSequenceAdv(ApplicationEnvironmentDependentValue[StringT
     def __init__(self, transformers: Sequence[StringTransformerAdv]):
         self._transformers = transformers
 
-    def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
+    def primitive(self, environment: ApplicationEnvironment) -> StringTransformer:
         return SequenceStringTransformer([
-            transformer.applier(environment)
+            transformer.primitive(environment)
             for transformer in self._transformers
         ])
 

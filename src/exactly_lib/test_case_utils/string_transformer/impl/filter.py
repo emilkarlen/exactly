@@ -67,8 +67,8 @@ class _SelectStringTransformerAdv(ApplicationEnvironmentDependentValue[StringTra
     def __init__(self, line_matcher: LineMatcherAdv):
         self._line_matcher = line_matcher
 
-    def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
-        return _SelectStringTransformer(self._line_matcher.applier(environment))
+    def primitive(self, environment: ApplicationEnvironment) -> StringTransformer:
+        return _SelectStringTransformer(self._line_matcher.primitive(environment))
 
 
 class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):

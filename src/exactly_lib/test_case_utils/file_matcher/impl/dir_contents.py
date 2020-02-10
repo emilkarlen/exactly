@@ -13,9 +13,11 @@ from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv, sdv_of_constant_primitive, Ddv, Adv
+from exactly_lib.test_case_utils.generic_dependent_value import Sdv, sdv_of_constant_primitive, Ddv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
+from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import details
@@ -150,11 +152,12 @@ class _RecursiveModelConstructorDdv(Ddv[ModelConstructor[FilesMatcherModel]]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> Adv[ModelConstructor[FilesMatcherModel]]:
+    def value_of_any_dependency(self, tcds: Tcds
+                                ) -> ApplicationEnvironmentDependentValue[ModelConstructor[FilesMatcherModel]]:
         def get_int_value(x: IntegerDdv) -> int:
             return x.value_of_any_dependency(tcds)
 
-        return generic_dependent_value.ConstantAdv(
+        return advs.ConstantAdv(
             _RecursiveModelConstructor(map_optional(get_int_value, self._min_depth),
                                        map_optional(get_int_value, self._max_depth))
         )

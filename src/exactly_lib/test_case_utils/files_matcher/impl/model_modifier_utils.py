@@ -73,7 +73,7 @@ class _PrunedModelGetterAdv(PropertyGetterAdv[FilesMatcherModel, FilesMatcherMod
 
     def applier(self, environment: ApplicationEnvironment) -> PropertyGetter[FilesMatcherModel, FilesMatcherModel]:
         return _ModelGetter(self._configuration,
-                            self._predicate.applier(environment))
+                            self._predicate.primitive(environment))
 
 
 class _PrunedModelGetterDdv(PropertyGetterDdv[FilesMatcherModel, FilesMatcherModel]):

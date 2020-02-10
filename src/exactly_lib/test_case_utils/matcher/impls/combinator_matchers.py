@@ -64,8 +64,8 @@ class _NegationAdv(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self, operand: MatcherAdv[MODEL]):
         self._operand = operand
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-        return Negation(self._operand.applier(environment))
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return Negation(self._operand.primitive(environment))
 
 
 class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
@@ -105,9 +105,9 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
             ]
         )
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return self._make_matcher([
-            operand.applier(environment)
+            operand.primitive(environment)
             for operand in self._operands
         ])
 

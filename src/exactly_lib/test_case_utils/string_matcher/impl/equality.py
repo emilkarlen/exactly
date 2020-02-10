@@ -64,7 +64,7 @@ class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
         self._expected_contents = expected_contents
         self._validator = validator
 
-    def applier(self, environment: ApplicationEnvironment) -> StringMatcher:
+    def primitive(self, environment: ApplicationEnvironment) -> StringMatcher:
         return EqualityStringMatcher(
             self._expected_contents,
             self._validator,

@@ -250,9 +250,9 @@ class _QuantifierAdv(Generic[MODEL, ELEMENT], MatcherAdv[MODEL]):
         self._predicate = predicate
         self._tcds = tcds
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         conf = _ApplicationConf(self._element_setup,
-                                self._predicate.applier(environment),
+                                self._predicate.primitive(environment),
                                 self._tcds,
                                 environment)
         return self.MATCHER_MAKER[self._quantifier](conf)

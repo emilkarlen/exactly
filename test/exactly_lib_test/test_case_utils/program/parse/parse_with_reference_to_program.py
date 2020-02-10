@@ -341,7 +341,7 @@ class TestResolving(unittest.TestCase):
 
             def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
                 def get_program(adv: ProgramAdv) -> Program:
-                    return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+                    return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
 
                 return asrt.is_instance_with(ProgramAdv,
                                              asrt.sub_component('program',
@@ -375,7 +375,7 @@ class TestResolving(unittest.TestCase):
 
         def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
             def get_program(adv: ProgramAdv) -> Program:
-                return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+                return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
 
             return asrt.is_instance_with(ProgramAdv,
                                          asrt.sub_component('program',

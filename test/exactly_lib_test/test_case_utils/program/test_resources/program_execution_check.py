@@ -228,7 +228,7 @@ class Executor:
         structure_tree_of_ddv = program_ddv.structure().render()
         program_adv = program_ddv.value_of_any_dependency(environment.tcds)
 
-        program = program_adv.applier(environment.application_environment)
+        program = program_adv.primitive(environment.application_environment)
         structure_tree_of_primitive = program.structure().render()
         structure_equals_ddv = asrt_d_tree.header_data_and_children_equal_as(structure_tree_of_ddv)
 

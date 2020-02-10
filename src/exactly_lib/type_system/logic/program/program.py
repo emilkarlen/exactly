@@ -56,10 +56,10 @@ class ProgramAdv(ApplicationEnvironmentDependentValue[Program]):
         self._stdin = stdin
         self._transformation = transformation
 
-    def applier(self, environment: ApplicationEnvironment) -> Program:
+    def primitive(self, environment: ApplicationEnvironment) -> Program:
         return Program(self._command,
                        self._stdin,
-                       self._transformation.applier(environment),
+                       self._transformation.primitive(environment),
                        )
 
 

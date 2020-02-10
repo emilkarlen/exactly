@@ -54,21 +54,21 @@ class LogicTypeResolvingHelper:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
-                .applier(self.application_environment)
+                .primitive(self.application_environment)
         )
 
     def resolve__generic(self, sdv: MatcherSdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
-                .applier(self.application_environment)
+                .primitive(self.application_environment)
         )
 
     def resolve_program(self, sdv: ProgramSdv) -> Program:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).applier(self.application_environment)
+        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
 
     def resolve_string_transformer(self, sdv: StringTransformerSdv) -> StringTransformer:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).applier(self.application_environment)
+        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
 
     def resolve_program_command(self, sdv: ProgramSdv) -> Command:
         return sdv.resolve(self.symbols).command.value_of_any_dependency(self.tcds)
@@ -77,7 +77,7 @@ class LogicTypeResolvingHelper:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
-                .applier(self.application_environment)
+                .primitive(self.application_environment)
         )
 
     def apply(self, sdv: MatcherTypeSdv[MODEL], model: MODEL) -> MatchingResult:

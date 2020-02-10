@@ -80,7 +80,7 @@ class _Adv(ApplicationEnvironmentDependentValue[StringTransformer]):
         self._regex = regex
         self._replacement = replacement
 
-    def applier(self, environment: ApplicationEnvironment) -> StringTransformer:
+    def primitive(self, environment: ApplicationEnvironment) -> StringTransformer:
         return _ReplaceStringTransformer(self._regex,
                                          self._replacement)
 

@@ -78,7 +78,7 @@ def matches_sdv_of_logic_type__w_adv(sdv_type: Type,
     ae = ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed())
 
     def resolve_value(sdv: SymbolDependentTypeValue):
-        return sdv.resolve(symbols).value_of_any_dependency(tcds).applier(ae)
+        return sdv.resolve(symbols).value_of_any_dependency(tcds).primitive(ae)
 
     return asrt.is_instance_with(sdv_type,
                                  asrt.and_([

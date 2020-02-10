@@ -383,7 +383,7 @@ class _MatcherExecutionChecker(Generic[MODEL]):
         asrt.is_instance(MatcherAdv).apply_with_message(self.put,
                                                         adv,
                                                         'adv')
-        ret_val = adv.applier(application_environment)
+        ret_val = adv.primitive(application_environment)
 
         asrt.is_instance(MatcherWTraceAndNegation).apply_with_message(self.put,
                                                                       ret_val,

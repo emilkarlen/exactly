@@ -84,9 +84,9 @@ class _StringMatcherWithTransformationAdv(StringMatcherAdvImplBase):
         self._transformer = transformer
         self._on_transformed = on_transformed
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
-        return StringMatcherWithTransformation(self._transformer.applier(environment),
-                                               self._on_transformed.applier(environment),
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+        return StringMatcherWithTransformation(self._transformer.primitive(environment),
+                                               self._on_transformed.primitive(environment),
                                                )
 
 

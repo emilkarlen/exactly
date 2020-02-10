@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.impls.advs import ConstantAdv
+from exactly_lib.type_system.logic.logic_base_class import LogicDdv, \
+    ApplicationEnvironmentDependentValue
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -13,24 +13,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 PRIMITIVE = TypeVar('PRIMITIVE')
 
 
-class Adv(Generic[PRIMITIVE], ABC):
-    @abstractmethod
-    def primitive(self, environment: ApplicationEnvironment) -> PRIMITIVE:
-        pass
-
-
-class Ddv(Generic[PRIMITIVE], ABC):
+class Ddv(Generic[PRIMITIVE], LogicDdv[PRIMITIVE], ABC):
     @property
     def describer(self) -> DetailsRenderer:
         return details.empty()
-
-    @property
-    def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
-
-    @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> Adv[PRIMITIVE]:
-        pass
 
 
 class Sdv(Generic[PRIMITIVE], SymbolDependentValue, ABC):
@@ -43,19 +29,11 @@ class Sdv(Generic[PRIMITIVE], SymbolDependentValue, ABC):
         pass
 
 
-class ConstantAdv(Generic[PRIMITIVE], Adv[PRIMITIVE]):
-    def __init__(self, primitive: PRIMITIVE):
-        self._primitive = primitive
-
-    def primitive(self, environment: ApplicationEnvironment) -> PRIMITIVE:
-        return self._primitive
-
-
 class ConstantDdv(Generic[PRIMITIVE], Ddv[PRIMITIVE]):
-    def __init__(self, adv: Adv[PRIMITIVE]):
+    def __init__(self, adv: ApplicationEnvironmentDependentValue[PRIMITIVE]):
         self._adv = adv
 
-    def value_of_any_dependency(self, tcds: Tcds) -> Adv[PRIMITIVE]:
+    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         return self._adv
 
 

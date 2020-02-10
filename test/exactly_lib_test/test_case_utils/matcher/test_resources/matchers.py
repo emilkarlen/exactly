@@ -138,7 +138,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def structure(self) -> StructureRenderer:
         return (
             self.value_of_any_dependency(self.FAKE_TCDS)
-                .applier(self.APPLICATION_ENVIRONMENT)
+                .primitive(self.APPLICATION_ENVIRONMENT)
                 .structure()
         )
 

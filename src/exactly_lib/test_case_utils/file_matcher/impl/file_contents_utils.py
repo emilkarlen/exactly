@@ -16,11 +16,12 @@ from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv, Ddv, Adv
+from exactly_lib.test_case_utils.generic_dependent_value import Sdv, Ddv
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
     MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -136,17 +137,17 @@ class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
                               ):
     def __init__(self,
                  names: NamesSetup,
-                 model_constructor: Adv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+                 model_constructor: ApplicationEnvironmentDependentValue[ModelConstructor[CONTENTS_MATCHER_MODEL]],
                  contents_matcher: MatcherAdv[CONTENTS_MATCHER_MODEL],
                  ):
         self._names = names
         self._model_constructor = model_constructor
         self._contents_matcher = contents_matcher
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return _FileContentsMatcher(self._names,
                                     self._model_constructor.primitive(environment),
-                                    self._contents_matcher.applier(environment))
+                                    self._contents_matcher.primitive(environment))
 
 
 class _FileContentsMatcherDdv(FileMatcherDdvImplBase):

@@ -46,7 +46,7 @@ def matches_dir_dependent_value__with_adv(
         return asrt.is_instance_with(
             ApplicationEnvironmentDependentValue,
             asrt.sub_component('primitive',
-                               lambda adv: adv.applier(ae),
+                               lambda adv: adv.primitive(ae),
                                resolved_value(tcds_)
                                )
         )

@@ -196,7 +196,7 @@ def check_parsing_of_program(put: unittest.TestCase,
 
         def expected_program_adv(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
             def get_program(adv: ProgramAdv) -> Program:
-                return adv.applier(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+                return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
 
             return asrt.is_instance_with(ProgramAdv,
                                          asrt.sub_component('program',

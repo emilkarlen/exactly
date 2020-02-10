@@ -159,7 +159,7 @@ class _Checker:
         ae = ApplicationEnvironment(
             TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'tmp-file-space')
         )
-        ret_val = adv.applier(ae)
+        ret_val = adv.primitive(ae)
 
         asrt.is_instance(StringTransformer).apply_with_message(self.put,
                                                                ret_val,

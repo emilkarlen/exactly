@@ -11,7 +11,7 @@ class ConstantAdv(Generic[T], ApplicationEnvironmentDependentValue[T]):
     def __init__(self, constant: T):
         self._constant = constant
 
-    def applier(self, environment: ApplicationEnvironment) -> T:
+    def primitive(self, environment: ApplicationEnvironment) -> T:
         return self._constant
 
 
@@ -19,7 +19,7 @@ class ConstantMatcherAdv(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self, constant: MatcherWTraceAndNegation[MODEL]):
         self._constant = constant
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return self._constant
 
 
@@ -27,5 +27,5 @@ class MatcherAdvFromFunction(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self, constructor: Callable[[ApplicationEnvironment], MatcherWTraceAndNegation[MODEL]]):
         self._constructor = constructor
 
-    def applier(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
         return self._constructor(environment)
