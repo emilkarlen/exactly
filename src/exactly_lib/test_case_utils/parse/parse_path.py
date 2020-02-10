@@ -25,8 +25,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativi
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
 from exactly_lib.symbol.err_msg.restriction_failures import ErrorMessageForDirectReference
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_sdv_from_token, \

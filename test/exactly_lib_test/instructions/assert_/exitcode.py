@@ -5,8 +5,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.name_and_value import NameAndValue

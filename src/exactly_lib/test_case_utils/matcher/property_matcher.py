@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar, Sequence
 
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds

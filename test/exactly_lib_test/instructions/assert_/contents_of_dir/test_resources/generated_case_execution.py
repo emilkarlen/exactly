@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.result import svh
 from exactly_lib.util.functional import reduce_optional
 from exactly_lib.util.name_and_value import NameAndValue

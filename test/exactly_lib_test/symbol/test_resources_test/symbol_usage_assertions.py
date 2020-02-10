@@ -3,8 +3,7 @@ import unittest
 import exactly_lib_test.symbol.test_resources.symbol_usage_assertions
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions import reference_restrictions as r, value_restrictions as vr
-from exactly_lib.symbol.sdv_structure import container_of_builtin
-from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
+from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolReference, SymbolDefinition
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

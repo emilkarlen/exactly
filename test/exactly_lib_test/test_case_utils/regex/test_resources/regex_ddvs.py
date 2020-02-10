@@ -1,6 +1,6 @@
 from typing import Pattern, Sequence, Set, Optional
 
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     ConstantDdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition

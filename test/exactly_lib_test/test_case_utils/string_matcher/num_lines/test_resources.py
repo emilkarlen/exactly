@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType

@@ -1,7 +1,7 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

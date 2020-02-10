@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.symbol.data import list_sdv as sut
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string, \
     string_ddv_of_single_path
 from exactly_lib.type_system.data.list_ddv import ListDdv
@@ -190,7 +191,7 @@ class ListResolverTest(unittest.TestCase):
 
     def test_references(self):
         reference_1 = su.symbol_reference('symbol_1_name')
-        reference_2 = su.SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
+        reference_2 = SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
                 'no elements',

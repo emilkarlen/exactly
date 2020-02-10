@@ -1,8 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
@@ -38,14 +37,15 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
 IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
 
 
-def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[su.SymbolUsage]:
+def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_STRING_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_string_matcher__ref(name_of_matcher: str) -> ValueAssertion[su.SymbolReference]:
+def is_reference_to_string_matcher__ref(name_of_matcher: str
+                                        ) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(
-        su.SymbolReference,
+        SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                          IS_STRING_MATCHER_REFERENCE_RESTRICTION)
     )

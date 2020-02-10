@@ -2,14 +2,13 @@ from typing import Sequence
 
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
-from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.test_case.validation.sdv_validation import DdvValidatorResolver
 from exactly_lib.type_system.logic.program.argument import ArgumentsDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ArgumentsSdv(ObjectWithTypedSymbolReferences):
+class ArgumentsSdv(ObjectWithSymbolReferences):
     def __init__(self,
                  arguments: ListSdv,
                  validators: Sequence[DdvValidatorResolver] = ()):

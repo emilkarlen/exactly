@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result

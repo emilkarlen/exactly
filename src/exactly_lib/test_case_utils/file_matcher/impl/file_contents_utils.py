@@ -8,7 +8,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds

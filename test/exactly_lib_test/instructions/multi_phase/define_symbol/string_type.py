@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *

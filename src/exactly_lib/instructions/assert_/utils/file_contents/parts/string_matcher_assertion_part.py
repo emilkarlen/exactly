@@ -4,7 +4,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.validation import sdv_validation

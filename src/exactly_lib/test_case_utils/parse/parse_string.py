@@ -11,8 +11,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_sdv import StringSdv, StringFragmentSdv
-from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.util.parse.token import Token
 
 

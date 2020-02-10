@@ -2,9 +2,8 @@ from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
@@ -26,7 +25,7 @@ class _IntResolver:
         return python_evaluate(value_string)
 
 
-class IntegerSdv(OperandSdv[int], ObjectWithTypedSymbolReferences):
+class IntegerSdv(OperandSdv[int], ObjectWithSymbolReferences):
     def __init__(self,
                  value_sdv: StringSdv,
                  custom_integer_validator: Optional[CustomIntegerValidator] = None):

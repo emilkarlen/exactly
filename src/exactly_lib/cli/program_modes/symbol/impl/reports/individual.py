@@ -8,7 +8,7 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import Symbol
 from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.definitions.entity import concepts, all_entity_types
 from exactly_lib.section_document.source_location import SourceLocationInfo, SourceLocationPath
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as struct

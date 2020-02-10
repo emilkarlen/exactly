@@ -3,7 +3,7 @@ from typing import Sequence, Any
 
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.symbol.restriction import ValueTypeRestriction
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep

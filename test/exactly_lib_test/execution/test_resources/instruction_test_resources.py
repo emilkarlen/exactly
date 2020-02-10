@@ -1,7 +1,7 @@
 from typing import Sequence, Callable, Optional
 
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

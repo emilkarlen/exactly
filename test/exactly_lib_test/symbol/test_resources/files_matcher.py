@@ -1,8 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -90,11 +89,12 @@ def files_matcher_sdv_constant_ddv_test_impl(resolved_value: FilesMatcherDdv,
 IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)
 
 
-def is_reference_to_files_matcher(name_of_matcher: str) -> ValueAssertion[su.SymbolUsage]:
+def is_reference_to_files_matcher(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_FILES_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_files_matcher__ref(name_of_matcher: str) -> ValueAssertion[su.SymbolReference]:
+def is_reference_to_files_matcher__ref(name_of_matcher: str
+                                       ) -> ValueAssertion[SymbolReference]:
     return asrt_sym_usage.matches_reference__ref(asrt.equals(name_of_matcher),
                                                  IS_FILES_MATCHER_REFERENCE_RESTRICTION)

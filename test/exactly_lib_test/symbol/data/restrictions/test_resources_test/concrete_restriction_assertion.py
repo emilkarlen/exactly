@@ -7,7 +7,8 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     StringRestriction, \
     PathRelativityRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
-from exactly_lib.symbol.restriction import ReferenceRestrictions, TypeCategoryRestriction
+from exactly_lib.symbol.restriction import TypeCategoryRestriction
+from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc

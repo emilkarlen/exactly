@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable

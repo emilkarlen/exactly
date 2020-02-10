@@ -2,7 +2,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator

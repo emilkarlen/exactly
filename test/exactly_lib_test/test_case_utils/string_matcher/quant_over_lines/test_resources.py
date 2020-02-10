@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement

@@ -11,7 +11,7 @@ from exactly_lib.symbol.data import list_sdv as _impl
 from exactly_lib.symbol.data import string_sdvs as _string_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv, ElementSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 
 
 def empty() -> ListSdv:

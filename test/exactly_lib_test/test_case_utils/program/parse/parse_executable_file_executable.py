@@ -12,8 +12,8 @@ from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_relativity_restriction

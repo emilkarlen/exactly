@@ -5,8 +5,7 @@ from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.accumulator import ProgramElementsSdvAccumulator
 from exactly_lib.type_system.logic.program.program import ProgramDdv

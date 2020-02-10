@@ -7,7 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, MatcherWTraceAndNegation, \

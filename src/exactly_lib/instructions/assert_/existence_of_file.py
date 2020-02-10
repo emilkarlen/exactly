@@ -16,7 +16,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose

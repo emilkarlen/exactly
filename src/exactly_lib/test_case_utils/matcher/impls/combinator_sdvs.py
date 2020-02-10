@@ -2,8 +2,7 @@ from abc import ABC
 from typing import TypeVar, Sequence, Generic
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.util.logic_types import ExpectationType

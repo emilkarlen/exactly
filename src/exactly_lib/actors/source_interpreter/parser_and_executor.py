@@ -5,7 +5,7 @@ from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
     SubProcessExecutor
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser

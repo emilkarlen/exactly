@@ -3,7 +3,7 @@ from typing import List, Sequence, Iterator, Dict, Callable, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SYMBOL_INFO, SymbolDefinitionInfo, \
     DefinitionsResolver, ContextAnd, SourceInfo
-from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage, SymbolReference, SymbolUsageVisitor
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, SymbolDefinition, SymbolUsageVisitor
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases import setup, before_assert, assert_, cleanup

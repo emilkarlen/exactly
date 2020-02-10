@@ -20,7 +20,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenSynta
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths

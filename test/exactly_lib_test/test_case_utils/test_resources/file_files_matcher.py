@@ -2,8 +2,7 @@ from abc import ABC
 from typing import Sequence, List, Mapping, Optional
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref

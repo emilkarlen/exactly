@@ -5,8 +5,7 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.validation import sdv_validation, ddv_validators

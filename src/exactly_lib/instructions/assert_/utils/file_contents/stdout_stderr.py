@@ -18,7 +18,7 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose

@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier

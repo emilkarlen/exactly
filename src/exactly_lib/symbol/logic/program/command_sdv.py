@@ -2,9 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.command import CommandDdv, CommandDriverDdv

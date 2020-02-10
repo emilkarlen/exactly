@@ -5,7 +5,7 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.validation import ddv_validators
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver

@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo, SourceLocation, \
     SourceLocationPath
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import single_line_source
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_source_location_info, \

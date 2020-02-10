@@ -9,8 +9,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, SymbolDefinition
 from exactly_lib.util import line_source
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry

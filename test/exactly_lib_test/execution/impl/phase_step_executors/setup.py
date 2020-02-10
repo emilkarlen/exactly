@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
 from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
-from exactly_lib.symbol import symbol_usage as su
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
@@ -163,7 +163,7 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
-def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
+def env_with_singleton_symbol_table(definition: SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
     table = ne_tr.symbol_table_from_symbol_definitions([definition])
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
@@ -179,7 +179,7 @@ def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
                                                symbols=symbols)
 
 
-def symbol_of(name: str) -> su.SymbolDefinition:
+def symbol_of(name: str) -> SymbolDefinition:
     return sym_tr.string_symbol_definition(name)
 
 

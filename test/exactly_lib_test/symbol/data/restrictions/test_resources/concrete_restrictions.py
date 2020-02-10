@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
-from exactly_lib.symbol.restriction import ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 
 

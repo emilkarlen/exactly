@@ -17,7 +17,7 @@ from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.resolving_helper import DataTypeResolvingHelper
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \

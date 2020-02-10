@@ -2,7 +2,7 @@ from typing import Sequence, Callable
 
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.test_case_utils.string_matcher.impl import on_transformed

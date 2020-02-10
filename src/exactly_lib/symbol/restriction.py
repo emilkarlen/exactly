@@ -1,32 +1,9 @@
-from abc import ABC
 from typing import Optional
 
-from exactly_lib.symbol.sdv_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer, Failure, ReferenceRestrictions
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-class Failure(ABC):
-    pass
-
-
-class ReferenceRestrictions(ABC):
-    """
-    Restrictions on a referenced symbol
-    """
-
-    def is_satisfied_by(self,
-                        symbol_table: SymbolTable,
-                        symbol_name: str,
-                        container: SymbolContainer) -> Optional[Failure]:
-        """
-        :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
-        :param symbol_name: The name of the symbol that the restriction applies to
-        :param container: The container of the value that the restriction applies to
-        :return: None if satisfied, otherwise an error message
-        """
-        pass
 
 
 class InvalidTypeCategoryFailure(Failure):

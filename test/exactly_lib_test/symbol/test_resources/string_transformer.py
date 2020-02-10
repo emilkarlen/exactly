@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds

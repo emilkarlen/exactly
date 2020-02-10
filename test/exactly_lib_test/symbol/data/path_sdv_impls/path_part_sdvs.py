@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.path_sdv_impls import path_part_sdvs as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.util import symbol_table as st
 from exactly_lib.util.name_and_value import NameAndValue

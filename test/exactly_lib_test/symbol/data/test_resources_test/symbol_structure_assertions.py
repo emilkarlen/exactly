@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDefinition
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as sut
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl

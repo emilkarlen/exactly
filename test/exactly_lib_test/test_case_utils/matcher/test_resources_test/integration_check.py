@@ -8,7 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator, DdvValidator
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure

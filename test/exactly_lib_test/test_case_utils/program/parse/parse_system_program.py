@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.tcds import Tcds

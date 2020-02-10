@@ -4,8 +4,8 @@ from contextlib import contextmanager
 
 from exactly_lib.actors import command_line as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \

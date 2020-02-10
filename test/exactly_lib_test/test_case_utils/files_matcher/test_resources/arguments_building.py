@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Dict, List
 
 from exactly_lib.definitions import logic
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolUsage
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax

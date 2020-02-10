@@ -3,14 +3,13 @@ from typing import Sequence, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.err_msg import restriction_failures
-from exactly_lib.symbol.sdv_structure import SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolReference, SymbolDefinition
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def validate_symbol_usages(symbol_usages: Sequence[su.SymbolUsage],
+def validate_symbol_usages(symbol_usages: Sequence[SymbolUsage],
                            symbols: SymbolTable) -> Optional[PartialInstructionControlledFailureInfo]:
     for symbol_usage in symbol_usages:
         result = validate_symbol_usage(symbol_usage, symbols)
@@ -19,19 +18,19 @@ def validate_symbol_usages(symbol_usages: Sequence[su.SymbolUsage],
     return None
 
 
-def validate_symbol_usage(usage: su.SymbolUsage,
+def validate_symbol_usage(usage: SymbolUsage,
                           symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    if isinstance(usage, su.SymbolReference):
+    if isinstance(usage, SymbolReference):
         return _validate_symbol_reference(symbol_table, usage)
-    elif isinstance(usage, su.SymbolDefinition):
+    elif isinstance(usage, SymbolDefinition):
         return _validate_symbol_definition(symbol_table, usage)
     else:
-        raise TypeError('Unknown variant of {}: {}'.format(str(su.SymbolUsage),
+        raise TypeError('Unknown variant of {}: {}'.format(str(SymbolUsage),
                                                            str(usage)))
 
 
 def _validate_symbol_definition(symbol_table: SymbolTable,
-                                definition: su.SymbolDefinition,
+                                definition: SymbolDefinition,
                                 ) -> Optional[PartialInstructionControlledFailureInfo]:
     if symbol_table.contains(definition.name):
         already_defined_sdv_container = symbol_table.lookup(definition.name)
@@ -51,9 +50,9 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
 
 
 def _validate_symbol_reference(symbol_table: SymbolTable,
-                               reference: su.SymbolReference,
+                               reference: SymbolReference,
                                ) -> Optional[PartialInstructionControlledFailureInfo]:
-    assert isinstance(reference, su.SymbolReference)
+    assert isinstance(reference, SymbolReference)
     if not symbol_table.contains(reference.name):
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
@@ -68,7 +67,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
     return None
 
 
-def _validate_reference(symbol_reference: su.SymbolReference,
+def _validate_reference(symbol_reference: SymbolReference,
                         symbols: SymbolTable) -> Optional[TextRenderer]:
     referenced_sdv_container = symbols.lookup(symbol_reference.name)
     assert isinstance(referenced_sdv_container, SymbolContainer), \

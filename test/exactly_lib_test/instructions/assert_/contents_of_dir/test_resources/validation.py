@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation

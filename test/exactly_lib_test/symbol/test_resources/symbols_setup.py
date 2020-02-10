@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer, SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, SymbolTable

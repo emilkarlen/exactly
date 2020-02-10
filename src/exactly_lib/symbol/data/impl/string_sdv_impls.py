@@ -1,12 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.symbol import symbol_usage as su, sdv_structure as struct
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringFragmentSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.type_system.data import string_ddv as sv, concrete_strings as csv
 from exactly_lib.type_system.data.concrete_strings import StrValueTransformer, TransformedStringFragmentDdv, \
     StringDdvFragmentDdv
@@ -44,7 +43,7 @@ class SymbolStringFragmentSdv(StringFragmentSdv):
     A fragment that represents a reference to a symbol.
     """
 
-    def __init__(self, symbol_reference: su.SymbolReference):
+    def __init__(self, symbol_reference: SymbolReference):
         self._symbol_reference = symbol_reference
 
     @property
@@ -57,7 +56,7 @@ class SymbolStringFragmentSdv(StringFragmentSdv):
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragmentDdv:
         container = symbols.lookup(self._symbol_reference.name)
-        assert isinstance(container, struct.SymbolContainer), 'Value in SymTbl must be SymbolContainer'
+        assert isinstance(container, SymbolContainer), 'Value in SymTbl must be SymbolContainer'
         value_sdv = container.sdv
         assert isinstance(value_sdv, DataTypeSdv), 'Value must be a DataTypeSdv'
         value = value_sdv.resolve(symbols)

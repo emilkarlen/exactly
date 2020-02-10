@@ -11,11 +11,10 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_sdv import StringFragmentSdv, \
     StringSdv
-from exactly_lib.symbol.restriction import ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_string as sut
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \

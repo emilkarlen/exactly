@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check

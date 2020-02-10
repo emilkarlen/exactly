@@ -2,7 +2,7 @@ from typing import Sequence, Callable, Optional, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryo, T
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator

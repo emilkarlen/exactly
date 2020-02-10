@@ -9,8 +9,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureO
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import error_messages
 from exactly_lib.symbol.lookups import lookup_container
-from exactly_lib.symbol.restriction import Failure, InvalidTypeCategoryFailure, InvalidValueTypeFailure
-from exactly_lib.symbol.sdv_structure import SymbolContainer
+from exactly_lib.symbol.restriction import InvalidTypeCategoryFailure, InvalidValueTypeFailure
+from exactly_lib.symbol.sdv_structure import SymbolContainer, Failure
 from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
 from exactly_lib.util.render import combinators
 from exactly_lib.util.render.renderer import SequenceRenderer

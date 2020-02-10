@@ -1,8 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType

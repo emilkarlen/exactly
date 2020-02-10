@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \

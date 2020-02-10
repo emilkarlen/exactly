@@ -17,7 +17,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType

@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart, IdentityAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties, path_check

@@ -1,4 +1,5 @@
-from exactly_lib.symbol.restriction import TypeCategoryRestriction, ValueTypeRestriction, ReferenceRestrictions
+from exactly_lib.symbol.restriction import TypeCategoryRestriction, ValueTypeRestriction
+from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

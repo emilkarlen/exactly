@@ -2,7 +2,7 @@ from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

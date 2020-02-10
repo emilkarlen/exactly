@@ -1,8 +1,7 @@
 from typing import List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import TypeCategory, DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable

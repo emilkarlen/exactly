@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Sequence
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test_that_equals

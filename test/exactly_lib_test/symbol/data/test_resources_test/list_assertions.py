@@ -5,7 +5,7 @@ from exactly_lib.symbol.data import string_sdvs, list_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2

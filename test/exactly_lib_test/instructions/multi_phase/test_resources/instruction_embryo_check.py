@@ -7,7 +7,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
     InstructionEmbryo, T
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure

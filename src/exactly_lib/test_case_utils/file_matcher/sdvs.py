@@ -1,7 +1,7 @@
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, GenericFileMatcherSdv

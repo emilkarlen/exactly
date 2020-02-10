@@ -4,8 +4,8 @@ import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.type_system.data import paths

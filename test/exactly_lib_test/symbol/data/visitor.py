@@ -3,7 +3,7 @@ from typing import List
 from typing import Type
 
 from exactly_lib.symbol.data import visitor as sut
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.type_system.value_type import ValueType

@@ -9,8 +9,8 @@ from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.data.restrictions import reference_restrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_list as sut
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token as token_syntax

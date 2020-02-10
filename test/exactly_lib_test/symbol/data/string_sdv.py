@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import string_sdv as sut
 from exactly_lib.symbol.data.impl import string_sdv_impls as impl
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data import concrete_strings as csv
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string

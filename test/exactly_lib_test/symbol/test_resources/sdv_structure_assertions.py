@@ -1,6 +1,6 @@
 from exactly_lib.symbol import sdv_structure as rs, sdv_structure
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv, get_logic_value_type
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.value_type import LogicValueType, TypeCategory
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

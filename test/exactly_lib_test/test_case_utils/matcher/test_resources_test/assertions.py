@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.matcher.impls import constant

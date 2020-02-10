@@ -12,8 +12,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path

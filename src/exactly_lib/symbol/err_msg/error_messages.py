@@ -8,9 +8,8 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference
 from exactly_lib.type_system.value_type import ValueType
 
 
@@ -22,7 +21,7 @@ def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationI
     )
 
 
-def undefined_symbol(reference: su.SymbolReference) -> TextRenderer:
+def undefined_symbol(reference: SymbolReference) -> TextRenderer:
     return text_docs.major_blocks_of_string_blocks(_undefined_symbol(reference))
 
 
@@ -128,7 +127,7 @@ def _duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocation
     return [header_block] + def_src_blocks
 
 
-def _undefined_symbol(reference: su.SymbolReference) -> Blocks:
+def _undefined_symbol(reference: SymbolReference) -> Blocks:
     from exactly_lib.definitions.formatting import InstructionName
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis

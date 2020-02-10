@@ -6,8 +6,7 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.type_system.description.tree_structured import StructureRenderer

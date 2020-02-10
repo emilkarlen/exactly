@@ -1,7 +1,7 @@
 from typing import Sequence, Callable, Generic
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv, MODEL
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
 from exactly_lib.util.symbol_table import SymbolTable
 from . import ddv_components

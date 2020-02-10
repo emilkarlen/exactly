@@ -11,8 +11,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolDefinition
 from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program import Program

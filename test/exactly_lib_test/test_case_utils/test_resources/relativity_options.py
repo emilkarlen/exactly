@@ -5,7 +5,7 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure

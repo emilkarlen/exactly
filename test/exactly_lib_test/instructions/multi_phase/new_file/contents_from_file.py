@@ -6,8 +6,8 @@ from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data import paths

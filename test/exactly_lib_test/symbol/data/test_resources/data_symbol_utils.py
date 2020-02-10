@@ -9,8 +9,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, SymbolDefinition
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import path_ddv as _path
 from exactly_lib.type_system.data.list_ddv import ListDdv

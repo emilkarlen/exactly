@@ -1,4 +1,6 @@
-from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
+from abc import ABC
+
+from exactly_lib.symbol.sdv_structure import ObjectWithSymbolReferences
 from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 
 
@@ -8,5 +10,5 @@ class WithValidation:
         raise NotImplementedError('abstract method')
 
 
-class ObjectWithSymbolReferencesAndValidation(ObjectWithTypedSymbolReferences, WithValidation):
+class ObjectWithSymbolReferencesAndValidation(ObjectWithSymbolReferences, WithValidation, ABC):
     pass

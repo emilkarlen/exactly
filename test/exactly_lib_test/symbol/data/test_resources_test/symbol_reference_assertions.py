@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as r
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

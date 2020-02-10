@@ -3,7 +3,7 @@ from typing import Sequence
 from typing import Type
 
 from exactly_lib.symbol.logic import visitor as sut
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable

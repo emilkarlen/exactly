@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
     INVALID_SYNTAX_CASES

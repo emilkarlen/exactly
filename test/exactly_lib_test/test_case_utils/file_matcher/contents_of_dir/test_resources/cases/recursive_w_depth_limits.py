@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, Optional, List
 
 from exactly_lib.symbol.data.restrictions import reference_restrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.name_and_value import NameAndValue

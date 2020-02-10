@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.string_sdv import StringSdv, StringFragmentSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.util.symbol_table import SymbolTable

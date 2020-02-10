@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable

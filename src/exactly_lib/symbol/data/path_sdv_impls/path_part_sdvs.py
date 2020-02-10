@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.path_sdv import PathPartSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv

@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
@@ -9,8 +8,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.string_sdvs import str_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -22,7 +20,7 @@ def symbol_table_with_values_matching_references(references: Sequence[SymbolRefe
     value_constructor = _ValueCorrespondingToValueRestriction()
     elements = {}
     for ref in references:
-        assert isinstance(ref, su.SymbolReference), "Type info for IDE"
+        assert isinstance(ref, SymbolReference), "Type info for IDE"
         restrictions = ref.restrictions
         assert isinstance(restrictions,
                           ReferenceRestrictionsOnDirectAndIndirect), 'Only handled/needed case for the moment'

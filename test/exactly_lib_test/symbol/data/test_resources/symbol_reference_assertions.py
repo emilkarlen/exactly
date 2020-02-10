@@ -1,8 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     matches_restrictions_on_direct_and_indirect, equals_data_type_reference_restrictions, \
@@ -18,7 +17,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
                                                               assertion_on_direct_restriction: ValueAssertion
-                                                              ) -> ValueAssertion[su.SymbolReference]:
+                                                              ) -> ValueAssertion[SymbolReference]:
     return asrt_sym_ref.matches_reference_2(expected_name,
                                             matches_restrictions_on_direct_and_indirect(
                                                 assertion_on_direct=assertion_on_direct_restriction,
@@ -53,7 +52,7 @@ class _EqualsSymbolReferences(ValueAssertionBase):
         assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
         for idx, element in enumerate(expected):
             assert isinstance(element,
-                              su.SymbolReference), 'Element must be a SymbolReference #' + str(idx)
+                              SymbolReference), 'Element must be a SymbolReference #' + str(idx)
 
     def _apply(self,
                put: unittest.TestCase,
@@ -66,16 +65,17 @@ class _EqualsSymbolReferences(ValueAssertionBase):
                         message_builder.apply('Number of symbol references'))
         for idx, expected_ref in enumerate(self._expected):
             actual_ref = value[idx]
-            put.assertIsInstance(actual_ref, su.SymbolReference)
-            assert isinstance(actual_ref, su.SymbolReference)
-            assert isinstance(expected_ref, su.SymbolReference)
+            put.assertIsInstance(actual_ref, SymbolReference)
+            assert isinstance(actual_ref, SymbolReference)
+            assert isinstance(expected_ref, SymbolReference)
             element_assertion = equals_symbol_reference(expected_ref)
             element_assertion.apply(put,
                                     actual_ref,
                                     message_builder.for_sub_component('[%d]' % idx))
 
 
-def is_reference_to_data_type_symbol(symbol_name: str) -> ValueAssertion[su.SymbolReference]:
+def is_reference_to_data_type_symbol(symbol_name: str
+                                     ) -> ValueAssertion[SymbolReference]:
     return matches_reference_2(symbol_name,
                                is_any_data_type_reference_restrictions())
 

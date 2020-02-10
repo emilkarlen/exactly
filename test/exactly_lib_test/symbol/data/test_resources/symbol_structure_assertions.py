@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib.symbol import sdv_structure as rs, symbol_usage as su
+from exactly_lib.symbol import sdv_structure as rs
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib_test.symbol.data.test_resources.any_sdv_assertions import equals_sdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
@@ -24,15 +25,15 @@ def equals_container(expected: rs.SymbolContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_symbol(expected: su.SymbolDefinition,
-                  ignore_source_line: bool = True) -> ValueAssertion[su.SymbolDefinition]:
-    return asrt.is_instance_with(su.SymbolDefinition,
+def equals_symbol(expected: SymbolDefinition,
+                  ignore_source_line: bool = True) -> ValueAssertion[SymbolDefinition]:
+    return asrt.is_instance_with(SymbolDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',
-                                                        su.SymbolDefinition.name.fget,
+                                                        SymbolDefinition.name.fget,
                                                         asrt.equals(expected.name)),
                                      asrt.sub_component('symbol_container',
-                                                        su.SymbolDefinition.symbol_container.fget,
+                                                        SymbolDefinition.symbol_container.fget,
                                                         equals_container(expected.symbol_container,
                                                                          ignore_source_line)),
 

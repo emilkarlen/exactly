@@ -11,7 +11,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.list_ddv import ListDdv

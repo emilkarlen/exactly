@@ -3,8 +3,7 @@ from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv

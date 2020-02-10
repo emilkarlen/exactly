@@ -6,7 +6,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import list_sdvs as lrs
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.parse.token import Token
 

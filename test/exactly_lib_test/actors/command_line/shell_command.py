@@ -6,8 +6,8 @@ from exactly_lib.actors import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh

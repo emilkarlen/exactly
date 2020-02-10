@@ -14,10 +14,9 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.restriction import ReferenceRestrictions, DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolContainer
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_path as sut

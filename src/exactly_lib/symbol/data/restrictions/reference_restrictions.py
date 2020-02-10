@@ -6,10 +6,8 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
-from exactly_lib.symbol.restriction import Failure, \
-    DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, Failure
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -1,6 +1,6 @@
 from typing import Generic, Sequence, TypeVar
 
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv

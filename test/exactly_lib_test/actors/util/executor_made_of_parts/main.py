@@ -5,7 +5,7 @@ from typing import Sequence, Dict
 from exactly_lib.actors.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser

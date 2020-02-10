@@ -9,9 +9,8 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, \
+    ReferenceRestrictions
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry

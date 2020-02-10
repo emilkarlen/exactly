@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.name_and_value import NameAndValue

@@ -2,7 +2,7 @@ from typing import Optional, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
