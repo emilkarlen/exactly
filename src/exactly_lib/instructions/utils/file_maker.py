@@ -129,7 +129,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
             sdv_validation.SingleStepSdvValidator(ValidationStep.PRE_SDS,
                                                   self._src_file_validator),
             sdv_validation.SdvValidatorFromDdvValidator(
-                lambda symbols: self._transformer.resolve(symbols).validator(),
+                lambda symbols: self._transformer.resolve(symbols).validator,
             )
         ])
 

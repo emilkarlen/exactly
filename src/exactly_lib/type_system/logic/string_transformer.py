@@ -1,13 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Iterable
 
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
-    constant_success_validator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, \
-    WithTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
+from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, LogicTypeDdv
 
 StringTransformerModel = Iterable[str]
 
@@ -34,12 +29,5 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
 StringTransformerAdv = ApplicationEnvironmentDependentValue[StringTransformer]
 
 
-class StringTransformerDdv(DirDependentValue[ApplicationEnvironmentDependentValue[StringTransformer]],
-                           WithTreeStructureDescription,
-                           ABC):
-    def validator(self) -> DdvValidator:
-        return constant_success_validator()
-
-    @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
-        pass
+class StringTransformerDdv(LogicTypeDdv[StringTransformer], ABC):
+    pass

@@ -1,6 +1,8 @@
 from abc import abstractmethod, ABC
 from typing import TypeVar, Generic
 
+from exactly_lib.test_case_file_structure import ddv_validation
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
@@ -30,9 +32,13 @@ class ApplicationEnvironmentDependentValue(Generic[VALUE_TYPE], ABC):
 
 
 class LogicTypeDdv(Generic[VALUE_TYPE],
-                   DirDependentValue[VALUE_TYPE],
+                   DirDependentValue[ApplicationEnvironmentDependentValue[VALUE_TYPE]],
                    WithTreeStructureDescription,
                    ABC):
+    @property
+    def validator(self) -> DdvValidator:
+        return ddv_validation.constant_success_validator()
+
     @abstractmethod
     def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
         pass

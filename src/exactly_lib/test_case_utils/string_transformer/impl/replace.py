@@ -98,6 +98,7 @@ class _Ddv(StringTransformerDdv):
             details.String(strings.AsToStringObject(self._replacement.describer())),
         )
 
+    @property
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 

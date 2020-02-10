@@ -43,18 +43,6 @@ def resolving_dependencies_from_dir_dependencies(dir_dependencies: DirDependenci
                                                  dir_dependencies))
 
 
-class DirDependencyError(ValueError):
-    def __init__(self, unexpected_dependency: Set[DirectoryStructurePartition],
-                 msg: str = ''):
-        super().__init__(msg)
-        self.unexpected_dependency = unexpected_dependency
-
-    def __str__(self) -> str:
-        return '{}(unexpected={}: {})'.format(type(self),
-                                              self.unexpected_dependency,
-                                              super().__str__())
-
-
 RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 
 
@@ -78,6 +66,18 @@ class WithDirDependenciesReporting:
 
     def exists_pre_sds(self) -> bool:
         return DirectoryStructurePartition.NON_HDS not in self.resolving_dependencies()
+
+
+class DirDependencyError(ValueError):
+    def __init__(self, unexpected_dependency: Set[DirectoryStructurePartition],
+                 msg: str = ''):
+        super().__init__(msg)
+        self.unexpected_dependency = unexpected_dependency
+
+    def __str__(self) -> str:
+        return '{}(unexpected={}: {})'.format(type(self),
+                                              self.unexpected_dependency,
+                                              super().__str__())
 
 
 class DependenciesAwareDdv(Generic[RESOLVED_TYPE],

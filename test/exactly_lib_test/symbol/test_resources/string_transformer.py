@@ -75,6 +75,7 @@ class StringTransformerDdvTestImpl(StringTransformerDdv):
     def structure(self) -> StructureRenderer:
         return self._primitive_value.structure()
 
+    @property
     def validator(self) -> DdvValidator:
         return self._validator
 

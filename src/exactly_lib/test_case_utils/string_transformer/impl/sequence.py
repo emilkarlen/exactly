@@ -85,13 +85,14 @@ class _StringTransformerSequenceDdv(StringTransformerDdv):
     def __init__(self, transformers: Sequence[StringTransformerDdv]):
         self._transformers = transformers
         self._validator = ddv_validators.AndValidator([
-            transformer.validator()
+            transformer.validator
             for transformer in transformers
         ])
 
     def structure(self) -> StructureRenderer:
         return SequenceStringTransformer.new_structure_tree(self._transformers)
 
+    @property
     def validator(self) -> DdvValidator:
         return self._validator
 

@@ -98,7 +98,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
         self._transformer = transformer
         self._on_transformed = on_transformed
         self._validator = ddv_validators.AndValidator([
-            transformer.validator(),
+            transformer.validator,
             on_transformed.validator,
         ])
 

@@ -55,6 +55,7 @@ class _SelectStringTransformerDdv(StringTransformerDdv):
     def structure(self) -> StructureRenderer:
         return _SelectStringTransformer.new_structure_tree(self._line_matcher)
 
+    @property
     def validator(self) -> DdvValidator:
         return self._line_matcher.validator
 
