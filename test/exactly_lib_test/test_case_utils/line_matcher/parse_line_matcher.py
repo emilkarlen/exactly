@@ -6,7 +6,7 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -120,7 +120,7 @@ class TestLineNumberParser(unittest.TestCase):
 def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[SymbolDependentValue]:
+                                          ) -> ValueAssertion[SymbolDependentTypeValue]:
     expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
     return sdv_assertions.matches_sdv_of_line_matcher(

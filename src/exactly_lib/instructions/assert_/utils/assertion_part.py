@@ -5,7 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, \
     references_from_objects_with_symbol_references
-from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -25,7 +25,7 @@ B = TypeVar('B')
 C = TypeVar('C')
 
 
-class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndValidation, ABC):
+class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndSdvValidation, ABC):
     """
     A part of an assertion instruction that
     executes one part of the whole assertion.

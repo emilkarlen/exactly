@@ -8,7 +8,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def __sdv_of(rel_option_type: RelOptionType) -> sdv_structure.SymbolDependentValue:
+def __sdv_of(rel_option_type: RelOptionType) -> sdv_structure.SymbolDependentTypeValue:
     return path_sdvs.of_rel_option(rel_option_type)
 
 

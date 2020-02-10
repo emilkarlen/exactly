@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
@@ -34,7 +34,7 @@ class ComparisonActualFile(tuple):
         return self[1]
 
 
-class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation, ABC):
+class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndSdvValidation, ABC):
     @abstractmethod
     def construct(self,
                   source_info: InstructionSourceInfo,

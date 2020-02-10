@@ -18,7 +18,20 @@ class ObjectWithSymbolReferences:
 
 
 class SymbolDependentValue(ObjectWithSymbolReferences):
-    """ Base class for values in the symbol table used by Exactly. """
+    """A value that may depend on symbols in a :class:`SymbolTable`"""
+
+    def resolve(self, symbols: SymbolTable):
+        """
+        Gives the value, by substituting symbol references with symbol values
+
+        :param symbols: Contains all symbols reported by :func:`references`, with
+        the types specified by the references' :class:`ReferenceRestrictions`.
+        """
+        raise NotImplementedError('abstract method')
+
+
+class SymbolDependentTypeValue(SymbolDependentValue):
+    """A :class:`SymbolDependentValue` that represents a value of a type in the type system"""
 
     @property
     def type_category(self) -> TypeCategory:
@@ -41,15 +54,15 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
         raise NotImplementedError('abstract method')
 
 
-def get_references(sdv: SymbolDependentValue) -> Sequence['SymbolReference']:
+def get_references(sdv: SymbolDependentTypeValue) -> Sequence['SymbolReference']:
     return sdv.references
 
 
-def get_type_category(sdv: SymbolDependentValue) -> TypeCategory:
+def get_type_category(sdv: SymbolDependentTypeValue) -> TypeCategory:
     return sdv.type_category
 
 
-def get_value_type(sdv: SymbolDependentValue) -> ValueType:
+def get_value_type(sdv: SymbolDependentTypeValue) -> ValueType:
     return sdv.value_type
 
 
@@ -61,7 +74,7 @@ class SymbolContainer(SymbolTableValue):
     """
 
     def __init__(self,
-                 value_sdv: SymbolDependentValue,
+                 value_sdv: SymbolDependentTypeValue,
                  source_location: Optional[SourceLocationInfo]):
         self._sdv = value_sdv
         self._source_location = source_location
@@ -82,11 +95,11 @@ class SymbolContainer(SymbolTableValue):
             self._source_location.source_location_path.location.source
 
     @property
-    def sdv(self) -> SymbolDependentValue:
+    def sdv(self) -> SymbolDependentTypeValue:
         return self._sdv
 
 
-def container_of_builtin(value_sdv: SymbolDependentValue) -> SymbolContainer:
+def container_of_builtin(value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
     return SymbolContainer(value_sdv, None)
 
 
@@ -107,7 +120,7 @@ class ReferenceRestrictions(ABC):
         :param symbol_table: A symbol table that contains all symbols that the checked value refer to.
         :param symbol_name: The name of the symbol that the restriction applies to
         :param container: The container of the value that the restriction applies to
-        :return: None if satisfied, otherwise an error message
+        :return: None if satisfied, otherwise a failure description
         """
         pass
 

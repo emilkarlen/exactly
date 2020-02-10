@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol import sdv_structure as rs
+from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv, get_data_value_type
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
@@ -11,7 +11,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentTypeValue
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data.list_ddv import ListDdv
@@ -32,11 +32,11 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
-def matches_sdv(sdv_type: ValueAssertion[rs.SymbolDependentValue],
+def matches_sdv(sdv_type: ValueAssertion[SymbolDependentTypeValue],
                 references: ValueAssertion[Sequence[SymbolReference]],
                 resolved_value: ValueAssertion,
-                custom: ValueAssertion[rs.SymbolDependentValue] = asrt.anything_goes(),
-                symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                custom: ValueAssertion[SymbolDependentTypeValue] = asrt.anything_goes(),
+                symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return _MatchesSdv(sdv_type,
                        references,
                        resolved_value,
@@ -45,11 +45,11 @@ def matches_sdv(sdv_type: ValueAssertion[rs.SymbolDependentValue],
 
 
 def is_sdv_of_data_type(data_value_type: DataValueType,
-                        value_type: ValueType) -> ValueAssertion[rs.SymbolDependentValue]:
+                        value_type: ValueType) -> ValueAssertion[SymbolDependentTypeValue]:
     return asrt.is_instance_with(DataTypeSdv,
                                  asrt.and_([
                                      asrt.sub_component('type_category',
-                                                        rs.get_type_category,
+                                                        sdv_structure.get_type_category,
                                                         asrt.is_(TypeCategory.DATA)),
 
                                      asrt.sub_component('data_value_type',
@@ -57,43 +57,43 @@ def is_sdv_of_data_type(data_value_type: DataValueType,
                                                         asrt.is_(data_value_type)),
 
                                      asrt.sub_component('value_type',
-                                                        rs.get_value_type,
+                                                        sdv_structure.get_value_type,
                                                         asrt.is_(value_type)),
                                  ]))
 
 
-def is_sdv_of_string_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_string_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_data_type(DataValueType.STRING, ValueType.STRING)
 
 
-def is_sdv_of_path_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_path_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_data_type(DataValueType.PATH, ValueType.PATH)
 
 
-def is_sdv_of_list_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_list_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_data_type(DataValueType.LIST, ValueType.LIST)
 
 
-def is_sdv_of_file_matcher_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_file_matcher_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_logic_type(LogicValueType.FILE_MATCHER)
 
 
-def is_sdv_of_line_matcher_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_line_matcher_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_logic_type(LogicValueType.LINE_MATCHER)
 
 
-def is_sdv_of_string_transformer_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_string_transformer_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_logic_type(LogicValueType.STRING_TRANSFORMER)
 
 
-def is_sdv_of_program_type() -> ValueAssertion[rs.SymbolDependentValue]:
+def is_sdv_of_program_type() -> ValueAssertion[SymbolDependentTypeValue]:
     return is_sdv_of_logic_type(LogicValueType.PROGRAM)
 
 
 def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
                           resolved_value: ValueAssertion[StringDdv],
                           custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
-                          symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                          symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdv(is_sdv_of_string_type(),
                        references,
                        asrt.is_instance_with(StringDdv, resolved_value),
@@ -104,7 +104,7 @@ def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
 def matches_sdv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
                         resolved_value: ValueAssertion[ListDdv],
                         custom: ValueAssertion[ListSdv] = asrt.anything_goes(),
-                        symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                        symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdv(is_sdv_of_list_type(),
                        references,
                        asrt.is_instance_with(ListDdv, resolved_value),
@@ -115,7 +115,7 @@ def matches_sdv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
 def matches_sdv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
                         resolved_value: ValueAssertion[PathDdv],
                         custom: ValueAssertion[PathSdv] = asrt.anything_goes(),
-                        symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                        symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdv(is_sdv_of_path_type(),
                        references,
                        asrt.is_instance_with(PathDdv, resolved_value),
@@ -128,7 +128,7 @@ def matches_sdv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefere
                                 symbols: SymbolTable = None,
                                 tcds: Tcds = fake_tcds(),
                                 tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
-                                ) -> ValueAssertion[rs.SymbolDependentValue]:
+                                ) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_matcher_sdv(
         FileMatcherSdv,
         LogicValueType.FILE_MATCHER,
@@ -145,7 +145,7 @@ def matches_sdv_of_files_matcher(references: ValueAssertion[Sequence[SymbolRefer
                                  symbols: SymbolTable = None,
                                  tcds: Tcds = fake_tcds(),
                                  tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
-                                 ) -> ValueAssertion[rs.SymbolDependentValue]:
+                                 ) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_matcher_sdv(
         FilesMatcherSdv,
         LogicValueType.FILES_MATCHER,
@@ -162,7 +162,7 @@ def matches_sdv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefere
                                 symbols: SymbolTable = None,
                                 tcds: Tcds = fake_tcds(),
                                 tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
-                                ) -> ValueAssertion[rs.SymbolDependentValue]:
+                                ) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_matcher_sdv(
         LineMatcherSdv,
         LogicValueType.LINE_MATCHER,
@@ -178,7 +178,7 @@ def matches_sdv_of_string_transformer(references: ValueAssertion[Sequence[Symbol
                                       resolved_value: ValueAssertion[StringTransformerDdv],
                                       custom: ValueAssertion[
                                           StringTransformerSdv] = asrt.anything_goes(),
-                                      symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                                      symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdv(is_sdv_of_string_transformer_type(),
                        references,
                        asrt.is_instance_with(StringTransformerDdv, resolved_value),
@@ -189,7 +189,7 @@ def matches_sdv_of_string_transformer(references: ValueAssertion[Sequence[Symbol
 def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]],
                            resolved_program_value: ValueAssertion[DirDependentValue],
                            custom: ValueAssertion[ProgramSdv] = asrt.anything_goes(),
-                           symbols: SymbolTable = None) -> ValueAssertion[rs.SymbolDependentValue]:
+                           symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdv(is_sdv_of_program_type(),
                        references,
                        asrt.is_instance_with(ProgramDdv, resolved_program_value),
@@ -197,14 +197,14 @@ def matches_sdv_of_program(references: ValueAssertion[Sequence[SymbolReference]]
                        symbol_table_from_none_or_value(symbols))
 
 
-class _MatchesSdv(ValueAssertionBase[rs.SymbolDependentValue]):
+class _MatchesSdv(ValueAssertionBase[SymbolDependentTypeValue]):
     """Implements as class to make it possible to set break points"""
 
     def __init__(self,
-                 sdv_type: ValueAssertion[rs.SymbolDependentValue],
+                 sdv_type: ValueAssertion[SymbolDependentTypeValue],
                  references: ValueAssertion[Sequence[SymbolReference]],
                  resolved_value: ValueAssertion,
-                 custom: ValueAssertion[rs.SymbolDependentValue],
+                 custom: ValueAssertion[SymbolDependentTypeValue],
                  symbols: SymbolTable):
         self.sdv_type = sdv_type
         self.references = references
@@ -214,9 +214,9 @@ class _MatchesSdv(ValueAssertionBase[rs.SymbolDependentValue]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: rs.SymbolDependentValue,
+               value: SymbolDependentTypeValue,
                message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(value, rs.SymbolDependentValue,
+        put.assertIsInstance(value, SymbolDependentTypeValue,
                              message_builder.apply("SDV type"))
 
         self.sdv_type.apply(put, value, message_builder)

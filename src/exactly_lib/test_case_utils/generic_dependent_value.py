@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Callable
 
-from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case.validation import ddv_validation
 from exactly_lib.test_case.validation.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -33,7 +33,7 @@ class Ddv(Generic[PRIMITIVE], ABC):
         pass
 
 
-class Sdv(Generic[PRIMITIVE], ObjectWithSymbolReferences, ABC):
+class Sdv(Generic[PRIMITIVE], SymbolDependentValue, ABC):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()

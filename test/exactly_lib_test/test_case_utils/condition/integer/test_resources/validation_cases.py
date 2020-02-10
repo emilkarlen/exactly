@@ -1,7 +1,7 @@
 from typing import List, Sequence
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -18,7 +18,7 @@ class IntegerValidationCase:
     def __init__(self,
                  case_name: str,
                  integer_expr_string: str,
-                 symbols: List[NameAndValue[SymbolDependentValue]],
+                 symbols: List[NameAndValue[SymbolDependentTypeValue]],
                  reference_assertions: List[ValueAssertion[SymbolReference]],
                  expectations: Expectation,
                  assertions: ValidationAssertions,

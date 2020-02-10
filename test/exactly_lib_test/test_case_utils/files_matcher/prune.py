@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from typing import Sequence, Mapping
 
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
@@ -650,7 +650,7 @@ def _check_multi(
         put: unittest.TestCase,
         helper: IntegrationCheckHelper,
         arguments: FilesMatcherArg,
-        symbols_common_to_all_cases: Mapping[str, SymbolDependentValue],
+        symbols_common_to_all_cases: Mapping[str, SymbolDependentTypeValue],
         symbol_references: ValueAssertion[Sequence[SymbolReference]],
         execution_cases: Sequence[NEA[Sequence[FileSystemElement], Sequence[FileSystemElement]]]):
     integration_check.CHECKER.check_multi__w_source_variants(

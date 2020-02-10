@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer, SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, SymbolTable
@@ -12,7 +12,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 class SymbolsArrAndExpectSetup:
     def __init__(self,
-                 symbols_in_arrangement: Dict[str, SymbolDependentValue],
+                 symbols_in_arrangement: Dict[str, SymbolDependentTypeValue],
                  expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
         self.symbols_in_arrangement = symbols_in_arrangement
         self.expected_references = expected_references

@@ -9,7 +9,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference
 from exactly_lib.type_system.value_type import ValueType
 
 
@@ -29,12 +29,12 @@ def invalid_type_msg(expected_value_types: List[ValueType],
                      symbol_name: str,
                      container_of_actual: SymbolContainer) -> ErrorMessageWithFixTip:
     actual = container_of_actual.sdv
-    if not isinstance(actual, SymbolDependentValue):
+    if not isinstance(actual, SymbolDependentTypeValue):
         raise TypeError('Symbol table contains a value that is not a {}: {}'.format(
-            type(SymbolDependentValue),
+            type(SymbolDependentTypeValue),
             str(actual)
         ))
-    assert isinstance(actual, SymbolDependentValue)  # Type info for IDE
+    assert isinstance(actual, SymbolDependentTypeValue)  # Type info for IDE
     header_lines = _invalid_type_header_lines(expected_value_types,
                                               actual.value_type,
                                               symbol_name,

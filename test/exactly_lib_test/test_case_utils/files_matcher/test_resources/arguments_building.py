@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Dict, List
 
 from exactly_lib.definitions import logic
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolUsage
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
@@ -280,7 +280,7 @@ def complete_arguments_constructor(assertion_variant: AssertionVariantArgumentsC
 class FilesMatcherArgumentsSetup(SymbolsArrAndExpectSetup):
     def __init__(self,
                  arguments: AssertionVariantArgumentsConstructor,
-                 symbols_in_arrangement: Dict[str, SymbolDependentValue],
+                 symbols_in_arrangement: Dict[str, SymbolDependentTypeValue],
                  expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
         super().__init__(symbols_in_arrangement,
                          expected_references)

@@ -8,7 +8,7 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import Defini
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import restriction
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference, SymbolDefinition
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
@@ -161,7 +161,7 @@ class _ConstantDefinitionsResolver(DefinitionsResolver):
 
 
 def _symbol_definition(name: str,
-                       sdv: SymbolDependentValue,
+                       sdv: SymbolDependentTypeValue,
                        references: Sequence[SymbolReference] = ()
                        ) -> SymbolDefinitionInfo:
     return SymbolDefinitionInfo(

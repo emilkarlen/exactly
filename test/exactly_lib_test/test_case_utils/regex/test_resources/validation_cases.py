@@ -1,7 +1,7 @@
 from typing import List, Sequence
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -15,7 +15,7 @@ class RegexValidationCase:
     def __init__(self,
                  case_name: str,
                  regex_string: str,
-                 symbols: List[NameAndValue[SymbolDependentValue]],
+                 symbols: List[NameAndValue[SymbolDependentTypeValue]],
                  reference_assertions: List[ValueAssertion[SymbolReference]],
                  expectation: ValidationAssertions,
                  ):

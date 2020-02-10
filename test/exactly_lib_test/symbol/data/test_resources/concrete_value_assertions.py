@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.impl.string_sdv_impls import ConstantStringFragment
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringFragmentSdv, StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
@@ -56,7 +56,7 @@ def equals_string_fragments(expected_fragments) -> ValueAssertion:
 
 
 def equals_string_sdv(expected: StringSdv,
-                      symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentValue]:
+                      symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     if symbols is None:
         symbols = symbol_table_with_values_matching_references(expected.references)
 

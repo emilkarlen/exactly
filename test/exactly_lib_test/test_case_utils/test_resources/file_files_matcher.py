@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Sequence, List, Mapping, Optional
 
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
@@ -45,7 +45,7 @@ class IntegrationCheckWFilesMatcherHelperBase(ABC):
     def arrangement_for_contents_of_model(self,
                                           checked_dir_contents: List[FileSystemElement],
                                           files_matcher_symbol_value: FilesMatcherSdv,
-                                          additional_symbols: Optional[Mapping[str, SymbolDependentValue]] = None,
+                                          additional_symbols: Optional[Mapping[str, SymbolDependentTypeValue]] = None,
                                           ) -> Arrangement:
         symbols = {
             self.files_matcher_name:

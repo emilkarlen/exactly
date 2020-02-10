@@ -30,7 +30,7 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolUsage, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolUsage, SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -194,7 +194,7 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 
 
 def _parse(fs_location_info: FileSystemLocationInfo,
-           parser: TokenParser) -> Tuple[str, SymbolDependentValue]:
+           parser: TokenParser) -> Tuple[str, SymbolDependentTypeValue]:
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
@@ -247,10 +247,10 @@ def _parse_string(fs_location_info: FileSystemLocationInfo,
     return source_type == SourceType.HERE_DOC, sdv
 
 
-def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser], SymbolDependentValue]
-                          ) -> Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentValue]]:
+def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser], SymbolDependentTypeValue]
+                          ) -> Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentTypeValue]]:
     def f(fs_location_info: FileSystemLocationInfo,
-          tp: TokenParser) -> Tuple[bool, SymbolDependentValue]:
+          tp: TokenParser) -> Tuple[bool, SymbolDependentTypeValue]:
         return False, parser(fs_location_info, tp)
 
     return f

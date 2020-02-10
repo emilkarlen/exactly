@@ -2,7 +2,7 @@ import unittest
 from typing import List
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -50,7 +50,7 @@ class IntegrationCheckCase:
                  operator: comparators.ComparisonOperator,
                  int_expr: str,
                  result: ValueAssertion[MatchingResult],
-                 symbols: List[NameAndValue[SymbolDependentValue]]):
+                 symbols: List[NameAndValue[SymbolDependentTypeValue]]):
         self.name = name
         self.line_num_of_model = line_num_of_model
         self.operator = operator
@@ -199,7 +199,7 @@ def successful_and_unsuccessful(name: str,
                                 successful_operator: comparators.ComparisonOperator,
                                 unsuccessful_operator: comparators.ComparisonOperator,
                                 int_expr: str,
-                                symbols: List[NameAndValue[SymbolDependentValue]]) -> List[IntegrationCheckCase]:
+                                symbols: List[NameAndValue[SymbolDependentTypeValue]]) -> List[IntegrationCheckCase]:
     return [
         IntegrationCheckCase(
             name + '/successful: ' + successful_operator.name,

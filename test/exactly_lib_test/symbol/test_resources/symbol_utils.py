@@ -9,20 +9,21 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, \
+    SymbolDefinition
 from exactly_lib.util import line_source
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 
 
-def container(value_sdv: SymbolDependentValue,
+def container(value_sdv: SymbolDependentTypeValue,
               line_num: int = 1,
               source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(value_sdv,
                            single_line_sequence(line_num, source_line))
 
 
-def container_of_builtin(value_sdv: SymbolDependentValue) -> SymbolContainer:
+def container_of_builtin(value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
     return sdv_structure.container_of_builtin(value_sdv)
 
 
@@ -61,7 +62,7 @@ def symbol_table_from_name_and_containers(name_and_containers: Sequence[NameAndV
 
 
 def symbol_table_from_name_and_sdvs(
-        name_and_sdvs: Sequence[NameAndValue[SymbolDependentValue]]) -> SymbolTable:
+        name_and_sdvs: Sequence[NameAndValue[SymbolDependentTypeValue]]) -> SymbolTable:
     return SymbolTable({
         nar.name: container(nar.value)
         for nar in name_and_sdvs
@@ -69,7 +70,7 @@ def symbol_table_from_name_and_sdvs(
 
 
 def symbol_table_from_name_and_sdv_mapping(
-        name_and_sdvs: Mapping[str, SymbolDependentValue]) -> SymbolTable:
+        name_and_sdvs: Mapping[str, SymbolDependentTypeValue]) -> SymbolTable:
     return SymbolTable({
         n_sdv[0]: container(n_sdv[1])
         for n_sdv in name_and_sdvs.items()

@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, Failure
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, Failure
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -162,7 +162,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                         symbol_name: str,
                         container: SymbolContainer) -> Optional[Failure]:
         sdv = container.sdv
-        assert isinstance(sdv, SymbolDependentValue)  # Type info for IDE
+        assert isinstance(sdv, SymbolDependentTypeValue)  # Type info for IDE
         if sdv.type_category is not TypeCategory.DATA:
             return self._no_satisfied_restriction(symbol_name, sdv, container)
         assert isinstance(sdv, DataTypeSdv)  # Type info for IDE
@@ -173,7 +173,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
 
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
-                                  sdv: SymbolDependentValue,
+                                  sdv: SymbolDependentTypeValue,
                                   value: SymbolContainer) -> FailureOfDirectReference:
         if self._sym_name_and_container_2_err_msg_if_no_matching_part is not None:
             msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
@@ -184,7 +184,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
     def _default_error_message(self,
                                symbol_name: str,
                                container: SymbolContainer,
-                               sdv: SymbolDependentValue) -> str:
+                               sdv: SymbolDependentTypeValue) -> str:
         from exactly_lib.definitions.test_case.instructions import define_symbol
         accepted_value_types = ', '.join([define_symbol.DATA_TYPE_INFO_DICT[part.selector].identifier
                                           for part in self._parts])

@@ -2,7 +2,7 @@ from typing import Any, Sequence, Type
 
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
@@ -48,7 +48,7 @@ def matches_sdv_of_logic_type2(sdv_type: Type,
                                ) -> ValueAssertion[LogicTypeSdv]:
     symbols = symbol_table.symbol_table_from_none_or_value(symbols)
 
-    def resolve_value(sdv: SymbolDependentValue):
+    def resolve_value(sdv: SymbolDependentTypeValue):
         return sdv.resolve(symbols).value_of_any_dependency(tcds)
 
     return asrt.is_instance_with(sdv_type,
@@ -77,7 +77,7 @@ def matches_sdv_of_logic_type__w_adv(sdv_type: Type,
 
     ae = ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed())
 
-    def resolve_value(sdv: SymbolDependentValue):
+    def resolve_value(sdv: SymbolDependentTypeValue):
         return sdv.resolve(symbols).value_of_any_dependency(tcds).applier(ae)
 
     return asrt.is_instance_with(sdv_type,

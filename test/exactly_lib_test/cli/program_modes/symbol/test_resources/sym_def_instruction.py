@@ -17,7 +17,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
 from exactly_lib.symbol.restriction import ValueTypeRestriction
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolUsage, SymbolReference
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
@@ -226,7 +226,7 @@ class _ActorThatParsesReferences(Actor):
 
 
 def builtin_symbol(name: str,
-                   sdv: SymbolDependentValue) -> BuiltinSymbol:
+                   sdv: SymbolDependentTypeValue) -> BuiltinSymbol:
     return BuiltinSymbol(
         name,
         sdv,

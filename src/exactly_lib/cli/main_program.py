@@ -16,7 +16,7 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue, container_of_builtin, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, container_of_builtin, SymbolContainer
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.util import argument_parsing_utils
@@ -28,7 +28,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
-                 sdv: SymbolDependentValue,
+                 sdv: SymbolDependentTypeValue,
                  single_line_description: str,
                  documentation: SectionContents,
                  see_also: Sequence[SeeAlsoTarget] = (),
@@ -57,7 +57,7 @@ class BuiltinSymbol:
 
 
 def builtin_symbol_of_custom_symbol(name: str,
-                                    sdv: SymbolDependentValue,
+                                    sdv: SymbolDependentTypeValue,
                                     documentation: CustomSymbolDocumentation
                                     ) -> BuiltinSymbol:
     return BuiltinSymbol(

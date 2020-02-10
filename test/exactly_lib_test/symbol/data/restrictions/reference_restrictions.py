@@ -9,7 +9,7 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentValue, SymbolReference, \
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, \
     ReferenceRestrictions
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -419,7 +419,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         def value_type_error_message_function(symbol_name: str,
                                               container: SymbolContainer) -> TextRenderer:
             sdv = container.sdv
-            assert isinstance(sdv, SymbolDependentValue)  # Type info for IDE
+            assert isinstance(sdv, SymbolDependentTypeValue)  # Type info for IDE
             return asrt_text_doc.new_single_string_text_for_test(mk_err_msg(symbol_name, sdv.value_type))
 
         referenced_symbol_cases = [
@@ -677,7 +677,7 @@ def unconditional_dissatisfaction(result: str) -> Callable[[sut.SymbolContainer]
 def dissatisfaction_if_value_type_is(value_type: ValueType) -> Callable[[sut.SymbolContainer], str]:
     def ret_val(container: sut.SymbolContainer) -> str:
         sdv = container.sdv
-        assert isinstance(sdv, SymbolDependentValue), 'Expects a SymbolDependentValue'
+        assert isinstance(sdv, SymbolDependentTypeValue), 'Expects a SymbolDependentValue'
         if sdv.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None
