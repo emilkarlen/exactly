@@ -15,14 +15,14 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case.validation import ddv_validators
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case.validation.sdv_validation import SdvValidatorFromDdvValidator
+from exactly_lib.test_case_file_structure import ddv_validators
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_parse_source

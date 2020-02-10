@@ -4,8 +4,8 @@ from typing import Callable, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.symbol.sdv_validation import SdvValidator
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable

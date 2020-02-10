@@ -3,7 +3,7 @@ from typing import Pattern, Callable, Sequence
 
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv

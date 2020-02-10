@@ -23,7 +23,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case.validation import ddv_validation
+from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering

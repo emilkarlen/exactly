@@ -1,8 +1,8 @@
 from typing import Generic, Callable
 
 from exactly_lib.symbol.logic.matcher import MODEL
-from exactly_lib.test_case.validation import ddv_validation
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validation
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs

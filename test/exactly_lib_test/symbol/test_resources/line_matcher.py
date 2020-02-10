@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant, ddv_components
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, GenericLineMatcherSdv

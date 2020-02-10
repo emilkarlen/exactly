@@ -3,17 +3,17 @@ from typing import Sequence, Optional
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
+from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data import string_sdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator, \
+    ValidationStep
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator, \
-    ValidationStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
 from exactly_lib.type_system.data.path_ddv import DescribedPath

@@ -4,10 +4,10 @@ Utilities to help constructing an instruction for a specific phase, from phase-i
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 
 
 class MainStepExecutor:

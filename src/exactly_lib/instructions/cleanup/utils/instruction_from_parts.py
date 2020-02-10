@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.instructions.cleanup.utils.validation import PreOrPostSdsSvhValidationForSuccessOrHardError
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
@@ -12,8 +13,7 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, Previo
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsSvhValidationErrorValidator, \
-    PreOrPostSdsSvhValidationForSuccessOrHardError
+from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
 
 
 class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):

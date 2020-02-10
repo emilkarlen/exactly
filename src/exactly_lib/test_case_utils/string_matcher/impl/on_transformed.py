@@ -5,8 +5,8 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.validation import ddv_validators
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validators
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \

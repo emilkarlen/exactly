@@ -10,8 +10,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.validation.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher

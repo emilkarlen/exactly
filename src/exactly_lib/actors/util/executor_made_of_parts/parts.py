@@ -2,14 +2,14 @@ import pathlib
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
-    PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.std import StdFiles
 
 

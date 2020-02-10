@@ -4,8 +4,8 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
-from exactly_lib.test_case.validation import ddv_validators
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validators
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, generic_dependent_value
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv

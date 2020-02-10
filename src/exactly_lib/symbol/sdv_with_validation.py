@@ -1,7 +1,7 @@
 from abc import ABC
 
 from exactly_lib.symbol.sdv_structure import ObjectWithSymbolReferences
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
+from exactly_lib.symbol.sdv_validation import SdvValidator
 
 
 class WithSdvValidation:

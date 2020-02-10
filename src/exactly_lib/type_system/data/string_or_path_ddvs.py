@@ -1,8 +1,8 @@
 import enum
 from typing import Optional, Set
 
-from exactly_lib.test_case.validation import ddv_validation
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validation
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds

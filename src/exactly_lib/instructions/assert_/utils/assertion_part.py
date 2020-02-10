@@ -2,9 +2,11 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Any, Callable, TypeVar, Generic, List, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, \
     references_from_objects_with_symbol_references
+from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -12,10 +14,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, \
-    PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh
+from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock

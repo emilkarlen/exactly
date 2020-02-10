@@ -6,9 +6,9 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 
 T = TypeVar('T')
 

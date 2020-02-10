@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case.validation.sdv_validation import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
 
 
 class AssertPhaseInstructionFromParts(AssertPhaseInstruction):

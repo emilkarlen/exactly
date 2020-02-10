@@ -7,14 +7,14 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     instruction_log_dir, InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.test_case.validation import sdv_validation
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.util.process_execution import sub_process_execution as spe
 from exactly_lib.util.process_execution.sub_process_execution import ResultAndStderr, failure_message_for_nonzero_status
 

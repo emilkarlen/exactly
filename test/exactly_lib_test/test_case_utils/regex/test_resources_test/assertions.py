@@ -4,7 +4,7 @@ from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.validation.ddv_validation import ConstantDdvValidator
+from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds

@@ -1,30 +1,10 @@
-from typing import Optional, Sequence, Iterable
+from typing import Sequence, Iterable, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator, \
-    constant_success_validator
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator, PreOrPostSdsValidatorPrimitive
+from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, constant_success_validator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.util.symbol_table import SymbolTable
-
-
-class DdvValidatorFromSdvValidator(DdvValidator):
-    def __init__(self,
-                 symbols: SymbolTable,
-                 adapted: SdvValidator):
-        self._symbols = symbols
-        self._adapted = adapted
-
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
-        environment = PathResolvingEnvironmentPreSds(hds, self._symbols)
-        return self._adapted.validate_pre_sds_if_applicable(environment)
-
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
-        environment = PathResolvingEnvironmentPostSds(tcds.sds, self._symbols)
-        return self._adapted.validate_post_sds_if_applicable(environment)
 
 
 def all_of(validators: Sequence[DdvValidator]) -> DdvValidator:

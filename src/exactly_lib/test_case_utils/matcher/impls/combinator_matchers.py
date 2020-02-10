@@ -2,8 +2,8 @@ from abc import ABC
 from typing import Generic, Sequence, Callable
 
 from exactly_lib.definitions import logic
-from exactly_lib.test_case.validation import ddv_validators
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validators
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder

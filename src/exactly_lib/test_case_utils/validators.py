@@ -2,9 +2,9 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreSds
+    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case.validation.sdv_validation import SdvValidator
 from exactly_lib.test_case_utils import svh_exception
 
 
@@ -93,3 +93,31 @@ class SvhValidatorViaReturnValuesFromValidatorViaExceptions(SvhValidatorViaRetur
     def validate_post_setup(self,
                             environment: PathResolvingEnvironmentPostSds) -> svh.SuccessOrValidationErrorOrHardError:
         return svh_exception.translate_svh_exception_to_svh(self._adapted.validate_post_setup, environment)
+
+
+class PreOrPostSdsSvhValidationErrorValidator:
+    """
+    A validator that translates error messages to a :class:`svh.SuccessOrValidationErrorOrHardError`
+    """
+
+    def __init__(self, validator: SdvValidator):
+        self.validator = validator
+
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds
+                                       ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_pre_sds_if_applicable(environment))
+
+    def validate_post_sds_if_applicable(self,
+                                        environment: PathResolvingEnvironmentPostSds
+                                        ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_post_sds_if_applicable(environment))
+
+    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds
+                                 ) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_pre_or_post_sds(environment))
+
+    @staticmethod
+    def _translate(error_message_or_none: Optional[TextRenderer]) -> svh.SuccessOrValidationErrorOrHardError:
+        if error_message_or_none is not None:
+            return svh.new_svh_validation_error(error_message_or_none)
+        return svh.new_svh_success()

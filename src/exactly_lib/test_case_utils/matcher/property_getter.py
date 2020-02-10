@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.validation import ddv_validation
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validation
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment

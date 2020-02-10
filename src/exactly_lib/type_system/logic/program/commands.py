@@ -1,6 +1,6 @@
 from typing import Sequence, List
 
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.type_system.data.list_ddv import ListDdv

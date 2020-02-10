@@ -7,8 +7,6 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 
 class DdvValidator:
     """
-    EXPERIMENTING WITH VALIDATOR THAT IS RESOLVED À LA SYMBOL VALUE.
-
     Validates an object - either pre or post creation of SDS.
 
     Symbols are expected to have been resolved at an earlier step.

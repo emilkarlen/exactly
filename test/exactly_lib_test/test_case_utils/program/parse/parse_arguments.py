@@ -8,8 +8,8 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case.validation import ddv_validators
-from exactly_lib.test_case.validation.ddv_validation import DdvValidator
+from exactly_lib.test_case_file_structure import ddv_validators
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements

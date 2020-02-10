@@ -11,6 +11,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -18,7 +19,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo
 from exactly_lib.test_case.phases.common import instruction_log_dir
-from exactly_lib.test_case.validation import sdv_validation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
