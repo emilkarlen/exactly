@@ -34,7 +34,7 @@ NAMES = file_contents_utils.NamesSetup(
 )
 
 
-class _NonRecursiveModelConstructor(file_contents_utils.ModelConstructor[FilesMatcherModel]):
+class _NonRecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
 
     def make_model(self, model: FileMatcherModel) -> FilesMatcherModel:
         return models.non_recursive(model.path)
@@ -44,8 +44,8 @@ MODEL_CONSTRUCTOR__NON_RECURSIVE = sdv_of_constant_primitive(_NonRecursiveModelC
 
 
 def model_constructor__recursive(min_depth: Optional[IntegerSdv],
-                                 max_depth: Optional[IntegerSdv]) -> LogicWithDescriberSdv[
-    ModelConstructor[FilesMatcherModel]]:
+                                 max_depth: Optional[IntegerSdv],
+                                 ) -> LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]]:
     def make_ddv(symbols: SymbolTable) -> LogicWithDescriberDdv[ModelConstructor[FilesMatcherModel]]:
         def get_int_ddv(x: IntegerSdv) -> IntegerDdv:
             return x.resolve(symbols)
