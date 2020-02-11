@@ -13,10 +13,10 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, LogicWithDescriberDdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv, Ddv
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
@@ -75,7 +75,7 @@ class ModelConstructor(Generic[CONTENTS_MATCHER_MODEL], ABC):
 
 def sdv__generic(
         names: NamesSetup,
-        model_constructor: Sdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+        model_constructor: LogicWithDescriberSdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
         contents_matcher: MatcherSdv[CONTENTS_MATCHER_MODEL],
 ) -> GenericFileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
@@ -153,7 +153,7 @@ class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
 class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
                  names: NamesSetup,
-                 model_constructor: Ddv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+                 model_constructor: LogicWithDescriberDdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
                  contents_matcher: MatcherDdv[CONTENTS_MATCHER_MODEL],
                  ):
         self._names = names

@@ -13,12 +13,12 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import path_check
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -62,7 +62,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self,
-                 model_constructor: Sdv[ModelConstructor[FilesMatcherModel]],
+                 model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
                  files_matcher: FilesMatcherSdv,
                  ):
         def get_ddv_validator(symbols: SymbolTable) -> DdvValidator:

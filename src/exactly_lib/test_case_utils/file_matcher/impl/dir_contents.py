@@ -7,13 +7,14 @@ from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils import file_properties, generic_dependent_value
+from exactly_lib.test_case_utils import file_properties, described_dep_val
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, sdv_of_constant_primitive, \
+    LogicWithDescriberDdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.test_case_utils.generic_dependent_value import Sdv, sdv_of_constant_primitive, Ddv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.type_system.logic.impls import advs
@@ -43,8 +44,9 @@ MODEL_CONSTRUCTOR__NON_RECURSIVE = sdv_of_constant_primitive(_NonRecursiveModelC
 
 
 def model_constructor__recursive(min_depth: Optional[IntegerSdv],
-                                 max_depth: Optional[IntegerSdv]) -> Sdv[ModelConstructor[FilesMatcherModel]]:
-    def make_ddv(symbols: SymbolTable) -> Ddv[ModelConstructor[FilesMatcherModel]]:
+                                 max_depth: Optional[IntegerSdv]) -> LogicWithDescriberSdv[
+    ModelConstructor[FilesMatcherModel]]:
+    def make_ddv(symbols: SymbolTable) -> LogicWithDescriberDdv[ModelConstructor[FilesMatcherModel]]:
         def get_int_ddv(x: IntegerSdv) -> IntegerDdv:
             return x.resolve(symbols)
 
@@ -53,7 +55,7 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
             map_optional(get_int_ddv, max_depth),
         )
 
-    return generic_dependent_value.SdvFromParts(
+    return described_dep_val.SdvFromParts(
         make_ddv,
         references_from_objects_with_symbol_references(
             filter_not_none([min_depth, max_depth])
@@ -62,7 +64,7 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
 
 
 def dir_matches_files_matcher_sdv__generic(
-        model_constructor: Sdv[ModelConstructor[FilesMatcherModel]],
+        model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
         contents_matcher: GenericFilesMatcherSdv,
 ) -> GenericFileMatcherSdv:
     return file_contents_utils.sdv__generic(
@@ -129,7 +131,7 @@ class _RecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
                                 self._max_depth)
 
 
-class _RecursiveModelConstructorDdv(Ddv[ModelConstructor[FilesMatcherModel]]):
+class _RecursiveModelConstructorDdv(LogicWithDescriberDdv[ModelConstructor[FilesMatcherModel]]):
     def __init__(self,
                  min_depth: Optional[IntegerDdv],
                  max_depth: Optional[IntegerDdv],

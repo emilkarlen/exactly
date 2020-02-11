@@ -1,8 +1,8 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.described_dep_val import sdv_of_constant_primitive
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
-from exactly_lib.test_case_utils.generic_dependent_value import sdv_of_constant_primitive
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv

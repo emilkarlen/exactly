@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment, \
-    LogicTypeDdv
+    LogicWithStructureDdv
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv, StdinData
@@ -63,7 +63,7 @@ class ProgramAdv(ApplicationEnvironmentDependentValue[Program]):
                        )
 
 
-class ProgramDdv(LogicTypeDdv[Program]):
+class ProgramDdv(LogicWithStructureDdv[Program]):
     def __init__(self,
                  command: CommandDdv,
                  stdin: StdinDataDdv,

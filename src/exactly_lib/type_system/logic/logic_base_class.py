@@ -43,9 +43,9 @@ class LogicDdv(Generic[VALUE_TYPE],
         pass
 
 
-class LogicTypeDdv(Generic[VALUE_TYPE],
-                   LogicDdv[VALUE_TYPE],
-                   WithTreeStructureDescription,
-                   ABC):
-    """A :class:`LogicDdv` that represents a value of a type in the type system"""
+class LogicWithStructureDdv(Generic[VALUE_TYPE],
+                            LogicDdv[VALUE_TYPE],
+                            WithTreeStructureDescription,
+                            ABC):
+    """A :class:`LogicDdv` that can report its structure"""
     pass
