@@ -191,7 +191,7 @@ def check_parsing_of_program(put: unittest.TestCase,
                     arguments=argument_case.expected_resolved_values(tcds)
                 ),
                 stdin=asrt_pgm_val.no_stdin(),
-                transformer=asrt_line_transformer.is_identity_transformer()
+                transformer=asrt_line_transformer.is_identity_transformer(True)
             )
 
         def expected_program_adv(tcds: Tcds) -> ValueAssertion[ProgramAdv]:

@@ -1,22 +1,27 @@
 import unittest
-from typing import List, Callable
+from typing import List, Callable, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import StringSdvTestImpl
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import \
+    arrangement_wo_tcds, Expectation, ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
-    model_construction
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
+    model_construction, integration_check
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import StExpectation
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources.string_transformer_assertions import is_identity_transformer
 from exactly_lib_test.util.test_resources import quoting
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
@@ -30,7 +35,17 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestInvalidSyntax(integration_check.TestCaseWithCheckMethods):
+class TransformationCase:
+    def __init__(self,
+                 name: str,
+                 regex: str,
+                 replacement: str):
+        self.name = name
+        self.regex = regex
+        self.replacement = replacement
+
+
+class TestInvalidSyntax(unittest.TestCase):
     def test_failing_parse(self):
         cases = [
             NameAndValue(
@@ -53,22 +68,7 @@ class TestInvalidSyntax(integration_check.TestCaseWithCheckMethods):
                     sut.parser().parse(case.value.as_remaining_source)
 
 
-class Test(integration_check.TestCaseWithCheckMethods):
-    def test_SHOULD_not_be_identity_transformer(self):
-        # ARRANGE #
-        arbitrary_string = 's'
-        arguments = arg.syntax_for_replace_transformer(arbitrary_string,
-                                                       arbitrary_string)
-        # ACT & ASSERT #
-        self._check_with_source_variants(
-            Arguments(arguments),
-            model_construction.arbitrary_model_constructor(),
-            integration_check.Arrangement(),
-            integration_check.Expectation(
-                is_identity_transformer=asrt.equals(False),
-            )
-        )
-
+class Test(unittest.TestCase):
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         def lines(pattern_matching_string: str) -> List[str]:
@@ -79,17 +79,17 @@ class Test(integration_check.TestCaseWithCheckMethods):
             ]
 
         source_cases = [
-            NEA('single word tokens',
-                'transformer',
-                'object',
-                ),
-            NEA('multi word tokens',
-                quoting.surrounded_by_soft_quotes_str('t r a n s f o r m er'),
-                quoting.surrounded_by_soft_quotes_str('o b j e c t'),
-                ),
+            TransformationCase('single word tokens',
+                               'transformer',
+                               'object',
+                               ),
+            TransformationCase('multi word tokens',
+                               quoting.surrounded_by_soft_quotes_str('t r a n s f o r m er'),
+                               quoting.surrounded_by_soft_quotes_str('o b j e c t'),
+                               ),
         ]
         # ACT & ASSERT #
-        self._check_lines(lines, source_cases)
+        self._check_lines_for_constant_regex(lines, source_cases)
 
     def test_every_match_on_a_line_SHOULD_be_replaced(self):
         # ARRANGE #
@@ -99,17 +99,17 @@ class Test(integration_check.TestCaseWithCheckMethods):
             ]
 
         source_cases = [
-            NEA('single word tokens',
-                'here',
-                'there',
-                ),
-            NEA('multi word tokens',
-                quoting.surrounded_by_soft_quotes_str('h e r e'),
-                quoting.surrounded_by_soft_quotes_str('t h e r e'),
-                ),
+            TransformationCase('single word tokens',
+                               'here',
+                               'there',
+                               ),
+            TransformationCase('multi word tokens',
+                               quoting.surrounded_by_soft_quotes_str('h e r e'),
+                               quoting.surrounded_by_soft_quotes_str('t h e r e'),
+                               ),
         ]
         # ACT & ASSERT #
-        self._check_lines(lines, source_cases)
+        self._check_lines_for_constant_regex(lines, source_cases)
 
     def test_regular_expression_SHOULD_be_matched(self):
         # ARRANGE #
@@ -125,13 +125,13 @@ class Test(integration_check.TestCaseWithCheckMethods):
 
         # ACT & ASSERT #
 
-        self._check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
+            self,
             Arguments(source),
             model_construction.of_lines(input_lines),
-            integration_check.Arrangement(),
-            integration_check.Expectation(
-                main_result=asrt.on_transformed(list,
-                                                asrt.equals(expected_lines))
+            arrangement_wo_tcds(),
+            expectation_of_successful_replace_execution(
+                output_lines=expected_lines
             )
         )
 
@@ -151,13 +151,13 @@ class Test(integration_check.TestCaseWithCheckMethods):
 
         # ACT & ASSERT #
 
-        self._check_with_source_variants(
+        integration_check.CHECKER.check__w_source_variants(
+            self,
             Arguments(source),
             model_construction.of_lines(input_lines),
-            integration_check.Arrangement(),
-            integration_check.Expectation(
-                main_result=asrt.on_transformed(list,
-                                                asrt.equals(expected_lines))
+            arrangement_wo_tcds(),
+            expectation_of_successful_replace_execution(
+                output_lines=expected_lines
             )
         )
 
@@ -170,18 +170,43 @@ class Test(integration_check.TestCaseWithCheckMethods):
             with self.subTest(source_case.name):
                 # ACT & ASSERT #
 
-                self._check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
+                    self,
                     Arguments(source),
                     model_construction.of_lines(lines_for(source_case.actual)),
-                    integration_check.Arrangement(),
-                    integration_check.Expectation(
-                        main_result=asrt.on_transformed(list,
-                                                        asrt.equals(lines_for(source_case.expected)))
+                    arrangement_wo_tcds,
+                    expectation_of_successful_replace_execution(
+                        output_lines=source_case.expected
+                    )
+                )
+
+    def _check_lines_for_constant_regex(self,
+                                        lines_for: Callable[[str], List[str]],
+                                        source_cases: List[TransformationCase]):
+        for source_case in source_cases:
+            source = arg.syntax_for_replace_transformer(source_case.regex,
+                                                        source_case.replacement)
+            with self.subTest(source_case.name):
+                # ACT & ASSERT #
+
+                integration_check.CHECKER.check__w_source_variants(
+                    self,
+                    Arguments(source),
+                    model_construction.of_lines(lines_for(source_case.regex)),
+                    arrangement_wo_tcds(),
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=asrt.is_empty_sequence,
+                        ),
+                        ExecutionExpectation(
+                            main_result=asrt.on_transformed(list,
+                                                            asrt.equals(lines_for(source_case.replacement)))
+                        )
                     )
                 )
 
 
-class ReferencedSymbolsShouldBeReportedAndUsed(integration_check.TestCaseWithCheckMethods):
+class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
@@ -209,10 +234,11 @@ class ReferencedSymbolsShouldBeReportedAndUsed(integration_check.TestCaseWithChe
             with self.subTest(quoting_case.name):
                 # ACT & ASSERT #
 
-                self._check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
+                    self,
                     Arguments(source),
                     model_construction.of_lines(input_lines),
-                    integration_check.Arrangement(
+                    arrangement_wo_tcds(
                         symbols=symbol_table_from_name_and_sdvs([
                             NameAndValue(symbol_in_regex.name,
                                          StringSdvTestImpl(symbol_in_regex.value)),
@@ -220,32 +246,48 @@ class ReferencedSymbolsShouldBeReportedAndUsed(integration_check.TestCaseWithChe
                                          StringSdvTestImpl(symbol_in_replacement.value)),
                         ]),
                     ),
-                    integration_check.Expectation(
+                    expectation_of_successful_replace_execution(
                         symbol_references=
                         asrt.matches_sequence([
                             is_reference_to_valid_regex_string_part(symbol_in_regex.name),
                             is_reference_to_data_type_symbol(symbol_in_replacement.name),
                         ]),
-                        main_result=asrt.on_transformed(list,
-                                                        asrt.equals(expected_lines)),
+                        output_lines=expected_lines,
                     )
                 )
 
 
-class ValidationShouldFailWhenRegexIsInvalid(integration_check.TestCaseWithCheckMethods):
+class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
     def runTest(self):
         for regex_case in failing_regex_validation_cases():
             source = arg.syntax_for_replace_transformer(regex_case.regex_string,
                                                         'arbitrary_replacement')
             with self.subTest(regex_case.case_name):
-                self._check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
+                    self,
                     Arguments(source),
                     model_construction.arbitrary_model_constructor(),
-                    integration_check.Arrangement(
+                    arrangement_wo_tcds(
                         symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
                     ),
-                    integration_check.Expectation(
-                        symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
-                        validation=regex_case.expectation
+                    Expectation(
+                        ParseExpectation(
+                            symbol_references=asrt.matches_sequence(regex_case.reference_assertions),
+                        ),
+                        ExecutionExpectation(
+                            validation=regex_case.expectation
+                        ),
+                        is_identity_transformer(False),
                     )
                 )
+
+
+def expectation_of_successful_replace_execution(
+        output_lines: List[str],
+        symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+) -> StExpectation:
+    return integration_check.expectation_of_successful_execution(
+        output_lines,
+        symbol_references,
+        False,
+    )

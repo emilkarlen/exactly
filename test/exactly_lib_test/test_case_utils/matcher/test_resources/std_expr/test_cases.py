@@ -86,7 +86,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             self,
             arguments=ArgumentElements(['(', symbol_name, ')']).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-            model_constructor=conf.arbitrary_model,
+            input_=conf.arbitrary_model,
             execution=helper.failing_validation_cases(symbol_name),
         )
 
@@ -122,7 +122,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-                    model_constructor=conf.arbitrary_model,
+                    input_=conf.arbitrary_model,
                     execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
                 )
 
@@ -139,7 +139,7 @@ class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             conf.checker().check__w_source_variants(
                 self,
                 arguments=matcher_argument.Constant(value).as_arguments,
-                model_constructor=conf.arbitrary_model,
+                input_=conf.arbitrary_model,
                 arrangement=arrangement_wo_tcds(),
                 expectation=Expectation(
                     execution=ExecutionExpectation(
@@ -180,7 +180,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     self,
                     arguments=Arguments(symbol_name),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-                    model_constructor=conf.arbitrary_model,
+                    input_=conf.arbitrary_model,
                     execution=helper.failing_validation_cases(symbol_name),
                 )
 
@@ -200,7 +200,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     self,
                     arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-                    model_constructor=conf.arbitrary_model,
+                    input_=conf.arbitrary_model,
                     execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
                 )
 
@@ -236,7 +236,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             self,
             arguments=ArgumentElements([logic.NOT_OPERATOR_NAME, symbol_name]).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-            model_constructor=conf.arbitrary_model,
+            input_=conf.arbitrary_model,
             execution=helper.failing_validation_cases(symbol_name),
         )
 
@@ -302,7 +302,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
-                    model_constructor=conf.arbitrary_model,
+                    input_=conf.arbitrary_model,
                     execution=execution_cases,
                 )
 
@@ -337,7 +337,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
-            model_constructor=self.configuration.arbitrary_model,
+            input_=self.configuration.arbitrary_model,
             execution=helper.failing_validation_cases()
         )
 
@@ -350,7 +350,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
-            model_constructor=self.configuration.arbitrary_model,
+            input_=self.configuration.arbitrary_model,
             execution=helper.failing_validation_cases()
         )
 

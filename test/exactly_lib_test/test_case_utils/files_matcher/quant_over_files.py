@@ -101,7 +101,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                     integration_check.CHECKER.check(
                         self,
                         source=remaining_source(str(arguments)),
-                        model_constructor=arbitrary_model(),
+                        input_=arbitrary_model(),
                         arrangement=
                         Arrangement(
                             symbols=symbol_context.symbol_table

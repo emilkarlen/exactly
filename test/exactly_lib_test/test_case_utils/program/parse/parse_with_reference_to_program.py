@@ -336,7 +336,7 @@ class TestResolving(unittest.TestCase):
                         arguments=expected_arguments
                     ),
                     stdin=asrt_pgm_val.no_stdin(),
-                    transformer=asrt_line_transformer.is_identity_transformer()
+                    transformer=asrt_line_transformer.is_identity_transformer(True)
                 )
 
             def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
@@ -370,7 +370,7 @@ class TestResolving(unittest.TestCase):
                     arguments=expected_arguments
                 ),
                 stdin=asrt_pgm_val.no_stdin(),
-                transformer=asrt_line_transformer.is_identity_transformer()
+                transformer=asrt_line_transformer.is_identity_transformer(True)
             )
 
         def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:

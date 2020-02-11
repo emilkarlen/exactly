@@ -1,7 +1,7 @@
 import unittest
 
 import exactly_lib_test.type_system.logic.string_transformer.test_resources
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import sdv_assertions as sut
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import assertions as sut
 from exactly_lib_test.type_system.logic.test_resources import string_transformers as sut
 
 

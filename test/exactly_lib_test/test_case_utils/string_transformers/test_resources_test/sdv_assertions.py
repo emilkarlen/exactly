@@ -9,7 +9,7 @@ from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import sdv_assertions as sut
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl

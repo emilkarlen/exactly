@@ -1,8 +1,7 @@
-from typing import Callable, List
+from typing import List
 
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
-
-ModelConstructor = Callable[[], StringTransformerModel]
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformer_checker import ModelConstructor
 
 
 def of_lines(lines: List[str]) -> ModelConstructor:

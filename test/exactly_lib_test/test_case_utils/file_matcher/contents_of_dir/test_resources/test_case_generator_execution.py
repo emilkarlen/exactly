@@ -19,7 +19,7 @@ def execute_single(put: unittest.TestCase,
     integration_check.CHECKER.check(
         put,
         source=case.arguments().as_remaining_source,
-        model_constructor=
+        input_=
         integration_check.file_in_tcds(
             case.model_file.location,
             case.model_file.name,
@@ -54,7 +54,7 @@ def execute_multi(put: unittest.TestCase,
         parse_expectation=ParseExpectation(
             symbol_references=asrt.matches_sequence(generator.expected_symbols())
         ),
-        model_constructor=
+        input_=
         integration_check.file_in_tcds(
             generator.model_file.location,
             generator.model_file.name,

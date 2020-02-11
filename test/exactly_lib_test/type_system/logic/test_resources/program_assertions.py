@@ -28,13 +28,13 @@ def matches_program(command: ValueAssertion[Command],
 def matches_plain_program(command: ValueAssertion[Command]):
     return matches_program(command,
                            no_stdin(),
-                           asrt_line_trans.is_identity_transformer())
+                           asrt_line_trans.is_identity_transformer(True))
 
 
 def matches_py_source_on_cmd_line_program(py_source_to_interpret: str,
                                           stdin: ValueAssertion[StdinData] = no_stdin(),
                                           transformer: ValueAssertion[
-                                              StringTransformer] = asrt_line_trans.is_identity_transformer()
+                                              StringTransformer] = asrt_line_trans.is_identity_transformer(True)
                                           ) -> ValueAssertion[Program]:
     return matches_program(asrt_command.equals_execute_py_source_command(py_source_to_interpret),
                            stdin=stdin,

@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import sdv_assertions as asrt_sdv
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import assertions as asrt_sdv
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_string_transformer
@@ -106,7 +106,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         expected_container = matches_container(
             assertion_on_sdv=
             asrt_sdv.resolved_value_matches_string_transformer(
-                asrt_string_transformer.is_identity_transformer(asrt.equals(False)),
+                asrt_string_transformer.is_identity_transformer(False),
                 references=asrt.matches_sequence([
                     is_reference_to_string_transformer__ref(symbol.name),
                 ]),

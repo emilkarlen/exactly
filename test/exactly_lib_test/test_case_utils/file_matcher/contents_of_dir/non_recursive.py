@@ -51,7 +51,7 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
             symbol_references=asrt.matches_singleton_sequence(
                 is_reference_to_files_matcher__ref(fsm_symbol_name)
             ),
-            model_constructor=
+            input_=
             integration_check.constant_relative_file_name('arbitrary-file-argument'),
             execution=validation_cases.failing_validation_cases__multi_exe(fsm_symbol_name)
         )
@@ -80,7 +80,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
             asrt.matches_singleton_sequence(
                 is_reference_to_files_matcher__ref(unconditionally_constant_true.name)
             ),
-            model_constructor=
+            input_=
             integration_check.file_in_sds(location, model_file_name),
             execution=[
                 NExArr(
@@ -110,7 +110,7 @@ class TestHardErrorDueToHardErrorFromFilesMatcher(unittest.TestCase):
             source=fm_args.DirContents(
                 fms_args.SymbolReference(helper.files_matcher_name)
             ).as_remaining_source,
-            model_constructor=helper.model_constructor(),
+            input_=helper.model_constructor(),
             arrangement=helper.arrangement(),
             expectation=helper.expectation()
         )
@@ -131,7 +131,7 @@ class TestApplication(unittest.TestCase):
             arguments=fm_args.DirContents(
                 fms_args.SymbolReference(files_matcher_name)
             ).as_arguments,
-            model_constructor=
+            input_=
             integration_check.file_in_sds(checked_dir_location, checked_dir.name),
             symbol_references=asrt.matches_singleton_sequence(
                 is_reference_to_files_matcher__ref(files_matcher_name)
@@ -187,7 +187,7 @@ class TestFilesOfModel(unittest.TestCase):
                     is_reference_to_files_matcher__ref(model_checker_symbol_name)
                 ),
             ),
-            model_constructor=
+            input_=
             integration_check.file_in_tcds(model_location, model_name),
             execution=[
                 NExArr(
@@ -223,7 +223,7 @@ class TestConcreteMatcher(unittest.TestCase):
         integration_check.CHECKER.check_multi__w_source_variants(
             self,
             arguments=helper.arg__non_recursive().as_arguments,
-            model_constructor=
+            input_=
             integration_check.file_in_sds(helper.checked_dir_location,
                                           helper.checked_dir_name),
             symbol_references=asrt.is_empty_sequence,
@@ -241,7 +241,7 @@ class TestConcreteMatcher(unittest.TestCase):
         integration_check.CHECKER.check_multi__w_source_variants(
             self,
             arguments=helper.arg__non_recursive().as_arguments,
-            model_constructor=
+            input_=
             integration_check.file_in_sds(helper.checked_dir_location,
                                           helper.checked_dir_name),
             symbol_references=asrt.is_empty_sequence,

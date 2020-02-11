@@ -9,16 +9,18 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
+from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_assertions as asrt_model
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import Arrangement, \
-    Expectation
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
+    expectation_of_successful_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.test_resources.string_transformer_assertions import is_identity_transformer
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import MyNonIdentityTransformer, \
     MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
 
@@ -31,7 +33,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class ResultShouldBeCompositionOfSequencedTransformers(integration_check.TestCaseWithCheckMethods):
+class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         symbol_1 = NameAndValue('symbol_1_name',
@@ -75,26 +77,28 @@ class ResultShouldBeCompositionOfSequencedTransformers(integration_check.TestCas
             # ACT & ASSERT #
 
             with self.subTest(case.name):
-                self._check_with_source_variants(
+                integration_check.CHECKER.check__w_source_variants(
+                    self,
                     Arguments(arguments),
                     model_construction.of_lines(initial_model_lines),
-                    Arrangement(
+                    arrangement_wo_tcds(
                         SymbolTable({
                             symbol.name: container(StringTransformerSdvConstant(symbol.value))
                             for symbol in sequenced_transformer_symbols
                         })
                     ),
-                    Expectation(
-                        main_result=asrt_model.model_as_list_matches(asrt.equals(expected_output_lines)),
+                    expectation_of_successful_execution(
+                        output_lines=expected_output_lines,
                         symbol_references=asrt.matches_sequence([
                             is_reference_to_string_transformer__ref(symbol.name)
                             for symbol in sequenced_transformer_symbols
                         ]),
+                        is_identity_transformer=False,
                     )
                 )
 
 
-class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWithCheckMethods):
+class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
     def runTest(self):
         successful_transformer = NameAndValue(
             'successful_transformer',
@@ -120,18 +124,28 @@ class ValidatorShouldValidateSequencedTransformers(integration_check.TestCaseWit
             ]
             for order_case in order_cases:
                 arguments = st_args.syntax_for_sequence_of_transformers(order_case.value)
+                expected_symbol_references = asrt.matches_sequence([
+                    is_reference_to_string_transformer__ref(symbol_name)
+                    for symbol_name in order_case.value
+                ])
 
                 with self.subTest(validation_case=case.name,
                                   order_case=order_case.name):
-                    self._check_with_source_variants(
+                    integration_check.CHECKER.check__w_source_variants(
+                        self,
                         Arguments(arguments),
                         model_construction.of_lines([]),
-                        Arrangement(
+                        arrangement_wo_tcds(
                             symbols=symbols
                         ),
-                        Expectation(
-                            validation=case.value.expectation,
-                            symbol_references=asrt.anything_goes()
+                        logic_integration_check.Expectation(
+                            logic_integration_check.ParseExpectation(
+                                symbol_references=expected_symbol_references
+                            ),
+                            logic_integration_check.ExecutionExpectation(
+                                validation=case.value.expectation,
+                            ),
+                            is_identity_transformer(False),
                         )
                     )
 

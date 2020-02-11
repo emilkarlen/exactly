@@ -42,7 +42,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check i
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import \
     is_expectation_of_execution_result_of
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
-    MatcherPropertiesCheckerConfiguration
+    MatcherPropertiesConfiguration
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError, \
     MatcherTestImplBase
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -70,7 +70,7 @@ def suite() -> unittest.TestSuite:
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
 UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
 
-PROPERTIES_CHECKER_FACTORY = MatcherPropertiesCheckerConfiguration(EXPECTED_LOGIC_TYPE_FOR_TEST)
+PROPERTIES_CHECKER_FACTORY = MatcherPropertiesConfiguration(EXPECTED_LOGIC_TYPE_FOR_TEST, MatcherTypeSdv)
 
 EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
 UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
@@ -245,7 +245,7 @@ class TestTypes(TestCaseBase):
     def test_expect_given_logic_value_type(self):
         checker = sut.IntegrationChecker(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-            MatcherPropertiesCheckerConfiguration(UNEXPECTED_LOGIC_TYPE_FOR_TEST))
+            MatcherPropertiesConfiguration(UNEXPECTED_LOGIC_TYPE_FOR_TEST, MatcherTypeSdv))
         expectation = sut.Expectation()
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
             with self.subTest(arrangement.name,

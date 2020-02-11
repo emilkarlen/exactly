@@ -25,8 +25,9 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.helper import \
     IntegrationCheckHelper
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
-    ParseExpectation, Arrangement, EXECUTION_IS_PASS
+    ParseExpectation, Arrangement
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import EXECUTION_IS_PASS
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, sym_link, Dir, FileSystemElement
 from exactly_lib_test.test_resources.matcher_argument import Conjunction, Parenthesis
@@ -376,7 +377,7 @@ class TestDetectionOfSymLink(unittest.TestCase):
                 fm_args.Type(FileType.SYMLINK),
                 helper.files_matcher_sym_ref_arg(),
             ).as_remaining_source,
-            model_constructor=
+            input_=
             helper.model_constructor_for_checked_dir__recursive(),
             arrangement=helper.arrangement_for_contents_of_model(
                 checked_dir_contents=PRUNE_TYPE_SYM_LINK.actual,
@@ -410,7 +411,7 @@ class TestBrokenSymLinksShouldBeTreatedAsNonDirFiles(unittest.TestCase):
                 matcher_argument.Constant(False),
                 helper.files_matcher_sym_ref_arg(),
             ).as_remaining_source,
-            model_constructor=
+            input_=
             helper.model_constructor_for_checked_dir__recursive(),
             arrangement=helper.arrangement_for_contents_of_model(
                 checked_dir_contents=BROKEN_SYM_LINKS_SHOULD_BE_TREATED_AS_NON_DIR_FILES.actual,
@@ -479,7 +480,7 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
                     self,
                     arguments=
                     argument_case.input_value.as_arguments,
-                    model_constructor=
+                    input_=
                     helper.model_constructor_for_checked_dir__recursive(),
                     arrangement=
                     helper.arrangement_for_contents_of_model(
@@ -523,7 +524,7 @@ class TestRecursiveWithPruneAndDepthLimitations(unittest.TestCase):
                     self,
                     arguments=
                     arguments,
-                    model_constructor=
+                    input_=
                     helper.model_constructor_for_checked_dir__recursive(min_depth=depth,
                                                                         max_depth=depth),
                     arrangement=
@@ -577,7 +578,7 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
             self,
             arguments=
             arguments.as_arguments,
-            model_constructor=
+            input_=
             helper.model_constructor_for_checked_dir__recursive(),
             arrangement=
             Arrangement(
@@ -616,7 +617,7 @@ class TestPruneShouldBeIgnoredWhenModelIsNotRecursive(unittest.TestCase):
             self,
             source=
             arguments.as_remaining_source,
-            model_constructor=
+            input_=
             helper.model_constructor_for_checked_dir__non_recursive(),
             arrangement=
             helper.arrangement_for_contents_of_model(
@@ -657,7 +658,7 @@ def _check_multi(
         put,
         arguments=arguments.as_arguments,
         symbol_references=symbol_references,
-        model_constructor=
+        input_=
         helper.model_constructor_for_checked_dir__recursive(),
         execution=[
             NExArr(

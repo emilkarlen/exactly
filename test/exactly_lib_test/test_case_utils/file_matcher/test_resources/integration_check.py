@@ -1,6 +1,7 @@
 import pathlib
 from typing import Callable
 
+from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -11,7 +12,7 @@ from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
-    MatcherPropertiesCheckerConfiguration
+    MatcherPropertiesConfiguration
 
 ModelConstructor = Callable[[FullResolvingEnvironment], FileMatcherModel]
 
@@ -50,5 +51,5 @@ ARBITRARY_MODEL = constant_relative_file_name('arbitrary-file.txt')
 
 CHECKER = integration_check.IntegrationChecker(
     parse_file_matcher.parser(),
-    MatcherPropertiesCheckerConfiguration(LogicValueType.FILE_MATCHER)
+    MatcherPropertiesConfiguration(LogicValueType.FILE_MATCHER, FileMatcherSdv)
 )
