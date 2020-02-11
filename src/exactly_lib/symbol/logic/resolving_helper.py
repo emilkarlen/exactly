@@ -1,6 +1,5 @@
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
+from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv

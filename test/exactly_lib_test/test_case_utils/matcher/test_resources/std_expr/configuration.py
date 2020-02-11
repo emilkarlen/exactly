@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker

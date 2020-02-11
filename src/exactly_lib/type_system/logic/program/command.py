@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -9,20 +9,23 @@ from exactly_lib.type_system.description.structure_building import StructureBuil
 from exactly_lib.type_system.logic.program.argument import ArgumentsDdv
 from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
 
+PRIMITIVE = TypeVar('PRIMITIVE')
 
-class CommandDriverDdv(DirDependentValue[CommandDriver], ABC):
 
-    @abstractmethod
-    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
-        """:returns A new object on each invokation."""
-        pass
-
+class NonAppEnvDepComponentDdv(Generic[PRIMITIVE], DirDependentValue[PRIMITIVE], ABC):
     @property
     def validators(self) -> Sequence[DdvValidator]:
         return ()
 
 
-class CommandDdv(DirDependentValue[Command]):
+class CommandDriverDdv(NonAppEnvDepComponentDdv[CommandDriver], ABC):
+    @abstractmethod
+    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
+        """:returns A new object on each invokation."""
+        pass
+
+
+class CommandDdv(NonAppEnvDepComponentDdv[Command]):
     def __init__(self,
                  command_driver: CommandDriverDdv,
                  arguments: ArgumentsDdv,

@@ -3,8 +3,7 @@ import unittest
 
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel

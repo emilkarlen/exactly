@@ -6,14 +6,13 @@ from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ProgramSdv(LogicTypeSdv, DirDepValueResolver[ProgramDdv]):
+class ProgramSdv(LogicTypeSdv[ProgramDdv]):
     @property
     def logic_value_type(self) -> LogicValueType:
         return LogicValueType.PROGRAM

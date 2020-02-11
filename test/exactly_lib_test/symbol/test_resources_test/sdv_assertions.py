@@ -2,7 +2,8 @@ import unittest
 from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -221,7 +222,7 @@ class _PathSdvTestImpl(DataTypeSdv):
         raise NotImplementedError('not used')
 
 
-class _ProgramResolverTestImpl(LogicTypeSdv):
+class _ProgramResolverTestImpl(ProgramSdv):
     def __init__(self,
                  explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references
@@ -246,7 +247,7 @@ class _ProgramResolverTestImpl(LogicTypeSdv):
         raise NotImplementedError('not used')
 
 
-class _StringTransformerSdvTestImpl(LogicTypeSdv):
+class _StringTransformerSdvTestImpl(StringTransformerSdv):
     def __init__(self,
                  explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references

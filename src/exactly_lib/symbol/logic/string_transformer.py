@@ -2,12 +2,12 @@ from typing import List
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
+from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringTransformerSdv(LogicTypeSdv):
+class StringTransformerSdv(LogicTypeSdv[StringTransformer]):
     @property
     def logic_value_type(self) -> LogicValueType:
         return LogicValueType.STRING_TRANSFORMER

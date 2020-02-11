@@ -6,8 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator, DdvValidator

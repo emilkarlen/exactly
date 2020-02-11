@@ -3,8 +3,7 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult

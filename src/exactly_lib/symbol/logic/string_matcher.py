@@ -1,7 +1,6 @@
 from typing import List
 
-from exactly_lib.symbol.logic.logic_type_sdv import MatcherTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck

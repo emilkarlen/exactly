@@ -3,15 +3,14 @@ from typing import Sequence, Optional
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.symbol.sdv_validation import SdvValidator
-from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, SourceType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class StringOrPathSdv(DirDepValueResolver[StringOrPathDdv]):
+class StringOrPathSdv(SymbolDependentValue):
     def __init__(self,
                  source_type: SourceType,
                  string: Optional[StringSdv],

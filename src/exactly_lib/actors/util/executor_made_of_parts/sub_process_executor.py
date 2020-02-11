@@ -17,7 +17,11 @@ class SubProcessExecutor(parts.Executor):
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         command_sdv = self._command_to_execute(script_output_dir_path)
-        command = command_sdv.resolve_of_any_dep(environment.path_resolving_environment_pre_or_post_sds)
+        command = (
+            command_sdv
+                .resolve(environment.symbols)
+                .value_of_any_dependency(environment.tcds)
+        )
         return self.os_process_executor.execute(command,
                                                 std_files,
                                                 environment.process_execution_settings)
