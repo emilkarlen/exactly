@@ -34,9 +34,15 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     tmp_user_dir_contains_exactly
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers, integration_check as sut
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ExecutionExpectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as sut
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation, \
     ParseExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import constant_model
+from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import \
+    is_expectation_of_execution_result_of
+from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
+    MatcherPropertiesCheckerConfiguration
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherThatReportsHardError, \
     MatcherTestImplBase
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -64,6 +70,8 @@ def suite() -> unittest.TestSuite:
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
 UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
 
+PROPERTIES_CHECKER_FACTORY = MatcherPropertiesCheckerConfiguration(EXPECTED_LOGIC_TYPE_FOR_TEST)
+
 EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
 UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
 
@@ -83,10 +91,10 @@ class TestCaseBase(unittest.TestCase):
                                  parser: Parser[MatcherTypeSdv[int]],
                                  arrangement: sut.arrangement_w_tcds,
                                  expectation: sut.Expectation):
-        checker = sut.MatcherChecker(parser, EXPECTED_LOGIC_TYPE_FOR_TEST)
+        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check(self.tc,
                       source,
-                      sut.constant_model(model),
+                      constant_model(model),
                       arrangement, expectation)
 
     def _check_line_matcher_type__multi(self,
@@ -95,12 +103,12 @@ class TestCaseBase(unittest.TestCase):
                                         parser: Parser[MatcherTypeSdv[int]],
                                         arrangement: sut.arrangement_w_tcds,
                                         expectation: sut.Expectation):
-        checker = sut.MatcherChecker(parser, EXPECTED_LOGIC_TYPE_FOR_TEST)
+        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
             arguments,
             expectation.parse,
-            sut.constant_model(model),
+            constant_model(model),
             NExArr('only execution',
                    expectation.execution,
                    arrangement),
@@ -112,18 +120,18 @@ class TestCaseBase(unittest.TestCase):
                                                    parser: Parser[MatcherTypeSdv[int]],
                                                    arrangement: sut.arrangement_w_tcds,
                                                    expectation: sut.Expectation):
-        checker = sut.MatcherChecker(parser, EXPECTED_LOGIC_TYPE_FOR_TEST)
+        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         with self.subTest('single execution'):
             checker.check(self.tc,
                           arguments.as_remaining_source,
-                          sut.constant_model(model),
+                          constant_model(model),
                           arrangement, expectation)
         with self.subTest('multiple executions'):
             checker.check_single_multi_execution_setup__for_test_of_test_resources(
                 self.tc,
                 arguments,
                 expectation.parse,
-                sut.constant_model(model),
+                constant_model(model),
                 NExArr('the one and only execution',
                        expectation.execution,
                        arrangement),
@@ -235,8 +243,9 @@ class TestHardError(TestCaseBase):
 
 class TestTypes(TestCaseBase):
     def test_expect_given_logic_value_type(self):
-        checker = sut.MatcherChecker(PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-                                     UNEXPECTED_LOGIC_TYPE_FOR_TEST)
+        checker = sut.IntegrationChecker(
+            PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
+            MatcherPropertiesCheckerConfiguration(UNEXPECTED_LOGIC_TYPE_FOR_TEST))
         expectation = sut.Expectation()
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
             with self.subTest(arrangement.name,
@@ -269,7 +278,7 @@ class TestDefault(TestCaseBase):
                 matchers.sdv_from_primitive_value(
                     references=[data_symbol_utils.symbol_reference('symbol_name')])
             ),
-            sut.Expectation(),
+            is_expectation_of_execution_result_of(True),
         )
 
     def test_expect_pre_validation_succeeds(self):
@@ -281,7 +290,7 @@ class TestDefault(TestCaseBase):
                         pre_sds_result=rend_comb.ConstantSequenceR(
                             [])))
             ),
-            sut.Expectation(),
+            is_expectation_of_execution_result_of(True),
         )
 
     def test_expect_post_validation_succeeds(self):
@@ -292,7 +301,7 @@ class TestDefault(TestCaseBase):
                     ConstantDdvValidator(
                         post_sds_result=rend_comb.ConstantSequenceR([])))
             ),
-            sut.Expectation(),
+            is_expectation_of_execution_result_of(True),
         )
 
     def test_expects_no_hard_error(self):
@@ -301,7 +310,7 @@ class TestDefault(TestCaseBase):
         )
         self._check_raises_test_error__single_and_multi(
             parser_that_gives_value_that_causes_hard_error,
-            sut.Expectation(),
+            is_expectation_of_execution_result_of(True),
         )
 
     def test_expect_match_is_true(self):
@@ -309,7 +318,7 @@ class TestDefault(TestCaseBase):
             _constant_line_matcher_type_parser_of_matcher_sdv(
                 matchers.sdv_from_primitive_value(matchers.MatcherWithConstantResult(False))
             ),
-            sut.Expectation(),
+            is_expectation_of_execution_result_of(True),
         )
 
     def test_successful_flow(self):
@@ -320,7 +329,7 @@ class TestDefault(TestCaseBase):
                     ARBITRARY_MODEL,
                     PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
                     arrangement.value,
-                    sut.Expectation(),
+                    is_expectation_of_execution_result_of(True),
                 )
 
     def test_tcds_directories_are_empty(self):
@@ -337,7 +346,7 @@ class TestDefault(TestCaseBase):
                 all_tcds_dirs_are_empty,
             ),
             sut.arrangement_w_tcds(),
-            sut.Expectation())
+            is_expectation_of_execution_result_of(True))
 
 
 class TestFailingExpectations(TestCaseBase):
@@ -551,7 +560,7 @@ def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTraceAndNegat
 
 
 ARBITRARY_MODEL = 0
-ARBITRARY_MODEL_CONSTRUCTOR = sut.constant_model(ARBITRARY_MODEL)
+ARBITRARY_MODEL_CONSTRUCTOR = constant_model(ARBITRARY_MODEL)
 
 PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION = \
     _constant_line_matcher_type_parser_of_matcher_sdv(

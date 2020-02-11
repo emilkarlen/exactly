@@ -1,13 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Callable
 
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 MODEL = TypeVar('MODEL')
+
+MatcherCheckerAlias = IntegrationChecker[MatcherWTraceAndNegation[MODEL],
+                                         Callable[[FullResolvingEnvironment], MODEL],
+                                         ValueAssertion[MatchingResult]]
 
 
 class MatcherConfiguration(Generic[MODEL], ABC):
@@ -24,7 +30,9 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         pass
 
     @abstractmethod
-    def checker(self) -> MatcherChecker[MODEL]:
+    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[MODEL],
+                                            Callable[[FullResolvingEnvironment], MODEL],
+                                            MatchingResult]:
         pass
 
     @abstractmethod

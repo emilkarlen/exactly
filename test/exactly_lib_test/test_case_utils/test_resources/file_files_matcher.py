@@ -8,7 +8,7 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation, Arrangement, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement

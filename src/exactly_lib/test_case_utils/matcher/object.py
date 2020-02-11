@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, Set, Sequence
+from typing import Generic, TypeVar, Set
 
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
@@ -32,12 +32,8 @@ class ObjectDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         pass
 
 
-class ObjectSdv(Generic[T], ABC):
+class ObjectSdv(Generic[T], SymbolDependentValue, ABC):
     """Resolves an arbitrary object"""
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return []
 
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> ObjectDdv[T]:

@@ -14,8 +14,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Arrangement
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import ExecutionExpectation, Arrangement
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator

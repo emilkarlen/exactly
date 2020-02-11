@@ -11,7 +11,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, arrangement_w_tcds, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, arrangement_w_tcds, \
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part

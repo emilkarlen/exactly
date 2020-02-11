@@ -12,9 +12,9 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Arrangement, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
     ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import _utils
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr._utils import AssertionsHelper, \
     trace_equals, ConstantIncludedInTrace, IgnoredDueToLaziness, \

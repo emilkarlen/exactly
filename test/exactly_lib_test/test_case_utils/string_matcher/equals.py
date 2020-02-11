@@ -15,9 +15,9 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
     ExecutionExpectation, ParseExpectation
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args

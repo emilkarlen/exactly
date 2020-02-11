@@ -9,7 +9,10 @@ from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGett
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
-from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
+    MatcherPropertiesCheckerConfiguration
 from exactly_lib_test.type_system.data.test_resources import described_path
 
 ModelConstructor = Callable[[FullResolvingEnvironment], FileToCheck]
@@ -62,10 +65,10 @@ ARBITRARY_MODEL = empty_model()
 
 
 def constant_model(model: FileToCheck) -> ModelConstructor:
-    return integration_check.constant_model(model)
+    return matcher_integration_check.constant_model(model)
 
 
-CHECKER = integration_check.MatcherChecker(
+CHECKER = integration_check.IntegrationChecker(
     parse_string_matcher.string_matcher_parser(),
-    LogicValueType.STRING_MATCHER
+    MatcherPropertiesCheckerConfiguration(LogicValueType.STRING_MATCHER)
 )

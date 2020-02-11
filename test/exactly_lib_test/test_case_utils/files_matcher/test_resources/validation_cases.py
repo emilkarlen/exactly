@@ -7,7 +7,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
     files_matcher_sdv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import ExecutionExpectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, \
     arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator
 from exactly_lib_test.test_case_utils.test_resources import validation

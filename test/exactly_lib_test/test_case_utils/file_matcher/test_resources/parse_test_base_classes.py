@@ -9,7 +9,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.test_utils import Actual
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, Expectation, \
     Arrangement, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

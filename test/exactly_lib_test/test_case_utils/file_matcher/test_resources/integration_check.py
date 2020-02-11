@@ -9,7 +9,9 @@ from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models
-from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
+from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
+    MatcherPropertiesCheckerConfiguration
 
 ModelConstructor = Callable[[FullResolvingEnvironment], FileMatcherModel]
 
@@ -46,7 +48,7 @@ def file_in_tcds(relativity: RelOptionType, file_name: str) -> ModelConstructor:
 
 ARBITRARY_MODEL = constant_relative_file_name('arbitrary-file.txt')
 
-CHECKER = integration_check.MatcherChecker(
+CHECKER = integration_check.IntegrationChecker(
     parse_file_matcher.parser(),
-    LogicValueType.FILE_MATCHER
+    MatcherPropertiesCheckerConfiguration(LogicValueType.FILE_MATCHER)
 )

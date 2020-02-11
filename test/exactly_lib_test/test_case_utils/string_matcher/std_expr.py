@@ -1,13 +1,15 @@
 import unittest
+from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.matcher import MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import LogicValueType
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MatcherConfiguration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
@@ -35,7 +37,9 @@ class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
     def parser(self) -> Parser[MatcherTypeSdv[FileToCheck]]:
         return parse_string_matcher.string_matcher_parser()
 
-    def checker(self) -> MatcherChecker[FileToCheck]:
+    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FileToCheck],
+                                            Callable[[FullResolvingEnvironment], FileToCheck],
+                                            MatchingResult]:
         return integration_check.CHECKER
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> FileToCheck:

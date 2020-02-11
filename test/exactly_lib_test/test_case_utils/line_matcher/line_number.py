@@ -17,8 +17,10 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.validatio
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import main_result_is_success, \
-    main_result_is_failure, ExecutionExpectation, ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, \
+    ParseExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources.assertions import main_result_is_success, \
+    main_result_is_failure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

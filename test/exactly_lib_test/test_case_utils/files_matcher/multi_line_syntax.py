@@ -8,7 +8,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import selection_arguments
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import arbitrary_model
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, Expectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources.matcher_assertions import is_matching_success, \

@@ -13,9 +13,9 @@ from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import Expectation, ParseExpectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args

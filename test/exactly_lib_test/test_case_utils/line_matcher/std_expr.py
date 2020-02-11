@@ -1,4 +1,5 @@
 import unittest
+from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
@@ -6,9 +7,10 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import MatcherChecker
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MatcherConfiguration
 
@@ -35,7 +37,9 @@ class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
     def parser(self) -> Parser[MatcherTypeSdv[LineMatcherLine]]:
         return parse_line_matcher.parser()
 
-    def checker(self) -> MatcherChecker[LineMatcherLine]:
+    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[LineMatcherLine],
+                                            Callable[[FullResolvingEnvironment], LineMatcherLine],
+                                            MatchingResult]:
         return integration_check.CHECKER
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> LineMatcherLine:

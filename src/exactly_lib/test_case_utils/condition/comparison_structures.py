@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Set
+from typing import TypeVar, Generic, Set
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -33,12 +33,8 @@ class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         pass
 
 
-class OperandSdv(Generic[T], ABC):
+class OperandSdv(Generic[T], SymbolDependentValue, ABC):
     """Resolves an operand used in a comparision"""
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return []
 
     def validate_pre_sds(self, environment: PathResolvingEnvironmentPreSds):
         """

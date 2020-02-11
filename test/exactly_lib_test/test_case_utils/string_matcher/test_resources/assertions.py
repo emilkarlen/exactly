@@ -1,5 +1,6 @@
 from typing import Sequence
 
+import exactly_lib_test.test_case_utils.logic.test_resources.assertions
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -30,7 +31,7 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
 
 def matches_string_matcher_attributes(references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                       ) -> ValueAssertion[LogicTypeSdv]:
-    return asrt_matcher.matches_matcher_attributes(
+    return exactly_lib_test.test_case_utils.logic.test_resources.assertions.matches_logic_sdv_attributes(
         StringMatcherSdv,
         LogicValueType.STRING_MATCHER,
         references,

@@ -24,9 +24,9 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import arrangement_w_tcds, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, \
     ExecutionExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.arguments_building import OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.test_utils import NExArr

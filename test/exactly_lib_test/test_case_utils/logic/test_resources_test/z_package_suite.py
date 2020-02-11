@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.matcher.test_resources_test import assertions
+from exactly_lib_test.test_case_utils.logic.test_resources_test import integration_check
 
 
 def suite() -> unittest.TestSuite:
-    return assertions.suite()
+    return integration_check.suite()
 
 
 if __name__ == '__main__':

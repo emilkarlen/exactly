@@ -24,9 +24,9 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     SymbolReference
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.helper import \
     IntegrationCheckHelper
-from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
-from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import ExecutionExpectation, Expectation, \
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
     ParseExpectation, Arrangement, EXECUTION_IS_PASS
+from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, sym_link, Dir, FileSystemElement
 from exactly_lib_test.test_resources.matcher_argument import Conjunction, Parenthesis
