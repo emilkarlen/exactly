@@ -1,8 +1,10 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
+    syntax_for_transformer_option
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.programs import python_program_execution
@@ -13,9 +15,17 @@ def symbol_ref_command_line(command_line: WithToString) -> ArgumentElementsRende
     return ab.sequence([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, command_line])
 
 
-def symbol_ref_command_elements(symbol_name: str, arguments: Sequence = ()) -> ArgumentElements:
-    return ArgumentElements([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, symbol_name] +
-                            list(arguments))
+def symbol_ref_command_elements(symbol_name: str,
+                                arguments: Sequence = (),
+                                transformation: Optional[str] = None) -> ArgumentElements:
+    first_line = [syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, symbol_name] + list(arguments)
+
+    following_lines = []
+
+    if transformation is not None:
+        following_lines.append([syntax_for_transformer_option(transformation)])
+
+    return ArgumentElements(first_line, following_lines)
 
 
 def shell_command(command_line: WithToString) -> ArgumentElements:

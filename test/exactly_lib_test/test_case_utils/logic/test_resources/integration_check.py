@@ -8,7 +8,7 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from contextlib import contextmanager
-from typing import Optional, Sequence, Generic, Callable, ContextManager
+from typing import Optional, Sequence, Generic, ContextManager
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
@@ -30,7 +30,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.ds_construction im
     tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE
+    CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser, \
@@ -190,7 +190,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                        case.arrangement,
                                                        asrt.anything_goes(),
                                                        case.expected,
-                                                       self._configuration.apply,
+                                                       self._configuration.applier(),
                                                        self._configuration.new_execution_checker(),
                                                        )
                 checker.check(actual)
@@ -217,7 +217,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                                case.arrangement,
                                                                asrt.anything_goes(),
                                                                case.expected,
-                                                               self._configuration.apply,
+                                                               self._configuration.applier(),
                                                                self._configuration.new_execution_checker(),
                                                                )
                         checker.check(actual)
@@ -241,7 +241,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                execution.arrangement,
                                                asrt.anything_goes(),
                                                execution.expected,
-                                               self._configuration.apply,
+                                               self._configuration.applier(),
                                                self._configuration.new_execution_checker(),
                                                )
         checker.check(actual)
@@ -291,7 +291,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                                arrangement,
                                                                expectation.primitive,
                                                                expectation.execution,
-                                                               configuration.apply,
+                                                               configuration.applier(),
                                                                configuration.new_execution_checker(),
                                                                )
 
@@ -332,7 +332,7 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  arrangement: Arrangement,
                  primitive: ValueAssertion[PRIMITIVE],
                  execution: ExecutionExpectation[OUTPUT],
-                 applier: Callable[[PRIMITIVE, FullResolvingEnvironment, INPUT], OUTPUT],
+                 applier: Applier[PRIMITIVE, INPUT, OUTPUT],
                  common_properties:
                  CommonExecutionPropertiesChecker[PRIMITIVE],
                  ):
@@ -464,7 +464,7 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.primitive.apply(self.put, primitive, message_builder)
 
         try:
-            result = self.applier(primitive, resolving_env, self.model_constructor)
+            result = self.applier.apply(primitive, resolving_env, self.model_constructor)
 
             if self.execution.is_hard_error is not None:
                 self.put.fail(message_builder.apply('HARD_ERROR not reported (raised)'))

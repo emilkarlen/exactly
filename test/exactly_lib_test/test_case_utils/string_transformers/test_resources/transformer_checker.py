@@ -6,7 +6,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerDdv
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration
+    CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicTypeSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
 
@@ -17,12 +17,11 @@ class StringTransformerPropertiesConfiguration(
     CommonPropertiesConfiguration[StringTransformer,
                                   ModelConstructor,
                                   StringTransformerModel]):
+    def __init__(self):
+        self._applier = _Applier()
 
-    def apply(self,
-              primitive: StringTransformer,
-              resolving_environment: FullResolvingEnvironment,
-              input_: ModelConstructor) -> StringTransformerModel:
-        return primitive.transform(input_())
+    def applier(self) -> Applier[StringTransformer, ModelConstructor, StringTransformerModel]:
+        return self._applier
 
     def new_sdv_checker(self) -> LogicTypeSdvPropertiesChecker[StringTransformer]:
         return LogicTypeSdvPropertiesChecker(LogicValueType.STRING_TRANSFORMER,
@@ -30,3 +29,11 @@ class StringTransformerPropertiesConfiguration(
 
     def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker:
         return WithTreeStructureExecutionPropertiesChecker(StringTransformerDdv, StringTransformer)
+
+
+class _Applier(Applier[StringTransformer, ModelConstructor, StringTransformerModel]):
+    def apply(self,
+              primitive: StringTransformer,
+              resolving_environment: FullResolvingEnvironment,
+              input_: ModelConstructor) -> StringTransformerModel:
+        return primitive.transform(input_())

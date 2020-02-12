@@ -50,6 +50,15 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE], ABC):
         pass
 
 
+class Applier(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
+    @abstractmethod
+    def apply(self,
+              primitive: PRIMITIVE,
+              resolving_environment: FullResolvingEnvironment,
+              input_: INPUT) -> OUTPUT:
+        pass
+
+
 class CommonPropertiesConfiguration(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
     """
     Defines properties of a single primitive type.
@@ -59,10 +68,7 @@ class CommonPropertiesConfiguration(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
     """
 
     @abstractmethod
-    def apply(self,
-              primitive: PRIMITIVE,
-              resolving_environment: FullResolvingEnvironment,
-              input_: INPUT) -> OUTPUT:
+    def applier(self) -> Applier[PRIMITIVE, INPUT, OUTPUT]:
         pass
 
     @abstractmethod
