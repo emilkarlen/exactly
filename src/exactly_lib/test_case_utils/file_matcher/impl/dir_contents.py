@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils import file_properties, described_dep_val
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, sdv_of_constant_primitive, \
-    LogicWithDescriberDdv
+    LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
@@ -46,7 +46,7 @@ MODEL_CONSTRUCTOR__NON_RECURSIVE = sdv_of_constant_primitive(_NonRecursiveModelC
 def model_constructor__recursive(min_depth: Optional[IntegerSdv],
                                  max_depth: Optional[IntegerSdv],
                                  ) -> LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]]:
-    def make_ddv(symbols: SymbolTable) -> LogicWithDescriberDdv[ModelConstructor[FilesMatcherModel]]:
+    def make_ddv(symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]:
         def get_int_ddv(x: IntegerSdv) -> IntegerDdv:
             return x.resolve(symbols)
 
@@ -131,7 +131,7 @@ class _RecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
                                 self._max_depth)
 
 
-class _RecursiveModelConstructorDdv(LogicWithDescriberDdv[ModelConstructor[FilesMatcherModel]]):
+class _RecursiveModelConstructorDdv(LogicWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]):
     def __init__(self,
                  min_depth: Optional[IntegerDdv],
                  max_depth: Optional[IntegerDdv],
