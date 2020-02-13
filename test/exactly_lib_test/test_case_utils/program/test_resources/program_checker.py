@@ -1,3 +1,5 @@
+import unittest
+
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case import executable_factories
@@ -13,6 +15,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker im
     WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
 class ProgramPropertiesConfiguration(
@@ -35,6 +38,8 @@ class ProgramPropertiesConfiguration(
 
 class _Applier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
     def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
               primitive: Program,
               resolving_environment: FullResolvingEnvironment,
               input_: ProcOutputFile) -> ResultWithTransformationData:

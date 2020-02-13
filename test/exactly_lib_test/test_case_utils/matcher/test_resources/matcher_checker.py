@@ -1,3 +1,4 @@
+import unittest
 from typing import TypeVar, Generic, Callable, Type
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
@@ -8,6 +9,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicTypeSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 MODEL = TypeVar('MODEL')
 
@@ -44,6 +46,8 @@ class _MatcherApplier(
     Applier[MatcherWTraceAndNegation[MODEL], Callable[[FullResolvingEnvironment], MODEL], MatchingResult]
 ):
     def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
               primitive: MatcherWTraceAndNegation[MODEL],
               resolving_environment: FullResolvingEnvironment,
               input_: Callable[[FullResolvingEnvironment], MODEL]) -> MatchingResult:

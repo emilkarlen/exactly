@@ -45,7 +45,8 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE], ABC):
     def check_primitive(self,
                         put: unittest.TestCase,
                         actual: PRIMITIVE,
-                        message_builder: MessageBuilder):
+                        message_builder: MessageBuilder,
+                        ):
         """Checks the primitive before application."""
         pass
 
@@ -53,6 +54,8 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE], ABC):
 class Applier(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
     @abstractmethod
     def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
               primitive: PRIMITIVE,
               resolving_environment: FullResolvingEnvironment,
               input_: INPUT) -> OUTPUT:

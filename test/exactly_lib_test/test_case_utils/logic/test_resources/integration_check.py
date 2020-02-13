@@ -464,7 +464,7 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.primitive.apply(self.put, primitive, message_builder)
 
         try:
-            result = self.applier.apply(primitive, resolving_env, self.model_constructor)
+            result = self.applier.apply(self.put, message_builder, primitive, resolving_env, self.model_constructor)
 
             if self.execution.is_hard_error is not None:
                 self.put.fail(message_builder.apply('HARD_ERROR not reported (raised)'))

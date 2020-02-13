@@ -1,3 +1,4 @@
+import unittest
 from typing import Callable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -9,6 +10,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicTypeSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 ModelConstructor = Callable[[], StringTransformerModel]
 
@@ -33,6 +35,8 @@ class StringTransformerPropertiesConfiguration(
 
 class _Applier(Applier[StringTransformer, ModelConstructor, StringTransformerModel]):
     def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
               primitive: StringTransformer,
               resolving_environment: FullResolvingEnvironment,
               input_: ModelConstructor) -> StringTransformerModel:
