@@ -2,6 +2,7 @@ import unittest
 from typing import Generic, Type
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv, LogicTypeSdv
+from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import LogicWithStructureDdv, LogicDdv
 from exactly_lib.type_system.value_type import LogicValueType
@@ -78,13 +79,13 @@ class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesCheck
             message_builder.for_sub_component('object type'),
         )
 
-        self._check_structure(put, actual, message_builder)
+        self._check_structure_of_primitive(put, actual, message_builder)
 
-    def _check_structure(self,
-                         put: unittest.TestCase,
-                         actual: WithTreeStructureDescription,
-                         message_builder: MessageBuilder,
-                         ):
+    def _check_structure_of_primitive(self,
+                                      put: unittest.TestCase,
+                                      actual: WithTreeStructureDescription,
+                                      message_builder: MessageBuilder,
+                                      ):
         structure_tree_of_primitive = actual.structure().render()
 
         asrt_d_tree.matches_node().apply(
@@ -99,4 +100,56 @@ class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesCheck
             put,
             structure_tree_of_primitive,
             'structure of should be same as that of ddv',
+        )
+
+
+class WithDetailsDescriptionExecutionPropertiesChecker(CommonExecutionPropertiesChecker[WithDetailsDescription]):
+    def __init__(self,
+                 expected_ddv_object_type: Type[WithDetailsDescription],
+                 expected_primitive_object_type: Type[WithDetailsDescription],
+                 ):
+        self._expected_ddv_object_type = expected_ddv_object_type
+        self._expected_primitive_object_type = expected_primitive_object_type
+
+    def check_ddv(self,
+                  put: unittest.TestCase,
+                  actual: LogicDdv[WithDetailsDescription],
+                  message_builder: MessageBuilder,
+                  ):
+        asrt.is_instance(self._expected_ddv_object_type).apply(
+            put,
+            actual,
+            message_builder.for_sub_component('object type'),
+        )
+
+        assert isinstance(actual, WithDetailsDescription)  # Type info for IDE
+
+        self._check_sanity_of_details_renderer(put, message_builder, actual)
+
+    def check_primitive(self,
+                        put: unittest.TestCase,
+                        actual: WithDetailsDescription,
+                        message_builder: MessageBuilder,
+                        ):
+        asrt.is_instance(self._expected_primitive_object_type).apply(
+            put,
+            actual,
+            message_builder.for_sub_component('object type'),
+        )
+
+        self._check_sanity_of_details_renderer(put, message_builder, actual)
+
+    @staticmethod
+    def _check_sanity_of_details_renderer(put: unittest.TestCase,
+                                          message_builder: MessageBuilder,
+                                          actual: WithDetailsDescription,
+                                          ):
+        details = actual.describer.render()
+
+        assertion = asrt.is_sequence_of(asrt_d_tree.is_any_detail())
+
+        assertion.apply(
+            put,
+            details,
+            message_builder.for_sub_component('sanity of description'),
         )
