@@ -163,6 +163,8 @@ class _IsAnyDetail(asrt.ValueAssertionBase[Detail]):
             return
         if isinstance(value, TreeDetail):
             return
+        if isinstance(value, IndentedDetail):
+            return
         msg = 'Not a know sub class of {}: {}'.format(Detail, value)
         put.fail(message_builder.for_sub_component('Detail class').apply(msg))
 
