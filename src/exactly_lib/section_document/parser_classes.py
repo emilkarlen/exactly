@@ -24,6 +24,31 @@ class Parser(Generic[PARSE_RESULT]):
         raise NotImplementedError('abstract method')
 
 
+class ParserWithCurrentLineVariants(Generic[PARSE_RESULT], Parser[PARSE_RESULT]):
+    """
+    Parser that can expect parsed object on either current line or any following line.
+
+    Ugly sub class ing of :class:`Parser`. Want to "add current-line-variants"
+    to :class:`Parser`, but cannot do it in one step.  So introduces this class in the
+    mean time.
+    """
+
+    def parse(self,
+              source: ParseSource,
+              must_be_on_current_line: bool = False,
+              ) -> PARSE_RESULT:
+        with from_parse_source(source,
+                               self._consume_last_line_if_is_at_eol_after_parse,
+                               self._consume_last_line_if_is_at_eof_after_parse) as parser:
+            return self.parse_from_token_parser(parser, must_be_on_current_line)
+
+    def parse_from_token_parser(self,
+                                tokens: TokenParser,
+                                must_be_on_current_line: bool = False,
+                                ) -> PARSE_RESULT:
+        raise NotImplementedError('abstract method')
+
+
 class ParserFromSimpleParser(Parser[PARSE_RESULT]):
     def __init__(self,
                  simple: Parser[T],

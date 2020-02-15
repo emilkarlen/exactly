@@ -3,7 +3,7 @@ from pathlib import PurePosixPath
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_utils.files_matcher.files_condition import FilesCondition, FilesConditionSdv, \
+from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionSdv, \
     FilesConditionDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
