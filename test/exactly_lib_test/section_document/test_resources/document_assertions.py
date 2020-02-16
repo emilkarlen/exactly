@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence, Dict
+from typing import Sequence, Mapping
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import InstructionInfo, ElementType
@@ -75,15 +75,19 @@ def equals_file_inclusion_directive(expected: ParsedFileInclusionDirective
                                             asrt.equals(expected.files_to_include))
 
 
-def doc_to_dict(doc: model.Document) -> Dict[str, Sequence[model.SectionContentElement]]:
-    return {section: doc.section_2_elements[section].elements
-            for section in doc.section}
+def doc_to_mapping(doc: model.Document) -> Mapping[str, Sequence[model.SectionContentElement]]:
+    return {
+        section: doc.section_2_elements[section].elements
+        for section in doc.section
+    }
 
 
-def matches_document(expected: Dict[str, Sequence[ValueAssertion[model.SectionContentElement]]]
+def matches_document(expected: Mapping[str, Sequence[ValueAssertion[model.SectionContentElement]]]
                      ) -> ValueAssertion[model.Document]:
-    expected_section_2_assertion = {section: asrt.matches_sequence(expected[section])
-                                    for section in expected.keys()}
+    expected_section_2_assertion = {
+        section: asrt.matches_sequence(expected[section])
+        for section in expected.keys()
+    }
 
-    assertion_on_dict = asrt.matches_dict(expected_section_2_assertion)
-    return asrt.on_transformed(doc_to_dict, assertion_on_dict)
+    assertion_on_dict = asrt.matches_mapping(expected_section_2_assertion)
+    return asrt.on_transformed(doc_to_mapping, assertion_on_dict)

@@ -646,7 +646,7 @@ class TestMatchesDict(unittest.TestCase):
         ]
         for nea in cases:
             with self.subTest(nea.name):
-                assertion = sut.matches_dict(nea.expected)
+                assertion = sut.matches_mapping(nea.expected)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion, nea.actual)
 
@@ -669,7 +669,7 @@ class TestMatchesDict(unittest.TestCase):
         ]
         for nea in cases:
             with self.subTest(nea.name):
-                assertion = sut.matches_dict(nea.expected)
+                assertion = sut.matches_mapping(nea.expected)
                 # ACT & ASSERT #
                 assertion.apply_without_message(self, nea.actual)
 

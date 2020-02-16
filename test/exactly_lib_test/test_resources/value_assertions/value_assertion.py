@@ -1,6 +1,6 @@
 import os
 import unittest
-from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict, Set, Optional
+from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Set, Optional, Mapping
 
 from exactly_lib.util.name_and_value import NameAndValue
 
@@ -768,13 +768,13 @@ def is_sub_class_with(expected_class: Type[T],
     return is_instance_with(expected_class, on_sub_class)
 
 
-class _MatchesDict(ValueAssertionBase[Dict[TYPE_WITH_EQUALS, T]]):
-    def __init__(self, expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]):
+class _MatchesMapping(ValueAssertionBase[Mapping[TYPE_WITH_EQUALS, T]]):
+    def __init__(self, expected: Mapping[TYPE_WITH_EQUALS, ValueAssertion[T]]):
         self.expected = expected
 
     def _apply(self,
                put: unittest.TestCase,
-               value: Dict[TYPE_WITH_EQUALS, T],
+               value: Mapping[TYPE_WITH_EQUALS, T],
                message_builder: MessageBuilder):
         put.assertEqual(self.expected.keys(),
                         value.keys(),
@@ -788,9 +788,10 @@ class _MatchesDict(ValueAssertionBase[Dict[TYPE_WITH_EQUALS, T]]):
             assertion.apply(put, actual, element_message_builder)
 
 
-def matches_dict(expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]) -> ValueAssertion[Dict[TYPE_WITH_EQUALS, T]]:
-    """Assertion on a dict, with keys that can be compared using std Python equality"""
-    return _MatchesDict(expected)
+def matches_mapping(expected: Mapping[TYPE_WITH_EQUALS, ValueAssertion[T]]
+                    ) -> ValueAssertion[Mapping[TYPE_WITH_EQUALS, T]]:
+    """Assertion on a Mapping, with keys that can be compared using std Python equality"""
+    return _MatchesMapping(expected)
 
 
 def is_not(value) -> ValueAssertion[T]:
