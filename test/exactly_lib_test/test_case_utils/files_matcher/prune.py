@@ -24,8 +24,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     SymbolReference
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.helper import \
     IntegrationCheckHelper
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
-    ParseExpectation, Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
+    ParseExpectation, Arrangement, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import EXECUTION_IS_PASS
 from exactly_lib_test.test_resources import matcher_argument
@@ -663,7 +663,7 @@ def _check_multi(
         execution=[
             NExArr(
                 case.name,
-                ExecutionExpectation(),
+                PrimAndExeExpectation.of_exe(),
                 helper.arrangement_for_contents_of_model(
                     checked_dir_contents=case.actual,
                     files_matcher_symbol_value=

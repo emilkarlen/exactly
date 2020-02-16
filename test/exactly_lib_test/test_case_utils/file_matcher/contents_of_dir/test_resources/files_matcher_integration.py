@@ -5,14 +5,16 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, \
-    Arrangement, arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, arrangement_w_tcds, \
+    PrimAndExeExpectation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, Dir, DirContents
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -162,11 +164,11 @@ class NumFilesTestCaseHelperBase(ABC):
     def arg__non_recursive(self) -> FileMatcherArg:
         pass
 
-    def execution_cases(self) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+    def execution_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[FilesMatcher, MatchingResult], Arrangement]]:
         return [
             NExArr(
                 case.name,
-                ExecutionExpectation(
+                PrimAndExeExpectation.of_exe(
                     main_result=asrt_matching_result.matches_value(case.expected)
                 ),
                 arrangement_w_tcds(

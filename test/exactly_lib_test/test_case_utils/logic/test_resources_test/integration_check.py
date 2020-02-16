@@ -110,7 +110,7 @@ class TestCaseBase(unittest.TestCase):
             expectation.parse,
             constant_model(model),
             NExArr('only execution',
-                   expectation.execution,
+                   expectation.prim_and_exe,
                    arrangement),
         )
 
@@ -133,7 +133,7 @@ class TestCaseBase(unittest.TestCase):
                 expectation.parse,
                 constant_model(model),
                 NExArr('the one and only execution',
-                       expectation.execution,
+                       expectation.prim_and_exe,
                        arrangement),
             )
 
@@ -266,7 +266,7 @@ class TestTypes(TestCaseBase):
                         expectation.parse,
                         ARBITRARY_MODEL_CONSTRUCTOR,
                         NExArr('the one and only execution',
-                               expectation.execution,
+                               expectation.prim_and_exe,
                                arrangement.value),
                     )
 
@@ -368,6 +368,15 @@ class TestFailingExpectations(TestCaseBase):
                     validation=asrt_validation.post_sds_validation_fails(),
                 ),
             )
+        )
+
+    def test_fail_due_to_unsatisfied_assertion_on_primitive(self):
+        self._check_raises_test_error__single_and_multi(
+            ConstantParser(_MATCHER_THAT_MATCHES),
+            Expectation(
+                execution=ExecutionExpectation(),
+                primitive=asrt.fail('primitive')
+            ),
         )
 
     def test_fail_due_to_unexpected_result_from_main(self):

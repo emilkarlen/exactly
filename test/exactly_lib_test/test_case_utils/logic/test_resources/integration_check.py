@@ -108,6 +108,31 @@ class ExecutionExpectation(Generic[OUTPUT]):
         self.is_hard_error = is_hard_error
 
 
+class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
+    def __init__(
+            self,
+            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
+            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
+    ):
+        self.execution = execution
+        self.primitive = primitive
+
+    @staticmethod
+    def of_exe(
+            validation: ValidationAssertions = all_validations_passes(),
+            main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
+            is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
+    ) -> 'PrimAndExeExpectation':
+        return PrimAndExeExpectation(
+            ExecutionExpectation(
+                validation=validation,
+                main_result=main_result,
+                is_hard_error=is_hard_error,
+            ),
+            asrt.anything_goes()
+        )
+
+
 class Expectation(Generic[PRIMITIVE, OUTPUT]):
     def __init__(
             self,
@@ -122,6 +147,13 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
         self.parse = parse
         self.execution = execution
         self.primitive = primitive
+
+    @property
+    def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
+        return PrimAndExeExpectation(
+            self.execution,
+            self.primitive
+        )
 
 
 class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
@@ -176,7 +208,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                     arguments: Arguments,
                     parse_expectation: ParseExpectation,
                     input_: INPUT,
-                    execution: Sequence[NExArr[ExecutionExpectation[OUTPUT], Arrangement]],
+                    execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
+                                               Arrangement]],
                     ):
         source = arguments.as_remaining_source
         actual = self._parser.parse(source)
@@ -188,8 +221,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                 checker = _IntegrationExecutionChecker(put,
                                                        input_,
                                                        case.arrangement,
-                                                       asrt.anything_goes(),
-                                                       case.expected,
+                                                       case.expected.primitive,
+                                                       case.expected.execution,
                                                        self._configuration.applier(),
                                                        self._configuration.new_execution_checker(),
                                                        )
@@ -200,7 +233,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                        arguments: Arguments,
                                        symbol_references: ValueAssertion[Sequence[SymbolReference]],
                                        input_: INPUT,
-                                       execution: Sequence[NExArr[ExecutionExpectation[OUTPUT], Arrangement]],
+                                       execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
+                                                                  Arrangement]],
                                        ):
         for source_case in equivalent_source_variants__with_source_check__for_expression_parser_2(arguments):
             with put.subTest(source_case.name):
@@ -215,8 +249,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                         checker = _IntegrationExecutionChecker(put,
                                                                input_,
                                                                case.arrangement,
-                                                               asrt.anything_goes(),
-                                                               case.expected,
+                                                               case.expected.primitive,
+                                                               case.expected.execution,
                                                                self._configuration.applier(),
                                                                self._configuration.new_execution_checker(),
                                                                )
@@ -228,7 +262,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             arguments: Arguments,
             parse_expectation: ParseExpectation,
             model_constructor: INPUT,
-            execution: NExArr[ExecutionExpectation[OUTPUT], Arrangement],
+            execution: NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT], Arrangement],
     ):
         source = arguments.as_remaining_source
         actual = self._parser.parse(source)
@@ -239,8 +273,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         checker = _IntegrationExecutionChecker(put,
                                                model_constructor,
                                                execution.arrangement,
-                                               asrt.anything_goes(),
-                                               execution.expected,
+                                               execution.expected.primitive,
+                                               execution.expected.execution,
                                                self._configuration.applier(),
                                                self._configuration.new_execution_checker(),
                                                )

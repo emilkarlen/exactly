@@ -14,7 +14,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
+    PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -120,8 +121,11 @@ class AssertionsHelper(Generic[MODEL]):
     def logic_type_matcher_from_primitive(self, primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherTypeSdv[MODEL]:
         return self.conf.mk_logic_type(matchers.sdv_from_primitive_value(primitive))
 
-    def execution_cases_for_constant_reference_expressions(self, symbol_name: str
-                                                           ) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+    def execution_cases_for_constant_reference_expressions(
+            self, symbol_name: str
+    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                               MatchingResult],
+                         Arrangement]]:
         helper = AssertionsHelper(self.conf)
 
         mk_trace = get_mk_operand_trace('referred')
@@ -132,7 +136,7 @@ class AssertionsHelper(Generic[MODEL]):
             )
             return NExArr(
                 'matcher that gives ' + str(result),
-                ExecutionExpectation(
+                PrimAndExeExpectation.of_exe(
                     main_result=asrt_matching_result.matches(
                         value=asrt.equals(result),
                         trace=trace_equals(mk_trace(result))
@@ -150,11 +154,14 @@ class AssertionsHelper(Generic[MODEL]):
             for result in [False, True]
         ]
 
-    def failing_validation_cases(self, symbol_name: str) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+    def failing_validation_cases(self, symbol_name: str
+                                 ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                                                            MatchingResult],
+                                                      Arrangement]]:
         return [
             NExArr(
                 validation_case.name,
-                expected=ExecutionExpectation(
+                expected=PrimAndExeExpectation.of_exe(
                     validation=validation_case.expected,
                 ),
                 arrangement=Arrangement(
@@ -185,15 +192,19 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
     def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
         return self.helper.is_sym_refs_to(self.operands)
 
-    def failing_validation_cases(self) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+    def failing_validation_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                                                                MatchingResult],
+                                                          Arrangement]]:
         def cases_for(validation_case: NEA[ValidationAssertions, ValidationActual]
-                      ) -> List[NExArr[ExecutionExpectation, Arrangement]]:
+                      ) -> List[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                                             MatchingResult],
+                                       Arrangement]]:
             validations = [validation_case.actual] + ([ValidationActual.passes()] * (len(self.operands) - 1))
             return [
                 NExArr(
                     'validation={}, failing_symbol={}'.format(validation_case.name,
                                                               operand_name_validations[0]),
-                    ExecutionExpectation(
+                    PrimAndExeExpectation.of_exe(
                         validation=validation_case.expected
                     ),
                     Arrangement(
@@ -277,10 +288,12 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
             for i in range(1, num_operands + 1)
         ]
 
-    def _execution_cases(self,
-                         operand_symbol_names: List[str],
-                         cases_with_same_number_of_operands: List[Case],
-                         ) -> Sequence[NExArr[ExecutionExpectation, Arrangement]]:
+    def _execution_cases(
+            self,
+            operand_symbol_names: List[str],
+            cases_with_same_number_of_operands: List[Case],
+    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL], MatchingResult],
+                         Arrangement]]:
         return [
             self._execution_case(operand_symbol_names, case)
             for case in cases_with_same_number_of_operands
@@ -289,7 +302,8 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
     def _execution_case(self,
                         operand_symbol_names: List[str],
                         case: Case,
-                        ) -> NExArr[ExecutionExpectation, Arrangement]:
+                        ) -> NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL], MatchingResult],
+                                    Arrangement]:
         operands = [
             NameAndValue(sym_and_behaviour[0], sym_and_behaviour[1])
             for sym_and_behaviour in zip(operand_symbol_names, case.operands)
@@ -297,7 +311,7 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
 
         return NExArr(
             case.name,
-            ExecutionExpectation(
+            PrimAndExeExpectation.of_exe(
                 main_result=asrt_matching_result.matches(
                     value=asrt.equals(case.expected_result),
                     trace=trace_equals(self._expected_trace_for(case.expected_result, operands))

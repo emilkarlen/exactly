@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, \
-    ExecutionExpectation
+    PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.arguments_building import OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
@@ -102,7 +102,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
             execution=[
                 NExArr(
                     invalid_file_case.name,
-                    ExecutionExpectation(
+                    PrimAndExeExpectation.of_exe(
                         is_hard_error=asrt_renderer.is_renderer_of_major_blocks()
                     ),
                     arrangement_w_tcds(
@@ -156,7 +156,7 @@ class TestApplication(unittest.TestCase):
             execution=[
                 NExArr(
                     'checked dir is empty',
-                    ExecutionExpectation(
+                    PrimAndExeExpectation.of_exe(
                         main_result=asrt_matching_result.matches_value(matcher_result)
                     ),
                     arrangement_w_tcds(
@@ -201,7 +201,7 @@ class TestFilesOfModel(unittest.TestCase):
             execution=[
                 NExArr(
                     contents_case.name,
-                    ExecutionExpectation(),
+                    PrimAndExeExpectation.of_exe(),
                     helper.arrangement_for_contents_of_model(
                         checked_dir_contents=contents_case.actual,
                         files_matcher_symbol_value=

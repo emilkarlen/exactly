@@ -6,7 +6,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
-    ExecutionExpectation, ParseExpectation
+    ExecutionExpectation, ParseExpectation, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     arguments_building2 as args2
@@ -71,7 +71,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
             [
                 NExArr(
                     case.name,
-                    ExecutionExpectation(
+                    PrimAndExeExpectation.of_exe(
                         main_result=asrt_matching_result.matches_value(case.expected),
                     ),
                     arrangement_w_tcds(

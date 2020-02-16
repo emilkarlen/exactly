@@ -6,14 +6,14 @@ from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
-    ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds
+    ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import _utils
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr._utils import AssertionsHelper, \
@@ -248,7 +248,9 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         mk_operand_trace = get_mk_operand_trace('the_operand')
 
-        def execution_case_for(operand_result: bool) -> NExArr:
+        def execution_case_for(operand_result: bool) -> NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                                                                     MatchingResult],
+                                                               Arrangement]:
             operand_matcher = helper.logic_type_matcher_from_primitive(
                 matchers.ConstantMatcherWithCustomTrace(mk_operand_trace, operand_result)
             )
@@ -259,7 +261,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                               )
             return NExArr(
                 'operand that gives ' + str(operand_result),
-                ExecutionExpectation(
+                PrimAndExeExpectation.of_exe(
                     main_result=asrt_matching_result.matches(
                         value=asrt.equals(not operand_result),
                         trace=trace_equals(trace)
