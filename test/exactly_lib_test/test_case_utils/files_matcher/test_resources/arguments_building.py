@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Dict, List
 
 from exactly_lib.definitions import logic
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     file_matcher_arguments
@@ -277,11 +277,11 @@ def complete_arguments_constructor(assertion_variant: AssertionVariantArgumentsC
     )
 
 
-class FilesMatcherArgumentsSetup(SymbolsArrAndExpectSetup):
+class FilesMatcherArgumentsSetup(SymbolsArrEx):
     def __init__(self,
                  arguments: AssertionVariantArgumentsConstructor,
                  symbols_in_arrangement: Dict[str, SymbolDependentTypeValue],
-                 expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
+                 expected_references: Sequence[ValueAssertion[SymbolReference]] = ()):
         super().__init__(symbols_in_arrangement,
                          expected_references)
         self.arguments = arguments

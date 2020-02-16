@@ -10,20 +10,32 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class SymbolsArrAndExpectSetup:
+class SymbolsArrEx:
     def __init__(self,
                  symbols_in_arrangement: Dict[str, SymbolDependentTypeValue],
-                 expected_references: Sequence[ValueAssertion[SymbolUsage]] = ()):
+                 expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
+                 ):
         self.symbols_in_arrangement = symbols_in_arrangement
         self.expected_references = expected_references
 
     @property
-    def expected_references_list(self) -> List[ValueAssertion[SymbolUsage]]:
+    def expected_references_list(self) -> List[ValueAssertion[SymbolReference]]:
         return list(self.expected_references)
 
     @property
-    def expected_references_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def expected_references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence(self.expected_references_list)
+
+    @property
+    def expected_usages_list(self) -> List[ValueAssertion[SymbolUsage]]:
+        return [
+            asrt.is_instance_with(SymbolReference, sym_ref)
+            for sym_ref in self.expected_references
+        ]
+
+    @property
+    def expected_usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(self.expected_usages_list)
 
     @property
     def symbol_entries_for_arrangement(self) -> List[Entry]:
@@ -35,7 +47,7 @@ class SymbolsArrAndExpectSetup:
 
     @staticmethod
     def empty():
-        return SymbolsArrAndExpectSetup({}, ())
+        return SymbolsArrEx({}, ())
 
     def table_with_additional_entries(self, additional: Sequence[Entry]) -> SymbolTable:
         entries = list(additional)
@@ -43,11 +55,18 @@ class SymbolsArrAndExpectSetup:
 
         return symbol_table.symbol_table_with_entries(entries)
 
-    def matches_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolUsage]]
-                            ) -> ValueAssertion[Sequence[SymbolUsage]]:
+    def matches_references_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolReference]]
+                                       ) -> ValueAssertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence(
             list(precedes) +
             self.expected_references_list
+        )
+
+    def matches_usages_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolUsage]]
+                                   ) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(
+            list(precedes) +
+            self.expected_usages_list
         )
 
 

@@ -10,7 +10,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -81,7 +81,7 @@ class InstructionChecker:
             rel_opt_config: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         with self.put.subTest(case_name=test_case_name,
                               expectation_type=etc.expectation_type.name,
@@ -102,7 +102,7 @@ class InstructionChecker:
                     main_result=etc.main_result(main_result_for_positive_expectation),
                     symbol_usages=asrt.matches_sequence(
                         rel_opt_config.symbols.usage_expectation_assertions() +
-                        following_symbols_setup.expected_references_list
+                        following_symbols_setup.expected_usages_list
                     ),
                 ))
 
@@ -127,7 +127,7 @@ class InstructionChecker:
             non_default_relativity: RelOptionType,
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         rel_opt_configs = [
             rel_opt_conf.default_conf_rel_any(default_relativity),
@@ -155,7 +155,7 @@ class InstructionChecker:
             rel_opt_config: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for expectation_type_of_test_case in ExpectationType:
             etc = pfh_expectation_type_config(expectation_type_of_test_case)
@@ -175,7 +175,7 @@ class InstructionChecker:
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for rel_opt_config in self.accepted_rel_opt_configurations:
             self.check_expectation_type_variants(
@@ -191,7 +191,7 @@ class InstructionChecker:
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
             main_result: ValueAssertion,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for rel_opt_config in self.accepted_rel_opt_configurations:
 
@@ -218,7 +218,7 @@ class InstructionChecker:
                             main_result=main_result,
                             symbol_usages=asrt.matches_sequence(
                                 rel_opt_config.symbols.usage_expectation_assertions() +
-                                following_symbols_setup.expected_references_list
+                                following_symbols_setup.expected_usages_list
                             )
                         ))
 
@@ -228,7 +228,7 @@ class InstructionChecker:
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for rel_opt_config in self.accepted_rel_opt_configurations:
             etc = pfh_expectation_type_config(ExpectationType.POSITIVE)
@@ -247,7 +247,7 @@ class InstructionChecker:
             test_cases_with_name_and_dir_contents: List[NameAndValue[DirContents]],
             make_instruction_arguments: InstructionArgumentsVariantConstructor,
             main_result_for_positive_expectation: PassOrFail,
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for case in test_cases_with_name_and_dir_contents:
             with self.put.subTest(case.name):
@@ -264,6 +264,6 @@ MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
 
 
 def _symbol_table_of(sym_conf: SymbolsConfiguration,
-                     symbols_setup: SymbolsArrAndExpectSetup,
+                     symbols_setup: SymbolsArrEx,
                      ) -> SymbolTable:
     return symbols_setup.table_with_additional_entries(sym_conf.entries_for_arrangement())

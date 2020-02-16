@@ -264,7 +264,7 @@ class TestSingleElement(unittest.TestCase):
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
-                        references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
+                        references=asrt.matches_sequence(rel_opt_conf.symbols.reference_expectation_assertions()),
                         validators=is_single_validator_with([
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(
@@ -364,7 +364,7 @@ class TestSingleElement(unittest.TestCase):
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
-                        references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
+                        references=asrt.matches_sequence(rel_opt_conf.symbols.reference_expectation_assertions()),
                         validators=is_single_validator_with([
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(
@@ -479,7 +479,7 @@ class TestSingleElement(unittest.TestCase):
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
                         elements=[case.expected_list_element],
-                        references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
+                        references=asrt.matches_sequence(rel_opt_conf.symbols.reference_expectation_assertions()),
                         validators=is_single_validator_with([
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(

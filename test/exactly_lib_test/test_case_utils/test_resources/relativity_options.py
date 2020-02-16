@@ -48,14 +48,17 @@ class SymbolsConfiguration:
     Configuration of symbols used by a relativity option (for a path cli argument).
     """
 
-    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
+    def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return []
+
+    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolUsage]]:
+        return self.reference_expectation_assertions()
 
     def entries_for_arrangement(self) -> List[Entry]:
         return []
 
     def usages_expectation(self) -> ValueAssertion[Sequence[SymbolUsage]]:
-        return asrt.matches_sequence(self.usage_expectation_assertions())
+        return asrt.matches_sequence(self.reference_expectation_assertions())
 
     def in_arrangement(self) -> SymbolTable:
         return symbol_tables.symbol_table_from_entries(self.entries_for_arrangement())
@@ -405,7 +408,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         self.relativity = relativity
         self.symbol_name = symbol_name
 
-    def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
+    def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return [
             equals_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,

@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrAndExpectSetup
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
@@ -65,7 +65,7 @@ class MatcherChecker:
             root_dir_of_dir_contents: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         with self.put.subTest(case_name=test_case_name,
                               expectation_type=etc.expectation_type.name,
@@ -99,7 +99,7 @@ class MatcherChecker:
             non_default_relativity: RelOptionType,
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         rel_opt_configs = [
             rel_opt_conf.default_conf_rel_any(default_relativity),
@@ -131,7 +131,7 @@ class MatcherChecker:
             root_dir_of_dir_contents: RelativityOptionConfiguration,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for expectation_type_of_test_case in ExpectationType:
             etc = expectation_type_config__non_is_success(expectation_type_of_test_case)
@@ -153,7 +153,7 @@ class MatcherChecker:
             main_result_for_positive_expectation: PassOrFail,
             contents_of_relativity_option_root: DirContents = empty_dir_contents(),
             test_case_name: str = '',
-            following_symbols_setup: SymbolsArrAndExpectSetup = SymbolsArrAndExpectSetup.empty()):
+            following_symbols_setup: SymbolsArrEx = SymbolsArrEx.empty()):
 
         for rel_opt_config in SOME_ACCEPTED_REL_OPT_CONFIGURATIONS:
             self.check_expectation_type_variants(
@@ -171,6 +171,6 @@ MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
 
 
 def _symbol_table_of(sym_conf: SymbolsConfiguration,
-                     symbols_setup: SymbolsArrAndExpectSetup,
+                     symbols_setup: SymbolsArrEx,
                      ) -> SymbolTable:
     return symbols_setup.table_with_additional_entries(sym_conf.entries_for_arrangement())

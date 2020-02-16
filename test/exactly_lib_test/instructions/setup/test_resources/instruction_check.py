@@ -1,10 +1,12 @@
 import os
 import unittest
+from typing import Sequence
 
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common
@@ -81,7 +83,7 @@ class Expectation:
                  pre_validation_result: ValueAssertion = svh_assertions.is_success(),
                  main_result: ValueAssertion = sh_assertions.is_success(),
                  post_validation_result: ValueAssertion = svh_assertions.is_success(),
-                 symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
                  settings_builder: ValueAssertion = asrt.anything_goes(),
