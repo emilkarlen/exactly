@@ -66,6 +66,9 @@ class Singleton(ArgumentElementsRenderer):
         return [self.value]
 
 
+NEW_LINE = Singleton('\n')
+
+
 class SequenceOfElementsBase(ArgumentElementsRenderer, ABC):
     """
     A sequence of arguments separated by space.

@@ -122,7 +122,7 @@ class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
             validation: ValidationAssertions = all_validations_passes(),
             main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
             is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
-    ) -> 'PrimAndExeExpectation':
+    ) -> 'PrimAndExeExpectation[PRIMITIVE, OUTPUT]':
         return PrimAndExeExpectation(
             ExecutionExpectation(
                 validation=validation,
@@ -130,6 +130,15 @@ class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
                 is_hard_error=is_hard_error,
             ),
             asrt.anything_goes()
+        )
+
+    @staticmethod
+    def of_prim(
+            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
+    ) -> 'PrimAndExeExpectation[PRIMITIVE, OUTPUT]':
+        return PrimAndExeExpectation(
+            ExecutionExpectation(),
+            primitive
         )
 
 

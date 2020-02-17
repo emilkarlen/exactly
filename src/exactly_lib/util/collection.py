@@ -25,11 +25,11 @@ def _unique(elements: Sequence) -> list:
     return ret_val
 
 
-def intersperse_list(element_between, l: list) -> list:
-    if len(l) <= 1:
-        return l
+def intersperse_list(element_between, elements: Sequence) -> list:
+    if len(elements) <= 1:
+        return list(elements)
     else:
-        return [l[0]] + [element_between] + intersperse_list(element_between, l[1:])
+        return [elements[0]] + [element_between] + intersperse_list(element_between, elements[1:])
 
 
 T = TypeVar('T')

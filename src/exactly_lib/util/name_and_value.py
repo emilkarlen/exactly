@@ -28,6 +28,18 @@ class NameAndValue(tuple, Generic[T]):
         return self[1]
 
 
+class NavBuilder:
+    def __init__(self, name: str):
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def build(self, value: T) -> NameAndValue[T]:
+        return NameAndValue(self._name, value)
+
+
 def to_dict(name_and_values: Sequence[NameAndValue[T]]) -> Dict[str, T]:
     return {
         nav.name: nav.value

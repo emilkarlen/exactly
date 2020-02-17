@@ -18,6 +18,19 @@ class SymbolsArrEx:
         self.symbols_in_arrangement = symbols_in_arrangement
         self.expected_references = expected_references
 
+    @staticmethod
+    def of_navs(
+            symbols_in_arrangement: Sequence[NameAndValue[SymbolDependentTypeValue]],
+            expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
+    ) -> 'SymbolsArrEx':
+        return SymbolsArrEx(
+            {
+                nav.name: nav.value
+                for nav in symbols_in_arrangement
+            },
+            expected_references,
+        )
+
     @property
     def expected_references_list(self) -> List[ValueAssertion[SymbolReference]]:
         return list(self.expected_references)

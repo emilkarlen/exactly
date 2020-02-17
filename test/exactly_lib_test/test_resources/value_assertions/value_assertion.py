@@ -398,6 +398,13 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
+def named(name: str,
+          assertion: ValueAssertion[T]) -> ValueAssertion[T]:
+    return sub_component(name,
+                         lambda x: x,
+                         assertion)
+
+
 def sub_component_many(component_name: str,
                        component_getter: Callable[[T], U],
                        component_assertions: List[ValueAssertion[U]],

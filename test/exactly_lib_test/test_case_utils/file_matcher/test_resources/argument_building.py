@@ -4,6 +4,7 @@ from typing import List, Optional
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
@@ -38,6 +39,15 @@ class SymbolReference(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [self.symbol_name]
+
+
+class SymbolReferenceWSyntax(FileMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [symbol_reference_syntax_for_name(self.symbol_name)]
 
 
 class Type(FileMatcherArg):

@@ -1,0 +1,4 @@
+BEGIN_BRACE = '{'
+END_BRACE = '}'
+
+FILE_MATCHER_SEPARATOR = ':'

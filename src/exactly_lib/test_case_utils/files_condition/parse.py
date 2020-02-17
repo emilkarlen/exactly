@@ -2,11 +2,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parser_classes import ParserWithCurrentLineVariants, PARSE_RESULT
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 
-BEGIN_BRACE = '{'
-END_BRACE = '}'
-
-FILE_MATCHER_SEPARATOR = ':'
-
 
 def parser() -> ParserWithCurrentLineVariants[FilesConditionSdv]:
     return _PARSER

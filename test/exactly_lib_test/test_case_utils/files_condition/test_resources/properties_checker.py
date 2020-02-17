@@ -1,5 +1,6 @@
 import unittest
 from pathlib import PurePosixPath
+from typing import Optional
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -18,12 +19,12 @@ from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileM
 
 class FilesConditionPropertiesConfiguration(
     CommonPropertiesConfiguration[FilesCondition,
-                                  PurePosixPath,
-                                  MatchingResult]):
+                                  Optional[PurePosixPath],
+                                  Optional[MatchingResult]]):
     def __init__(self):
         self._applier = _Applier()
 
-    def applier(self) -> Applier[FilesCondition, PurePosixPath, MatchingResult]:
+    def applier(self) -> Applier[FilesCondition, Optional[PurePosixPath], Optional[MatchingResult]]:
         return self._applier
 
     def new_sdv_checker(self) -> CommonSdvPropertiesChecker[FilesCondition]:
@@ -46,7 +47,7 @@ class _SdvPropertiesChecker(CommonSdvPropertiesChecker[FilesCondition]):
         )
 
 
-class _Applier(Applier[FilesCondition, PurePosixPath, MatchingResult]):
+class _Applier(Applier[FilesCondition, Optional[PurePosixPath], Optional[MatchingResult]]):
     """
     Test fails if the files-condition does not contain the tested path,
     or if it has no associated file-matcher.
@@ -59,7 +60,10 @@ class _Applier(Applier[FilesCondition, PurePosixPath, MatchingResult]):
               message_builder: MessageBuilder,
               primitive: FilesCondition,
               resolving_environment: FullResolvingEnvironment,
-              input_: PurePosixPath) -> MatchingResult:
+              input_: Optional[PurePosixPath]) -> Optional[MatchingResult]:
+        if input_ is None:
+            return None
+
         file_matcher = self._associated_file_matcher(put, message_builder, input_, primitive)
         return file_matcher.matches_w_trace(FileMatcherModelThatMustNotBeAccessed())
 

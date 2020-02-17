@@ -7,12 +7,15 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
+    PrimAndExeExpectation, Arrangement
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, \
     ValidationExpectationSvh, ValidationAssertions
+from exactly_lib_test.test_resources.test_utils import NExArr
 
 
 class ValidationCaseSvh:
@@ -91,6 +94,22 @@ def failing_validation_cases(symbol_name: str = 'file_matcher_symbol') -> Sequen
                            symbol_name)
         )
         for case in validation.failing_validation_cases()
+    ]
+
+
+def failing_validation_cases__multi_exe(symbol_name: str = 'files_matcher_symbol'
+                                        ) -> Sequence[NExArr[PrimAndExeExpectation, Arrangement]]:
+    return [
+        NExArr(
+            case.name,
+            PrimAndExeExpectation.of_exe(
+                validation=case.value.expectation,
+            ),
+            arrangement_wo_tcds(
+                symbols=case.value.symbol_context.symbol_table,
+            ),
+        )
+        for case in failing_validation_cases(symbol_name)
     ]
 
 

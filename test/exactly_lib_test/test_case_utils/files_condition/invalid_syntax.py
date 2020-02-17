@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.test_case_utils.files_condition.syntax
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.files_condition import parse as sut
@@ -16,6 +17,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace),
         unittest.makeSuite(TestSyntaxErrorExceptionShouldBeRaisedWhenMissingEndBrace),
         unittest.makeSuite(TestSyntaxErrorExceptionShouldBeRaisedWhenInvalidFileMatcher),
+        unittest.makeSuite(TestSyntaxErrorExceptionShouldBeRaisedWhenMultipleFileNamesOnSameLine),
     ])
 
 
@@ -38,11 +40,11 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace(_TestCaseHelpe
             ),
             NameAndValue(
                 'quoted start brace token',
-                surrounded_by_hard_quotes_str(sut.BEGIN_BRACE)
+                surrounded_by_hard_quotes_str(exactly_lib.test_case_utils.files_condition.syntax.BEGIN_BRACE)
             ),
             NameAndValue(
                 'non start brace token',
-                sut.END_BRACE
+                exactly_lib.test_case_utils.files_condition.syntax.END_BRACE
             ),
         ]
         for must_be_on_current_line in [False, True]:
@@ -52,7 +54,7 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace(_TestCaseHelpe
                     self._expect_parse_exception(case.value, must_be_on_current_line)
 
     def test_begin_brace_on_following_line_BUT_must_be_on_current_line(self):
-        self._expect_parse_exception('\n{}'.format(sut.BEGIN_BRACE),
+        self._expect_parse_exception('\n{}'.format(exactly_lib.test_case_utils.files_condition.syntax.BEGIN_BRACE),
                                      must_be_on_current_line=True)
 
 
@@ -132,10 +134,32 @@ class TestSyntaxErrorExceptionShouldBeRaisedWhenInvalidFileMatcher(_TestCaseHelp
                     self._expect_parse_exception(source, must_be_on_current_line)
 
 
+class TestSyntaxErrorExceptionShouldBeRaisedWhenMultipleFileNamesOnSameLine(_TestCaseHelperBase):
+    def test(self):
+        cases = [
+            NameAndValue(
+                'multiple file names on one and only line',
+                '{BEGIN_BRACE} fn1 fn2  {END_BRACE}'
+            ),
+            NameAndValue(
+                'first line ok, multiple file names on second line',
+                '{BEGIN_BRACE} file-name\n'
+                'fn1 fn2\n'
+                '{END_BRACE}'
+            ),
+        ]
+        for must_be_on_current_line in [False, True]:
+            for case in cases:
+                with self.subTest(source_case=case.name,
+                                  must_be_on_current_line=must_be_on_current_line):
+                    source = _SF.format(case.value)
+                    self._expect_parse_exception(source, must_be_on_current_line)
+
+
 _SF = StringFormatter({
-    'BEGIN_BRACE': sut.BEGIN_BRACE,
-    'END_BRACE': sut.END_BRACE,
-    'FILE_MATCHER_SEPARATOR': sut.FILE_MATCHER_SEPARATOR,
+    'BEGIN_BRACE': exactly_lib.test_case_utils.files_condition.syntax.BEGIN_BRACE,
+    'END_BRACE': exactly_lib.test_case_utils.files_condition.syntax.END_BRACE,
+    'FILE_MATCHER_SEPARATOR': exactly_lib.test_case_utils.files_condition.syntax.FILE_MATCHER_SEPARATOR,
     'FILE_NAME': 'a-file-name',
     'FILE_MATCHER': 'file_matcher_symbol',
     'INVALID_FILE_MATCHER': NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME,
