@@ -17,23 +17,28 @@ from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
+from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, GenericFileMatcherSdv, \
     FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.functional import map_optional
+from exactly_lib.util.render import strings as string_rendering
+from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class FilesCondition(WithDetailsDescription):
     def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcher]]):
         self._files = files
+        self._describer = _DescriberOfPrimitive(files)
 
     @property
     def describer(self) -> DetailsRenderer:
-        return details.empty()
+        return self._describer
 
     @property
     def files(self) -> Mapping[PurePosixPath, Optional[FileMatcher]]:
@@ -61,7 +66,7 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
 
     @property
     def describer(self) -> DetailsRenderer:
-        return details.empty()
+        return _DescriberOfDdv(self._files)
 
     @property
     def validator(self) -> DdvValidator:
@@ -166,3 +171,54 @@ _FORMAT_MAP = {
 }
 _EMPTY_FILE_NAME = strings.FormatMap('A {FILE_NAME} must not be the empty string',
                                      _FORMAT_MAP)
+
+
+class _DescriberBase(DetailsRenderer):
+    def render(self) -> Sequence[Detail]:
+        return self._renderer().render()
+
+    def _entries(self) -> Sequence[Tuple[Renderer[str], Optional[WithTreeStructureDescription]]]:
+        raise NotImplementedError('abstract method')
+
+    def _renderer(self) -> DetailsRenderer:
+        return details.SequenceRenderer([
+            self._file(fn, mb_matcher)
+            for fn, mb_matcher in self._entries()
+        ])
+
+    @staticmethod
+    def _file(path: Renderer[str],
+              mb_matcher: Optional[WithTreeStructureDescription],
+              ) -> DetailsRenderer:
+        path_renderer = details.String(path.render())
+        return (
+            path_renderer
+            if mb_matcher is None
+            else
+            details.HeaderAndValue(
+                path_renderer,
+                details.Tree(mb_matcher.structure())
+            )
+        )
+
+
+class _DescriberOfDdv(_DescriberBase):
+    def __init__(self, files: Sequence[Tuple[StringDdv, Optional[FileMatcherDdv]]]):
+        self._files = files
+
+    def _entries(self) -> Sequence[Tuple[Renderer[str], Optional[WithTreeStructureDescription]]]:
+        return [
+            (fn.describer(), mb_matcher)
+            for fn, mb_matcher in self._files
+        ]
+
+
+class _DescriberOfPrimitive(_DescriberBase):
+    def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcher]]):
+        self._files = files
+
+    def _entries(self) -> Sequence[Tuple[Renderer[str], Optional[WithTreeStructureDescription]]]:
+        return [
+            (string_rendering.of_to_string_object(fn), self._files[fn])
+            for fn in sorted(self._files.keys())
+        ]

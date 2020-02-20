@@ -2,6 +2,7 @@ from typing import Iterable, TypeVar, Callable
 
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
+from exactly_lib.util.strings import ToStringObject
 
 
 class AsToStringObject:
@@ -58,3 +59,7 @@ class OfObjectAndRenderingFunction(Renderer[str]):
 
     def render(self) -> str:
         return self._renderer(self._x)
+
+
+def of_to_string_object(x: ToStringObject) -> Renderer[str]:
+    return OfObjectAndRenderingFunction(x, str)

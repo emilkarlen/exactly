@@ -1,7 +1,4 @@
-from typing import List
-
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
@@ -109,35 +106,5 @@ INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
 
 FILES_CONDITION_SYNTAX_ELEMENT = name_and_ref_target(
     'FILES-CONDITION',
-    'A set of file names together with an optional matcher'
+    'A condition of existence of a set of named files'
 )
-
-ALL_SYNTAX_ELEMENTS = (
-
-    SYMBOL_NAME_SYNTAX_ELEMENT,
-    SYMBOL_REFERENCE_SYNTAX_ELEMENT,
-
-    HERE_DOCUMENT_SYNTAX_ELEMENT,
-
-    REGEX_SYNTAX_ELEMENT,
-    GLOB_PATTERN_SYNTAX_ELEMENT,
-
-    INTEGER_SYNTAX_ELEMENT,
-    INTEGER_MATCHER_SYNTAX_ELEMENT,
-
-    STRING_SYNTAX_ELEMENT,
-    LIST_SYNTAX_ELEMENT,
-    PATH_SYNTAX_ELEMENT,
-
-    FILE_MATCHER_SYNTAX_ELEMENT,
-    FILES_MATCHER_SYNTAX_ELEMENT,
-    LINE_MATCHER_SYNTAX_ELEMENT,
-    STRING_MATCHER_SYNTAX_ELEMENT,
-    STRING_TRANSFORMER_SYNTAX_ELEMENT,
-    PROGRAM_SYNTAX_ELEMENT,
-)
-
-
-def all_syntax_element_cross_refs() -> List[CrossReferenceId]:
-    return [x.cross_reference_target
-            for x in ALL_SYNTAX_ELEMENTS]

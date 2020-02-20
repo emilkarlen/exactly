@@ -31,6 +31,7 @@ class ConstantMatcherThatRegistersApplication(FileMatcherTestImplBase):
                  result: bool,
                  sequence_to_register_from: IntSequence,
                  ):
+        super().__init__()
         self.name_for_err_msgs = name_for_err_msgs
         self._result = result
         self._sequence = sequence_to_register_from
