@@ -64,6 +64,10 @@ class TokenParser:
             self.error('Missing ' + syntax_element_name)
         self.require_head_token_has_valid_syntax(syntax_element_name)
 
+    def require_head_is_unquoted_and_equals(self, expected: str, error_message: ErrorMessageGenerator):
+        if not self.head_is_unquoted_and_equals(expected):
+            raise SingleInstructionInvalidArgumentException(error_message.message())
+
     def has_valid_head_token(self) -> bool:
         return not (
                 self._token_stream.is_null
@@ -265,21 +269,22 @@ class TokenParser:
     def consume_mandatory_constant_unquoted_string(self,
                                                    expected_string: str,
                                                    must_be_on_current_line: bool,
+                                                   header: Optional[ErrorMessageGenerator] = None,
                                                    ):
         """
-        Consumes the first token if it is an unquoted string.
-
-        :type must_be_on_current_line: Tells if the string must be found on the current line.
-        :return: The unquoted string
-
         :raises :class:`SingleInstructionInvalidArgumentException' The parser is at end of file,
         or if the must_be_on_current_line is True but the current line is empty.
         """
         actual_string = self.consume_mandatory_unquoted_string(expected_string, must_be_on_current_line)
         if actual_string != expected_string:
-            raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines_str(
-                expected_string,
-                actual_string))
+            explanation = expected_found.unexpected_lines_str(expected_string, actual_string)
+            message = (
+                '\n'.join((header.message(), explanation))
+                if header
+                else
+                explanation
+            )
+            raise SingleInstructionInvalidArgumentException(message)
 
     def consume_mandatory_keyword(self,
                                   keyword: str,
@@ -290,6 +295,20 @@ class TokenParser:
             raise SingleInstructionInvalidArgumentException(expected_found.unexpected_lines_str(
                 keyword,
                 actual_string))
+
+    def consume_mandatory_keyword__part_of_syntax_element(self,
+                                                          keyword: str,
+                                                          must_be_on_current_line: bool,
+                                                          syntax_element_name: str,
+                                                          ):
+        actual_string = self.consume_mandatory_unquoted_string(syntax_element_name, must_be_on_current_line)
+        if actual_string != keyword:
+            raise SingleInstructionInvalidArgumentException(
+                expected_found.unexpected_lines_str__part_of_syntax_element(
+                    syntax_element_name,
+                    keyword,
+                    actual_string)
+            )
 
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self,
                                                                          expected_constants: Sequence[str],
@@ -419,6 +438,12 @@ class TokenParser:
             return False
         return matches(option_name, self.token_stream.head.source_string)
 
+    def head_is_unquoted_and_equals(self, s: str) -> bool:
+        if not self.has_valid_head_token():
+            return False
+        head = self.head
+        return head.is_plain and head.string == s
+
     def parse_optional_command(self, command_name_2_parser: Dict[str, Callable[['TokenParser'], T]]) -> T:
         """
         Checks if the first token is one of a given set of commands.  If the token
@@ -539,19 +564,17 @@ class TokenParser:
 
     def error(self,
               error_message_format_string: str,
-              extra_format_map: dict = None):
+              extra_format_map: dict = None) -> T:
 
         format_map = self.error_message_format_map
         if extra_format_map:
             format_map = dict(list(self.error_message_format_map.items()) + list(extra_format_map.items()))
 
-        err_msg = error_message_format_string.format_map(format_map)
-
-        raise SingleInstructionInvalidArgumentException(err_msg)
+        return self.error_plain(error_message_format_string.format_map(format_map))
 
     def error_from(self,
                    header: Optional[str],
-                   err_msg_generator: ErrorMessageGenerator):
+                   err_msg_generator: ErrorMessageGenerator) -> T:
 
         line_separated_parts = []
         if header:
@@ -559,8 +582,10 @@ class TokenParser:
 
         line_separated_parts.append(err_msg_generator.message())
 
-        err_msg = '\n'.join(line_separated_parts)
-        raise SingleInstructionInvalidArgumentException(err_msg)
+        return self.error_plain('\n'.join(line_separated_parts))
+
+    def error_plain(self, message: str) -> T:
+        raise SingleInstructionInvalidArgumentException(message)
 
     def _lookahead_token_has_invalid_syntax(self) -> bool:
         return self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR

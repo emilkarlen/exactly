@@ -34,7 +34,7 @@ class Negation(_CombinatorBase[MODEL]):
             (negated.structure(),),
         )
 
-    def __init__(self, negated: MatcherWTrace[MODEL]):
+    def __init__(self, negated: MatcherWTraceAndNegation[MODEL]):
         _CombinatorBase.__init__(self)
         self._negated = negated
 
@@ -171,6 +171,10 @@ class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
         return _SequenceOfOperandsAdv.of(Conjunction,
                                          self._operands,
                                          tcds)
+
+
+def conjunction_adv(operands: Sequence[MatcherAdv[MODEL]]) -> MatcherAdv[MODEL]:
+    return _SequenceOfOperandsAdv(Conjunction, operands)
 
 
 class Disjunction(_CombinatorBase[MODEL]):

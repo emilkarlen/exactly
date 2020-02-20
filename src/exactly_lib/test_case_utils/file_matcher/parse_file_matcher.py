@@ -56,7 +56,7 @@ class _Parser(parser_classes.Parser[FileMatcherSdv]):
 
 class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
     def parse_from_token_parser(self, token_parser: TokenParser) -> GenericFileMatcherSdv:
-        return _parse__generic(token_parser, must_be_on_current_line=False)
+        return parse__generic(token_parser, must_be_on_current_line=False)
 
 
 _PARSER = _Parser()
@@ -74,12 +74,12 @@ def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv
 
 def parse_sdv(parser: TokenParser,
               must_be_on_current_line: bool = True) -> FileMatcherSdv:
-    generic_matcher = _parse__generic(parser, must_be_on_current_line)
+    generic_matcher = parse__generic(parser, must_be_on_current_line)
     return FileMatcherSdv(generic_matcher)
 
 
-def _parse__generic(parser: TokenParser,
-                    must_be_on_current_line: bool) -> GenericFileMatcherSdv:
+def parse__generic(parser: TokenParser,
+                   must_be_on_current_line: bool) -> GenericFileMatcherSdv:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)

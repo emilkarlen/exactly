@@ -107,6 +107,11 @@ INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
     'Matches an integer'
 )
 
+FILES_CONDITION_SYNTAX_ELEMENT = name_and_ref_target(
+    'FILES-CONDITION',
+    'A set of file names together with an optional matcher'
+)
+
 ALL_SYNTAX_ELEMENTS = (
 
     SYMBOL_NAME_SYNTAX_ELEMENT,

@@ -22,14 +22,14 @@ class ArgumentElementsRenderer(ABC):
         return ' '.join([str(element) for element in self.elements])
 
     @property
-    def as_str(self) -> str:
-        """Alternative way to render as string."""
-        return str(self)
-
-    @property
     @abstractmethod
     def elements(self) -> List[WithToString]:
         pass
+
+    @property
+    def as_str(self) -> str:
+        """Alternative way to render as string."""
+        return str(self)
 
     @property
     def as_arguments(self) -> Arguments:

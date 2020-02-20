@@ -16,6 +16,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
 
 def suite() -> unittest.TestSuite:
@@ -90,7 +91,7 @@ class TestInvalidFileNamesShouldCauseValidationError(unittest.TestCase):
                     self,
                     case.source.as_arguments,
                     None,
-                    arrangement_wo_tcds(),
+                    arrangement_wo_tcds(case.symbols.symbol_table),
                     Expectation(
                         ParseExpectation(
                             symbol_references=case.symbols.expected_references_assertion
@@ -141,7 +142,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
                     self,
                     case.source.as_arguments,
                     None,
-                    arrangement_wo_tcds(),
+                    arrangement_wo_tcds(case.symbols.symbol_table),
                     Expectation(
                         ParseExpectation(
                             symbol_references=case.symbols.expected_references_assertion
@@ -160,7 +161,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
             PurePosixPath(file_name_with_back_slash): asrt.is_none
         }
         source = args.FilesCondition([
-            args.FileCondition(file_name_with_back_slash),
+            args.FileCondition(surrounded_by_hard_quotes(file_name_with_back_slash)),
         ])
 
         # ACT & ASSERT #
@@ -253,7 +254,7 @@ class TestEachUniqueFileNameShouldHaveAnEntryInFilesMapping(unittest.TestCase):
                     self,
                     case.source.as_arguments,
                     None,
-                    arrangement_wo_tcds(),
+                    arrangement_wo_tcds(case.symbols.symbol_table),
                     Expectation(
                         ParseExpectation(
                             symbol_references=case.symbols.expected_references_assertion

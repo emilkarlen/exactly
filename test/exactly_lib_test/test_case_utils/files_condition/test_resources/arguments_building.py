@@ -1,10 +1,10 @@
 from typing import Optional, List, Sequence
 
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.files_condition import syntax
-from exactly_lib.util.collection import intersperse_list
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton, NEW_LINE, \
-    SequenceOfArguments
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, Arguments
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton
 from exactly_lib_test.test_resources.strings import WithToString
 
 
@@ -17,14 +17,14 @@ class FileCondition:
         self.condition = condition
 
     @property
-    def elements(self) -> List[WithToString]:
-        ret_val = [str(self.name)]
-
-        if self.condition:
-            ret_val.append(syntax.FILE_MATCHER_SEPARATOR)
-            ret_val += self.condition.elements
-
-        return ret_val
+    def as_argument_elements(self) -> ArgumentElements:
+        fn = ArgumentElements([self.name])
+        return (
+            fn
+            if self.condition is None
+            else
+            fn.followed_by(self.condition.as_argument_elements, [syntax.FILE_MATCHER_SEPARATOR])
+        )
 
 
 BEGIN_BRACE_RENDERER = Singleton(syntax.BEGIN_BRACE)
@@ -38,11 +38,24 @@ class FilesCondition(ArgumentElementsRenderer):
 
     @property
     def elements(self) -> List[WithToString]:
-        elements = (
-                [BEGIN_BRACE_RENDERER] +
-                list(self.files) +
-                [END_BRACE_RENDERER]
-        )
+        raise NotImplementedError('unsupported')
 
-        separated_elements = SequenceOfArguments(intersperse_list(NEW_LINE, elements))
-        return separated_elements.elements
+    @property
+    def as_str(self) -> str:
+        return self.as_argument_elements.as_arguments.as_single_string
+
+    @property
+    def as_arguments(self) -> Arguments:
+        return self.as_argument_elements.as_arguments
+
+    @property
+    def as_argument_elements(self) -> ArgumentElements:
+        ret_val = ArgumentElements([syntax.BEGIN_BRACE])
+        for fc in self.files:
+            ret_val = ret_val.followed_by_lines(fc.as_argument_elements.all_lines)
+
+        return ret_val.last_line_followed_by(ArgumentElements([syntax.END_BRACE]))
+
+    @property
+    def as_remaining_source(self) -> ParseSource:
+        return self.as_argument_elements.as_remaining_source

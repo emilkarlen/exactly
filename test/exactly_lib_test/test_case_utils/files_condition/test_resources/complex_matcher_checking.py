@@ -37,7 +37,7 @@ class ConstantMatcherThatRegistersApplication(FileMatcherTestImplBase):
         self.registrations = []
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
-        self._registrations.append(self._sequence.next())
+        self.registrations.append(self._sequence.next())
         return matching_result.of(self._result)
 
 

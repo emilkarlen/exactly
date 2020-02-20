@@ -62,6 +62,10 @@ class SymbolsArrEx:
     def empty():
         return SymbolsArrEx({}, ())
 
+    @property
+    def symbol_table(self) -> SymbolTable:
+        return self.table_with_additional_entries(())
+
     def table_with_additional_entries(self, additional: Sequence[Entry]) -> SymbolTable:
         entries = list(additional)
         entries += self.symbol_entries_for_arrangement

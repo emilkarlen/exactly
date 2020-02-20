@@ -214,11 +214,12 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                     arrangement_wo_tcds(
                         symbol_utils.symbol_table_from_name_and_sdv_mapping({
 
-                            file_name__constant:
+                            fm__constant.name:
                                 file_matchers.constant(fm__constant.value),
 
-                            file_name__w_variations:
+                            fm__w_variations:
                                 file_matchers.constant(expected_result_of_matcher_w_variations),
+
                         })
                     ),
                 )

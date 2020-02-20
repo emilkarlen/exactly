@@ -125,31 +125,31 @@ class ArgumentElements:
     def as_remaining_source(self) -> ParseSource:
         return self.as_arguments.as_remaining_source
 
-    def append_to_first_line(self, elements: List):
+    def append_to_first_line(self, elements: List) -> 'ArgumentElements':
         return ArgumentElements(self.first_line + elements,
                                 self.following_lines)
 
-    def with_first_line_preceded_by(self, elements: List):
+    def with_first_line_preceded_by(self, elements: List) -> 'ArgumentElements':
         return ArgumentElements(elements + self.first_line,
                                 self.following_lines)
 
-    def prepend_to_first_line(self, elements: List):
+    def prepend_to_first_line(self, elements: List) -> 'ArgumentElements':
         return ArgumentElements(elements + self.first_line,
                                 self.following_lines)
 
     def followed_by_lines(self,
-                          following_lines: List[List]):
+                          following_lines: List[List]) -> 'ArgumentElements':
         return ArgumentElements(self.first_line,
                                 self.following_lines + following_lines)
 
-    def append_to_first_and_following_lines(self, argument_elements):
+    def append_to_first_and_following_lines(self, argument_elements: 'ArgumentElements') -> 'ArgumentElements':
         assert isinstance(argument_elements, ArgumentElements)
         return ArgumentElements(self.first_line + argument_elements.first_line,
                                 self.following_lines + argument_elements.following_lines)
 
     def followed_by(self,
-                    argument_elements,
-                    first_line_separator: Sequence = ()):
+                    argument_elements: 'ArgumentElements',
+                    first_line_separator: Sequence = ()) -> 'ArgumentElements':
         """
         :type argument_elements: ArgumentElements
         :param first_line_separator: String that separates the first line of the two arguments
@@ -159,8 +159,8 @@ class ArgumentElements:
                                 self.following_lines + argument_elements.following_lines)
 
     def last_line_followed_by(self,
-                              argument_elements,
-                              first_line_separator: Sequence = ()):
+                              argument_elements: 'ArgumentElements',
+                              first_line_separator: Sequence = ()) -> 'ArgumentElements':
         """
         :type argument_elements: ArgumentElements
         :param first_line_separator: String that separates the first line of the two arguments

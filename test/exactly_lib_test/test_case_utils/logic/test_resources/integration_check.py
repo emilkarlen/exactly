@@ -203,7 +203,8 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         checker.check(source)
 
     def check__w_source_variants(self,
-                                 put: unittest.TestCase, arguments: Arguments,
+                                 put: unittest.TestCase,
+                                 arguments: Arguments,
                                  input_: INPUT,
                                  arrangement: Arrangement,
                                  expectation: Expectation[PRIMITIVE, OUTPUT],
