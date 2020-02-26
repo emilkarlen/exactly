@@ -44,6 +44,29 @@ class ArgumentElementsRenderer(ABC):
         return parse_source.remaining_source(str(self))
 
 
+class FromArgumentElementsBase(ArgumentElementsRenderer, ABC):
+    @property
+    def elements(self) -> List[WithToString]:
+        raise NotImplementedError('unsupported')
+
+    @property
+    def as_str(self) -> str:
+        return self.as_argument_elements.as_arguments.as_single_string
+
+    @property
+    def as_arguments(self) -> Arguments:
+        return self.as_argument_elements.as_arguments
+
+    @property
+    @abstractmethod
+    def as_argument_elements(self) -> ArgumentElements:
+        pass
+
+    @property
+    def as_remaining_source(self) -> ParseSource:
+        return self.as_argument_elements.as_remaining_source
+
+
 class EmptyArgument(ArgumentElementsRenderer):
     """
     An empty string.

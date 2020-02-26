@@ -11,7 +11,10 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import \
     file_matcher_arguments
+from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesCondition
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
+from exactly_lib_test.test_resources.arguments_building import FromArgumentElementsBase
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -100,6 +103,28 @@ class Prune(FilesMatcherArg):
                 + self.prune.elements +
                 self.on_resulting_contents.elements
         )
+
+
+class _FilesConditionContainmentBase(FromArgumentElementsBase, FilesMatcherArg, ABC):
+    def __init__(self,
+                 files_matcher: str,
+                 files_condition: FilesCondition):
+        self.files_matcher = files_matcher
+        self.files_condition = files_condition
+
+    @property
+    def as_argument_elements(self) -> ArgumentElements:
+        return self.files_condition.as_argument_elements.with_first_line_preceded_by([self.files_matcher])
+
+
+class Contains(FilesMatcherArg, ABC):
+    def __init__(self, files_condition: FilesCondition):
+        super().__init__(config.CONTAINS_ARGUMENT, files_condition)
+
+
+class Equals(FilesMatcherArg, ABC):
+    def __init__(self, files_condition: FilesCondition):
+        super().__init__(config.EQUALS_ARGUMENT, files_condition)
 
 
 class AssertionVariantArgumentsConstructor:
