@@ -117,12 +117,12 @@ class _FilesConditionContainmentBase(FromArgumentElementsBase, FilesMatcherArg, 
         return self.files_condition.as_argument_elements.with_first_line_preceded_by([self.files_matcher])
 
 
-class Contains(FilesMatcherArg, ABC):
+class Contains(_FilesConditionContainmentBase):
     def __init__(self, files_condition: FilesCondition):
         super().__init__(config.CONTAINS_ARGUMENT, files_condition)
 
 
-class Equals(FilesMatcherArg, ABC):
+class Equals(_FilesConditionContainmentBase):
     def __init__(self, files_condition: FilesCondition):
         super().__init__(config.EQUALS_ARGUMENT, files_condition)
 
