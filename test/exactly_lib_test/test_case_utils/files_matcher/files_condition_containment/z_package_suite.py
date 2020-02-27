@@ -1,12 +1,13 @@
 import unittest
 
 from exactly_lib_test.test_case_utils.files_matcher.files_condition_containment import invalid_syntax, \
-    validation_failure
+    validation_failure, symbol_references
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         invalid_syntax.suite(),
+        symbol_references.suite(),
         validation_failure.suite(),
     ])
 
