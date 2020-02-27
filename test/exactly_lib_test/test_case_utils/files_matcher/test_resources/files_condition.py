@@ -1,21 +1,25 @@
-from typing import Callable, Sequence
+from typing import Callable
 
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesCondition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 
 
-def contains_and_equals_cases() -> Sequence[NameAndValue[Callable[[FilesCondition], FilesMatcherArg]]]:
-    return _CASES
+class MatcherCase:
+    def __init__(self,
+                 name: str,
+                 arguments_for_fc: Callable[[FilesCondition], FilesMatcherArg],
+                 ):
+        self.name = name
+        self.arguments_for_fc = arguments_for_fc
 
 
-_CASES = [
-    NameAndValue(
+CONTAINS_AND_EQUALS_CASES = [
+    MatcherCase(
         'contains',
         args.Contains,
     ),
-    NameAndValue(
+    MatcherCase(
         'equals',
         args.Equals,
     ),
