@@ -7,6 +7,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import sdv_from_primitive_value
 from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 
@@ -28,6 +29,10 @@ def constant_valid_file_matcher(name: str, matcher_result: bool = True) -> NameA
 
 def constant(matcher_result: bool = True) -> FileMatcherSdv:
     return FileMatcherSdv(matchers.sdv_from_bool(matcher_result))
+
+
+def hard_error(error_message: str = 'unconditional hard error') -> FileMatcherSdv:
+    return FileMatcherSdv(sdv_from_primitive_value(matchers.MatcherThatReportsHardError(error_message)))
 
 
 class IsRegularFileMatcher(FileMatcherTestImplBase):

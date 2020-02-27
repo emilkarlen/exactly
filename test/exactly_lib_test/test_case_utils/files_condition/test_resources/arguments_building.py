@@ -41,6 +41,10 @@ class FilesCondition(FilesConditionArg):
     def __init__(self, files: Sequence[FileCondition]):
         self.files = files
 
+    @staticmethod
+    def empty() -> 'FilesCondition':
+        return FilesCondition(())
+
     @property
     def as_argument_elements(self) -> ArgumentElements:
         ret_val = ArgumentElements([syntax.BEGIN_BRACE])

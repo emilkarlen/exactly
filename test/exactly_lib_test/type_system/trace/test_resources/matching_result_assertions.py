@@ -23,11 +23,19 @@ def matches(value: ValueAssertion[bool] = asrt.is_instance(bool),
 
 
 def matches_value(expected_value: bool) -> ValueAssertion[MatchingResult]:
+    return matches_value__w_header(asrt.equals(expected_value),
+                                   asrt.anything_goes())
+
+
+def matches_value__w_header(expected_value: ValueAssertion[bool],
+                            header: ValueAssertion[str],
+                            ) -> ValueAssertion[MatchingResult]:
     return matches(
-        value=asrt.equals(expected_value),
+        value=expected_value,
         trace=asrt_trace_rendering.matches_node_renderer(
             asrt_d_tree.matches_node(
-                data=asrt.equals(expected_value),
+                header=header,
+                data=expected_value,
             ),
         )
     )

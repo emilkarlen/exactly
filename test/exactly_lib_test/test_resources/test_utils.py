@@ -1,9 +1,11 @@
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Callable
 
 EXPECTED = TypeVar('EXPECTED')
+EXPECTED2 = TypeVar('EXPECTED2')
 INPUT = TypeVar('INPUT')
 ACTUAL = TypeVar('ACTUAL')
 ARRANGEMENT = TypeVar('ARRANGEMENT')
+ARRANGEMENT2 = TypeVar('ARRANGEMENT2')
 
 
 class EA(Generic[EXPECTED, ACTUAL]):
@@ -42,6 +44,16 @@ class NExArr(Generic[EXPECTED, ACTUAL]):
         self.name = name
         self.expected = expected
         self.arrangement = arrangement
+
+    def translate(self,
+                  expected: Callable[[EXPECTED], EXPECTED2],
+                  arrangement: Callable[[ARRANGEMENT], ARRANGEMENT2],
+                  ) -> 'NExArr[EXPECTED2, ARRANGEMENT2]':
+        return NExArr(
+            self.name,
+            expected(self.expected),
+            arrangement(self.arrangement),
+        )
 
 
 class NArrEx(Generic[ACTUAL, EXPECTED]):
