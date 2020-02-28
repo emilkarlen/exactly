@@ -27,15 +27,15 @@ def matches_value(expected_value: bool) -> ValueAssertion[MatchingResult]:
                                    asrt.anything_goes())
 
 
-def matches_value__w_header(expected_value: ValueAssertion[bool],
+def matches_value__w_header(value: ValueAssertion[bool],
                             header: ValueAssertion[str],
                             ) -> ValueAssertion[MatchingResult]:
     return matches(
-        value=expected_value,
+        value=value,
         trace=asrt_trace_rendering.matches_node_renderer(
             asrt_d_tree.matches_node(
                 header=header,
-                data=expected_value,
+                data=value,
             ),
         )
     )

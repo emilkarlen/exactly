@@ -76,7 +76,7 @@ def check_contains_and_equals__multi(
 ):
     for case in CONTAINS_AND_EQUALS_CASES:
         execution_w_trace_assertion = [
-            n_ex_arr.translate(lambda pee: _prim_and_exe_w_header_matcher(case.name, pee),
+            n_ex_arr.translate(lambda pee: prim_and_exe_w_header_matcher(case.name, pee),
                                lambda x: x)
             for n_ex_arr in execution
         ]
@@ -102,9 +102,9 @@ def _trace_for_matcher(matcher_name: str,
     )
 
 
-def _prim_and_exe_w_header_matcher(matcher_name: str,
-                                   original: PrimAndExeExpectation[FilesMatcher, bool],
-                                   ) -> PrimAndExeExpectation[FilesMatcher, MatchingResult]:
+def prim_and_exe_w_header_matcher(matcher_name: str,
+                                  original: PrimAndExeExpectation[FilesMatcher, bool],
+                                  ) -> PrimAndExeExpectation[FilesMatcher, MatchingResult]:
     return PrimAndExeExpectation(
         exe_w_added_header_matcher(matcher_name, original.execution),
         original.primitive,
@@ -118,8 +118,8 @@ def exe_w_added_header_matcher(matcher_name: str,
     return ExecutionExpectation(
         original.validation,
         asrt_matching_result.matches_value__w_header(
-            original.main_result,
-            asrt.equals(matcher_header)
+            value=original.main_result,
+            header=asrt.equals(matcher_header)
         ),
         original.is_hard_error,
     )
