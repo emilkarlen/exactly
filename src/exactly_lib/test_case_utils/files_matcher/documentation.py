@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions import matcher_model, misc_texts
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
@@ -53,6 +54,28 @@ class PruneDoc(grammar.SimpleExpressionDescription):
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
         return _TP.fnap(_PRUNE_DESCRIPTION)
+
+
+class _EqualsAndContainsDoc(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.single_mandatory,
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return ()
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.cross_reference_target,
+
+
+def equals() -> grammar.SimpleExpressionDescription:
+    return _EqualsAndContainsDoc()
+
+
+def contains() -> grammar.SimpleExpressionDescription:
+    return _EqualsAndContainsDoc()
 
 
 _TP = TextParser({

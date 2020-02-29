@@ -181,22 +181,27 @@ class _DescriberBase(DetailsRenderer):
         raise NotImplementedError('abstract method')
 
     def _renderer(self) -> DetailsRenderer:
-        return details.SequenceRenderer([
-            self._file(fn, mb_matcher)
-            for fn, mb_matcher in self._entries()
-        ])
+        entries = self._entries()
+
+        if len(entries) == 0:
+            return _EMPTY_RENDERER
+        else:
+            return details.SequenceRenderer([
+                self._file(fn, mb_matcher)
+                for fn, mb_matcher in entries
+            ])
 
     @staticmethod
     def _file(path: Renderer[str],
               mb_matcher: Optional[WithTreeStructureDescription],
               ) -> DetailsRenderer:
-        path_renderer = details.String(path.render())
+        path_string = path.render()
         return (
-            path_renderer
+            details.String(path_string)
             if mb_matcher is None
             else
             details.HeaderAndValue(
-                path_renderer,
+                path_string,
                 details.Tree(mb_matcher.structure())
             )
         )
@@ -222,3 +227,6 @@ class _DescriberOfPrimitive(_DescriberBase):
             (string_rendering.of_to_string_object(fn), self._files[fn])
             for fn in sorted(self._files.keys())
         ]
+
+
+_EMPTY_RENDERER = details.String(' '.join((syntax.BEGIN_BRACE, syntax.END_BRACE)))

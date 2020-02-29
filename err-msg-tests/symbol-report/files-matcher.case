@@ -17,3 +17,12 @@ def files-matcher SELECTION = -selection type file
 
 def files-matcher PRUNE     = -prune type symlink
                                empty
+
+def files-matcher EQUALS_EMPTY  = equals {  }
+
+def files-matcher EQUALS_N_EMPTY = equals {
+  a.txt
+  b.txt : contents empty
+  c/c.txt
+  d.txt : type file
+}

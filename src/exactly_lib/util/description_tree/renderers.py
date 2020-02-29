@@ -1,8 +1,10 @@
 import itertools
-from typing import Generic, Sequence, Callable
+from typing import Generic, Sequence, Callable, TypeVar
 
 from exactly_lib.util.description_tree.renderer import NODE_DATA, NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
+
+T = TypeVar('T')
 
 
 class Constant(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
@@ -17,6 +19,10 @@ class Constant(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
 
 def header_only(header: str) -> NodeRenderer[None]:
     return NodeRendererFromParts(header, None, (), ())
+
+
+def header_only__w_value(header: str, data: T) -> NodeRenderer[T]:
+    return NodeRendererFromParts(header, data, (), ())
 
 
 def header_and_detail(header: str,

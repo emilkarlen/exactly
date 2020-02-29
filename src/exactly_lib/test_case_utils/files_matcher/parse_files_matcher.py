@@ -9,10 +9,11 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_condition import parse as parse_fc
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import documentation
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, \
-    sub_set_selection, prune
+    sub_set_selection, prune, equals_and_contains
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
@@ -71,12 +72,32 @@ def _parse_prune(parser: TokenParser) -> GenericFilesMatcherSdv:
                          matcher_on_selection)
 
 
+def _parse_equals(parser: TokenParser) -> GenericFilesMatcherSdv:
+    fc = parse_fc.parse(parser, False)
+    return equals_and_contains.equals_sdv(fc)
+
+
+def _parse_contains(parser: TokenParser) -> GenericFilesMatcherSdv:
+    fc = parse_fc.parse(parser, False)
+    return equals_and_contains.contains_sdv(fc)
+
+
 def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             config.EMPTINESS_CHECK_ARGUMENT,
             grammar.SimpleExpression(_parse_empty_check,
                                      documentation.EmptyDoc())
+        ),
+        NameAndValue(
+            config.EQUALS_ARGUMENT,
+            grammar.SimpleExpression(_parse_equals,
+                                     documentation.equals())
+        ),
+        NameAndValue(
+            config.CONTAINS_ARGUMENT,
+            grammar.SimpleExpression(_parse_contains,
+                                     documentation.contains())
         ),
     ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(
