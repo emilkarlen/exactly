@@ -149,7 +149,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
                 PRIM_AND_EXE_EXPECTATION__MATCH,
                 Arrangement(
                     symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_REGULAR_FILE_FILE_MATCHER.value
+                        file_matcher_name: IS_DIR_FILE_MATCHER.value
                     }),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_dir(name_of_file_in_fc),
@@ -179,7 +179,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         name_of_file_not_in_fc__3 = 'file-not-in-files-condition-3'
 
         file_matcher_name = 'the_file_matcher'
-        arguments = args.Equals(
+        arguments = args.Contains(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc__1,
                                       fm_args.SymbolReferenceWSyntax(file_matcher_name)),
@@ -263,7 +263,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
             ),
             NExArr(
                 '4 files: both file name matches, but matcher does not match',
-                PRIM_AND_EXE_EXPECTATION__MATCH,
+                PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
                     symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                         file_matcher_name: IS_DIR_FILE_MATCHER.value

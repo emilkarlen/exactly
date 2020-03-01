@@ -1,6 +1,6 @@
 from abc import ABC
-from pathlib import PurePosixPath
-from typing import Callable, Sequence, List, Optional
+from pathlib import PurePosixPath, Path
+from typing import Callable, Sequence, List, Optional, Mapping
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -75,9 +75,9 @@ class _Equals(_MatcherBase):
 
 class _Contains(_MatcherBase):
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
-        return _EqualsApplier(self._structure_name,
-                              self._files_condition,
-                              model).apply()
+        return _ContainsApplier(self._structure_name,
+                                self._files_condition,
+                                model).apply()
 
 
 class _NameMatch:
@@ -162,6 +162,74 @@ class _EqualsApplier:
 
     def _report_unexpected_num_files(self, fetched: List[FileModel]) -> MatchingResult:
         return MatchingResult(False, _UnexpectedNumFiles(fetched, self))
+
+
+class _ContainsApplier:
+    def __init__(self,
+                 name: str,
+                 files_condition: FilesCondition,
+                 model: FilesMatcherModel,
+                 ):
+        self.name = name
+        self.model = model
+        self.files_condition = files_condition
+
+    def apply(self) -> MatchingResult:
+        if len(self.files_condition.files) == 0:
+            return MatchingResult(True,
+                                  renderers.header_only__w_value(self.name, True))
+
+        expected_files = {
+            Path(posix_path): mb_fm
+            for posix_path, mb_fm in self.files_condition.files.items()
+        }
+
+        for actual_file in self.model.files():
+            relative_file_name = actual_file.relative_to_root_dir
+            if relative_file_name in expected_files:
+                mb_matcher = expected_files[relative_file_name]
+                if mb_matcher is not None:
+                    matching_result = mb_matcher.matches_w_trace(actual_file.as_file_matcher_model())
+                    if not matching_result.value:
+                        return MatchingResult(False,
+                                              _ContainsNonMatchingMatcher(self.name,
+                                                                          actual_file,
+                                                                          matching_result))
+
+                del expected_files[relative_file_name]
+
+                if len(expected_files) == 0:
+                    return MatchingResult(True,
+                                          renderers.header_only__w_value(self.name, True))
+
+        return MatchingResult(False,
+                              _ContainsFilesNotFound(self.name, expected_files))
+
+
+class _ContainsNonMatchingMatcher(NodeRenderer[bool]):
+    def __init__(self,
+                 name: str,
+                 non_matching_file: FileModel,
+                 match_trace: MatchingResult,
+                 ):
+        self._name = name
+        self._non_matching_file = non_matching_file
+        self._match_trace = match_trace
+
+    def render(self) -> Node[bool]:
+        return Node.empty(self._name, False)
+
+
+class _ContainsFilesNotFound(NodeRenderer[bool]):
+    def __init__(self,
+                 name: str,
+                 files_not_found: Mapping[Path, Optional[FileModel]],
+                 ):
+        self._name = name
+        self._files_not_found = files_not_found
+
+    def render(self) -> Node[bool]:
+        return Node.empty(self._name, False)
 
 
 class _UnexpectedNumFiles(NodeRenderer[bool]):
