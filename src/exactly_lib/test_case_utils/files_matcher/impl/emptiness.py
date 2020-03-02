@@ -91,7 +91,7 @@ class _FailureTraceRenderer(NodeRenderer[bool]):
             strings.FormatPositional(
                 'Actual contents ({} files)', len(self._actual_contents),
             ),
-            custom_details.StringList(self._dir_contents_err_msg_lines()),
+            custom_details.string_list(self._dir_contents_err_msg_lines()),
 
         )
         return renderer.render()

@@ -13,6 +13,7 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, LogicWithDetailsDescriptionDdv
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -182,7 +183,7 @@ class _Describer(Generic[TSD], DetailsRenderer):
             else
             details.HeaderAndValue(
                 path_string,
-                details.Tree(mb_matcher.structure())
+                custom_details.WithTreeStructure(mb_matcher)
             )
         )
 

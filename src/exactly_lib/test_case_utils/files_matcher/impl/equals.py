@@ -1,13 +1,14 @@
 from pathlib import PurePosixPath
-from typing import List, Optional
+from typing import List, Optional, Tuple, Iterable
 
-from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionSdv
+from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.test_case_utils.files_matcher.impl import equals_and_contains_utils as utils
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, GenericFilesMatcherSdv, \
-    FileModel
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher, GenericFilesMatcherSdv, \
+    FileModel, FilesMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.util.description_tree import details
+from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
 
 
@@ -32,9 +33,8 @@ class _EqualsApplier(utils.Applier):
                  files_condition: FilesCondition,
                  model: FilesMatcherModel,
                  ):
-        self.name = name
-        self.model = model
-        self.files_condition = files_condition
+        super().__init__(name, files_condition, model)
+        self.model_files_iter = model.files()
 
     def apply(self) -> MatchingResult:
         return self._start_w_num_files_check()
@@ -45,7 +45,8 @@ class _EqualsApplier(utils.Applier):
         actual_files = self._try_get_num_files(expected_num_files + 1)
 
         if len(actual_files) != expected_num_files:
-            return self._report_unexpected_num_files(actual_files)
+            return MatchingResult(False,
+                                  _RendererOfUnexpectedNumFiles(actual_files, self))
 
         return self._continue_w_file_name_check(actual_files)
 
@@ -65,7 +66,7 @@ class _EqualsApplier(utils.Applier):
                                                actual_file))
             except KeyError:
                 return MatchingResult(False,
-                                      _RendererOfUnexpectedFile(actual_file, self))
+                                      _RendererOfFileWithUnexpectedName(actual_file, actual, self))
 
         return self._continue_w_file_matcher_check(name_matches)
 
@@ -75,11 +76,12 @@ class _EqualsApplier(utils.Applier):
                 file_model = name_match.match_from_model.as_file_matcher_model()
                 matching_result = name_match.fc_matcher.matches_w_trace(file_model)
                 if not matching_result.value:
-                    return MatchingResult(False, _RendererOfNonMatchingFileMatcher(name_match,
-                                                                                   matching_result,
-                                                                                   self))
+                    return MatchingResult(False,
+                                          utils.RendererOfNonMatchingFileMatcher(self.name,
+                                                                                 name_match.fc_path,
+                                                                                 matching_result))
 
-        return MatchingResult(True, renderers.header_only__w_value(self.name, True))
+        return self._result_true()
 
     def _try_get_num_files(self, num_files: int) -> List[FileModel]:
         """
@@ -87,16 +89,13 @@ class _EqualsApplier(utils.Applier):
         """
         ret_val = []
         num_fetched = 0
-        for x in self.model.files():
+        for x in self.model_files_iter:
             ret_val.append(x)
             num_fetched += 1
             if num_fetched == num_files:
                 break
 
         return ret_val
-
-    def _report_unexpected_num_files(self, fetched: List[FileModel]) -> MatchingResult:
-        return MatchingResult(False, _RendererOfUnexpectedNumFiles(fetched, self))
 
 
 _EQUALS_CONFIG = utils.Conf(utils.EQUALS_STRUCTURE_NAME,
@@ -112,30 +111,86 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
         self._applier = applier
 
     def render(self) -> Node[bool]:
-        return Node.empty(self._applier.name, False)
+        get_explanation_and_actual = (
+            self._too_few_files
+            if len(self._fetch_of_expected_plus_1) < len(self._applier.files_condition.files.keys())
+            else
+            self._too_many_files
+        )
+        explanation, actual = get_explanation_and_actual()
+
+        expected_and_actual = custom_details.ExpectedAndActual(
+            self._expected(),
+            actual,
+            details.String(explanation),
+        )
+
+        return Node(self._applier.name,
+                    False,
+                    expected_and_actual.render(),
+                    (),
+                    )
+
+    def _expected(self) -> DetailsRenderer:
+        return _expected_file_names_renderer(self._applier.files_condition)
+
+    def _too_few_files(self) -> Tuple[str, DetailsRenderer]:
+        return (
+            utils.NUM_FILES_LESS,
+            custom_details.string_list(self._consumed_file_names())
+        )
+
+    def _too_many_files(self) -> Tuple[str, DetailsRenderer]:
+        file_list_elements = list(self._consumed_file_names())
+        if self._model_has_more_files():
+            file_list_elements.append(custom_details.HAS_MORE_DATA_MARKER)
+
+        return (
+            utils.NUM_FILES_MORE,
+            custom_details.string_list(file_list_elements)
+        )
+
+    def _consumed_file_names(self) -> Iterable[str]:
+        return _files_in_model_list(self._fetch_of_expected_plus_1)
+
+    def _model_has_more_files(self) -> bool:
+        for _ in self._applier.model_files_iter:
+            return True
+        return False
 
 
-class _RendererOfUnexpectedFile(NodeRenderer[bool]):
+class _RendererOfFileWithUnexpectedName(NodeRenderer[bool]):
     def __init__(self,
                  unexpected_file: FileModel,
+                 actual: List[FileModel],
                  applier: _EqualsApplier,
                  ):
         self._unexpected_file = unexpected_file
+        self._actual = actual
         self._applier = applier
 
     def render(self) -> Node[bool]:
-        return Node.empty(self._applier.name, False)
+        renderer = custom_details.ExpectedAndActual(
+            _expected_file_names_renderer(self._applier.files_condition),
+            custom_details.string_list(_files_in_model_list(self._actual)),
+            details.HeaderAndValue(
+                utils.UNEXPECTED_NAME,
+                details.String(self._unexpected_file.relative_to_root_dir),
+            )
+        )
+        return Node(self._applier.name,
+                    False,
+                    renderer.render(),
+                    (),
+                    )
 
 
-class _RendererOfNonMatchingFileMatcher(NodeRenderer[bool]):
-    def __init__(self,
-                 non_match: _NameMatch,
-                 non_match_result: MatchingResult,
-                 applier: _EqualsApplier,
-                 ):
-        self._non_match = non_match
-        self._non_match_result = non_match_result
-        self._applier = applier
+def _expected_file_names_renderer(expected: FilesCondition) -> DetailsRenderer:
+    return custom_details.string_list(sorted(expected.files.keys()))
 
-    def render(self) -> Node[bool]:
-        return Node.empty(self._applier.name, False)
+
+def _files_in_model_list(files: List[FileModel]) -> Iterable[str]:
+    return sorted(
+        str(fm.relative_to_root_dir)
+        for fm in files
+    )

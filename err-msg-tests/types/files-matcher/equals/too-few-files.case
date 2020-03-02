@@ -1,0 +1,10 @@
+[setup]
+
+file a
+
+[assert]
+
+dir-contents . equals {
+ a : type file
+ b : type dir
+}

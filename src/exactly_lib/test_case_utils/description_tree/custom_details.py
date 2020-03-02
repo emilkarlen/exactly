@@ -1,5 +1,5 @@
 import re
-from typing import Sequence, Iterable, Pattern, Match, Any
+from typing import Sequence, Iterable, Pattern, Match, Any, TypeVar, Generic, Callable
 
 from exactly_lib.common.report_rendering import print
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -18,6 +18,8 @@ from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.strings import ToStringObject
+
+HAS_MORE_DATA_MARKER = '...'
 
 _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
@@ -108,15 +110,33 @@ class PathDetailsRenderer(DetailsRenderer):
         ]
 
 
-class StringList(DetailsRenderer):
-    def __init__(self, items: Iterable[ToStringObject]):
-        self._items = items
+E = TypeVar('E')
+
+
+class ElementList(Generic[E], DetailsRenderer):
+    def __init__(self,
+                 element_renderer: Callable[[E], Detail],
+                 elements: Iterable[E],
+                 ):
+        self._element_renderer = element_renderer
+        self._elements = elements
 
     def render(self) -> Sequence[Detail]:
         return [
-            tree.StringDetail(item)
-            for item in self._items
+            self._element_renderer(element)
+            for element in self._elements
         ]
+
+
+def string_list(items: Iterable[ToStringObject]) -> DetailsRenderer:
+    return ElementList(
+        _render_string,
+        items,
+    )
+
+
+def _render_string(x: ToStringObject) -> Detail:
+    return tree.StringDetail(x)
 
 
 class StringOrPath(DetailsRenderer):
@@ -233,7 +253,7 @@ class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
         s = s[:self._max_chars_to_print]
         sr = repr(s)
         if len(s) != len(self._value):
-            sr = sr + '...'
+            sr = sr + HAS_MORE_DATA_MARKER
         return [
             tree.StringDetail(sr)
         ]
@@ -281,12 +301,16 @@ class ExpectedAndActual(DetailsRenderer):
     def __init__(self,
                  expected: DetailsRenderer,
                  actual: DetailsRenderer,
+                 initial_explanation: DetailsRenderer = details.DetailsRendererOfConstant(()),
                  ):
         self._expected = expected
         self._actual = actual
+        self._initial_explanation = initial_explanation
 
     def render(self) -> Sequence[Detail]:
-        ret_val = expected(self._expected).render()
-        ret_val += actual(self._actual).render()
+        ret_val = []
+        ret_val += list(self._initial_explanation.render())
+        ret_val += list(expected(self._expected).render())
+        ret_val += list(actual(self._actual).render())
 
         return ret_val

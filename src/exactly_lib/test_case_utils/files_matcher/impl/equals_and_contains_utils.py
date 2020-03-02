@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import PurePath
 from typing import Callable, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
@@ -6,25 +7,52 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionAdv, FilesConditionDdv, \
     FilesConditionSdv
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
     FilesMatcherDdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherAdv, MatcherDdv, \
     MatchingResult
-from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.description_tree.renderer import DetailsRenderer
+from exactly_lib.util.description_tree import renderers, details
+from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
+from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.symbol_table import SymbolTable
+
+NUM_FILES_LESS = 'Too few files'
+NUM_FILES_MORE = 'Too many files'
+UNEXPECTED_NAME = 'File with unexpected name'
+NON_MATCHING_MATCHER = 'File that does not match corresponding ' + syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name
+
+FILES_FOUND = 'Found files'
+FILES_NOT_FOUND = 'Not found files'
 
 
 class Applier(ABC):
+    def __init__(self,
+                 name: str,
+                 files_condition: FilesCondition,
+                 model: FilesMatcherModel,
+                 ):
+        self.name = name
+        self.model = model
+        self.files_condition = files_condition
+
     @abstractmethod
     def apply(self) -> MatchingResult:
         pass
+
+    def _result_true(self) -> MatchingResult:
+        return (
+            TraceBuilder(self.name)
+                .append_details(self.files_condition.describer)
+                .build_result(True)
+        )
 
 
 class Conf:
@@ -34,6 +62,28 @@ class Conf:
                  ):
         self.name = name
         self.applier_for_model = make_matcher
+
+
+class RendererOfNonMatchingFileMatcher(NodeRenderer[bool]):
+    def __init__(self,
+                 name: str,
+                 non_matching_path: PurePath,
+                 non_match_result: MatchingResult,
+                 ):
+        self._name = name
+        self._non_matching_path = non_matching_path
+        self._non_match_result = non_match_result
+
+    def render(self) -> Node[bool]:
+        file_spec_renderer = custom_details.HeaderAndValue(
+            NON_MATCHING_MATCHER,
+            details.String(self._non_matching_path)
+        )
+        return Node(self._name,
+                    False,
+                    file_spec_renderer.render(),
+                    (self._non_match_result.trace.render(),)
+                    )
 
 
 class _Matcher(MatcherWTraceAndNegation[FilesMatcherModel]):

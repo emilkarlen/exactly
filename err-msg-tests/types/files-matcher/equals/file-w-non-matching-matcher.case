@@ -1,0 +1,13 @@
+# Expected number of files, but file with matcher that doesn't match.
+
+[setup]
+
+file a
+file b
+
+[assert]
+
+dir-contents . equals {
+ a
+ b : type dir
+}

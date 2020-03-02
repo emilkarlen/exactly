@@ -1,0 +1,13 @@
+# Expected number of files, but file with unexpected name.
+
+[setup]
+
+file x
+file y
+
+[assert]
+
+dir-contents . equals {
+ a : type file
+ b : type dir
+}

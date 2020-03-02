@@ -1,0 +1,14 @@
+[setup]
+
+file a
+file b
+file x
+file y
+
+[assert]
+
+dir-contents . contains {
+ a : type file
+ b : type file
+ c : type dir
+}
