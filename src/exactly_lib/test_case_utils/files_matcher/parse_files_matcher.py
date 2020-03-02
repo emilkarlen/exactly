@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.files_condition import parse as parse_fc
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import documentation
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, \
-    sub_set_selection, prune, equals_and_contains
+    sub_set_selection, prune, contains, equals
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
@@ -74,12 +74,12 @@ def _parse_prune(parser: TokenParser) -> GenericFilesMatcherSdv:
 
 def _parse_equals(parser: TokenParser) -> GenericFilesMatcherSdv:
     fc = parse_fc.parse(parser, False)
-    return equals_and_contains.equals_sdv(fc)
+    return equals.equals_sdv(fc)
 
 
 def _parse_contains(parser: TokenParser) -> GenericFilesMatcherSdv:
     fc = parse_fc.parse(parser, False)
-    return equals_and_contains.contains_sdv(fc)
+    return contains.contains_sdv(fc)
 
 
 def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
