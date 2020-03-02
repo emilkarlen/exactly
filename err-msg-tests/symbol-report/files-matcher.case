@@ -21,20 +21,21 @@ def files-matcher PRUNE     = -prune type symlink
 def files-matcher EQUALS_EMPTY  = equals { }
 
 def files-matcher EQUALS_N_EMPTY = equals {
-  a
+  d   : type dir
   b   : type file
   b   : contents empty
   c/f
-  d   : type dir
   e   : dir-contents contains { f }
+  a
 }
 
 def files-matcher CONTAINS_EMPTY  = contains { }
 
 def files-matcher CONTAINS_N_EMPTY = contains {
-  a
+  d   : type dir
   b   : type file
   b   : contents empty
   c/f
   e   : dir-contents equals { f }
+  a
 }
