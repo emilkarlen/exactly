@@ -304,63 +304,6 @@ Program values can be defined for reuse using ``def`` and run using ``@``::
     run @ EXECUTE_SQL "drop table my_table"
 
 
-Testing source code files
--------------------------
-
-The ``actor`` instruction can specify an interpreter to test a source code file::
-
-    [conf]
-
-    actor = -file python
-
-    [act]
-
-    my-python-program.py 'an argument' second third
-
-    [assert]
-
-    stdout equals
-    <<EOF
-    Argument: an argument
-    Argument: second
-    Argument: third
-    EOF
-
-
-Print output from the tested program
-------------------------------------
-
-
-If ``--act`` is used, the output of the "act" phase (the "action to check")
-will become the output of ``exactly`` -
-stdout, stderr and exit code
-::
-
-
-    [setup]
-
-    dir  a-dir
-    file a-file
-
-    [act]
-
-    $ ls
-
-    [assert]
-
-    stdout num-lines == 314
-
-::
-
-    > exactly --act my-test.case
-    a-dir
-    a-file
-
-
-The test case is executed in a temporary sandbox, as usual,
-but assertions are ignored.
-
-
 Testing existing OS environment - tests without ``[act]``
 ----------------------------------------------------------------------
 
@@ -401,6 +344,87 @@ and must contain a 'Makefile' with a target 'all'::
         dir-contents -recursive
           -selection name @[MY_PROJECT_DIR_NAME]@
             every file : @[IS_VALID_PROJECT_DIR]@
+
+
+Testing source code files
+-------------------------
+
+The ``actor`` instruction can specify an interpreter to test a source code file::
+
+    [conf]
+
+    actor = -file python
+
+    [act]
+
+    my-python-program.py 'an argument' second third
+
+    [assert]
+
+    stdout equals
+    <<EOF
+    Argument: an argument
+    Argument: second
+    Argument: third
+    EOF
+
+
+Testing source code
+-------------------------
+
+The ``actor`` instruction can specify an interpreter to test source code in ``[act]``::
+
+    [conf]
+
+    actor = -source python
+
+    [act]
+
+    import sys
+    sys.stdout.write('Hello\n')
+    sys.stdout.write('world!\n')
+
+    [assert]
+
+    stdout equals
+    <<-
+    Hello
+    world!
+    -
+
+
+Print output from the tested program
+------------------------------------
+
+
+If ``--act`` is used, the output of the "act" phase (the "action to check")
+will become the output of ``exactly`` -
+stdout, stderr and exit code
+::
+
+
+    [setup]
+
+    dir  a-dir
+    file a-file
+
+    [act]
+
+    $ ls
+
+    [assert]
+
+    stdout num-lines == 314
+
+::
+
+    > exactly --act my-test.case
+    a-dir
+    a-file
+
+
+The test case is executed in a temporary sandbox, as usual,
+but assertions are ignored.
 
 
 Testing a git commit hook

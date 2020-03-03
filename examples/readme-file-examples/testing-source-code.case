@@ -1,0 +1,17 @@
+[conf]
+
+actor = -source python
+
+[act]
+
+import sys
+sys.stdout.write('Hello\n')
+sys.stdout.write('world!\n')
+
+[assert]
+
+stdout equals
+<<-
+Hello
+world!
+-
