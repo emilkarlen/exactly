@@ -16,10 +16,8 @@ classify-files-by-moving-to-appropriate-dir GOOD input/ output/
 
 [assert]
 
-dir-contents input empty
+dir-contents input        empty
 
-exists       output/good/a.txt : type file
-dir-contents output/good         num-files == 1
+dir-contents output/good  equals { a.txt : type file }
 
-exists       output/bad/b.txt : type file
-dir-contents output/bad         num-files == 1
+dir-contents output/bad   equals { b.txt : type file }
