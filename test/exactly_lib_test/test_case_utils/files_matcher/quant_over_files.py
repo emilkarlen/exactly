@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
     integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_case_bases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     FileQuantificationAssertionVariant, FilesMatcherArgumentsSetup, \
     files_matcher_setup_without_references
@@ -69,7 +69,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
+class TestWithAssertionVariantForFileContents(test_case_bases.TestWithAssertionVariantBase):
     @property
     def assertion_variant(self) -> FilesMatcherArgumentsSetup:
         return files_matcher_setup_without_references(
@@ -80,7 +80,7 @@ class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
         )
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxBase,
+class TestParseInvalidSyntax(test_case_bases.TestParseInvalidSyntaxBase,
                              TestWithAssertionVariantForFileContents):
     pass
 
@@ -139,7 +139,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumLinesChec
         return arguments_constructor.apply(expectation_type_config__non_is_success(ExpectationType.POSITIVE))
 
 
-class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
+class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
                            TestWithAssertionVariantForFileContents):
     def test_symbols_from_contents_assertion_SHOULD_be_reported(self):
         # ARRANGE #

@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg, \
     SymbolReference
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.helper import \
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check_helper import \
     IntegrationCheckHelper
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
     ParseExpectation, Arrangement, PrimAndExeExpectation

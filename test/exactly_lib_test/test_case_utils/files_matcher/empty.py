@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_case_bases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     EmptyAssertionVariant, argument_constructor_for_emptiness_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
@@ -25,23 +25,23 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestWithAssertionVariantForEmpty(tr.TestWithAssertionVariantBase):
+class TestWithAssertionVariantForEmpty(test_case_bases.TestWithAssertionVariantBase):
     @property
     def assertion_variant(self) -> FilesMatcherArgumentsSetup:
         return files_matcher_setup_without_references(EmptyAssertionVariant())
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
+class TestParseInvalidSyntax(test_case_bases.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForEmpty):
     pass
 
 
-class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
+class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
                            TestWithAssertionVariantForEmpty):
     pass
 
 
-class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
+class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         empty_directory = empty_dir('name-of-empty-dir')
 
@@ -91,7 +91,7 @@ class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
         )
 
 
-class TestPassingAndFailingScenarios(tr.TestCaseBaseForParser):
+class TestPassingAndFailingScenarios(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         name_of_empty_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
@@ -132,7 +132,7 @@ class TestPassingAndFailingScenarios(tr.TestCaseBaseForParser):
             contents_of_relativity_option_root=contents_of_relativity_option_root)
 
 
-class TestWithFileSelection(tr.TestCaseBaseForParser):
+class TestWithFileSelection(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_contain_files_but_non_matching_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'

@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import tr
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_case_bases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     NumFilesAssertionVariant, argument_constructor_for_num_files_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
@@ -35,7 +35,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestWithAssertionVariantForNumFiles(tr.TestWithAssertionVariantBase):
+class TestWithAssertionVariantForNumFiles(test_case_bases.TestWithAssertionVariantBase):
     @property
     def assertion_variant(self) -> FilesMatcherArgumentsSetup:
         return files_matcher_setup_without_references(
@@ -57,7 +57,7 @@ class TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesChec
             condition=condition_str)
 
 
-class TestParseInvalidSyntax(tr.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
+class TestParseInvalidSyntax(test_case_bases.TestParseInvalidSyntaxWithMissingSelectorArgCaseBase,
                              TestWithAssertionVariantForNumFiles):
     pass
 
@@ -69,7 +69,7 @@ class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFail
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
 
-class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
+class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
                            TestWithAssertionVariantForNumFiles):
     def test_symbols_from_comparison_SHOULD_be_reported(self):
         # ARRANGE #
@@ -106,7 +106,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
         assertion.apply_without_message(self, actual_symbol_references)
 
 
-class TestDifferentSourceVariants(tr.TestCaseBaseForParser):
+class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_has_expected_number_of_files(self):
         directory_with_one_file = Dir('name-of-dir', [empty_file('a-file-in-checked-dir')])
 
