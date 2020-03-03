@@ -17,6 +17,8 @@ they are combined using {CONJUNCTION}, in order of appearance.
 
 
 There can be only one {FILE_CONDITION} per line.
+
+All parts must be separated by space.
 """
 
 _FILE_CONDITION_DESCRIPTION_REST = """\
@@ -27,7 +29,7 @@ the condition includes matching by that matcher.
 
 
 The {FILES_CONDITION_SYNTAX_ELEMENT} before the {FILE_MATCHER}
-must appear on the same line as the file name (with space between).
+must appear on the same line as the file name.
 """
 
 _FILE_NAME_DESCRIPTION_REST = """\
