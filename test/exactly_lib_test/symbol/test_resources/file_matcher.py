@@ -60,7 +60,8 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: FileMatcherStv):
+                 sdv: FileMatcherStv,
+                 ):
         super().__init__(name)
         self._sdv = sdv
 
@@ -72,7 +73,7 @@ class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherStv]):
         )
 
     @property
-    def sdv(self) -> FileMatcherStv:
+    def stv(self) -> FileMatcherStv:
         return self._sdv
 
     @property

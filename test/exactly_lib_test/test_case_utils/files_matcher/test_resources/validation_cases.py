@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
-    files_matcher_sdv_constant_test_impl
+    files_matcher_stv_constant_test_impl
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
     PrimAndExeExpectation
@@ -19,9 +19,10 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: FilesMatcherStv):
+                 stv: FilesMatcherStv,
+                 ):
         super().__init__(name)
-        self._sdv = sdv
+        self._stv = stv
 
     @staticmethod
     def of_generic(name: str, sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolContext':
@@ -31,8 +32,8 @@ class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherStv]):
         )
 
     @property
-    def sdv(self) -> FilesMatcherStv:
-        return self._sdv
+    def stv(self) -> FilesMatcherStv:
+        return self._stv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
@@ -48,7 +49,7 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = FilesMatcherSymbolContext(
             symbol_name,
-            files_matcher_sdv_constant_test_impl(
+            files_matcher_stv_constant_test_impl(
                 True,
                 validator=pre_or_post_sds_value_validator.constant_validator(actual),
             ),

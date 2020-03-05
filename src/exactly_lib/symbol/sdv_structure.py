@@ -54,18 +54,6 @@ class SymbolDependentTypeValue(SymbolDependentValue):
         raise NotImplementedError('abstract method')
 
 
-def get_references(sdv: SymbolDependentTypeValue) -> Sequence['SymbolReference']:
-    return sdv.references
-
-
-def get_type_category(sdv: SymbolDependentTypeValue) -> TypeCategory:
-    return sdv.type_category
-
-
-def get_value_type(sdv: SymbolDependentTypeValue) -> ValueType:
-    return sdv.value_type
-
-
 class SymbolContainer(SymbolTableValue):
     """
     The info about a Symbol Dependent Value that is stored in a symbol table.
@@ -202,3 +190,19 @@ def references_from_objects_with_symbol_references(objects: Sequence[ObjectWithS
     return list(itertools.chain.from_iterable([x.references
                                                for x in objects])
                 )
+
+
+def get_references(stv: SymbolDependentTypeValue) -> Sequence[SymbolReference]:
+    return stv.references
+
+
+def get_references__sdv(sdv: SymbolDependentValue) -> Sequence[SymbolReference]:
+    return sdv.references
+
+
+def get_type_category(sdv: SymbolDependentTypeValue) -> TypeCategory:
+    return sdv.type_category
+
+
+def get_value_type(sdv: SymbolDependentTypeValue) -> ValueType:
+    return sdv.value_type

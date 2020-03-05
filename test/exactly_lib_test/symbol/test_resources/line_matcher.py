@@ -48,7 +48,7 @@ def successful_matcher_with_validation(validator: DdvValidator):
     )
 
 
-def sdv_from_primitive_value(
+def stv_from_primitive_value(
         primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = constant_success_validator(),
@@ -75,9 +75,10 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
 class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: LineMatcherStv):
+                 stv: LineMatcherStv,
+                 ):
         super().__init__(name)
-        self._sdv = sdv
+        self._stv = stv
 
     @staticmethod
     def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
@@ -87,8 +88,8 @@ class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherStv]):
         )
 
     @property
-    def sdv(self) -> LineMatcherStv:
-        return self._sdv
+    def stv(self) -> LineMatcherStv:
+        return self._stv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:

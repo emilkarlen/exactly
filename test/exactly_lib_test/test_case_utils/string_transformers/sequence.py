@@ -1,6 +1,7 @@
 import itertools
 import unittest
 
+from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
@@ -83,7 +84,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     model_construction.of_lines(initial_model_lines),
                     arrangement_wo_tcds(
                         SymbolTable({
-                            symbol.name: container(StringTransformerSdvConstant(symbol.value))
+                            symbol.name: container(StringTransformerStv(StringTransformerSdvConstant(symbol.value)))
                             for symbol in sequenced_transformer_symbols
                         })
                     ),
@@ -102,7 +103,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
     def runTest(self):
         successful_transformer = NameAndValue(
             'successful_transformer',
-            StringTransformerSdvConstant(IdentityStringTransformer())
+            StringTransformerStv(StringTransformerSdvConstant(IdentityStringTransformer()))
         )
         for case in validation_cases.failing_validation_cases('failing_transformer'):
             failing_symbol_context = case.value.symbol_context

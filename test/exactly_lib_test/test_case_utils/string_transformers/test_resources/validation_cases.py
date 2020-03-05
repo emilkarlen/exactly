@@ -1,5 +1,6 @@
 from typing import Sequence, List
 
+from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext, \
     string_transformer_from_primitive_value
@@ -18,9 +19,10 @@ class ValidationCase:
         self._expectation = expectation
         self._symbol_context = StringTransformerSymbolContext(
             symbol_name,
-            string_transformer_from_primitive_value(
-                validator=constant_validator(actual)
-            )
+            StringTransformerStv(
+                string_transformer_from_primitive_value(
+                    validator=constant_validator(actual)
+                ))
         )
 
     @property

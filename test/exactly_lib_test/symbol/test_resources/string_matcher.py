@@ -54,9 +54,10 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
 class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: StringMatcherStv):
+                 stv: StringMatcherStv,
+                 ):
         super().__init__(name)
-        self._sdv = sdv
+        self._stv = stv
 
     @staticmethod
     def of_generic(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
@@ -66,8 +67,8 @@ class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherStv]):
         )
 
     @property
-    def sdv(self) -> StringMatcherStv:
-        return self._sdv
+    def stv(self) -> StringMatcherStv:
+        return self._stv
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:

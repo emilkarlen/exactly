@@ -321,7 +321,7 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
                 helper.files_matcher_sym_ref_arg()
             ),
             symbols_common_to_all_cases={
-                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdv
+                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.stv
             },
             symbol_references=asrt.matches_sequence([
                 NAME_STARTS_WITH__P1.reference_assertion,
@@ -350,8 +350,8 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
                 ),
             ),
             symbols_common_to_all_cases={
-                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdv,
-                NAME_STARTS_WITH__P2.name: NAME_STARTS_WITH__P2.sdv,
+                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.stv,
+                NAME_STARTS_WITH__P2.name: NAME_STARTS_WITH__P2.stv,
             },
             symbol_references=asrt.matches_sequence([
                 NAME_STARTS_WITH__P1.reference_assertion,
@@ -492,8 +492,8 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
                             contents_case.expected,
                         ),
                         additional_symbols={
-                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdv,
-                            NAME_STARTS_WITH__S1.name: NAME_STARTS_WITH__S1.sdv,
+                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.stv,
+                            NAME_STARTS_WITH__S1.name: NAME_STARTS_WITH__S1.stv,
                         },
                     ),
                     expectation=Expectation(
@@ -537,7 +537,7 @@ class TestRecursiveWithPruneAndDepthLimitations(unittest.TestCase):
                             nie.expected,
                         ),
                         additional_symbols={
-                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdv,
+                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.stv,
                         },
                     ),
                     expectation=Expectation(
@@ -583,7 +583,7 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
             arrangement=
             Arrangement(
                 symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                    NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdv,
+                    NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.stv,
                 }),
                 tcds=helper.dir_arg.tcds_arrangement_dir_with_contents(actual_contents)
             ),
@@ -631,7 +631,7 @@ class TestPruneShouldBeIgnoredWhenModelIsNotRecursive(unittest.TestCase):
                     ),
                 ),
                 additional_symbols={
-                    test_fails_if_applied__matcher.name: test_fails_if_applied__matcher.sdv,
+                    test_fails_if_applied__matcher.name: test_fails_if_applied__matcher.stv,
                 },
             ),
             expectation=

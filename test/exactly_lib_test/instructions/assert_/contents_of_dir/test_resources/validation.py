@@ -6,7 +6,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_sdv_constant_test_impl, \
+from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
     is_reference_to_files_matcher
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
@@ -44,7 +44,7 @@ class ValidationHelper:
         return ArrangementPostAct2(
             symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                 self.name_of_referenced_symbol:
-                    files_matcher_sdv_constant_test_impl(
+                    files_matcher_stv_constant_test_impl(
                         resolved_value=True,
                         validator=validator,
                     )}),

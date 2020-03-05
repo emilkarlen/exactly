@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def arbitrary_sdv() -> FilesMatcherStv:
-    return files_matcher_sdv_constant_test_impl(True)
+    return files_matcher_stv_constant_test_impl(True)
 
 
 class FilesMatcherTestImpl(FilesMatcherImplBase):
@@ -72,9 +72,10 @@ def value_with_result(result: bool,
     )
 
 
-def files_matcher_sdv_constant_test_impl(resolved_value: bool = True,
+def files_matcher_stv_constant_test_impl(resolved_value: bool = True,
                                          references: Sequence[SymbolReference] = (),
-                                         validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherStv:
+                                         validator: DdvValidator = ddv_validation.constant_success_validator(),
+                                         ) -> FilesMatcherStv:
     return FilesMatcherStv(matchers.sdv_from_bool(resolved_value,
                                                   references,
                                                   validator))

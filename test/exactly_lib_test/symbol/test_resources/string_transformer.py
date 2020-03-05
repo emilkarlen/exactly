@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
@@ -160,16 +160,24 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
     )
 
 
-class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerSdv]):
+class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerStv]):
     def __init__(self,
                  name: str,
-                 sdv: StringTransformerSdv):
+                 sdt: StringTransformerStv,
+                 ):
         super().__init__(name)
-        self._sdv = sdv
+        self._sdt = sdt
+
+    @staticmethod
+    def of_generic(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
+        return StringTransformerSymbolContext(
+            name,
+            StringTransformerStv(sdv)
+        )
 
     @property
-    def sdv(self) -> StringTransformerSdv:
-        return self._sdv
+    def stv(self) -> StringTransformerStv:
+        return self._sdt
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:

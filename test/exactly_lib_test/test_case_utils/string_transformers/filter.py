@@ -96,7 +96,7 @@ class TestSelectTransformer(unittest.TestCase):
     def test_every_line_SHOULD_be_filtered(self):
         matcher = NameAndValue(
             'line_matcher_symbol',
-            line_matcher.sdv_from_primitive_value(
+            line_matcher.stv_from_primitive_value(
                 sub_string_line_matcher('MATCH'),
             ),
         )
@@ -200,7 +200,7 @@ class TestSelectTransformer(unittest.TestCase):
                     arrangement_wo_tcds(
                         symbols=symbol_table_from_name_and_sdvs([
                             NameAndValue(line_matcher_name,
-                                         line_matcher.sdv_from_primitive_value(
+                                         line_matcher.stv_from_primitive_value(
                                              matcher,
                                          ),
                                          ),

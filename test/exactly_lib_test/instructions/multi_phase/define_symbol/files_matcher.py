@@ -21,7 +21,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_sdv_constant_test_impl, \
+from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
     is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
@@ -283,7 +283,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         populator.populate_tcds(environment.tcds)
 
 
-ARBITRARY_SDV = files_matcher_sdv_constant_test_impl(True,
+ARBITRARY_SDV = files_matcher_stv_constant_test_impl(True,
                                                      references=[])
 
 if __name__ == '__main__':

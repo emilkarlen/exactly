@@ -29,7 +29,7 @@ from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolUsage, SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -294,9 +294,11 @@ def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
-                              token_parser: TokenParser) -> StringTransformerSdv:
-    return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser,
-                                                                               must_be_on_current_line=False)
+                              token_parser: TokenParser) -> StringTransformerStv:
+    return StringTransformerStv(
+        parse_string_transformer.parse_string_transformer_from_token_parser(token_parser,
+                                                                            must_be_on_current_line=False)
+    )
 
 
 def _parse_program(fs_location_info: FileSystemLocationInfo,
