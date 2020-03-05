@@ -6,32 +6,19 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path, parse_path
 from exactly_lib.test_case_utils.string_matcher.impl import equality
 from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'
 
 EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_path.CONFIGURATION
-
-
-def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> StringMatcherStv:
-    return StringMatcherStv(
-        combinator_sdvs.of_expectation_type(
-            parse__generic(token_parser),
-            expectation_type
-        )
-    )
 
 
 def parse__generic(token_parser: TokenParser) -> GenericStringMatcherSdv:

@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
@@ -12,7 +12,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
-    successful_matcher_with_validation, sdv_of_unconditionally_matching_matcher
+    successful_matcher_with_validation, sdtv_of_unconditionally_matching_matcher
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_containers
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
@@ -148,7 +148,7 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
         line_matcher_symbol = NameAndValue(
             'valid_line_matcher',
             symbol_utils.container(
-                sdv_of_unconditionally_matching_matcher()
+                sdtv_of_unconditionally_matching_matcher()
             )
         )
 
@@ -213,7 +213,7 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                     ).apply(expectation_type)
                     source = test_configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     sdv = parser.parse(source)
-                    assert isinstance(sdv, StringMatcherStv)  # Sanity check
+                    assert isinstance(sdv, MatcherSdv)  # Sanity check
                     expected_symbols.apply_without_message(self, sdv.references)
 
 

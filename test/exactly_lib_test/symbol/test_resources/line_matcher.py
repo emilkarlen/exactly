@@ -62,7 +62,7 @@ def stv_from_primitive_value(
     )
 
 
-def sdv_of_unconditionally_matching_matcher() -> LineMatcherStv:
+def sdtv_of_unconditionally_matching_matcher() -> LineMatcherStv:
     return LineMatcherStv(matchers.sdv_of_unconditionally_matching_matcher())
 
 

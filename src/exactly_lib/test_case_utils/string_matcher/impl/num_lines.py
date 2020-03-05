@@ -1,6 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers, property_getters
@@ -12,10 +11,6 @@ from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
                   syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
-
-
-def sdv(matcher: MatcherSdv[int]) -> StringMatcherStv:
-    return StringMatcherStv(sdv__generic(matcher))
 
 
 def sdv__generic(matcher: MatcherSdv[int]) -> GenericStringMatcherSdv:

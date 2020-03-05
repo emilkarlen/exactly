@@ -3,14 +3,12 @@ import unittest
 from typing import Iterable
 
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
@@ -141,9 +139,10 @@ class _StringTransformerShouldBeValidated(TestCaseBase):
 class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             _DeleteAllButFirstLine()))
+        named_transformer = StringTransformerSymbolContext.of_primitive(
+            'the_transformer',
+            _DeleteAllButFirstLine()
+        )
 
         actual_original_contents = lines_content(['1',
                                                   '2',
@@ -152,7 +151,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         number_of_lines_after_transformation = '1'
 
         symbol_table_with_transformer = SymbolTable({
-            named_transformer.name: container(named_transformer.value)
+            named_transformer.name: named_transformer.symbol_table_container
         })
 
         expected_symbol_usages = asrt.matches_sequence([

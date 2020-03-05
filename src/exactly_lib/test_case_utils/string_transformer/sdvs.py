@@ -1,13 +1,17 @@
 from typing import Sequence
 
 from exactly_lib.symbol import lookups
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic import string_transformer_ddvs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
+
+
+def constant_sdtv(value: StringTransformer) -> StringTransformerStv:
+    return StringTransformerStv(StringTransformerSdvConstant(value))
 
 
 class StringTransformerSdvConstant(StringTransformerSdv):

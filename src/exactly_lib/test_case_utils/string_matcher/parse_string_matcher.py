@@ -8,7 +8,6 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
@@ -31,26 +30,21 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def string_matcher_parser() -> Parser[StringMatcherStv]:
+def string_matcher_parser() -> Parser[GenericStringMatcherSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_string_matcher,
                                                         consume_last_line_if_is_at_eol_after_parse=True)
 
 
 def parse_string_matcher(parser: TokenParser,
-                         must_be_on_current_line: bool = False) -> StringMatcherStv:
-    return StringMatcherStv(parse_string_matcher__generic(parser, must_be_on_current_line))
-
-
-def parse_string_matcher__generic(parser: TokenParser,
-                                  must_be_on_current_line: bool = True) -> GenericStringMatcherSdv:
+                         must_be_on_current_line: bool = False) -> GenericStringMatcherSdv:
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
 def _parse_on_transformed__generic(parser: TokenParser) -> GenericStringMatcherSdv:
     transformer = parse_string_transformer.parse_string_transformer_from_token_parser(parser,
                                                                                       must_be_on_current_line=False)
-    matcher_on_transformed = parse_string_matcher__generic(parser,
-                                                           must_be_on_current_line=False)
+    matcher_on_transformed = parse_string_matcher(parser,
+                                                  must_be_on_current_line=False)
     return on_transformed.StringMatcherWithTransformationSdv(transformer, matcher_on_transformed)
 
 
@@ -91,7 +85,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
     ]
 
     quantification_setup = parse_quantified_matcher.GrammarSetup(
-        line_matches.line_matches.ELEMENT_SETUP,
+        line_matches.line_matchers.ELEMENT_SETUP,
         parse_line_matcher.ParserOfGenericMatcherOnArbitraryLine(),
     )
 

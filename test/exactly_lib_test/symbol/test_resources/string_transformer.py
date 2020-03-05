@@ -5,6 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
@@ -169,10 +170,17 @@ class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerStv]):
         self._sdt = sdt
 
     @staticmethod
-    def of_generic(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
+    def of_sdv(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
             StringTransformerStv(sdv)
+        )
+
+    @staticmethod
+    def of_primitive(name: str, primitive: StringTransformer) -> 'StringTransformerSymbolContext':
+        return StringTransformerSymbolContext.of_sdv(
+            name,
+            StringTransformerSdvConstant(primitive)
         )
 
     @property

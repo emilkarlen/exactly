@@ -101,8 +101,8 @@ def _parse_type_matcher(parser: TokenParser) -> GenericFileMatcherSdv:
 
 
 def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
-    string_matcher = parse_string_matcher.parse_string_matcher__generic(parser,
-                                                                        must_be_on_current_line=False)
+    string_matcher = parse_string_matcher.parse_string_matcher(parser,
+                                                               must_be_on_current_line=False)
     return regular_file_contents.sdv__generic(string_matcher)
 
 

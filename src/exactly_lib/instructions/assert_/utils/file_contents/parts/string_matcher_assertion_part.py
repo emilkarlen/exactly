@@ -4,17 +4,17 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
+from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
 from exactly_lib.util.render import combinators as rend_comb
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):
-    def __init__(self, string_matcher: StringMatcherStv):
+    def __init__(self, string_matcher: GenericStringMatcherSdv):
         super().__init__(sdv_validation.SdvValidatorFromDdvValidator(
             lambda symbols: string_matcher.resolve(symbols).validator
         ))
@@ -29,7 +29,8 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                os_services: OsServices,
                custom_environment,
                file_to_check: FileToCheck):
-        matching_result = resolving_helper_for_instruction_env(environment).apply(self._string_matcher, file_to_check)
+        matching_result = resolving_helper_for_instruction_env(environment).apply__generic(self._string_matcher,
+                                                                                           file_to_check)
         if not matching_result.value:
             raise pfh_exception.PfhFailException(
                 rend_comb.SingletonSequenceR(

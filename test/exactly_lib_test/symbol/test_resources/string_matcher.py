@@ -60,10 +60,17 @@ class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherStv]):
         self._stv = stv
 
     @staticmethod
-    def of_generic(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
+    def of_sdv(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
             StringMatcherStv(sdv)
+        )
+
+    @staticmethod
+    def of_primitive(name: str, primitive: StringMatcher) -> 'StringMatcherSymbolContext':
+        return StringMatcherSymbolContext.of_sdv(
+            name,
+            string_matcher_sdv_constant_test_impl(primitive)
         )
 
     @property

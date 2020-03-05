@@ -278,7 +278,8 @@ def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
                           token_parser: TokenParser) -> StringMatcherStv:
-    return parse_string_matcher.parse_string_matcher(token_parser)
+    sdv = parse_string_matcher.parse_string_matcher(token_parser)
+    return StringMatcherStv(sdv)
 
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,

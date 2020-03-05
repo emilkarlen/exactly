@@ -4,7 +4,6 @@ import pathlib
 from typing import Iterable
 
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -13,7 +12,6 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -26,17 +24,8 @@ from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import TmpDirFileSpace, tmp_text_file_containing
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.strings import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-def sdv(expectation_type: ExpectationType,
-        expected_contents: StringOrPathSdv) -> StringMatcherStv:
-    return sdvs.new_maybe_negated(
-        sdv__generic(expected_contents),
-        expectation_type,
-    )
 
 
 def sdv__generic(expected_contents: StringOrPathSdv) -> GenericStringMatcherSdv:

@@ -1,25 +1,14 @@
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers, \
     sdv_components
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
-from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck, GenericStringMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-def sdv(expectation_type: ExpectationType,
-        is_full_match: bool,
-        contents_matcher: RegexSdv) -> StringMatcherStv:
-    return sdvs.new_maybe_negated(
-        sdv__generic(is_full_match, contents_matcher),
-        expectation_type,
-    )
 
 
 def sdv__generic(is_full_match: bool,

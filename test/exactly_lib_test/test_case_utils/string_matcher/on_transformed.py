@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.test_case_utils.string_transformer.sdvs import constant_sdtv
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+    StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ExecutionExpectation, ParseExpectation, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -76,7 +76,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
                     ),
                     arrangement_w_tcds(
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                            _TRANSFORMER_SYMBOL_NAME: StringTransformerSdvConstant(case.actual)
+                            _TRANSFORMER_SYMBOL_NAME: constant_sdtv(case.actual)
                         }),
                     )
                 )
@@ -87,11 +87,9 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
 
 class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCase):
     def runTest(self):
-        string_transformer = NameAndValue(
+        string_transformer = StringTransformerSymbolContext.of_primitive(
             'the_string_transformer',
-            symbol_utils.container(
-                StringTransformerSdvConstant(StringTransformerThatMustNotBeUsedTestImpl())
-            )
+            StringTransformerThatMustNotBeUsedTestImpl()
         )
         for case in string_matcher_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
@@ -104,15 +102,15 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
                     ).as_arguments,
                     integration_check.model_that_must_not_be_used,
                     Arrangement(
-                        symbols=SymbolTable({
-                            string_transformer.name: string_transformer.value,
-                            symbol_context.name: symbol_context.symbol_table_container,
-                        })
+                        symbols=SdvSymbolContext.symbol_table_of_contexts([
+                            string_transformer,
+                            symbol_context,
+                        ])
                     ),
                     Expectation(
                         ParseExpectation(
                             symbol_references=asrt.matches_sequence([
-                                is_reference_to_string_transformer__ref(string_transformer.name),
+                                string_transformer.reference_assertion,
                                 symbol_context.reference_assertion,
                             ]),
                         ),
@@ -150,9 +148,9 @@ class TestValidationShouldFailWhenValidationOfStringTransformerFails(unittest.Te
 
 class TestWithBinaryOperators(unittest.TestCase):
     def test_transformation_SHOULD_apply_to_all_operands_if_matcher_is_binary_operator_expression(self):
-        to_upper_transformer = NameAndValue(
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            StringTransformerSdvConstant(string_transformers.MyToUppercaseTransformer())
+            string_transformers.MyToUppercaseTransformer()
         )
 
         model = contents_transformation.TransformedContentsSetup(
@@ -173,12 +171,12 @@ class TestWithBinaryOperators(unittest.TestCase):
             ).as_arguments,
             integration_check.model_of(model.original),
             arrangement_w_tcds(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([to_upper_transformer])
+                symbols=to_upper_transformer.symbol_table
             ),
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        is_reference_to_string_transformer__ref(to_upper_transformer.name)
+                        to_upper_transformer.reference_assertion
                     )
                 ),
                 ExecutionExpectation(
@@ -188,9 +186,9 @@ class TestWithBinaryOperators(unittest.TestCase):
         )
 
     def test_transformation_SHOULD_apply_only_to_matcher_argument(self):
-        to_upper_transformer = NameAndValue(
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            StringTransformerSdvConstant(string_transformers.MyToUppercaseTransformer())
+            string_transformers.MyToUppercaseTransformer()
         )
 
         model = contents_transformation.TransformedContentsSetup(
@@ -211,7 +209,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             ]).as_arguments,
             integration_check.model_of(model.original),
             arrangement_w_tcds(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([to_upper_transformer])
+                symbols=to_upper_transformer.symbol_table
             ),
             Expectation(
                 ParseExpectation(
@@ -226,14 +224,14 @@ class TestWithBinaryOperators(unittest.TestCase):
         )
 
     def test_transformation_SHOULD_2(self):
-        to_upper_transformer = NameAndValue(
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            StringTransformerSdvConstant(string_transformers.MyToUppercaseTransformer())
+            string_transformers.MyToUppercaseTransformer()
         )
 
-        count_num_upper_characters_transformer = NameAndValue(
+        count_num_upper_characters_transformer = StringTransformerSymbolContext.of_primitive(
             'the_count_num_upper_transformer',
-            StringTransformerSdvConstant(string_transformers.MyCountNumUppercaseCharactersTransformer())
+            string_transformers.MyCountNumUppercaseCharactersTransformer()
         )
 
         model__original = 'text'
@@ -258,7 +256,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             ).as_arguments,
             integration_check.model_of(model__original),
             arrangement_w_tcds(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([
+                symbols=SdvSymbolContext.symbol_table_of_contexts([
                     to_upper_transformer,
                     count_num_upper_characters_transformer,
                 ])
@@ -266,8 +264,8 @@ class TestWithBinaryOperators(unittest.TestCase):
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_sequence([
-                        is_reference_to_string_transformer__ref(to_upper_transformer.name),
-                        is_reference_to_string_transformer__ref(count_num_upper_characters_transformer.name),
+                        to_upper_transformer.reference_assertion,
+                        count_num_upper_characters_transformer.reference_assertion,
                     ]
                     )
                 ),

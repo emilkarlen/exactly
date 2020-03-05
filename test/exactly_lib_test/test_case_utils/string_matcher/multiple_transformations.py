@@ -6,13 +6,12 @@ from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMat
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
-    is_reference_to_string_matcher__ref
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
-    is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher__ref, \
+    StringMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+    StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -45,15 +44,15 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
 
         initial_model = integration_check.model_of(initial_model_contents)
 
-        equals_expected_matcher = NameAndValue('EQUALS_EXPECTED',
-                                               string_matcher_sdv_constant_test_impl(
-                                                   EqualsMatcherTestImpl(model_after_2_transformations)
-                                               ))
+        equals_expected_matcher = StringMatcherSymbolContext.of_primitive(
+            'EQUALS_EXPECTED',
+            EqualsMatcherTestImpl(model_after_2_transformations)
+        )
 
-        prepend_transformer_symbol = NameAndValue('PREPEND_TRANSFORMER',
-                                                  StringTransformerSdvConstantTestImpl(
-                                                      PrependStringToLinesTransformer(string_to_prepend))
-                                                  )
+        prepend_transformer_symbol = StringTransformerSymbolContext.of_primitive(
+            'PREPEND_TRANSFORMER',
+            PrependStringToLinesTransformer(string_to_prepend)
+        )
 
         prepend_trans_arg = str_trans_syntax.syntax_for_transformer_option(prepend_transformer_symbol.name)
 
@@ -67,10 +66,12 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
         parser = sut.string_matcher_parser()
         prepend_and_equals_expected_matcher_sdv = parser.parse(trans_and_eq_expected_matcher_source)
 
-        prepend_and_equals_expected_matcher = NameAndValue('PREPEND_AND_EQUALS_EXPECTED',
-                                                           prepend_and_equals_expected_matcher_sdv)
+        prepend_and_equals_expected_matcher = StringMatcherSymbolContext.of_sdv(
+            'PREPEND_AND_EQUALS_EXPECTED',
+            prepend_and_equals_expected_matcher_sdv
+        )
 
-        symbols = symbol_table_from_name_and_sdvs([
+        symbols = SdvSymbolContext.symbol_table_of_contexts([
             equals_expected_matcher,
             prepend_transformer_symbol,
             prepend_and_equals_expected_matcher,
