@@ -21,21 +21,24 @@ def matches_logic_ddv(resolved_value: Callable[[Tcds], ValueAssertion[PRIMITIVE]
     return asrt.is_instance_with__many(
         LogicDdv,
         [
-            asrt.sub_component(
-                'description',
-                _get_description,
-                asrt.is_instance_with(LogicValueDescription, _IsValidDescription()),
-
-            ),
+            has_valid_description(),
             asrt_ddv.matches_dir_dependent_value__with_adv(resolved_value, tcds),
         ])
+
+
+def has_valid_description() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
+    return asrt.sub_component(
+        'description',
+        _get_description,
+        asrt.is_instance_with(LogicValueDescription, IsValidDescription()),
+    )
 
 
 def _get_description(ddv: LogicDdv) -> LogicValueDescription:
     return ddv.description()
 
 
-class _IsValidDescription(ValueAssertionBase[LogicValueDescription]):
+class IsValidDescription(ValueAssertionBase[LogicValueDescription]):
     def _apply(self,
                put: unittest.TestCase,
                value: LogicValueDescription,

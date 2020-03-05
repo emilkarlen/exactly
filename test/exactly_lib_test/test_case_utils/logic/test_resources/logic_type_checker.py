@@ -11,6 +11,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
     CommonSdvPropertiesChecker, PRIMITIVE, CommonExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_system.logic.test_resources.logic_structure_assertions import has_valid_description
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
@@ -63,6 +64,8 @@ class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesCheck
             self._structure_tree_of_ddv,
             message_builder.for_sub_component('sanity of structure'),
         )
+
+        has_valid_description().apply(put, actual, message_builder)
 
     def check_primitive(self,
                         put: unittest.TestCase,
@@ -121,6 +124,8 @@ class WithDetailsDescriptionExecutionPropertiesChecker(CommonExecutionProperties
         assert isinstance(actual, WithDetailsDescription)  # Type info for IDE
 
         self._check_sanity_of_details_renderer(put, message_builder, actual)
+
+        has_valid_description().apply(put, actual, message_builder)
 
     def check_primitive(self,
                         put: unittest.TestCase,
