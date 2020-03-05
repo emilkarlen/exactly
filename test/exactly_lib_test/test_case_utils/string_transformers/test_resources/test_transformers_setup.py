@@ -1,3 +1,4 @@
+from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.name_and_value import NameAndValue
@@ -26,7 +27,7 @@ TO_UPPER_CASE_TRANSFORMER = NameAndValue('TO_UPPER_CASE_TRANSFORMER',
 
 def symbol_container_of(transformer: StringTransformer) -> SymbolContainer:
     return symbol_utils.container(
-        string_transformer.StringTransformerSdvConstantTestImpl(transformer)
+        StringTransformerStv(string_transformer.StringTransformerSdvConstantTestImpl(transformer))
     )
 
 

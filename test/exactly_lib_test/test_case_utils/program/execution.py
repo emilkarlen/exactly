@@ -1,11 +1,12 @@
 import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.logic.program.program_sdv import ProgramStv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_program_sdv
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
@@ -76,7 +77,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 
                     symbols = SymbolTable({
                         program_that_executes_py_source.name:
-                            symbol_utils.container(program_that_executes_py_source.value)
+                            container_of_program_sdv(program_that_executes_py_source.value)
                     })
 
                     # ACT & ASSERT #
@@ -147,7 +148,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 
                     symbols = SymbolTable({
                         program_that_executes_py_source.name:
-                            symbol_utils.container(program_that_executes_py_source.value),
+                            container_of_program_sdv(program_that_executes_py_source.value),
 
                         to_upper_transformer.name:
                             test_transformers_setup.symbol_container_of(
@@ -186,8 +187,10 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        program_symbol = NameAndValue('A_PROGRAM',
-                                      program_sdvs.arbitrary_sdv__without_symbol_references())
+        program_symbol = NameAndValue(
+            'A_PROGRAM',
+            ProgramStv(program_sdvs.arbitrary_sdv__without_symbol_references())
+        )
 
         pgm_and_args_cases = [
             NameAndValue('shell command',
@@ -211,7 +214,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
 
                 symbols = symbol_table_from_name_and_sdvs([
                     program_symbol,
-                    validation_case.value.symbol_context.name_and_sdv,
+                    validation_case.value.symbol_context.name_and_sdtv,
                 ])
 
                 with self.subTest(pgm_and_args_case=pgm_and_args_case.name,

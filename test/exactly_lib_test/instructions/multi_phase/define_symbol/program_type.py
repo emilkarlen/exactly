@@ -71,7 +71,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
                 expected_symbol_container = asrt_rs.matches_container(
-                    assertion_on_sdv=asrt_sdv.matches_stv_of_program(
+                    assertion_on_sdv=asrt_sdv.matches_sdtv_of_program(
                         references=asrt.matches_sequence([
                             is_program_reference_to(referred_symbol.name)
                         ]),

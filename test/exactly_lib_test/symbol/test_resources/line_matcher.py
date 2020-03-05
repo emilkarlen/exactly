@@ -88,7 +88,7 @@ class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherStv]):
         )
 
     @property
-    def stv(self) -> LineMatcherStv:
+    def sdtv(self) -> LineMatcherStv:
         return self._stv
 
     @property

@@ -193,7 +193,7 @@ actor = -file python
 
 [act]
 
-my-python-program.py argument1 "second argument"
+my-python-logic_symbol_utils.py argument1 "second argument"
 ```
 
 

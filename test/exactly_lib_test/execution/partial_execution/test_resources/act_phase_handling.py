@@ -13,7 +13,7 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
 
 
 class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
-    PYTHON_FILE_NAME = 'program.py'
+    PYTHON_FILE_NAME = 'logic_symbol_utils.py'
 
     def __init__(self, python_program_source: str):
         self.python_program_source = python_program_source

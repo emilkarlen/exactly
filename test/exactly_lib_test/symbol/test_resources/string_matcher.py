@@ -67,7 +67,7 @@ class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherStv]):
         )
 
     @property
-    def stv(self) -> StringMatcherStv:
+    def sdtv(self) -> StringMatcherStv:
         return self._stv
 
     @property

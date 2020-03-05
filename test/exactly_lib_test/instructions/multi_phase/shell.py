@@ -48,7 +48,7 @@ class TestFailingParse(unittest.TestCase):
 class TestSymbolReferences(unittest.TestCase):
     def test_symbol_references(self):
         expected_exit_status = 72
-        file_to_interpret = fs.File('python-program.py',
+        file_to_interpret = fs.File('python-logic_symbol_utils.py',
                                     py_script_that_exists_with_status(expected_exit_status))
         file_to_interpret_symbol = NameAndValue('file_to_interpret_symbol',
                                                 file_to_interpret.file_name)

@@ -247,7 +247,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                                                                        expectation)
 
     def test_symbol_references(self):
-        file_to_interpret = fs.File('python-program.py',
+        file_to_interpret = fs.File('python-logic_symbol_utils.py',
                                     python_program_that_exits_with_code_given_as_first_cl_arg)
         file_to_interpret_symbol = NameAndValue('file_to_interpret_symbol',
                                                 file_to_interpret.file_name)

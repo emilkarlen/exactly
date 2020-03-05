@@ -109,7 +109,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
             failing_symbol_context = case.value.symbol_context
 
             symbols = symbol_table_from_name_and_sdvs([
-                failing_symbol_context.name_and_sdv,
+                failing_symbol_context.name_and_sdtv,
                 successful_transformer,
             ])
 

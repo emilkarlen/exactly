@@ -13,19 +13,16 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
+from exactly_lib_test.symbol.logic.test_resources.assertions import matches_logic_sdv
 from exactly_lib_test.test_case.test_resources import validation_check, command_assertions as asrt_command
-from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
-    tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as cmd_line_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -36,6 +33,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_transformer
+from exactly_lib_test.type_system.logic.test_resources.logic_structure_assertions import matches_logic_ddv
 
 
 def suite() -> unittest.TestSuite:
@@ -194,20 +192,9 @@ def check_parsing_of_program(put: unittest.TestCase,
                 transformer=asrt_line_transformer.is_identity_transformer(True)
             )
 
-        def expected_program_adv(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
-            def get_program(adv: ProgramAdv) -> Program:
-                return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
-
-            return asrt.is_instance_with(ProgramAdv,
-                                         asrt.sub_component('program',
-                                                            get_program,
-                                                            expected_program(tcds)))
-
-        expectation = asrt_sdv.matches_stv_of_program(
+        expectation = matches_logic_sdv(
             references=expected_references_assertion,
-            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
-                resolved_value=expected_program_adv,
-            ),
+            ddv=matches_logic_ddv(expected_program),
             symbols=symbols
         )
 

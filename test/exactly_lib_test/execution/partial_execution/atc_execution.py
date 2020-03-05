@@ -243,10 +243,11 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
         with preserved_cwd():
             # ARRANGE #
             output_file_path = tmp_dir_path / 'output.txt'
-            python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
+            python_program_file = fs.File('logic_symbol_utils.py',
+                                          _python_program_that_prints_stdin_to(output_file_path))
             python_program_file.write_to(tmp_dir_path)
             executor_that_records_contents_of_stdin = _AtcThatExecutesPythonProgramFile(
-                tmp_dir_path / 'program.py')
+                tmp_dir_path / 'logic_symbol_utils.py')
             parser = ActorForConstantAtc(
                 executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()

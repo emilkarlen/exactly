@@ -176,7 +176,7 @@ class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerStv]):
         )
 
     @property
-    def stv(self) -> StringTransformerStv:
+    def sdtv(self) -> StringTransformerStv:
         return self._sdt
 
     @property

@@ -32,7 +32,7 @@ class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherStv]):
         )
 
     @property
-    def stv(self) -> FilesMatcherStv:
+    def sdtv(self) -> FilesMatcherStv:
         return self._stv
 
     @property

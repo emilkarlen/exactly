@@ -27,11 +27,11 @@ sys.exit(%d)
 """ % exit_code
 
         with tmp_dir(DirContents([
-            File('program.py', py_pgm_that_exits_with_exit_code)
+            File('logic_symbol_utils.py', py_pgm_that_exits_with_exit_code)
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path,
-                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py'))
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'logic_symbol_utils.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
             self.assertEqual(exit_code,
@@ -49,12 +49,12 @@ sys.exit(%d)
 
     def test_storage_of_result_in_files__existing_dir(self):
         with tmp_dir(DirContents([
-            File('program.py',
+            File('logic_symbol_utils.py',
                  program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path,
-                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py')
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'logic_symbol_utils.py')
                                       )
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
@@ -62,12 +62,12 @@ sys.exit(%d)
 
     def test_storage_of_result_in_files__non_existing_dir(self):
         with tmp_dir(DirContents([
-            File('program.py',
+            File('logic_symbol_utils.py',
                  program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path / 'non-existing-path-component' / 'one-more-component',
-                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py'))
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'logic_symbol_utils.py'))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
                                                                             result)

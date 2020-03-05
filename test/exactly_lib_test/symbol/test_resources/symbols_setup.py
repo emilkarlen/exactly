@@ -101,17 +101,17 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     @abstractmethod
-    def stv(self) -> STV_TYPE:
+    def sdtv(self) -> STV_TYPE:
         pass
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
-        return symbol_utils.container(self.stv)
+        return symbol_utils.container(self.sdtv)
 
     @property
-    def name_and_sdv(self) -> NameAndValue[STV_TYPE]:
+    def name_and_sdtv(self) -> NameAndValue[STV_TYPE]:
         return NameAndValue(self.name,
-                            self.stv)
+                            self.sdtv)
 
     @property
     def name_and_container(self) -> NameAndValue[SymbolContainer]:

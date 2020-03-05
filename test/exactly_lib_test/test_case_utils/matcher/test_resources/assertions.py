@@ -12,7 +12,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNeg
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed, TmpDirFileSpace
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_stv_of_logic_type
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdtv_of_logic_type
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -43,7 +43,7 @@ def matches_matcher_stv(type_: Type[LogicTypeStv],
     return asrt.is_instance_with(
         type_,
         asrt.and_([
-            is_stv_of_logic_type(logic_value_type),
+            is_sdtv_of_logic_type(logic_value_type),
 
             asrt.sub_component('references',
                                sdv_structure.get_references,

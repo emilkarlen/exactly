@@ -98,7 +98,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expected_container = matches_container(
                     assertion_on_sdv=
-                    sdv_assertions.matches_stv_of_line_matcher(
+                    sdv_assertions.matches_sdtv_of_line_matcher(
                         references=asrt.matches_sequence([
                             is_line_matcher_reference_to(symbol.name),
                         ]),

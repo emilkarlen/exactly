@@ -22,8 +22,8 @@ from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_program_sdv
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
@@ -175,10 +175,10 @@ class TestValidation(unittest.TestCase):
 
         symbols = SymbolTable({
             program_symbol_with_ref_to_non_exit_exe_file.name:
-                symbol_utils.container(program_symbol_with_ref_to_non_exit_exe_file.value),
+                container_of_program_sdv(program_symbol_with_ref_to_non_exit_exe_file.value),
 
             program_symbol_with_ref_to_non_exiting_file_as_argument.name:
-                symbol_utils.container(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
+                container_of_program_sdv(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
         })
 
         cases = [
@@ -229,10 +229,10 @@ class TestValidation(unittest.TestCase):
 
         symbols = SymbolTable({
             program_symbol_with_ref_to_non_exit_exe_file.name:
-                symbol_utils.container(program_symbol_with_ref_to_non_exit_exe_file.value),
+                container_of_program_sdv(program_symbol_with_ref_to_non_exit_exe_file.value),
 
             program_symbol_with_ref_to_non_exiting_file_as_argument.name:
-                symbol_utils.container(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
+                container_of_program_sdv(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
         })
 
         cases = [
@@ -305,7 +305,7 @@ class TestExecution(unittest.TestCase):
 
                     symbols = SymbolTable({
                         program_that_executes_py_source.name:
-                            symbol_utils.container(program_that_executes_py_source.value)
+                            container_of_program_sdv(program_that_executes_py_source.value)
                     })
 
                     # ACT & ASSERT #
@@ -446,7 +446,7 @@ class TestResolving(unittest.TestCase):
 
                         symbols = SymbolTable({
                             program_symbol.name:
-                                symbol_utils.container(program_symbol.value)
+                                container_of_program_sdv(program_symbol.value)
                         })
 
                         expected_references_assertion = asrt.matches_sequence([
