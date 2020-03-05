@@ -3,7 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
@@ -63,7 +63,7 @@ class TestSelectTransformer(unittest.TestCase):
 
         matcher = NameAndValue(
             'line_matcher_symbol',
-            LineMatcherSdv(
+            LineMatcherStv(
                 matchers.sdv_from_primitive_value(
                     matchers.MatcherWithConstantResult(False)
                 )

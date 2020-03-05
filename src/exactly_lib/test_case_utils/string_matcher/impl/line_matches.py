@@ -2,8 +2,8 @@ import contextlib
 from typing import ContextManager, Iterator
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
@@ -19,7 +19,7 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 
 def sdv(expectation_type: ExpectationType,
         quantifier: Quantifier,
-        line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
+        line_matcher_sdv: LineMatcherStv) -> StringMatcherStv:
     return sdvs.new_maybe_negated(
         sdv__generic(quantifier, line_matcher_sdv.as_generic),
         expectation_type,

@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher import property_matcher
@@ -17,8 +17,8 @@ _NAME = ' '.join((config.NUM_FILES_CHECK_ARGUMENT,
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> FilesMatcherSdv:
-    return FilesMatcherSdv(
+          token_parser: TokenParser) -> FilesMatcherStv:
+    return FilesMatcherStv(
         parse__generic(expectation_type, token_parser)
     )
 

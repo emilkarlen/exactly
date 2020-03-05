@@ -5,7 +5,6 @@ from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -23,14 +22,14 @@ from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 
 
-def files_matcher_parser() -> Parser[FilesMatcherSdv]:
+def files_matcher_parser() -> Parser[GenericFilesMatcherSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_files_matcher,
                                                         consume_last_line_if_is_at_eol_after_parse=True)
 
 
 def parse_files_matcher(parser: TokenParser,
-                        must_be_on_current_line: bool = True) -> FilesMatcherSdv:
-    return FilesMatcherSdv(parse_files_matcher__generic(parser, must_be_on_current_line))
+                        must_be_on_current_line: bool = True) -> GenericFilesMatcherSdv:
+    return parse_files_matcher__generic(parser, must_be_on_current_line)
 
 
 def parse_files_matcher__generic(parser: TokenParser,

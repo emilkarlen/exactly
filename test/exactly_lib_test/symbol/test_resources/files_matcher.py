@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def arbitrary_sdv() -> FilesMatcherSdv:
+def arbitrary_sdv() -> FilesMatcherStv:
     return files_matcher_sdv_constant_test_impl(True)
 
 
@@ -74,15 +74,15 @@ def value_with_result(result: bool,
 
 def files_matcher_sdv_constant_test_impl(resolved_value: bool = True,
                                          references: Sequence[SymbolReference] = (),
-                                         validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherSdv:
-    return FilesMatcherSdv(matchers.sdv_from_bool(resolved_value,
+                                         validator: DdvValidator = ddv_validation.constant_success_validator()) -> FilesMatcherStv:
+    return FilesMatcherStv(matchers.sdv_from_bool(resolved_value,
                                                   references,
                                                   validator))
 
 
 def files_matcher_sdv_constant_ddv_test_impl(resolved_value: FilesMatcherDdv,
-                                             references: Sequence[SymbolReference] = ()) -> FilesMatcherSdv:
-    return FilesMatcherSdv(matchers.MatcherSdvOfConstantDdvTestImpl(resolved_value,
+                                             references: Sequence[SymbolReference] = ()) -> FilesMatcherStv:
+    return FilesMatcherStv(matchers.MatcherSdvOfConstantDdvTestImpl(resolved_value,
                                                                     references))
 
 

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
@@ -18,7 +18,7 @@ MatcherCheckerAlias = IntegrationChecker[MatcherWTraceAndNegation[MODEL],
 
 class MatcherConfiguration(Generic[MODEL], ABC):
     @abstractmethod
-    def mk_logic_type(self, generic: MatcherSdv[MODEL]) -> MatcherTypeSdv[MODEL]:
+    def mk_logic_type(self, generic: MatcherSdv[MODEL]) -> MatcherTypeStv[MODEL]:
         pass
 
     @abstractmethod
@@ -26,7 +26,7 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         pass
 
     @abstractmethod
-    def parser(self) -> Parser[MatcherTypeSdv[MODEL]]:
+    def parser(self) -> Parser[MatcherTypeStv[MODEL]]:
         pass
 
     @abstractmethod

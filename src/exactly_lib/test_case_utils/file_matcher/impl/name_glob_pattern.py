@@ -2,7 +2,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_matcher, str_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase
@@ -21,8 +21,8 @@ from exactly_lib.util.render import strings as string_rendering
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def parse(token_parser: TokenParser) -> FileMatcherSdv:
-    return FileMatcherSdv(parse__generic(token_parser))
+def parse(token_parser: TokenParser) -> FileMatcherStv:
+    return FileMatcherStv(parse__generic(token_parser))
 
 
 def parse__generic(token_parser: TokenParser) -> GenericFileMatcherSdv:

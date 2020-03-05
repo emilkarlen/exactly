@@ -1,6 +1,6 @@
 from typing import Sequence, Callable
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -28,7 +28,7 @@ class Configuration:
 
 
 def matcher(configuration: Configuration,
-            selector: FileMatcherSdv,
+            selector: FileMatcherStv,
             matcher_on_result: GenericFilesMatcherSdv) -> GenericFilesMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
         matcher_on_result,
@@ -100,7 +100,7 @@ class _PrunedModelGetterDdv(PropertyGetterDdv[FilesMatcherModel, FilesMatcherMod
 class _PrunedModelGetterSdv(PropertyGetterSdv[FilesMatcherModel, FilesMatcherModel]):
     def __init__(self,
                  configuration: Configuration,
-                 predicate: FileMatcherSdv):
+                 predicate: FileMatcherStv):
         self._configuration = configuration
         self._predicate = predicate
 

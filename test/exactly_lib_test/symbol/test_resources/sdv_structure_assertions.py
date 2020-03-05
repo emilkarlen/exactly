@@ -1,5 +1,5 @@
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv, get_logic_value_type
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, get_logic_value_type, LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer, SymbolDependentTypeValue
 from exactly_lib.type_system.value_type import LogicValueType, TypeCategory
 from exactly_lib.util.line_source import LineSequence
@@ -24,9 +24,9 @@ def matches_container(assertion_on_sdv: ValueAssertion[SymbolDependentTypeValue]
         ]))
 
 
-def is_sdv_of_logic_type(logic_value_type: LogicValueType) -> ValueAssertion[SymbolDependentTypeValue]:
+def is_stv_of_logic_type(logic_value_type: LogicValueType) -> ValueAssertion[SymbolDependentTypeValue]:
     value_type = LOGIC_VALUE_TYPE_2_VALUE_TYPE[logic_value_type]
-    return asrt.is_instance_with(LogicTypeSdv,
+    return asrt.is_instance_with(LogicTypeStv,
                                  asrt.and_([
                                      asrt.sub_component('type_category',
                                                         sdv_structure.get_type_category,
@@ -40,7 +40,15 @@ def is_sdv_of_logic_type(logic_value_type: LogicValueType) -> ValueAssertion[Sym
                                                         sdv_structure.get_value_type,
                                                         asrt.is_(value_type)),
 
+                                     asrt.sub_component('sdv',
+                                                        _get_sdv,
+                                                        asrt.is_instance(LogicSdv)),
+
                                      asrt.sub_component('references',
                                                         sdv_structure.get_references,
                                                         asrt.is_sequence_of(asrt.is_instance(SymbolReference))),
                                  ]))
+
+
+def _get_sdv(stv: LogicTypeStv):
+    return stv.value()

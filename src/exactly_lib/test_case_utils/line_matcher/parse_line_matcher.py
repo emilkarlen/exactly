@@ -7,22 +7,16 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
-from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-CONSTANT_TRUE_MATCHER_SDV = LineMatcherSdv(
-    sdv_components.matcher_sdv_from_constant_primitive(constant.MatcherWithConstantResult(True))
-)
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
@@ -33,28 +27,21 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 
-def parser() -> Parser[LineMatcherSdv]:
+def parser() -> Parser[GenericLineMatcherSdv]:
     return _PARSER
 
 
-class _Parser(Parser[LineMatcherSdv]):
-    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherSdv:
-        return parse_line_matcher_from_token_parser(parser)
+class _Parser(Parser[GenericLineMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> GenericLineMatcherSdv:
+        return parse_line_matcher_from_token_parser__generic(parser)
 
 
 _PARSER = _Parser()
 
 
 class ParserOfGenericMatcherOnArbitraryLine(Parser[MatcherSdv[LineMatcherLine]]):
-    def parse_from_token_parser(self, token_parser: TokenParser) -> MatcherSdv[LineMatcherLine]:
+    def parse_from_token_parser(self, token_parser: TokenParser) -> GenericLineMatcherSdv:
         return parse_line_matcher_from_token_parser__generic(token_parser, must_be_on_current_line=False)
-
-
-def parse_line_matcher_from_token_parser(parser: TokenParser,
-                                         must_be_on_current_line: bool = True) -> LineMatcherSdv:
-    return LineMatcherSdv(
-        parse_line_matcher_from_token_parser__generic(parser, must_be_on_current_line)
-    )
 
 
 def parse_line_matcher_from_token_parser__generic(parser: TokenParser,

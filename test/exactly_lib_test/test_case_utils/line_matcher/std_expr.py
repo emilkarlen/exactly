@@ -2,8 +2,8 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
@@ -28,13 +28,13 @@ def suite() -> unittest.TestSuite:
 
 
 class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
-    def mk_logic_type(self, generic: MatcherSdv[LineMatcherLine]) -> MatcherTypeSdv[LineMatcherLine]:
-        return LineMatcherSdv(generic)
+    def mk_logic_type(self, generic: MatcherSdv[LineMatcherLine]) -> MatcherTypeStv[LineMatcherLine]:
+        return LineMatcherStv(generic)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.LINE_MATCHER
 
-    def parser(self) -> Parser[MatcherTypeSdv[LineMatcherLine]]:
+    def parser(self) -> Parser[MatcherTypeStv[LineMatcherLine]]:
         return parse_line_matcher.parser()
 
     def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[LineMatcherLine],

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -78,7 +78,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
     def runTest(self):
         unconditionally_constant_true = NameAndValue(
             'unconditionally_constant_true',
-            FilesMatcherSdv(
+            FilesMatcherStv(
                 matchers.sdv_from_bool(True)
             )
         )
@@ -166,7 +166,7 @@ class TestApplication(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             files_matcher_name:
-                                FilesMatcherSdv(matchers.sdv_from_bool(matcher_result))
+                                FilesMatcherStv(matchers.sdv_from_bool(matcher_result))
                         })
                     ),
                 )

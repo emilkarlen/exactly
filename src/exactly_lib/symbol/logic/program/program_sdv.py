@@ -1,33 +1,16 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicWithStructureSdv
 from exactly_lib.symbol.logic.program import stdin_data_sdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
-from exactly_lib.type_system.logic.program.program import ProgramDdv
+from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
-from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ProgramSdv(LogicTypeSdv[ProgramDdv]):
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.PROGRAM
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.PROGRAM
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        raise NotImplementedError('abstract method')
-
-    def resolve(self, symbols: SymbolTable) -> ProgramDdv:
-        raise NotImplementedError('abstract method')
-
+class ProgramSdv(LogicWithStructureSdv[Program]):
     def new_accumulated(self,
                         additional_stdin: StdinDataSdv,
                         additional_arguments: ArgumentsSdv,
@@ -48,3 +31,19 @@ class ProgramSdv(LogicTypeSdv[ProgramDdv]):
         current transformations.
         """
         return self.new_accumulated(stdin_data_sdv.no_stdin(), arguments_sdvs.empty(), transformations)
+
+
+class ProgramStv(LogicTypeStv[Program]):
+    def __init__(self, sdv: ProgramSdv):
+        self._sdv = sdv
+
+    @property
+    def logic_value_type(self) -> LogicValueType:
+        return LogicValueType.PROGRAM
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PROGRAM
+
+    def value(self) -> ProgramSdv:
+        return self._sdv

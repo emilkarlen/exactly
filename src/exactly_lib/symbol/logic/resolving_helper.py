@@ -1,5 +1,5 @@
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv, MatcherTypeSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
+from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -49,7 +49,7 @@ class LogicTypeResolvingHelper:
                 .primitive(self.application_environment)
         )
 
-    def resolve(self, sdv: MatcherTypeSdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
+    def resolve(self, sdv: MatcherTypeStv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
@@ -72,20 +72,20 @@ class LogicTypeResolvingHelper:
     def resolve_program_command(self, sdv: ProgramSdv) -> Command:
         return sdv.resolve(self.symbols).command.value_of_any_dependency(self.tcds)
 
-    def resolve_files_matcher(self, sdv: FilesMatcherSdv) -> FilesMatcher:
+    def resolve_files_matcher(self, sdv: FilesMatcherStv) -> FilesMatcher:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
                 .primitive(self.application_environment)
         )
 
-    def apply(self, sdv: MatcherTypeSdv[MODEL], model: MODEL) -> MatchingResult:
+    def apply(self, sdv: MatcherTypeStv[MODEL], model: MODEL) -> MatchingResult:
         return self.resolve(sdv).matches_w_trace(model)
 
     def apply__generic(self, sdv: MatcherSdv[MODEL], model: MODEL) -> MatchingResult:
         return self.resolve__generic(sdv).matches_w_trace(model)
 
-    def apply__files_matcher(self, sdv: FilesMatcherSdv, model: FilesMatcherModel) -> MatchingResult:
+    def apply__files_matcher(self, sdv: FilesMatcherStv, model: FilesMatcherModel) -> MatchingResult:
         return self.resolve_files_matcher(sdv).matches_w_trace(model)
 
 

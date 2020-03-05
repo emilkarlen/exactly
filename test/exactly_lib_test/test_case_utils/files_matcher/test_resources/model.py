@@ -2,7 +2,7 @@ from typing import Optional, Callable
 
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 class ModelEmbryo:
     def __init__(self,
                  dir_path_sdv: PathSdv,
-                 files_selection: Optional[FileMatcherSdv] = None
+                 files_selection: Optional[FileMatcherStv] = None
                  ):
         self.dir_path_sdv = dir_path_sdv
         self.files_selection = files_selection

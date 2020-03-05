@@ -4,7 +4,7 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
@@ -266,7 +266,7 @@ class TestMultiLineSyntax(unittest.TestCase):
                     tcds,
                     symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                         files_matcher_name:
-                            FilesMatcherSdv(matchers.sdv_from_bool(matcher_result))
+                            FilesMatcherStv(matchers.sdv_from_bool(matcher_result))
                     })
                 )
             )

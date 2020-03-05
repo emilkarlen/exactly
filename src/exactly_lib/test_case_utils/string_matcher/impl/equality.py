@@ -4,7 +4,7 @@ import pathlib
 from typing import Iterable
 
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -32,7 +32,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(expectation_type: ExpectationType,
-        expected_contents: StringOrPathSdv) -> StringMatcherSdv:
+        expected_contents: StringOrPathSdv) -> StringMatcherStv:
     return sdvs.new_maybe_negated(
         sdv__generic(expected_contents),
         expectation_type,

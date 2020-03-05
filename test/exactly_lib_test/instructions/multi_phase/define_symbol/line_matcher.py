@@ -1,10 +1,12 @@
 import unittest
 
-import exactly_lib.definitions.primitives.line_matcher
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
+from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -57,7 +59,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
         symbol = NameAndValue(
             'the_symbol_name',
-            parse_line_matcher.CONSTANT_TRUE_MATCHER_SDV)
+            CONSTANT_TRUE_MATCHER_STV)
 
         regex_matcher_syntax = argument_syntax.syntax_for_regex_matcher(regex_str)
 
@@ -96,7 +98,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expected_container = matches_container(
                     assertion_on_sdv=
-                    sdv_assertions.matches_sdv_of_line_matcher(
+                    sdv_assertions.matches_stv_of_line_matcher(
                         references=asrt.matches_sequence([
                             is_line_matcher_reference_to(symbol.name),
                         ]),
@@ -127,7 +129,7 @@ class TestUnsuccessfulScenarios(TestCaseBase):
         cases = [
             NameAndValue(
                 'single quoted argument',
-                str(surrounded_by_hard_quotes(exactly_lib.definitions.primitives.line_matcher.REGEX_MATCHER_NAME)),
+                str(surrounded_by_hard_quotes(line_matcher.REGEX_MATCHER_NAME)),
             ),
             NameAndValue(
                 'non-transformer name that is not a valid symbol name',
@@ -152,6 +154,10 @@ class TestUnsuccessfulScenarios(TestCaseBase):
                     # ACT & ASSERT #
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
+
+CONSTANT_TRUE_MATCHER_STV = LineMatcherStv(
+    sdv_components.matcher_sdv_from_constant_primitive(constant.MatcherWithConstantResult(True))
+)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

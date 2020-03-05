@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Sequence
 
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -50,7 +50,7 @@ class _HelperBase(ABC):
 
 
 class HardErrorDueToInvalidPathArgumentHelper(_HelperBase):
-    UNCONDITIONALLY_CONSTANT_TRUE = FilesMatcherSdv(
+    UNCONDITIONALLY_CONSTANT_TRUE = FilesMatcherStv(
         matchers.sdv_from_bool(True)
     )
 
@@ -97,7 +97,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper(_HelperBase):
             ),
             symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                 self.name_of_referenced_symbol:
-                    FilesMatcherSdv(matchers.sdv_from_primitive_value(
+                    FilesMatcherStv(matchers.sdv_from_primitive_value(
                         matchers.MatcherThatReportsHardError(self.error_message)
                     ))
             }),

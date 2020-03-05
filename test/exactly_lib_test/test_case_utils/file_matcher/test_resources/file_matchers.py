@@ -1,4 +1,4 @@
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -20,19 +20,19 @@ class FileMatcherTestImplBase(FileMatcherImplBase):
         return renderers.header_only(self.name)
 
 
-def constant_valid_file_matcher(name: str, matcher_result: bool = True) -> NameAndValue[FileMatcherSdv]:
+def constant_valid_file_matcher(name: str, matcher_result: bool = True) -> NameAndValue[FileMatcherStv]:
     return NameAndValue(
         name,
-        FileMatcherSdv(matchers.sdv_from_bool(matcher_result))
+        FileMatcherStv(matchers.sdv_from_bool(matcher_result))
     )
 
 
-def constant(matcher_result: bool = True) -> FileMatcherSdv:
-    return FileMatcherSdv(matchers.sdv_from_bool(matcher_result))
+def constant(matcher_result: bool = True) -> FileMatcherStv:
+    return FileMatcherStv(matchers.sdv_from_bool(matcher_result))
 
 
-def hard_error(error_message: str = 'unconditional hard error') -> FileMatcherSdv:
-    return FileMatcherSdv(sdv_from_primitive_value(matchers.MatcherThatReportsHardError(error_message)))
+def hard_error(error_message: str = 'unconditional hard error') -> FileMatcherStv:
+    return FileMatcherStv(sdv_from_primitive_value(matchers.MatcherThatReportsHardError(error_message)))
 
 
 class IsRegularFileMatcher(FileMatcherTestImplBase):

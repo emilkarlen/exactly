@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -61,7 +61,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
     def runTest(self):
         unconditionally_constant_true = NameAndValue(
             'unconditionally_constant_true',
-            FilesMatcherSdv(
+            FilesMatcherStv(
                 matchers.sdv_from_bool(True)
             )
         )
@@ -149,7 +149,7 @@ class TestApplication(unittest.TestCase):
                         ),
                         symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                             files_matcher_name:
-                                FilesMatcherSdv(matchers.sdv_from_bool(matcher_result))
+                                FilesMatcherStv(matchers.sdv_from_bool(matcher_result))
                         }),
                     ),
                 )

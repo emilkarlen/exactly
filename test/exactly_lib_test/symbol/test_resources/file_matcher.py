@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, GenericFileMatcherSdv
@@ -14,14 +14,14 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.test_resources import file_matchers
 
 
-def arbitrary_sdv() -> FileMatcherSdv:
+def arbitrary_sdv() -> FileMatcherStv:
     return file_matcher_sdv_constant_test_impl(
         file_matchers.arbitrary_file_matcher()
     )
 
 
 def file_matcher_sdv_constant_test_impl(resolved_value: FileMatcher,
-                                        references: Sequence[SymbolReference] = ()) -> FileMatcherSdv:
+                                        references: Sequence[SymbolReference] = ()) -> FileMatcherStv:
     return file_matcher_sdv_constant_value_test_impl(
         ddv_components.MatcherDdvFromConstantPrimitive(resolved_value),
         references,
@@ -29,11 +29,11 @@ def file_matcher_sdv_constant_test_impl(resolved_value: FileMatcher,
 
 
 def file_matcher_sdv_constant_value_test_impl(resolved_value: FileMatcherDdv,
-                                              references: Sequence[SymbolReference] = ()) -> FileMatcherSdv:
+                                              references: Sequence[SymbolReference] = ()) -> FileMatcherStv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         return resolved_value
 
-    return FileMatcherSdv(
+    return FileMatcherStv(
         sdv_components.MatcherSdvFromParts(
             references,
             make_ddv,
@@ -57,10 +57,10 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherSdv]):
+class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: FileMatcherSdv):
+                 sdv: FileMatcherStv):
         super().__init__(name)
         self._sdv = sdv
 
@@ -68,11 +68,11 @@ class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherSdv]):
     def of_generic(name: str, sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSdv(sdv)
+            FileMatcherStv(sdv)
         )
 
     @property
-    def sdv(self) -> FileMatcherSdv:
+    def sdv(self) -> FileMatcherStv:
         return self._sdv
 
     @property

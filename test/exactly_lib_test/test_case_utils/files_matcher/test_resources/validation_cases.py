@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
@@ -16,10 +16,10 @@ from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherSdv]):
+class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: FilesMatcherSdv):
+                 sdv: FilesMatcherStv):
         super().__init__(name)
         self._sdv = sdv
 
@@ -27,11 +27,11 @@ class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherSdv]):
     def of_generic(name: str, sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(
             name,
-            FilesMatcherSdv(sdv)
+            FilesMatcherStv(sdv)
         )
 
     @property
-    def sdv(self) -> FilesMatcherSdv:
+    def sdv(self) -> FilesMatcherStv:
         return self._sdv
 
     @property

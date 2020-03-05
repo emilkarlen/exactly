@@ -2,7 +2,7 @@ import shlex
 import unittest
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
@@ -164,7 +164,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
         matcher_sdv = sut.files_matcher_parser().parse(source)
 
-        assert isinstance(matcher_sdv, FilesMatcherSdv)
+        assert isinstance(matcher_sdv, FilesMatcherStv)
 
         actual_symbol_references = matcher_sdv.references
 

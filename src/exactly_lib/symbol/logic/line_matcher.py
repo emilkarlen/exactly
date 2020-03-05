@@ -1,13 +1,9 @@
-from typing import List
-
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 
 
-class LineMatcherSdv(MatcherTypeSdv[LineMatcherLine]):
+class LineMatcherStv(MatcherTypeStv[LineMatcherLine]):
     """ Base class for SDVs of :class:`LineMatcher`. """
 
     def __init__(self, matcher: MatcherSdv[LineMatcherLine]):
@@ -25,9 +21,5 @@ class LineMatcherSdv(MatcherTypeSdv[LineMatcherLine]):
     def as_generic(self) -> MatcherSdv[LineMatcherLine]:
         return self._matcher
 
-    @property
-    def references(self) -> List[SymbolReference]:
-        return list(self._matcher.references)
-
-    def resolve(self, symbols: SymbolTable) -> LineMatcherDdv:
-        return self._matcher.resolve(symbols)
+    def value(self) -> MatcherSdv[LineMatcherLine]:
+        return self._matcher

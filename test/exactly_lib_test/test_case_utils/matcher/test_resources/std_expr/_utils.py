@@ -3,7 +3,7 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
@@ -100,7 +100,7 @@ class AssertionsHelper(Generic[MODEL]):
             for operand_symbol_name in symbol_names
         ])
 
-    def sdv_with_validation(self, validation: ValidationActual) -> MatcherTypeSdv[MODEL]:
+    def sdv_with_validation(self, validation: ValidationActual) -> MatcherTypeStv[MODEL]:
         validator = constant_validator(validation)
         sdv__generic = matchers.sdv_from_bool(
             True,
@@ -115,10 +115,10 @@ class AssertionsHelper(Generic[MODEL]):
             (),
         )
 
-    def bool_matcher(self, result: bool) -> MatcherTypeSdv[MODEL]:
+    def bool_matcher(self, result: bool) -> MatcherTypeStv[MODEL]:
         return self.conf.mk_logic_type(self.bool_matcher__generic(result))
 
-    def logic_type_matcher_from_primitive(self, primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherTypeSdv[MODEL]:
+    def logic_type_matcher_from_primitive(self, primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherTypeStv[MODEL]:
         return self.conf.mk_logic_type(matchers.sdv_from_primitive_value(primitive))
 
     def execution_cases_for_constant_reference_expressions(

@@ -1,4 +1,4 @@
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
@@ -37,7 +37,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper:
             ),
             symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
                 self.files_matcher_name:
-                    FilesMatcherSdv(matchers.sdv_from_primitive_value(
+                    FilesMatcherStv(matchers.sdv_from_primitive_value(
                         matchers.MatcherThatReportsHardError(self.error_message)
                     ))
             }),

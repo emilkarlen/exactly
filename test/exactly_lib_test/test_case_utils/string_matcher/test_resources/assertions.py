@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
@@ -17,9 +17,9 @@ def matches_string_matcher_sdv(primitive_value: ValueAssertion[StringMatcher] = 
                                references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                symbols: symbol_table.SymbolTable = None,
                                tcds: Tcds = fake_tcds(),
-                               ) -> ValueAssertion[LogicTypeSdv]:
-    return asrt_matcher.matches_matcher_sdv(
-        StringMatcherSdv,
+                               ) -> ValueAssertion[LogicTypeStv]:
+    return asrt_matcher.matches_matcher_stv(
+        StringMatcherStv,
         LogicValueType.STRING_MATCHER,
         primitive_value,
         references,

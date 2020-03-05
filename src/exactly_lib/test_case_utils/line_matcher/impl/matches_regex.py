@@ -1,6 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
@@ -10,10 +9,6 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, GenericLineMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
-
-
-def parse(token_parser: TokenParser) -> LineMatcherSdv:
-    return LineMatcherSdv(parse__generic(token_parser))
 
 
 def parse__generic(token_parser: TokenParser) -> GenericLineMatcherSdv:

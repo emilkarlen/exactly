@@ -1,11 +1,11 @@
 import unittest
 from typing import Generic, Type
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv, LogicTypeSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import LogicWithStructureDdv, LogicDdv
-from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.logic.test_resources import assertions as asrt_logic
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, CommonExecutionPropertiesChecker
@@ -14,16 +14,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
-class LogicTypeSdvPropertiesChecker(Generic[PRIMITIVE],
-                                    CommonSdvPropertiesChecker[PRIMITIVE]):
-    def __init__(self,
-                 expected_logic_value_type: LogicValueType,
-                 expected_object_type: Type[LogicTypeSdv],
-                 ):
+class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
+                                CommonSdvPropertiesChecker[PRIMITIVE]):
+    def __init__(self, expected_object_type: Type[LogicSdv]):
         self._is_valid_sdv = asrt_logic.matches_logic_sdv_attributes(
             expected_object_type,
-            expected_logic_value_type,
-            asrt.anything_goes()
+            asrt.is_sequence_of(asrt.is_instance(SymbolReference))
         )
 
     def check(self,
@@ -31,10 +27,10 @@ class LogicTypeSdvPropertiesChecker(Generic[PRIMITIVE],
               actual: LogicSdv[PRIMITIVE],
               message_builder: MessageBuilder,
               ):
-        asrt.is_instance(LogicTypeSdv).apply(put,
-                                             actual,
-                                             message_builder.for_sub_component('type'))
-        assert isinstance(actual, LogicTypeSdv)  # Type info for IDE
+        asrt.is_instance(LogicSdv).apply(put,
+                                         actual,
+                                         message_builder.for_sub_component('type'))
+        assert isinstance(actual, LogicSdv)  # Type info for IDE
         self._is_valid_sdv.apply(put, actual, message_builder)
 
 

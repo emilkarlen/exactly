@@ -5,13 +5,12 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.test_case import executable_factories
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
-from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util import file_utils
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
-from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicTypeSdvPropertiesChecker, \
+from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -28,9 +27,8 @@ class ProgramPropertiesConfiguration(
     def applier(self) -> Applier[Program, ProcOutputFile, ResultWithTransformationData]:
         return self._applier
 
-    def new_sdv_checker(self) -> LogicTypeSdvPropertiesChecker[Program]:
-        return LogicTypeSdvPropertiesChecker(LogicValueType.PROGRAM,
-                                             ProgramSdv)
+    def new_sdv_checker(self) -> LogicSdvPropertiesChecker[Program]:
+        return LogicSdvPropertiesChecker(ProgramSdv)
 
     def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker:
         return WithTreeStructureExecutionPropertiesChecker(ProgramDdv, Program)

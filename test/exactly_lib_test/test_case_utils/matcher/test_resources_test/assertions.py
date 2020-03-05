@@ -1,8 +1,8 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
@@ -150,12 +150,12 @@ def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAnd
                                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                 symbols: SymbolTable = None,
                                 tcds: Tcds = fake_tcds(),
-                                ) -> ValueAssertion[LogicTypeSdv]:
-    return sut.matches_matcher_sdv(StringMatcherSdv, LogicValueType.STRING_MATCHER, primitive_value, references,
+                                ) -> ValueAssertion[LogicTypeStv]:
+    return sut.matches_matcher_stv(StringMatcherStv, LogicValueType.STRING_MATCHER, primitive_value, references,
                                    symbols, tcds)
 
 
-def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:
+def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherStv:
     return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True),
                                                  references)
 

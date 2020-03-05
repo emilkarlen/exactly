@@ -4,7 +4,6 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -15,7 +14,8 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
+    GenericLineMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerModel, StringTransformerAdv
@@ -27,12 +27,12 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse_filter(parser: TokenParser) -> StringTransformerSdv:
-    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
+    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser__generic(parser)
     return _StringTransformerSelectSdv(line_matcher)
 
 
 class _StringTransformerSelectSdv(StringTransformerSdv):
-    def __init__(self, line_matcher_sdv: LineMatcherSdv):
+    def __init__(self, line_matcher_sdv: GenericLineMatcherSdv):
         self.line_matcher_sdv = line_matcher_sdv
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:

@@ -1,7 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher, property_getters, \
@@ -14,10 +13,6 @@ from exactly_lib.util.logic_types import ExpectationType
 
 _NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
                   syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
-
-
-def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
-    return LineMatcherSdv(parse_line_number__generic(parser))
 
 
 def parse_line_number__generic(parser: TokenParser) -> GenericLineMatcherSdv:

@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
@@ -213,7 +213,7 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                     ).apply(expectation_type)
                     source = test_configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     sdv = parser.parse(source)
-                    assert isinstance(sdv, StringMatcherSdv)  # Sanity check
+                    assert isinstance(sdv, StringMatcherStv)  # Sanity check
                     expected_symbols.apply_without_message(self, sdv.references)
 
 

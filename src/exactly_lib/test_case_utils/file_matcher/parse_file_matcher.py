@@ -14,7 +14,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
@@ -45,12 +45,12 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-def parser() -> parser_classes.Parser[FileMatcherSdv]:
+def parser() -> parser_classes.Parser[FileMatcherStv]:
     return _PARSER
 
 
-class _Parser(parser_classes.Parser[FileMatcherSdv]):
-    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
+class _Parser(parser_classes.Parser[FileMatcherStv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherStv:
         return parse_sdv(parser)
 
 
@@ -62,7 +62,7 @@ class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[Fil
 _PARSER = _Parser()
 
 
-def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv]:
+def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherStv]:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
@@ -73,9 +73,9 @@ def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherSdv
 
 
 def parse_sdv(parser: TokenParser,
-              must_be_on_current_line: bool = True) -> FileMatcherSdv:
+              must_be_on_current_line: bool = True) -> FileMatcherStv:
     generic_matcher = parse__generic(parser, must_be_on_current_line)
-    return FileMatcherSdv(generic_matcher)
+    return FileMatcherStv(generic_matcher)
 
 
 def parse__generic(parser: TokenParser,

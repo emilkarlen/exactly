@@ -58,14 +58,14 @@ class TestIsResolverOfDataType(unittest.TestCase):
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM)
+        assertion = asrt_sdv_struct.is_stv_of_logic_type(LogicValueType.PROGRAM)
         matching_sdv = _ProgramResolverTestImpl()
         # ACT & ASSERT #
         assertion.apply_without_message(self, matching_sdv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM)
+        assertion = asrt_sdv_struct.is_stv_of_logic_type(LogicValueType.PROGRAM)
         cases = [
             NameAndValue('unexpected logic type',
                          _StringTransformerSdvTestImpl(),
@@ -85,7 +85,7 @@ class TestMatchesResolver(unittest.TestCase):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl()
         assertion = sut.matches_sdv(
-            asrt_sdv_struct.is_sdv_of_logic_type(LogicValueType.PROGRAM),
+            asrt_sdv_struct.is_stv_of_logic_type(LogicValueType.PROGRAM),
             asrt.anything_goes(),
             asrt.anything_goes())
         # ACT & ASSERT #
@@ -228,18 +228,6 @@ class _ProgramResolverTestImpl(ProgramSdv):
         self.explicit_references = explicit_references
 
     @property
-    def type_category(self) -> TypeCategory:
-        return TypeCategory.LOGIC
-
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.PROGRAM
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.PROGRAM
-
-    @property
     def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
 
@@ -251,18 +239,6 @@ class _StringTransformerSdvTestImpl(StringTransformerSdv):
     def __init__(self,
                  explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references
-
-    @property
-    def type_category(self) -> TypeCategory:
-        return TypeCategory.LOGIC
-
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.STRING_TRANSFORMER
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING_TRANSFORMER
 
     @property
     def references(self) -> Sequence[SymbolReference]:

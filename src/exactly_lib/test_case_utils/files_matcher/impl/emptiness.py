@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
@@ -17,8 +17,8 @@ from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 
 
-def emptiness_matcher() -> FilesMatcherSdv:
-    return FilesMatcherSdv(emptiness_matcher__generic())
+def emptiness_matcher() -> FilesMatcherStv:
+    return FilesMatcherStv(emptiness_matcher__generic())
 
 
 def emptiness_matcher__generic() -> GenericFilesMatcherSdv:

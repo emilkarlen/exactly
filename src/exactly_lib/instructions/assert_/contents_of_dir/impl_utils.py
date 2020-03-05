@@ -4,7 +4,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
@@ -63,7 +63,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self,
                  model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
-                 files_matcher: FilesMatcherSdv,
+                 files_matcher: FilesMatcherStv,
                  ):
         def get_ddv_validator(symbols: SymbolTable) -> DdvValidator:
             return ddv_validators.all_of([

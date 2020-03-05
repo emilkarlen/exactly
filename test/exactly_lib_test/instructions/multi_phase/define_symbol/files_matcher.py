@@ -75,7 +75,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                 # EXPECTATION #
 
                 expected_container = matches_container(
-                    sdv_assertions.matches_sdv_of_files_matcher()
+                    sdv_assertions.matches_stv_of_files_matcher()
                 )
 
                 expectation = Expectation(
@@ -117,7 +117,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            sdv_assertions.matches_sdv_of_files_matcher(
+            sdv_assertions.matches_stv_of_files_matcher(
                 references=asrt.matches_sequence([
                     is_reference_to_files_matcher__ref(referenced_symbol.name)
                 ]),
@@ -145,7 +145,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
-            sdv_assertions.matches_sdv_of_files_matcher()
+            sdv_assertions.matches_stv_of_files_matcher()
         )
 
         not_num_files_beginning_with_a_eq_1_arg = self._not_num_files_beginning_with_a_eq_1_arg()

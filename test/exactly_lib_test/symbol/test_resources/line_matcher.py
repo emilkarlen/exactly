@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
@@ -16,8 +16,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def arbitrary_sdv() -> LineMatcherSdv:
-    return LineMatcherSdv(
+def arbitrary_sdv() -> LineMatcherStv:
+    return LineMatcherStv(
         sdv_components.matcher_sdv_from_constant_primitive(constant.MatcherWithConstantResult(True))
     )
 
@@ -39,7 +39,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 
 def successful_matcher_with_validation(validator: DdvValidator):
-    return LineMatcherSdv(
+    return LineMatcherStv(
         matchers.sdv_from_primitive_value(
             matchers.MatcherWithConstantResult(True),
             (),
@@ -52,8 +52,8 @@ def sdv_from_primitive_value(
         primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = constant_success_validator(),
-) -> LineMatcherSdv:
-    return LineMatcherSdv(
+) -> LineMatcherStv:
+    return LineMatcherStv(
         matchers.sdv_from_primitive_value(
             primitive_value,
             references,
@@ -62,8 +62,8 @@ def sdv_from_primitive_value(
     )
 
 
-def sdv_of_unconditionally_matching_matcher() -> LineMatcherSdv:
-    return LineMatcherSdv(matchers.sdv_of_unconditionally_matching_matcher())
+def sdv_of_unconditionally_matching_matcher() -> LineMatcherStv:
+    return LineMatcherStv(matchers.sdv_of_unconditionally_matching_matcher())
 
 
 def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
@@ -72,10 +72,10 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
     )
 
 
-class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherSdv]):
+class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: LineMatcherSdv):
+                 sdv: LineMatcherStv):
         super().__init__(name)
         self._sdv = sdv
 
@@ -83,11 +83,11 @@ class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherSdv]):
     def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSdv(sdv)
+            LineMatcherStv(sdv)
         )
 
     @property
-    def sdv(self) -> LineMatcherSdv:
+    def sdv(self) -> LineMatcherStv:
         return self._sdv
 
     @property

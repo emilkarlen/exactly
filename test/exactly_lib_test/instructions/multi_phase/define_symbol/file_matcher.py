@@ -91,7 +91,7 @@ class Test(TestCaseBase):
                     )
 
                     expected_container = matches_container(
-                        sdv_assertions.matches_sdv_of_file_matcher(
+                        sdv_assertions.matches_stv_of_file_matcher(
                             references=asrt.is_empty_sequence,
                             primitive_value=case.expected_value
                         )

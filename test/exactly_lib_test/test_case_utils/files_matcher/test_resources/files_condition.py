@@ -2,7 +2,7 @@ import unittest
 from typing import Callable, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
@@ -138,8 +138,8 @@ class Case:
         self.arrangement = arrangement
 
 
-def file_matcher_from_primitive(primitive: FileMatcher) -> FileMatcherSdv:
-    return FileMatcherSdv(sdv_from_primitive_value(primitive))
+def file_matcher_from_primitive(primitive: FileMatcher) -> FileMatcherStv:
+    return FileMatcherStv(sdv_from_primitive_value(primitive))
 
 
 NON_MATCHING_EXECUTION_EXPECTATION = ExecutionExpectation(

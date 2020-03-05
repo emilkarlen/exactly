@@ -1,5 +1,5 @@
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher, combinator_sdvs
 from exactly_lib.test_case_utils.string_matcher.impl import line_matches
@@ -9,8 +9,8 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 
 def parse(quantifier: Quantifier,
           expectation_type: ExpectationType,
-          token_parser: TokenParser) -> StringMatcherSdv:
-    return StringMatcherSdv(
+          token_parser: TokenParser) -> StringMatcherStv:
+    return StringMatcherStv(
         combinator_sdvs.of_expectation_type(
             parse__generic(quantifier, token_parser),
             expectation_type

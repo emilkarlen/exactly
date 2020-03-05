@@ -8,9 +8,10 @@ from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicSdv, PRIMITIVE
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, \
     ReferenceRestrictions
+from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
@@ -620,12 +621,13 @@ class DataTypeSdvForTest(DataTypeSdv):
         return self._references
 
 
-class LogicTypeSdvForTest(LogicTypeSdv):
+class LogicTypeStvForTest(LogicTypeStv):
     def __init__(self,
                  references: Sequence[SymbolReference],
-                 logic_value_type: LogicValueType):
+                 logic_value_type: LogicValueType,
+                 ):
         self._logic_value_type = logic_value_type
-        self._references = references
+        self._sdv = _LogicSdvForTest(references)
 
     @property
     def logic_value_type(self) -> LogicValueType:
@@ -635,12 +637,20 @@ class LogicTypeSdvForTest(LogicTypeSdv):
     def value_type(self) -> ValueType:
         return type_system.LOGIC_TYPE_2_VALUE_TYPE[self._logic_value_type]
 
-    def resolve(self, symbols: SymbolTable):
-        raise NotImplementedError('It is an error if this method is called')
+    def value(self) -> LogicSdv[PRIMITIVE]:
+        return self._sdv
+
+
+class _LogicSdvForTest(LogicSdv):
+    def __init__(self, references: Sequence[SymbolReference]):
+        self._references = references
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+    def resolve(self, symbols: SymbolTable) -> LogicDdv[PRIMITIVE]:
+        raise NotImplementedError('It is an error if this method is called')
 
 
 def symbol_table_entry(symbol_name: str,
@@ -655,7 +665,7 @@ def logic_symbol_table_entry(symbol_name: str,
                              references,
                              value_type: LogicValueType = LogicValueType.FILE_MATCHER) -> Entry:
     return Entry(symbol_name,
-                 symbol_utils.container(LogicTypeSdvForTest(references,
+                 symbol_utils.container(LogicTypeStvForTest(references,
                                                             logic_value_type=value_type)))
 
 

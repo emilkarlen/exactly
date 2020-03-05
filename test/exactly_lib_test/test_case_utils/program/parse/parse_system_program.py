@@ -203,7 +203,7 @@ def check_parsing_of_program(put: unittest.TestCase,
                                                             get_program,
                                                             expected_program(tcds)))
 
-        expectation = asrt_sdv.matches_sdv_of_program(
+        expectation = asrt_sdv.matches_stv_of_program(
             references=expected_references_assertion,
             resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
                 resolved_value=expected_program_adv,

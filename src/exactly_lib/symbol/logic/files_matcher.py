@@ -1,13 +1,9 @@
-from typing import List
-
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherDdv, FilesMatcherModel
+from exactly_lib.symbol.logic.matcher import MatcherTypeStv, MatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FilesMatcherSdv(MatcherTypeSdv[FilesMatcherModel]):
+class FilesMatcherStv(MatcherTypeStv[FilesMatcherModel]):
     def __init__(self, matcher: MatcherSdv[FilesMatcherModel]):
         self._matcher = matcher
 
@@ -19,9 +15,5 @@ class FilesMatcherSdv(MatcherTypeSdv[FilesMatcherModel]):
     def value_type(self) -> ValueType:
         return ValueType.FILES_MATCHER
 
-    @property
-    def references(self) -> List[SymbolReference]:
-        return list(self._matcher.references)
-
-    def resolve(self, symbols: SymbolTable) -> FilesMatcherDdv:
-        return self._matcher.resolve(symbols)
+    def value(self) -> MatcherSdv[FilesMatcherModel]:
+        return self._matcher

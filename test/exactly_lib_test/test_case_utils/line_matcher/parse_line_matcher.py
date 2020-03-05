@@ -6,7 +6,8 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
+from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -17,12 +18,19 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
-from exactly_lib_test.symbol.test_resources import sdv_assertions
+from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as asrt_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
+
+
+class Expectation:
+    def __init__(self,
+                 sdv: ValueAssertion[LogicSdv],
+                 token_stream: ValueAssertion[TokenParser] = asrt.anything_goes()):
+        self.sdv = sdv
+        self.token_stream = token_stream
 
 
 def suite() -> unittest.TestSuite:
@@ -36,7 +44,7 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_sdv = line_number.parse_line_number(source)
+        actual_sdv = line_number.parse_line_number__generic(source)
         # ASSERT #
         expectation.sdv.apply_with_message(self, actual_sdv,
                                            'SDV')
@@ -67,7 +75,7 @@ class TestLineNumberParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    line_number.parse_line_number(source)
+                    line_number.parse_line_number__generic(source)
 
     def test_successful_parse(self):
         # ARRANGE #
@@ -120,11 +128,11 @@ class TestLineNumberParser(unittest.TestCase):
 def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[SymbolDependentTypeValue]:
+                                          ) -> ValueAssertion[LogicSdv]:
     expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
-    return sdv_assertions.matches_sdv_of_line_matcher(
-        references,
+    return asrt_matcher.matches_matcher_sdv(
+        references=references,
         primitive_value=expected_matcher
     )
 

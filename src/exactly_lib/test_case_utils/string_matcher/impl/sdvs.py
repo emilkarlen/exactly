@@ -1,6 +1,6 @@
 from typing import Sequence, Callable
 
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, sdv_components
@@ -13,16 +13,16 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def new_maybe_negated(matcher: GenericStringMatcherSdv,
-                      expectation_type: ExpectationType) -> StringMatcherSdv:
+                      expectation_type: ExpectationType) -> StringMatcherStv:
     if expectation_type is ExpectationType.NEGATIVE:
         matcher = combinator_sdvs.Negation(matcher)
 
-    return StringMatcherSdv(matcher)
+    return StringMatcherStv(matcher)
 
 
 def new_with_transformation(transformer: StringTransformerSdv,
-                            original: GenericStringMatcherSdv) -> StringMatcherSdv:
-    return StringMatcherSdv(on_transformed.StringMatcherWithTransformationSdv(transformer, original))
+                            original: GenericStringMatcherSdv) -> StringMatcherStv:
+    return StringMatcherStv(on_transformed.StringMatcherWithTransformationSdv(transformer, original))
 
 
 def new_with_transformation__generic(transformer: StringTransformerSdv,
@@ -31,12 +31,12 @@ def new_with_transformation__generic(transformer: StringTransformerSdv,
 
 
 def new_reference(name_of_referenced_sdv: str,
-                  expectation_type: ExpectationType) -> StringMatcherSdv:
+                  expectation_type: ExpectationType) -> StringMatcherStv:
     matcher = MatcherReferenceSdv(name_of_referenced_sdv, ValueType.STRING_MATCHER)
     if expectation_type is ExpectationType.NEGATIVE:
         matcher = combinator_sdvs.Negation(matcher)
 
-    return StringMatcherSdv(matcher)
+    return StringMatcherStv(matcher)
 
 
 def new_reference__generic(name_of_referenced_sdv: str,
@@ -49,7 +49,7 @@ def new_reference__generic(name_of_referenced_sdv: str,
 
 
 def string_matcher_sdv_from_parts_2(references: Sequence[SymbolReference],
-                                    get_ddv: Callable[[SymbolTable], StringMatcherDdv]) -> StringMatcherSdv:
-    return StringMatcherSdv(
+                                    get_ddv: Callable[[SymbolTable], StringMatcherDdv]) -> StringMatcherStv:
+    return StringMatcherStv(
         sdv_components.MatcherSdvFromParts(references, get_ddv)
     )

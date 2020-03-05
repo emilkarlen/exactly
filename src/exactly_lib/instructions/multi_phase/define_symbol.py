@@ -24,11 +24,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.logic.file_matcher import FileMatcherSdv
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.line_matcher import LineMatcherSdv
+from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
+from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolUsage, SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
@@ -270,24 +270,25 @@ def _parse_list(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> LineMatcherSdv:
-    return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser,
-                                                                   must_be_on_current_line=False)
+                        token_parser: TokenParser) -> LineMatcherStv:
+    sdv = parse_line_matcher.parse_line_matcher_from_token_parser__generic(token_parser,
+                                                                           must_be_on_current_line=False)
+    return LineMatcherStv(sdv)
 
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
-                          token_parser: TokenParser) -> StringMatcherSdv:
+                          token_parser: TokenParser) -> StringMatcherStv:
     return parse_string_matcher.parse_string_matcher(token_parser)
 
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> FileMatcherSdv:
+                        token_parser: TokenParser) -> FileMatcherStv:
     return parse_file_matcher.parse_sdv(token_parser,
                                         must_be_on_current_line=False)
 
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
-                         token_parser: TokenParser) -> FilesMatcherSdv:
+                         token_parser: TokenParser) -> FilesMatcherStv:
     return parse_files_matcher.parse_files_matcher(token_parser,
                                                    must_be_on_current_line=False)
 

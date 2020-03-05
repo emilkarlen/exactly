@@ -6,7 +6,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.expression import grammar
@@ -25,8 +25,8 @@ EXPECTED_FILE_REL_OPT_ARG_CONFIG = parse_here_doc_or_path.CONFIGURATION
 
 
 def parse(expectation_type: ExpectationType,
-          token_parser: TokenParser) -> StringMatcherSdv:
-    return StringMatcherSdv(
+          token_parser: TokenParser) -> StringMatcherStv:
+    return StringMatcherStv(
         combinator_sdvs.of_expectation_type(
             parse__generic(token_parser),
             expectation_type

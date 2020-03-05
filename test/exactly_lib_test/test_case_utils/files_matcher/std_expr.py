@@ -2,8 +2,8 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
@@ -30,13 +30,13 @@ def suite() -> unittest.TestSuite:
 
 
 class FilesMatcherConfiguration(MatcherConfiguration[FilesMatcherModel]):
-    def mk_logic_type(self, generic: MatcherSdv[FilesMatcherModel]) -> MatcherTypeSdv[FilesMatcherModel]:
-        return FilesMatcherSdv(generic)
+    def mk_logic_type(self, generic: MatcherSdv[FilesMatcherModel]) -> MatcherTypeStv[FilesMatcherModel]:
+        return FilesMatcherStv(generic)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.FILES_MATCHER
 
-    def parser(self) -> Parser[MatcherTypeSdv[FilesMatcherModel]]:
+    def parser(self) -> Parser[MatcherTypeStv[FilesMatcherModel]]:
         return parse_files_matcher.files_matcher_parser()
 
     def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FilesMatcherModel],

@@ -5,6 +5,7 @@ from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
+from exactly_lib.type_system.logic.description import DetailsDescription
 from exactly_lib.type_system.logic.impls.advs import ConstantAdv
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv, \
     ApplicationEnvironmentDependentValue
@@ -22,6 +23,9 @@ class LogicWithDetailsDescriptionDdv(Generic[PRIMITIVE],
     @property
     def describer(self) -> DetailsRenderer:
         return details.empty()
+
+    def description(self) -> DetailsDescription:
+        return _DetailsDescriptionOfDdvWDetails(self)
 
 
 class LogicWithDescriberSdv(Generic[PRIMITIVE], LogicSdv[PRIMITIVE], ABC):
@@ -68,3 +72,11 @@ def sdv_of_constant_primitive(primitive: PRIMITIVE) -> LogicWithDescriberSdv[PRI
             ConstantAdv(primitive)
         )
     )
+
+
+class _DetailsDescriptionOfDdvWDetails(DetailsDescription):
+    def __init__(self, with_details_description: WithDetailsDescription):
+        self._with_details_description = with_details_description
+
+    def details(self) -> DetailsRenderer:
+        return self._with_details_description.describer

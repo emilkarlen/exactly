@@ -1,12 +1,10 @@
 import unittest
-from typing import Sequence
 from typing import Type
 
 from exactly_lib.symbol.logic import visitor as sut
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv, PRIMITIVE
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
     files_matcher, string_transformer
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
@@ -19,7 +17,7 @@ def suite() -> unittest.TestSuite:
 class TestVisitor(unittest.TestCase):
     def _check(self,
                sdv_class: Type,
-               sdv: sut.LogicTypeSdv,
+               sdv: sut.LogicTypeStv,
                expected_ret_val: str,
                ):
         # ARRANGE #
@@ -39,28 +37,28 @@ class TestVisitor(unittest.TestCase):
 
     def test_visit_file_matcher(self):
         self._check(
-            sut.FileMatcherSdv,
+            sut.FileMatcherStv,
             file_matcher.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_files_matcher(self):
         self._check(
-            sut.FilesMatcherSdv,
+            sut.FilesMatcherStv,
             files_matcher.arbitrary_sdv(),
             'other ret val',
         )
 
     def test_visit_line_matcher(self):
         self._check(
-            sut.LineMatcherSdv,
+            sut.LineMatcherStv,
             line_matcher.arbitrary_sdv(),
             'ret val',
         )
 
     def test_visit_string_matcher(self):
         self._check(
-            sut.StringMatcherSdv,
+            sut.StringMatcherStv,
             string_matcher.arbitrary_sdv(),
             'ret val',
         )
@@ -84,31 +82,31 @@ class TestVisitor(unittest.TestCase):
         visitor = AVisitorThatRecordsVisitedMethods('ret-val')
         # ACT #
         with self.assertRaises(TypeError):
-            visitor.visit(UnknownLogicTypeSdvClass())
+            visitor.visit(UnknownLogicTypeStvClass())
         # ASSERT #
         self.assertIsNot(visitor.visited_types,
                          'No visit method should have been executed.')
 
 
-class AVisitorThatRecordsVisitedMethods(sut.LogicTypeSdvPseudoVisitor[str]):
+class AVisitorThatRecordsVisitedMethods(sut.LogicTypeStvPseudoVisitor[str]):
     def __init__(self, ret_val: str):
         self._ret_val = ret_val
         self.visited_types = []
 
-    def visit_file_matcher(self, value: sut.FileMatcherSdv) -> str:
-        self.visited_types.append(sut.FileMatcherSdv)
+    def visit_file_matcher(self, value: sut.FileMatcherStv) -> str:
+        self.visited_types.append(sut.FileMatcherStv)
         return self._ret_val
 
-    def visit_files_matcher(self, value: sut.FilesMatcherSdv) -> str:
-        self.visited_types.append(sut.FilesMatcherSdv)
+    def visit_files_matcher(self, value: sut.FilesMatcherStv) -> str:
+        self.visited_types.append(sut.FilesMatcherStv)
         return self._ret_val
 
-    def visit_line_matcher(self, value: sut.LineMatcherSdv) -> str:
-        self.visited_types.append(sut.LineMatcherSdv)
+    def visit_line_matcher(self, value: sut.LineMatcherStv) -> str:
+        self.visited_types.append(sut.LineMatcherStv)
         return self._ret_val
 
-    def visit_string_matcher(self, value: sut.StringMatcherSdv) -> str:
-        self.visited_types.append(sut.StringMatcherSdv)
+    def visit_string_matcher(self, value: sut.StringMatcherStv) -> str:
+        self.visited_types.append(sut.StringMatcherStv)
         return self._ret_val
 
     def visit_string_transformer(self, value: sut.StringTransformerSdv) -> str:
@@ -120,18 +118,14 @@ class AVisitorThatRecordsVisitedMethods(sut.LogicTypeSdvPseudoVisitor[str]):
         return self._ret_val
 
 
-class UnknownLogicTypeSdvClass(sut.LogicTypeSdv):
+class UnknownLogicTypeStvClass(sut.LogicTypeStv):
     @property
     def logic_value_type(self) -> LogicValueType:
-        raise NotImplementedError('unsupported')
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
         raise NotImplementedError('unsupported')
 
     @property
     def value_type(self) -> ValueType:
         raise NotImplementedError('unsupported')
 
-    def resolve(self, symbols: SymbolTable):
+    def value(self) -> LogicSdv[PRIMITIVE]:
         raise NotImplementedError('unsupported')

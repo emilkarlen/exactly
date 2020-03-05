@@ -3,7 +3,7 @@ import unittest
 from typing import List
 
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
@@ -17,8 +17,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def matcher(put: unittest.TestCase,
             model_dir: PathSdv,
-            expected_contents: List[pathlib.Path]) -> FilesMatcherSdv:
-    return FilesMatcherSdv(
+            expected_contents: List[pathlib.Path]) -> FilesMatcherStv:
+    return FilesMatcherStv(
         assertion_applier.matcher(
             put,
             application_assertion=_ModelCheckerAssertionSetup(model_dir, expected_contents)

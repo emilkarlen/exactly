@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.string_matcher import StringMatcherSdv
+from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -15,15 +15,15 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def arbitrary_sdv() -> StringMatcherSdv:
+def arbitrary_sdv() -> StringMatcherStv:
     return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True))
 
 
 def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
                                           references: Sequence[SymbolReference] = (),
                                           validator: DdvValidator = ddv_validation.ConstantDdvValidator(),
-                                          ) -> StringMatcherSdv:
-    return StringMatcherSdv(
+                                          ) -> StringMatcherStv:
+    return StringMatcherStv(
         matchers.MatcherSdvOfConstantDdvTestImpl(
             matchers.MatcherDdvOfConstantMatcherTestImpl(
                 resolved_value,
@@ -51,10 +51,10 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
     )
 
 
-class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherSdv]):
+class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdv: StringMatcherSdv):
+                 sdv: StringMatcherStv):
         super().__init__(name)
         self._sdv = sdv
 
@@ -62,11 +62,11 @@ class StringMatcherSymbolContext(SdvSymbolContext[StringMatcherSdv]):
     def of_generic(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
-            StringMatcherSdv(sdv)
+            StringMatcherStv(sdv)
         )
 
     @property
-    def sdv(self) -> StringMatcherSdv:
+    def sdv(self) -> StringMatcherStv:
         return self._sdv
 
     @property
