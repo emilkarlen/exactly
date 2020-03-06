@@ -3,6 +3,7 @@ import unittest
 from typing import Sequence, Optional, List
 
 from exactly_lib.symbol.data.restrictions import reference_restrictions
+from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -61,11 +62,12 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
         return symbol_utils.symbol_table_from_name_and_sdv_mapping({
             self.files_matcher_name:
-                model_checker.matcher(
-                    put,
-                    self.model_file.path,
-                    test_data.strip_file_type_info(self.expected_and_actual.expected),
-                ),
+                FilesMatcherStv(
+                    model_checker.matcher(
+                        put,
+                        self.model_file.path,
+                        test_data.strip_file_type_info(self.expected_and_actual.expected),
+                    )),
             self.min_depth.name:
                 symbol_utils.string_sdvs.str_constant(str(self.min_depth.value)),
             self.max_depth.name:
@@ -382,12 +384,12 @@ class _TestFilesOfModel(SingleCaseGenerator):
         )
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
-        return symbol_utils.symbol_table_from_name_and_sdv_mapping({
+        return SymbolTable({
             self.files_matcher_name:
-                model_checker.matcher(put,
-                                      self._helper.model_file_path(),
-                                      test_data.strip_file_type_info(self._case.data.expected),
-                                      )
+                model_checker.matcher__sym_tbl_container(put,
+                                                         self._helper.model_file_path(),
+                                                         test_data.strip_file_type_info(self._case.data.expected),
+                                                         )
         })
 
     def tcds_arrangement(self) -> Optional[TcdsArrangement]:

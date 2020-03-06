@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
@@ -122,9 +121,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '2 files: one file name matches, and matcher matches',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_REGULAR_FILE_FILE_MATCHER.value
-                    }),
+                    symbols=IS_REGULAR_FILE_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc),
                         empty_file(name_of_file_not_in_fc_1),
@@ -135,9 +132,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '2 files: one file name matches, and matcher does not match',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_DIR_FILE_MATCHER.value
-                    }),
+                    symbols=IS_DIR_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc),
                         empty_file(name_of_file_not_in_fc_1),
@@ -148,9 +143,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '3 files: one file name matches, and matcher matches',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_DIR_FILE_MATCHER.value
-                    }),
+                    symbols=IS_DIR_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_dir(name_of_file_in_fc),
                         empty_file(name_of_file_not_in_fc_1),
@@ -193,9 +186,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '3 files: one file name matches, and matcher matches',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_REGULAR_FILE_FILE_MATCHER.value
-                    }),
+                    symbols=IS_REGULAR_FILE_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc__1),
                         empty_file(name_of_file_not_in_fc__1),
@@ -207,9 +198,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '3 files: both file names matches, and matcher matches',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_REGULAR_FILE_FILE_MATCHER.value
-                    }),
+                    symbols=IS_REGULAR_FILE_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc__1),
                         empty_file(name_of_file_in_fc__2),
@@ -221,9 +210,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '3 files: both file name matches, but matcher does not match',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_DIR_FILE_MATCHER.value
-                    }),
+                    symbols=IS_DIR_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc__1),
                         empty_file(name_of_file_in_fc__2),
@@ -235,9 +222,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
                 '4 files: both file name matches, and matcher matches',
                 PRIM_AND_EXE_EXPECTATION__NON_MATCH,
                 Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        file_matcher_name: IS_REGULAR_FILE_FILE_MATCHER.value
-                    }),
+                    symbols=IS_REGULAR_FILE_FILE_MATCHER.symbol_table__w_name(file_matcher_name),
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
                         empty_file(name_of_file_in_fc__1),
                         empty_file(name_of_file_in_fc__2),

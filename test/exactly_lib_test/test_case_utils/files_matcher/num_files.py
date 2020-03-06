@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -92,7 +92,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
         actual_matcher = sut.files_matcher_parser().parse(source)
 
-        assert isinstance(actual_matcher, FilesMatcherStv)
+        assert isinstance(actual_matcher, MatcherSdv)
 
         actual_symbol_references = actual_matcher.references
 

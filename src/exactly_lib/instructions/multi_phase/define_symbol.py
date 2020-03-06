@@ -290,8 +290,10 @@ def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
                          token_parser: TokenParser) -> FilesMatcherStv:
-    return parse_files_matcher.parse_files_matcher(token_parser,
-                                                   must_be_on_current_line=False)
+    return FilesMatcherStv(
+        parse_files_matcher.parse_files_matcher__generic(token_parser,
+                                                         must_be_on_current_line=False)
+    )
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,

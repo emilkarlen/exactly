@@ -7,6 +7,7 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import generated_case_execution
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_error import \
@@ -212,9 +213,11 @@ class TestFilesOfModel(unittest.TestCase):
                                 ])
                             )
                         ),
-                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
+                        symbols=SymbolTable({
                             model_checker_symbol_name:
-                                model_checker.matcher(self, checked_dir_path, contents_case.expected)
+                                model_checker.matcher__sym_tbl_container(self,
+                                                                         checked_dir_path,
+                                                                         contents_case.expected)
                         })
                     ),
                 )

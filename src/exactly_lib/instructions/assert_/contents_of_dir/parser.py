@@ -43,8 +43,8 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
             actual_path_checker_assertion_part = self._actual_path_checker_assertion_part(path_to_check)
 
-            files_matcher_sdv = parse_files_matcher.parse_files_matcher(token_parser,
-                                                                        must_be_on_current_line=False)
+            files_matcher_sdv = parse_files_matcher.parse_files_matcher__generic(token_parser,
+                                                                                 must_be_on_current_line=False)
 
             token_parser.report_superfluous_arguments_if_not_at_eol()
             token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()

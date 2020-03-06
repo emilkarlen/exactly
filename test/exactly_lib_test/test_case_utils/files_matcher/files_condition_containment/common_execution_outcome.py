@@ -217,7 +217,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name)
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion
                         )
                     ),
                     NON_MATCHING_EXECUTION_EXPECTATION,
@@ -240,7 +240,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name)
+                            IS_DIR_FILE_MATCHER.reference_assertion
                         )
                     ),
                     NON_MATCHING_EXECUTION_EXPECTATION,
@@ -299,7 +299,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name)
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion
                         )
                     ),
                     NON_MATCHING_EXECUTION_EXPECTATION,
@@ -317,8 +317,8 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_sequence([
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name),
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name),
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion,
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion,
                         ]
                         )
                     ),
@@ -337,8 +337,8 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_sequence([
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name),
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name),
+                            IS_DIR_FILE_MATCHER.reference_assertion,
+                            IS_DIR_FILE_MATCHER.reference_assertion,
                         ]
                         )
                     ),
@@ -472,7 +472,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name)
+                            IS_DIR_FILE_MATCHER.reference_assertion
                         )
                     ),
                     MATCHING_EXECUTION_EXPECTATION,
@@ -531,7 +531,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name)
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion
                         )
                     ),
                     MATCHING_EXECUTION_EXPECTATION,
@@ -549,7 +549,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name)
+                            IS_DIR_FILE_MATCHER.reference_assertion
                         )
                     ),
                     MATCHING_EXECUTION_EXPECTATION,
@@ -569,8 +569,8 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_sequence([
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name),
-                            is_file_matcher_reference_to__ref(IS_DIR_FILE_MATCHER.name),
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion,
+                            IS_DIR_FILE_MATCHER.reference_assertion,
                         ]
                         )
                     ),

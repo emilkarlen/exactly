@@ -135,6 +135,11 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
             self.name: self.symbol_table_container
         })
 
+    def symbol_table__w_name(self, custom_name: str) -> SymbolTable:
+        return SymbolTable({
+            custom_name: self.symbol_table_container
+        })
+
     @staticmethod
     def symbol_table_of_contexts(symbols: Sequence['SdvSymbolContext']) -> SymbolTable:
         return SymbolTable({

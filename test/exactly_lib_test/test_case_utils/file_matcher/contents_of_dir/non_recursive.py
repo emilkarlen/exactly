@@ -4,6 +4,7 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
@@ -200,9 +201,9 @@ class TestFilesOfModel(unittest.TestCase):
                                 Dir(model_name, contents_case.actual)
                             ])
                         ),
-                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
+                        symbols=SymbolTable({
                             model_checker_symbol_name:
-                                model_checker.matcher(self, model_path, contents_case.expected)
+                                model_checker.matcher__sym_tbl_container(self, model_path, contents_case.expected)
                         })
                     ),
                 )

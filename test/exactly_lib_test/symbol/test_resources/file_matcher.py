@@ -9,6 +9,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import sdv_from_primitive_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import file_matchers
@@ -70,6 +71,13 @@ class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherStv]):
         return FileMatcherSymbolContext(
             name,
             FileMatcherStv(sdv)
+        )
+
+    @staticmethod
+    def of_primitive(name: str, primitive: FileMatcher) -> 'FileMatcherSymbolContext':
+        return FileMatcherSymbolContext.of_generic(
+            name,
+            sdv_from_primitive_value(primitive)
         )
 
     @property

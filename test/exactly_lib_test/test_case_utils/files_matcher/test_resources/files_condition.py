@@ -2,14 +2,12 @@ import unittest
 from typing import Callable, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
@@ -18,7 +16,6 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructor
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, Arrangement, \
     Expectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import sdv_from_primitive_value
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -138,25 +135,21 @@ class Case:
         self.arrangement = arrangement
 
 
-def file_matcher_from_primitive(primitive: FileMatcher) -> FileMatcherStv:
-    return FileMatcherStv(sdv_from_primitive_value(primitive))
-
-
 NON_MATCHING_EXECUTION_EXPECTATION = ExecutionExpectation(
     main_result=asrt.equals(False)
 )
 MATCHING_EXECUTION_EXPECTATION = ExecutionExpectation(
     main_result=asrt.equals(True)
 )
-IS_REGULAR_FILE_FILE_MATCHER = NameAndValue(
+IS_REGULAR_FILE_FILE_MATCHER = FileMatcherSymbolContext.of_primitive(
     'is_regular_file',
-    file_matcher_from_primitive(file_matchers.IsRegularFileMatcher())
+    file_matchers.IsRegularFileMatcher()
 )
-IS_DIR_FILE_MATCHER = NameAndValue(
+IS_DIR_FILE_MATCHER = FileMatcherSymbolContext.of_primitive(
     'is_dir',
-    file_matcher_from_primitive(file_matchers.IsDirectoryMatcher())
+    file_matchers.IsDirectoryMatcher()
 )
-IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS = symbol_utils.symbol_table_from_name_and_sdvs([
+IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS = SdvSymbolContext.symbol_table_of_contexts([
     IS_REGULAR_FILE_FILE_MATCHER,
     IS_DIR_FILE_MATCHER,
 ])

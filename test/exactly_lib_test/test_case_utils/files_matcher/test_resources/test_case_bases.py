@@ -3,7 +3,7 @@ from abc import ABC
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType
@@ -92,7 +92,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
         # ACT #
 
         matcher = sut.files_matcher_parser().parse(source)
-        assert isinstance(matcher, FilesMatcherStv)
+        assert isinstance(matcher, MatcherSdv)
         actual = matcher.references
 
         # ASSERT #

@@ -3,10 +3,10 @@ import unittest
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
@@ -35,7 +35,7 @@ class InstructionArgumentsVariantConstructor:
 
 class Configuration:
     def __init__(self,
-                 parser: Parser[FilesMatcherStv],
+                 parser: Parser[GenericFilesMatcherSdv],
                  arguments_constructor: InstructionArgumentsVariantConstructor,
                  invalid_integers_according_to_custom_validation: list):
         self.parser = parser
