@@ -14,6 +14,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
+from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -1429,7 +1430,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
         cases = [
             ListSdvTestImplForConstantListDdv(ListDdv([])),
             file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
-            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
+            StringTransformerStv(StringTransformerSdvConstantTestImpl(FakeStringTransformer(), [])),
         ]
         for sdv in cases:
             with self.subTest(invalid_type=str(sdv.value_type)):

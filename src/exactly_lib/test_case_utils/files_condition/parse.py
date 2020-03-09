@@ -64,7 +64,7 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[G
         file_name = parse_string.parse_string_sdv(tokens.token_stream, _FILE_NAME_STRING_CONFIGURATION)
         if tokens.head_is_unquoted_and_equals(syntax.FILE_MATCHER_SEPARATOR):
             tokens.consume_head()
-            file_matcher = parse_file_matcher.parse__generic(tokens, False)
+            file_matcher = parse_file_matcher.parse_sdv(tokens, False)
             return file_name, file_matcher
         else:
             is_at_eol_or_end_of_set()

@@ -15,7 +15,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
@@ -38,6 +37,7 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.type_system.logic.file_matcher import GenericFileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import strings
@@ -165,7 +165,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
 
     @staticmethod
     def _parse_optional_file_matcher(parser: token_stream_parser.TokenParser
-                                     ) -> Optional[FileMatcherStv]:
+                                     ) -> Optional[GenericFileMatcherSdv]:
         file_matcher = None
 
         if not parser.is_at_eol:
@@ -182,7 +182,7 @@ class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  expectation_type: ExpectationType,
                  path_sdv: PathSdv,
-                 file_matcher: Optional[FileMatcherStv]):
+                 file_matcher: Optional[GenericFileMatcherSdv]):
         self._expectation_type = expectation_type
         self._path_sdv = path_sdv
         self._file_matcher = file_matcher
@@ -230,7 +230,7 @@ class _Assertion:
                  environment: i.InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
                  path_sdv: PathSdv,
-                 file_matcher: Optional[FileMatcherStv]
+                 file_matcher: Optional[GenericFileMatcherSdv]
                  ):
         self.environment = environment
         self.expectation_type = expectation_type
@@ -305,10 +305,10 @@ class _Assertion:
 
         return helper.apply(sdv, model)
 
-    def _file_matcher_for_expectation_type(self) -> FileMatcherStv:
+    def _file_matcher_for_expectation_type(self) -> GenericFileMatcherSdv:
         return (self.file_matcher
                 if self._is_positive_check()
-                else FileMatcherStv(combinator_sdvs.Negation(self.file_matcher.as_generic))
+                else combinator_sdvs.Negation(self.file_matcher)
                 )
 
     def _is_positive_check(self) -> bool:

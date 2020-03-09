@@ -59,7 +59,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestDefault))
-    ret_val.addTest(unittest.makeSuite(TestTypes))
     ret_val.addTest(unittest.makeSuite(TestFailingExpectations))
     ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
     ret_val.addTest(unittest.makeSuite(TestHardError))
@@ -239,36 +238,6 @@ class TestHardError(TestCaseBase):
                 ),
             )
         )
-
-
-class TestTypes(TestCaseBase):
-    def test_expect_given_logic_value_type(self):
-        checker = sut.IntegrationChecker(
-            PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-            MatcherPropertiesConfiguration())
-        expectation = sut.Expectation()
-        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
-            with self.subTest(arrangement.name,
-                              execution_variant='single execution'):
-                with self.assertRaises(utils.TestError):
-                    checker.check(self.tc,
-                                  utils.single_line_source(),
-                                  ARBITRARY_MODEL_CONSTRUCTOR,
-                                  arrangement.value,
-                                  expectation)
-
-            with self.subTest(arrangement.name,
-                              execution_variant='multiple execution'):
-                with self.assertRaises(utils.TestError):
-                    checker.check_single_multi_execution_setup__for_test_of_test_resources(
-                        self.tc,
-                        utils.single_line_arguments(),
-                        expectation.parse,
-                        ARBITRARY_MODEL_CONSTRUCTOR,
-                        NExArr('the one and only execution',
-                               expectation.prim_and_exe,
-                               arrangement.value),
-                    )
 
 
 class TestDefault(TestCaseBase):
@@ -536,12 +505,12 @@ class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[M
         return matchers.ddv_of_unconditionally_matching_matcher()
 
 
-def _line_matcher_type_sdv(matcher: MatcherSdv[int]) -> MatcherTypeStv[int]:
+def _line_matcher_type_sdv(matcher: MatcherSdv[int]) -> MatcherSdv[int]:
     return _MatcherTypeStvTestImpl(matcher)
 
 
-class _ConstantParserOfSingleTokenExpression(Parser[MatcherTypeStv[int]]):
-    def __init__(self, constant_result: MatcherTypeStv[int]):
+class _ConstantParserOfSingleTokenExpression(Parser[MatcherSdv[int]]):
+    def __init__(self, constant_result: MatcherSdv[int]):
         super().__init__()
         self._constant_result = constant_result
 
@@ -550,18 +519,17 @@ class _ConstantParserOfSingleTokenExpression(Parser[MatcherTypeStv[int]]):
         return self._constant_result
 
 
-def _constant_line_matcher_type_parser_of_matcher_sdv(matcher: MatcherSdv[int]) -> Parser[MatcherTypeStv[int]]:
-    return _ConstantParserOfSingleTokenExpression(_line_matcher_type_sdv(matcher))
+def _constant_line_matcher_type_parser_of_matcher_sdv(matcher: MatcherSdv[int]) -> Parser[MatcherSdv[int]]:
+    return _ConstantParserOfSingleTokenExpression(matcher)
 
 
-def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) -> Parser[MatcherTypeStv[int]]:
-    return _ConstantParserOfSingleTokenExpression(
-        _line_matcher_type_sdv(matchers.MatcherSdvOfConstantDdvTestImpl(matcher)))
+def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) -> Parser[MatcherSdv[int]]:
+    return _ConstantParserOfSingleTokenExpression(matchers.MatcherSdvOfConstantDdvTestImpl(matcher))
 
 
 def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTraceAndNegation[int]
-                                                  ) -> Parser[MatcherTypeStv[int]]:
-    return _ConstantParserOfSingleTokenExpression(_line_matcher_type_sdv(matchers.sdv_from_primitive_value(matcher)))
+                                                  ) -> Parser[MatcherSdv[int]]:
+    return _ConstantParserOfSingleTokenExpression(matchers.sdv_from_primitive_value(matcher))
 
 
 ARBITRARY_MODEL = 0
@@ -572,7 +540,7 @@ PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION 
         matchers.sdv_from_primitive_value()
     )
 
-_MATCHER_THAT_MATCHES = _line_matcher_type_sdv(matchers.sdv_from_primitive_value())
+_MATCHER_THAT_MATCHES = matchers.sdv_from_primitive_value()
 
 
 def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[Tcds]:

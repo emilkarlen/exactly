@@ -6,11 +6,8 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
@@ -166,15 +163,12 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         # ARRANGE #
 
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             EveryLineEmptyStringTransformer()))
+        named_transformer = StringTransformerSymbolContext.of_primitive('the_transformer',
+                                                                        EveryLineEmptyStringTransformer())
 
         checked_file = File('actual.txt', 'some\ntext')
 
-        symbols = SymbolTable({
-            named_transformer.name: container(named_transformer.value)
-        })
+        symbols = named_transformer.symbol_table
 
         expected_symbol_reference_to_transformer = is_reference_to_string_transformer__ref(named_transformer.name)
 

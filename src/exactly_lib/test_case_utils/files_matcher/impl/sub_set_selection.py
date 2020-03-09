@@ -1,13 +1,12 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from . import model_modifier_utils
 
 
-def matcher(dir_selector: FileMatcherStv,
+def matcher(dir_selector: GenericFileMatcherSdv,
             matcher_on_result: GenericFilesMatcherSdv) -> GenericFilesMatcherSdv:
     return model_modifier_utils.matcher(
         _CONFIGURATION,

@@ -1,7 +1,5 @@
-from typing import List, Optional, Sequence
+from typing import List, Sequence
 
-import exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc
-import exactly_lib.test_case_utils.files_matcher.config
 from exactly_lib.definitions import doc_format, matcher_model, misc_texts
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -14,7 +12,6 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
@@ -45,41 +42,25 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-def parser() -> parser_classes.Parser[FileMatcherStv]:
+def parser() -> parser_classes.Parser[GenericFileMatcherSdv]:
     return _PARSER
 
 
-class _Parser(parser_classes.Parser[FileMatcherStv]):
-    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherStv:
-        return parse_sdv(parser)
+class _Parser(parser_classes.Parser[GenericFileMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> GenericFileMatcherSdv:
+        return parse_sdv(parser, must_be_on_current_line=True)
 
 
 class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
     def parse_from_token_parser(self, token_parser: TokenParser) -> GenericFileMatcherSdv:
-        return parse__generic(token_parser, must_be_on_current_line=False)
+        return parse_sdv(token_parser, must_be_on_current_line=False)
 
 
 _PARSER = _Parser()
 
 
-def parse_optional_selection_sdv(parser: TokenParser) -> Optional[FileMatcherStv]:
-    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
-        parser,
-        ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    return parser.consume_and_handle_optional_option(
-        None,
-        parse_sdv,
-        exactly_lib.test_case_utils.files_matcher.config.SELECTION_OPTION.name)
-
-
 def parse_sdv(parser: TokenParser,
-              must_be_on_current_line: bool = True) -> FileMatcherStv:
-    generic_matcher = parse__generic(parser, must_be_on_current_line)
-    return FileMatcherStv(generic_matcher)
-
-
-def parse__generic(parser: TokenParser,
-                   must_be_on_current_line: bool) -> GenericFileMatcherSdv:
+              must_be_on_current_line: bool) -> GenericFileMatcherSdv:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
@@ -210,7 +191,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             grammar.SimpleExpression(
                 _parse_regular_file_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
-                    exactly_lib.test_case_utils.file_matcher.file_or_dir_contents_doc.REGULAR_FILE_DOCUMENTATION_SETUP
+                    file_or_dir_contents_doc.REGULAR_FILE_DOCUMENTATION_SETUP
                 )
             )
         ),
