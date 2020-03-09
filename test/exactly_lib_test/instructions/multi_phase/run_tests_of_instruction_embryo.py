@@ -25,7 +25,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
@@ -311,15 +311,12 @@ class TestProgramViaSymbolReference(TestCaseBase):
     py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
     py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
 
-    program_that_executes_py_pgm_symbol = NameAndValue(
+    program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_generic(
         'PROGRAM_THAT_EXECUTES_PY_FILE',
         program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
     )
 
-    symbols_dict = SymbolTable({
-        program_that_executes_py_pgm_symbol.name:
-            symbol_utils.container(program_that_executes_py_pgm_symbol.value),
-    })
+    symbols_dict = program_that_executes_py_pgm_symbol.symbol_table
 
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
@@ -335,7 +332,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 main_result=spr_check.is_success_result(0,
                                                         None),
                 symbol_usages=asrt.matches_sequence([
-                    asrt_pgm.is_program_reference_to(self.program_that_executes_py_pgm_symbol.name)
+                    self.program_that_executes_py_pgm_symbol.reference_assertion
                 ])
 
             )

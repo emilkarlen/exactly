@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import \
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, just_parse
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
+from exactly_lib_test.instructions.test_resources.parse_file_maker import \
     empty_file_contents_arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source

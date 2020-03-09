@@ -22,13 +22,13 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.common_te
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import Step, \
     ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS, just_parse
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import file_with_rel_opt_conf, \
+from exactly_lib_test.instructions.test_resources.parse_file_maker import file_with_rel_opt_conf, \
     accepted_non_hds_source_relativities, ALLOWED_SRC_FILE_RELATIVITIES, TransformableContentsConstructor
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
-    is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
@@ -71,8 +71,10 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
     def test_symbol_usages(self):
         # ARRANGE #
 
-        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            MyToUppercaseTransformer(),
+        )
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
@@ -96,7 +98,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                                   paths.constant_path_part(dst_file_symbol.value))),
 
             to_upper_transformer.name:
-                container(to_upper_transformer.value),
+                to_upper_transformer.symbol_table_container,
         })
 
         # ACT & ASSERT #
@@ -143,8 +145,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
     def test_superfluous_arguments(self):
         # ARRANGE #
 
-        arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        arbitrary_transformer = 'TRANSFORMER_SYMBOL'
 
         src_file = PathArgumentWithRelativity('src-file.txt',
                                               conf_rel_hds(RelHdsOptionType.REL_HDS_CASE))
@@ -160,7 +161,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             ),
             NameAndValue(
                 'contents of existing file / with transformation',
-                file_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
+                file_contents_arguments_constructor.with_transformation(arbitrary_transformer)
             ),
         ]
 
@@ -245,12 +246,9 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         src_file = fs.File('source-file.txt', 'contents of source file')
         expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
 
-        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            to_upper_transformer.name:
-                container(to_upper_transformer.value),
-        })
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive('TRANSFORMER_SYMBOL',
+                                                                           MyToUppercaseTransformer())
+        symbols = to_upper_transformer.symbol_table
 
         for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
@@ -330,12 +328,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
     def test_no_new_line_variants(self):
         # ARRANGE #
 
-        identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerSdvConstantTestImpl(IdentityStringTransformer()))
+        identity_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            IdentityStringTransformer()
+        )
 
-        symbols = SymbolTable({
-            identity_transformer.name: container(identity_transformer.value),
-        })
+        symbols = identity_transformer.symbol_table
 
         src_file = fs.File('src-file.txt', 'source file contents')
         src_file_rel_opt_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
@@ -420,12 +418,11 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             is_after_act_2_every_src_file_rel_conf: Callable[[bool], Sequence[RelativityOptionConfiguration]],
             step_of_expected_failure: Step):
         # ARRANGE #
-        transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            transformer.name:
-                container(transformer.value),
-        })
+        transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            MyToUppercaseTransformer(),
+        )
+        symbols = transformer.symbol_table
 
         dst_file = PathArgumentWithRelativity('dst-file.txt',
                                               conf_rel_any(RelOptionType.REL_TMP))
@@ -474,12 +471,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
-        arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            MyToUppercaseTransformer(),
+        )
 
-        symbols = SymbolTable({
-            arbitrary_transformer.name: container(arbitrary_transformer.value),
-        })
+        symbols = arbitrary_transformer.symbol_table
 
         src_file = PathArgumentWithRelativity('src-file.txt',
                                               conf_rel_hds(RelHdsOptionType.REL_HDS_CASE))

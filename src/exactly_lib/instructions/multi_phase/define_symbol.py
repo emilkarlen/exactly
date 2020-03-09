@@ -27,7 +27,7 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramStv
 from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolUsage, SymbolDefinition
@@ -305,9 +305,9 @@ def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_program(fs_location_info: FileSystemLocationInfo,
-                   token_parser: TokenParser) -> Tuple[bool, ProgramSdv]:
-    ret_val = parse_program.parse_program(token_parser)
-    return True, ret_val
+                   token_parser: TokenParser) -> Tuple[bool, ProgramStv]:
+    stv = ProgramStv(parse_program.parse_program(token_parser))
+    return True, stv
 
 
 _TYPE_SETUPS = {

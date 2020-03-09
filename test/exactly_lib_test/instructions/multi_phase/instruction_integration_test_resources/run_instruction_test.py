@@ -4,14 +4,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
-from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
@@ -75,15 +72,12 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
         py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
         py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
 
-        program_that_executes_py_pgm_symbol = NameAndValue(
+        program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_generic(
             'PROGRAM_THAT_EXECUTES_PY_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
         )
 
-        symbols_dict = SymbolTable({
-            program_that_executes_py_pgm_symbol.name:
-                symbol_utils.container(program_that_executes_py_pgm_symbol.value),
-        })
+        symbols_dict = program_that_executes_py_pgm_symbol.symbol_table
 
         instruction_arguments = [
             pgm_args.symbol_ref_command_line(program_that_executes_py_pgm_symbol.name),
@@ -99,7 +93,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
                            ),
                            self.conf.expect_success(
                                symbol_usages=asrt.matches_sequence([
-                                   asrt_pgm.is_program_reference_to(program_that_executes_py_pgm_symbol.name)
+                                   program_that_executes_py_pgm_symbol.reference_assertion
                                ])
                            ),
                            )

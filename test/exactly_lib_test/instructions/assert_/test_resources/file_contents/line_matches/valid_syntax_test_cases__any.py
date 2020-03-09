@@ -1,16 +1,12 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches.utils import \
     TestCaseBase
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines.test_resources import args_constructor_for
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation
@@ -78,9 +74,10 @@ class _AWholeLineMatchesRegEx(TestCaseBase):
 class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             contents_transformation.ToUppercaseStringTransformer()))
+        named_transformer = StringTransformerSymbolContext.of_primitive(
+            'the_transformer',
+            contents_transformation.ToUppercaseStringTransformer()
+        )
 
         actual_original_contents = lines_content(['only',
                                                   'lowercase',
@@ -88,14 +85,10 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
 
         reg_ex_that_matches_uppercase_character = '[A-Z]'
 
-        symbol_table_with_transformer = SymbolTable({
-            named_transformer.name: container(named_transformer.value)
-        })
-
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
+        symbol_table_with_transformer = named_transformer.symbol_table
 
         expected_symbol_usages = asrt.matches_sequence([
-            expected_symbol_reference_to_transformer
+            named_transformer.reference_assertion
         ])
 
         self._check_variants_with_expectation_type(

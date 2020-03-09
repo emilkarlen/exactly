@@ -4,19 +4,18 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SEQUENCE_OPERATOR_NAME
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container, is_sdtv_of_logic_type
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
@@ -42,8 +41,10 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         regex_str = 'the_regex'
         replacement_str = 'the_replacement'
 
-        symbol = NameAndValue('the_symbol_name',
-                              transformers.StringTransformerThatMustNotBeUsedTestImpl())
+        symbol = StringTransformerSymbolContext.of_primitive(
+            'the_symbol_name',
+            transformers.StringTransformerThatMustNotBeUsedTestImpl()
+        )
 
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
                                                                                     replacement_str)
@@ -104,17 +105,16 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            assertion_on_sdv=
-            asrt_sdv.resolved_value_matches_string_transformer(
-                asrt_string_transformer.is_identity_transformer(False),
-                references=asrt.matches_sequence([
-                    is_reference_to_string_transformer__ref(symbol.name),
-                ]),
-                symbols=SymbolTable({
-                    symbol.name: container(StringTransformerSdvConstant(symbol.value)),
-                }),
-            )
-        )
+            assertion_on_sdv=is_sdtv_of_logic_type(
+                LogicValueType.STRING_TRANSFORMER,
+                asrt_sdv.resolved_value_matches_string_transformer(
+                    asrt_string_transformer.is_identity_transformer(False),
+                    references=asrt.matches_sequence([
+                        is_reference_to_string_transformer__ref(symbol.name),
+                    ]),
+                    symbols=symbol.symbol_table,
+                )
+            ))
 
         for source_case in cases:
             with self.subTest(source_case.name):

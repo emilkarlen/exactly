@@ -24,7 +24,9 @@ def matches_container(assertion_on_sdv: ValueAssertion[SymbolDependentTypeValue]
         ]))
 
 
-def is_sdtv_of_logic_type(logic_value_type: LogicValueType) -> ValueAssertion[SymbolDependentTypeValue]:
+def is_sdtv_of_logic_type(logic_value_type: LogicValueType,
+                          sdv: ValueAssertion[(LogicSdv)] = asrt.anything_goes(),
+                          ) -> ValueAssertion[SymbolDependentTypeValue]:
     value_type = LOGIC_VALUE_TYPE_2_VALUE_TYPE[logic_value_type]
     return asrt.is_instance_with(LogicTypeStv,
                                  asrt.and_([
@@ -42,7 +44,7 @@ def is_sdtv_of_logic_type(logic_value_type: LogicValueType) -> ValueAssertion[Sy
 
                                      asrt.sub_component('sdv',
                                                         _get_sdv,
-                                                        asrt.is_instance(LogicSdv)),
+                                                        asrt.is_instance_with(LogicSdv, sdv)),
 
                                      asrt.sub_component('references',
                                                         sdv_structure.get_references,

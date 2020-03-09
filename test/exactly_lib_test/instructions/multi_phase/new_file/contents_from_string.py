@@ -24,8 +24,8 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse, \
     AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments as file_maker_args
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
+from exactly_lib_test.instructions.test_resources import parse_file_maker as file_maker_args
+from exactly_lib_test.instructions.test_resources.parse_file_maker import \
     here_document_contents_arguments, \
     string_contents_arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

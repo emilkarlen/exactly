@@ -3,16 +3,12 @@ from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
@@ -99,19 +95,18 @@ class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
 class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         # ARRANGE #
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             DeleteEverythingStringTransformer()))
+        named_transformer = StringTransformerSymbolContext.of_primitive(
+            'the_transformer',
+            DeleteEverythingStringTransformer()
+        )
 
         original_file_contents = 'some\ntext'
 
-        symbols = SymbolTable({
-            named_transformer.name: container(named_transformer.value)
-        })
+        symbols = named_transformer.symbol_table
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
-
-        expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
+        expected_symbol_usages = asrt.matches_sequence([
+            named_transformer.reference_assertion
+        ])
 
         self._check_with_source_variants(
             self.configuration.arguments_for(

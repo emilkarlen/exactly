@@ -3,7 +3,7 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments as file_maker_args
+from exactly_lib_test.instructions.test_resources import parse_file_maker as file_maker_args
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments

@@ -1,7 +1,5 @@
 import unittest
 
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -9,8 +7,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_rs
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.program import is_program_reference_to
+from exactly_lib_test.symbol.test_resources.program import is_program_reference_to, ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -33,19 +30,14 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_program_without_arguments(self):
         python_source = 'exit(72)'
 
-        sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
-
         name_of_defined_symbol = 'the_symbol'
 
-        referred_symbol = NameAndValue(
+        referred_symbol = ProgramSymbolContext.of_generic(
             'PRE_EXISTING_PROGRAM_SYMBOL',
-            sdv_of_referred_program
+            program_sdvs.for_py_source_on_command_line(python_source)
         )
 
-        symbols = SymbolTable({
-            referred_symbol.name:
-                symbol_utils.container(referred_symbol.value)
-        })
+        symbols = referred_symbol.symbol_table
 
         program = pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
             referred_symbol.name))

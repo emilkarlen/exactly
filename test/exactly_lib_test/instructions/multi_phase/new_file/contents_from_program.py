@@ -23,7 +23,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
     IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
+from exactly_lib_test.instructions.test_resources.parse_file_maker import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -31,9 +31,8 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -80,8 +79,10 @@ class TestSymbolUsages(TestCaseBase):
 
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
 
-        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            MyToUppercaseTransformer()
+        )
 
         transformed_shell_contents_arguments = TransformableContentsConstructor(
             output_from_program(ProcOutputFile.STDOUT,
@@ -108,7 +109,7 @@ class TestSymbolUsages(TestCaseBase):
                 container(string_sdvs.str_constant(text_printed_by_shell_command_symbol.value)),
 
             to_upper_transformer.name:
-                container(to_upper_transformer.value),
+                to_upper_transformer.symbol_table_container,
         })
 
         # ACT & ASSERT #
@@ -131,7 +132,7 @@ class TestSymbolUsages(TestCaseBase):
                                 text_printed_by_shell_command_symbol.name,
                                 equals_data_type_reference_restrictions(is_any_data_type())),
 
-                            is_reference_to_string_transformer(to_upper_transformer.name),
+                            to_upper_transformer.reference_assertion,
                         ]),
                     )
                     )
@@ -150,14 +151,16 @@ class ProgramCase:
 class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
     def test_with_transformation(self):
         text_printed_by_program = 'the text printed by the program'
-        transformer = NameAndValue('TO_UPPER_CASE',
-                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        transformer = StringTransformerSymbolContext.of_primitive(
+            'TO_UPPER_CASE',
+            MyToUppercaseTransformer(),
+        )
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
             make_arguments=lambda tcc: tcc.with_transformation(transformer.name),
-            additional_symbols={transformer.name: symbol_utils.container(transformer.value)},
-            additional_symbol_references=[is_reference_to_string_transformer(transformer.name)]
+            additional_symbols={transformer.name: transformer.symbol_table_container},
+            additional_symbol_references=[transformer.reference_assertion]
         )
 
     def test_without_transformation(self):
@@ -183,14 +186,14 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
             python_source = py_programs.single_line_pgm_that_prints_to(proc_output_file,
                                                                        text_printed_by_program)
 
-            program_that_executes_py_source_symbol = NameAndValue(
+            program_that_executes_py_source_symbol = ProgramSymbolContext.of_generic(
                 'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                 program_sdvs.for_py_source_on_command_line(python_source)
             )
 
             symbols_dict = {
                 program_that_executes_py_source_symbol.name:
-                    symbol_utils.container(program_that_executes_py_source_symbol.value),
+                    program_that_executes_py_source_symbol.symbol_table_container,
             }
             symbols_dict.update(additional_symbols)
             symbols = SymbolTable(symbols_dict)
@@ -249,11 +252,11 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
 
         expected_file = fs.File(file_arg.name, expected_file_contents)
 
-        to_upper_transformer = NameAndValue('TO_UPPER_CASE',
-                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            to_upper_transformer.name: container(to_upper_transformer.value)
-        })
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
+            'TO_UPPER_CASE',
+            MyToUppercaseTransformer(),
+        )
+        symbols = to_upper_transformer.symbol_table
 
         program_cases = [
             NameAndValue(
@@ -312,7 +315,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                             main_result=IS_SUCCESS,
                             side_effects_on_hds=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence([
-                                is_reference_to_string_transformer(to_upper_transformer.name),
+                                to_upper_transformer.reference_assertion,
                             ]),
                             main_side_effects_on_sds=dir_contains_exactly(file_arg.relativity_option,
                                                                           fs.DirContents([expected_file])),
@@ -353,11 +356,11 @@ class TestFailingValidation(TestCaseBase):
 class TestFailingScenarios(TestCaseBase):
     def _expect_failure(self, failing_program_as_single_line: WithToString):
         failing_program = ArgumentElements([failing_program_as_single_line])
-        transformer = NameAndValue('TRANSFORMER',
-                                   StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            transformer.name: container(transformer.value)
-        })
+        transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER',
+            MyToUppercaseTransformer(),
+        )
+        symbols = transformer.symbol_table
 
         cases = [
             NameAndValue('without transformer',
@@ -396,12 +399,12 @@ class TestFailingScenarios(TestCaseBase):
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
-        arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+        arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            MyToUppercaseTransformer(),
+        )
 
-        symbols = SymbolTable({
-            arbitrary_transformer.name: container(arbitrary_transformer.value),
-        })
+        symbols = arbitrary_transformer.symbol_table
 
         shell_contents_arguments_constructor = TransformableContentsConstructor(
             output_from_program(ProcOutputFile.STDOUT,
