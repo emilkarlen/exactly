@@ -25,7 +25,7 @@ class ValidationCaseSvh:
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
-        self._symbol_context = FileMatcherSymbolContext(
+        self._symbol_context = FileMatcherSymbolContext.of_sdtv(
             symbol_name,
             _successful_matcher_with_validation(actual)
         )
@@ -71,7 +71,7 @@ class ValidationCase:
                  symbol_name: str = 'file_matcher_symbol',
                  ):
         self._expectation = expectation
-        self._symbol_context = FileMatcherSymbolContext(
+        self._symbol_context = FileMatcherSymbolContext.of_sdtv(
             symbol_name,
             _successful_matcher_with_validation(actual),
         )

@@ -16,7 +16,7 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext, SymbolTableValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
@@ -161,35 +161,46 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
     )
 
 
+class StringTransformerSymbolTableValue(SymbolTableValue[StringTransformerStv]):
+    @staticmethod
+    def of_sdv(sdv: StringTransformerSdv) -> 'StringTransformerSymbolTableValue':
+        return StringTransformerSymbolTableValue(StringTransformerStv(sdv))
+
+    @staticmethod
+    def of_primitive(primitive: StringTransformer) -> 'StringTransformerSymbolTableValue':
+        return StringTransformerSymbolTableValue.of_sdv(StringTransformerSdvConstant(primitive))
+
+    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        return is_reference_to_string_transformer__ref(symbol_name)
+
+
 class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerStv]):
     def __init__(self,
                  name: str,
-                 sdt: StringTransformerStv,
+                 value: StringTransformerSymbolTableValue,
                  ):
-        super().__init__(name)
-        self._sdt = sdt
+        super().__init__(name, value)
+
+    @staticmethod
+    def of_sdtv(name: str, sdtv: StringTransformerStv) -> 'StringTransformerSymbolContext':
+        return StringTransformerSymbolContext(
+            name,
+            StringTransformerSymbolTableValue(sdtv)
+        )
 
     @staticmethod
     def of_sdv(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerStv(sdv)
+            StringTransformerSymbolTableValue.of_sdv(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: StringTransformer) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext.of_sdv(
+        return StringTransformerSymbolContext(
             name,
-            StringTransformerSdvConstant(primitive)
+            StringTransformerSymbolTableValue.of_primitive(primitive)
         )
-
-    @property
-    def sdtv(self) -> StringTransformerStv:
-        return self._sdt
-
-    @property
-    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_string_transformer__ref(self.name)
 
 
 def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:

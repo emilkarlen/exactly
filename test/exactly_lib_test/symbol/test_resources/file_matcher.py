@@ -8,8 +8,8 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
-from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import sdv_from_primitive_value
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext, SymbolTableValue
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import file_matchers
@@ -58,32 +58,43 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
+class FileMatcherSymbolTableValue(SymbolTableValue[FileMatcherStv]):
+    @staticmethod
+    def of_generic(sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolTableValue':
+        return FileMatcherSymbolTableValue(FileMatcherStv(sdv))
+
+    @staticmethod
+    def of_primitive(primitive: FileMatcher) -> 'FileMatcherSymbolTableValue':
+        return FileMatcherSymbolTableValue.of_generic(matchers.sdv_from_primitive_value(primitive))
+
+    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        return is_file_matcher_reference_to__ref(symbol_name)
+
+
 class FileMatcherSymbolContext(SdvSymbolContext[FileMatcherStv]):
     def __init__(self,
                  name: str,
-                 sdtv: FileMatcherStv,
+                 value: FileMatcherSymbolTableValue,
                  ):
-        super().__init__(name)
-        self._sdtv = sdtv
+        super().__init__(name, value)
+
+    @staticmethod
+    def of_sdtv(name: str, sdtv: FileMatcherStv) -> 'FileMatcherSymbolContext':
+        return FileMatcherSymbolContext(
+            name,
+            FileMatcherSymbolTableValue(sdtv)
+        )
 
     @staticmethod
     def of_generic(name: str, sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherStv(sdv)
+            FileMatcherSymbolTableValue.of_generic(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: FileMatcher) -> 'FileMatcherSymbolContext':
-        return FileMatcherSymbolContext.of_generic(
+        return FileMatcherSymbolContext(
             name,
-            sdv_from_primitive_value(primitive)
+            FileMatcherSymbolTableValue.of_primitive(primitive)
         )
-
-    @property
-    def sdtv(self) -> FileMatcherStv:
-        return self._sdtv
-
-    @property
-    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return is_file_matcher_reference_to__ref(self.name)

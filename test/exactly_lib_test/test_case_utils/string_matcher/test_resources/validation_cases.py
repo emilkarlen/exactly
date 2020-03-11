@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.util.name_and_value import NameAndValue
@@ -17,16 +16,14 @@ class ValidationCase:
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
-        self._symbol_context = StringMatcherSymbolContext(
+        self._symbol_context = StringMatcherSymbolContext.of_sdv(
             'string_matcher_symbol',
-            StringMatcherStv(
-                sdv_components.MatcherSdvFromConstantDdv(
-                    matchers.MatcherDdvOfConstantMatcherTestImpl(
-                        constant.MatcherWithConstantResult(True),
-                        validator=constant_ddv_validator(actual)
+            sdv_components.MatcherSdvFromConstantDdv(
+                matchers.MatcherDdvOfConstantMatcherTestImpl(
+                    constant.MatcherWithConstantResult(True),
+                    validator=constant_ddv_validator(actual)
 
-                    )
-                ),
+                )
             )
         )
 

@@ -5,12 +5,13 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant, ddv_components
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, GenericLineMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, GenericLineMatcherSdv, \
+    LineMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext, SymbolTableValue
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -62,6 +63,18 @@ def stv_from_primitive_value(
     )
 
 
+def sdv_from_primitive_value(
+        primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
+        references: Sequence[SymbolReference] = (),
+        validator: DdvValidator = constant_success_validator(),
+) -> GenericLineMatcherSdv:
+    return matchers.sdv_from_primitive_value(
+        primitive_value,
+        references,
+        validator,
+    )
+
+
 def sdtv_of_unconditionally_matching_matcher() -> LineMatcherStv:
     return LineMatcherStv(matchers.sdv_of_unconditionally_matching_matcher())
 
@@ -72,25 +85,43 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
     )
 
 
+class LineMatcherSymbolTableValue(SymbolTableValue[LineMatcherStv]):
+    @staticmethod
+    def of_generic(sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolTableValue':
+        return LineMatcherSymbolTableValue(LineMatcherStv(sdv))
+
+    @staticmethod
+    def of_primitive(primitive: LineMatcher) -> 'LineMatcherSymbolTableValue':
+        return LineMatcherSymbolTableValue.of_generic(matchers.sdv_from_primitive_value(primitive))
+
+    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        return is_line_matcher_reference_to__ref(symbol_name)
+
+
 class LineMatcherSymbolContext(SdvSymbolContext[LineMatcherStv]):
     def __init__(self,
                  name: str,
-                 stv: LineMatcherStv,
+                 value: LineMatcherSymbolTableValue,
                  ):
-        super().__init__(name)
-        self._stv = stv
+        super().__init__(name, value)
+
+    @staticmethod
+    def of_sdtv(name: str, sdtv: LineMatcherStv) -> 'LineMatcherSymbolContext':
+        return LineMatcherSymbolContext(
+            name,
+            LineMatcherSymbolTableValue(sdtv)
+        )
 
     @staticmethod
     def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherStv(sdv)
+            LineMatcherSymbolTableValue.of_generic(sdv)
         )
 
-    @property
-    def sdtv(self) -> LineMatcherStv:
-        return self._stv
-
-    @property
-    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return is_line_matcher_reference_to__ref(self.name)
+    @staticmethod
+    def of_primitive(name: str, primitive: LineMatcher) -> 'LineMatcherSymbolContext':
+        return LineMatcherSymbolContext(
+            name,
+            LineMatcherSymbolTableValue.of_primitive(primitive)
+        )

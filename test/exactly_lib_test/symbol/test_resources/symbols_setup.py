@@ -91,18 +91,38 @@ class SymbolsArrEx:
 STV_TYPE = TypeVar('STV_TYPE', bound=LogicTypeStv)
 
 
+class SymbolTableValue(Generic[STV_TYPE], ABC):
+    def __init__(self, sdtv: STV_TYPE):
+        self._sdtv = sdtv
+
+    @property
+    def sdtv(self) -> STV_TYPE:
+        return self._sdtv
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @abstractmethod
+    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        pass
+
+
 class SdvSymbolContext(Generic[STV_TYPE], ABC):
-    def __init__(self, name: str):
+    def __init__(self,
+                 name: str,
+                 value: SymbolTableValue[STV_TYPE],
+                 ):
         self._name = name
+        self._value = value
 
     @property
     def name(self) -> str:
         return self._name
 
     @property
-    @abstractmethod
     def sdtv(self) -> STV_TYPE:
-        pass
+        return self._value.sdtv
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
@@ -119,9 +139,8 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
                             self.symbol_table_container)
 
     @property
-    @abstractmethod
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        pass
+        return self._value.reference_assertion(self._name)
 
     @property
     def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
