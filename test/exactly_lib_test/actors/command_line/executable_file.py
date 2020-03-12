@@ -23,6 +23,7 @@ from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.list_ import ConstantListSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -33,7 +34,6 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.type_system.data.test_resources import list_ddvs
 from exactly_lib_test.util.test_resources import py_program
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
@@ -157,19 +157,19 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
 
 class TestSymbolUsages(unittest.TestCase):
     def test_symbol_reference_in_arguments(self):
-        list_symbol = NameAndValue('list_symbol_name', ['first element',
-                                                        'second element'])
+        list_symbol = ConstantListSymbolContext('list_symbol_name', ['first element',
+                                                                     'second element'])
 
         string_constant = 'string-constant'
 
-        expected_output = lines_content(['string-constant'] + list_symbol.value)
+        expected_output = lines_content(['string-constant'] + list_symbol.constant_list)
 
         executable = 'the-executable'
 
         command_line = '{executable} {string_constant} {list_symbol}'.format(
             executable=executable,
             string_constant=string_constant,
-            list_symbol=symbol_reference_syntax_for_name(list_symbol.name),
+            list_symbol=list_symbol.name__sym_ref_syntax,
         )
 
         arrangement = Arrangement(
@@ -178,19 +178,14 @@ class TestSymbolUsages(unittest.TestCase):
                     executable,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ])),
-            symbol_table=SymbolTable({
-                list_symbol.name:
-                    su.list_ddv_constant_container(list_ddvs.list_ddv_of_string_constants(list_symbol.value)),
-            })
+            symbol_table=list_symbol.symbol_table
         )
 
         expectation = Expectation(
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references(
-                [SymbolReference(list_symbol.name, is_any_data_type())]
-            )
+            symbol_usages=asrt.matches_singleton_sequence(list_symbol.reference_assertion)
         )
         check_execution(self,
                         sut.Parser(),

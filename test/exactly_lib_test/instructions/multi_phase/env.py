@@ -9,17 +9,14 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.string import StringFormatter
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.strings import WithToString
@@ -256,14 +253,14 @@ class TestSet(unittest.TestCase):
 
         variable_name = 'variable_to_assign'
 
-        my_symbol = NameAndValue('my_symbol', 'my symbol value')
-        your_symbol = NameAndValue('your_symbol', 'your symbol value')
+        my_symbol = StringConstantSymbolContext('my_symbol', 'my symbol value')
+        your_symbol = StringConstantSymbolContext('your_symbol', 'your symbol value')
 
         value_template = 'pre {MY_SYMBOL} {YOUR_SYMBOL} post'
 
         expected_evaluated_value_string = value_template.format(
-            MY_SYMBOL=my_symbol.value,
-            YOUR_SYMBOL=your_symbol.value,
+            MY_SYMBOL=my_symbol.str_value,
+            YOUR_SYMBOL=your_symbol.str_value,
         )
         expected_environ_after_main = {
             variable_name: expected_evaluated_value_string,
@@ -283,22 +280,15 @@ class TestSet(unittest.TestCase):
             source_line,
             ArrangementWithSds(
                 symbols=
-                SymbolTable({
-                    my_symbol.name: su.string_constant_container(my_symbol.value),
-                    your_symbol.name: su.string_constant_container(your_symbol.value),
-                }),
+                SdvSymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
                 execution_elements.with_environ_copy({}),
             ),
             embryo_check.Expectation(
                 main_side_effect_on_environment_variables=asrt.equals(expected_environ_after_main),
                 symbol_usages=asrt.matches_sequence([
-                    matches_reference_2(
-                        my_symbol.name,
-                        is_any_data_type_reference_restrictions()),
-                    matches_reference_2(
-                        your_symbol.name,
-                        is_any_data_type_reference_restrictions()),
+                    my_symbol.usage_assertion__any_data_type,
+                    your_symbol.usage_assertion__any_data_type,
                 ]),
                 source=assert_source(current_line_number=asrt.equals(2),
                                      column_index=asrt.equals(0)),

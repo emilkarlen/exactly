@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
@@ -88,7 +88,7 @@ class SymbolsArrEx:
         )
 
 
-STV_TYPE = TypeVar('STV_TYPE', bound=LogicTypeStv)
+STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
 
 
 class SymbolTableValue(Generic[STV_TYPE], ABC):
@@ -119,6 +119,10 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
     @property
     def name(self) -> str:
         return self._name
+
+    @property
+    def name__sym_ref_syntax(self) -> str:
+        return symbol_syntax.symbol_reference_syntax_for_name(self._name)
 
     @property
     def sdtv(self) -> STV_TYPE:

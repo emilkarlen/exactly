@@ -300,7 +300,8 @@ class Expectation:
     def __init__(self,
                  elements: List[ElementSdv],
                  source: ValueAssertion[ParseSource],
-                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
+                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+                 ):
         self.elements = elements
         self.source = source
         self.references = references

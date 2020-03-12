@@ -23,18 +23,18 @@ is_any_data_type_restriction = asrt.is_instance(AnyDataTypeRestriction)
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
 
-def equals_string_restriction(expected: StringRestriction) -> ValueAssertion:
+def equals_string_restriction(expected: StringRestriction) -> ValueAssertion[ValueRestriction]:
     return is_string_value_restriction
 
 
-def equals_path_relativity_restriction(expected: PathRelativityRestriction) -> ValueAssertion:
+def equals_path_relativity_restriction(expected: PathRelativityRestriction) -> ValueAssertion[ValueRestriction]:
     return asrt.is_instance_with(PathRelativityRestriction,
                                  asrt.sub_component('accepted',
                                                     PathRelativityRestriction.accepted.fget,
                                                     equals_path_relativity_variants(expected.accepted)))
 
 
-def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion:
+def equals_value_restriction(expected: ValueRestriction) -> ValueAssertion[ValueRestriction]:
     return _EqualsValueRestriction(expected)
 
 

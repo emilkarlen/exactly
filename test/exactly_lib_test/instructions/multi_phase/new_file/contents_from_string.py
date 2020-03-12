@@ -4,12 +4,8 @@ from typing import Callable
 from exactly_lib.definitions import path as path_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_path
-from exactly_lib.type_system.data import paths
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -31,8 +27,9 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import \
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
@@ -155,15 +152,10 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
 class TestSymbolReferences(TestCaseBase):
     def test_symbol_reference_in_dst_file_argument(self):
         sub_dir_name = 'sub-dir'
-        relativity = RelOptionType.REL_ACT
-        symbol = NameAndValue('symbol_name',
-                              paths.of_rel_option(relativity,
-                                                  paths.constant_path_part(sub_dir_name)))
-        expected_symbol_reference = SymbolReference(
-            symbol.name,
-            parse_path.path_or_string_reference_restrictions(
-                ACCEPTED_RELATIVITY_VARIANTS
-            ))
+        symbol = PathDdvSymbolContext.of_rel_option('symbol_name',
+                                                    RelOptionType.REL_ACT,
+                                                    sub_dir_name,
+                                                    ACCEPTED_RELATIVITY_VARIANTS)
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
@@ -177,15 +169,13 @@ class TestSymbolReferences(TestCaseBase):
                  'THE_MARKER']),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                symbols=data_symbol_utils.symbol_table_with_single_path_value(
-                    symbol.name,
-                    symbol.value),
+                symbols=symbol.symbol_table,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                symbol_usages=equals_symbol_references([expected_symbol_reference]),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion),
                 main_side_effects_on_sds=dir_contains_exactly(
-                    relativity,
+                    symbol.rel_option_type,
                     fs.DirContents([
                         fs.Dir(sub_dir_name, [expected_file])])),
             ))
@@ -196,32 +186,26 @@ class TestSymbolReferences(TestCaseBase):
             symbol_value_2_expected_contents: Callable[[str], str]
     ):
         sub_dir_name = 'sub-dir'
-        relativity = RelOptionType.REL_ACT
-        file_symbol = NameAndValue('file_symbol_name',
-                                   paths.of_rel_option(relativity,
-                                                       paths.constant_path_part(sub_dir_name)))
-        contents_symbol = NameAndValue('contents_symbol_name',
-                                       'contents symbol value')
+        file_symbol = PathDdvSymbolContext.of_rel_option('file_symbol_name',
+                                                         RelOptionType.REL_ACT,
+                                                         sub_dir_name,
+                                                         ACCEPTED_RELATIVITY_VARIANTS)
+        contents_symbol = StringConstantSymbolContext('contents_symbol_name',
+                                                      'contents symbol value')
 
-        expected_file_symbol_reference = SymbolReference(
-            file_symbol.name,
-            parse_path.path_or_string_reference_restrictions(
-                ACCEPTED_RELATIVITY_VARIANTS))
-        expected_contents_symbol_reference = SymbolReference(
-            contents_symbol.name,
-            is_any_data_type())
-
-        expected_file_contents = symbol_value_2_expected_contents(contents_symbol.value)
+        expected_file_contents = symbol_value_2_expected_contents(contents_symbol.str_value)
 
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
-        expected_symbol_references = [expected_file_symbol_reference,
-                                      expected_contents_symbol_reference]
+        expected_symbol_references = [
+            file_symbol.reference_assertion,
+            contents_symbol.reference_assertion__any_data_type,
+        ]
 
-        symbol_table = data_symbol_utils.SymbolTable({
-            file_symbol.name: data_symbol_utils.path_constant_container(file_symbol.value),
-            contents_symbol.name: data_symbol_utils.string_constant_container(contents_symbol.value),
-        })
+        symbol_table = SdvSymbolContext.symbol_table_of_contexts([
+            file_symbol,
+            contents_symbol,
+        ])
 
         contents_arguments = symbol_ref_syntax_2_contents_arguments(
             symbol_reference_syntax_for_name(contents_symbol.name)).as_arguments
@@ -242,9 +226,9 @@ class TestSymbolReferences(TestCaseBase):
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                symbol_usages=equals_symbol_references(expected_symbol_references),
+                symbol_usages=asrt.matches_sequence(expected_symbol_references),
                 main_side_effects_on_sds=dir_contains_exactly(
-                    relativity,
+                    file_symbol.rel_option_type,
                     fs.DirContents([
                         fs.Dir(sub_dir_name, [expected_file])])),
             ))

@@ -13,6 +13,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
+from exactly_lib_test.symbol.data.test_resources.list_ import ConstantListSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv
@@ -108,21 +109,18 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         # ARRANGE #
         string_value_1 = 'string value 1'
         string_value_2 = 'string value 2'
-        expected_list_value = ListDdv([string_ddv_of_single_string(string_value_1),
-                                       string_ddv_of_single_string(string_value_2)])
-        symbol = NameAndValue('the_symbol_name',
-                              expected_list_value)
-        symbol_reference = su.symbol_reference(symbol.name)
+        list_symbol = ConstantListSymbolContext('the_symbol_name',
+                                                [string_value_1, string_value_2]
+                                                )
+        symbol_reference = su.symbol_reference(list_symbol.name)
         fragment = impl.SymbolStringFragmentSdv(symbol_reference)
 
-        symbol_table = symbol_tables.symbol_table_from_entries([Entry(symbol.name,
-                                                                      su.list_ddv_constant_container(
-                                                                          symbol.value))])
+        symbol_table = list_symbol.symbol_table
         # ACT #
         actual = fragment.resolve(symbol_table)
         # ASSERT #
         self.assertIsInstance(actual, csv.ListFragmentDdv)
-        assertion = equals_string_fragment_ddv(csv.ListFragmentDdv(expected_list_value))
+        assertion = equals_string_fragment_ddv(csv.ListFragmentDdv(list_symbol.ddv))
         assertion.apply_without_message(self, actual)
 
 
