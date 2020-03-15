@@ -9,7 +9,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.parse import parse_here_doc_or_path, parse_path
+from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
+from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.string_matcher.impl import equality
 from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -36,7 +37,7 @@ class Description(grammar.SimpleExpressionDescription):
         self._string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
             _EXPECTED_PATH_NAME,
             _RELATIVITY_OF_EXPECTED_PATH_NAME,
-            parse_path.all_rel_options_config(_EXPECTED_PATH_NAME),
+            path_relativities.all_rel_options_config(_EXPECTED_PATH_NAME),
             the_path_of('the file that contains the expected contents.')
         )
 

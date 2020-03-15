@@ -9,6 +9,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_path
+from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -266,7 +267,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         arrangement = ArrangementWithSds(
             tcds_contents=TcdsPopulatorForRelOptionType(
-                parse_path.ALL_REL_OPTIONS_CONFIG.options.default_option,
+                path_relativities.ALL_REL_OPTIONS_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolTable({
                 python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
@@ -289,7 +290,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                     file_to_interpret_symbol.name,
                     equals_data_type_reference_restrictions(
                         parse_path.path_or_string_reference_restrictions(
-                            parse_path.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
+                            path_relativities.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     exit_code_symbol.name,

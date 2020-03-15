@@ -4,7 +4,6 @@ from typing import Sequence, Optional, Callable, Union
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -32,59 +31,13 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_sdv_from
     parse_fragments_from_token, string_sdv_from_fragments
 from exactly_lib.test_case_utils.parse.path_from_symbol_reference import \
     _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix
-from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
-    RelOptionArgumentConfiguration
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util import strings
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
-
-ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
-
-REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS,
-                                                                           True),
-                                                    RelOptionType.REL_HDS_CASE)
-
-ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
-
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE}
-
-ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
-    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
-    False)
-
-ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativityVariants(
-    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
-    True)
-
-
-def all_rel_options_config(argument_syntax_name: str,
-                           path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
-                                          argument_syntax_name,
-                                          path_suffix_is_required)
-
-
-ALL_REL_OPTIONS_CONFIG = all_rel_options_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
-
-STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
-    ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
-    True)
-
-STANDARD_NON_HDS_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HDS_RELATIVITY_VARIANTS,
-                                                   RelOptionType.REL_CWD)
-
-
-def non_hds_config(argument_syntax_name: str,
-                   path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(STANDARD_NON_HDS_OPTIONS,
-                                          argument_syntax_name,
-                                          path_suffix_is_required)
-
-
-NON_HDS_CONFIG = non_hds_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def parse_path_from_parse_source(source: ParseSource,

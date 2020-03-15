@@ -15,7 +15,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.test_case_utils.parse import parse_path
+from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import arg_config_with_name
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.type_system.value_type import TypeCategory
@@ -152,7 +152,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
                          instruction_arguments.PATH_ARGUMENT)
             ],
             rel_path_doc.path_element_relativity_paragraphs(
-                parse_path.REL_OPTIONS_CONFIGURATION,
+                path_relativities.REL_OPTIONS_CONFIGURATION,
                 _TEXT_PARSER.paras(the_path_of('{executable_file:a}.')),
             )
         )

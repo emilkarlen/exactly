@@ -9,12 +9,13 @@ from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_path
 from exactly_lib.test_case_utils.parse import parse_string
+from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
-CONFIGURATION = parse_path.ALL_REL_OPTIONS_CONFIG
+CONFIGURATION = path_relativities.ALL_REL_OPTIONS_CONFIG
 
 FILE_ARGUMENT_OPTION = a.OptionName(long_name='file')
 

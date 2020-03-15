@@ -22,6 +22,7 @@ from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -90,7 +91,7 @@ class _ActualFileParser(ComparisonActualFileParser):
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(
-        parse_path.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
+        path_relativities.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
         RelOptionType.REL_CWD),
     ACTUAL_PATH_ARGUMENT.name,
     True)
