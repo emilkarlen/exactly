@@ -7,11 +7,12 @@ from exactly_lib.test_case_utils.parse.parse_path import path_or_string_referenc
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolTableValue, SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
+    DataSymbolTypeContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class PathSymbolTableValue(SymbolTableValue[PathSdv]):
+class PathSymbolTypeContext(DataSymbolTypeContext[PathSdv]):
     def __init__(self,
                  sdv: PathSdv,
                  accepted_relativities: PathRelativityVariants,
@@ -23,22 +24,22 @@ class PathSymbolTableValue(SymbolTableValue[PathSdv]):
     @staticmethod
     def of_sdv(sdv: PathSdv,
                accepted_relativities: PathRelativityVariants,
-               ) -> 'PathSymbolTableValue':
+               ) -> 'PathSymbolTypeContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolTableValue(sdv, accepted_relativities)
+        return PathSymbolTypeContext(sdv, accepted_relativities)
 
     @staticmethod
     def of_ddv(ddv: PathDdv,
                accepted_relativities: PathRelativityVariants,
-               ) -> 'PathSymbolTableValue':
+               ) -> 'PathSymbolTypeContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolTableValue(PathConstantSdv(ddv), accepted_relativities)
+        return PathSymbolTypeContext(PathConstantSdv(ddv), accepted_relativities)
 
     @property
     def accepted_relativities(self) -> PathRelativityVariants:
@@ -51,12 +52,12 @@ class PathSymbolTableValue(SymbolTableValue[PathSdv]):
         )
 
 
-class PathSymbolContext(SdvSymbolContext[PathSdv]):
+class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     def __init__(self,
                  name: str,
-                 value: PathSymbolTableValue,
+                 type_context: PathSymbolTypeContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name, type_context)
 
     @staticmethod
     def of_sdv(name: str,
@@ -65,7 +66,7 @@ class PathSymbolContext(SdvSymbolContext[PathSdv]):
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
-            PathSymbolTableValue.of_sdv(sdv, accepted_relativities)
+            PathSymbolTypeContext.of_sdv(sdv, accepted_relativities)
         )
 
     @staticmethod
@@ -75,12 +76,12 @@ class PathSymbolContext(SdvSymbolContext[PathSdv]):
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
-            PathSymbolTableValue.of_sdv(PathConstantSdv(ddv),
-                                        accepted_relativities)
+            PathSymbolTypeContext.of_sdv(PathConstantSdv(ddv),
+                                         accepted_relativities)
         )
 
     @property
-    def symbol_table_value(self) -> PathSymbolTableValue:
+    def symbol_table_value(self) -> PathSymbolTypeContext:
         return self._value
 
 
@@ -90,8 +91,8 @@ class PathDdvSymbolContext(PathSymbolContext):
                  ddv: PathDdv,
                  accepted_relativities: PathRelativityVariants,
                  ):
-        super().__init__(name, PathSymbolTableValue.of_sdv(PathConstantSdv(ddv),
-                                                           accepted_relativities))
+        super().__init__(name, PathSymbolTypeContext.of_sdv(PathConstantSdv(ddv),
+                                                            accepted_relativities))
         self._ddv = ddv
 
     @staticmethod

@@ -4,20 +4,22 @@ from exactly_lib.symbol.data import string_sdv as sut
 from exactly_lib.symbol.data.impl import string_sdv_impls as impl
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_system.data import concrete_strings as csv
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
-from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import empty_symbol_table, Entry
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
-from exactly_lib_test.symbol.data.test_resources.list_ import ConstantListSymbolContext
+from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv
-from exactly_lib_test.util.test_resources import symbol_tables
 
 
 def suite() -> unittest.TestSuite:
@@ -109,7 +111,7 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
         # ARRANGE #
         string_value_1 = 'string value 1'
         string_value_2 = 'string value 2'
-        list_symbol = ConstantListSymbolContext('the_symbol_name',
+        list_symbol = ListConstantSymbolContext('the_symbol_name',
                                                 [string_value_1, string_value_2]
                                                 )
         symbol_reference = su.symbol_reference(list_symbol.name)
@@ -139,15 +141,14 @@ class StringResolverTest(unittest.TestCase):
     def test_resolve(self):
         string_constant_1 = 'string constant 1'
         string_constant_2 = 'string constant 2'
-        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
-        path_symbol = NameAndValue('path_symbol_name',
-                                   paths.rel_act(paths.constant_path_part('file-name')))
-        list_element_1 = 'list element 1'
-        list_element_2 = 'list element 2'
-        list_symbol = NameAndValue('list_symbol_name',
-                                   ListDdv([string_ddv_of_single_string(list_element_1),
-                                            string_ddv_of_single_string(list_element_2)])
-                                   )
+        string_symbol = StringConstantSymbolContext('string_symbol_name', 'string symbol value')
+        path_symbol = PathDdvSymbolContext.of_rel_option('path_symbol_name',
+                                                         RelOptionType.REL_ACT,
+                                                         'file-name',
+                                                         ALL_REL_OPTION_VARIANTS)
+        list_symbol = ListConstantSymbolContext('list_symbol_name',
+                                                ['list element 1', 'list element 2']
+                                                )
 
         cases = [
             (
@@ -174,46 +175,43 @@ class StringResolverTest(unittest.TestCase):
                 'single symbol fragment/symbol is a string',
                 sut.StringSdv((
                     impl.SymbolStringFragmentSdv(
-                        su.symbol_reference(string_symbol.name)),)),
-                su.symbol_table_with_single_string_value(string_symbol.name,
-                                                         string_symbol.value),
-                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.value),)),
+                        string_symbol.symbol_reference__any_data_type),)),
+                string_symbol.symbol_table,
+                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.str_value),)),
             ),
             (
                 'single symbol fragment/symbol is a path',
                 sut.StringSdv((
                     impl.SymbolStringFragmentSdv(
-                        su.symbol_reference(path_symbol.name)),)),
-                su.symbol_table_with_single_path_value(path_symbol.name, path_symbol.value),
-                csv.StringDdv((csv.PathFragmentDdv(path_symbol.value),)),
+                        path_symbol.symbol_reference__any_data_type),)),
+                path_symbol.symbol_table,
+                csv.StringDdv((csv.PathFragmentDdv(path_symbol.ddv),)),
             ),
             (
                 'single symbol fragment/symbol is a list',
                 sut.StringSdv((
-                    impl.SymbolStringFragmentSdv(
-                        su.symbol_reference(list_symbol.name)),)),
-                symbol_tables.symbol_table_from_entries([Entry(list_symbol.name,
-                                                               su.list_ddv_constant_container(
-                                                                   list_symbol.value))]),
-                csv.StringDdv((csv.ListFragmentDdv(list_symbol.value),)),
+                    impl.SymbolStringFragmentSdv(list_symbol.symbol_reference__any_data_type),)
+                ),
+                list_symbol.symbol_table,
+                csv.StringDdv((csv.ListFragmentDdv(list_symbol.ddv),)),
             ),
             (
                 'multiple fragments of different types',
                 sut.StringSdv((
-                    impl.SymbolStringFragmentSdv(su.symbol_reference(string_symbol.name)),
+                    impl.SymbolStringFragmentSdv(string_symbol.symbol_reference__any_data_type),
                     impl.ConstantStringFragmentSdv(string_constant_1),
-                    impl.SymbolStringFragmentSdv(su.symbol_reference(path_symbol.name)),
-                    impl.SymbolStringFragmentSdv(su.symbol_reference(list_symbol.name)),
+                    impl.SymbolStringFragmentSdv(path_symbol.symbol_reference__any_data_type),
+                    impl.SymbolStringFragmentSdv(list_symbol.symbol_reference__any_data_type),
                 )),
-                symbol_tables.symbol_table_from_entries([
-                    Entry(string_symbol.name, su.string_constant_container(string_symbol.value)),
-                    Entry(path_symbol.name, su.path_constant_container(path_symbol.value)),
-                    Entry(list_symbol.name, su.list_ddv_constant_container(list_symbol.value)),
+                SymbolContext.symbol_table_of_contexts([
+                    string_symbol,
+                    path_symbol,
+                    list_symbol,
                 ]),
-                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.value),
+                csv.StringDdv((csv.ConstantFragmentDdv(string_symbol.str_value),
                                csv.ConstantFragmentDdv(string_constant_1),
-                               csv.PathFragmentDdv(path_symbol.value),
-                               csv.ListFragmentDdv(list_symbol.value),
+                               csv.PathFragmentDdv(path_symbol.ddv),
+                               csv.ListFragmentDdv(list_symbol.ddv),
                                )),
             ),
         ]

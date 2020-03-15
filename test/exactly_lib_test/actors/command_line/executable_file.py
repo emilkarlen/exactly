@@ -23,7 +23,7 @@ from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.symbol.data.test_resources.list_ import ConstantListSymbolContext
+from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -157,7 +157,7 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
 
 class TestSymbolUsages(unittest.TestCase):
     def test_symbol_reference_in_arguments(self):
-        list_symbol = ConstantListSymbolContext('list_symbol_name', ['first element',
+        list_symbol = ListConstantSymbolContext('list_symbol_name', ['first element',
                                                                      'second element'])
 
         string_constant = 'string-constant'

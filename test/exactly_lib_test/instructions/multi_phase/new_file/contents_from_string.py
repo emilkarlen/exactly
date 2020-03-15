@@ -29,7 +29,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
@@ -202,7 +202,7 @@ class TestSymbolReferences(TestCaseBase):
             contents_symbol.reference_assertion__any_data_type,
         ]
 
-        symbol_table = SdvSymbolContext.symbol_table_of_contexts([
+        symbol_table = SymbolContext.symbol_table_of_contexts([
             file_symbol,
             contents_symbol,
         ])

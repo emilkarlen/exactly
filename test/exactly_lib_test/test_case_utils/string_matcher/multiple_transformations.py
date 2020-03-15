@@ -11,7 +11,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_t
     StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
     StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -71,7 +71,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             prepend_and_equals_expected_matcher_sdv
         )
 
-        symbols = SdvSymbolContext.symbol_table_of_contexts([
+        symbols = SymbolContext.symbol_table_of_contexts([
             equals_expected_matcher,
             prepend_transformer_symbol,
             prepend_and_equals_expected_matcher,

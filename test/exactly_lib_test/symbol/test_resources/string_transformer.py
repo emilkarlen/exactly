@@ -16,7 +16,7 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext, SymbolTableValue
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
@@ -161,45 +161,45 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
     )
 
 
-class StringTransformerSymbolTableValue(SymbolTableValue[StringTransformerStv]):
+class StringTransformerSymbolTypeContext(LogicSymbolTypeContext[StringTransformerStv]):
     @staticmethod
-    def of_sdv(sdv: StringTransformerSdv) -> 'StringTransformerSymbolTableValue':
-        return StringTransformerSymbolTableValue(StringTransformerStv(sdv))
+    def of_sdv(sdv: StringTransformerSdv) -> 'StringTransformerSymbolTypeContext':
+        return StringTransformerSymbolTypeContext(StringTransformerStv(sdv))
 
     @staticmethod
-    def of_primitive(primitive: StringTransformer) -> 'StringTransformerSymbolTableValue':
-        return StringTransformerSymbolTableValue.of_sdv(StringTransformerSdvConstant(primitive))
+    def of_primitive(primitive: StringTransformer) -> 'StringTransformerSymbolTypeContext':
+        return StringTransformerSymbolTypeContext.of_sdv(StringTransformerSdvConstant(primitive))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_transformer__ref(symbol_name)
 
 
-class StringTransformerSymbolContext(SdvSymbolContext[StringTransformerStv]):
+class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv]):
     def __init__(self,
                  name: str,
-                 value: StringTransformerSymbolTableValue,
+                 type_context: StringTransformerSymbolTypeContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name, type_context)
 
     @staticmethod
     def of_sdtv(name: str, sdtv: StringTransformerStv) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolTableValue(sdtv)
+            StringTransformerSymbolTypeContext(sdtv)
         )
 
     @staticmethod
     def of_sdv(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolTableValue.of_sdv(sdv)
+            StringTransformerSymbolTypeContext.of_sdv(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: StringTransformer) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolTableValue.of_primitive(primitive)
+            StringTransformerSymbolTypeContext.of_primitive(primitive)
         )
 
 

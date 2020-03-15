@@ -6,7 +6,7 @@ from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv, 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref, \
     files_matcher_stv_constant_test_impl
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext, SymbolTableValue
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -17,45 +17,45 @@ from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class FilesMatcherSymbolTableValue(SymbolTableValue[FilesMatcherStv]):
+class FilesMatcherSymbolTypeContext(LogicSymbolTypeContext[FilesMatcherStv]):
     @staticmethod
-    def of_generic(sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolTableValue':
-        return FilesMatcherSymbolTableValue(FilesMatcherStv(sdv))
+    def of_generic(sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolTypeContext':
+        return FilesMatcherSymbolTypeContext(FilesMatcherStv(sdv))
 
     @staticmethod
-    def of_primitive(primitive: FilesMatcher) -> 'FilesMatcherSymbolTableValue':
-        return FilesMatcherSymbolTableValue.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_primitive(primitive: FilesMatcher) -> 'FilesMatcherSymbolTypeContext':
+        return FilesMatcherSymbolTypeContext.of_generic(matchers.sdv_from_primitive_value(primitive))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_files_matcher__ref(symbol_name)
 
 
-class FilesMatcherSymbolContext(SdvSymbolContext[FilesMatcherStv]):
+class FilesMatcherSymbolContext(LogicTypeSymbolContext[FilesMatcherStv]):
     def __init__(self,
                  name: str,
-                 value: FilesMatcherSymbolTableValue,
+                 type_context: FilesMatcherSymbolTypeContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name, type_context)
 
     @staticmethod
     def of_sdtv(name: str, sdtv: FilesMatcherStv) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(
             name,
-            FilesMatcherSymbolTableValue(sdtv)
+            FilesMatcherSymbolTypeContext(sdtv)
         )
 
     @staticmethod
     def of_generic(name: str, sdv: GenericFilesMatcherSdv) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(
             name,
-            FilesMatcherSymbolTableValue.of_generic(sdv)
+            FilesMatcherSymbolTypeContext.of_generic(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: FilesMatcher) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(
             name,
-            FilesMatcherSymbolTableValue.of_primitive(primitive)
+            FilesMatcherSymbolTypeContext.of_primitive(primitive)
         )
 
 

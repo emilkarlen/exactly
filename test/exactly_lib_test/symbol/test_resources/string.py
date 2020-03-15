@@ -5,7 +5,8 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_restr
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolTableValue, SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
+    DataSymbolTypeContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -27,18 +28,18 @@ def is_string_made_up_of_just_strings_reference_to__ref(name_of_symbol: str,
                                                  IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION)
 
 
-class StringSymbolTableValue(SymbolTableValue[StringSdv]):
+class StringSymbolTypeContext(DataSymbolTypeContext[StringSdv]):
     @staticmethod
-    def of_sdv(sdv: StringSdv) -> 'StringSymbolTableValue':
+    def of_sdv(sdv: StringSdv) -> 'StringSymbolTypeContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return StringSymbolTableValue(sdv)
+        return StringSymbolTypeContext(sdv)
 
     @staticmethod
-    def of_constant(primitive: str) -> 'StringSymbolTableValue':
-        return StringSymbolTableValue(string_sdvs.str_constant(primitive))
+    def of_constant(primitive: str) -> 'StringSymbolTypeContext':
+        return StringSymbolTypeContext(string_sdvs.str_constant(primitive))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
@@ -69,42 +70,42 @@ class StringSymbolTableValue(SymbolTableValue[StringSdv]):
         return is_string_made_up_of_just_strings_reference_to(symbol_name)
 
 
-class StringSymbolContext(SdvSymbolContext[StringSdv]):
+class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def __init__(self,
                  name: str,
-                 value: StringSymbolTableValue,
+                 type_context: StringSymbolTypeContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name, type_context)
 
     @staticmethod
     def of_sdv(name: str, sdv: StringSdv) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolTableValue.of_sdv(sdv)
+            StringSymbolTypeContext.of_sdv(sdv)
         )
 
     @staticmethod
     def of_constant(name: str, primitive: str) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolTableValue.of_constant(primitive)
+            StringSymbolTypeContext.of_constant(primitive)
         )
 
     @property
     def reference_assertion__any_data_type(self) -> ValueAssertion[SymbolReference]:
-        return StringSymbolTableValue.reference_assertion__any_data_type(self.name)
+        return StringSymbolTypeContext.reference_assertion__any_data_type(self.name)
 
     @property
     def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
-        return StringSymbolTableValue.usage_assertion__any_data_type(self.name)
+        return StringSymbolTypeContext.usage_assertion__any_data_type(self.name)
 
     @property
     def reference_assertion__string_made_up_of_just_strings(self) -> ValueAssertion[SymbolReference]:
-        return StringSymbolTableValue.reference_assertion__string_made_up_of_just_strings(self.name)
+        return StringSymbolTypeContext.reference_assertion__string_made_up_of_just_strings(self.name)
 
     @property
     def usage_assertion__string_made_up_of_just_strings(self) -> ValueAssertion[SymbolUsage]:
-        return StringSymbolTableValue.usage_assertion__string_made_up_of_just_strings(self.name)
+        return StringSymbolTypeContext.usage_assertion__string_made_up_of_just_strings(self.name)
 
 
 class StringConstantSymbolContext(StringSymbolContext):
@@ -112,7 +113,7 @@ class StringConstantSymbolContext(StringSymbolContext):
                  name: str,
                  constant: str,
                  ):
-        super().__init__(name, StringSymbolTableValue.of_constant(constant))
+        super().__init__(name, StringSymbolTypeContext.of_constant(constant))
         self._constant = constant
 
     @property

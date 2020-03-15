@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.string_transformer.sdvs import constant_sdtv
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
     StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ExecutionExpectation, ParseExpectation, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -102,7 +102,7 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
                     ).as_arguments,
                     integration_check.model_that_must_not_be_used,
                     Arrangement(
-                        symbols=SdvSymbolContext.symbol_table_of_contexts([
+                        symbols=SymbolContext.symbol_table_of_contexts([
                             string_transformer,
                             symbol_context,
                         ])
@@ -256,7 +256,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             ).as_arguments,
             integration_check.model_of(model__original),
             arrangement_w_tcds(
-                symbols=SdvSymbolContext.symbol_table_of_contexts([
+                symbols=SymbolContext.symbol_table_of_contexts([
                     to_upper_transformer,
                     count_num_upper_characters_transformer,
                 ])

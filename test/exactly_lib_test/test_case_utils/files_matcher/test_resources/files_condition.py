@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
@@ -149,7 +149,7 @@ IS_DIR_FILE_MATCHER = FileMatcherSymbolContext.of_primitive(
     'is_dir',
     file_matchers.IsDirectoryMatcher()
 )
-IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS = SdvSymbolContext.symbol_table_of_contexts([
+IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS = SymbolContext.symbol_table_of_contexts([
     IS_REGULAR_FILE_FILE_MATCHER,
     IS_DIR_FILE_MATCHER,
 ])

@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Dict, Sequence, List, TypeVar, Generic
 
 from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.data.restrictions import reference_restrictions
+from exactly_lib.symbol.data.restrictions import value_restrictions
 from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
@@ -91,7 +93,7 @@ class SymbolsArrEx:
 STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
 
 
-class SymbolTableValue(Generic[STV_TYPE], ABC):
+class SymbolTypeContext(Generic[STV_TYPE], ABC):
     def __init__(self, sdtv: STV_TYPE):
         self._sdtv = sdtv
 
@@ -108,13 +110,22 @@ class SymbolTableValue(Generic[STV_TYPE], ABC):
         pass
 
 
-class SdvSymbolContext(Generic[STV_TYPE], ABC):
-    def __init__(self,
-                 name: str,
-                 value: SymbolTableValue[STV_TYPE],
-                 ):
+class DataSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
+    pass
+
+
+class LogicSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
+    pass
+
+
+class SymbolContext(Generic[STV_TYPE], ABC):
+    def __init__(self, name: str):
         self._name = name
-        self._value = value
+
+    @property
+    @abstractmethod
+    def _type_context(self) -> SymbolTypeContext[STV_TYPE]:
+        pass
 
     @property
     def name(self) -> str:
@@ -126,7 +137,7 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def sdtv(self) -> STV_TYPE:
-        return self._value.sdtv
+        return self._type_context.sdtv
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
@@ -144,7 +155,7 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return self._value.reference_assertion(self._name)
+        return self._type_context.reference_assertion(self._name)
 
     @property
     def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
@@ -164,8 +175,43 @@ class SdvSymbolContext(Generic[STV_TYPE], ABC):
         })
 
     @staticmethod
-    def symbol_table_of_contexts(symbols: Sequence['SdvSymbolContext']) -> SymbolTable:
+    def symbol_table_of_contexts(symbols: Sequence['SymbolContext']) -> SymbolTable:
         return SymbolTable({
             symbol.name: symbol.symbol_table_container
             for symbol in symbols
         })
+
+
+class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
+    def __init__(self,
+                 name: str,
+                 type_context: DataSymbolTypeContext[STV_TYPE],
+                 ):
+        super().__init__(name)
+        self.__type_context = type_context
+
+    @property
+    def _type_context(self) -> DataSymbolTypeContext[STV_TYPE]:
+        return self.__type_context
+
+    @property
+    def symbol_reference__any_data_type(self) -> SymbolReference:
+        return SymbolReference(
+            self.name,
+            reference_restrictions.ReferenceRestrictionsOnDirectAndIndirect(
+                value_restrictions.AnyDataTypeRestriction()
+            )
+        )
+
+
+class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
+    def __init__(self,
+                 name: str,
+                 type_context: LogicSymbolTypeContext[STV_TYPE],
+                 ):
+        super().__init__(name)
+        self.__type_context = type_context
+
+    @property
+    def _type_context(self) -> LogicSymbolTypeContext[STV_TYPE]:
+        return self.__type_context

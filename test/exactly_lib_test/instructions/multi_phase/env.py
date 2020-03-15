@@ -16,7 +16,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SdvSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.strings import WithToString
@@ -280,7 +280,7 @@ class TestSet(unittest.TestCase):
             source_line,
             ArrangementWithSds(
                 symbols=
-                SdvSymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
+                SymbolContext.symbol_table_of_contexts([my_symbol, your_symbol]),
                 process_execution_settings=
                 execution_elements.with_environ_copy({}),
             ),
