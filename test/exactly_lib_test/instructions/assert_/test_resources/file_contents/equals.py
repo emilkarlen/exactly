@@ -1,12 +1,8 @@
 import unittest
 
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -22,8 +18,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
@@ -226,23 +221,21 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
         def expected_content(symbol_content: str) -> str:
             return expected_content_line_template.format(symbol=symbol_content)
 
-        symbol = NameAndValue('symbol_name', 'the symbol value')
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
         self._check(
             self.configuration.source_for(
                 args('{maybe_not} {equals} <<EOF',
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
-                [expected_content(symbol_reference_syntax_for_name(symbol.name)),
+                [expected_content(symbol.name__sym_ref_syntax),
                  'EOF',
                  'following line']),
             self.configuration.arrangement_for_contents(
-                lines_content([expected_content(symbol.value)]),
+                lines_content([expected_content(symbol.str_value)]),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
-                symbols=SymbolTable({
-                    symbol.name: data_symbol_utils.string_constant_container(symbol.value),
-                })),
+                symbols=symbol.symbol_table),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
-                        symbol_usages=equals_symbol_references([
-                            SymbolReference(symbol.name, is_any_data_type())
+                        symbol_usages=asrt.matches_sequence([
+                            symbol.reference_assertion__any_data_type
                         ]),
                         source=is_at_beginning_of_line(4)),
         )

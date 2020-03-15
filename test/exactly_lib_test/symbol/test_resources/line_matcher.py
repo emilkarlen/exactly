@@ -125,3 +125,6 @@ class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
             name,
             LineMatcherSymbolTypeContext.of_primitive(primitive)
         )
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = LineMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))

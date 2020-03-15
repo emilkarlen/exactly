@@ -27,6 +27,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parser_classes import ConstantParser
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_contents_check, \
@@ -181,12 +182,9 @@ class TestSymbolReferences(TestCaseBase):
         )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):
-        symbol_name = 'symbol_name'
-        symbol_value = 'the symbol value'
-        symbol_table_of_arrangement = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                              symbol_value)
-        expected_symbol_table = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                        symbol_value)
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
+        symbol_table_of_arrangement = symbol.symbol_table
+        expected_symbol_table = symbol.symbol_table
         expectation = asrt_sym.equals_symbol_table(expected_symbol_table)
 
         sdv_that_checks_symbols = MatcherSdvThatAssertsThatSymbolsAreAsExpected(self, expectation)

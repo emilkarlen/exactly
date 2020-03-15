@@ -12,6 +12,7 @@ from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su, list_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -115,7 +116,8 @@ class TestEqualsResolver(unittest.TestCase):
                 sut.equals_list_sdv(sdv).apply_without_message(self, sdv)
 
     def test_not_equals(self):
-        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
+        string_symbol = StringConstantSymbolContext('string_symbol_name',
+                                                    'string symbol value')
         cases = [
             Case('different number of elements',
                  expected=
@@ -131,11 +133,11 @@ class TestEqualsResolver(unittest.TestCase):
                  ),
             Case('different element types, but same resolved value',
                  expected=
-                 list_sdvs.from_str_constants([string_symbol.value]),
+                 list_sdvs.from_str_constants([string_symbol.str_value]),
                  actual=
-                 list_sdvs.from_elements([list_sdvs.symbol_element(su.symbol_reference(string_symbol.name))]),
+                 list_sdvs.from_elements([list_sdvs.symbol_element(string_symbol.reference__any_data_type)]),
                  symbols=
-                 su.symbol_table_with_single_string_value(string_symbol.name, string_symbol.value),
+                 string_symbol.symbol_table,
                  ),
         ]
         for case in cases:

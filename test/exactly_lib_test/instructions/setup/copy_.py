@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
@@ -24,7 +25,6 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     ChangeDirectoryToDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 
 def suite() -> unittest.TestSuite:
@@ -237,9 +237,9 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                 dst_relativity_option=dst_rel_option.option_argument,
                 dst_file=dst_file_name,
             )
-            symbols_in_arrangement = symbol_table_from_entries(
-                src_rel_option.symbols.entries_for_arrangement() +
-                dst_rel_option.symbols.entries_for_arrangement()
+            symbols_in_arrangement = SymbolContext.symbol_table_of_contexts(
+                src_rel_option.symbols.contexts_for_arrangement() +
+                dst_rel_option.symbols.contexts_for_arrangement()
             )
             expected_symbol_usages = asrt.matches_sequence(
                 src_rel_option.symbols.usage_expectation_assertions() +

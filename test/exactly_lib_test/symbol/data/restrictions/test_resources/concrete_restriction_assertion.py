@@ -85,7 +85,7 @@ def is_failure_of_indirect_reference(
                                  ]))
 
 
-class _EqualsValueRestriction(ValueAssertionBase):
+class _EqualsValueRestriction(ValueAssertionBase[ValueRestriction]):
     def __init__(self, expected: ValueRestriction):
         self.expected = expected
 

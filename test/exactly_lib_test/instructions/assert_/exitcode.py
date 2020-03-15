@@ -1,10 +1,10 @@
 import unittest
+from typing import List
 
 from exactly_lib.instructions.assert_ import exitcode as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -17,14 +17,16 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -127,13 +129,13 @@ class TestArgumentWithSymbolReferences(TestBase):
                                          ['following line']),
                         ArrangementPostAct(
                             act_result_producer=act_result_of(actual_value),
-                            symbols=symbol_table_with_string_constant_symbols(case.symbol_name_and_value_list),
+                            symbols=case.symbol_table,
                         ),
                         Expectation(
                             source=is_at_beginning_of_line(2),
                             main_result=result_expectation,
-                            symbol_usages=equals_symbol_references(
-                                string_symbol_references_of(case.symbol_name_and_value_list))
+                            symbol_usages=asrt.matches_sequence(
+                                case.reference_assertions__string_made_up_of_just_strings)
                         ),
                     )
 
@@ -180,7 +182,7 @@ class TestConstantArguments(TestBase):
 class CaseWithSymbols:
     def __init__(self,
                  case_name: str,
-                 symbol_name_and_value_list: list,
+                 symbol_name_and_value_list: List[NameAndValue],
                  argument: str,
                  actual_value_for_pass: int,
                  actual_value_for_fail: int, ):
@@ -189,6 +191,21 @@ class CaseWithSymbols:
         self.actual_value_for_pass = actual_value_for_pass
         self.actual_value_for_fail = actual_value_for_fail
         self.symbol_name_and_value_list = symbol_name_and_value_list
+        self.symbol_contexts = [
+            StringConstantSymbolContext(nav.name, nav.value)
+            for nav in symbol_name_and_value_list
+        ]
+
+    @property
+    def symbol_table(self) -> SymbolTable:
+        return SymbolContext.symbol_table_of_contexts(self.symbol_contexts)
+
+    @property
+    def reference_assertions__string_made_up_of_just_strings(self) -> List[ValueAssertion[SymbolReference]]:
+        return [
+            symbol_context.reference_assertion__string_made_up_of_just_strings
+            for symbol_context in self.symbol_contexts
+        ]
 
 
 def _actual_exitcode(exit_code: int) -> ArrangementPostAct:
@@ -197,19 +214,6 @@ def _actual_exitcode(exit_code: int) -> ArrangementPostAct:
 
 def act_result_of(exit_code: int):
     return ActResultProducerFromActResult(SubProcessResult(exitcode=exit_code))
-
-
-def symbol_table_with_string_constant_symbols(symbol_name_and_value_list: list) -> SymbolTable:
-    return SymbolTable(dict([(sym.name, data_symbol_utils.string_constant_container(sym.value))
-                             for sym in symbol_name_and_value_list]))
-
-
-def string_symbol_references_of(symbol_name_and_value_list: list) -> list:
-    return [
-        SymbolReference(symbol.name,
-                        string_made_up_by_just_strings())
-        for symbol in symbol_name_and_value_list
-    ]
 
 
 _IS_PASS = is_pass()

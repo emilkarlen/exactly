@@ -7,9 +7,9 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.util import symbol_table as st
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
-    symbol_table_with_string_values_from_name_and_value
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -66,21 +66,21 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
 
     def test_resolve(self):
         # ARRANGE #
-        symbol1 = NameAndValue('symbol_1_name', 'symbol 1 value')
+        symbol1 = StringConstantSymbolContext('symbol_1_name', 'symbol 1 value')
         symbol1_ref = self._symbol_reference(symbol1.name)
-        symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
+        symbol2 = StringConstantSymbolContext('symbol_2_name', 'symbol 2 value')
         symbol2_ref = self._symbol_reference(symbol2.name)
         fragments = [string_sdvs.symbol_fragment(symbol1_ref),
                      string_sdvs.symbol_fragment(symbol2_ref)]
         sdv = sut.StringSdv(tuple(fragments))
         path_part = sut.PathPartSdvAsStringSdv(sdv)
         symbol_table_entries = [symbol1, symbol2]
-        symbol_table = symbol_table_with_string_values_from_name_and_value(symbol_table_entries)
+        symbol_table = SymbolContext.symbol_table_of_contexts(symbol_table_entries)
         # ACT #
         actual = path_part.resolve(symbol_table)
         self.assertIsInstance(actual, PathPartDdv)
         # ASSERT #
-        expected_resolved_value = symbol1.value + symbol2.value
+        expected_resolved_value = symbol1.str_value + symbol2.str_value
         self.assertEqual(expected_resolved_value,
                          actual.value(),
                          'resolved path part')

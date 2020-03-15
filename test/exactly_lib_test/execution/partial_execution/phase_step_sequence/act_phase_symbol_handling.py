@@ -17,6 +17,8 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
     ExpectedFailureForPhaseFailure
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.symbol.data.test_resources.path import arbitrary_path_symbol_context
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
@@ -35,7 +37,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         symbol_name = 'symbol_name'
         reference_to_string_symbol = data_symbol_utils.symbol_reference(symbol_name,
                                                                         StringRestriction())
-        definition_of_string_symbol = data_symbol_utils.string_symbol_definition(symbol_name)
+        definition_of_string_symbol = StringConstantSymbolContext(symbol_name).definition
         symbol_usages = [
             definition_of_string_symbol,
             reference_to_string_symbol,
@@ -119,7 +121,7 @@ class TestFailingScenarios(TestCaseBase):
         symbol_name = 'symbol_name'
         reference_to_string_symbol = data_symbol_utils.symbol_reference(symbol_name,
                                                                         StringRestriction())
-        definition_of_path_symbol = data_symbol_utils.path_symbol_definition(symbol_name)
+        definition_of_path_symbol = arbitrary_path_symbol_context(symbol_name).definition
         symbol_usages = [
             definition_of_path_symbol,
             reference_to_string_symbol,

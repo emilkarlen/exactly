@@ -1,19 +1,24 @@
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions
+from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
+from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
+    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
-    asrt_restr
+    asrt_rest
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference, \
+    symbol_usage_equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolTypeContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
-IS_STRING_REFERENCE_RESTRICTION = asrt_restr.equals_data_type_reference_restrictions(
+IS_STRING_REFERENCE_RESTRICTION = asrt_rest.equals_data_type_reference_restrictions(
     string_made_up_by_just_strings())
 
-IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION = asrt_restr.equals_data_type_reference_restrictions(
+IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION = asrt_rest.equals_data_type_reference_restrictions(
     string_made_up_by_just_strings())
 
 
@@ -44,21 +49,7 @@ class StringSymbolTypeContext(DataSymbolTypeContext[StringSdv]):
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
             symbol_name,
-            asrt_restr.is_string_value_restriction
-        )
-
-    @staticmethod
-    def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return asrt_sym_usage.matches_reference_2__ref(
-            symbol_name,
-            asrt_restr.is_any_data_type_reference_restrictions()
-        )
-
-    @staticmethod
-    def usage_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolUsage]:
-        return asrt_sym_usage.matches_reference_2(
-            symbol_name,
-            asrt_restr.is_any_data_type_reference_restrictions()
+            asrt_rest.is_string_value_restriction
         )
 
     @staticmethod
@@ -68,6 +59,29 @@ class StringSymbolTypeContext(DataSymbolTypeContext[StringSdv]):
     @staticmethod
     def usage_assertion__string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolUsage]:
         return is_string_made_up_of_just_strings_reference_to(symbol_name)
+
+    @staticmethod
+    def reference_restriction__path_or_string(accepted_relativities: PathRelativityVariants
+                                              ) -> ReferenceRestrictions:
+        return path_or_string_reference_restrictions(accepted_relativities)
+
+    @staticmethod
+    def reference_assertion__path_or_string(symbol_name: str,
+                                            accepted_relativities: PathRelativityVariants,
+                                            ) -> ValueAssertion[SymbolReference]:
+        return equals_symbol_reference(
+            SymbolReference(symbol_name,
+                            StringSymbolTypeContext.reference_restriction__path_or_string(accepted_relativities))
+        )
+
+    @staticmethod
+    def usage_assertion__path_or_string(symbol_name: str,
+                                        accepted_relativities: PathRelativityVariants,
+                                        ) -> ValueAssertion[SymbolUsage]:
+        return symbol_usage_equals_symbol_reference(
+            SymbolReference(symbol_name,
+                            StringSymbolTypeContext.reference_restriction__path_or_string(accepted_relativities))
+        )
 
 
 class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
@@ -91,13 +105,9 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
             StringSymbolTypeContext.of_constant(primitive)
         )
 
-    @property
-    def reference_assertion__any_data_type(self) -> ValueAssertion[SymbolReference]:
-        return StringSymbolTypeContext.reference_assertion__any_data_type(self.name)
-
-    @property
-    def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
-        return StringSymbolTypeContext.usage_assertion__any_data_type(self.name)
+    def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:
+        return SymbolReference(self.name,
+                               StringSymbolTypeContext.reference_restriction__path_or_string(accepted_relativities))
 
     @property
     def reference_assertion__string_made_up_of_just_strings(self) -> ValueAssertion[SymbolReference]:
@@ -107,11 +117,33 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def usage_assertion__string_made_up_of_just_strings(self) -> ValueAssertion[SymbolUsage]:
         return StringSymbolTypeContext.usage_assertion__string_made_up_of_just_strings(self.name)
 
+    @property
+    def reference_assertion__path_component(self) -> ValueAssertion[SymbolReference]:
+        return asrt_sym_usage.matches_reference__ref(
+            asrt.equals(self.name),
+            asrt_rest.equals_data_type_reference_restrictions(PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+        )
+
+    @property
+    def usage_assertion__path_component(self) -> ValueAssertion[SymbolUsage]:
+        return asrt_sym_usage.matches_reference(
+            asrt.equals(self.name),
+            asrt_rest.equals_data_type_reference_restrictions(PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+        )
+
+    def reference_assertion__path_or_string(self, accepted_relativities: PathRelativityVariants
+                                            ) -> ValueAssertion[SymbolReference]:
+        return StringSymbolTypeContext.reference_assertion__path_or_string(self.name, accepted_relativities)
+
+    def usage_assertion__path_or_string(self, accepted_relativities: PathRelativityVariants
+                                        ) -> ValueAssertion[SymbolUsage]:
+        return StringSymbolTypeContext.usage_assertion__path_or_string(self.name, accepted_relativities)
+
 
 class StringConstantSymbolContext(StringSymbolContext):
     def __init__(self,
                  name: str,
-                 constant: str,
+                 constant: str = 'string value',
                  ):
         super().__init__(name, StringSymbolTypeContext.of_constant(constant))
         self._constant = constant
@@ -119,3 +151,19 @@ class StringConstantSymbolContext(StringSymbolContext):
     @property
     def str_value(self) -> str:
         return self._constant
+
+
+class StringIntConstantSymbolContext(StringSymbolContext):
+    def __init__(self,
+                 name: str,
+                 constant: int,
+                 ):
+        super().__init__(name, StringSymbolTypeContext.of_constant(str(constant)))
+        self._int_constant = constant
+
+    @property
+    def int_value(self) -> int:
+        return self._int_constant
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = StringSymbolTypeContext.of_constant('arbitrary value')

@@ -16,6 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
     Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
@@ -112,12 +113,9 @@ class TestSymbolUsages(TestCaseBase):
             )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):
-        symbol_name = 'symbol_name'
-        symbol_value = 'the symbol value'
-        symbol_table_of_arrangement = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                              symbol_value)
-        expected_symbol_table = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                        symbol_value)
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
+        symbol_table_of_arrangement = symbol.symbol_table
+        expected_symbol_table = symbol.symbol_table
         assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
             self,
             expected_symbol_table,

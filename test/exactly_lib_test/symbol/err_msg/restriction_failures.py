@@ -8,7 +8,8 @@ from exactly_lib.symbol.err_msg import restriction_failures as sut
 from exactly_lib.symbol.restriction import InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -16,13 +17,13 @@ def suite() -> unittest.TestSuite:
 
 
 class TestErrorMessage(unittest.TestCase):
-    string_sym_def_1 = data_symbol_utils.string_symbol_definition('symbol1')
-    string_sym_def_2 = data_symbol_utils.string_symbol_definition('symbol2')
+    string_sym_def_1 = StringConstantSymbolContext('symbol1')
+    string_sym_def_2 = StringConstantSymbolContext('symbol2')
 
-    symbol_table = data_symbol_utils.symbol_table_from_symbol_definitions(
-        [string_sym_def_1,
-         string_sym_def_2
-         ]
+    symbol_table = SymbolContext.symbol_table_of_contexts([
+        string_sym_def_1,
+        string_sym_def_2
+    ]
     )
 
     def test_invalid_type_category(self):

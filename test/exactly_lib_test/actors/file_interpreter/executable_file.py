@@ -3,16 +3,11 @@ import sys
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.actors.test_resources import act_phase_execution
@@ -23,8 +18,8 @@ from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -148,15 +143,15 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
 
 class TestSymbolUsages(unittest.TestCase):
     def test_symbol_value_with_space_SHOULD_be_given_as_single_argument_to_program(self):
-        symbol = NameAndValue('symbol_name', 'symbol value with space')
+        symbol = StringConstantSymbolContext('symbol_name', 'symbol value with space')
 
-        expected_output = lines_content([symbol.value])
+        expected_output = lines_content([symbol.str_value])
 
         source_file = 'the-source-file.py'
 
         command_line = '{source_file} {symbol}'.format(
             source_file=source_file,
-            symbol=symbol_reference_syntax_for_name(symbol.name),
+            symbol=symbol.name__sym_ref_syntax,
         )
 
         arrangement = act_phase_execution.Arrangement(
@@ -165,10 +160,7 @@ class TestSymbolUsages(unittest.TestCase):
                     source_file,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ])),
-            symbol_table=SymbolTable({
-                symbol.name:
-                    su.string_constant_container(symbol.value),
-            })
+            symbol_table=symbol.symbol_table
         )
 
         expectation = act_phase_execution.Expectation(
@@ -176,8 +168,7 @@ class TestSymbolUsages(unittest.TestCase):
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(
-                [SymbolReference(symbol.name,
-                                 is_any_data_type())]
+                [symbol.reference__any_data_type]
             )
         )
         act_phase_execution.check_execution(self,

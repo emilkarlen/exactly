@@ -30,8 +30,10 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, here_doc_assertion_utils as hd
+from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolTypeContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringSymbolTypeContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -206,14 +208,15 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                             is_any_data_type())
         ]
         cases = [
-            ('string value container',
-             data_symbol_utils.string_constant_container('string symbol value')),
-            ('path value container',
-             data_symbol_utils.path_constant_container(
-                 paths.rel_act(paths.constant_path_part('file-name.txt')))),
+            NameAndValue('string value container',
+                         StringSymbolTypeContext.of_constant('string symbol value').container
+                         ),
+            NameAndValue('path value container',
+                         PathSymbolTypeContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT, 'file-name.txt').container
+                         ),
         ]
         for case in cases:
-            with self.subTest(case[0]):
+            with self.subTest(case.name):
                 self._run(assignment_of(' <<MARKER  ',
                                         [content_line_of_here_doc_template.format(
                                             symbol=symbol_reference_syntax_for_name(symbol_name)),
@@ -221,7 +224,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                                             'following line']),
                           Arrangement(
                               symbols=SymbolTable({
-                                  symbol_name: case[1]
+                                  symbol_name: case.value
                               })
                           ),
                           Expectation(

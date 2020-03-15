@@ -13,18 +13,15 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.value_type import DataValueType, ValueType
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as sym_utils, \
-    symbol_reference_assertions as vr_tr
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container
+from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as vr_tr
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.sdvs import \
     string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -83,29 +80,26 @@ class TestRelSymbol(unittest.TestCase):
         ]
         path_suffix_test_cases = [
             (path_part_sdvs.from_constant_str('file.txt'),
-             ()
+             []
              ),
             (path_part_sdvs.from_string(string_sdv_of_single_symbol_reference('path_suffix_symbol_name',
                                                                               is_any_data_type())),
-             (Entry('path_suffix_symbol_name',
-                    string_constant_container('path-suffix')),),
+             [StringConstantSymbolContext('path_suffix_symbol_name', 'path-suffix').entry],
              ),
         ]
-        path_symbol_name = 'SYMBOL_NAME'
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
-            referenced_path = paths.of_rel_option(rel_option_type_of_referenced_symbol,
-                                                  paths.constant_path_part('referenced-file-name'))
+            referenced_path = ConstantSuffixPathDdvSymbolContext('SYMBOL_NAME',
+                                                                 rel_option_type_of_referenced_symbol,
+                                                                 'referenced-file-name')
             for path_suffix, sym_tbl_entries in path_suffix_test_cases:
-                symbol_table = singleton_symbol_table_2(
-                    path_symbol_name,
-                    sym_utils.path_constant_container(referenced_path))
+                symbol_table = referenced_path.symbol_table
                 symbol_table.add_all(sym_tbl_entries)
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):
                     path_sdv_to_check = sut.PathSdvRelSymbol(
                         path_suffix,
-                        _symbol_reference_of_path_with_accepted(path_symbol_name,
+                        _symbol_reference_of_path_with_accepted(referenced_path.name,
                                                                 rel_option_type_of_referenced_symbol))
                     # ACT #
                     actual = path_sdv_to_check.resolve(symbol_table).exists_pre_sds()
@@ -121,30 +115,28 @@ class TestRelSymbol(unittest.TestCase):
         ]
         path_suffix_str = 'path-suffix-file.txt'
         path_suffix_test_cases = [
-            (path_part_sdvs.from_constant_str(path_suffix_str), ()
+            (path_part_sdvs.from_constant_str(path_suffix_str),
+             ()
              ),
             (path_part_sdvs.from_string(string_sdv_of_single_symbol_reference('path_suffix_symbol',
                                                                               is_any_data_type())),
-             (Entry('path_suffix_symbol',
-                    string_constant_container(path_suffix_str)),)
+             (StringConstantSymbolContext('path_suffix_symbol',
+                                          path_suffix_str).entry,)
              ),
         ]
         for rel_option, exists_pre_sds in relativity_test_cases:
             # ARRANGE #
             path_component_from_referenced_path = 'path-component-from-referenced-file-ref'
-            referenced_sym = NameAndValue('path_symbol',
-                                          sym_utils.path_constant_container(
-                                              paths.of_rel_option(rel_option,
-                                                                  paths.constant_path_part(
-                                                                      path_component_from_referenced_path))
-                                          ))
+            referenced_sym = ConstantSuffixPathDdvSymbolContext('path_symbol',
+                                                                rel_option,
+                                                                path_component_from_referenced_path)
+
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
                 fr_sdv_to_check = sut.PathSdvRelSymbol(
                     path_suffix,
                     _symbol_reference_of_path_with_accepted(referenced_sym.name,
                                                             rel_option))
-                symbol_table = singleton_symbol_table_2(referenced_sym.name,
-                                                        referenced_sym.value)
+                symbol_table = referenced_sym.symbol_table
                 symbol_table.add_all(symbol_table_entries)
                 tcds = fake_tcds()
                 expected_root_path = _root_path_of_option(rel_option, tcds)

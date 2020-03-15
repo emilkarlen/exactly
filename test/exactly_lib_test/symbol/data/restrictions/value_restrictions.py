@@ -2,20 +2,20 @@ import unittest
 from typing import Optional
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
+from exactly_lib_test.symbol.data.test_resources import list_
+from exactly_lib_test.symbol.data.test_resources import path
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolTypeContext
+from exactly_lib_test.symbol.test_resources import string
+from exactly_lib_test.symbol.test_resources import string_transformer, \
+    file_matcher
+from exactly_lib_test.symbol.test_resources.string import StringSymbolTypeContext
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
-from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeStringTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -31,33 +31,31 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_pass_WHEN_type_category_is_data(self):
         # ARRANGE #
         test_cases = [
-            string_sdvs.str_constant('string'),
-            path_constant_sdv(),
-            ListSdvTestImplForConstantListDdv(ListDdv([])),
+            string.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            path.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            list_.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value.container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
     def test_fail_WHEN_type_category_is_not_data(self):
         # ARRANGE #
         test_cases = [
-            file_matcher_sdv_constant_test_impl(FileMatcherTestImpl()),
-            StringTransformerSdvConstantTestImpl(FakeStringTransformer(), []),
+            file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value.container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -67,32 +65,30 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            string_sdvs.str_constant('string'),
-            string_sdvs.str_constant(''),
+            StringSymbolTypeContext.of_constant('string'),
+            StringSymbolTypeContext.of_constant(''),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value.container)
                 # ASSERT #
                 self.assertIsNone(actual)
 
     def test_fail__not_a_string(self):
         # ARRANGE #
         test_cases = [
-            path_constant_sdv(),
-            file_matcher_sdv_constant_test_impl(FileMatcherTestImpl()),
+            path.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
                 # ACT #
-                actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
+                actual = restriction.is_satisfied_by(symbols, 'symbol_name', value.container)
                 # ASSERT #
                 self.assertIsNotNone(actual,
                                      'Result should denote failing validation')
@@ -102,17 +98,17 @@ class TestPathRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
+            RelOptionType.REL_ACT,
+            RelOptionType.REL_HDS_CASE,
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
                 {RelOptionType.REL_ACT, RelOptionType.REL_HDS_CASE, RelOptionType.REL_RESULT},
                 False))
         symbols = empty_symbol_table()
-        for value in test_cases:
-            with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
+        for actual_relativity in test_cases:
+            with self.subTest(msg='actual_relativity=' + str(actual_relativity)):
+                container = PathSymbolTypeContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
                 # ACT #
                 actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
@@ -121,17 +117,17 @@ class TestPathRelativityRestriction(unittest.TestCase):
     def test_fail__relative_paths(self):
         # ARRANGE #
         test_cases = [
-            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_ACT)),
-            path_sdvs.constant(path_test_impl(relativity=RelOptionType.REL_HDS_CASE)),
+            RelOptionType.REL_ACT,
+            RelOptionType.REL_HDS_CASE,
         ]
         restriction = vr.PathRelativityRestriction(
             PathRelativityVariants(
                 {RelOptionType.REL_RESULT},
                 False))
         symbols = empty_symbol_table()
-        for value in test_cases:
-            with self.subTest(msg='value=' + str(value)):
-                container = data_symbol_utils.container(value)
+        for actual_relativity in test_cases:
+            with self.subTest(msg='value=' + str(actual_relativity)):
+                container = PathSymbolTypeContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
                 # ACT #
                 actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #

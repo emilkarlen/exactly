@@ -1,7 +1,9 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
@@ -20,7 +22,7 @@ def matches_primitive_string(resolved_str: ValueAssertion,
 class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase):
     def __init__(self,
                  expected_resolved_primitive_value: ValueAssertion,
-                 symbol_references: list,
+                 symbol_references: Sequence[SymbolReference],
                  symbols: SymbolTable):
         self.symbol_references = symbol_references
         self.symbols = symbols

@@ -8,18 +8,16 @@ from exactly_lib.section_document.source_location import FileLocationInfo, Sourc
 from exactly_lib.symbol import sdv_structure as rs
 from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
 from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition, SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import path_constant_container, \
-    path_sdv_container
 
 
 def suite() -> unittest.TestSuite:
@@ -183,10 +181,6 @@ def symbol_of(name: str) -> SymbolDefinition:
                                                single_line_sequence(1, 'source code')))
 
 
-def path_entry(name: str, path_ddv: PathDdv) -> Entry:
-    return Entry(name, path_constant_container(path_ddv))
-
-
 def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
                  rs.SymbolContainer(string_sdvs.str_constant(constant),
@@ -206,6 +200,11 @@ class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
 
 
 _FL = FileLocationInfo(pathlib.Path('/'))
+
+
+def path_sdv_container(path_sdv: PathSdv) -> SymbolContainer:
+    return SymbolContainer(path_sdv,
+                           single_line_sequence(1, 'value def line'))
 
 
 def single_line_sequence(line_number: int, line: str) -> SourceLocationInfo:

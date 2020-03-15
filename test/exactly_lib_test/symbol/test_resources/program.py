@@ -4,6 +4,8 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
+from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
+    arbitrary_sdv__without_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -44,3 +46,6 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramStv]):
             name,
             ProgramSymbolTypeContext.of_generic(sdv)
         )
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolTypeContext.of_generic(arbitrary_sdv__without_symbol_references())

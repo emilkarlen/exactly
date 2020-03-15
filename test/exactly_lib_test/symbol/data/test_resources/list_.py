@@ -98,3 +98,6 @@ def _ddv_of_constant(elements: Sequence[str]) -> ListDdv:
         string_ddv_of_single_string(element)
         for element in elements
     ])
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ListSymbolTypeContext.of_constant(['arbitrary', 'value'])

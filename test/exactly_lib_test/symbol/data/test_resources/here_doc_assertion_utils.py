@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Optional, Sequence
 
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.parse.parse_here_document import DOCUMENT_MARKER_PREFIX
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
@@ -22,7 +23,7 @@ def here_doc_lines(marker: str,
 
 
 def matches_resolved_value(expected_resolved_primitive_lines: list,
-                           symbol_references: list = None,
+                           symbol_references: Optional[Sequence[SymbolReference]] = None,
                            symbols: SymbolTable = None) -> ValueAssertion:
     symbols = empty_symbol_table() if symbols is None else symbols
     symbol_references = [] if symbol_references is None else symbol_references

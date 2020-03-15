@@ -5,6 +5,7 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -12,10 +13,12 @@ from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -137,16 +140,24 @@ class TestMatchesResolver(unittest.TestCase):
     def test_symbol_table_is_passed_to_resolve_method(self):
         # ARRANGE #
         symbol_name = 'symbol_name'
+        symbol_value = 'the symbol value'
         string_sdv = _StringSdvTestImpl(resolve_string_via_symbol_table(symbol_name))
-        symbol_table = singleton_symbol_table_2(symbol_name,
-                                                data_symbol_utils.string_ddv_constant_container2(STRING_DDV))
 
+        symbol_table = StringConstantSymbolContext(symbol_name, symbol_value).symbol_table
+        is_expected_resolved_value = asrt.on_transformed(
+            _resolve_ddv,
+            asrt.equals(symbol_value)
+        )
         assertion = sut.matches_sdtv(asrt.anything_goes(),
                                      asrt.anything_goes(),
-                                     asrt.is_(STRING_DDV),
+                                     is_expected_resolved_value,
                                      symbols=symbol_table)
         # ACT & ASSERT #
         assertion.apply_without_message(self, string_sdv)
+
+
+def _resolve_ddv(ddv: DirDependentValue):
+    return ddv.value_of_any_dependency(fake_tcds())
 
 
 STRING_DDV = StringDdv((ConstantFragmentDdv('value'),))
@@ -165,6 +176,7 @@ def resolve_string_via_symbol_table(symbol_name: str) -> Callable[[SymbolTable],
     def ret_val(symbols: SymbolTable) -> StringDdv:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Value in Symbol Table must be SymbolContainer'
+        assert container.sdv.value_type == ValueType.STRING, 'Value type must be STRING'
         return container.sdv.resolve(symbols)
 
     return ret_val

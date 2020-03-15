@@ -1,5 +1,5 @@
 import unittest
-from typing import Optional
+from typing import Optional, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data import string_sdvs
@@ -8,10 +8,11 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.condition.integer import integer_sdv as sut
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.svh_exception import SvhValidationException
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -23,6 +24,50 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestValidationPreSds),
         unittest.makeSuite(TestValidateAndResolve),
     ])
+
+
+class CustomValidator:
+    def __init__(self, value_that_makes_the_validation_succeed: int,
+                 error_message: TextRenderer):
+        self.error_message = error_message
+        self.value_that_makes_the_validation_succeed = value_that_makes_the_validation_succeed
+
+    def __call__(self, value: int) -> Optional[TextRenderer]:
+        if value != self.value_that_makes_the_validation_succeed:
+            return self.error_message
+
+        return None
+
+
+class Expected:
+    def __init__(self,
+                 resolved_value: int,
+                 symbol_references: list):
+        self.resolved_value = resolved_value
+        self.symbol_references = symbol_references
+
+
+class Case:
+    def __init__(self,
+                 name: str,
+                 source: str,
+                 expected: Expected):
+        self.name = name
+        self.source = source
+        self.expected = expected
+
+
+class Symbol:
+    def __init__(self,
+                 name: str,
+                 value_int: int,
+                 value_str: str,
+                 ):
+        self.name = name
+        self.value_int = value_int
+        self.value_str = value_str
+        self.ref_syntax = symbol_reference_syntax_for_name(name)
+        self.symbol_reference = data_symbol_utils.symbol_reference(name)
 
 
 class TestValidateAndResolve(unittest.TestCase):
@@ -115,10 +160,12 @@ class TestValidateAndResolve(unittest.TestCase):
                     .apply_without_message(self,
                                            actual_symbol_references)
 
-    def _symbol_table_with_string_values(self, all_symbols):
-        return SymbolTable(
-            dict([(sym.name, data_symbol_utils.string_constant_container(sym.value_str))
-                  for sym in all_symbols]))
+    @staticmethod
+    def _symbol_table_with_string_values(all_symbols: Sequence[Symbol]):
+        return SymbolContext.symbol_table_of_contexts([
+            StringConstantSymbolContext(sym.name, sym.value_str)
+            for sym in all_symbols
+        ])
 
 
 class TestSymbolReferences(unittest.TestCase):
@@ -268,47 +315,3 @@ class TestValidationPreSds(unittest.TestCase):
                         value_to_check = sdv_to_check.resolve(the_instruction_environment.symbols)
                         value_to_check.validator().validate_pre_sds_if_applicable(the_instruction_environment.hds)
                         value_to_check.validator().validate_post_sds_if_applicable(fake_tcds())
-
-
-class CustomValidator:
-    def __init__(self, value_that_makes_the_validation_succeed: int,
-                 error_message: TextRenderer):
-        self.error_message = error_message
-        self.value_that_makes_the_validation_succeed = value_that_makes_the_validation_succeed
-
-    def __call__(self, value: int) -> Optional[TextRenderer]:
-        if value != self.value_that_makes_the_validation_succeed:
-            return self.error_message
-
-        return None
-
-
-class Expected:
-    def __init__(self,
-                 resolved_value: int,
-                 symbol_references: list):
-        self.resolved_value = resolved_value
-        self.symbol_references = symbol_references
-
-
-class Case:
-    def __init__(self,
-                 name: str,
-                 source: str,
-                 expected: Expected):
-        self.name = name
-        self.source = source
-        self.expected = expected
-
-
-class Symbol:
-    def __init__(self,
-                 name: str,
-                 value_int: int,
-                 value_str: str,
-                 ):
-        self.name = name
-        self.value_int = value_int
-        self.value_str = value_str
-        self.ref_syntax = symbol_reference_syntax_for_name(name)
-        self.symbol_reference = data_symbol_utils.symbol_reference(name)

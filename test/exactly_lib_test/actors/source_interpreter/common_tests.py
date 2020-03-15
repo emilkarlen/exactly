@@ -1,16 +1,12 @@
 import unittest
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system.data import paths
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -51,29 +47,24 @@ class TestCaseBase(unittest.TestCase):
 
 class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
     def runTest(self):
-        symbol = NameAndValue('symbol_name', 'the symbol value')
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
 
         program_that_prints_value_of_symbol = 'print("{symbol}")'
 
         single_source_line = program_that_prints_value_of_symbol.format(
-            symbol=symbol_reference_syntax_for_name(symbol.name),
+            symbol=symbol.name__sym_ref_syntax,
         )
 
-        expected_output = symbol.value + '\n'
+        expected_output = symbol.str_value + '\n'
 
         self._check(
             single_source_line,
             Arrangement(
-                symbol_table=SymbolTable({
-                    symbol.name:
-                        su.string_constant_container(symbol.value),
-                })
-
+                symbol_table=symbol.symbol_table
             ),
             Expectation(
                 symbol_usages=equals_symbol_references([
-                    SymbolReference(symbol.name,
-                                    is_any_data_type()),
+                    symbol.reference__any_data_type,
                 ]),
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                       'program output')),
@@ -82,29 +73,23 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
 
 class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
     def runTest(self):
-        path_suffix = 'the-path-suffix'
-        symbol = NameAndValue('symbol_name',
-                              paths.rel_act(paths.constant_path_part(path_suffix)))
+        symbol = ConstantSuffixPathDdvSymbolContext('symbol_name',
+                                                    RelOptionType.REL_ACT,
+                                                    'the-path-suffix')
 
         program_that_prints_value_of_symbol = 'print("{symbol}")'
 
         single_source_line = program_that_prints_value_of_symbol.format(
-            symbol=symbol_reference_syntax_for_name(symbol.name),
+            symbol=symbol.name__sym_ref_syntax,
         )
 
         self._check(
             single_source_line,
             Arrangement(
-                symbol_table=SymbolTable({
-                    symbol.name:
-                        su.path_constant_container(symbol.value),
-                })
+                symbol_table=symbol.symbol_table
 
             ),
             Expectation(
-                symbol_usages=equals_symbol_references([
-                    SymbolReference(symbol.name,
-                                    is_any_data_type()),
-                ]),
-                sub_process_result_from_execute=pr.stdout(str_asrt.contains(path_suffix)),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
+                sub_process_result_from_execute=pr.stdout(str_asrt.contains(symbol.path_suffix)),
             ))

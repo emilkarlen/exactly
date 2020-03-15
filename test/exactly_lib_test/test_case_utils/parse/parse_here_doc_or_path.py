@@ -1,11 +1,11 @@
 import unittest
+from typing import List, Optional
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_or_path
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -16,18 +16,15 @@ from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
-from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, singleton_symbol_table_2
+from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as asrt_hd
-from exactly_lib_test.symbol.data.test_resources import references
 from exactly_lib_test.symbol.data.test_resources import string_assertions as asrt_string
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
-    symbol_table_with_string_values_from_name_and_value, path_constant_container
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_utils.parse.parse_path import path_reference_restrictions
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_utils.parse.test_resources import relativity_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     OptionStringConfigurationForRelativityOption
@@ -125,7 +122,7 @@ class TestString(unittest.TestCase):
                 _expect_string(self, source, expected_string)
 
     def test_valid_syntax_with_symbol_references(self):
-        symbol = NameAndValue('symbol_name', 'symbol value')
+        symbol = StringConstantSymbolContext('symbol_name', 'symbol value')
         before_symbol = 'text before symbol'
         after_symbol = 'text after symbol'
         following_arg_token = 'singleToken'
@@ -133,17 +130,15 @@ class TestString(unittest.TestCase):
             NameAndValue('single unquoted symbol reference',
                          (
                              [
-                                 symbol_reference_syntax_for_name(symbol.name),
+                                 symbol.name__sym_ref_syntax,
                              ],
-                             ExpectedString(symbol.value,
+                             ExpectedString(symbol.str_value,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    references.reference_to_any_data_type_value(symbol.name),
+                                                    symbol.reference__any_data_type,
                                                 ],
                                                 source=asrt_source.is_at_end_of_line(1),
-                                                symbol_table=singleton_symbol_table_2(symbol.name,
-                                                                                      string_constant_container(
-                                                                                          symbol.value)),
+                                                symbol_table=symbol.symbol_table,
                                             )
                                             )
                          )
@@ -152,22 +147,20 @@ class TestString(unittest.TestCase):
                          (
                              [
                                  '{sym_ref} {following_argument}'.format(
-                                     sym_ref=symbol_reference_syntax_for_name(symbol.name),
+                                     sym_ref=symbol.name__sym_ref_syntax,
                                      following_argument=following_arg_token,
                                  ),
                              ],
-                             ExpectedString(symbol.value,
+                             ExpectedString(symbol.str_value,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    references.reference_to_any_data_type_value(symbol.name),
+                                                    symbol.reference__any_data_type,
                                                 ],
                                                 source=asrt_source.assert_source(
                                                     current_line_number=asrt.equals(1),
                                                     remaining_part_of_current_line=asrt.equals(
                                                         following_arg_token)),
-                                                symbol_table=singleton_symbol_table_2(symbol.name,
-                                                                                      string_constant_container(
-                                                                                          symbol.value)),
+                                                symbol_table=symbol.symbol_table,
                                             ),
                                             )
                          )
@@ -177,20 +170,18 @@ class TestString(unittest.TestCase):
                              [
                                  '{soft_quote}{before_sym_ref}{sym_ref}{after_sym_ref}{soft_quote}'.format(
                                      soft_quote=SOFT_QUOTE_CHAR,
-                                     sym_ref=symbol_reference_syntax_for_name(symbol.name),
+                                     sym_ref=symbol.name__sym_ref_syntax,
                                      before_sym_ref=before_symbol,
                                      after_sym_ref=after_symbol,
                                  )
                              ],
-                             ExpectedString(before_symbol + symbol.value + after_symbol,
+                             ExpectedString(before_symbol + symbol.str_value + after_symbol,
                                             CommonExpectation(
                                                 symbol_references=[
-                                                    references.reference_to_any_data_type_value(symbol.name),
+                                                    symbol.reference__any_data_type,
                                                 ],
                                                 source=asrt_source.is_at_end_of_line(1),
-                                                symbol_table=singleton_symbol_table_2(symbol.name,
-                                                                                      string_constant_container(
-                                                                                          symbol.value)),
+                                                symbol_table=symbol.symbol_table,
                                             )
                                             )
                          )
@@ -261,11 +252,11 @@ class TestHereDoc(unittest.TestCase):
         _expect_here_doc(self, source, expectation)
 
     def test_with_symbol_references(self):
-        symbol1 = NameAndValue('symbol_1_name', 'symbol 1 value')
+        symbol1 = StringConstantSymbolContext('symbol_1_name', 'symbol 1 value')
         line_with_sym_ref_template = 'before symbol {symbol} after symbol'
         source = remaining_source_lines(['<<MARKER',
                                          line_with_sym_ref_template.format(
-                                             symbol=symbol_reference_syntax_for_name(symbol1.name)),
+                                             symbol=symbol1.name__sym_ref_syntax),
                                          'MARKER',
                                          'Line 4',
                                          ]
@@ -273,15 +264,13 @@ class TestHereDoc(unittest.TestCase):
         expectation = ExpectedHereDoc(
             resolved_here_doc_lines=[
                 line_with_sym_ref_template.format(
-                    symbol=symbol1.value)
+                    symbol=symbol1.str_value)
             ],
             common=CommonExpectation(
                 symbol_references=[
-                    references.reference_to_any_data_type_value(symbol1.name),
+                    symbol1.reference__any_data_type,
                 ],
-                symbol_table=symbol_table_with_string_values_from_name_and_value([
-                    symbol1,
-                ]),
+                symbol_table=symbol1.symbol_table,
                 source=asrt_source.is_at_beginning_of_line(4),
             )
 
@@ -372,10 +361,10 @@ class TestFileRef(unittest.TestCase):
             False
         )
         symbol_path_suffix = 'symbol-path-suffix'
-        symbol = NameAndValue('path_symbol',
-                              paths.of_rel_option(
-                                  symbol_relativity,
-                                  concrete_path_parts.fixed_path_parts(symbol_path_suffix)))
+        symbol = ConstantSuffixPathDdvSymbolContext('path_symbol',
+                                                    symbol_relativity,
+                                                    symbol_path_suffix,
+                                                    accepted_path_relativity_variants)
         file_name = 'file'
         source = remaining_source_lines(
             ['{file_option} {rel_symbol_option} {file_name} following args'.format(
@@ -391,15 +380,12 @@ class TestFileRef(unittest.TestCase):
                                          concrete_path_parts.fixed_path_parts([symbol_path_suffix,
                                                                                file_name])),
             common=CommonExpectation(
-                symbol_references=[SymbolReference(symbol.name,
-                                                   path_reference_restrictions(
-                                                       accepted_path_relativity_variants))],
+                symbol_references=[symbol.reference__path],
 
                 source=asrt_source.assert_source(current_line_number=asrt.equals(1),
                                                  remaining_part_of_current_line=asrt.equals(
                                                      'following args')),
-                symbol_table=singleton_symbol_table_2(symbol.name,
-                                                      path_constant_container(symbol.value)))
+                symbol_table=symbol.symbol_table)
         )
         # ACT & ASSERT #
         _expect_path(self, source, expectation,
@@ -408,9 +394,9 @@ class TestFileRef(unittest.TestCase):
 
 class CommonExpectation:
     def __init__(self,
-                 symbol_references: list,
-                 source: ValueAssertion,
-                 symbol_table: SymbolTable = None):
+                 symbol_references: List[SymbolReference],
+                 source: ValueAssertion[ParseSource],
+                 symbol_table: Optional[SymbolTable] = None):
         self.symbol_references = symbol_references
         self.source = source
         self.symbol_table = empty_symbol_table() if symbol_table is None else symbol_table

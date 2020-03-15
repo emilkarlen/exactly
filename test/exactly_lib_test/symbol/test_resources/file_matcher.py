@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components
+from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components, constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, GenericFileMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -98,3 +98,6 @@ class FileMatcherSymbolContext(LogicTypeSymbolContext[FileMatcherStv]):
             name,
             FileMatcherSymbolTypeContext.of_primitive(primitive)
         )
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))

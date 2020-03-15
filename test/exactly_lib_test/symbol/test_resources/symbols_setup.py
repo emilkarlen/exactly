@@ -4,10 +4,14 @@ from typing import Dict, Sequence, List, TypeVar, Generic
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.data.restrictions import value_restrictions
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference, \
+    ReferenceRestrictions, SymbolDefinition
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, SymbolTable
+from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
+    asrt_rest
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -111,7 +115,19 @@ class SymbolTypeContext(Generic[STV_TYPE], ABC):
 
 
 class DataSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
-    pass
+    @staticmethod
+    def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
+        return asrt_sym_usage.matches_reference_2__ref(
+            symbol_name,
+            asrt_rest.is_any_data_type_reference_restrictions()
+        )
+
+    @staticmethod
+    def usage_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolUsage]:
+        return asrt_sym_usage.matches_reference_2(
+            symbol_name,
+            asrt_rest.is_any_data_type_reference_restrictions()
+        )
 
 
 class LogicSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
@@ -144,24 +160,8 @@ class SymbolContext(Generic[STV_TYPE], ABC):
         return symbol_utils.container(self.sdtv)
 
     @property
-    def name_and_sdtv(self) -> NameAndValue[STV_TYPE]:
-        return NameAndValue(self.name,
-                            self.sdtv)
-
-    @property
-    def name_and_container(self) -> NameAndValue[SymbolContainer]:
-        return NameAndValue(self.name,
-                            self.symbol_table_container)
-
-    @property
-    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return self._type_context.reference_assertion(self._name)
-
-    @property
-    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
-        return asrt.matches_sequence([
-            self.reference_assertion,
-        ])
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
     @property
     def symbol_table(self) -> SymbolTable:
@@ -173,6 +173,37 @@ class SymbolContext(Generic[STV_TYPE], ABC):
         return SymbolTable({
             custom_name: self.symbol_table_container
         })
+
+    @property
+    def name_and_sdtv(self) -> NameAndValue[STV_TYPE]:
+        return NameAndValue(self.name,
+                            self.sdtv)
+
+    @property
+    def name_and_container(self) -> NameAndValue[SymbolContainer]:
+        return NameAndValue(self.name,
+                            self.symbol_table_container)
+
+    def reference(self, restrictions: ReferenceRestrictions) -> SymbolReference:
+        return SymbolReference(self.name, restrictions)
+
+    @property
+    def definition(self) -> SymbolDefinition:
+        return SymbolDefinition(self.name, self._type_context.container)
+
+    @property
+    def entry(self) -> Entry:
+        return Entry(self.name, self._type_context.container)
+
+    @property
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        return self._type_context.reference_assertion(self._name)
+
+    @property
+    def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+        return asrt.matches_sequence([
+            self.reference_assertion,
+        ])
 
     @staticmethod
     def symbol_table_of_contexts(symbols: Sequence['SymbolContext']) -> SymbolTable:
@@ -195,13 +226,21 @@ class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
         return self.__type_context
 
     @property
-    def symbol_reference__any_data_type(self) -> SymbolReference:
+    def reference__any_data_type(self) -> SymbolReference:
         return SymbolReference(
             self.name,
             reference_restrictions.ReferenceRestrictionsOnDirectAndIndirect(
                 value_restrictions.AnyDataTypeRestriction()
             )
         )
+
+    @property
+    def reference_assertion__any_data_type(self) -> ValueAssertion[SymbolReference]:
+        return DataSymbolTypeContext.reference_assertion__any_data_type(self.name)
+
+    @property
+    def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
+        return DataSymbolTypeContext.usage_assertion__any_data_type(self.name)
 
 
 class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):

@@ -12,10 +12,10 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container, \
-    container
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import container
 from exactly_lib_test.symbol.data.test_resources.here_doc_assertion_utils import here_doc_lines
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_string import string_sdv_from_fragments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -65,14 +65,14 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
                 source = arbitrary_string_source(argument_case.value)
-                expected_definition = SymbolDefinition('name1', string_constant_container('v1'))
+                expected_symbol = StringConstantSymbolContext('name1', 'v1')
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
+                        vs_asrt.equals_symbol(expected_symbol.definition, ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         'name1',
-                        equals_container(string_constant_container('v1')),
+                        equals_container(expected_symbol.symbol_table_container),
                     )
                 )
                 self._check(source, ArrangementWithSds(), expectation)
@@ -169,15 +169,14 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
             ['following line']
         )
         # EXPECTATION #
-        expected_container = string_constant_container(value_str + '\n')
-        expected_definition = SymbolDefinition(symbol_name, expected_container)
+        expected_symbol = StringConstantSymbolContext(symbol_name, value_str + '\n')
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
+                vs_asrt.equals_symbol(expected_symbol.definition, ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_name,
-                equals_container(expected_container),
+                equals_container(expected_symbol.symbol_table_container),
             ),
             source=asrt_source.is_at_beginning_of_line(4)
         )

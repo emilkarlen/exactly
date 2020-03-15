@@ -1,10 +1,8 @@
 import unittest
 
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
-from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
@@ -19,9 +17,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.exp
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_path_relativity_restriction
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
@@ -30,7 +29,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import 
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources import symbol_tables
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -136,14 +134,14 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             EXPECTED_FILE_REL_OPT_ARG_CONFIG
 
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
-        path_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
+        path_symbol = ConstantSuffixPathDdvSymbolContext(
             expected_file_relativity_symbol,
-            path_sdvs.constant(paths.of_rel_option(self.relativity_of_expected_file(),
-                                                   paths.empty_path_part())))
+            self.relativity_of_expected_file(),
+            'base-name')
 
-        symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
-            [path_sym_tbl_entry_for_expected_file] +
-            self.rel_opt.symbols.entries_for_arrangement())
+        symbols_in_arrangement = SymbolContext.symbol_table_of_contexts(
+            [path_symbol] +
+            self.rel_opt.symbols.contexts_for_arrangement())
 
         symbol_usage_expectation_for_expected_file = equals_symbol_reference_with_restriction_on_direct_target(
             expected_file_relativity_symbol,

@@ -5,16 +5,11 @@ from contextlib import contextmanager
 from exactly_lib.actors import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
@@ -22,8 +17,8 @@ from exactly_lib_test.actors.test_resources.act_phase_execution import \
     check_execution, Arrangement, Expectation
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.programs import shell_commands
@@ -82,18 +77,18 @@ class TestParsingAndValidation(unittest.TestCase):
 
 class TestSymbolReferences(unittest.TestCase):
     def test_symbol_reference_on_command_line_SHOULD_be_reported_and_used_in_execution(self):
-        symbol = NameAndValue('symbol_name', 'symbol value')
+        symbol = StringConstantSymbolContext('symbol_name', 'symbol value')
 
         string_to_print_template = 'constant and {symbol}'
         expected_output_template = string_to_print_template + '\n'
 
         shell_source_line = shell_commands.command_that_prints_to_stdout(
-            string_to_print_template.format(symbol=symbol_reference_syntax_for_name(symbol.name))
+            string_to_print_template.format(symbol=symbol.name__sym_ref_syntax)
         )
         act_phase_instructions = [instr([shell_command_source_line_for(shell_source_line)])]
 
         expected_symbol_references = [
-            SymbolReference(symbol.name, is_any_data_type()),
+            symbol.reference__any_data_type,
         ]
 
         check_execution(
@@ -101,14 +96,12 @@ class TestSymbolReferences(unittest.TestCase):
             sut.Parser(),
             act_phase_instructions,
             Arrangement(
-                symbol_table=SymbolTable({
-                    symbol.name: data_symbol_utils.string_constant_container(symbol.value)
-                })
+                symbol_table=symbol.symbol_table
             ),
             Expectation(
                 symbol_usages=equals_symbol_references(expected_symbol_references),
                 sub_process_result_from_execute=
-                pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.value)))
+                pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))
             ),
         )
 

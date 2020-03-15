@@ -91,3 +91,6 @@ class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):
             name,
             StringMatcherSymbolTypeContext.of_primitive(primitive)
         )
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = StringMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))

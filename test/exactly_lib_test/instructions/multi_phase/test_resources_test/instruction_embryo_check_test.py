@@ -23,6 +23,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources import instruction
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_instruction import \
     instruction_embryo_that
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import single_line_source
@@ -147,12 +148,9 @@ class TestSymbols(TestCaseBase):
             )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):
-        symbol_name = 'symbol_name'
-        symbol_value = 'the symbol value'
-        symbol_table_of_arrangement = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                              symbol_value)
-        expected_symbol_table = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                        symbol_value)
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
+        symbol_table_of_arrangement = symbol.symbol_table
+        expected_symbol_table = symbol.symbol_table
         assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
             self,
             expected_symbol_table,
@@ -176,12 +174,12 @@ class TestSymbols(TestCaseBase):
         )
 
     def test_symbols_populated_by_main_SHOULD_appear_in_symbol_table_given_to_symbols_after_main(self):
-        symbol_name = 'symbol_name'
+        symbol = StringConstantSymbolContext('symbol_name', 'const string')
 
         def add_symbol_to_symbol_table(environment: InstructionEnvironmentForPostSdsStep,
                                        *args, **kwargs):
-            environment.symbols.put(symbol_name,
-                                    data_symbol_utils.string_constant_container('const string'))
+            environment.symbols.put(symbol.name,
+                                    symbol.symbol_table_container)
 
         self._check(
             ParserThatGives(
@@ -192,7 +190,7 @@ class TestSymbols(TestCaseBase):
             sut.Expectation(
                 symbols_after_main=asrt.sub_component('names_set',
                                                       SymbolTable.names_set.fget,
-                                                      asrt.equals({symbol_name}))),
+                                                      asrt.equals({symbol.name}))),
         )
 
 

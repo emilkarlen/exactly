@@ -8,7 +8,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -41,18 +40,18 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     string_made_up_of_just_strings_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_sdv, \
     matches_path_sdv
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
-    symbol_table_with_single_string_value, symbol_table_with_single_path_value, symbol_table_with_string_values, \
-    entry
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext, PathSymbolTypeContext, \
+    ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -60,7 +59,6 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
-from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 
 def suite() -> unittest.TestSuite:
@@ -224,7 +222,7 @@ class TestParsesBase(unittest.TestCase):
             actual: PathSdv,
             symbols: SymbolTable):
         restriction = PathRelativityRestriction(PathRelativityVariants(RelOptionType, True))
-        container = data_symbol_utils.path_sdv_container(actual)
+        container = PathSymbolTypeContext.of_sdv(actual).container
         result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
         self.assertIsNone(result,
                           'Result of hypothetical restriction on path')
@@ -546,9 +544,9 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
-                 symbol_table_from_entries([
-                     entry(defined_path_symbol.name, path_sdvs.constant(relativity_path)),
-                     entry(suffix_symbol.name, string_sdvs.str_constant(suffix_symbol.value)),
+                 SymbolContext.symbol_table_of_contexts([
+                     PathDdvSymbolContext(defined_path_symbol.name, relativity_path),
+                     StringConstantSymbolContext(suffix_symbol.name, suffix_symbol.value),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -582,9 +580,9 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
-                 symbol_table_from_entries([
-                     entry(defined_path_symbol.name, path_sdvs.constant(relativity_path)),
-                     entry(suffix_symbol.name, string_sdvs.str_constant(suffix_symbol.value)),
+                 SymbolContext.symbol_table_of_contexts([
+                     PathDdvSymbolContext(defined_path_symbol.name, relativity_path),
+                     StringConstantSymbolContext(suffix_symbol.name, suffix_symbol.value),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -657,9 +655,9 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
     def test_successful_parse_with_source_file_location(self):
         source_file_location_path = Path(PurePosixPath('/source/file/location'))
         constant_path_part = 'constant-path-part'
-        symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
+        symbol = StringConstantSymbolContext('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
         fm = dict(format_rel_option.FORMAT_MAP,
-                  symbol_reference=symbol_reference_syntax_for_name(symbol.name),
+                  symbol_reference=symbol.name__sym_ref_syntax,
                   constant_path_part=constant_path_part,
                   )
         accepted_relativities = _arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT)
@@ -695,14 +693,13 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
              expect(
                  resolved_path=
                  paths.rel_abs_path(source_file_location_path,
-                                    paths.constant_path_part(symbol.value)),
+                                    paths.constant_path_part(symbol.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
+                     symbol.reference_assertion__string_made_up_of_just_strings,
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name,
-                                                       symbol.value),
+                 symbol.symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -717,14 +714,13 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                      paths.constant_path_part(
-                                         symbol.value)),
+                                         symbol.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
+                     symbol.reference_assertion__string_made_up_of_just_strings,
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name,
-                                                       symbol.value),
+                 symbol.symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -739,7 +735,7 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_ACT,
                                      paths.constant_path_part(
-                                         symbol.value)),
+                                         symbol.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -749,8 +745,7 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
                      )
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name,
-                                                       symbol.value),
+                 symbol.symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -773,9 +768,9 @@ class TestRelativityOfSourceFileLocation(TestParsesBase):
 
 class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
     def test_with_explicit_relativity(self):
-        symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
-        symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol 1 value')
-        symbol_2 = NameAndValue('SYMBOL_NAME_2', 'symbol 2 value')
+        symbol = StringConstantSymbolContext('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
+        symbol_1 = StringConstantSymbolContext('SYMBOL_NAME_1', 'symbol 1 value')
+        symbol_2 = StringConstantSymbolContext('SYMBOL_NAME_2', 'symbol 2 value')
         test_cases = [
             ('Symbol reference after explicit relativity '
              'SHOULD '
@@ -783,21 +778,20 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{rel_hds_case_option} {symbol_reference}'.format(
                      rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
-                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
+                     symbol_reference=symbol.name__sym_ref_syntax),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_HDS_CASE,
                                      paths.constant_path_part(
-                                         symbol.value)),
+                                         symbol.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
+                     symbol.reference_assertion__string_made_up_of_just_strings,
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name,
-                                                       symbol.value),
+                 symbol.symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -808,22 +802,22 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              ArrangementWoSuffixRequirement(
                  source='{rel_tmp_option} {symbol_reference1}/const{symbol_reference2}'.format(
                      rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
-                     symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
-                     symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
+                     symbol_reference1=symbol_1.name__sym_ref_syntax,
+                     symbol_reference2=symbol_2.name__sym_ref_syntax),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
              expect(
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_TMP,
                                      paths.constant_path_part(
-                                         symbol_1.value + '/const' + symbol_2.value)),
+                                         symbol_1.str_value + '/const' + symbol_2.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
+                     symbol_1.reference_assertion__string_made_up_of_just_strings,
+                     symbol_2.reference_assertion__string_made_up_of_just_strings,
                  ]),
                  symbol_table=
-                 symbol_table_with_string_values([symbol_1, symbol_2]),
+                 SymbolContext.symbol_table_of_contexts([symbol_1, symbol_2]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -835,22 +829,22 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  source='{rel_tmp_option} {soft_quote}{symbol_reference1}/ const {symbol_reference2}{soft_quote}'.format(
                      soft_quote=SOFT_QUOTE_CHAR,
                      rel_tmp_option=_option_string_for_relativity(RelOptionType.REL_TMP),
-                     symbol_reference1=symbol_reference_syntax_for_name(symbol_1.name),
-                     symbol_reference2=symbol_reference_syntax_for_name(symbol_2.name)),
+                     symbol_reference1=symbol_1.name__sym_ref_syntax,
+                     symbol_reference2=symbol_2.name__sym_ref_syntax),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_TMP),
              ),
              expect(
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_TMP,
                                      paths.constant_path_part(
-                                         symbol_1.value + '/ const ' + symbol_2.value)),
+                                         symbol_1.str_value + '/ const ' + symbol_2.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
+                     symbol_1.reference_assertion__string_made_up_of_just_strings,
+                     symbol_2.reference_assertion__string_made_up_of_just_strings,
                  ]),
                  symbol_table=
-                 symbol_table_with_string_values([symbol_1, symbol_2]),
+                 SymbolContext.symbol_table_of_contexts([symbol_1, symbol_2]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )),
@@ -861,14 +855,14 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  source='{rel_hds_case_option} {hard_quote}{symbol_reference}{hard_quote}'.format(
                      rel_hds_case_option=_option_string_for_relativity(RelOptionType.REL_HDS_CASE),
                      hard_quote=HARD_QUOTE_CHAR,
-                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
+                     symbol_reference=symbol.name__sym_ref_syntax),
                  rel_option_argument_configuration=_arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
                  paths.of_rel_option(
                      RelOptionType.REL_HDS_CASE,
-                     paths.constant_path_part(symbol_reference_syntax_for_name(symbol.name))),
+                     paths.constant_path_part(symbol.name__sym_ref_syntax)),
                  expected_symbol_references=
                  asrt.equals([]),
                  symbol_table=
@@ -884,9 +878,9 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                                  expectation)
 
     def test_no_explicit_relativity(self):
-        symbol = NameAndValue('THE_SYMBOL', 'symbol-string-value')
-        symbol_1 = NameAndValue('SYMBOL_NAME_1', 'symbol-1-value')
-        symbol_2 = NameAndValue('SYMBOL_NAME_2', 'symbol-2-value')
+        symbol = StringConstantSymbolContext('THE_SYMBOL', 'symbol-string-value')
+        symbol_1 = StringConstantSymbolContext('SYMBOL_NAME_1', 'symbol-1-value')
+        symbol_2 = StringConstantSymbolContext('SYMBOL_NAME_2', 'symbol-2-value')
         accepted_relativities = PathRelativityVariants({RelOptionType.REL_HDS_CASE,
                                                         RelOptionType.REL_TMP},
                                                        True)
@@ -901,14 +895,14 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              'referenced symbol is a string',
              ArrangementWoSuffixRequirement(
                  source='{symbol_reference}'.format(
-                     symbol_reference=symbol_reference_syntax_for_name(symbol.name)),
+                     symbol_reference=symbol.name__sym_ref_syntax),
                  rel_option_argument_configuration=_arg_config_for_rel_symbol_config(accepted_relativities,
                                                                                      RelOptionType.REL_ACT),
              ),
              expect(
                  resolved_path=
                  paths.of_rel_option(RelOptionType.REL_ACT,
-                                     paths.constant_path_part(symbol.value)),
+                                     paths.constant_path_part(symbol.str_value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -917,7 +911,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      )
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name, symbol.value),
+                 symbol.symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -944,7 +938,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      ),
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
+                 StringConstantSymbolContext(symbol.name, '/absolute/path').symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -972,7 +966,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      ,
                  ]),
                  symbol_table=
-                 symbol_table_with_single_string_value(symbol.name, '/absolute/path'),
+                 StringConstantSymbolContext(symbol.name, '/absolute/path').symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -993,7 +987,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_path=
                  paths.absolute_file_name('/absolute/path/{symbol_2_value}-constant-suffix'.format(
-                     symbol_2_value=symbol_2.value
+                     symbol_2_value=symbol_2.str_value
                  )),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -1003,8 +997,10 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
-                 symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
-                                                  symbol_2]),
+                 SymbolContext.symbol_table_of_contexts([
+                     StringConstantSymbolContext(symbol_1.name, '/absolute/path'),
+                     symbol_2,
+                 ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -1037,9 +1033,11 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
-                 symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
-                                                  (symbol_1.name, 'non-abs-str1'),
-                                                  (symbol_2.name, 'non-abs-str2')]),
+                 SymbolContext.symbol_table_of_contexts([
+                     StringConstantSymbolContext(symbol.name, 'non-abs-str'),
+                     StringConstantSymbolContext(symbol_1.name, 'non-abs-str1'),
+                     StringConstantSymbolContext(symbol_2.name, 'non-abs-str2'),
+                 ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -1067,8 +1065,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      ,
                  ]),
                  symbol_table=
-                 symbol_table_with_single_path_value(symbol.name,
-                                                     path_rel_home),
+                 PathDdvSymbolContext(symbol.name, path_rel_home).symbol_table,
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
              )
@@ -1099,12 +1096,11 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
-                 symbol_table_from_entries([
-                     entry(symbol_1.name,
-                           path_sdvs.constant(paths.of_rel_option(RelOptionType.REL_HDS_CASE,
-                                                                  paths.constant_path_part(
-                                                                      'suffix-from-path-symbol')))),
-                     entry(symbol_2.name, string_sdvs.str_constant('string-symbol-value')),
+                 SymbolContext.symbol_table_of_contexts([
+                     ConstantSuffixPathDdvSymbolContext(symbol_1.name,
+                                                        RelOptionType.REL_HDS_CASE,
+                                                        'suffix-from-path-symbol'),
+                     StringConstantSymbolContext(symbol_2.name, 'string-symbol-value'),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),

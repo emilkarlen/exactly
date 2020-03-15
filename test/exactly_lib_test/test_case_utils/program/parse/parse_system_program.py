@@ -18,9 +18,9 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.logic.test_resources.assertions import matches_logic_sdv
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import validation_check, command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -100,19 +100,16 @@ class TestSuccessfulParse(unittest.TestCase):
     def test(self):
         # ARRANGE #
 
-        program_name_string_symbol = NameAndValue('PROGRAM_NAME_STRING_SYMBOL_NAME',
-                                                  'the program name')
+        program_name_string_symbol = StringConstantSymbolContext('PROGRAM_NAME_STRING_SYMBOL_NAME',
+                                                                 'the program name')
 
-        argument_string_symbol = NameAndValue('ARGUMENT_STRING_SYMBOL_NAME',
-                                              'the argument')
+        argument_string_symbol = StringConstantSymbolContext('ARGUMENT_STRING_SYMBOL_NAME',
+                                                             'the argument')
 
-        symbols = SymbolTable({
-            program_name_string_symbol.name:
-                data_symbol_utils.string_constant_container(program_name_string_symbol.value),
-
-            argument_string_symbol.name:
-                data_symbol_utils.string_constant_container(argument_string_symbol.value),
-        })
+        symbols = SymbolContext.symbol_table_of_contexts([
+            program_name_string_symbol,
+            argument_string_symbol,
+        ])
 
         file_name = 'a-file.txt'
         default_relativity_of_existing_file = RelOptionType.REL_HDS_CASE
@@ -126,9 +123,9 @@ class TestSuccessfulParse(unittest.TestCase):
                           expected_resolved_values=lambda tcds: ['argument'], expected_symbol_references=[]),
             ArgumentsCase('symbol reference and constant argument',
                           source_elements=[ab.symbol_reference(argument_string_symbol.name), 'argument'],
-                          expected_resolved_values=lambda tcds: [argument_string_symbol.value, 'argument'],
+                          expected_resolved_values=lambda tcds: [argument_string_symbol.str_value, 'argument'],
                           expected_symbol_references=[
-                              asrt_sym_ref.is_reference_to_data_type_symbol(argument_string_symbol.name)
+                              argument_string_symbol.reference_assertion__any_data_type
                           ]),
             ArgumentsCase('existing file argument',
                           source_elements=[ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME), file_name],
@@ -144,10 +141,9 @@ class TestSuccessfulParse(unittest.TestCase):
                             ),
             ProgramNameCase('symbol reference',
                             source_element=ab.symbol_reference(program_name_string_symbol.name),
-                            expected_resolved_value=program_name_string_symbol.value,
+                            expected_resolved_value=program_name_string_symbol.str_value,
                             expected_symbol_references=[
-                                asrt_sym_ref.is_reference_to_string_made_up_of_just_plain_strings(
-                                    program_name_string_symbol.name)
+                                program_name_string_symbol.reference_assertion__string_made_up_of_just_strings
                             ]
                             ),
         ]

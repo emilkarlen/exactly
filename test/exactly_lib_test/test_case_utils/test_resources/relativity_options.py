@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC
 from typing import List, Sequence
 
 from exactly_lib.symbol.data import path_sdvs
@@ -21,9 +22,10 @@ from exactly_lib.type_system.data.paths import empty_path_part
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_path_relativity_restriction
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as path_args, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
@@ -40,7 +42,6 @@ from exactly_lib_test.test_resources.arguments_building import ArgumentElementsR
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.test_resources import symbol_tables
 
 
 class SymbolsConfiguration:
@@ -57,11 +58,14 @@ class SymbolsConfiguration:
     def entries_for_arrangement(self) -> List[Entry]:
         return []
 
+    def contexts_for_arrangement(self) -> List[SymbolContext]:
+        return []
+
     def usages_expectation(self) -> ValueAssertion[Sequence[SymbolUsage]]:
         return asrt.matches_sequence(self.reference_expectation_assertions())
 
     def in_arrangement(self) -> SymbolTable:
-        return symbol_tables.symbol_table_from_entries(self.entries_for_arrangement())
+        return SymbolContext.symbol_table_of_contexts(self.contexts_for_arrangement())
 
 
 class NamedFileConf:
@@ -149,7 +153,7 @@ class OptionStringConfigurationForRelSymbol(OptionStringConfiguration):
         super().__init__(path_args.rel_symbol_arg(symbol_name))
 
 
-class RelativityOptionConfiguration:
+class RelativityOptionConfiguration(ABC):
     """
     Complete Configuration of a relativity option (for a path cli argument). 
     """
@@ -221,7 +225,7 @@ class RelativityOptionConfiguration:
         return self._symbols_configuration
 
 
-class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguration, ABC):
     def __init__(self,
                  relativity: RelOptionType,
                  cli_option: OptionStringConfiguration,
@@ -407,6 +411,10 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         self.expected_accepted_relativities = expected_accepted_relativities
         self.relativity = relativity
         self.symbol_name = symbol_name
+        self.symbol_context = PathDdvSymbolContext(symbol_name,
+                                                   paths.of_rel_option(relativity,
+                                                                       paths.empty_path_part()),
+                                                   )
 
     def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return [
@@ -418,13 +426,10 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         ]
 
     def entries_for_arrangement(self) -> List[Entry]:
-        return [
-            data_symbol_utils.entry(
-                self.symbol_name,
-                path_sdvs.constant(
-                    paths.of_rel_option(self.relativity,
-                                        paths.empty_path_part())))
-        ]
+        return [self.symbol_context.entry]
+
+    def contexts_for_arrangement(self) -> List[SymbolContext]:
+        return [self.symbol_context]
 
 
 def conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:

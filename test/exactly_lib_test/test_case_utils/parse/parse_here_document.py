@@ -3,18 +3,15 @@ import unittest
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.parse import parse_here_document as sut
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.element_parsers.optional_description_and_instruction_parser import \
     source_is_at_end
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.symbol.data.test_resources import references
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
-    symbol_table_with_string_values_from_name_and_value
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -169,9 +166,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
             self._check_case(case)
 
     def test_here_document_with_symbol_references(self):
-        symbol1 = NameAndValue('symbol_1_name', 'symbol 1 value')
-        symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
-        symbol3 = NameAndValue('symbol_3_name', 'symbol 3 value')
+        symbol1 = StringConstantSymbolContext('symbol_1_name', 'symbol 1 value')
+        symbol2 = StringConstantSymbolContext('symbol_2_name', 'symbol 2 value')
+        symbol3 = StringConstantSymbolContext('symbol_3_name', 'symbol 3 value')
         line_with_sym_ref_template = 'before symbol {symbol} after symbol'
         line_with_two_sym_refs_template = '{first_symbol} between symbols {second_symbol}'
         cases = [
@@ -179,22 +176,19 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 source_lines=[
                     '<<eof',
                     line_with_sym_ref_template.format(
-                        symbol=symbol_reference_syntax_for_name(symbol1.name)),
+                        symbol=symbol1.name__sym_ref_syntax),
                     'eof',
                     'following line',
                 ],
                 expected_document_contents=
                 hd.matches_resolved_value([
                     line_with_sym_ref_template.format(
-                        symbol=symbol1.value),
+                        symbol=symbol1.str_value),
                 ],
                     symbol_references=[
-                        references.reference_to_any_data_type_value(symbol1.name),
+                        symbol1.reference__any_data_type,
                     ],
-                    symbols=symbol_table_with_string_values_from_name_and_value([
-                        symbol1,
-                    ],
-                    )
+                    symbols=symbol1.symbol_table
                 ),
                 source_after_parse=is_at_beginning_of_line(4),
             ),
@@ -202,27 +196,27 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 source_lines=[
                     '<<eof',
                     line_with_sym_ref_template.format(
-                        symbol=symbol_reference_syntax_for_name(symbol1.name)),
+                        symbol=symbol1.name__sym_ref_syntax),
                     line_with_two_sym_refs_template.format(
-                        first_symbol=symbol_reference_syntax_for_name(symbol2.name),
-                        second_symbol=symbol_reference_syntax_for_name(symbol3.name)),
+                        first_symbol=symbol2.name__sym_ref_syntax,
+                        second_symbol=symbol3.name__sym_ref_syntax),
                     'eof',
                     'following line',
                 ],
                 expected_document_contents=
                 hd.matches_resolved_value([
                     line_with_sym_ref_template.format(
-                        symbol=symbol1.value),
+                        symbol=symbol1.str_value),
                     line_with_two_sym_refs_template.format(
-                        first_symbol=symbol2.value,
-                        second_symbol=symbol3.value),
+                        first_symbol=symbol2.str_value,
+                        second_symbol=symbol3.str_value),
                 ],
                     symbol_references=[
-                        references.reference_to_any_data_type_value(symbol1.name),
-                        references.reference_to_any_data_type_value(symbol2.name),
-                        references.reference_to_any_data_type_value(symbol3.name),
+                        symbol1.reference__any_data_type,
+                        symbol2.reference__any_data_type,
+                        symbol3.reference__any_data_type,
                     ],
-                    symbols=symbol_table_with_string_values_from_name_and_value([
+                    symbols=SymbolContext.symbol_table_of_contexts([
                         symbol1,
                         symbol2,
                         symbol3

@@ -5,6 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
@@ -232,3 +233,8 @@ def is_reference_to_string_transformer__ref(name_of_transformer: str) -> ValueAs
                                  asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
                                                                   IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)
                                  )
+
+
+ARBITRARY_SYMBOL_VALUE_CONTEXT = StringTransformerSymbolTypeContext.of_primitive(
+    IdentityStringTransformer()
+)

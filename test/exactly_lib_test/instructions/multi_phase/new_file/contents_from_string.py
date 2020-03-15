@@ -27,7 +27,7 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import \
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -152,7 +152,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
 class TestSymbolReferences(TestCaseBase):
     def test_symbol_reference_in_dst_file_argument(self):
         sub_dir_name = 'sub-dir'
-        symbol = PathDdvSymbolContext.of_rel_option('symbol_name',
+        symbol = ConstantSuffixPathDdvSymbolContext('symbol_name',
                                                     RelOptionType.REL_ACT,
                                                     sub_dir_name,
                                                     ACCEPTED_RELATIVITY_VARIANTS)
@@ -186,7 +186,7 @@ class TestSymbolReferences(TestCaseBase):
             symbol_value_2_expected_contents: Callable[[str], str]
     ):
         sub_dir_name = 'sub-dir'
-        file_symbol = PathDdvSymbolContext.of_rel_option('file_symbol_name',
+        file_symbol = ConstantSuffixPathDdvSymbolContext('file_symbol_name',
                                                          RelOptionType.REL_ACT,
                                                          sub_dir_name,
                                                          ACCEPTED_RELATIVITY_VARIANTS)

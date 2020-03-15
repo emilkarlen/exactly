@@ -22,6 +22,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
 
@@ -92,7 +93,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
 class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        defined_symbol = data_symbol_utils.string_symbol_definition('symbol_name')
+        defined_symbol = StringConstantSymbolContext('symbol_name').definition
         error_message_for_failed_restriction = 'error message'
         reference_with_restriction_failure = SymbolReference(
             defined_symbol.name,

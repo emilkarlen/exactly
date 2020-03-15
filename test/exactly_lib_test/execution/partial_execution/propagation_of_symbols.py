@@ -13,8 +13,8 @@ from exactly_lib_test.execution.test_resources.execution_recording import phase_
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -72,7 +72,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol = NameAndValue('symbol name',
                               'symbol value (not used in test)')
         all_defined_symbols = frozenset((symbol.name,))
-        symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
+        symbol_definition = StringConstantSymbolContext(symbol.name, symbol.value).definition
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         expected_phase_2_step_2_names_set = {
@@ -136,7 +136,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol = NameAndValue('symbol name',
                               'symbol value (not used in test)')
         all_defined_symbols = {symbol.name}
-        symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
+        symbol_definition = StringConstantSymbolContext(symbol.name, symbol.value).definition
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         expected_phase_2_step_2_names_set = {
@@ -207,7 +207,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol = NameAndValue('symbol name',
                               'symbol value (not used in test)')
         all_defined_symbols = {symbol.name}
-        symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
+        symbol_definition = StringConstantSymbolContext(symbol.name, symbol.value).definition
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         expected_phase_2_step_2_names_set = {
@@ -278,7 +278,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol = NameAndValue('symbol name',
                               'symbol value (not used in test)')
         all_defined_symbols = {symbol.name}
-        symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
+        symbol_definition = StringConstantSymbolContext(symbol.name, symbol.value).definition
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         expected_phase_2_step_2_names_set = {
@@ -410,7 +410,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))
 
-        symbol_definition = data_symbol_utils.string_symbol_definition(defined_symbol.name, defined_symbol.value)
+        symbol_definition = StringConstantSymbolContext(defined_symbol.name, defined_symbol.value).definition
 
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 

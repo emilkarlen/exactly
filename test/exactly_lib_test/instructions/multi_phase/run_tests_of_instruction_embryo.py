@@ -1,19 +1,14 @@
 import sys
 import unittest
+from typing import List
 
 from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.util.symbol_table import symbol_table_with_entries
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -22,12 +17,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_data_type_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringIntConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
@@ -41,6 +34,8 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
     relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources import validation
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
+    RelativityOptionConfigurationForRelOptionType
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
@@ -115,47 +110,35 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                                                                        expectation)
 
     def test_symbol_references(self):
-        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
-        execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
-        exit_code_symbol = NameAndValue('exit_code_symbol', 5)
+        python_interpreter_symbol = StringConstantSymbolContext('python_interpreter_symbol', sys.executable)
+        execute_program_option_symbol = StringConstantSymbolContext('execute_program_option', '-c')
+        exit_code_symbol = StringIntConstantSymbolContext('exit_code_symbol', 5)
 
         argument = ' {python_interpreter} {execute_program_option} "exit({exit_code})"'.format(
-            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
-            execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
-            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+            python_interpreter=python_interpreter_symbol.name__sym_ref_syntax,
+            execute_program_option=execute_program_option_symbol.name__sym_ref_syntax,
+            exit_code=exit_code_symbol.name__sym_ref_syntax,
         )
 
         arrangement = ArrangementWithSds(
-            symbols=SymbolTable({
-                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
-                execute_program_option_symbol.name: su.string_constant_container(
-                    execute_program_option_symbol.value),
-                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
-            }),
+            symbols=SymbolContext.symbol_table_of_contexts([
+                python_interpreter_symbol,
+                execute_program_option_symbol,
+                exit_code_symbol,
+            ]),
         )
 
         expectation = embryo_check.Expectation(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                matches_reference_2(
-                    python_interpreter_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        parse_path.path_or_string_reference_restrictions(
-                            syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
-                        ))),
-                matches_reference_2(
-                    execute_program_option_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        is_any_data_type()
-                    )),
-                matches_reference_2(
-                    exit_code_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        is_any_data_type()
-                    )),
+                python_interpreter_symbol.usage_assertion__path_or_string(
+                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                ),
+                execute_program_option_symbol.usage_assertion__any_data_type,
+                exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -192,9 +175,9 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                         roc_source_file.populator_for_relativity_option_root(
                             fs.DirContents([source_file])),
                     ]),
-                    symbols=symbol_table_with_entries(
-                        roc_executable_file.symbols.entries_for_arrangement() +
-                        roc_source_file.symbols.entries_for_arrangement()),
+                    symbols=SymbolContext.symbol_table_of_contexts(
+                        roc_executable_file.symbols.contexts_for_arrangement() +
+                        roc_source_file.symbols.contexts_for_arrangement()),
 
                 )
                 test_name = 'exe-file-option={}, source-file-option={}'.format(
@@ -250,16 +233,16 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
     def test_symbol_references(self):
         file_to_interpret = fs.File('python-logic_symbol_utils.py',
                                     python_program_that_exits_with_code_given_as_first_cl_arg)
-        file_to_interpret_symbol = NameAndValue('file_to_interpret_symbol',
-                                                file_to_interpret.file_name)
-        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
-        exit_code_symbol = NameAndValue('exit_code_symbol', 72)
+        file_to_interpret_symbol = StringConstantSymbolContext('file_to_interpret_symbol',
+                                                               file_to_interpret.file_name)
+        python_interpreter_symbol = StringConstantSymbolContext('python_interpreter_symbol', sys.executable)
+        exit_code_symbol = StringIntConstantSymbolContext('exit_code_symbol', 72)
 
         argument = ' {python_interpreter} {interpret_option} {file_to_interpret}  "{exit_code}"'.format(
-            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
+            python_interpreter=python_interpreter_symbol.name__sym_ref_syntax,
             interpret_option=args.option(syntax_elements.EXISTING_FILE_OPTION_NAME).as_str,
-            file_to_interpret=symbol_reference_syntax_for_name(file_to_interpret_symbol.name),
-            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+            file_to_interpret=file_to_interpret_symbol.name__sym_ref_syntax,
+            exit_code=exit_code_symbol.name__sym_ref_syntax,
         )
 
         following_line = 'following line'
@@ -269,35 +252,26 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             tcds_contents=TcdsPopulatorForRelOptionType(
                 path_relativities.ALL_REL_OPTIONS_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
-            symbols=SymbolTable({
-                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
-                file_to_interpret_symbol.name: su.string_constant_container(file_to_interpret_symbol.value),
-                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
-            }),
+            symbols=SymbolContext.symbol_table_of_contexts([
+                python_interpreter_symbol,
+                file_to_interpret_symbol,
+                exit_code_symbol,
+            ]),
         )
 
         expectation = embryo_check.Expectation(
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                matches_reference_2(
-                    python_interpreter_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        parse_path.path_or_string_reference_restrictions(
-                            syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
-                        ))),
-                matches_reference_2(
-                    file_to_interpret_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        parse_path.path_or_string_reference_restrictions(
-                            path_relativities.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
-                        ))),
-                matches_reference_2(
-                    exit_code_symbol.name,
-                    equals_data_type_reference_restrictions(is_any_data_type()
-                                                            )),
+                python_interpreter_symbol.usage_assertion__path_or_string(
+                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                ),
+                file_to_interpret_symbol.usage_assertion__path_or_string(
+                    path_relativities.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
+                ),
+                exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -404,24 +378,23 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                                                                        expectation)
 
     def test_symbol_references(self):
-        python_interpreter_symbol = NameAndValue('python_interpreter_symbol', sys.executable)
-        execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
-        exit_code_symbol = NameAndValue('exit_code_symbol', 87)
+        python_interpreter_symbol = StringConstantSymbolContext('python_interpreter_symbol', sys.executable)
+        execute_program_option_symbol = StringConstantSymbolContext('execute_program_option', '-c')
+        exit_code_symbol = StringIntConstantSymbolContext('exit_code_symbol', 87)
 
         argument = ' {python_interpreter} {execute_program_option} {source_option}   exit({exit_code})  '.format(
-            python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
-            execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
+            python_interpreter=python_interpreter_symbol.name__sym_ref_syntax,
+            execute_program_option=execute_program_option_symbol.name__sym_ref_syntax,
             source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-            exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
+            exit_code=exit_code_symbol.name__sym_ref_syntax,
         )
 
         arrangement = ArrangementWithSds(
-            symbols=SymbolTable({
-                python_interpreter_symbol.name: su.string_constant_container(python_interpreter_symbol.value),
-                execute_program_option_symbol.name: su.string_constant_container(
-                    execute_program_option_symbol.value),
-                exit_code_symbol.name: su.string_constant_container(str(exit_code_symbol.value)),
-            }),
+            symbols=SymbolContext.symbol_table_of_contexts([
+                python_interpreter_symbol,
+                execute_program_option_symbol,
+                exit_code_symbol,
+            ]),
         )
 
         source = remaining_source(argument,
@@ -431,24 +404,13 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
-                matches_reference_2(
-                    python_interpreter_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        parse_path.path_or_string_reference_restrictions(
-                            syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
-                        ))),
-                matches_reference_2(
-                    execute_program_option_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        is_any_data_type()
-                    )),
-                matches_reference_2(
-                    exit_code_symbol.name,
-                    equals_data_type_reference_restrictions(
-                        is_any_data_type()
-                    )),
+                python_interpreter_symbol.usage_assertion__path_or_string(
+                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                ),
+                execute_program_option_symbol.usage_assertion__any_data_type,
+                exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
+            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -506,7 +468,7 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
 IS_VALIDATION_ERROR = validation.is_arbitrary_validation_failure()
 
 
-def relativity_options(symbol_name: str) -> list:
+def relativity_options(symbol_name: str) -> List[RelativityOptionConfigurationForRelOptionType]:
     return [
         rel_opt.default_conf_rel_any(RelOptionType.REL_HDS_CASE),
 

@@ -1,23 +1,17 @@
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
-    PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
-from exactly_lib.type_system.data import paths
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.type_system.logic.program.process_execution.command import Command
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
@@ -93,30 +87,28 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
 
 class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
     def runTest(self):
-        symbol_for_source_file = NameAndValue('source_file_symbol_name',
-                                              'the-source-file.py')
+        symbol_for_source_file = StringConstantSymbolContext('source_file_symbol_name',
+                                                             'the-source-file.py')
 
-        argument_symbol = NameAndValue('argument_symbol_name', 'string-constant')
+        argument_symbol = StringConstantSymbolContext('argument_symbol_name', 'string-constant')
 
-        expected_output = lines_content([argument_symbol.value])
+        expected_output = lines_content([argument_symbol.str_value])
 
         command_line = '{source_file} {argument} '.format(
-            source_file=symbol_reference_syntax_for_name(symbol_for_source_file.name),
-            argument=symbol_reference_syntax_for_name(argument_symbol.name),
+            source_file=symbol_for_source_file.name__sym_ref_syntax,
+            argument=argument_symbol.name__sym_ref_syntax,
         )
 
         arrangement = Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
-                    symbol_for_source_file.value,
+                    symbol_for_source_file.str_value,
                     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
             ])),
-            symbol_table=SymbolTable({
-                symbol_for_source_file.name:
-                    su.string_constant_container(symbol_for_source_file.value),
-                argument_symbol.name:
-                    su.string_constant_container(argument_symbol.value),
-            })
+            symbol_table=SymbolContext.symbol_table_of_contexts([
+                symbol_for_source_file,
+                argument_symbol,
+            ])
         )
 
         expectation = Expectation(
@@ -124,10 +116,8 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
-                SymbolReference(symbol_for_source_file.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
-                SymbolReference(argument_symbol.name,
-                                is_any_data_type()),
+                symbol_for_source_file.reference__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
+                argument_symbol.reference__any_data_type,
             ]),
         )
         self._check(command_line,
@@ -138,49 +128,45 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
 class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
-        dir_symbol = NameAndValue('dir_symbol_name',
-                                  paths.rel_hds_act(paths.constant_path_part(sub_dir_of_home)))
+        dir_symbol = ConstantSuffixPathDdvSymbolContext('dir_symbol_name',
+                                                        RelOptionType.REL_HDS_ACT,
+                                                        sub_dir_of_home,
+                                                        PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)
 
-        source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
-                                               'the-source-file.py')
+        source_file_name_symbol = StringConstantSymbolContext('source_file_name_symbol_name',
+                                                              'the-source-file.py')
 
         argument = 'argument_string'
 
         expected_output = lines_content([argument])
 
         command_line = '{dir}/{file_name}  {argument} '.format(
-            dir=symbol_reference_syntax_for_name(dir_symbol.name),
-            file_name=symbol_reference_syntax_for_name(source_file_name_symbol.name),
+            dir=dir_symbol.name__sym_ref_syntax,
+            file_name=source_file_name_symbol.name__sym_ref_syntax,
             argument=argument,
         )
 
         executable_file = fs.File(
-            source_file_name_symbol.value,
+            source_file_name_symbol.str_value,
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.Dir(sub_dir_of_home, [executable_file])
             ])),
-            symbol_table=SymbolTable({
-                dir_symbol.name:
-                    su.path_constant_container(dir_symbol.value),
-
-                source_file_name_symbol.name:
-                    su.string_constant_container(source_file_name_symbol.value),
-            })
+            symbol_table=SymbolContext.symbol_table_of_contexts([
+                dir_symbol,
+                source_file_name_symbol,
+            ])
         )
 
         expectation = Expectation(
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references([
-                SymbolReference(dir_symbol.name,
-                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
-
-                SymbolReference(source_file_name_symbol.name,
-                                PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            symbol_usages=asrt.matches_sequence([
+                dir_symbol.reference_assertion__path_or_string,
+                source_file_name_symbol.reference_assertion__path_component,
             ]),
         )
         self._check(command_line,

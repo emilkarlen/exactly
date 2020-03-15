@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def matches_sdtv(sdv_type: ValueAssertion[SymbolDependentTypeValue],
                  references: ValueAssertion[Sequence[SymbolReference]],
-                 resolved_value: ValueAssertion,
+                 resolved_value: ValueAssertion[DirDependentValue],
                  custom: ValueAssertion[SymbolDependentTypeValue] = asrt.anything_goes(),
                  symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return _MatchesSdtv(sdv_type,
@@ -203,7 +203,7 @@ class _MatchesSdtv(ValueAssertionBase[SymbolDependentTypeValue]):
     def __init__(self,
                  sdv_type: ValueAssertion[SymbolDependentTypeValue],
                  references: ValueAssertion[Sequence[SymbolReference]],
-                 resolved_value: ValueAssertion,
+                 resolved_value: ValueAssertion[DirDependentValue],
                  custom: ValueAssertion[SymbolDependentTypeValue],
                  symbols: SymbolTable):
         self.sdv_type = sdv_type

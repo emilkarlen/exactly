@@ -4,7 +4,8 @@ from exactly_lib.symbol import sdv_structure as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import path_constant_container
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -15,8 +16,9 @@ class TestSymbolUsageVisitor(unittest.TestCase):
     def test_visit_definition(self):
         # ARRANGE #
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
+        definition = ConstantSuffixPathDdvSymbolContext('name', RelOptionType.REL_ACT, 'file-name').definition
         # ACT #
-        ret_val = visitor.visit(sut.SymbolDefinition('name', path_constant_container()))
+        ret_val = visitor.visit(definition)
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
                              [sut.SymbolReference],
