@@ -3,16 +3,13 @@ import unittest
 from typing import Iterable
 
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content, line_separated
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     TestCaseBase
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -112,9 +109,8 @@ class _NumLinesDoesNotMatch(TestCaseBase):
 class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             _DeleteAllButFirstLine()))
+        named_transformer = StringTransformerSymbolContext.of_primitive('the_transformer',
+                                                                        _DeleteAllButFirstLine())
 
         actual_original_contents = lines_content(['1',
                                                   '2',
@@ -122,9 +118,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
 
         number_of_lines_after_transformation = '1'
 
-        symbol_table_with_transformer = SymbolTable({
-            named_transformer.name: container(named_transformer.value)
-        })
+        symbol_table_with_transformer = named_transformer.symbol_table
 
         expected_symbol_usages = asrt.matches_sequence([
             is_reference_to_string_transformer(named_transformer.name)

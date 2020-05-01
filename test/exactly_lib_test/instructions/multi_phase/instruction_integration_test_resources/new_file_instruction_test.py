@@ -13,7 +13,7 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.instructions.test_resources import parse_file_maker
+from exactly_lib_test.instructions.test_resources import parse_file_maker as parse_file_maker_tr
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
@@ -84,8 +84,8 @@ class TestSymbolUsages(TestCaseBase):
         expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
 
-        file_contents_arg = parse_file_maker.TransformableContentsConstructor(
-            parse_file_maker.file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol.name))
+        file_contents_arg = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name).as_arguments
 
         source = remaining_source(
@@ -151,8 +151,8 @@ def instruction_arguments_for_src_file_rel_result() -> str:
                                               conf_rel_any(RelOptionType.REL_RESULT))
     dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
                                               conf_rel_any(RelOptionType.REL_ACT))
-    contents_arg = parse_file_maker.TransformableContentsConstructor(
-        parse_file_maker.file_with_rel_opt_conf(src_file_arg.file_name, src_file_arg.relativity)
+    contents_arg = parse_file_maker_tr.TransformableContentsConstructor(
+        parse_file_maker_tr.file_with_rel_opt_conf(src_file_arg.file_name, src_file_arg.relativity)
     ).without_transformation().as_arguments
 
     return '{dst_file_arg} {contents_arguments}'.format(
@@ -177,8 +177,8 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
         )
         symbols = to_upper_transformer.symbol_table
 
-        file_contents_arg = parse_file_maker.TransformableContentsConstructor(
-            parse_file_maker.file_with_rel_opt_conf(src_file.name, src_rel_opt_conf)
+        file_contents_arg = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.file_with_rel_opt_conf(src_file.name, src_rel_opt_conf)
         ).with_transformation(to_upper_transformer.name).as_arguments
 
         expected_non_hds_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
@@ -224,8 +224,8 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 
         rel_opt_conf = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
 
-        shell_contents_arguments = parse_file_maker.TransformableContentsConstructor(
-            parse_file_maker.output_from_program(
+        shell_contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.output_from_program(
                 ProcOutputFile.STDOUT,
                 pgm_arguments.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
@@ -256,8 +256,8 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 
 class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
     def runTest(self):
-        shell_contents_arguments = parse_file_maker.TransformableContentsConstructor(
-            parse_file_maker.output_from_program(
+        shell_contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.output_from_program(
                 ProcOutputFile.STDOUT,
                 pgm_arguments.shell_command(command_that_exits_with_code(1))
             )
@@ -288,8 +288,8 @@ class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
         src_file = PathArgumentWithRelativity('non-existing-source-file.txt',
                                               src_file_rel_conf)
 
-        contents_argument = parse_file_maker.TransformableContentsConstructor(
-            parse_file_maker.file_with_rel_opt_conf(src_file.file_name, src_file.relativity)
+        contents_argument = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.file_with_rel_opt_conf(src_file.file_name, src_file.relativity)
         ).without_transformation().as_arguments
 
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(

@@ -3,20 +3,18 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_matcher.impl.emptiness import EmptinessStringMatcher
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
-    is_reference_to_string_matcher
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
+    StringMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
@@ -37,9 +35,9 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     return suite_for__conf__not_argument(configuration, test_cases)
 
 
-SYMBOL_FOR_EMPTINESS_MATCHER = NameAndValue(
+SYMBOL_FOR_EMPTINESS_MATCHER = StringMatcherSymbolContext.of_primitive(
     'SYMBOL_NAME',
-    string_matcher_sdv_constant_test_impl(EmptinessStringMatcher())
+    EmptinessStringMatcher()
 )
 
 
@@ -75,9 +73,7 @@ class ParseShouldFailWhenSymbolNameHasInvalidSyntax(TestWithConfigurationAndNega
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
-        symbols = SymbolTable({
-            SYMBOL_FOR_EMPTINESS_MATCHER.name: container(SYMBOL_FOR_EMPTINESS_MATCHER.value),
-        })
+        symbols = SYMBOL_FOR_EMPTINESS_MATCHER.symbol_table
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_matcher(SYMBOL_FOR_EMPTINESS_MATCHER.name),
         ])
@@ -103,16 +99,15 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
 class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         # ARRANGE #
-        named_transformer = NameAndValue('the_transformer',
-                                         StringTransformerSdvConstant(
-                                             EveryLineEmptyStringTransformer()))
+        named_transformer = StringTransformerSymbolContext.of_primitive('the_transformer',
+                                                                        EveryLineEmptyStringTransformer())
 
         original_file_contents = 'some\ntext'
 
-        symbols = SymbolTable({
-            named_transformer.name: container(named_transformer.value),
-            SYMBOL_FOR_EMPTINESS_MATCHER.name: container(SYMBOL_FOR_EMPTINESS_MATCHER.value),
-        })
+        symbols = SymbolContext.symbol_table_of_contexts([
+            named_transformer,
+            SYMBOL_FOR_EMPTINESS_MATCHER,
+        ])
 
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_transformer(named_transformer.name),
