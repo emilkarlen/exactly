@@ -2,11 +2,10 @@ import unittest
 from pathlib import PurePosixPath
 from typing import Mapping, Optional
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to__ref
+from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to__ref, \
+    StringSymbolTypeContext, StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
@@ -78,7 +77,7 @@ class TestInvalidFileNamesShouldCauseValidationError(unittest.TestCase):
                 SymbolsArrEx(
                     {
                         ABS_POSIX_PATH_SYMBOL_NAME:
-                            string_sdvs.str_constant(ABS_POSIX_PATH)
+                            StringSymbolTypeContext.of_constant(ABS_POSIX_PATH)
                     },
                     [is_string_made_up_of_just_strings_reference_to__ref(ABS_POSIX_PATH_SYMBOL_NAME)]
                 ),
@@ -111,9 +110,9 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
             PurePosixPath(*FILE_NAME_PARTS): asrt.is_none
         }
 
-        multi_part_file_name_symbol = NameAndValue(
+        multi_part_file_name_symbol = StringConstantSymbolContext(
             'multi_part_file_name_symbol',
-            string_sdvs.str_constant(multi_part_file_name)
+            multi_part_file_name
         )
 
         cases = [
@@ -129,8 +128,8 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
                 args.FilesCondition([
                     args.FileCondition(SymbolWithReferenceSyntax(multi_part_file_name_symbol.name)),
                 ]),
-                SymbolsArrEx.of_navs(
-                    [multi_part_file_name_symbol],
+                SymbolsArrEx(
+                    {multi_part_file_name_symbol.name: multi_part_file_name_symbol.type_context},
                     [is_string_made_up_of_just_strings_reference_to__ref(multi_part_file_name_symbol.name)]
                 ),
             ),
@@ -234,8 +233,8 @@ class TestEachUniqueFileNameShouldHaveAnEntryInFilesMapping(unittest.TestCase):
                 ]),
                 SymbolsArrEx(
                     {
-                        'sym_ref1': string_sdvs.str_constant('fn'),
-                        'sym_ref2': string_sdvs.str_constant('fn'),
+                        'sym_ref1': StringSymbolTypeContext.of_constant('fn'),
+                        'sym_ref2': StringSymbolTypeContext.of_constant('fn'),
                     },
                     [
                         is_string_made_up_of_just_strings_reference_to__ref('sym_ref1'),

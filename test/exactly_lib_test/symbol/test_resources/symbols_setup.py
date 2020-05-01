@@ -16,84 +16,6 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
-
-class SymbolsArrEx:
-    def __init__(self,
-                 symbols_in_arrangement: Dict[str, SymbolDependentTypeValue],
-                 expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
-                 ):
-        self.symbols_in_arrangement = symbols_in_arrangement
-        self.expected_references = expected_references
-
-    @staticmethod
-    def of_navs(
-            symbols_in_arrangement: Sequence[NameAndValue[SymbolDependentTypeValue]],
-            expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
-    ) -> 'SymbolsArrEx':
-        return SymbolsArrEx(
-            {
-                nav.name: nav.value
-                for nav in symbols_in_arrangement
-            },
-            expected_references,
-        )
-
-    @property
-    def expected_references_list(self) -> List[ValueAssertion[SymbolReference]]:
-        return list(self.expected_references)
-
-    @property
-    def expected_references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
-        return asrt.matches_sequence(self.expected_references_list)
-
-    @property
-    def expected_usages_list(self) -> List[ValueAssertion[SymbolUsage]]:
-        return [
-            asrt.is_instance_with(SymbolReference, sym_ref)
-            for sym_ref in self.expected_references
-        ]
-
-    @property
-    def expected_usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
-        return asrt.matches_sequence(self.expected_usages_list)
-
-    @property
-    def symbol_entries_for_arrangement(self) -> List[Entry]:
-        return [
-            Entry(symbol_name,
-                  symbol_utils.container(sdv))
-            for symbol_name, sdv in self.symbols_in_arrangement.items()
-        ]
-
-    @staticmethod
-    def empty():
-        return SymbolsArrEx({}, ())
-
-    @property
-    def symbol_table(self) -> SymbolTable:
-        return self.table_with_additional_entries(())
-
-    def table_with_additional_entries(self, additional: Sequence[Entry]) -> SymbolTable:
-        entries = list(additional)
-        entries += self.symbol_entries_for_arrangement
-
-        return symbol_table.symbol_table_with_entries(entries)
-
-    def matches_references_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolReference]]
-                                       ) -> ValueAssertion[Sequence[SymbolUsage]]:
-        return asrt.matches_sequence(
-            list(precedes) +
-            self.expected_references_list
-        )
-
-    def matches_usages_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolUsage]]
-                                   ) -> ValueAssertion[Sequence[SymbolUsage]]:
-        return asrt.matches_sequence(
-            list(precedes) +
-            self.expected_usages_list
-        )
-
-
 STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
 
 
@@ -140,7 +62,7 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     @abstractmethod
-    def _type_context(self) -> SymbolTypeContext[STV_TYPE]:
+    def type_context(self) -> SymbolTypeContext[STV_TYPE]:
         pass
 
     @property
@@ -153,7 +75,7 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def sdtv(self) -> STV_TYPE:
-        return self._type_context.sdtv
+        return self.type_context.sdtv
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
@@ -189,15 +111,15 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def definition(self) -> SymbolDefinition:
-        return SymbolDefinition(self.name, self._type_context.container)
+        return SymbolDefinition(self.name, self.type_context.container)
 
     @property
     def entry(self) -> Entry:
-        return Entry(self.name, self._type_context.container)
+        return Entry(self.name, self.type_context.container)
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return self._type_context.reference_assertion(self._name)
+        return self.type_context.reference_assertion(self._name)
 
     @property
     def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
@@ -219,11 +141,11 @@ class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
                  type_context: DataSymbolTypeContext[STV_TYPE],
                  ):
         super().__init__(name)
-        self.__type_context = type_context
+        self._type_context = type_context
 
     @property
-    def _type_context(self) -> DataSymbolTypeContext[STV_TYPE]:
-        return self.__type_context
+    def type_context(self) -> DataSymbolTypeContext[STV_TYPE]:
+        return self._type_context
 
     @property
     def reference__any_data_type(self) -> SymbolReference:
@@ -252,5 +174,69 @@ class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
         self.__type_context = type_context
 
     @property
-    def _type_context(self) -> LogicSymbolTypeContext[STV_TYPE]:
+    def type_context(self) -> LogicSymbolTypeContext[STV_TYPE]:
         return self.__type_context
+
+
+class SymbolsArrEx:
+    def __init__(self,
+                 symbols_in_arrangement: Dict[str, SymbolTypeContext],
+                 expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
+                 ):
+        self.symbols_in_arrangement = symbols_in_arrangement
+        self.expected_references = expected_references
+
+    @property
+    def expected_references_list(self) -> List[ValueAssertion[SymbolReference]]:
+        return list(self.expected_references)
+
+    @property
+    def expected_references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
+        return asrt.matches_sequence(self.expected_references_list)
+
+    @property
+    def expected_usages_list(self) -> List[ValueAssertion[SymbolUsage]]:
+        return [
+            asrt.is_instance_with(SymbolReference, sym_ref)
+            for sym_ref in self.expected_references
+        ]
+
+    @property
+    def expected_usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(self.expected_usages_list)
+
+    @property
+    def symbol_entries_for_arrangement(self) -> List[Entry]:
+        return [
+            Entry(symbol_name,
+                  value_context.container)
+            for symbol_name, value_context in self.symbols_in_arrangement.items()
+        ]
+
+    @staticmethod
+    def empty():
+        return SymbolsArrEx({}, ())
+
+    @property
+    def symbol_table(self) -> SymbolTable:
+        return self.table_with_additional_entries(())
+
+    def table_with_additional_entries(self, additional: Sequence[Entry]) -> SymbolTable:
+        entries = list(additional)
+        entries += self.symbol_entries_for_arrangement
+
+        return symbol_table.symbol_table_with_entries(entries)
+
+    def matches_references_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolReference]]
+                                       ) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(
+            list(precedes) +
+            self.expected_references_list
+        )
+
+    def matches_usages_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolUsage]]
+                                   ) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence(
+            list(precedes) +
+            self.expected_usages_list
+        )
