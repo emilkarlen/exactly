@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Sequence, List, TypeVar, Generic
+from typing import Sequence, List, TypeVar, Generic
 
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions import reference_restrictions
@@ -180,7 +180,7 @@ class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
 
 class SymbolsArrEx:
     def __init__(self,
-                 symbols_in_arrangement: Dict[str, SymbolTypeContext],
+                 symbols_in_arrangement: List[SymbolContext],
                  expected_references: Sequence[ValueAssertion[SymbolReference]] = (),
                  ):
         self.symbols_in_arrangement = symbols_in_arrangement
@@ -208,14 +208,13 @@ class SymbolsArrEx:
     @property
     def symbol_entries_for_arrangement(self) -> List[Entry]:
         return [
-            Entry(symbol_name,
-                  value_context.container)
-            for symbol_name, value_context in self.symbols_in_arrangement.items()
+            symbol_context.entry
+            for symbol_context in self.symbols_in_arrangement
         ]
 
     @staticmethod
     def empty():
-        return SymbolsArrEx({}, ())
+        return SymbolsArrEx([], ())
 
     @property
     def symbol_table(self) -> SymbolTable:
@@ -226,6 +225,12 @@ class SymbolsArrEx:
         entries += self.symbol_entries_for_arrangement
 
         return symbol_table.symbol_table_with_entries(entries)
+
+    def table_with_additional_contexts(self, additional: Sequence[SymbolContext]) -> SymbolTable:
+        contexts = list(additional)
+        contexts += self.symbol_entries_for_arrangement
+
+        return SymbolContext.symbol_table_of_contexts(contexts)
 
     def matches_references_preceded_by(self, precedes: Sequence[ValueAssertion[SymbolReference]]
                                        ) -> ValueAssertion[Sequence[SymbolUsage]]:

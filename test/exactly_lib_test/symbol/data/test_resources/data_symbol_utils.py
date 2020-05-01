@@ -1,12 +1,10 @@
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.util.symbol_table import Entry
 from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 
 
@@ -24,11 +22,3 @@ def container_of_builtin(value_sdv: DataTypeSdv) -> SymbolContainer:
 def symbol_reference(name: str,
                      value_restriction: ValueRestriction = AnyDataTypeRestriction()) -> SymbolReference:
     return SymbolReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
-
-
-def entry(name: str,
-          value_sdv: DataTypeSdv = string_sdvs.str_constant('string value'),
-          line_num: int = 1,
-          source_line: str = 'value def line') -> Entry:
-    return Entry(name, SymbolContainer(value_sdv,
-                                       single_line_sequence(line_num, source_line)))

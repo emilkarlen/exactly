@@ -173,4 +173,4 @@ MAKE_CWD_OUTSIDE_OF_EVERY_REL_OPT_DIR = MkSubDirAndMakeItCurrentDirectory(
 def _symbol_table_of(sym_conf: SymbolsConfiguration,
                      symbols_setup: SymbolsArrEx,
                      ) -> SymbolTable:
-    return symbols_setup.table_with_additional_entries(sym_conf.entries_for_arrangement())
+    return symbols_setup.table_with_additional_contexts(sym_conf.contexts_for_arrangement())

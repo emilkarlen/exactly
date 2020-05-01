@@ -19,7 +19,7 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.type_system.data.paths import empty_path_part
-from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_path_relativity_restriction
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
@@ -54,9 +54,6 @@ class SymbolsConfiguration:
 
     def usage_expectation_assertions(self) -> List[ValueAssertion[SymbolUsage]]:
         return self.reference_expectation_assertions()
-
-    def entries_for_arrangement(self) -> List[Entry]:
-        return []
 
     def contexts_for_arrangement(self) -> List[SymbolContext]:
         return []
@@ -424,9 +421,6 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
                     PathRelativityRestriction(self.expected_accepted_relativities)))
 
         ]
-
-    def entries_for_arrangement(self) -> List[Entry]:
-        return [self.symbol_context.entry]
 
     def contexts_for_arrangement(self) -> List[SymbolContext]:
         return [self.symbol_context]
