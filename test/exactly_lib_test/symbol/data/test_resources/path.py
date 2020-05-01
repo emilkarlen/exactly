@@ -128,6 +128,17 @@ class PathDdvSymbolContext(PathSymbolContext):
                                                             accepted_relativities))
         self._ddv = ddv
 
+    @staticmethod
+    def of_no_suffix(name: str,
+                     relativity: RelOptionType,
+                     accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS, ) -> 'PathDdvSymbolContext':
+        return PathDdvSymbolContext(
+            name,
+            paths.of_rel_option(relativity,
+                                paths.empty_path_part()),
+            accepted_relativities
+        )
+
     @property
     def ddv(self) -> PathDdv:
         return self._ddv

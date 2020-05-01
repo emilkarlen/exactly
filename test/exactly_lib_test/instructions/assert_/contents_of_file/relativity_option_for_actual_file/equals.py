@@ -17,7 +17,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.exp
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_path_relativity_restriction
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -134,10 +134,9 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             EXPECTED_FILE_REL_OPT_ARG_CONFIG
 
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
-        path_symbol = ConstantSuffixPathDdvSymbolContext(
+        path_symbol = PathDdvSymbolContext.of_no_suffix(
             expected_file_relativity_symbol,
-            self.relativity_of_expected_file(),
-            'base-name')
+            self.relativity_of_expected_file())
 
         symbols_in_arrangement = SymbolContext.symbol_table_of_contexts(
             [path_symbol] +
