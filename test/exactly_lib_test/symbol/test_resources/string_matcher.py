@@ -60,6 +60,10 @@ class StringMatcherSymbolTypeContext(LogicSymbolTypeContext[StringMatcherStv]):
     def of_primitive(primitive: StringMatcher) -> 'StringMatcherSymbolTypeContext':
         return StringMatcherSymbolTypeContext.of_generic(matchers.sdv_from_primitive_value(primitive))
 
+    @staticmethod
+    def of_primitive_constant(result: bool) -> 'StringMatcherSymbolTypeContext':
+        return StringMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(result))
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_matcher__ref(symbol_name)
 
@@ -91,6 +95,11 @@ class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):
             name,
             StringMatcherSymbolTypeContext.of_primitive(primitive)
         )
+
+    @staticmethod
+    def of_primitive_constant(name: str, result: bool) -> 'StringMatcherSymbolContext':
+        return StringMatcherSymbolContext.of_primitive(name,
+                                                       constant.MatcherWithConstantResult(result))
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = StringMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))

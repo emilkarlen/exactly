@@ -67,6 +67,10 @@ class FileMatcherSymbolTypeContext(LogicSymbolTypeContext[FileMatcherStv]):
     def of_primitive(primitive: FileMatcher) -> 'FileMatcherSymbolTypeContext':
         return FileMatcherSymbolTypeContext.of_generic(matchers.sdv_from_primitive_value(primitive))
 
+    @staticmethod
+    def of_primitive_constant(result: bool) -> 'FileMatcherSymbolTypeContext':
+        return FileMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(result))
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to__ref(symbol_name)
 
@@ -98,6 +102,11 @@ class FileMatcherSymbolContext(LogicTypeSymbolContext[FileMatcherStv]):
             name,
             FileMatcherSymbolTypeContext.of_primitive(primitive)
         )
+
+    @staticmethod
+    def of_primitive_constant(name: str, result: bool) -> 'FileMatcherSymbolContext':
+        return FileMatcherSymbolContext.of_primitive(name,
+                                                     constant.MatcherWithConstantResult(result))
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))
