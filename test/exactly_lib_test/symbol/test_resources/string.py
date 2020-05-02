@@ -166,4 +166,8 @@ class StringIntConstantSymbolContext(StringSymbolContext):
         return self._int_constant
 
 
+def arbitrary_symbol_context(symbol_name: str) -> StringSymbolContext:
+    return StringConstantSymbolContext(symbol_name, 'arbitrary value')
+
+
 ARBITRARY_SYMBOL_VALUE_CONTEXT = StringSymbolTypeContext.of_constant('arbitrary value')

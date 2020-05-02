@@ -8,19 +8,20 @@ from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import Defini
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import restriction
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
-from exactly_lib_test.symbol.data.test_resources import string_sdvs, list_sdvs, path_sdvs
-from exactly_lib_test.symbol.test_resources import symbol_utils, line_matcher, string_matcher, file_matcher, \
-    files_matcher, string_transformer
-from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
+from exactly_lib_test.symbol.data.test_resources import path, list_
+from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
+    string_transformer, program, string
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolTypeContext
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.string_transformers import MyToUppercaseTransformer
@@ -40,9 +41,9 @@ class TestDefinition(unittest.TestCase):
 
         symbol_name = 'the_symbol_name'
 
-        for sdv in _RESOLVERS_OF_EVERY_TYPE:
-            with self.subTest(str(sdv.value_type)):
-                symbol_definition = _symbol_definition(symbol_name, sdv)
+        for value_context in _VALUE_CONTEXTS_OF_EVERY_TYPE:
+            with self.subTest(str(value_context.sdtv.value_type)):
+                symbol_definition = _symbol_definition(symbol_name, value_context)
                 definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
                 report_generator = sut.IndividualReportGenerator(symbol_name, False, empty_symbol_table())
@@ -75,7 +76,7 @@ class TestReferences(unittest.TestCase):
 
         symbol_name = 'the_symbol_name'
 
-        symbol_definition = _symbol_definition(symbol_name, _ARBITRARY_STRING_SDV)
+        symbol_definition = _symbol_definition(symbol_name, string.ARBITRARY_SYMBOL_VALUE_CONTEXT)
         definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 
         report_generator = sut.IndividualReportGenerator(symbol_name, True, empty_symbol_table())
@@ -98,12 +99,9 @@ class TestReferences(unittest.TestCase):
     def test_symbol_with_single_reference(self):
         # ARRANGE #
 
-        referenced_symbol = NameAndValue(
-            'referenced_symbol',
-            _ARBITRARY_STRING_SDV,
-        )
+        referenced_symbol = string.arbitrary_symbol_context('referenced_symbol')
 
-        referencing_symbol = NameAndValue(
+        referencing_symbol = StringMatcherSymbolContext.of_sdv(
             'referencing_symbol',
             string_matcher.string_matcher_sdv_constant_test_impl(
                 MatcherWithConstantResult(True),
@@ -112,9 +110,9 @@ class TestReferences(unittest.TestCase):
         )
 
         symbol_definitions = [
-            _symbol_definition(referencing_symbol.name, referencing_symbol.value),
-            _symbol_definition(referenced_symbol.name, referenced_symbol.value,
-                               referencing_symbol.value.references),
+            _symbol_definition(referencing_symbol.name, referencing_symbol.type_context),
+            _symbol_definition(referenced_symbol.name, referenced_symbol.type_context,
+                               referencing_symbol.type_context.sdtv.references),
         ]
 
         definitions_resolver = _ConstantDefinitionsResolver(symbol_definitions)
@@ -161,14 +159,14 @@ class _ConstantDefinitionsResolver(DefinitionsResolver):
 
 
 def _symbol_definition(name: str,
-                       sdv: SymbolDependentTypeValue,
+                       value: SymbolTypeContext,
                        references: Sequence[SymbolReference] = ()
                        ) -> SymbolDefinitionInfo:
     return SymbolDefinitionInfo(
         phase_identifier.SETUP,
         SymbolDefinition(
             name,
-            symbol_utils.container(sdv),
+            value.container,
         ),
         [
             symbol_info.ContextAnd(
@@ -247,18 +245,16 @@ _SOURCE_INFO_WITH_SOURCE = symbol_info.SourceInfo.of_lines(
     ['the reference source line']
 )
 
-_ARBITRARY_STRING_SDV = string_sdvs.arbitrary_sdv()
+_VALUE_CONTEXTS_OF_EVERY_TYPE = [
+    string.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    list_.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    path.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
-_RESOLVERS_OF_EVERY_TYPE = [
-    _ARBITRARY_STRING_SDV,
-    list_sdvs.arbitrary_sdv(),
-    path_sdvs.arbitrary_sdv(),
+    line_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    files_matcher_sc.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
-    line_matcher.arbitrary_sdv(),
-    string_matcher.arbitrary_sdv(),
-    file_matcher.arbitrary_sdv(),
-    files_matcher.arbitrary_sdv(),
-
-    string_transformer.arbitrary_sdv(),
-    program_sdvs.arbitrary_sdv(),
+    string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 ]
