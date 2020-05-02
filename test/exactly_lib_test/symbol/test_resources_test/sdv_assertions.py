@@ -17,7 +17,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolTypeContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -61,20 +63,20 @@ class TestIsResolverOfDataType(unittest.TestCase):
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.PROGRAM)
-        matching_sdv = _ProgramResolverTestImpl()
+        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.STRING_MATCHER)
+        matching_sdtv = StringMatcherSymbolTypeContext.of_primitive_constant(False).sdtv
         # ACT & ASSERT #
-        assertion.apply_without_message(self, matching_sdv)
+        assertion.apply_without_message(self, matching_sdtv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.PROGRAM)
+        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.STRING_MATCHER)
         cases = [
             NameAndValue('unexpected logic type',
-                         _StringTransformerSdvTestImpl(),
+                         LineMatcherSymbolTypeContext.of_primitive_constant(False).sdtv,
                          ),
             NameAndValue('data type',
-                         _PathSdvTestImpl(),
+                         StringSymbolTypeContext.of_constant('value').sdtv,
                          ),
         ]
         for case in cases:
@@ -86,13 +88,24 @@ class TestIsResolverOfLogicType(unittest.TestCase):
 class TestMatchesResolver(unittest.TestCase):
     def test_fail_due_to_unexpected_sdv_type(self):
         # ARRANGE #
-        string_sdv = _StringSdvTestImpl()
+        cases = [
+            NameAndValue(
+                'unexpected logic type',
+                LineMatcherSymbolTypeContext.of_primitive_constant(False).sdtv,
+            ),
+            NameAndValue(
+                'data type',
+                StringSymbolTypeContext.of_constant('value').sdtv,
+            ),
+        ]
         assertion = sut.matches_sdtv(
             asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.PROGRAM),
             asrt.anything_goes(),
             asrt.anything_goes())
         # ACT & ASSERT #
-        test_of_test_resources_util.assert_that_assertion_fails(assertion, string_sdv)
+        for case in cases:
+            with self.subTest(case.name):
+                test_of_test_resources_util.assert_that_assertion_fails(assertion, case.value)
 
     def test_fail_due_to_unexpected_references(self):
         # ARRANGE #
