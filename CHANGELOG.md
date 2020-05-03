@@ -12,6 +12,10 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` - primitive `contains`
  - Type `files-matcher` - primitive `equals`
 
+### Changed
+
+ - Improves meaning of parentheses in expressions
+
 ## [0.12.0] - 2020-02-02
 
 ### Added

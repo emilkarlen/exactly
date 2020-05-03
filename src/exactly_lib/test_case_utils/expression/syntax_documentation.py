@@ -184,6 +184,8 @@ is interpreted as the name of {symbol_concept:a}.
 """
 
 _GLOBAL_DESCRIPTION = """\
+Prefix operators have the highest precedence.
+
 All binary operators have the same precedence.
 
 

@@ -125,7 +125,7 @@ class SourceExpectation:
         )
 
     @property
-    def assertion(self) -> ValueAssertion:
+    def assertion(self) -> ValueAssertion[ParseSource]:
         return (
             asrt_source.is_at_end_of_line(self.current_line_number)
             if self.remaining_part_of_current_line is None
@@ -254,6 +254,17 @@ class TestSingleSimpleExpression(TestCaseBase):
                 '( simple )',
                 source('( {simple_with_arg} {argument} )'),
                 SourceExpectation.is_at_end_of_line(1),
+            ),
+            SourceCase(
+                'simple, within parenthesis, with tokens on separate lines',
+                source('( \n {simple_with_arg} \n {argument} \n )'),
+                SourceExpectation.is_at_end_of_line(4),
+            ),
+            SourceCase(
+                'simple, within parenthesis, with expression tokens on separate lines, followed by non-expression',
+                source('( \n {simple_with_arg} \n {argument} \n ) {token_after}'),
+                SourceExpectation.source_is_not_at_end(current_line_number=4,
+                                                       remaining_part_of_current_line=token_after),
             ),
             SourceCase(
                 '( ( simple ) )',
@@ -407,13 +418,12 @@ class TestSinglePrefixExpression(TestCaseBase):
                 ),
             ]
 
-        operator_cases = []
-        for prefix_operator, mk_prefix_expr in self.PREFIX_OPERATORS:
-            operator_cases.append(
-                (prefix_operator,
-                 mk_prefix_expr(simple_expr),
-                 cases_for_operator(prefix_operator))
-            )
+        operator_cases = [
+            (prefix_operator,
+             mk_prefix_expr(simple_expr),
+             cases_for_operator(prefix_operator))
+            for prefix_operator, mk_prefix_expr in self.PREFIX_OPERATORS
+        ]
 
         for grammar in GRAMMARS:
             for operator_case in operator_cases:
@@ -759,7 +769,7 @@ class TestComplexExpression(unittest.TestCase):
                 ),
             ),
             NArrEx(
-                'parentheses around expr should allow binary operator to be on separate ling',
+                'parentheses around expr should allow binary operator to be on separate lines',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=source_of_lines([
@@ -947,6 +957,82 @@ class TestComplexExpression(unittest.TestCase):
 
 
 class TestCombinedExpressions(TestCaseBase):
+    def test__inside_parentheses__simple_recursive_followed_by_binary_op_on_following_line(self):
+        s = ast.SimpleSansArg()
+
+        expected = ast.ComplexA([ast.SimpleRecursive(s), s])
+
+        arguments = '( \n {r} {s} \n {op_a} \n {s} \n )'.format(
+            r=ast.SIMPLE_RECURSIVE,
+            s=ast.SIMPLE_SANS_ARG,
+            op_a=ast.COMPLEX_A,
+        )
+
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(arguments)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(5),
+            )
+        )
+
+    def test__inside_parentheses__simple_recursive_followed_by_binary_op_on_same_line(self):
+        s = ast.SimpleSansArg()
+
+        expected = ast.SimpleRecursive(ast.ComplexA([s, s]))
+        # TODO want this to be same as above - fix with precedences
+
+        arguments = '( \n {r} {s} {op_a} \n {s} \n )'.format(
+            r=ast.SIMPLE_RECURSIVE,
+            s=ast.SIMPLE_SANS_ARG,
+            op_a=ast.COMPLEX_A,
+        )
+
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(arguments)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(4),
+            )
+        )
+
+    def test__simple_recursive_followed_by_binary_op_on_same_line(self):
+        s = ast.SimpleSansArg()
+
+        expected = ast.SimpleRecursive(ast.ComplexA([s, s]))
+
+        arguments = '{r} {s} {op_a} {s}'.format(
+            r=ast.SIMPLE_RECURSIVE,
+            s=ast.SIMPLE_SANS_ARG,
+            op_a=ast.COMPLEX_A,
+        )
+
+        self._check(
+            Arrangement(
+                grammar=
+                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                source=
+                remaining_source(arguments)),
+            Expectation(
+                expression=
+                expected,
+                source=
+                asrt_source.is_at_end_of_line(1),
+            )
+        )
+
     def test_combined_expression_with_single_simple_expr(self):
         # [ [ [ s A s ] B s B  s ] A s ]
 

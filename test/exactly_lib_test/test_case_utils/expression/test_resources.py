@@ -5,6 +5,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.expression import parser as expression_parser
 from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name import NameWithGenderWithFormatting, NameWithGender
@@ -71,6 +72,15 @@ class SimpleSansArg(SimpleExpr):
         return self.__class__.__name__
 
 
+class SimpleRecursive(SimpleExpr):
+    def __init__(self, argument: Expr):
+        self.argument = argument
+
+    def __str__(self):
+        return '{}({})'.format(self.__class__.__name__,
+                               str(self.argument))
+
+
 class ComplexExpr(Expr):
     def __init__(self, expressions: Sequence[Expr]):
         self.expressions = expressions
@@ -97,10 +107,18 @@ def parse_simple_sans_arg(parser: TokenParser) -> SimpleSansArg:
     return SimpleSansArg()
 
 
+def parse_recursive_simple_of_grammar_w_all_components(parser: TokenParser) -> SimpleRecursive:
+    argument = expression_parser.parse(GRAMMAR_WITH_ALL_COMPONENTS,
+                                       parser,
+                                       must_be_on_current_line=False)
+    return SimpleRecursive(argument)
+
+
 CROSS_REF_ID = CustomCrossReferenceId('custom-target')
 
 SIMPLE_WITH_ARG = 'simple_with_arg'
 SIMPLE_SANS_ARG = 'simple_sans_arg'
+SIMPLE_RECURSIVE = 'simple_recursive'
 
 NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/simple/expr/name/and/not/a/valid/symbol/name'
 
@@ -171,7 +189,7 @@ class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
         return self._see_also_targets
 
 
-SIMPLE_EXPRESSIONS = (
+SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE = (
     NameAndValue(
         SIMPLE_WITH_ARG,
         grammar.SimpleExpression(parse_simple_with_arg,
@@ -184,6 +202,17 @@ SIMPLE_EXPRESSIONS = (
         grammar.SimpleExpression(parse_simple_sans_arg,
                                  ConstantSimpleExprDescription([], []))
     ),
+)
+
+SIMPLE_EXPRESSIONS__INCLUDING_RECURSIVE = (
+        list(SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE) +
+        [
+            NameAndValue(
+                SIMPLE_RECURSIVE,
+                grammar.SimpleExpression(parse_recursive_simple_of_grammar_w_all_components,
+                                         ConstantSimpleExprDescription([], []))
+            )
+        ]
 )
 
 PREFIX_EXPRESSIONS = (
@@ -207,7 +236,7 @@ def _mk_reference(name: str) -> Expr:
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions=SIMPLE_EXPRESSIONS,
+    simple_expressions=SIMPLE_EXPRESSIONS__INCLUDING_RECURSIVE,
     complex_expressions=(
         NameAndValue(
             COMPLEX_A,
@@ -228,7 +257,7 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
 GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions=SIMPLE_EXPRESSIONS,
+    simple_expressions=SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE,
     prefix_expressions=PREFIX_EXPRESSIONS,
     complex_expressions=(),
 )

@@ -20,7 +20,11 @@ def parse_from_parse_source(grammar: Grammar[EXPR],
 def parse(grammar: Grammar[EXPR],
           parser: TokenParser,
           must_be_on_current_line: bool = True) -> EXPR:
-    return _Parser(grammar, parser).parse(must_be_on_current_line)
+    return _Parser(grammar, parser).parse(None if must_be_on_current_line else _NEXT_EXPR_ON_ANY_LINE)
+
+
+_IS_INSIDE_PARENTHESIS = 1
+_NEXT_EXPR_ON_ANY_LINE = 2
 
 
 class _Parser(Generic[EXPR]):
@@ -33,24 +37,31 @@ class _Parser(Generic[EXPR]):
         self.prefix_expressions_keys = self.grammar.prefix_expressions.keys()
         self.missing_expression = 'Missing ' + self.grammar.concept.syntax_element.name
 
-    def parse(self, must_be_on_current_line: bool) -> EXPR:
+    def parse(self, new_line_ignore: Optional[int]) -> EXPR:
         if not self.grammar.complex_expressions:
-            return self.parse_mandatory_simple(must_be_on_current_line=must_be_on_current_line)
+            return self.parse_mandatory_simple(new_line_ignore is None)
         else:
-            return self.parse_with_complex_expressions(must_be_on_current_line=must_be_on_current_line)
+            return self.parse_with_complex_expressions(new_line_ignore)
 
-    def parse_with_complex_expressions(self, must_be_on_current_line: bool = True) -> EXPR:
-        expression = self.parse_mandatory_simple(must_be_on_current_line)
+    def parse_with_complex_expressions(self, new_line_ignore: Optional[int]) -> EXPR:
+        expression = self.parse_mandatory_simple(new_line_ignore is None)
 
-        complex_operator_name = self.parse_optional_complex_operator_name(must_be_on_current_line)
+        if new_line_ignore is _NEXT_EXPR_ON_ANY_LINE:
+            new_line_ignore = None
+
+        complex_operator_name = self.parse_optional_complex_operator_name(new_line_ignore is None)
 
         while complex_operator_name:
-            expression = self.complex_operator_sequence_for_single_operator(complex_operator_name, expression)
-            complex_operator_name = self.parse_optional_complex_operator_name(must_be_on_current_line)
+            expression = self.complex_operator_sequence_for_single_operator(
+                complex_operator_name,
+                expression,
+                is_inside_parens=new_line_ignore is _IS_INSIDE_PARENTHESIS
+            )
+            complex_operator_name = self.parse_optional_complex_operator_name(new_line_ignore is None)
 
         return expression
 
-    def parse_optional_complex_operator_name(self, must_be_on_current_line: bool = True) -> str:
+    def parse_optional_complex_operator_name(self, must_be_on_current_line: bool) -> str:
         return self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
             self.complex_expressions_keys,
             must_be_on_current_line,
@@ -58,7 +69,8 @@ class _Parser(Generic[EXPR]):
 
     def complex_operator_sequence_for_single_operator(self,
                                                       complex_operator_name: str,
-                                                      first_expression: EXPR) -> EXPR:
+                                                      first_expression: EXPR,
+                                                      is_inside_parens: bool) -> EXPR:
         single_accepted_operator = [complex_operator_name]
 
         expressions = [first_expression]
@@ -68,17 +80,19 @@ class _Parser(Generic[EXPR]):
             expressions.append(next_expression)
 
         parse_mandatory_simple_and_append()
-        while self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(single_accepted_operator):
+        while self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
+                single_accepted_operator,
+                must_be_on_current_line=not is_inside_parens):
             parse_mandatory_simple_and_append()
 
         return self.grammar.complex_expressions[complex_operator_name].mk_complex(expressions)
 
-    def parse_mandatory_simple(self, must_be_on_current_line: bool = True) -> EXPR:
+    def parse_mandatory_simple(self, must_be_on_current_line: bool) -> EXPR:
         if must_be_on_current_line:
             self.parser.require_is_not_at_eol(self.missing_expression)
 
-        if self.consume_optional_start_parentheses(must_be_on_current_line):
-            expression = self.parse(must_be_on_current_line=False)
+        if self.consume_optional_start_parentheses():
+            expression = self.parse(_IS_INSIDE_PARENTHESIS)
             self.consume_mandatory_end_parentheses()
             return expression
         else:
@@ -90,7 +104,7 @@ class _Parser(Generic[EXPR]):
                 return self.parser.parse_mandatory_string_that_must_be_unquoted(
                     self.grammar.concept.syntax_element.name,
                     self.parse_simple,
-                    must_be_on_current_line=must_be_on_current_line)
+                    must_be_on_current_line=False)
 
     def parse_simple(self, simple_name: str) -> EXPR:
         symbol_name_of_symbol_reference = symbol_syntax.parse_symbol_reference__from_str(simple_name)
@@ -121,10 +135,10 @@ class _Parser(Generic[EXPR]):
         else:
             return None
 
-    def consume_optional_start_parentheses(self, must_be_on_current_line: bool) -> bool:
+    def consume_optional_start_parentheses(self) -> bool:
         start_parenthesis = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
             ['('],
-            must_be_on_current_line)
+            False)
         return start_parenthesis is not None
 
     def consume_mandatory_end_parentheses(self) -> None:
