@@ -28,13 +28,13 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
-                 sdv: SymbolDependentTypeValue,
+                 sdtv: SymbolDependentTypeValue,
                  single_line_description: str,
                  documentation: SectionContents,
                  see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         self._name = name
-        self._sdv = sdv
+        self._sdtv = sdtv
         self._single_line_description = single_line_description
         self._documentation = documentation
         self._see_also = see_also
@@ -45,11 +45,11 @@ class BuiltinSymbol:
 
     @property
     def container(self) -> SymbolContainer:
-        return container_of_builtin(self._sdv)
+        return container_of_builtin(self._sdtv)
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._sdv.value_type,
+        return BuiltinSymbolDocumentation(self._sdtv.value_type,
                                           self.name,
                                           self._single_line_description,
                                           self._documentation,
@@ -57,12 +57,12 @@ class BuiltinSymbol:
 
 
 def builtin_symbol_of_custom_symbol(name: str,
-                                    sdv: SymbolDependentTypeValue,
+                                    sdtv: SymbolDependentTypeValue,
                                     documentation: CustomSymbolDocumentation
                                     ) -> BuiltinSymbol:
     return BuiltinSymbol(
         name,
-        sdv,
+        sdtv,
         documentation.single_line_description,
         documentation.documentation,
         documentation.see_also
