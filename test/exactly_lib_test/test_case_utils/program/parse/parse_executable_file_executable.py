@@ -7,8 +7,6 @@ from exactly_lib.definitions.path import REL_symbol_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
@@ -21,10 +19,10 @@ from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
     pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
@@ -179,11 +177,11 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
 
 class TestParseWithSymbols(unittest.TestCase):
     def test(self):
-        path_suffix_of_symbol = 'first_path_component'
-        file_symbol = NameAndValue('file_symbol',
-                                   path_of(RelOptionType.REL_TMP, path_suffix_of_symbol))
-        string_symbol = NameAndValue('string_symbol',
-                                     'string symbol value')
+        file_symbol = ConstantSuffixPathDdvSymbolContext('file_symbol',
+                                                         RelOptionType.REL_TMP,
+                                                         'first_path_component')
+        string_symbol = StringConstantSymbolContext('string_symbol',
+                                                    'string symbol value')
         reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
@@ -194,10 +192,10 @@ class TestParseWithSymbols(unittest.TestCase):
                                                                                 direct=StringRestriction(),
                                                                                 indirect=StringRestriction()),
                                                                             )
-        symbols = SymbolTable({
-            file_symbol.name: su.container(path_sdvs.constant(file_symbol.value)),
-            string_symbol.name: su.container(string_sdvs.str_constant(string_symbol.value)),
-        })
+        symbols = SymbolContext.symbol_table_of_contexts([
+            file_symbol,
+            string_symbol,
+        ])
         cases = [
             Case('symbol references in file',
                  source='{rel_symbol_option} {file_symbol} {string_symbol}'.format(
@@ -207,8 +205,8 @@ class TestParseWithSymbols(unittest.TestCase):
                  ),
                  expectation=
                  ExpectationOnExeFile(
-                     path_ddv=paths.stacked(file_symbol.value,
-                                            paths.constant_path_part(string_symbol.value)),
+                     path_ddv=paths.stacked(file_symbol.ddv,
+                                            paths.constant_path_part(string_symbol.str_value)),
                      expected_symbol_references_of_file=[reference_of_relativity_symbol,
                                                          reference_of_path_string_symbol_as_path_component],
                      argument_sdv_value=empty_list_ddv(),

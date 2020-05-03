@@ -87,7 +87,7 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     @staticmethod
     def of_sdv(name: str,
                sdv: PathSdv,
-               accepted_relativities: PathRelativityVariants,
+               accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
@@ -97,7 +97,7 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     @staticmethod
     def of_ddv(name: str,
                ddv: PathDdv,
-               accepted_relativities: PathRelativityVariants,
+               accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,

@@ -3,7 +3,6 @@ from typing import Sequence, List, TypeVar, Generic
 
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions import reference_restrictions
-from exactly_lib.symbol.data.restrictions import value_restrictions
 from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference, \
     ReferenceRestrictions, SymbolDefinition
 from exactly_lib.util import symbol_table
@@ -151,9 +150,7 @@ class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
     def reference__any_data_type(self) -> SymbolReference:
         return SymbolReference(
             self.name,
-            reference_restrictions.ReferenceRestrictionsOnDirectAndIndirect(
-                value_restrictions.AnyDataTypeRestriction()
-            )
+            reference_restrictions.is_any_data_type()
         )
 
     @property

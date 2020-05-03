@@ -70,7 +70,7 @@ class TestElementTypeRestriction(unittest.TestCase):
 class TestValueTypeRestriction(unittest.TestCase):
     ARBITRARY_LIST_CONTEXT = list_.ARBITRARY_SYMBOL_VALUE_CONTEXT
 
-    value_type_2_sdv_of_type = {
+    value_type_2_symbol_value_context_of_type = {
 
         ValueType.STRING:
             string.ARBITRARY_SYMBOL_VALUE_CONTEXT,
@@ -104,7 +104,7 @@ class TestValueTypeRestriction(unittest.TestCase):
         # ARRANGE #
         symbols = empty_symbol_table()
         for expected_value_type in ValueType:
-            container_of_sdv = self.value_type_2_sdv_of_type[expected_value_type].container
+            container_of_sdv = self.value_type_2_symbol_value_context_of_type[expected_value_type].container
             with self.subTest(element_type=str(expected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)
                 # ACT
@@ -129,7 +129,7 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         symbols = empty_symbol_table()
         for expected_value_type, unexpected_value_type in cases.items():
-            container_of_unexpected = self.value_type_2_sdv_of_type[unexpected_value_type].container
+            container_of_unexpected = self.value_type_2_symbol_value_context_of_type[unexpected_value_type].container
             with self.subTest(expected_element_type=str(expected_value_type),
                               unexpected_element_type=str(unexpected_value_type)):
                 restriction_to_check = sut.ValueTypeRestriction(expected_value_type)

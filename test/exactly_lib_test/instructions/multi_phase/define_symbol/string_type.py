@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -12,10 +11,9 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import container
 from exactly_lib_test.symbol.data.test_resources.here_doc_assertion_utils import here_doc_lines
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_string import string_sdv_from_fragments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -80,21 +78,18 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
         referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
-        name_of_defined_symbol = 'defined_symbol'
+        assigned_symbol = StringSymbolContext.of_sdv('defined_symbol',
+                                                     string_sdv_from_fragments([symbol(referred_symbol.name)]))
         source = single_line_source('{string_type} {name} = {symbol_reference}',
-                                    name=name_of_defined_symbol,
+                                    name=assigned_symbol.name,
                                     symbol_reference=referred_symbol)
-        expected_sdv = string_sdv_from_fragments([symbol(referred_symbol.name)])
-        container_of_expected_sdv = container(expected_sdv)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_sdv)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
+                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
-                name_of_defined_symbol,
-                equals_container(container_of_expected_sdv),
+                assigned_symbol.name,
+                equals_container(assigned_symbol.symbol_table_container),
             )
         )
         # ACT & ASSERT #
@@ -103,22 +98,19 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_single_symbol_reference_syntax_within_hard_quotes(self):
         # ARRANGE #
         referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
-        name_of_defined_symbol = 'defined_symbol'
+        assigned_symbol = StringSymbolContext.of_sdv('defined_symbol',
+                                                     string_sdv_from_fragments([constant(str(referred_symbol))]))
         source = single_line_source('{string_type} {name} = {hard_quote}{symbol_reference}{hard_quote}',
-                                    name=name_of_defined_symbol,
+                                    name=assigned_symbol.name,
                                     hard_quote=HARD_QUOTE_CHAR,
                                     symbol_reference=referred_symbol)
-        expected_sdv = string_sdv_from_fragments([constant(str(referred_symbol))])
-        container_of_expected_sdv = container(expected_sdv)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_sdv)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
+                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
-                name_of_defined_symbol,
-                equals_container(container_of_expected_sdv),
+                assigned_symbol.name,
+                equals_container(assigned_symbol.symbol_table_container),
             )
         )
         # ACT & ASSERT #
@@ -128,27 +120,25 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         # ARRANGE #
         referred_symbol1 = SymbolWithReferenceSyntax('referred_symbol_1')
         referred_symbol2 = SymbolWithReferenceSyntax('referred_symbol_2')
-        name_of_defined_symbol = 'defined_symbol'
+        assigned_symbol = StringSymbolContext.of_sdv(
+            'defined_symbol',
+            string_sdv_from_fragments([
+                symbol(referred_symbol1.name),
+                constant(' between '),
+                symbol(referred_symbol2.name),
+            ]))
         source = single_line_source('{string_type} {name} = {soft_quote}{sym_ref1} between {sym_ref2}{soft_quote}',
                                     soft_quote=SOFT_QUOTE_CHAR,
-                                    name=name_of_defined_symbol,
+                                    name=assigned_symbol.name,
                                     sym_ref1=referred_symbol1,
                                     sym_ref2=referred_symbol2)
-        expected_sdv = string_sdv_from_fragments([
-            symbol(referred_symbol1.name),
-            constant(' between '),
-            symbol(referred_symbol2.name),
-        ])
-        container_of_expected_sdv = container(expected_sdv)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_sdv)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
+                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
-                name_of_defined_symbol,
-                equals_container(container_of_expected_sdv),
+                assigned_symbol.name,
+                equals_container(assigned_symbol.symbol_table_container),
             )
         )
         # ACT & ASSERT #
@@ -186,9 +176,14 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
         referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
-        name_of_defined_symbol = 'defined_symbol'
+        expected_sdv = string_sdv_from_fragments([symbol(referred_symbol.name),
+                                                  constant('\n')])
+        assigned_symbol = StringSymbolContext.of_sdv(
+            'defined_symbol',
+            expected_sdv,
+        )
         sb = SB.new_with(referred_symbol=referred_symbol,
-                         name_of_defined_symbol=name_of_defined_symbol)
+                         name_of_defined_symbol=assigned_symbol.name)
 
         source = sb.lines(
             here_doc_lines(first_line_start='{string_type} {name_of_defined_symbol} = ',
@@ -196,18 +191,13 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
                            contents_lines=[str(referred_symbol)])
         )
         # EXPECTATION #
-        expected_sdv = string_sdv_from_fragments([symbol(referred_symbol.name),
-                                                  constant('\n')])
-        container_of_expected_sdv = container(expected_sdv)
-        expected_definition = SymbolDefinition(name_of_defined_symbol,
-                                               container_of_expected_sdv)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_definition, ignore_source_line=True),
+                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
-                name_of_defined_symbol,
-                equals_container(container_of_expected_sdv),
+                assigned_symbol.name,
+                equals_container(assigned_symbol.symbol_table_container),
             )
         )
         # ACT & ASSERT #

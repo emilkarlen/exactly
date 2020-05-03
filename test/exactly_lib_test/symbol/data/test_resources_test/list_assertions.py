@@ -2,14 +2,11 @@ import unittest
 
 from exactly_lib.symbol.data import list_sdv as lr
 from exactly_lib.symbol.data import string_sdvs, list_sdvs
-from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
-    ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
+from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su, list_assertions as sut
+from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.symbol.data.test_resources import list_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
@@ -148,7 +145,7 @@ class TestEqualsResolver(unittest.TestCase):
 
 class TestMatchesResolver(unittest.TestCase):
     def test_equals(self):
-        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
+        string_symbol = StringConstantSymbolContext('string_symbol_name', 'string symbol value')
         cases = [
             MatchesCase('empty list of fragments',
                         expected=
@@ -168,19 +165,15 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('symbol reference',
                         expected=
-                        lr.ListDdv([string_ddv_of_single_string(string_symbol.value)]),
+                        lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        equals_symbol_references([SymbolReference(string_symbol.name,
-                                                                  is_any_data_type())]),
+                        equals_symbol_references([string_symbol.reference__any_data_type]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
-                            string_sdvs.symbol_reference(
-                                SymbolReference(string_symbol.name,
-                                                is_any_data_type()),
-                            ))]),
+                            string_sdvs.symbol_reference(string_symbol.reference__any_data_type)
+                        )]),
                         symbols=
-                        singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_sdvs.str_constant(string_symbol.value))),
+                        string_symbol.symbol_table,
                         ),
         ]
         for case in cases:
@@ -189,7 +182,7 @@ class TestMatchesResolver(unittest.TestCase):
                 assertion.apply_without_message(self, case.actual)
 
     def test_not_equals(self):
-        string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
+        string_symbol = StringConstantSymbolContext('string_symbol_name', 'string symbol value')
         cases = [
             MatchesCase('different number of elements',
                         expected=
@@ -209,11 +202,9 @@ class TestMatchesResolver(unittest.TestCase):
                         ),
             MatchesCase('different references',
                         expected=
-                        lr.ListDdv([string_ddv_of_single_string(string_symbol.value)]),
+                        lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        equals_symbol_references([SymbolReference(string_symbol.name,
-                                                                  ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      AnyDataTypeRestriction()))]),
+                        equals_symbol_references([string_symbol.reference__any_data_type]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
                             string_sdvs.symbol_reference(
@@ -221,8 +212,7 @@ class TestMatchesResolver(unittest.TestCase):
                                                 OrReferenceRestrictions([])),
                             ))]),
                         symbols=
-                        singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_sdvs.str_constant(string_symbol.value))),
+                        string_symbol.symbol_table,
                         ),
         ]
         for case in cases:
