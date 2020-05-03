@@ -1,5 +1,6 @@
 from typing import Sequence, List
 
+from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
@@ -27,12 +28,12 @@ class ListSymbolTypeContext(DataSymbolTypeContext[ListSdv]):
         return ListSymbolTypeContext.of_sdv(ListSdvTestImplForConstantListDdv(ddv))
 
     @staticmethod
-    def of_constant(elements: Sequence[str]) -> 'ListSymbolTypeContext':
-        return ListSymbolTypeContext.of_ddv(_ddv_of_constant(elements))
+    def of_constants(elements: Sequence[str]) -> 'ListSymbolTypeContext':
+        return ListSymbolTypeContext.of_sdv(list_sdvs.from_str_constants(elements))
 
     @staticmethod
     def of_empty() -> 'ListSymbolTypeContext':
-        return ListSymbolTypeContext.of_constant(())
+        return ListSymbolTypeContext.of_constants(())
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
@@ -59,8 +60,8 @@ class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
         return ListSymbolContext(name, ListSymbolTypeContext.of_ddv(ddv))
 
     @staticmethod
-    def of_constant(name: str, elements: Sequence[str]) -> 'ListSymbolContext':
-        return ListSymbolContext(name, ListSymbolTypeContext.of_constant(elements))
+    def of_constants(name: str, elements: Sequence[str]) -> 'ListSymbolContext':
+        return ListSymbolContext(name, ListSymbolTypeContext.of_constants(elements))
 
     @staticmethod
     def of_empty(name: str) -> 'ListSymbolContext':
@@ -76,7 +77,7 @@ class ListDdvSymbolContext(ListSymbolContext):
         self._ddv = ddv
 
     @staticmethod
-    def of_constant(name: str, elements: Sequence[str]) -> 'ListDdvSymbolContext':
+    def of_constants(name: str, elements: Sequence[str]) -> 'ListDdvSymbolContext':
         return ListDdvSymbolContext(name, _ddv_of_constant(elements))
 
     @property
@@ -108,4 +109,4 @@ def _ddv_of_constant(elements: Sequence[str]) -> ListDdv:
     ])
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = ListSymbolTypeContext.of_constant(['arbitrary', 'value'])
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ListSymbolTypeContext.of_constants(['arbitrary', 'value'])

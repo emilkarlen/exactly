@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.symbol.data import list_sdvs as lrs
-from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -10,7 +9,6 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import references
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import container
 from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -57,14 +55,15 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                 self._check(case.source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_list_with_multiple_constant_elements(self):
-        symbol_name = 'the_symbol_name'
         value_without_space = 'value_without_space'
         value_with_space = 'value with space'
-        expected_sdv = lrs.from_str_constants([value_without_space,
-                                               value_with_space])
-        expected_sdv_container = container(expected_sdv)
+        symbol_to_assign = ListSymbolContext.of_sdv(
+            'the_symbol_name',
+            lrs.from_str_constants([value_without_space,
+                                    value_with_space])
+        )
 
-        sb = SB.new_with(symbol_name=symbol_name,
+        sb = SB.new_with(symbol_name=symbol_to_assign.name,
                          value_without_space=value_without_space,
                          value_with_space=value_with_space)
         cases = [
@@ -89,40 +88,41 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
+                        vs_asrt.equals_symbol(symbol_to_assign.definition,
                                               ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
-                        symbol_name,
-                        equals_container(expected_sdv_container),
+                        symbol_to_assign.name,
+                        equals_container(symbol_to_assign.type_context.container),
                     ),
                     source=case.source_assertion,
                 )
                 self._check(case.source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_list_with_symbol_references(self):
-        symbol_name = 'the_symbol_name'
         referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
+        expected_symbol_reference = references.reference_to_any_data_type_value(referred_symbol.name)
+        symbol_to_assign = ListSymbolContext.of_sdv(
+            'the_symbol_name',
+            lrs.from_elements([lrs.symbol_element(expected_symbol_reference)])
+        )
+
         source = remaining_source(src(
             '{list_type} {symbol_name} = {symbol_reference} ',
-            symbol_name=symbol_name,
+            symbol_name=symbol_to_assign.name,
             symbol_reference=referred_symbol,
         ),
             ['following line'],
         )
-        expected_symbol_reference = references.reference_to_any_data_type_value(referred_symbol.name)
-        expected_sdv = lrs.from_elements([lrs.symbol_element(expected_symbol_reference)])
-
-        expected_sdv_container = container(expected_sdv)
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
+                vs_asrt.equals_symbol(symbol_to_assign.definition,
                                       ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
-                symbol_name,
-                equals_container(expected_sdv_container),
+                symbol_to_assign.name,
+                equals_container(symbol_to_assign.type_context.container),
             ),
             source=asrt_source.is_at_beginning_of_line(2),
         )
