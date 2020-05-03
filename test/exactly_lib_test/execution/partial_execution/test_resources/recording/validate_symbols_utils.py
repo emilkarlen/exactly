@@ -2,12 +2,9 @@ import unittest
 
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
@@ -21,7 +18,6 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
@@ -144,19 +140,3 @@ class TestImplementationError(TestCaseBase):
                 ),
                 conf.expected_steps_before_failing_instruction,
             ))
-
-
-def _reference_to_undefined_symbol() -> SymbolReference:
-    return SymbolReference('undefined symbol',
-                           ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
-
-
-def definition_with_reference(name_of_defined: str,
-                              name_of_referenced: str) -> SymbolDefinition:
-    symbol_reference = SymbolReference(name_of_referenced,
-                                       ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
-                                                                                indirect=AnyDataTypeRestriction()))
-    return SymbolDefinition(name_of_defined,
-                            data_symbol_utils.container(
-                                StringSdv((string_sdvs.symbol_fragment(symbol_reference),))
-                            ))

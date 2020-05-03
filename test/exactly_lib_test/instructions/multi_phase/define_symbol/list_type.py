@@ -11,6 +11,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.data.test_resources import references
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import container
+from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -24,8 +25,8 @@ def suite() -> unittest.TestSuite:
 
 class TestListSuccessfulParse(TestCaseBaseForParser):
     def test_assignment_of_empty_list(self):
-        symbol_name = 'the_symbol_name'
-        sb = SB.new_with(symbol_name=symbol_name)
+        list_symbol = ListSymbolContext.of_empty('the_symbol_name')
+        sb = SB.new_with(symbol_name=list_symbol.name)
 
         cases = [
             SourceCase('No following lines',
@@ -39,19 +40,17 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                        source_assertion=asrt_source.is_at_beginning_of_line(2)
                        ),
         ]
-        expected_sdv = lrs.empty()
-        expected_sdv_container = container(expected_sdv)
 
         for case in cases:
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(SymbolDefinition(symbol_name, expected_sdv_container),
+                        vs_asrt.equals_symbol(list_symbol.definition,
                                               ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
-                        symbol_name,
-                        equals_container(expected_sdv_container),
+                        list_symbol.name,
+                        equals_container(list_symbol.type_context.container),
                     ),
                     source=case.source_assertion
                 )

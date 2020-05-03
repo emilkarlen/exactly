@@ -30,6 +30,10 @@ class ListSymbolTypeContext(DataSymbolTypeContext[ListSdv]):
     def of_constant(elements: Sequence[str]) -> 'ListSymbolTypeContext':
         return ListSymbolTypeContext.of_ddv(_ddv_of_constant(elements))
 
+    @staticmethod
+    def of_empty() -> 'ListSymbolTypeContext':
+        return ListSymbolTypeContext.of_constant(())
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
@@ -57,6 +61,10 @@ class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
     @staticmethod
     def of_constant(name: str, elements: Sequence[str]) -> 'ListSymbolContext':
         return ListSymbolContext(name, ListSymbolTypeContext.of_constant(elements))
+
+    @staticmethod
+    def of_empty(name: str) -> 'ListSymbolContext':
+        return ListSymbolContext(name, ListSymbolTypeContext.of_empty())
 
 
 class ListDdvSymbolContext(ListSymbolContext):
