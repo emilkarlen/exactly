@@ -48,7 +48,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         list_symbol.name,
-                        equals_container(list_symbol.type_context.container),
+                        equals_container(list_symbol.value.container),
                     ),
                     source=case.source_assertion
                 )
@@ -93,7 +93,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         symbol_to_assign.name,
-                        equals_container(symbol_to_assign.type_context.container),
+                        equals_container(symbol_to_assign.value.container),
                     ),
                     source=case.source_assertion,
                 )
@@ -122,7 +122,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_to_assign.name,
-                equals_container(symbol_to_assign.type_context.container),
+                equals_container(symbol_to_assign.value.container),
             ),
             source=asrt_source.is_at_beginning_of_line(2),
         )

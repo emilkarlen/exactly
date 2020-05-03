@@ -12,11 +12,11 @@ from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
-    DataSymbolTypeContext
+    DataSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class PathSymbolTypeContext(DataSymbolTypeContext[PathSdv]):
+class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def __init__(self,
                  sdv: PathSdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
@@ -28,31 +28,31 @@ class PathSymbolTypeContext(DataSymbolTypeContext[PathSdv]):
     @staticmethod
     def of_sdv(sdv: PathSdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
-               ) -> 'PathSymbolTypeContext':
+               ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolTypeContext(sdv, accepted_relativities)
+        return PathSymbolValueContext(sdv, accepted_relativities)
 
     @staticmethod
     def of_ddv(ddv: PathDdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
-               ) -> 'PathSymbolTypeContext':
+               ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolTypeContext(PathConstantSdv(ddv), accepted_relativities)
+        return PathSymbolValueContext(PathConstantSdv(ddv), accepted_relativities)
 
     @staticmethod
     def of_rel_opt_and_suffix(relativity: RelOptionType,
                               suffix: str,
                               accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
-                              ) -> 'PathSymbolTypeContext':
-        return PathSymbolTypeContext.of_ddv(paths.of_rel_option(relativity,
-                                                                paths.constant_path_part(suffix)),
-                                            accepted_relativities)
+                              ) -> 'PathSymbolValueContext':
+        return PathSymbolValueContext.of_ddv(paths.of_rel_option(relativity,
+                                                                 paths.constant_path_part(suffix)),
+                                             accepted_relativities)
 
     @property
     def accepted_relativities(self) -> PathRelativityVariants:
@@ -79,10 +79,10 @@ class PathSymbolTypeContext(DataSymbolTypeContext[PathSdv]):
 class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     def __init__(self,
                  name: str,
-                 type_context: PathSymbolTypeContext,
+                 value: PathSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
-        self._path_type_context = type_context
+        super().__init__(name, value)
+        self._path_value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -91,7 +91,7 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
-            PathSymbolTypeContext.of_sdv(sdv, accepted_relativities)
+            PathSymbolValueContext.of_sdv(sdv, accepted_relativities)
         )
 
     @staticmethod
@@ -101,13 +101,13 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
-            PathSymbolTypeContext.of_sdv(PathConstantSdv(ddv),
-                                         accepted_relativities)
+            PathSymbolValueContext.of_sdv(PathConstantSdv(ddv),
+                                          accepted_relativities)
         )
 
     @property
     def reference__path(self) -> SymbolReference:
-        return SymbolReference(self.name, self._path_type_context.reference_restriction__path)
+        return SymbolReference(self.name, self._path_value.reference_restriction__path)
 
     @property
     def reference_assertion__path_or_string(self) -> ValueAssertion[SymbolReference]:
@@ -115,7 +115,7 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
 
     @property
     def reference__path_or_string(self) -> SymbolReference:
-        return SymbolReference(self.name, self._path_type_context.reference_restriction__path_or_string)
+        return SymbolReference(self.name, self._path_value.reference_restriction__path_or_string)
 
 
 class PathDdvSymbolContext(PathSymbolContext):
@@ -124,8 +124,8 @@ class PathDdvSymbolContext(PathSymbolContext):
                  ddv: PathDdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                  ):
-        super().__init__(name, PathSymbolTypeContext.of_sdv(PathConstantSdv(ddv),
-                                                            accepted_relativities))
+        super().__init__(name, PathSymbolValueContext.of_sdv(PathConstantSdv(ddv),
+                                                             accepted_relativities))
         self._ddv = ddv
 
     @staticmethod
@@ -173,5 +173,5 @@ def arbitrary_path_symbol_context(symbol_name: str) -> ConstantSuffixPathDdvSymb
     return ConstantSuffixPathDdvSymbolContext(symbol_name, RelOptionType.REL_ACT, 'base-name')
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = PathSymbolTypeContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT,
-                                                                             'arbitrary-base-name')
+ARBITRARY_SYMBOL_VALUE_CONTEXT = PathSymbolValueContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT,
+                                                                              'arbitrary-base-name')

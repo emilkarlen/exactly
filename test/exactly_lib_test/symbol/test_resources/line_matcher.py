@@ -11,7 +11,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNeg
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -85,18 +85,18 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
     )
 
 
-class LineMatcherSymbolTypeContext(LogicSymbolTypeContext[LineMatcherStv]):
+class LineMatcherSymbolValueContext(LogicSymbolValueContext[LineMatcherStv]):
     @staticmethod
-    def of_generic(sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolTypeContext':
-        return LineMatcherSymbolTypeContext(LineMatcherStv(sdv))
+    def of_generic(sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext(LineMatcherStv(sdv))
 
     @staticmethod
-    def of_primitive(primitive: LineMatcher) -> 'LineMatcherSymbolTypeContext':
-        return LineMatcherSymbolTypeContext.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_primitive(primitive: LineMatcher) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive))
 
     @staticmethod
-    def of_primitive_constant(result: bool) -> 'LineMatcherSymbolTypeContext':
-        return LineMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(result))
+    def of_primitive_constant(result: bool) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to__ref(symbol_name)
@@ -105,29 +105,29 @@ class LineMatcherSymbolTypeContext(LogicSymbolTypeContext[LineMatcherStv]):
 class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
     def __init__(self,
                  name: str,
-                 type_context: LineMatcherSymbolTypeContext,
+                 value: LineMatcherSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of_sdtv(name: str, sdtv: LineMatcherStv) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolTypeContext(sdtv)
+            LineMatcherSymbolValueContext(sdtv)
         )
 
     @staticmethod
     def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolTypeContext.of_generic(sdv)
+            LineMatcherSymbolValueContext.of_generic(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: LineMatcher) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolTypeContext.of_primitive(primitive)
+            LineMatcherSymbolValueContext.of_primitive(primitive)
         )
 
     @staticmethod
@@ -136,4 +136,4 @@ class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
                                                      constant.MatcherWithConstantResult(result))
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = LineMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))
+ARBITRARY_SYMBOL_VALUE_CONTEXT = LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

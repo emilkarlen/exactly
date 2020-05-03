@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
 
 
-class SymbolTypeContext(Generic[STV_TYPE], ABC):
+class SymbolValueContext(Generic[STV_TYPE], ABC):
     def __init__(self, sdtv: STV_TYPE):
         self._sdtv = sdtv
 
@@ -35,7 +35,7 @@ class SymbolTypeContext(Generic[STV_TYPE], ABC):
         pass
 
 
-class DataSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
+class DataSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
     @staticmethod
     def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
@@ -51,7 +51,7 @@ class DataSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC)
         )
 
 
-class LogicSymbolTypeContext(Generic[STV_TYPE], SymbolTypeContext[STV_TYPE], ABC):
+class LogicSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
     pass
 
 
@@ -61,7 +61,7 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     @abstractmethod
-    def type_context(self) -> SymbolTypeContext[STV_TYPE]:
+    def value(self) -> SymbolValueContext[STV_TYPE]:
         pass
 
     @property
@@ -74,7 +74,7 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def sdtv(self) -> STV_TYPE:
-        return self.type_context.sdtv
+        return self.value.sdtv
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
@@ -110,15 +110,15 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def definition(self) -> SymbolDefinition:
-        return SymbolDefinition(self.name, self.type_context.container)
+        return SymbolDefinition(self.name, self.value.container)
 
     @property
     def entry(self) -> Entry:
-        return Entry(self.name, self.type_context.container)
+        return Entry(self.name, self.value.container)
 
     @property
     def reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return self.type_context.reference_assertion(self._name)
+        return self.value.reference_assertion(self._name)
 
     @property
     def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
@@ -137,13 +137,13 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
     def __init__(self,
                  name: str,
-                 type_context: DataSymbolTypeContext[STV_TYPE],
+                 value: DataSymbolValueContext[STV_TYPE],
                  ):
         super().__init__(name)
-        self._type_context = type_context
+        self._type_context = value
 
     @property
-    def type_context(self) -> DataSymbolTypeContext[STV_TYPE]:
+    def value(self) -> DataSymbolValueContext[STV_TYPE]:
         return self._type_context
 
     @property
@@ -155,23 +155,23 @@ class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
 
     @property
     def reference_assertion__any_data_type(self) -> ValueAssertion[SymbolReference]:
-        return DataSymbolTypeContext.reference_assertion__any_data_type(self.name)
+        return DataSymbolValueContext.reference_assertion__any_data_type(self.name)
 
     @property
     def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
-        return DataSymbolTypeContext.usage_assertion__any_data_type(self.name)
+        return DataSymbolValueContext.usage_assertion__any_data_type(self.name)
 
 
 class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
     def __init__(self,
                  name: str,
-                 type_context: LogicSymbolTypeContext[STV_TYPE],
+                 value: LogicSymbolValueContext[STV_TYPE],
                  ):
         super().__init__(name)
-        self.__type_context = type_context
+        self.__type_context = value
 
     @property
-    def type_context(self) -> LogicSymbolTypeContext[STV_TYPE]:
+    def value(self) -> LogicSymbolValueContext[STV_TYPE]:
         return self.__type_context
 
 

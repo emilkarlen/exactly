@@ -23,8 +23,8 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import DataSymbolTypeContext, DataTypeSymbolContext, \
-    LogicSymbolTypeContext, LogicTypeSymbolContext, SymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import DataSymbolValueContext, DataTypeSymbolContext, \
+    LogicSymbolValueContext, LogicTypeSymbolContext, SymbolContext
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -622,11 +622,11 @@ class DataTypeSdvForTest(DataTypeSdv):
         return self._references
 
 
-class TestDataSymbolTypeContext(DataSymbolTypeContext[DataTypeSdvForTest]):
+class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
     @staticmethod
     def of(references: Sequence[SymbolReference],
-           data_value_type: DataValueType) -> 'TestDataSymbolTypeContext':
-        return TestDataSymbolTypeContext(DataTypeSdvForTest(references, data_value_type))
+           data_value_type: DataValueType) -> 'TestDataSymbolValueContext':
+        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
@@ -635,16 +635,16 @@ class TestDataSymbolTypeContext(DataSymbolTypeContext[DataTypeSdvForTest]):
 class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
     def __init__(self,
                  name: str,
-                 type_context: TestDataSymbolTypeContext,
+                 value: TestDataSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of(symbol_name: str,
            references: Sequence[SymbolReference],
            value_type: DataValueType = DataValueType.STRING) -> 'TestDataSymbolContext':
         return TestDataSymbolContext(symbol_name,
-                                     TestDataSymbolTypeContext.of(references, value_type))
+                                     TestDataSymbolValueContext.of(references, value_type))
 
 
 class _LogicSdvForTest(LogicSdv):
@@ -679,11 +679,11 @@ class LogicTypeStvForTest(LogicTypeStv):
         return self._sdv
 
 
-class TestLogicSymbolTypeContext(LogicSymbolTypeContext[LogicTypeStvForTest]):
+class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
     @staticmethod
     def of(references: Sequence[SymbolReference],
-           logic_value_type: LogicValueType) -> 'TestLogicSymbolTypeContext':
-        return TestLogicSymbolTypeContext(LogicTypeStvForTest(references, logic_value_type))
+           logic_value_type: LogicValueType) -> 'TestLogicSymbolValueContext':
+        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
@@ -692,16 +692,16 @@ class TestLogicSymbolTypeContext(LogicSymbolTypeContext[LogicTypeStvForTest]):
 class TestLogicSymbolContext(LogicTypeSymbolContext[LogicTypeStvForTest]):
     def __init__(self,
                  name: str,
-                 type_context: TestLogicSymbolTypeContext,
+                 value: TestLogicSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of(symbol_name: str,
            references: Sequence[SymbolReference],
            value_type: LogicValueType = LogicValueType.FILE_MATCHER) -> 'TestLogicSymbolContext':
         return TestLogicSymbolContext(symbol_name,
-                                      TestLogicSymbolTypeContext.of(references, value_type))
+                                      TestLogicSymbolValueContext.of(references, value_type))
 
 
 def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> SymbolReference:

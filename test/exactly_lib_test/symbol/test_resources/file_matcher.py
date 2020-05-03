@@ -8,7 +8,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -58,18 +58,18 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-class FileMatcherSymbolTypeContext(LogicSymbolTypeContext[FileMatcherStv]):
+class FileMatcherSymbolValueContext(LogicSymbolValueContext[FileMatcherStv]):
     @staticmethod
-    def of_generic(sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolTypeContext':
-        return FileMatcherSymbolTypeContext(FileMatcherStv(sdv))
+    def of_generic(sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext(FileMatcherStv(sdv))
 
     @staticmethod
-    def of_primitive(primitive: FileMatcher) -> 'FileMatcherSymbolTypeContext':
-        return FileMatcherSymbolTypeContext.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_primitive(primitive: FileMatcher) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive))
 
     @staticmethod
-    def of_primitive_constant(result: bool) -> 'FileMatcherSymbolTypeContext':
-        return FileMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(result))
+    def of_primitive_constant(result: bool) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to__ref(symbol_name)
@@ -78,29 +78,29 @@ class FileMatcherSymbolTypeContext(LogicSymbolTypeContext[FileMatcherStv]):
 class FileMatcherSymbolContext(LogicTypeSymbolContext[FileMatcherStv]):
     def __init__(self,
                  name: str,
-                 type_context: FileMatcherSymbolTypeContext,
+                 value: FileMatcherSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of_sdtv(name: str, sdtv: FileMatcherStv) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolTypeContext(sdtv)
+            FileMatcherSymbolValueContext(sdtv)
         )
 
     @staticmethod
     def of_generic(name: str, sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolTypeContext.of_generic(sdv)
+            FileMatcherSymbolValueContext.of_generic(sdv)
         )
 
     @staticmethod
     def of_primitive(name: str, primitive: FileMatcher) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolTypeContext.of_primitive(primitive)
+            FileMatcherSymbolValueContext.of_primitive(primitive)
         )
 
     @staticmethod
@@ -109,4 +109,4 @@ class FileMatcherSymbolContext(LogicTypeSymbolContext[FileMatcherStv]):
                                                      constant.MatcherWithConstantResult(result))
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolTypeContext.of_primitive(constant.MatcherWithConstantResult(True))
+ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

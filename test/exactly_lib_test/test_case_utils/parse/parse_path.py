@@ -43,7 +43,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_sdv, \
     matches_path_sdv
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext, PathSymbolTypeContext, \
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext, PathSymbolValueContext, \
     ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
@@ -222,7 +222,7 @@ class TestParsesBase(unittest.TestCase):
             actual: PathSdv,
             symbols: SymbolTable):
         restriction = PathRelativityRestriction(PathRelativityVariants(RelOptionType, True))
-        container = PathSymbolTypeContext.of_sdv(actual).container
+        container = PathSymbolValueContext.of_sdv(actual).container
         result = restriction.is_satisfied_by(symbols, 'hypothetical_symbol', container)
         self.assertIsNone(result,
                           'Result of hypothetical restriction on path')

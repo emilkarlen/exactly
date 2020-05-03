@@ -3,7 +3,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
     arbitrary_sdv__without_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -17,10 +17,10 @@ def is_program_reference_to(symbol_name: str) -> ValueAssertion:
                                             IS_PROGRAM_REFERENCE_RESTRICTION)
 
 
-class ProgramSymbolTypeContext(LogicSymbolTypeContext[ProgramStv]):
+class ProgramSymbolValueContext(LogicSymbolValueContext[ProgramStv]):
     @staticmethod
-    def of_generic(sdv: ProgramSdv) -> 'ProgramSymbolTypeContext':
-        return ProgramSymbolTypeContext(ProgramStv(sdv))
+    def of_generic(sdv: ProgramSdv) -> 'ProgramSymbolValueContext':
+        return ProgramSymbolValueContext(ProgramStv(sdv))
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_program_reference_to(symbol_name)
@@ -29,23 +29,23 @@ class ProgramSymbolTypeContext(LogicSymbolTypeContext[ProgramStv]):
 class ProgramSymbolContext(LogicTypeSymbolContext[ProgramStv]):
     def __init__(self,
                  name: str,
-                 type_context: ProgramSymbolTypeContext,
+                 value: ProgramSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of_sdtv(name: str, sdtv: ProgramStv) -> 'ProgramSymbolContext':
         return ProgramSymbolContext(
             name,
-            ProgramSymbolTypeContext(sdtv)
+            ProgramSymbolValueContext(sdtv)
         )
 
     @staticmethod
     def of_generic(name: str, sdv: ProgramSdv) -> 'ProgramSymbolContext':
         return ProgramSymbolContext(
             name,
-            ProgramSymbolTypeContext.of_generic(sdv)
+            ProgramSymbolValueContext.of_generic(sdv)
         )
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolTypeContext.of_generic(arbitrary_sdv__without_symbol_references())
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_generic(arbitrary_sdv__without_symbol_references())

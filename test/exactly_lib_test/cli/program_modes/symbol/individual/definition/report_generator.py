@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.data.test_resources import path, list_
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
     string_transformer, program, string
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolTypeContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -110,9 +110,9 @@ class TestReferences(unittest.TestCase):
         )
 
         symbol_definitions = [
-            _symbol_definition(referencing_symbol.name, referencing_symbol.type_context),
-            _symbol_definition(referenced_symbol.name, referenced_symbol.type_context,
-                               referencing_symbol.type_context.sdtv.references),
+            _symbol_definition(referencing_symbol.name, referencing_symbol.value),
+            _symbol_definition(referenced_symbol.name, referenced_symbol.value,
+                               referencing_symbol.value.sdtv.references),
         ]
 
         definitions_resolver = _ConstantDefinitionsResolver(symbol_definitions)
@@ -159,7 +159,7 @@ class _ConstantDefinitionsResolver(DefinitionsResolver):
 
 
 def _symbol_definition(name: str,
-                       value: SymbolTypeContext,
+                       value: SymbolValueContext,
                        references: Sequence[SymbolReference] = ()
                        ) -> SymbolDefinitionInfo:
     return SymbolDefinitionInfo(

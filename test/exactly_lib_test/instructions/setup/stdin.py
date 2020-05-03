@@ -31,9 +31,9 @@ from exactly_lib_test.section_document.test_resources.parse_source import argume
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolTypeContext
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.string import StringSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -209,10 +209,10 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         ]
         cases = [
             NameAndValue('string value container',
-                         StringSymbolTypeContext.of_constant('string symbol value').container
+                         StringSymbolValueContext.of_constant('string symbol value').container
                          ),
             NameAndValue('path value container',
-                         PathSymbolTypeContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT, 'file-name.txt').container
+                         PathSymbolValueContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT, 'file-name.txt').container
                          ),
         ]
         for case in cases:

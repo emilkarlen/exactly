@@ -10,11 +10,11 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolTypeContext
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.symbol.test_resources import string
 from exactly_lib_test.symbol.test_resources import string_transformer, \
     file_matcher
-from exactly_lib_test.symbol.test_resources.string import StringSymbolTypeContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 
 
@@ -65,8 +65,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            StringSymbolTypeContext.of_constant('string'),
-            StringSymbolTypeContext.of_constant(''),
+            StringSymbolValueContext.of_constant('string'),
+            StringSymbolValueContext.of_constant(''),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()
@@ -108,7 +108,7 @@ class TestPathRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for actual_relativity in test_cases:
             with self.subTest(msg='actual_relativity=' + str(actual_relativity)):
-                container = PathSymbolTypeContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
+                container = PathSymbolValueContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
                 # ACT #
                 actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #
@@ -127,7 +127,7 @@ class TestPathRelativityRestriction(unittest.TestCase):
         symbols = empty_symbol_table()
         for actual_relativity in test_cases:
             with self.subTest(msg='value=' + str(actual_relativity)):
-                container = PathSymbolTypeContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
+                container = PathSymbolValueContext.of_rel_opt_and_suffix(actual_relativity, 'base-name').container
                 # ACT #
                 actual = restriction.is_satisfied_by(symbols, 'symbol_name', container)
                 # ASSERT #

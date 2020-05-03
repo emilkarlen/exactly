@@ -10,30 +10,30 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
-    DataSymbolTypeContext
+    DataSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class ListSymbolTypeContext(DataSymbolTypeContext[ListSdv]):
+class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
     @staticmethod
-    def of_sdv(sdv: ListSdv) -> 'ListSymbolTypeContext':
+    def of_sdv(sdv: ListSdv) -> 'ListSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return ListSymbolTypeContext(sdv)
+        return ListSymbolValueContext(sdv)
 
     @staticmethod
-    def of_ddv(ddv: ListDdv) -> 'ListSymbolTypeContext':
-        return ListSymbolTypeContext.of_sdv(ListSdvTestImplForConstantListDdv(ddv))
+    def of_ddv(ddv: ListDdv) -> 'ListSymbolValueContext':
+        return ListSymbolValueContext.of_sdv(ListSdvTestImplForConstantListDdv(ddv))
 
     @staticmethod
-    def of_constants(elements: Sequence[str]) -> 'ListSymbolTypeContext':
-        return ListSymbolTypeContext.of_sdv(list_sdvs.from_str_constants(elements))
+    def of_constants(elements: Sequence[str]) -> 'ListSymbolValueContext':
+        return ListSymbolValueContext.of_sdv(list_sdvs.from_str_constants(elements))
 
     @staticmethod
-    def of_empty() -> 'ListSymbolTypeContext':
-        return ListSymbolTypeContext.of_constants(())
+    def of_empty() -> 'ListSymbolValueContext':
+        return ListSymbolValueContext.of_constants(())
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
@@ -44,28 +44,28 @@ class ListSymbolTypeContext(DataSymbolTypeContext[ListSdv]):
 class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
     def __init__(self,
                  name: str,
-                 type_context: ListSymbolTypeContext,
+                 value: ListSymbolValueContext,
                  ):
-        super().__init__(name, type_context)
+        super().__init__(name, value)
 
     @staticmethod
     def of_sdv(name: str, sdv: ListSdv) -> 'ListSymbolContext':
         return ListSymbolContext(
             name,
-            ListSymbolTypeContext.of_sdv(sdv)
+            ListSymbolValueContext.of_sdv(sdv)
         )
 
     @staticmethod
     def of_ddv(name: str, ddv: ListDdv) -> 'ListSymbolContext':
-        return ListSymbolContext(name, ListSymbolTypeContext.of_ddv(ddv))
+        return ListSymbolContext(name, ListSymbolValueContext.of_ddv(ddv))
 
     @staticmethod
     def of_constants(name: str, elements: Sequence[str]) -> 'ListSymbolContext':
-        return ListSymbolContext(name, ListSymbolTypeContext.of_constants(elements))
+        return ListSymbolContext(name, ListSymbolValueContext.of_constants(elements))
 
     @staticmethod
     def of_empty(name: str) -> 'ListSymbolContext':
-        return ListSymbolContext(name, ListSymbolTypeContext.of_empty())
+        return ListSymbolContext(name, ListSymbolValueContext.of_empty())
 
 
 class ListDdvSymbolContext(ListSymbolContext):
@@ -73,7 +73,7 @@ class ListDdvSymbolContext(ListSymbolContext):
                  name: str,
                  ddv: ListDdv,
                  ):
-        super().__init__(name, ListSymbolTypeContext.of_ddv(ddv))
+        super().__init__(name, ListSymbolValueContext.of_ddv(ddv))
         self._ddv = ddv
 
     @staticmethod
@@ -109,4 +109,4 @@ def _ddv_of_constant(elements: Sequence[str]) -> ListDdv:
     ])
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = ListSymbolTypeContext.of_constants(['arbitrary', 'value'])
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ListSymbolValueContext.of_constants(['arbitrary', 'value'])
