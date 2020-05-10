@@ -1,3 +1,6 @@
+from typing import Optional
+
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
@@ -11,7 +14,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
     symbol_usage_equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
-    DataSymbolValueContext
+    DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -34,17 +37,27 @@ def is_string_made_up_of_just_strings_reference_to__ref(name_of_symbol: str,
 
 
 class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
+    def __init__(self,
+                 sdv: StringSdv,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
+
     @staticmethod
-    def of_sdv(sdv: StringSdv) -> 'StringSymbolValueContext':
+    def of_sdv(sdv: StringSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return StringSymbolValueContext(sdv)
+        return StringSymbolValueContext(sdv, definition_source)
 
     @staticmethod
-    def of_constant(primitive: str) -> 'StringSymbolValueContext':
-        return StringSymbolValueContext(string_sdvs.str_constant(primitive))
+    def of_constant(primitive: str,
+                    definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                    ) -> 'StringSymbolValueContext':
+        return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
@@ -100,17 +113,23 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdv(name: str, sdv: StringSdv) -> 'StringSymbolContext':
+    def of_sdv(name: str,
+               sdv: StringSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolValueContext.of_sdv(sdv)
+            StringSymbolValueContext.of_sdv(sdv, definition_source)
         )
 
     @staticmethod
-    def of_constant(name: str, primitive: str) -> 'StringSymbolContext':
+    def of_constant(name: str,
+                    primitive: str,
+                    definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                    ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolValueContext.of_constant(primitive)
+            StringSymbolValueContext.of_constant(primitive, definition_source)
         )
 
     def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:
@@ -152,8 +171,9 @@ class StringConstantSymbolContext(StringSymbolContext):
     def __init__(self,
                  name: str,
                  constant: str = 'string value',
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
-        super().__init__(name, StringSymbolValueContext.of_constant(constant))
+        super().__init__(name, StringSymbolValueContext.of_constant(constant, definition_source))
         self._constant = constant
 
     @property
@@ -161,12 +181,13 @@ class StringConstantSymbolContext(StringSymbolContext):
         return self._constant
 
 
-class StringIntConstantSymbolContext(StringSymbolContext):
+class StringIntConstantSymbolContext(StringConstantSymbolContext):
     def __init__(self,
                  name: str,
                  constant: int,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
-        super().__init__(name, StringSymbolValueContext.of_constant(str(constant)))
+        super().__init__(name, str(constant), definition_source)
         self._int_constant = constant
 
     @property

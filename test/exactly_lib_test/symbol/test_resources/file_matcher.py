@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components, constant
@@ -8,7 +9,8 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
+    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -59,17 +61,31 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 
 class FileMatcherSymbolValueContext(LogicSymbolValueContext[FileMatcherStv]):
-    @staticmethod
-    def of_generic(sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext(FileMatcherStv(sdv))
+    def __init__(self,
+                 sdv: FileMatcherStv,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_primitive(primitive: FileMatcher) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_generic(sdv: GenericFileMatcherSdv,
+                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                   ) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext(FileMatcherStv(sdv), definition_source)
 
     @staticmethod
-    def of_primitive_constant(result: bool) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result))
+    def of_primitive(primitive: FileMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
+                                                        definition_source)
+
+    @staticmethod
+    def of_primitive_constant(result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
+                                                          definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to__ref(symbol_name)
@@ -91,30 +107,43 @@ class FileMatcherSymbolContext(LogicTypeSymbolContext[FileMatcherStv]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str, sdtv: FileMatcherStv) -> 'FileMatcherSymbolContext':
+    def of_sdtv(name: str,
+                sdtv: FileMatcherStv,
+                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolValueContext(sdtv)
+            FileMatcherSymbolValueContext(sdtv, definition_source)
         )
 
     @staticmethod
-    def of_generic(name: str, sdv: GenericFileMatcherSdv) -> 'FileMatcherSymbolContext':
+    def of_generic(name: str,
+                   sdv: GenericFileMatcherSdv,
+                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                   ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolValueContext.of_generic(sdv)
+            FileMatcherSymbolValueContext.of_generic(sdv, definition_source)
         )
 
     @staticmethod
-    def of_primitive(name: str, primitive: FileMatcher) -> 'FileMatcherSymbolContext':
+    def of_primitive(name: str,
+                     primitive: FileMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolValueContext.of_primitive(primitive)
+            FileMatcherSymbolValueContext.of_primitive(primitive, definition_source)
         )
 
     @staticmethod
-    def of_primitive_constant(name: str, result: bool) -> 'FileMatcherSymbolContext':
+    def of_primitive_constant(name: str,
+                              result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext.of_primitive(name,
-                                                     constant.MatcherWithConstantResult(result))
+                                                     constant.MatcherWithConstantResult(result),
+                                                     definition_source)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

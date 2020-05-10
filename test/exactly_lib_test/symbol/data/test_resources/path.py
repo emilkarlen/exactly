@@ -1,3 +1,6 @@
+from typing import Optional
+
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
@@ -13,7 +16,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
-    DataSymbolValueContext
+    DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -21,39 +24,43 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     def __init__(self,
                  sdv: PathSdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
-        super().__init__(sdv)
-        self._sdtv = sdv
+        super().__init__(sdv, definition_source)
         self._accepted_relativities = accepted_relativities
 
     @staticmethod
     def of_sdv(sdv: PathSdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolValueContext(sdv, accepted_relativities)
+        return PathSymbolValueContext(sdv, accepted_relativities, definition_source)
 
     @staticmethod
     def of_ddv(ddv: PathDdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'PathSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return PathSymbolValueContext(PathConstantSdv(ddv), accepted_relativities)
+        return PathSymbolValueContext(PathConstantSdv(ddv), accepted_relativities, definition_source)
 
     @staticmethod
     def of_rel_opt_and_suffix(relativity: RelOptionType,
                               suffix: str,
                               accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                               ) -> 'PathSymbolValueContext':
         return PathSymbolValueContext.of_ddv(paths.of_rel_option(relativity,
                                                                  paths.constant_path_part(suffix)),
-                                             accepted_relativities)
+                                             accepted_relativities,
+                                             definition_source)
 
     @property
     def accepted_relativities(self) -> PathRelativityVariants:
@@ -97,21 +104,24 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     def of_sdv(name: str,
                sdv: PathSdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
-            PathSymbolValueContext.of_sdv(sdv, accepted_relativities)
+            PathSymbolValueContext.of_sdv(sdv, accepted_relativities, definition_source)
         )
 
     @staticmethod
     def of_ddv(name: str,
                ddv: PathDdv,
                accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'PathSymbolContext':
         return PathSymbolContext(
             name,
             PathSymbolValueContext.of_sdv(PathConstantSdv(ddv),
-                                          accepted_relativities)
+                                          accepted_relativities,
+                                          definition_source)
         )
 
     @property
@@ -132,20 +142,25 @@ class PathDdvSymbolContext(PathSymbolContext):
                  name: str,
                  ddv: PathDdv,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(name, PathSymbolValueContext.of_sdv(PathConstantSdv(ddv),
-                                                             accepted_relativities))
+                                                             accepted_relativities,
+                                                             definition_source))
         self._ddv = ddv
 
     @staticmethod
     def of_no_suffix(name: str,
                      relativity: RelOptionType,
-                     accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS, ) -> 'PathDdvSymbolContext':
+                     accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'PathDdvSymbolContext':
         return PathDdvSymbolContext(
             name,
             paths.of_rel_option(relativity,
                                 paths.empty_path_part()),
-            accepted_relativities
+            accepted_relativities,
+            definition_source,
         )
 
     @property
@@ -167,10 +182,12 @@ class ConstantSuffixPathDdvSymbolContext(PathDdvSymbolContext):
                  relativity: RelOptionType,
                  suffix: str,
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(name, paths.of_rel_option(relativity,
                                                    paths.constant_path_part(suffix)),
-                         accepted_relativities)
+                         accepted_relativities,
+                         definition_source)
         self._suffix = suffix
 
     @property

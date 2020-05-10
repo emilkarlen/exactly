@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, SymbolContainer
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
@@ -17,7 +18,8 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
+    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
@@ -163,13 +165,25 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
 
 
 class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransformerStv]):
-    @staticmethod
-    def of_sdv(sdv: StringTransformerSdv) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext(StringTransformerStv(sdv))
+    def __init__(self,
+                 sdv: StringTransformerStv,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_primitive(primitive: StringTransformer) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext.of_sdv(StringTransformerSdvConstant(primitive))
+    def of_sdv(sdv: StringTransformerSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringTransformerSymbolValueContext':
+        return StringTransformerSymbolValueContext(StringTransformerStv(sdv),
+                                                   definition_source)
+
+    @staticmethod
+    def of_primitive(primitive: StringTransformer,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringTransformerSymbolValueContext':
+        return StringTransformerSymbolValueContext.of_sdv(StringTransformerSdvConstant(primitive),
+                                                          definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_transformer__ref(symbol_name)
@@ -191,24 +205,33 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str, sdtv: StringTransformerStv) -> 'StringTransformerSymbolContext':
+    def of_sdtv(name: str,
+                sdtv: StringTransformerStv,
+                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                ) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolValueContext(sdtv)
+            StringTransformerSymbolValueContext(sdtv, definition_source)
         )
 
     @staticmethod
-    def of_sdv(name: str, sdv: StringTransformerSdv) -> 'StringTransformerSymbolContext':
+    def of_sdv(name: str,
+               sdv: StringTransformerSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolValueContext.of_sdv(sdv)
+            StringTransformerSymbolValueContext.of_sdv(sdv, definition_source)
         )
 
     @staticmethod
-    def of_primitive(name: str, primitive: StringTransformer) -> 'StringTransformerSymbolContext':
+    def of_primitive(name: str,
+                     primitive: StringTransformer,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringTransformerSymbolContext':
         return StringTransformerSymbolContext(
             name,
-            StringTransformerSymbolValueContext.of_primitive(primitive)
+            StringTransformerSymbolValueContext.of_primitive(primitive, definition_source)
         )
 
 

@@ -1,25 +1,35 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, List, TypeVar, Generic
+from typing import Sequence, List, TypeVar, Generic, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference, \
     ReferenceRestrictions, SymbolDefinition
+from exactly_lib.util import line_source
 from exactly_lib.util import symbol_table
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import Entry, SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
 
+ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION = symbol_utils.source_info_for_line_sequence(
+    line_source.single_line_sequence(1, 'definition source'))
+
 
 class SymbolValueContext(Generic[STV_TYPE], ABC):
-    def __init__(self, sdtv: STV_TYPE):
+    def __init__(self,
+                 sdtv: STV_TYPE,
+                 definition_source: Optional[SourceLocationInfo],
+                 ):
         self._sdtv = sdtv
+        self._definition_source = definition_source
 
     @property
     def sdtv(self) -> STV_TYPE:
@@ -28,6 +38,10 @@ class SymbolValueContext(Generic[STV_TYPE], ABC):
     @abstractmethod
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         pass
+
+    @property
+    def definition_source(self) -> Optional[SourceLocationInfo]:
+        return self._definition_source
 
     @property
     @abstractmethod
@@ -41,6 +55,12 @@ class SymbolValueContext(Generic[STV_TYPE], ABC):
 
 
 class DataSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
+    def __init__(self,
+                 sdtv: STV_TYPE,
+                 definition_source: Optional[SourceLocationInfo],
+                 ):
+        super().__init__(sdtv, definition_source)
+
     @staticmethod
     def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
@@ -57,7 +77,11 @@ class DataSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], AB
 
 
 class LogicSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
-    pass
+    def __init__(self,
+                 sdtv: STV_TYPE,
+                 definition_source: Optional[SourceLocationInfo],
+                 ):
+        super().__init__(sdtv, definition_source)
 
 
 class SymbolContext(Generic[STV_TYPE], ABC):

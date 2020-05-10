@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage, SymbolContainer
 from exactly_lib.test_case_file_structure import ddv_validation
@@ -9,7 +10,8 @@ from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericS
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
+    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -52,17 +54,32 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
 
 
 class StringMatcherSymbolValueContext(LogicSymbolValueContext[StringMatcherStv]):
-    @staticmethod
-    def of_generic(sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext(StringMatcherStv(sdv))
+    def __init__(self,
+                 sdv: StringMatcherStv,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_primitive(primitive: StringMatcher) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_generic(sdv: GenericStringMatcherSdv,
+                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                   ) -> 'StringMatcherSymbolValueContext':
+        return StringMatcherSymbolValueContext(StringMatcherStv(sdv),
+                                               definition_source)
 
     @staticmethod
-    def of_primitive_constant(result: bool) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result))
+    def of_primitive(primitive: StringMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringMatcherSymbolValueContext':
+        return StringMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
+                                                          definition_source)
+
+    @staticmethod
+    def of_primitive_constant(result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'StringMatcherSymbolValueContext':
+        return StringMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
+                                                            definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_matcher__ref(symbol_name)
@@ -84,30 +101,43 @@ class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str, sdtv: StringMatcherStv) -> 'StringMatcherSymbolContext':
+    def of_sdtv(name: str,
+                sdtv: StringMatcherStv,
+                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
-            StringMatcherSymbolValueContext(sdtv)
+            StringMatcherSymbolValueContext(sdtv, definition_source)
         )
 
     @staticmethod
-    def of_sdv(name: str, sdv: GenericStringMatcherSdv) -> 'StringMatcherSymbolContext':
+    def of_sdv(name: str,
+               sdv: GenericStringMatcherSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
-            StringMatcherSymbolValueContext.of_generic(sdv)
+            StringMatcherSymbolValueContext.of_generic(sdv, definition_source)
         )
 
     @staticmethod
-    def of_primitive(name: str, primitive: StringMatcher) -> 'StringMatcherSymbolContext':
+    def of_primitive(name: str,
+                     primitive: StringMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
-            StringMatcherSymbolValueContext.of_primitive(primitive)
+            StringMatcherSymbolValueContext.of_primitive(primitive, definition_source)
         )
 
     @staticmethod
-    def of_primitive_constant(name: str, result: bool) -> 'StringMatcherSymbolContext':
+    def of_primitive_constant(name: str,
+                              result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext.of_primitive(name,
-                                                       constant.MatcherWithConstantResult(result))
+                                                       constant.MatcherWithConstantResult(result),
+                                                       definition_source)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = StringMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

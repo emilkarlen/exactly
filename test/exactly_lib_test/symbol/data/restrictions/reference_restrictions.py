@@ -5,6 +5,7 @@ from typing import Sequence, Optional, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
@@ -25,7 +26,7 @@ from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolCo
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataSymbolValueContext, DataTypeSymbolContext, \
-    LogicSymbolValueContext, LogicTypeSymbolContext, SymbolContext
+    LogicSymbolValueContext, LogicTypeSymbolContext, SymbolContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -624,10 +625,18 @@ class DataTypeSdvForTest(DataTypeSdv):
 
 
 class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
+    def __init__(self,
+                 sdv: DataTypeSdvForTest,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
+
     @staticmethod
     def of(references: Sequence[SymbolReference],
-           data_value_type: DataValueType) -> 'TestDataSymbolValueContext':
-        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type))
+           data_value_type: DataValueType,
+           definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+           ) -> 'TestDataSymbolValueContext':
+        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type), definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
@@ -651,9 +660,11 @@ class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
     @staticmethod
     def of(symbol_name: str,
            references: Sequence[SymbolReference],
-           value_type: DataValueType = DataValueType.STRING) -> 'TestDataSymbolContext':
+           value_type: DataValueType = DataValueType.STRING,
+           definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+           ) -> 'TestDataSymbolContext':
         return TestDataSymbolContext(symbol_name,
-                                     TestDataSymbolValueContext.of(references, value_type))
+                                     TestDataSymbolValueContext.of(references, value_type, definition_source))
 
 
 class _LogicSdvForTest(LogicSdv):
@@ -689,10 +700,18 @@ class LogicTypeStvForTest(LogicTypeStv):
 
 
 class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
+    def __init__(self,
+                 sdv: LogicTypeStvForTest,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
+
     @staticmethod
     def of(references: Sequence[SymbolReference],
-           logic_value_type: LogicValueType) -> 'TestLogicSymbolValueContext':
-        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type))
+           logic_value_type: LogicValueType,
+           definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+           ) -> 'TestLogicSymbolValueContext':
+        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type), definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
@@ -716,9 +735,11 @@ class TestLogicSymbolContext(LogicTypeSymbolContext[LogicTypeStvForTest]):
     @staticmethod
     def of(symbol_name: str,
            references: Sequence[SymbolReference],
-           value_type: LogicValueType = LogicValueType.FILE_MATCHER) -> 'TestLogicSymbolContext':
+           value_type: LogicValueType = LogicValueType.FILE_MATCHER,
+           definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+           ) -> 'TestLogicSymbolContext':
         return TestLogicSymbolContext(symbol_name,
-                                      TestLogicSymbolValueContext.of(references, value_type))
+                                      TestLogicSymbolValueContext.of(references, value_type, definition_source))
 
 
 def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> SymbolReference:

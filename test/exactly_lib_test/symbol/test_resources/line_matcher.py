@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
@@ -11,7 +12,8 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNeg
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
+    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -86,17 +88,32 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
 
 
 class LineMatcherSymbolValueContext(LogicSymbolValueContext[LineMatcherStv]):
-    @staticmethod
-    def of_generic(sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolValueContext':
-        return LineMatcherSymbolValueContext(LineMatcherStv(sdv))
+    def __init__(self,
+                 sdv: LineMatcherStv,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_primitive(primitive: LineMatcher) -> 'LineMatcherSymbolValueContext':
-        return LineMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive))
+    def of_generic(sdv: GenericLineMatcherSdv,
+                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                   ) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext(LineMatcherStv(sdv),
+                                             definition_source)
 
     @staticmethod
-    def of_primitive_constant(result: bool) -> 'LineMatcherSymbolValueContext':
-        return LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result))
+    def of_primitive(primitive: LineMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
+                                                        definition_source)
+
+    @staticmethod
+    def of_primitive_constant(result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'LineMatcherSymbolValueContext':
+        return LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
+                                                          definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to__ref(symbol_name)
@@ -118,30 +135,43 @@ class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str, sdtv: LineMatcherStv) -> 'LineMatcherSymbolContext':
+    def of_sdtv(name: str,
+                sdtv: LineMatcherStv,
+                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                ) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolValueContext(sdtv)
+            LineMatcherSymbolValueContext(sdtv, definition_source)
         )
 
     @staticmethod
-    def of_generic(name: str, sdv: GenericLineMatcherSdv) -> 'LineMatcherSymbolContext':
+    def of_generic(name: str,
+                   sdv: GenericLineMatcherSdv,
+                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                   ) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolValueContext.of_generic(sdv)
+            LineMatcherSymbolValueContext.of_generic(sdv, definition_source)
         )
 
     @staticmethod
-    def of_primitive(name: str, primitive: LineMatcher) -> 'LineMatcherSymbolContext':
+    def of_primitive(name: str,
+                     primitive: LineMatcher,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(
             name,
-            LineMatcherSymbolValueContext.of_primitive(primitive)
+            LineMatcherSymbolValueContext.of_primitive(primitive, definition_source)
         )
 
     @staticmethod
-    def of_primitive_constant(name: str, result: bool) -> 'LineMatcherSymbolContext':
+    def of_primitive_constant(name: str,
+                              result: bool,
+                              definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                              ) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext.of_primitive(name,
-                                                     constant.MatcherWithConstantResult(result))
+                                                     constant.MatcherWithConstantResult(result),
+                                                     definition_source)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))
