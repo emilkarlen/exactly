@@ -9,9 +9,8 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
     ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -251,7 +250,8 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         def execution_case_for(operand_result: bool) -> NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
                                                                                      MatchingResult],
                                                                Arrangement]:
-            operand_matcher = helper.logic_type_matcher_from_primitive(
+            operand_matcher = helper.logic_type_symbol_context_from_primitive(
+                symbol_name,
                 matchers.ConstantMatcherWithCustomTrace(mk_operand_trace, operand_result)
             )
             trace = tree.Node(logic.NOT_OPERATOR_NAME,
@@ -268,9 +268,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     )
                 ),
                 Arrangement(
-                    symbols=SymbolTable({
-                        symbol_name: symbol_utils.container(operand_matcher)
-                    })
+                    symbols=operand_matcher.symbol_table
                 )
             )
 
@@ -616,13 +614,10 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
             arguments.as_arguments,
             conf.arbitrary_model,
             Arrangement(
-                symbols=SymbolTable({
-                    sym.name:
-                        symbol_utils.container(
-                            helper.logic_type_matcher_from_primitive(sym.value)
-                        )
+                symbols=SymbolContext.symbol_table_of_contexts([
+                    conf.mk_logic_type_context_of_primitive(sym.name, sym.value)
                     for sym in all_symbols
-                }),
+                ]),
             ),
             Expectation(
                 ParseExpectation(

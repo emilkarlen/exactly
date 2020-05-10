@@ -1,7 +1,5 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.sdvs import constant_sdtv
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -75,9 +73,8 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
                         main_result=asrt_matching_result.matches_value(case.expected),
                     ),
                     arrangement_w_tcds(
-                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                            _TRANSFORMER_SYMBOL_NAME: constant_sdtv(case.actual)
-                        }),
+                        symbols=StringTransformerSymbolContext.of_primitive(_TRANSFORMER_SYMBOL_NAME, case.actual
+                                                                            ).symbol_table,
                     )
                 )
                 for case in cases

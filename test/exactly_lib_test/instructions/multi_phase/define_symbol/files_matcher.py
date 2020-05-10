@@ -13,14 +13,12 @@ from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, Files
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
     is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
@@ -30,6 +28,7 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources import ar
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
@@ -96,13 +95,10 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'
 
-        referenced_symbol = NameAndValue('referenced_name',
-                                         ARBITRARY_SDV)
+        referenced_symbol = FilesMatcherSymbolContext.of_sdtv('referenced_name',
+                                                              ARBITRARY_SDV)
 
-        symbols = SymbolTable({
-            referenced_symbol.name:
-                symbol_utils.container(referenced_symbol.value)
-        })
+        symbols = referenced_symbol.symbol_table
 
         # ARRANGE #
 

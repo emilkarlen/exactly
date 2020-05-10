@@ -20,10 +20,10 @@ from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources import string_sdvs as string_sdvs_tr
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
@@ -139,6 +139,7 @@ class TestSingleElement(unittest.TestCase):
         plain_string = 'plain'
         symbol_name = 'symbol_name'
 
+        string_symbol = StringSymbolContext.of_arbitrary_value(symbol_name)
         cases = [
             Case('plain string',
                  plain_string,
@@ -151,17 +152,12 @@ class TestSingleElement(unittest.TestCase):
             Case('symbol reference',
                  symbol_reference_syntax_for_name(symbol_name),
                  Arrangement(
-                     symbol_table_from_name_and_sdvs([
-                         NameAndValue(symbol_name, string_sdvs_tr.arbitrary_sdv()),
-                     ])
+                     string_symbol.symbol_table
                  ),
                  Expectation(
                      elements=[list_sdvs.symbol_element(symbol_reference(symbol_name))],
                      validators=asrt.is_empty_sequence,
-                     references=asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
-                         symbol_name,
-                         is_any_data_type_reference_restrictions())
-                     ]),
+                     references=asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
                  )),
         ]
         # ACT & ASSERT #
@@ -200,10 +196,7 @@ class TestSingleElement(unittest.TestCase):
                               symbol_reference_syntax_for_name(symbol_name),
                               'after'])]),
                  Arrangement(
-                     symbol_table_from_name_and_sdvs([
-                         NameAndValue(symbol_name, string_sdvs_tr.arbitrary_sdv())
-                     ])
-                 ),
+                     StringSymbolContext.of_arbitrary_value(symbol_name).symbol_table),
                  Expectation(
                      elements=[list_sdvs.string_element(string_sdvs.from_fragments([
                          string_sdvs.str_fragment('before'),
@@ -595,9 +588,9 @@ class TestMultipleElements(unittest.TestCase):
                               remaining_part_of_current_line_with_sym_ref,
                               ]).as_str,
                  Arrangement(
-                     symbol_table_from_name_and_sdvs([
-                         NameAndValue(symbol_name_1, string_sdvs_tr.arbitrary_sdv()),
-                         NameAndValue(symbol_name_2, string_sdvs_tr.arbitrary_sdv()),
+                     SymbolContext.symbol_table_of_contexts([
+                         StringSymbolContext.of_arbitrary_value(symbol_name_1),
+                         StringSymbolContext.of_arbitrary_value(symbol_name_2),
                      ])
                  ),
                  Expectation(

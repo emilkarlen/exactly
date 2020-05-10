@@ -4,9 +4,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_files_matcher_sdv
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
@@ -15,6 +13,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import argumen
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
     integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation, \
     ParseExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -153,9 +152,9 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
             remaining_source(files_matcher_source__num_files_ending_with_x_eq_1)
         )
 
-        symbols = SymbolTable({
-            symbol_name: container_of_files_matcher_sdv(num_files_ending_with_x_eq_1_resolver),
-        })
+        symbols = FilesMatcherSymbolContext.of_generic(symbol_name,
+                                                       num_files_ending_with_x_eq_1_resolver,
+                                                       ).symbol_table
 
         # ASSERT #
 

@@ -1,15 +1,13 @@
 import itertools
 import unittest
 
-from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+    StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -83,10 +81,10 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     Arguments(arguments),
                     model_construction.of_lines(initial_model_lines),
                     arrangement_wo_tcds(
-                        SymbolTable({
-                            symbol.name: container(StringTransformerStv(StringTransformerSdvConstant(symbol.value)))
+                        SymbolContext.symbol_table_of_contexts([
+                            StringTransformerSymbolContext.of_primitive(symbol.name, symbol.value)
                             for symbol in sequenced_transformer_symbols
-                        })
+                        ])
                     ),
                     expectation_of_successful_execution(
                         output_lines=expected_output_lines,
@@ -101,15 +99,12 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
 
 class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
     def runTest(self):
-        successful_transformer = NameAndValue(
-            'successful_transformer',
-            StringTransformerStv(StringTransformerSdvConstant(IdentityStringTransformer()))
-        )
+        successful_transformer = StringTransformerSymbolContext.of_identity('successful_transformer')
         for case in validation_cases.failing_validation_cases('failing_transformer'):
             failing_symbol_context = case.value.symbol_context
 
-            symbols = symbol_table_from_name_and_sdvs([
-                failing_symbol_context.name_and_sdtv,
+            symbols = SymbolContext.symbol_table_of_contexts([
+                failing_symbol_context,
                 successful_transformer,
             ])
 

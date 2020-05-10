@@ -16,7 +16,7 @@ from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransfor
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
@@ -185,16 +185,20 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
         return StringTransformerSymbolValueContext.of_sdv(StringTransformerSdvConstant(primitive),
                                                           definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'StringTransformerSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.STRING_TRANSFORMER
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_transformer__ref(symbol_name)
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv]):
@@ -233,6 +237,36 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv
             name,
             StringTransformerSymbolValueContext.of_primitive(primitive, definition_source)
         )
+
+    @staticmethod
+    def of_identity(name: str,
+                    definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                    ) -> 'StringTransformerSymbolContext':
+        return StringTransformerSymbolContext.of_primitive(name,
+                                                           IdentityStringTransformer(),
+                                                           definition_source)
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'StringTransformerSymbolContext':
+        return StringTransformerSymbolContext(
+            name,
+            ARBITRARY_SYMBOL_VALUE_CONTEXT
+        )
+
+
+class StringTransformerPrimitiveSymbolContext(StringTransformerSymbolContext):
+    def __init__(self,
+                 name: str,
+                 primitive: StringTransformer,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(name,
+                         StringTransformerSymbolValueContext.of_primitive(primitive, definition_source))
+        self._primitive = primitive
+
+    @property
+    def primitive(self) -> StringTransformer:
+        return self._primitive
 
 
 def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:

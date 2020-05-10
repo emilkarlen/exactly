@@ -2,13 +2,10 @@ import unittest
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.data import paths
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
@@ -29,12 +26,14 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -100,17 +99,20 @@ class TestSymbolUsages(TestCaseBase):
             ),
             transformed_shell_contents_arguments.following_lines)
 
-        symbols = SymbolTable({
-            dst_file_symbol.name:
-                container(path_sdvs.of_rel_option(RelOptionType.REL_ACT,
-                                                  paths.constant_path_part(dst_file_symbol.value))),
+        symbols = SymbolContext.symbol_table_of_contexts([
+            ConstantSuffixPathDdvSymbolContext(
+                dst_file_symbol.name,
+                RelOptionType.REL_ACT,
+                dst_file_symbol.value,
+            ),
 
-            text_printed_by_shell_command_symbol.name:
-                container(string_sdvs.str_constant(text_printed_by_shell_command_symbol.value)),
+            StringSymbolContext.of_constant(
+                text_printed_by_shell_command_symbol.name,
+                text_printed_by_shell_command_symbol.value,
+            ),
 
-            to_upper_transformer.name:
-                to_upper_transformer.symbol_table_container,
-        })
+            to_upper_transformer,
+        ])
 
         # ACT & ASSERT #
 

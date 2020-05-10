@@ -1,12 +1,9 @@
 import unittest
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbol_utils import container, symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import test_case_utils
@@ -118,7 +115,7 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
                     model_constructor=
                     CONSTRUCTOR_OF_ARBITRARY_MODEL,
                     arrangement=
-                    symbol_table_from_name_and_sdvs(regex_case.symbols),
+                    regex_case.symbol_table,
                     expectation=
                     Expectation(
                         ParseExpectation(
@@ -132,18 +129,16 @@ class ValidationShouldFailWhenRegexIsInvalid(test_case_utils.TestWithNegationArg
 
 
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
-    any_char_regex_string_symbol = NameAndValue(
+    any_char_regex_string_symbol = StringSymbolContext.of_constant(
         'valid_regex_string_symbol',
-        container(string_sdvs.str_constant('.'))
+        '.'
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
         arg.Matches('AB' + symbol_reference_syntax_for_name(any_char_regex_string_symbol.name))
     )
     matching_model_of_positive_check = (1, 'ABC')
 
-    arrangement = SymbolTable({
-        any_char_regex_string_symbol.name: any_char_regex_string_symbol.value,
-    })
+    arrangement = any_char_regex_string_symbol.symbol_table
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         integration_check.check_with_source_variants(

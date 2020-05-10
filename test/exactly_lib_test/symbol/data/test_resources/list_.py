@@ -6,10 +6,11 @@ from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -49,6 +50,14 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
                  ) -> 'ListSymbolValueContext':
         return ListSymbolValueContext.of_constants((), definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'ListSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.LIST
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
@@ -56,11 +65,7 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
@@ -97,6 +102,10 @@ class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
     @staticmethod
     def of_empty(name: str) -> 'ListSymbolContext':
         return ListSymbolContext(name, ListSymbolValueContext.of_empty())
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'ListSymbolContext':
+        return ListSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
 class ListDdvSymbolContext(ListSymbolContext):

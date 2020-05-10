@@ -1,10 +1,9 @@
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, arrangement_w_tcds, \
     Expectation, ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -35,12 +34,10 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper:
                 self.checked_dir_location,
                 DirContents([empty_dir(self.checked_dir_name)])
             ),
-            symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                self.files_matcher_name:
-                    FilesMatcherStv(matchers.sdv_from_primitive_value(
-                        matchers.MatcherThatReportsHardError(self.error_message)
-                    ))
-            }),
+            symbols=FilesMatcherSymbolContext.of_primitive(
+                self.files_matcher_name,
+                matchers.MatcherThatReportsHardError(self.error_message)
+            ).symbol_table,
         )
 
     def expectation(self) -> Expectation:

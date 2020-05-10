@@ -6,12 +6,12 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage, Symbo
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericStringMatcherSdv, FileToCheck
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
-    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
+    MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -53,7 +53,7 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
     )
 
 
-class StringMatcherSymbolValueContext(LogicSymbolValueContext[StringMatcherStv]):
+class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
     def __init__(self,
                  sdv: StringMatcherStv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
@@ -81,19 +81,23 @@ class StringMatcherSymbolValueContext(LogicSymbolValueContext[StringMatcherStv])
         return StringMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
                                                             definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'StringMatcherSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_matcher__ref(symbol_name)
 
     @property
-    def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
+    def value_type(self) -> ValueType:
+        return ValueType.STRING_MATCHER
 
     @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+    def container(self) -> SymbolContainer:
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
-class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):
+class StringMatcherSymbolContext(MatcherTypeSymbolContext[FileToCheck]):
     def __init__(self,
                  name: str,
                  value: StringMatcherSymbolValueContext,
@@ -138,6 +142,10 @@ class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):
         return StringMatcherSymbolContext.of_primitive(name,
                                                        constant.MatcherWithConstantResult(result),
                                                        definition_source)
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'StringMatcherSymbolContext':
+        return StringMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = StringMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

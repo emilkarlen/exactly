@@ -1,10 +1,11 @@
 import unittest
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolContainer, container_of_builtin
+from exactly_lib.symbol.sdv_structure import container_of_builtin
 from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as sut
-from exactly_lib_test.symbol.test_resources import symbol_utils  as su
+from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
@@ -29,8 +30,9 @@ class TestMatchesContainer(unittest.TestCase):
         # ARRANGE #
         actual_sdv = string_sdvs.str_constant('s')
         source_line = single_line_sequence(1, 'source line')
-        actual_container = SymbolContainer(actual_sdv,
-                                           su.source_info_for_line_sequence(source_line))
+        actual_container = StringSymbolValueContext(actual_sdv,
+                                                    source_location.source_info_for_line_sequence(
+                                                        source_line)).container
         assertion_that_is_expected_to_succeed = equals_line_sequence(source_line)
         assertion_to_check = sut.matches_container(
             assertion_on_sdv=asrt.anything_goes(),
@@ -42,8 +44,9 @@ class TestMatchesContainer(unittest.TestCase):
         # ARRANGE #
         actual_sdv = string_sdvs.str_constant('s')
         source_line = single_line_sequence(1, 'source line')
-        actual_container = SymbolContainer(actual_sdv,
-                                           su.source_info_for_line_sequence(source_line))
+        actual_container = StringSymbolValueContext(actual_sdv,
+                                                    source_location.source_info_for_line_sequence(
+                                                        source_line)).container
         assertion_that_is_expected_to_fail = asrt.not_(equals_line_sequence(source_line))
         assertion_to_check = sut.matches_container(
             assertion_on_sdv=asrt.anything_goes(),

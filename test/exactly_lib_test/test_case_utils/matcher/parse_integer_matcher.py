@@ -5,7 +5,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
@@ -14,13 +13,12 @@ from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import Compari
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherWTrace
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable, singleton_symbol_table_2
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -114,9 +112,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
     def test_successful_parse(self):
         # ARRANGE #
         tcds = fake_tcds()
-        symbol_69 = NameAndValue('SYMBOL_69',
-                                 symbol_utils.container(string_sdvs.str_constant('69')),
-                                 )
+        symbol_69 = StringSymbolContext.of_constant('SYMBOL_69', '69')
         for expectation_type in ExpectationType:
             cases = [
                 Case(comparators.EQ.name + ' plain integer',
@@ -212,8 +208,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                      references=asrt.matches_singleton_sequence(
                          asrt_sym_ref.is_reference_to_string_made_up_of_just_plain_strings(symbol_69.name)
                      ),
-                     symbols=singleton_symbol_table_2(symbol_69.name,
-                                                      symbol_69.value)
+                     symbols=symbol_69.symbol_table
                      ),
             ]
             for case in cases:
@@ -244,9 +239,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
         # ARRANGE #
         tcds = fake_tcds()
         is_text_renderer = asrt_renderer.is_renderer_of_major_blocks()
-        symbol_not_an_int = NameAndValue('SYMBOL_NOT_AN_INT',
-                                         symbol_utils.container(string_sdvs.str_constant('notAnInt')),
-                                         )
+        symbol_not_an_int = StringSymbolContext.of_constant('SYMBOL_NOT_AN_INT', 'notAnInt')
         for expectation_type in ExpectationType:
             cases = [
                 ValidationCase(comparators.EQ.name + ' not a number',
@@ -271,11 +264,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                source_assertion=
                                assert_source(is_at_eol=asrt.is_true),
                                references=asrt.matches_singleton_sequence(
-                                   asrt_sym_ref.is_reference_to_string_made_up_of_just_plain_strings(
-                                       symbol_not_an_int.name)
-                               ),
-                               symbols=singleton_symbol_table_2(symbol_not_an_int.name,
-                                                                symbol_not_an_int.value)
+                                   symbol_not_an_int.reference_assertion__string_made_up_of_just_strings),
+                               symbols=symbol_not_an_int.symbol_table
                                ),
             ]
             for case in cases:

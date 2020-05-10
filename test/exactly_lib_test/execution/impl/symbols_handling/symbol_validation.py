@@ -7,17 +7,17 @@ from exactly_lib.execution.impl.single_instruction_executor import PartialContro
 from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
 from exactly_lib.symbol import sdv_structure as rs
 from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
-from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util import line_source
-from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -42,7 +42,7 @@ class TestSymbolReference(unittest.TestCase):
     def test_WHEN_referenced_symbol_is_in_symbol_table_but_does_not_satisfy_value_restriction_THEN_validation_error(
             self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('val_name', 'symbol string'))
+        symbol_table = StringSymbolContext.of_constant('val_name', 'symbol string').symbol_table
         symbol_usage = SymbolReference('val_name',
                                        unconditionally_unsatisfied_reference_restrictions())
         # ACT #
@@ -53,32 +53,33 @@ class TestSymbolReference(unittest.TestCase):
 
     def test_WHEN_referenced_symbol_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
-        symbol_usage = SymbolReference('val_name',
-                                       ReferenceRestrictionsOnDirectAndIndirect(
-                                           RestrictionThatIsAlwaysSatisfied()))
+        symbol_table = StringSymbolContext.of_constant('val_name', 'value string').symbol_table
+        symbol_reference = SymbolReference('val_name',
+                                           ReferenceRestrictionsOnDirectAndIndirect(
+                                               RestrictionThatIsAlwaysSatisfied()))
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_reference, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
 
 
 class TestSymbolDefinition(unittest.TestCase):
     def test_WHEN_defined_symbol_is_in_symbol_table_THEN_validation_error(self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('already-defined'))
-        symbol_usage = symbol_of('already-defined')
+        name = 'already-defined'
+        symbol_table = StringSymbolContext.of_constant(name, 'arbitrary value').symbol_table
+        symbol_definition = StringSymbolContext.of_constant(name, 'other value').definition
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_definition, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
 
     def test_WHEN_defined_symbol_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('other'))
-        symbol_usage = symbol_of('undefined')
+        symbol_table = StringSymbolContext.of_constant('other', 'value').symbol_table
+        symbol_definition = StringSymbolContext.of_constant('undefined', 'value').definition
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol_definition, symbol_table)
         self.assertIsNone(actual, 'return value for indicating')
         self.assertTrue(symbol_table.contains('undefined'),
                         'definition should be added to symbol table')
@@ -87,48 +88,44 @@ class TestSymbolDefinition(unittest.TestCase):
 
     def test_WHEN_defined_symbol_not_in_symbol_table_but_referenced_symbols_not_in_table_THEN_validation_error(self):
         # ARRANGE #
-        symbol_table = singleton_symbol_table(string_entry('OTHER'))
-        symbol_usage = SymbolDefinition(
+        symbol_table = StringSymbolContext.of_constant('OTHER', 'value').symbol_table
+        symbol = PathSymbolContext.of_sdv(
             'UNDEFINED',
-            path_sdv_container(
-                path_sdvs.rel_symbol(SymbolReference('REFERENCED',
-                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                         RestrictionThatIsAlwaysSatisfied())),
-                                     path_part_sdvs.from_constant_str('file-name'))))
+            path_sdvs.rel_symbol(SymbolReference('REFERENCED',
+                                                 ReferenceRestrictionsOnDirectAndIndirect(
+                                                     RestrictionThatIsAlwaysSatisfied())),
+                                 path_part_sdvs.from_constant_str('file-name')))
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
+        actual = sut.validate_symbol_usage(symbol.definition, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
 
     def test_WHEN_defined_symbol_not_in_table_but_referenced_symbol_in_table_does_not_satisfy_restriction_THEN_error(
             self):
         # ARRANGE #
-        referenced_entry = string_entry('REFERENCED')
-        symbol_table = singleton_symbol_table(referenced_entry)
-        symbol_usage_to_check = SymbolDefinition(
+        symbol_table = StringSymbolContext.of_constant('REFERENCED', 'value').symbol_table
+        symbol = PathSymbolContext.of_sdv(
             'UNDEFINED',
-            path_sdv_container(
-                path_sdvs.rel_symbol(SymbolReference('REFERENCED',
-                                                     unconditionally_unsatisfied_reference_restrictions()),
-                                     path_part_sdvs.from_constant_str('file-name'))))
+            path_sdvs.rel_symbol(SymbolReference('REFERENCED',
+                                                 unconditionally_unsatisfied_reference_restrictions()),
+                                 path_part_sdvs.from_constant_str('file-name')))
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usage(symbol.definition, symbol_table)
         # ASSERT #
         self.assertIsNotNone(actual, 'return value for indicating error')
 
     def test_WHEN_defined_symbol_not_in_symbol_table_and_referenced_symbol_is_in_table_and_satisfies_restriction_THEN_ok(
             self):
         # ARRANGE #
-        referenced_entry = string_entry('REFERENCED')
-        symbol_table = singleton_symbol_table(referenced_entry)
-        symbol_usage_to_check = SymbolDefinition(
-            'UNDEFINED',
-            path_sdv_container(
-                path_sdvs.rel_symbol(SymbolReference('REFERENCED',
-                                                     ReferenceRestrictionsOnDirectAndIndirect(
-                                                         RestrictionThatIsAlwaysSatisfied())),
-                                     path_part_sdvs.from_constant_str('file-name'))))
+        referenced_symbol = StringSymbolContext.of_constant('REFERENCED', 'value')
+        symbol_table = referenced_symbol.symbol_table
+        symbol = PathSymbolContext.of_sdv('UNDEFINED',
+                                          path_sdvs.rel_symbol(
+                                              SymbolReference('REFERENCED',
+                                                              ReferenceRestrictionsOnDirectAndIndirect(
+                                                                  RestrictionThatIsAlwaysSatisfied())),
+                                              path_part_sdvs.from_constant_str('file-name')))
         # ACT #
-        actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
+        actual = sut.validate_symbol_usage(symbol.definition, symbol_table)
         # ASSERT #
         self.assertIsNone(actual, 'return value for indicating success')
         self.assertTrue(symbol_table.contains('UNDEFINED'),
@@ -149,7 +146,7 @@ class TestValidationOfList(unittest.TestCase):
             self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        valid_definition = symbol_of('symbol')
+        valid_definition = StringSymbolContext.of_constant('symbol', 'value').definition
         valid__reference = SymbolReference('symbol', unconditionally_satisfied_reference_restrictions())
         symbol_usages = [
             valid_definition,
@@ -162,7 +159,7 @@ class TestValidationOfList(unittest.TestCase):
     def test_WHEN_2nd_element_fails_to_validate_THEN_validation_error(self):
         # ARRANGE #
         symbol_table = empty_symbol_table()
-        valid_definition = symbol_of('name-of-definition')
+        valid_definition = StringSymbolContext.of_constant('name-of-definition', 'value').definition
         invalid__reference = SymbolReference('undefined', unconditionally_satisfied_reference_restrictions())
         symbol_usages = [
             valid_definition,
@@ -173,18 +170,6 @@ class TestValidationOfList(unittest.TestCase):
         self.assertIsNotNone(actual, 'result should indicate error')
         self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
-
-
-def symbol_of(name: str) -> SymbolDefinition:
-    return SymbolDefinition(name,
-                            rs.SymbolContainer(string_sdvs.str_constant('string value'),
-                                               single_line_sequence(1, 'source code')))
-
-
-def string_entry(name: str, constant: str = 'string value') -> Entry:
-    return Entry(name,
-                 rs.SymbolContainer(string_sdvs.str_constant(constant),
-                                    single_line_sequence(1, 'source code')))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:
@@ -200,11 +185,6 @@ class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
 
 
 _FL = FileLocationInfo(pathlib.Path('/'))
-
-
-def path_sdv_container(path_sdv: PathSdv) -> SymbolContainer:
-    return SymbolContainer(path_sdv,
-                           single_line_sequence(1, 'value def line'))
 
 
 def single_line_sequence(line_number: int, line: str) -> SourceLocationInfo:

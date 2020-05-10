@@ -8,9 +8,9 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_files_matcher_sdv
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
     FilesMatcherModelContentsAssertion
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolValueContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertion_applier import ApplicationAssertionSetup
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -28,9 +28,9 @@ def matcher(put: unittest.TestCase,
 def matcher__sym_tbl_container(put: unittest.TestCase,
                                model_dir: PathSdv,
                                expected_contents: List[pathlib.Path]) -> SymbolContainer:
-    return container_of_files_matcher_sdv(
+    return FilesMatcherSymbolValueContext.of_generic(
         matcher(put, model_dir, expected_contents)
-    )
+    ).container
 
 
 class _ModelCheckerAssertionSetup(ApplicationAssertionSetup[FilesMatcherModel, FilesMatcherModel]):

@@ -10,10 +10,11 @@ from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl
+from exactly_lib_test.symbol.test_resources import string_matcher
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
+    StringMatcherSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -33,10 +34,10 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringMatcherSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
-                         )),
+                             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv = ARBITRARY_STRING_MATCHER_SDV
@@ -52,10 +53,10 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringMatcherSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
-                         )),
+                             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = file_matcher_constant_sdv(FileMatcherTestImpl())
@@ -72,10 +73,10 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringMatcherSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
-                         )),
+                             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True),
@@ -93,10 +94,10 @@ class TestMatchesStringMatcherSdv(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringMatcherSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_MATCHER_SDV),
-                         )),
+                             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = ARBITRARY_STRING_MATCHER_SDV

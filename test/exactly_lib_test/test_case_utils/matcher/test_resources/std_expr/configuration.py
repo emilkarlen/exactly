@@ -6,6 +6,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -19,6 +20,26 @@ MatcherCheckerAlias = IntegrationChecker[MatcherWTraceAndNegation[MODEL],
 class MatcherConfiguration(Generic[MODEL], ABC):
     @abstractmethod
     def mk_logic_type(self, generic: MatcherSdv[MODEL]) -> MatcherTypeStv[MODEL]:
+        pass
+
+    @abstractmethod
+    def mk_logic_type_value_context_of_primitive(self,
+                                                 primitive: MatcherWTraceAndNegation[MODEL]
+                                                 ) -> MatcherSymbolValueContext[MODEL]:
+        pass
+
+    @abstractmethod
+    def mk_logic_type_context_of_primitive(self,
+                                           name: str,
+                                           primitive: MatcherWTraceAndNegation[MODEL]
+                                           ) -> MatcherTypeSymbolContext[MODEL]:
+        pass
+
+    @abstractmethod
+    def mk_logic_type_context_of_stv(self,
+                                     name: str,
+                                     stv: MatcherTypeStv[MODEL]
+                                     ) -> MatcherTypeSymbolContext[MODEL]:
         pass
 
     @abstractmethod

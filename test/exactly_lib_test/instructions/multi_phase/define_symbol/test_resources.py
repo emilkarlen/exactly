@@ -1,10 +1,8 @@
 from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
-from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as file_matcher_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax as line_matcher_syntax
 from exactly_lib_test.test_case_utils.parse.test_resources import \
@@ -77,11 +75,6 @@ def multi_line_source(first_line: str,
                       **kwargs) -> ParseSource:
     return remaining_source(src(first_line, **kwargs),
                             [src(line, **kwargs) for line in following_lines])
-
-
-def symbol_container(value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
-    return SymbolContainer(value_sdv,
-                           single_line_sequence(1, 'source line'))
 
 
 SB = ParseSourceBuilder(_STD_FORMAT_MAP)

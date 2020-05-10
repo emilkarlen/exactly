@@ -20,10 +20,10 @@ from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_program_sdv
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
@@ -160,26 +160,23 @@ class TestValidation(unittest.TestCase):
 
         expected_validation = validation.pre_sds_validation_fails__w_any_msg()
 
-        program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
+        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_generic(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                                                             'non-existing-exe-file')))
         )
 
-        program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
+        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_generic(
             'PGM_WITH_REF_TO_SOURCE_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                               'non-existing-python-file.py')))
         )
 
-        symbols = SymbolTable({
-            program_symbol_with_ref_to_non_exit_exe_file.name:
-                container_of_program_sdv(program_symbol_with_ref_to_non_exit_exe_file.value),
-
-            program_symbol_with_ref_to_non_exiting_file_as_argument.name:
-                container_of_program_sdv(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
-        })
+        symbols = SymbolContext.symbol_table_of_contexts([
+            program_symbol_with_ref_to_non_exit_exe_file,
+            program_symbol_with_ref_to_non_exiting_file_as_argument,
+        ])
 
         cases = [
             ValidationPreSdsCase('executable does not exist',
@@ -214,26 +211,23 @@ class TestValidation(unittest.TestCase):
 
         expected_validation = validation.post_sds_validation_fails__w_any_msg()
 
-        program_symbol_with_ref_to_non_exit_exe_file = NameAndValue(
+        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_generic(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
                                                                             'non-existing-exe-file')))
         )
 
-        program_symbol_with_ref_to_non_exiting_file_as_argument = NameAndValue(
+        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_generic(
             'PGM_WITH_REF_TO_SOURCE_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_ACT,
                                               'non-existing-python-file.py')))
         )
 
-        symbols = SymbolTable({
-            program_symbol_with_ref_to_non_exit_exe_file.name:
-                container_of_program_sdv(program_symbol_with_ref_to_non_exit_exe_file.value),
-
-            program_symbol_with_ref_to_non_exiting_file_as_argument.name:
-                container_of_program_sdv(program_symbol_with_ref_to_non_exiting_file_as_argument.value)
-        })
+        symbols = SymbolContext.symbol_table_of_contexts([
+            program_symbol_with_ref_to_non_exit_exe_file,
+            program_symbol_with_ref_to_non_exiting_file_as_argument,
+        ])
 
         cases = [
             ValidationPostSdsCase('executable does not exist',
@@ -295,7 +289,7 @@ class TestExecution(unittest.TestCase):
 
                     sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
-                    program_that_executes_py_source = NameAndValue(
+                    program_that_executes_py_source = ProgramSymbolContext.of_generic(
                         'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                         sdv_of_referred_program
                     )
@@ -303,10 +297,7 @@ class TestExecution(unittest.TestCase):
                     source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
                         program_that_executes_py_source.name))
 
-                    symbols = SymbolTable({
-                        program_that_executes_py_source.name:
-                            container_of_program_sdv(program_that_executes_py_source.value)
-                    })
+                    symbols = program_that_executes_py_source.symbol_table
 
                     # ACT & ASSERT #
                     CHECKER.check(
@@ -438,16 +429,13 @@ class TestResolving(unittest.TestCase):
                     with self.subTest(program=program_case.name,
                                       arguments=argument_case.name,
                                       resolving_case=resolving_case.name):
-                        program_symbol = NameAndValue(
+                        program_symbol = ProgramSymbolContext.of_generic(
                             'PROGRAM_SYMBOL',
                             resolving_case.actual_sdv)
 
                         source = parse_source_of(sym_ref_args.sym_ref_cmd_line(program_symbol.name))
 
-                        symbols = SymbolTable({
-                            program_symbol.name:
-                                container_of_program_sdv(program_symbol.value)
-                        })
+                        symbols = program_symbol.symbol_table
 
                         expected_references_assertion = asrt.matches_sequence([
                             asrt_pgm.is_program_reference_to(program_symbol.name),

@@ -8,13 +8,10 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
-    successful_matcher_with_validation, sdtv_of_unconditionally_matching_matcher
+    successful_matcher_with_validation, LineMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_containers
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
@@ -115,11 +112,10 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
         ]
         for case in validation_cases:
 
-            symbols = SymbolTable({
-                line_matcher_symbol_name: symbol_utils.container(
-                    successful_matcher_with_validation(case.actual)
-                )
-            })
+            symbols = LineMatcherSymbolContext.of_sdtv(
+                line_matcher_symbol_name,
+                successful_matcher_with_validation(case.actual)
+            ).symbol_table
             for quantifier in Quantifier:
 
                 arguments_constructor = arguments_building.ImplicitActualFileArgumentsConstructor(
@@ -145,19 +141,16 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
 
 class _TestStringTransformerValidatorIsApplied(TestCaseBase):
     def runTest(self):
-        line_matcher_symbol = NameAndValue(
+        line_matcher_symbol = LineMatcherSymbolContext.of_primitive_constant(
             'valid_line_matcher',
-            symbol_utils.container(
-                sdtv_of_unconditionally_matching_matcher()
-            )
-        )
+            True)
 
         for case in failing_validation_cases():
             symbol_context = case.value.symbol_context
 
-            symbols = symbol_table_from_name_and_containers([
+            symbols = SymbolContext.symbol_table_of_contexts([
                 line_matcher_symbol,
-                symbol_context.name_and_container,
+                symbol_context,
             ])
 
             expected_symbol_references = asrt.matches_sequence([

@@ -1,11 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
@@ -20,9 +17,9 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, \
     ParseExpectation, PrimAndExeExpectation
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -60,13 +57,10 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
 
 class TestHardErrorDueToInvalidModel(unittest.TestCase):
     def runTest(self):
-        unconditionally_constant_true = NameAndValue(
+        unconditionally_constant_true = FilesMatcherSymbolContext.of_primitive_constant(
             'unconditionally_constant_true',
-            FilesMatcherStv(
-                matchers.sdv_from_bool(True)
-            )
-        )
-        symbols = symbol_utils.symbol_table_from_name_and_sdvs([unconditionally_constant_true])
+            True)
+        symbols = unconditionally_constant_true.symbol_table
 
         location = RelSdsOptionType.REL_TMP
         model_file_name = 'the-checked-file'
@@ -148,10 +142,9 @@ class TestApplication(unittest.TestCase):
                             checked_dir_location,
                             DirContents([checked_dir])
                         ),
-                        symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                            files_matcher_name:
-                                FilesMatcherStv(matchers.sdv_from_bool(matcher_result))
-                        }),
+                        symbols=FilesMatcherSymbolContext.of_primitive_constant(files_matcher_name,
+                                                                                matcher_result
+                                                                                ).symbol_table,
                     ),
                 )
                 for matcher_result in [False, True]

@@ -4,7 +4,7 @@ from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.program.program_sdv import ProgramStv, ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
@@ -35,16 +35,20 @@ class ProgramSymbolValueContext(LogicSymbolValueContext[ProgramStv]):
         return ProgramSymbolValueContext(ProgramStv(sdv),
                                          definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'ProgramSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PROGRAM
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_program_reference_to(symbol_name)
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class ProgramSymbolContext(LogicTypeSymbolContext[ProgramStv]):
@@ -73,6 +77,10 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramStv]):
             name,
             ProgramSymbolValueContext.of_generic(sdv, definition_source)
         )
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'ProgramSymbolContext':
+        return ProgramSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_generic(arbitrary_sdv__without_symbol_references())

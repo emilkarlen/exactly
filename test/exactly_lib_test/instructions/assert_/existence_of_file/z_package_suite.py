@@ -27,7 +27,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_path_argument, \
@@ -187,9 +187,9 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
         # ARRANGE #
 
         error_message = 'error message from file matcher'
-        file_matcher_that_raises_hard_error = NameAndValue(
+        file_matcher_that_raises_hard_error = FileMatcherSymbolContext.of_primitive(
             'file_matcher_that_raises_hard_error',
-            self._sdv_of_matcher_that_causes_hard_error(error_message)
+            matchers.MatcherThatReportsHardError(error_message)
         )
 
         path_relativity = conf_rel_sds(RelSdsOptionType.REL_ACT)
@@ -208,9 +208,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
             sut.Parser(),
             remaining_source(str(argument)),
             ArrangementPostAct(
-                symbols=symbol_table_from_name_and_sdvs([
-                    file_matcher_that_raises_hard_error
-                ]),
+                symbols=file_matcher_that_raises_hard_error.symbol_table,
                 sds_contents=path_relativity.populator_for_relativity_option_root__sds(
                     DirContents([checked_file])
                 )
@@ -220,7 +218,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
                     asrt_text_doc.rendered_text_matches(asrt_str.contains(error_message))
                 ),
                 symbol_usages=asrt.matches_sequence([
-                    asrt_file_matcher.is_file_matcher_reference_to__ref(file_matcher_that_raises_hard_error.name)
+                    file_matcher_that_raises_hard_error.reference_assertion
                 ])
             ))
 

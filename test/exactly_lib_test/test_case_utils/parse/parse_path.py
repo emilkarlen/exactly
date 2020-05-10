@@ -13,7 +13,6 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -24,7 +23,6 @@ from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.util.cli_syntax.elements import argument
@@ -40,25 +38,21 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     string_made_up_of_just_strings_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_path_sdv, \
     matches_path_sdv
-from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext, PathSymbolValueContext, \
     ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
+from exactly_lib_test.symbol.test_resources import file_matcher, string_transformer, program
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
-from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
-from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -1424,17 +1418,17 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
 
 class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
     def test_SHOULD_be_able_to_generate_an_error_message_for_every_illegal_type(self):
-        cases = [
-            ListSdvTestImplForConstantListDdv(ListDdv([])),
-            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
-            StringTransformerStv(StringTransformerSdvConstantTestImpl(FakeStringTransformer(), [])),
+        symbol_value_contexts = [
+            list_.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
-        for sdv in cases:
-            with self.subTest(invalid_type=str(sdv.value_type)):
-                symbol_container = symbol_utils.container(sdv)
+        for symbol_value_context in symbol_value_contexts:
+            with self.subTest(invalid_type=str(symbol_value_context.value_type)):
                 # ACT #
                 actual = sut.type_must_be_either_path_or_string__err_msg_generator('failing_symbol',
-                                                                                   symbol_container)
+                                                                                   symbol_value_context.container)
                 # ASSERT #
                 asrt_text_doc.assert_is_valid_text_renderer(self, actual)
 

@@ -5,7 +5,6 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -19,7 +18,6 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
@@ -32,7 +30,7 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     files_matcher_integration as fm_tr
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data, model_checker
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.arguments_building import SequenceOfArguments, \
     OptionArgument
@@ -281,10 +279,9 @@ class TestMultiLineSyntax(unittest.TestCase):
                 ),
                 ArrangementPostAct2(
                     tcds,
-                    symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                        files_matcher_name:
-                            FilesMatcherStv(matchers.sdv_from_bool(matcher_result))
-                    })
+                    symbols=FilesMatcherSymbolContext.of_primitive_constant(files_matcher_name,
+                                                                            matcher_result
+                                                                            ).symbol_table
                 )
             )
             for matcher_result in [False, True]

@@ -12,8 +12,10 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext, \
+    SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -121,6 +123,17 @@ class AssertionsHelper(Generic[MODEL]):
     def logic_type_matcher_from_primitive(self, primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherTypeStv[MODEL]:
         return self.conf.mk_logic_type(matchers.sdv_from_primitive_value(primitive))
 
+    def logic_type_symbol_value_context_from_primitive(self,
+                                                       primitive: MatcherWTraceAndNegation[MODEL]
+                                                       ) -> MatcherSymbolValueContext[MODEL]:
+        return self.conf.mk_logic_type_value_context_of_primitive(primitive)
+
+    def logic_type_symbol_context_from_primitive(self,
+                                                 name: str,
+                                                 primitive: MatcherWTraceAndNegation[MODEL]
+                                                 ) -> MatcherTypeSymbolContext[MODEL]:
+        return self.conf.mk_logic_type_context_of_primitive(name, primitive)
+
     def execution_cases_for_constant_reference_expressions(
             self, symbol_name: str
     ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
@@ -131,9 +144,7 @@ class AssertionsHelper(Generic[MODEL]):
         mk_trace = get_mk_operand_trace('referred')
 
         def execution_case_for(result: bool) -> NExArr:
-            referenced_matcher = helper.logic_type_matcher_from_primitive(
-                matchers.ConstantMatcherWithCustomTrace(mk_trace, result)
-            )
+            referenced_matcher = matchers.ConstantMatcherWithCustomTrace(mk_trace, result)
             return NExArr(
                 'matcher that gives ' + str(result),
                 PrimAndExeExpectation.of_exe(
@@ -143,9 +154,8 @@ class AssertionsHelper(Generic[MODEL]):
                     )
                 ),
                 Arrangement(
-                    symbols=SymbolTable({
-                        symbol_name: symbol_utils.container(referenced_matcher)
-                    })
+                    symbols=helper.logic_type_symbol_context_from_primitive(symbol_name,
+                                                                            referenced_matcher).symbol_table
                 )
             )
 
@@ -165,10 +175,9 @@ class AssertionsHelper(Generic[MODEL]):
                     validation=validation_case.expected,
                 ),
                 arrangement=Arrangement(
-                    symbols=symbol_utils.symbol_table_from_name_and_sdvs([
-                        NameAndValue(symbol_name,
-                                     self.sdv_with_validation(validation_case.actual))
-                    ])
+                    symbols=self.conf.mk_logic_type_context_of_stv(
+                        symbol_name,
+                        self.sdv_with_validation(validation_case.actual)).symbol_table
                 )
             )
             for validation_case in failing_validation_cases()
@@ -208,9 +217,10 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
                         validation=validation_case.expected
                     ),
                     Arrangement(
-                        symbols=symbol_utils.symbol_table_from_name_and_sdvs([
-                            NameAndValue(sym_and_validation[0],
-                                         self.helper.sdv_with_validation(sym_and_validation[1]))
+                        symbols=SymbolContext.symbol_table_of_contexts([
+                            self.helper.conf.mk_logic_type_context_of_stv(
+                                sym_and_validation[0],
+                                self.helper.sdv_with_validation(sym_and_validation[1]))
                             for sym_and_validation in zip(operand_name_validations, validations)
                         ])
                     ),
@@ -346,11 +356,9 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
         })
 
     def _symbol_definition_for(self, operand: NameAndValue[MatcherBehaviour]) -> SymbolContainer:
-        return symbol_utils.container(
-            self.helper.logic_type_matcher_from_primitive(
-                operand.value.accept(_OperandSymbolDefinitionConstructor(self.put, operand.name))
-            )
-        )
+        return self.helper.logic_type_symbol_value_context_from_primitive(
+            operand.value.accept(_OperandMatcherConstructor(self.put, operand.name))
+        ).container
 
 
 class _ApplicationTraceConstructor(_MatcherBehaviourVisitor[Optional[tree.Node[bool]]]):
@@ -364,7 +372,7 @@ class _ApplicationTraceConstructor(_MatcherBehaviourVisitor[Optional[tree.Node[b
         return None
 
 
-class _OperandSymbolDefinitionConstructor(Generic[MODEL], _MatcherBehaviourVisitor[MatcherWTraceAndNegation[MODEL]]):
+class _OperandMatcherConstructor(Generic[MODEL], _MatcherBehaviourVisitor[MatcherWTraceAndNegation[MODEL]]):
     def __init__(self,
                  put: unittest.TestCase,
                  operand_name: str,

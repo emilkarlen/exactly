@@ -10,10 +10,10 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatch
     LineMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
-    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
+    MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -41,7 +41,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-def successful_matcher_with_validation(validator: DdvValidator):
+def successful_matcher_with_validation(validator: DdvValidator) -> LineMatcherStv:
     return LineMatcherStv(
         matchers.sdv_from_primitive_value(
             matchers.MatcherWithConstantResult(True),
@@ -87,7 +87,7 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
     )
 
 
-class LineMatcherSymbolValueContext(LogicSymbolValueContext[LineMatcherStv]):
+class LineMatcherSymbolValueContext(MatcherSymbolValueContext[LineMatcherLine]):
     def __init__(self,
                  sdv: LineMatcherStv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
@@ -115,19 +115,23 @@ class LineMatcherSymbolValueContext(LogicSymbolValueContext[LineMatcherStv]):
         return LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
                                                           definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'LineMatcherSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.LINE_MATCHER
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_line_matcher_reference_to__ref(symbol_name)
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
-class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
+class LineMatcherSymbolContext(MatcherTypeSymbolContext[LineMatcherLine]):
     def __init__(self,
                  name: str,
                  value: LineMatcherSymbolValueContext,
@@ -172,6 +176,10 @@ class LineMatcherSymbolContext(LogicTypeSymbolContext[LineMatcherStv]):
         return LineMatcherSymbolContext.of_primitive(name,
                                                      constant.MatcherWithConstantResult(result),
                                                      definition_source)
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'LineMatcherSymbolContext':
+        return LineMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = LineMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

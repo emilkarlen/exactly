@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolValueContext, LineMatcherSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
@@ -30,6 +31,23 @@ def suite() -> unittest.TestSuite:
 class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
     def mk_logic_type(self, generic: MatcherSdv[LineMatcherLine]) -> MatcherTypeStv[LineMatcherLine]:
         return LineMatcherStv(generic)
+
+    def mk_logic_type_value_context_of_primitive(self,
+                                                 primitive: MatcherWTraceAndNegation[LineMatcherLine]
+                                                 ) -> LineMatcherSymbolValueContext:
+        return LineMatcherSymbolValueContext.of_primitive(primitive)
+
+    def mk_logic_type_context_of_primitive(self,
+                                           name: str,
+                                           primitive: MatcherWTraceAndNegation[LineMatcherLine]
+                                           ) -> LineMatcherSymbolContext:
+        return LineMatcherSymbolContext.of_primitive(name, primitive)
+
+    def mk_logic_type_context_of_stv(self,
+                                     name: str,
+                                     stv: MatcherTypeStv[LineMatcherLine]
+                                     ) -> LineMatcherSymbolContext:
+        return LineMatcherSymbolContext.of_sdtv(name, stv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.LINE_MATCHER

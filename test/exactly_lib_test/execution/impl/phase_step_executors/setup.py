@@ -1,15 +1,15 @@
 import unittest
+from typing import List, Set
 
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
 from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
-from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.symbol.test_resources import symbol_utils as ne_tr
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -41,33 +41,38 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
         self.phase_configuration = phase_configuration
 
     def runTest(self):
+        symbol__defined = symbol_of('defined')
+        symbol__defined1 = symbol_of('defined1')
+        symbol__defined2 = symbol_of('defined2')
+        symbol__undefined = symbol_of('undefined')
         test_cases = [
             ('WHEN referenced value not in symbol table THEN error',
-             Arrangement(symbol_usages=[ne_tr.element_reference('undefined')],
+             Arrangement(symbol_usages=[symbol__undefined.reference__any_data_type],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
              ),
             ('WHEN referenced value is in symbol table THEN None',
-             Arrangement(symbol_usages=[ne_tr.element_reference('defined')],
-                         environment=env_with_singleton_symbol_table(symbol_of('defined'))),
+             Arrangement(symbol_usages=[symbol__defined.reference__any_data_type],
+                         environment=env_with_singleton_symbol_table(symbol__defined)),
              Expectation(return_value=is_success,
-                         environment=symbol_table_contains_exactly_names({'defined'}))
+                         environment=symbol_table_contains_exactly_names({symbol__defined.name}))
              ),
             ('WHEN referenced valueS is in symbol table THEN None',
-             Arrangement(symbol_usages=[ne_tr.element_reference('defined1'),
-                                        ne_tr.element_reference('defined2')],
-                         environment=env_with_symbol_table([symbol_of('defined1'),
-                                                            symbol_of('defined2')])),
+             Arrangement(symbol_usages=[symbol__defined1.reference__any_data_type,
+                                        symbol__defined2.reference__any_data_type],
+                         environment=env_with_symbol_table([symbol__defined1,
+                                                            symbol__defined2])),
              Expectation(return_value=is_success,
-                         environment=symbol_table_contains_exactly_names({'defined1', 'defined2'}))
+                         environment=symbol_table_contains_exactly_names(
+                             {symbol__defined1.name, symbol__defined2.name}))
              ),
             ('WHEN at least one referenced value is not in symbol table THEN error',
-             Arrangement(symbol_usages=[ne_tr.element_reference('defined'),
-                                        ne_tr.element_reference('undefined')],
-                         environment=env_with_symbol_table([symbol_of('defined')])),
+             Arrangement(symbol_usages=[symbol__defined.reference__any_data_type,
+                                        symbol__undefined.reference__any_data_type],
+                         environment=env_with_symbol_table([symbol__defined])),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
-                         environment=symbol_table_contains_exactly_names({'defined'}))
+                         environment=symbol_table_contains_exactly_names({symbol__defined.name}))
              ),
         ]
         for test_name, arrangement, expectation in test_cases:
@@ -120,17 +125,18 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
         self.phase_configuration = phase_configuration
 
     def runTest(self):
+        string_symbol = StringConstantSymbolContext('define')
         test_cases = [
             ('WHEN value to define is before reference to it (in list of value usages) THEN ok',
-             Arrangement(symbol_usages=[StringConstantSymbolContext('define').definition,
-                                        ne_tr.element_reference('define')],
+             Arrangement(symbol_usages=[string_symbol.definition,
+                                        string_symbol.reference__any_data_type],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=is_success,
                          environment=symbol_table_contains_exactly_names({'define'}))
              ),
             ('WHEN value to define is after reference to it (in list of value usages) THEN error',
-             Arrangement(symbol_usages=[ne_tr.element_reference('define'),
-                                        StringConstantSymbolContext('define').definition],
+             Arrangement(symbol_usages=[string_symbol.reference__any_data_type,
+                                        string_symbol.definition],
                          environment=env_with_empty_symbol_table()),
              Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
@@ -163,24 +169,24 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
-def env_with_singleton_symbol_table(definition: SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
-    table = ne_tr.symbol_table_from_symbol_definitions([definition])
+def env_with_singleton_symbol_table(symbol: SymbolContext) -> InstructionEnvironmentForPreSdsStep:
+    table = symbol.symbol_table
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=table)
 
 
-def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
-    symbols = ne_tr.symbol_table_from_symbol_definitions(symbols)
+def env_with_symbol_table(symbols: List[SymbolContext]) -> InstructionEnvironmentForPreSdsStep:
+    symbols = SymbolContext.symbol_table_of_contexts(symbols)
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
                                                {},
                                                symbols=symbols)
 
 
-def symbol_of(name: str) -> SymbolDefinition:
-    return StringConstantSymbolContext(name).definition
+def symbol_of(name: str) -> StringSymbolContext:
+    return StringConstantSymbolContext(name)
 
 
 def error_with_status(expected: PartialControlledFailureEnum) -> ValueAssertion:
@@ -193,15 +199,15 @@ def error_with_status(expected: PartialControlledFailureEnum) -> ValueAssertion:
 is_success = asrt.is_none
 
 
-def symbol_table_contains_exactly_names(names: set) -> ValueAssertion:
+def symbol_table_contains_exactly_names(names: Set[str]) -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
     return _symbol_table_names_set(asrt.equals(names))
 
 
-def symbol_table_is_empty() -> ValueAssertion:
+def symbol_table_is_empty() -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
     return _symbol_table_names_set(asrt.len_equals(0))
 
 
-def _symbol_table_names_set(assertion: ValueAssertion) -> ValueAssertion:
+def _symbol_table_names_set(assertion: ValueAssertion[Set[str]]) -> ValueAssertion[InstructionEnvironmentForPreSdsStep]:
     return asrt.sub_component('symbols',
                               InstructionEnvironmentForPreSdsStep.symbols.fget,
                               asrt.sub_component('names_set',

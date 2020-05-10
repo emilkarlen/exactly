@@ -26,7 +26,7 @@ class ErrorMessageWithFixTip(tuple):
             to_string.major_blocks(self.message.render_sequence()),
             (''
              if self.how_to_fix is None
-             else to_string.major_blocks(self.how_to_fix.render())
+             else to_string.major_blocks(self.how_to_fix.render_sequence())
              )
         )
 

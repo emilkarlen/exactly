@@ -4,9 +4,7 @@ from typing import Sequence, Iterable
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
-from exactly_lib.type_system.data import paths
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
@@ -14,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
@@ -195,14 +193,12 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         ]
 
         for dst_file_relativity_case in dst_file_relativity_cases:
-            path_symbol_wo_suffix = NameAndValue(
+            path_symbol_wo_suffix = PathDdvSymbolContext.of_no_suffix(
                 'dst_path_symbol',
-                path_sdvs.constant(paths.of_rel_option(dst_file_relativity_case)),
+                dst_file_relativity_case,
             )
             additional_symbol_table_entries = [
-                Entry(path_symbol_wo_suffix.name,
-                      symbol_utils.container(path_symbol_wo_suffix.value)
-                      ),
+                path_symbol_wo_suffix.entry,
             ]
             with self.subTest(dst_file_relativity_case):
                 self._check_cases_for_dst_file_setup__expect_pre_sds_validation_failure(

@@ -8,11 +8,12 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, Refer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference, \
     symbol_usage_equals_symbol_reference
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -59,6 +60,10 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
                     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source)
 
+    @staticmethod
+    def of_arbitrary_value() -> 'StringSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
             symbol_name,
@@ -97,12 +102,12 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
         )
 
     @property
-    def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
+    def value_type(self) -> ValueType:
+        return ValueType.STRING
 
     @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+    def container(self) -> SymbolContainer:
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
@@ -131,6 +136,10 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
             name,
             StringSymbolValueContext.of_constant(primitive, definition_source)
         )
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'StringSymbolContext':
+        return StringSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
     def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:
         return SymbolReference(self.name,

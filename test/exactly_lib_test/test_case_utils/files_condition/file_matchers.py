@@ -1,17 +1,15 @@
 import unittest
 from pathlib import PurePosixPath
-from typing import Optional, Mapping
+from typing import Optional, Mapping, Sequence
 
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases, \
-    file_matchers
-from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import constant_valid_file_matcher
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref, \
+    FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.complex_matcher_checking import \
@@ -54,7 +52,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
 
     def test_validation_error_SHOULD_be_reported_WHEN_file_name_is_invalid(self):
         # ARRANGE #
-        valid_fm = constant_valid_file_matcher('a_valid_file_matcher')
+        valid_fm = FileMatcherSymbolContext.of_primitive_constant('a_valid_file_matcher', True)
         arguments = args.FilesCondition([
             args.FileCondition('/an/absolute/file/name',
                                fm_args.SymbolReferenceWSyntax(valid_fm.name)),
@@ -65,7 +63,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
             arguments.as_remaining_source,
             None,
             arrangement_wo_tcds(
-                symbol_utils.symbol_table_from_name_and_sdvs([valid_fm])
+                valid_fm.symbol_table
             ),
             Expectation(
                 ParseExpectation(
@@ -128,9 +126,9 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                                 })
                             ),
                             arrangement_wo_tcds(
-                                symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                                    fm_symbol: file_matchers.constant(expected_result)
-                                })
+                                FileMatcherSymbolContext.of_primitive_constant(
+                                    fm_symbol,
+                                    expected_result).symbol_table
                             ),
                         )
                         for expected_result in [False, True]
@@ -168,9 +166,9 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                         })
                     ),
                     arrangement_wo_tcds(
-                        symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                            fm_symbol: file_matchers.constant(expected_result)
-                        })
+                        FileMatcherSymbolContext.of_primitive_constant(
+                            fm_symbol,
+                            expected_result).symbol_table
                     ),
                 )
                 for expected_result in [False, True]
@@ -212,15 +210,12 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                         })
                     ),
                     arrangement_wo_tcds(
-                        symbol_utils.symbol_table_from_name_and_sdv_mapping({
-
-                            fm__constant.name:
-                                file_matchers.constant(fm__constant.value),
-
-                            fm__w_variations:
-                                file_matchers.constant(expected_result_of_matcher_w_variations),
-
-                        })
+                        SymbolContext.symbol_table_of_contexts([
+                            FileMatcherSymbolContext.of_primitive_constant(fm__constant.name,
+                                                                           fm__constant.value),
+                            FileMatcherSymbolContext.of_primitive_constant(fm__w_variations,
+                                                                           expected_result_of_matcher_w_variations),
+                        ])
                     ),
                 )
                 for expected_result_of_matcher_w_variations in [False, True]
@@ -363,9 +358,9 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
                             fn_2_times_w_fm,
                             fn_2_times__fm_1.build(fm1),
                             fn_2_times__fm_2.build(fm2),
-                            additional_symbols={
-                                fn_1_time__fm.name: file_matchers.constant(fm2)
-                            },
+                            additional_symbols=[
+                                FileMatcherSymbolContext.of_primitive_constant(fn_1_time__fm.name, fm2)
+                            ],
                             additional_entries={
                                 PurePosixPath(fn_1_time_wo_fm): asrt.is_none,
                                 PurePosixPath(fn_1_time_w_fm): asrt_primitive.is_matcher_that_gives(fm2),
@@ -383,7 +378,7 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
         file_name: str,
         fm1: NameAndValue[bool],
         fm2: NameAndValue[bool],
-        additional_symbols: Optional[Mapping[str, SymbolDependentValue]] = None,
+        additional_symbols: Sequence[SymbolContext] = (),
         additional_entries: Optional[Mapping[PurePosixPath, ValueAssertion[Optional[FileMatcher]]]] = None
 ) -> NExArr[PrimAndExeExpectation[FilesCondition,
                                   Optional[MatchingResult]],
@@ -400,18 +395,12 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
         sequence_builder.add_un_applied(fm2)
     )
 
-    symbols = (
-        {}
-        if additional_symbols is None
-        else
-        dict(additional_symbols)
-    )
-    symbols.update(
-        {
-            fm1.name: fst_matcher,
-            fm2.name: snd_matcher__w_respect_to_laziness,
-        }
-    )
+    symbols = []
+    symbols += additional_symbols
+    symbols += [
+        FileMatcherSymbolContext.of_sdtv(fm1.name, fst_matcher),
+        FileMatcherSymbolContext.of_sdtv(fm2.name, snd_matcher__w_respect_to_laziness),
+    ]
 
     entries = (
         {}
@@ -433,6 +422,6 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
             )
         ),
         arrangement_wo_tcds(
-            symbol_utils.symbol_table_from_name_and_sdv_mapping(symbols)
+            SymbolContext.symbol_table_of_contexts(symbols)
         ),
     )

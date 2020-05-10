@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext, FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
@@ -32,6 +33,23 @@ def suite() -> unittest.TestSuite:
 class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
     def mk_logic_type(self, generic: MatcherSdv[FileMatcherModel]) -> MatcherTypeStv[FileMatcherModel]:
         return FileMatcherStv(generic)
+
+    def mk_logic_type_value_context_of_primitive(self,
+                                                 primitive: MatcherWTraceAndNegation[FileMatcherModel]
+                                                 ) -> FileMatcherSymbolValueContext:
+        return FileMatcherSymbolValueContext.of_primitive(primitive)
+
+    def mk_logic_type_context_of_primitive(self,
+                                           name: str,
+                                           primitive: MatcherWTraceAndNegation[FileMatcherModel]
+                                           ) -> FileMatcherSymbolContext:
+        return FileMatcherSymbolContext.of_primitive(name, primitive)
+
+    def mk_logic_type_context_of_stv(self,
+                                     name: str,
+                                     stv: MatcherTypeStv[FileMatcherModel]
+                                     ) -> FileMatcherSymbolContext:
+        return FileMatcherSymbolContext.of_sdtv(name, stv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.FILE_MATCHER

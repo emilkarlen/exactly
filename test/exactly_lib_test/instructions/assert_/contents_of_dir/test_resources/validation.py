@@ -4,14 +4,14 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
-    is_reference_to_files_matcher
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as args
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -42,12 +42,12 @@ class ValidationHelper:
 
     def _arrangement(self, validator: DdvValidator) -> ArrangementPostAct2:
         return ArrangementPostAct2(
-            symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                self.name_of_referenced_symbol:
-                    files_matcher_stv_constant_test_impl(
-                        resolved_value=True,
-                        validator=validator,
-                    )}),
+            symbols=FilesMatcherSymbolContext.of_generic(
+                self.name_of_referenced_symbol,
+                matchers.sdv_from_bool(
+                    unconditional_result=True,
+                    validator=validator,
+                )).symbol_table,
         )
 
     def execution_cases(self) -> Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]]:

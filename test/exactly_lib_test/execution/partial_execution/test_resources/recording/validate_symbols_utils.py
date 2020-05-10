@@ -4,7 +4,6 @@ from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
@@ -19,7 +18,6 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbol_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
 
 
@@ -65,9 +63,10 @@ class TestCaseBase(unittest.TestCase):
 class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
     def runTest(self):
         conf = self.configuration
+        symbol__undefined = StringConstantSymbolContext('undefined symbol')
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
-                 conf.instruction_that_returns([element_reference('undefined symbol')]))
+                 conf.instruction_that_returns([symbol__undefined.reference__any_data_type]))
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
@@ -89,16 +88,15 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
 class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        defined_symbol = StringConstantSymbolContext('symbol_name').definition
+        defined_symbol = StringConstantSymbolContext('symbol_name')
         error_message_for_failed_restriction = 'error message'
-        reference_with_restriction_failure = SymbolReference(
-            defined_symbol.name,
+        reference_with_restriction_failure = defined_symbol.reference(
             ReferenceRestrictionsOnDirectAndIndirect(
                 direct=value_restriction_that_is_unconditionally_unsatisfied(error_message_for_failed_restriction)))
 
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,
-                 setup_phase_instruction_that(symbol_usages=do_return([defined_symbol]))) \
+                 setup_phase_instruction_that(symbol_usages=do_return([defined_symbol.definition]))) \
             .add(conf.phase,
                  conf.instruction_that_returns([reference_with_restriction_failure]))
 

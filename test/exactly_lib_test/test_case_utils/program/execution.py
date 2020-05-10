@@ -1,14 +1,12 @@
 import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program.program_sdv import ProgramStv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_program_sdv
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
     ParseExpectation, arrangement_w_tcds
@@ -66,7 +64,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 
                     sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
-                    program_that_executes_py_source = NameAndValue(
+                    program_that_executes_py_source = ProgramSymbolContext.of_generic(
                         'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                         sdv_of_referred_program
                     )
@@ -75,10 +73,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                         pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
                             program_that_executes_py_source.name)))
 
-                    symbols = SymbolTable({
-                        program_that_executes_py_source.name:
-                            container_of_program_sdv(program_that_executes_py_source.value)
-                    })
+                    symbols = program_that_executes_py_source.symbol_table
 
                     # ACT & ASSERT #
 
@@ -136,7 +131,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                                                                         stderr_contents,
                                                                         exit_code_case)
 
-                    program_that_executes_py_source = NameAndValue(
+                    program_that_executes_py_source = ProgramSymbolContext.of_generic(
                         'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                         program_sdvs.for_py_source_on_command_line(python_source)
                     )
@@ -146,15 +141,10 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                         transformation=to_upper_transformer.name
                     ).as_remaining_source
 
-                    symbols = SymbolTable({
-                        program_that_executes_py_source.name:
-                            container_of_program_sdv(program_that_executes_py_source.value),
-
-                        to_upper_transformer.name:
-                            test_transformers_setup.symbol_container_of(
-                                to_upper_transformer.value
-                            )
-                    })
+                    symbols = SymbolContext.symbol_table_of_contexts([
+                        program_that_executes_py_source,
+                        to_upper_transformer
+                    ])
 
                     # ACT & ASSERT #
 
@@ -187,9 +177,9 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        program_symbol = NameAndValue(
+        program_symbol = ProgramSymbolContext.of_generic(
             'A_PROGRAM',
-            ProgramStv(program_sdvs.arbitrary_sdv__without_symbol_references())
+            program_sdvs.arbitrary_sdv__without_symbol_references()
         )
 
         pgm_and_args_cases = [
@@ -212,9 +202,9 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                     [validation_case.value.transformer_arguments_elements]
                 )
 
-                symbols = symbol_table_from_name_and_sdvs([
+                symbols = SymbolContext.symbol_table_of_contexts([
                     program_symbol,
-                    validation_case.value.symbol_context.name_and_sdtv,
+                    validation_case.value.symbol_context,
                 ])
 
                 with self.subTest(pgm_and_args_case=pgm_and_args_case.name,

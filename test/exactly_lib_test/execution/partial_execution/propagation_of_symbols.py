@@ -2,19 +2,16 @@ import unittest
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Arrangement, test__va
 from exactly_lib_test.execution.test_resources.execution_recording import phase_step_recordings as psr
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -350,12 +347,10 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
 
 class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
     def test_one_symbol_is_predefined(self):
-        predefined_symbol = NameAndValue('predefined symbol name',
-                                         'predefined string constant symbol value')
+        predefined_symbol = StringSymbolContext.of_constant('predefined symbol name',
+                                                            'predefined string constant symbol value')
 
-        expected_predefined_symbols = SymbolTable({
-            predefined_symbol.name: symbol_utils.container(string_sdvs.str_constant(predefined_symbol.value))
-        })
+        expected_predefined_symbols = predefined_symbol.symbol_table
         all_predefined_symbols = frozenset((predefined_symbol.name,))
 
         expected_phase_2_step_2_names_set = {
@@ -400,17 +395,17 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                       actual_phase_2_step_2_names_set)
 
     def test_one_symbol_is_predefined_and_one_symbol_is_defined_in_the_setup_phase(self):
-        predefined_symbol = NameAndValue('predefined symbol',
-                                         'predefined string constant symbol value')
-        defined_symbol = NameAndValue('defined symbol',
-                                      'value of symbol defined in the setup phase (not used in this test)')
-        predefined_symbols_table = SymbolTable({
-            predefined_symbol.name: symbol_utils.container(string_sdvs.str_constant(predefined_symbol.value))
-        })
+        predefined_symbol = StringSymbolContext.of_constant('predefined symbol',
+                                                            'predefined string constant symbol value')
+        defined_symbol = StringConstantSymbolContext(
+            'defined symbol',
+            'value of symbol defined in the setup phase (not used in this test)'
+        )
+        predefined_symbols_table = predefined_symbol.symbol_table
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))
 
-        symbol_definition = StringConstantSymbolContext(defined_symbol.name, defined_symbol.value).definition
+        symbol_definition = defined_symbol.definition
 
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 

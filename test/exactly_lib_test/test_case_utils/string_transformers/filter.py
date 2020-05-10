@@ -3,7 +3,6 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
@@ -11,12 +10,11 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
     model_construction
@@ -61,13 +59,9 @@ class TestSelectTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
         # ARRANGE #
 
-        matcher = NameAndValue(
+        matcher = LineMatcherSymbolContext.of_primitive_constant(
             'line_matcher_symbol',
-            LineMatcherStv(
-                matchers.sdv_from_primitive_value(
-                    matchers.MatcherWithConstantResult(False)
-                )
-            ),
+            False,
         )
         line_matcher_arg = lm_arg.SymbolReference(matcher.name)
 
@@ -80,13 +74,11 @@ class TestSelectTransformer(unittest.TestCase):
             Arguments(arguments),
             model_construction.of_lines([]),
             arrangement_wo_tcds(
-                symbols=symbol_table_from_name_and_sdvs([
-                    matcher,
-                ])
+                symbols=matcher.symbol_table
             ),
             expectation_of_successful_execution(
                 symbol_references=asrt.matches_singleton_sequence(
-                    line_matcher.is_line_matcher_reference_to__ref(matcher.name)
+                    matcher.reference_assertion
                 ),
                 output_lines=[],
                 is_identity_transformer=False,
@@ -94,11 +86,9 @@ class TestSelectTransformer(unittest.TestCase):
         )
 
     def test_every_line_SHOULD_be_filtered(self):
-        matcher = NameAndValue(
+        matcher = LineMatcherSymbolContext.of_primitive(
             'line_matcher_symbol',
-            line_matcher.stv_from_primitive_value(
-                sub_string_line_matcher('MATCH'),
-            ),
+            sub_string_line_matcher('MATCH'),
         )
         line_matcher_arg = lm_arg.SymbolReference(matcher.name)
         cases = [
@@ -135,9 +125,7 @@ class TestSelectTransformer(unittest.TestCase):
                     Arguments(arguments),
                     model_construction.of_lines(case.actual),
                     arrangement_wo_tcds(
-                        symbols=symbol_table_from_name_and_sdvs([
-                            matcher,
-                        ])
+                        symbols=matcher.symbol_table
                     ),
                     expectation_of_successful_filter_execution(
                         output_lines=case.expected,
@@ -198,13 +186,10 @@ class TestSelectTransformer(unittest.TestCase):
                     Arguments(arguments),
                     model_construction.of_lines(input_lines),
                     arrangement_wo_tcds(
-                        symbols=symbol_table_from_name_and_sdvs([
-                            NameAndValue(line_matcher_name,
-                                         line_matcher.stv_from_primitive_value(
-                                             matcher,
-                                         ),
-                                         ),
-                        ])
+                        symbols=LineMatcherSymbolContext.of_primitive(
+                            line_matcher_name,
+                            matcher,
+                        ).symbol_table,
                     ),
                     expectation_of_successful_filter_execution(
                         output_lines=expected_output_lines,

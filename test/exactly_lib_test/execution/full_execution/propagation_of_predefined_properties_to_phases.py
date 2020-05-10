@@ -5,7 +5,6 @@ from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.phase_step_simple import \
     ALL_SETUP_WITH_ENV_ARG, ALL_ASSERT_WITH_ENV_ARG, ALL_BEFORE_ASSERT_WITH_ENV_ARG, \
     ALL_CLEANUP_WITH_ENV_ARG, ALL_ACT_WITH_ENV_ARG
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.functional import Composition
@@ -15,7 +14,7 @@ from exactly_lib_test.execution.full_execution.test_resources import execution_c
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     actor_that_records_property_of_env_for_each_step_w_env_arg, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_keys_equals
 
@@ -35,10 +34,9 @@ class TestPredefinedSymbols(unittest.TestCase):
     def test_WHEN_predefined_symbols_are_specified_THEN_the_set_of_symbols_SHOULD_be_exactly_these_symbols(
             self):
         # ARRANGE #
-        predefined_symbols_table = SymbolTable({
-            'predefined symbol': symbol_utils.container(string_sdvs.str_constant(
-                'predefined string value (not used by this test)'))
-        })
+        predefined_symbols_table = StringSymbolContext.of_constant(
+            'predefined symbol',
+            'predefined string value (not used by this test)').symbol_table
         predefined_properties = PredefinedProperties(environ={},
                                                      predefined_symbols=predefined_symbols_table)
         self._check(predefined_properties, assert_symbol_table_keys_equals(predefined_symbols_table.names_set))

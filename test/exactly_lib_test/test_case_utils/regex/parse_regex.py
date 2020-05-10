@@ -5,7 +5,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -19,8 +18,10 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source, remaining_source_lines
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -250,17 +251,14 @@ class TestValidRegex(unittest.TestCase):
 
     def test_here_document(self):
         # ARRANGE #
-        star_string_symbol = NameAndValue('STAR_SYMBOL',
-                                          container(string_sdvs.str_constant('*')))
+        star_string_symbol = StringSymbolContext.of_constant('STAR_SYMBOL', '*')
 
         regex_str = '.*'
 
         regex_source_line = '.' + symbol_reference_syntax_for_name(star_string_symbol.name)
 
         arrangement = Arrangement(
-            symbols=SymbolTable({
-                star_string_symbol.name: star_string_symbol.value,
-            })
+            symbols=star_string_symbol.symbol_table
         )
 
         matches_for_case_sensitive = []
@@ -318,8 +316,7 @@ class TestValidRegex(unittest.TestCase):
 
     def test_symbol_references(self):
         # ARRANGE #
-        star_string_symbol = NameAndValue('STAR_SYMBOL',
-                                          container(string_sdvs.str_constant('* ')))
+        star_string_symbol = StringSymbolContext.of_constant('STAR_SYMBOL', '* ')
 
         regex_str = '.* regex'
 
@@ -355,9 +352,7 @@ class TestValidRegex(unittest.TestCase):
         ]
 
         arrangement = Arrangement(
-            symbols=SymbolTable({
-                star_string_symbol.name: star_string_symbol.value,
-            })
+            symbols=star_string_symbol.symbol_table
         )
 
         expectation = ExpectationExceptPattern(
@@ -378,8 +373,7 @@ class TestValidRegex(unittest.TestCase):
 
 
 class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
-    STAR_STRING_SYMBOL = NameAndValue('STAR_SYMBOL',
-                                      container(string_sdvs.str_constant('*')))
+    STAR_STRING_SYMBOL = StringSymbolContext.of_constant('STAR_SYMBOL', '*')
 
     def test_no_symbol_references(self):
         # ARRANGE #
@@ -431,9 +425,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         ]
 
         arrangement = Arrangement(
-            symbols=SymbolTable({
-                self.STAR_STRING_SYMBOL.name: self.STAR_STRING_SYMBOL.value,
-            })
+            symbols=self.STAR_STRING_SYMBOL.symbol_table
         )
 
         expectation = ExpectationExceptPattern(
@@ -473,9 +465,7 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         ]
 
         arrangement = Arrangement(
-            symbols=SymbolTable({
-                self.STAR_STRING_SYMBOL.name: self.STAR_STRING_SYMBOL.value,
-            })
+            symbols=self.STAR_STRING_SYMBOL.symbol_table
         )
 
         expectation = ExpectationExceptPattern(
@@ -519,13 +509,13 @@ class TestFailingValidationDueToInvalidRegexSyntax(unittest.TestCase):
         ]
 
         for rel_opt in rel_opt_cases:
-            path_sdv = path_sdvs.of_rel_option(rel_opt)
+            path_symbol = PathDdvSymbolContext.of_no_suffix(path_symbol_name, rel_opt)
 
             arrangement = Arrangement(
-                symbols=SymbolTable({
-                    self.STAR_STRING_SYMBOL.name: self.STAR_STRING_SYMBOL.value,
-                    path_symbol_name: container(path_sdv),
-                })
+                symbols=SymbolContext.symbol_table_of_contexts([
+                    self.STAR_STRING_SYMBOL,
+                    path_symbol,
+                ])
             )
 
             # ACT & ASSERT #
@@ -559,9 +549,8 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
 
         for symbol_value in ['A', 'B']:
             with self.subTest(symbol_value=symbol_value):
-                symbols = SymbolTable({
-                    STRING_SYMBOL_NAME: container(string_sdvs.str_constant(symbol_value)),
-                })
+                string_symbol = StringSymbolContext.of_constant(STRING_SYMBOL_NAME, symbol_value)
+                symbols = string_symbol.symbol_table
 
                 # ACT & ASSERT #
 

@@ -3,15 +3,15 @@ import unittest
 from typing import Sequence, Optional, List
 
 from exactly_lib.symbol.data.restrictions import reference_restrictions
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
+from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
@@ -27,6 +27,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_build
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, empty_file, empty_dir
@@ -60,19 +61,24 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
         )
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
-        return symbol_utils.symbol_table_from_name_and_sdv_mapping({
-            self.files_matcher_name:
-                FilesMatcherStv(
-                    model_checker.matcher(
-                        put,
-                        self.model_file.path,
-                        test_data.strip_file_type_info(self.expected_and_actual.expected),
-                    )),
-            self.min_depth.name:
-                symbol_utils.string_sdvs.str_constant(str(self.min_depth.value)),
-            self.max_depth.name:
-                symbol_utils.string_sdvs.str_constant(str(self.max_depth.value)),
-        })
+        return SymbolContext.symbol_table_of_contexts([
+            FilesMatcherSymbolContext.of_generic(
+                self.files_matcher_name,
+                model_checker.matcher(
+                    put,
+                    self.model_file.path,
+                    test_data.strip_file_type_info(self.expected_and_actual.expected),
+                )
+            ),
+            StringIntConstantSymbolContext(
+                self.min_depth.name,
+                self.min_depth.value,
+            ),
+            StringIntConstantSymbolContext(
+                self.max_depth.name,
+                self.max_depth.value,
+            ),
+        ])
 
     def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
         return [

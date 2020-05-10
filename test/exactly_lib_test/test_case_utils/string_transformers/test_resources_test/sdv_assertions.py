@@ -5,10 +5,9 @@ from exactly_lib.test_case_utils.string_transformer.impl.identity import Identit
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -26,10 +25,9 @@ class TestResolvedValueMatchesStringTransformer(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
-                             'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_SDV),
-                         )),
+                         StringTransformerSymbolContext.of_arbitrary_value('the symbol name'
+                                                                           ).symbol_table,
+                         ),
 
         ]
         actual_and_expected = IdentityStringTransformer()
@@ -49,10 +47,11 @@ class TestResolvedValueMatchesStringTransformer(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringTransformerSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_SDV),
-                         )),
+                             ARBITRARY_STRING_TRANSFORMER_SDV,
+                         ).symbol_table
+                         ),
 
         ]
         actual = FileMatcherTestImpl()
@@ -73,10 +72,10 @@ class TestResolvedValueMatchesStringTransformer(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringTransformerSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_SDV),
-                         )),
+                             ARBITRARY_STRING_TRANSFORMER_SDV,
+                         ).symbol_table),
 
         ]
         actual = SequenceStringTransformer([])

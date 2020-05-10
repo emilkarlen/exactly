@@ -13,17 +13,15 @@ from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCh
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
-    string_matcher_sdv_constant_test_impl
+    string_matcher_sdv_constant_test_impl, StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
@@ -94,13 +92,9 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'
 
-        referenced_symbol = NameAndValue('referenced_name',
-                                         ARBITRARY_SDV)
+        referenced_symbol = StringMatcherSymbolContext.of_arbitrary_value('referenced_name')
 
-        symbols = SymbolTable({
-            referenced_symbol.name:
-                symbol_utils.container(referenced_symbol.value)
-        })
+        symbols = referenced_symbol.symbol_table
 
         # ARRANGE #
 

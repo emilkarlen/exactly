@@ -1,10 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import \
@@ -35,7 +33,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
         # ARRANGE #
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'a-dir')
 
-        unconditionally_hard_error_file_matcher = NameAndValue(
+        unconditionally_hard_error_file_matcher = FileMatcherSymbolContext.of_sdtv(
             'unconditionally_hard_error_file_matcher',
             file_matchers.hard_error()
         )
@@ -52,9 +50,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
             ]),
             model_constructor__non_recursive(checked_dir.path_sdv),
             Arrangement(
-                symbols=symbol_utils.symbol_table_from_name_and_sdvs([
-                    unconditionally_hard_error_file_matcher
-                ]),
+                symbols=unconditionally_hard_error_file_matcher.symbol_table,
                 tcds=checked_dir.tcds_arrangement_dir_with_contents([
                     empty_file(file_in_model)
                 ])
@@ -62,7 +58,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        is_file_matcher_reference_to__ref(unconditionally_hard_error_file_matcher.name)
+                        unconditionally_hard_error_file_matcher.reference_assertion
                     )
                 ),
                 ExecutionExpectation(
@@ -81,20 +77,17 @@ class TestFailWhenFewerFilesInModel(unittest.TestCase):
         fc_file_2 = 'file-2'
         file_name_not_in_fc = 'not-in-fc'
 
-        unconditionally_matching_file_matcher = NameAndValue(
+        unconditionally_matching_file_matcher = FileMatcherSymbolContext.of_primitive_constant(
             'unconditionally_matching_file_matcher',
-            file_matchers.constant(True)
+            True
         )
 
         unconditionally_matching_file_matcher_sym_ref_arg = fm_args.SymbolReferenceWSyntax(
             unconditionally_matching_file_matcher.name
         )
-        unconditionally_matching_file_matcher_sym_ref_assertion = is_file_matcher_reference_to__ref(
-            unconditionally_matching_file_matcher.name
-        )
-        symbol_table_with_unconditionally_matching_file_matcher = symbol_utils.symbol_table_from_name_and_sdvs([
-            unconditionally_matching_file_matcher
-        ])
+        unconditionally_matching_file_matcher_sym_ref_assertion = unconditionally_matching_file_matcher.reference_assertion
+        symbol_table_with_unconditionally_matching_file_matcher = unconditionally_matching_file_matcher.symbol_table
+
         files_condition_w_2_files_cases = [
             NIE(
                 'no file matcher',
@@ -449,7 +442,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Expectation(
                     ParseExpectation(
                         symbol_references=asrt.matches_singleton_sequence(
-                            is_file_matcher_reference_to__ref(IS_REGULAR_FILE_FILE_MATCHER.name)
+                            IS_REGULAR_FILE_FILE_MATCHER.reference_assertion
                         )
                     ),
                     MATCHING_EXECUTION_EXPECTATION,

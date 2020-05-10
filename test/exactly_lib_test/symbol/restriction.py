@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import list_
@@ -9,10 +8,9 @@ from exactly_lib_test.symbol.data.test_resources import path
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, string_transformer, \
     file_matcher, program
 from exactly_lib_test.symbol.test_resources import string
-from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
-from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -25,17 +23,17 @@ def suite() -> unittest.TestSuite:
 class TestElementTypeRestriction(unittest.TestCase):
     element_type_2_sdv_of_type = {
         TypeCategory.DATA:
-            string_sdvs.str_constant('string value'),
+            StringSymbolValueContext.of_arbitrary_value(),
 
         TypeCategory.LOGIC:
-            file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl()),
+            FileMatcherSymbolValueContext.of_arbitrary_value(),
     }
 
     def test_satisfied_restriction(self):
         # ARRANGE #
         symbols = empty_symbol_table()
         for expected_element_type in TypeCategory:
-            container_of_sdv = container(self.element_type_2_sdv_of_type[expected_element_type])
+            container_of_sdv = self.element_type_2_sdv_of_type[expected_element_type].container
             with self.subTest(element_type=str(expected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
@@ -55,7 +53,7 @@ class TestElementTypeRestriction(unittest.TestCase):
 
         symbols = empty_symbol_table()
         for expected_element_type, unexpected_element_type in cases.items():
-            container_of_unexpected = container(self.element_type_2_sdv_of_type[unexpected_element_type])
+            container_of_unexpected = self.element_type_2_sdv_of_type[unexpected_element_type].container
             with self.subTest(expected_element_type=str(expected_element_type),
                               unexpected_element_type=str(unexpected_element_type)):
                 restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)

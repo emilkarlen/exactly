@@ -7,7 +7,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test_that_equals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, Expectation
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
@@ -16,6 +15,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.arguments_building
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
@@ -55,9 +55,9 @@ class HardErrorDueToInvalidPathArgumentHelper(_HelperBase):
     )
 
     def symbols(self) -> SymbolTable:
-        return symbol_utils.symbol_table_from_name_and_sdv_mapping({
-            self.name_of_referenced_symbol: self.UNCONDITIONALLY_CONSTANT_TRUE
-        })
+        return FilesMatcherSymbolContext.of_primitive_constant(self.name_of_referenced_symbol,
+                                                               True
+                                                               ).symbol_table
 
     def expectation(self) -> ExecutionExpectation:
         return ExecutionExpectation(
@@ -95,12 +95,10 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper(_HelperBase):
                 self.checked_file_location,
                 DirContents([empty_dir(self.checked_file_name)])
             ),
-            symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                self.name_of_referenced_symbol:
-                    FilesMatcherStv(matchers.sdv_from_primitive_value(
-                        matchers.MatcherThatReportsHardError(self.error_message)
-                    ))
-            }),
+            symbols=FilesMatcherSymbolContext.of_primitive(
+                self.name_of_referenced_symbol,
+                matchers.MatcherThatReportsHardError(self.error_message)
+            ).symbol_table,
         )
 
     def expectation(self) -> Expectation:

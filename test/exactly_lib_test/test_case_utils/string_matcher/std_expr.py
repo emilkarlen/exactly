@@ -9,6 +9,8 @@ from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolValueContext, \
+    StringMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MatcherConfiguration
@@ -30,6 +32,23 @@ def suite() -> unittest.TestSuite:
 class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
     def mk_logic_type(self, generic: GenericStringMatcherSdv) -> MatcherTypeStv[FileToCheck]:
         return StringMatcherStv(generic)
+
+    def mk_logic_type_value_context_of_primitive(self,
+                                                 primitive: MatcherWTraceAndNegation[FileToCheck]
+                                                 ) -> StringMatcherSymbolValueContext:
+        return StringMatcherSymbolValueContext.of_primitive(primitive)
+
+    def mk_logic_type_context_of_primitive(self,
+                                           name: str,
+                                           primitive: MatcherWTraceAndNegation[FileToCheck]
+                                           ) -> StringMatcherSymbolContext:
+        return StringMatcherSymbolContext.of_primitive(name, primitive)
+
+    def mk_logic_type_context_of_stv(self,
+                                     name: str,
+                                     stv: MatcherTypeStv[FileToCheck]
+                                     ) -> StringMatcherSymbolContext:
+        return StringMatcherSymbolContext.of_sdtv(name, stv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.STRING_MATCHER

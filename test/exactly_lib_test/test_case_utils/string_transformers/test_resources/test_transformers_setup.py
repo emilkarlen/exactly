@@ -1,47 +1,35 @@
-from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
-from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import string_transformer
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerPrimitiveSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.type_system.logic.string_transformer import test_resources
 from exactly_lib_test.type_system.logic.test_resources import string_transformers
 
-DELETE_EVERYTHING_TRANSFORMER = NameAndValue('DELETE_EVERYTHING_TRANSFORMER',
-                                             test_resources.DeleteEverythingTransformer()
-                                             )
+DELETE_EVERYTHING_TRANSFORMER = StringTransformerPrimitiveSymbolContext(
+    'DELETE_EVERYTHING_TRANSFORMER',
+    test_resources.DeleteEverythingTransformer()
+)
 
-DUPLICATE_WORDS_TRANSFORMER = NameAndValue('DUPLICATE_WORDS_TRANSFORMER',
-                                           string_transformers.DuplicateWordsTransformer()
-                                           )
+DUPLICATE_WORDS_TRANSFORMER = StringTransformerPrimitiveSymbolContext(
+    'DUPLICATE_WORDS_TRANSFORMER',
+    string_transformers.DuplicateWordsTransformer()
+)
 
-DELETE_INITIAL_WORD_TRANSFORMER = NameAndValue('DELETE_INITIAL_WORD_TRANSFORMER',
-                                               string_transformers.DeleteInitialWordTransformer()
-                                               )
+DELETE_INITIAL_WORD_TRANSFORMER = StringTransformerPrimitiveSymbolContext(
+    'DELETE_INITIAL_WORD_TRANSFORMER',
+    string_transformers.DeleteInitialWordTransformer()
+)
 
-TO_UPPER_CASE_TRANSFORMER = NameAndValue('TO_UPPER_CASE_TRANSFORMER',
-                                         string_transformers.MyToUppercaseTransformer()
-                                         )
+TO_UPPER_CASE_TRANSFORMER = StringTransformerPrimitiveSymbolContext(
+    'TO_UPPER_CASE_TRANSFORMER',
+    string_transformers.MyToUppercaseTransformer()
+)
 
+SYMBOL_TABLE = SymbolContext.symbol_table_of_contexts([
 
-def symbol_container_of(transformer: StringTransformer) -> SymbolContainer:
-    return symbol_utils.container(
-        StringTransformerStv(string_transformer.StringTransformerSdvConstantTestImpl(transformer))
-    )
+    DELETE_EVERYTHING_TRANSFORMER,
 
+    DUPLICATE_WORDS_TRANSFORMER,
 
-SYMBOL_TABLE = SymbolTable({
+    DELETE_INITIAL_WORD_TRANSFORMER,
 
-    DELETE_EVERYTHING_TRANSFORMER.name:
-        symbol_container_of(DELETE_EVERYTHING_TRANSFORMER.value),
-
-    DUPLICATE_WORDS_TRANSFORMER.name:
-        symbol_container_of(DUPLICATE_WORDS_TRANSFORMER.value),
-
-    DELETE_INITIAL_WORD_TRANSFORMER.name:
-        symbol_container_of(DELETE_INITIAL_WORD_TRANSFORMER.value),
-
-    TO_UPPER_CASE_TRANSFORMER.name:
-        symbol_container_of(TO_UPPER_CASE_TRANSFORMER.value),
-})
+    TO_UPPER_CASE_TRANSFORMER,
+])

@@ -20,6 +20,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
@@ -82,7 +83,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     expected_path_sdv = path_sdvs.constant(
                         paths.rel_act(paths.constant_path_part('component')))
-                    expected_container = symbol_container(expected_path_sdv)
+                    expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
                     self._check(source,
                                 ArrangementWithSds(),
                                 Expectation(
@@ -103,7 +104,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
             expected_path_sdv = path_sdvs.constant(
                 paths.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
                                     paths.constant_path_part('component')))
-            expected_container = symbol_container(expected_path_sdv)
+            expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
@@ -125,7 +126,7 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                                 ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 path_part_sdvs.from_constant_str('component'))
-            expected_container = symbol_container(expected_path_sdv)
+            expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
@@ -151,7 +152,7 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
                 expected_path_sdv = path_sdvs.constant(
                     paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
                                        paths.constant_path_part('component')))
-                expected_container = symbol_container(expected_path_sdv)
+                expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
                 self._check(source,
                             ArrangementWithSds(fs_location_info=fs_location_info),
                             Expectation(

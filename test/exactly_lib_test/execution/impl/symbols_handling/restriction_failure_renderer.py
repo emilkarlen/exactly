@@ -1,16 +1,13 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import restriction_failures as sut
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
+from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 
 
@@ -58,7 +55,8 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
 
     def test_directly_referenced_symbol_is_builtin(self):
         referenced_symbol = StringConstantSymbolContext('referenced symbol',
-                                                        'referenced symbol value')
+                                                        'referenced symbol value',
+                                                        definition_source=None)
         for how_to_fix in ['', 'how_to_fix']:
             with self.subTest(how_to_fix=how_to_fix):
                 error = _new_em('error message',
@@ -69,10 +67,10 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
                 # ACT #
                 checked_symbol = StringConstantSymbolContext('checked symbol name',
                                                              'checked symbol value')
-                symbol_table = SymbolTable({
-                    checked_symbol.name: checked_symbol.symbol_table_container,
-                    referenced_symbol.name: referenced_symbol.container__of_builtin,
-                })
+                symbol_table = SymbolContext.symbol_table_of_contexts([
+                    checked_symbol,
+                    referenced_symbol,
+                ])
                 actual = sut.ErrorMessage(checked_symbol.name, symbol_table, failure)
                 # ASSERT #
                 asrt_text_doc.assert_is_valid_text_renderer(self, actual)
@@ -86,12 +84,10 @@ class TestRenderFailureOfIndirectReference(unittest.TestCase):
                                                      path_to_failing_symbol=[],
                                                      error=error)
                 # ACT #
-                checked_symbol = NameAndValue('checked_symbol',
-                                              symbol_utils.container_of_builtin(
-                                                  string_sdvs.str_constant('checked symbol value')))
-                symbol_table = SymbolTable({
-                    checked_symbol.name: checked_symbol.value
-                })
+                checked_symbol = StringSymbolContext.of_constant('checked_symbol',
+                                                                 'checked symbol value',
+                                                                 definition_source=None)
+                symbol_table = checked_symbol.symbol_table
                 actual = sut.ErrorMessage(checked_symbol.name, symbol_table, failure)
                 # ASSERT #
                 asrt_text_doc.assert_is_valid_text_renderer(self, actual)

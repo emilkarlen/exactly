@@ -1,14 +1,12 @@
 import unittest
 from typing import List
 
-from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, StringIntConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition__expr
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
@@ -52,7 +50,7 @@ class IntegrationCheckCase:
                  operator: comparators.ComparisonOperator,
                  int_expr: str,
                  result: ValueAssertion[MatchingResult],
-                 symbols: List[NameAndValue[SymbolDependentTypeValue]]):
+                 symbols: List[SymbolContext]):
         self.name = name
         self.line_num_of_model = line_num_of_model
         self.operator = operator
@@ -87,16 +85,15 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
 
 class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
     def runTest(self):
-        actual_line_num = 3
-        int_string_symbol = NameAndValue(
+        int_string_symbol = StringIntConstantSymbolContext(
             'int_string_symbol_name',
-            string_sdvs.str_constant(str(actual_line_num))
+            3
         )
 
         arguments = arg.LineNum(int_condition__expr(comparators.EQ,
                                                     symbol_reference_syntax_for_name(int_string_symbol.name)))
 
-        model_that_matches = integration_check.constant_model((actual_line_num, 'the line'))
+        model_that_matches = integration_check.constant_model((int_string_symbol.int_value, 'the line'))
 
         integration_check.check(
             self,
@@ -104,7 +101,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             remaining_source(str(arguments)),
             model_constructor=model_that_matches,
             arrangement=
-            symbol_utils.symbol_table_from_name_and_sdvs([int_string_symbol]),
+            int_string_symbol.symbol_table,
             expectation=
             integration_check.Expectation(
                 ParseExpectation(
@@ -149,7 +146,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     unsuccessful_operator=comparators.NE,
                     int_expr=str(symbol_1),
                     symbols=[
-                        NameAndValue(symbol_1.name, string_sdvs.str_constant('72'))
+                        StringSymbolContext.of_constant(symbol_1.name, '72')
                     ]
                 )
                 +
@@ -163,8 +160,8 @@ class _ParseAndMatchTest(unittest.TestCase):
                         symbol_2
                     ),
                     symbols=[
-                        NameAndValue(symbol_1.name, string_sdvs.str_constant('"abc"')),
-                        NameAndValue(symbol_2.name, string_sdvs.str_constant('+(20-10)')),
+                        StringSymbolContext.of_constant(symbol_1.name, '"abc"'),
+                        StringSymbolContext.of_constant(symbol_2.name, '+(20-10)'),
                     ]
                 )
         )
@@ -184,7 +181,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     self,
                     remaining_source(str(arguments)),
                     integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
-                    symbol_utils.symbol_table_from_name_and_sdvs(case.symbols),
+                    SymbolContext.symbol_table_of_contexts(case.symbols),
                     integration_check.Expectation(
                         ParseExpectation(
                             symbol_references=expected_symbol_references,
@@ -201,7 +198,7 @@ def successful_and_unsuccessful(name: str,
                                 successful_operator: comparators.ComparisonOperator,
                                 unsuccessful_operator: comparators.ComparisonOperator,
                                 int_expr: str,
-                                symbols: List[NameAndValue[SymbolDependentTypeValue]]) -> List[IntegrationCheckCase]:
+                                symbols: List[SymbolContext]) -> List[IntegrationCheckCase]:
     return [
         IntegrationCheckCase(
             name + '/successful: ' + successful_operator.name,

@@ -63,8 +63,10 @@ class SymbolContainer(SymbolTableValue):
 
     def __init__(self,
                  value_sdv: SymbolDependentTypeValue,
+                 value_type: ValueType,
                  source_location: Optional[SourceLocationInfo]):
         self._sdv = value_sdv
+        self._value_type = value_type
         self._source_location = source_location
 
     @property
@@ -83,12 +85,16 @@ class SymbolContainer(SymbolTableValue):
             self._source_location.source_location_path.location.source
 
     @property
+    def value_type(self) -> ValueType:
+        return self._value_type
+
+    @property
     def sdv(self) -> SymbolDependentTypeValue:
         return self._sdv
 
 
 def container_of_builtin(value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
-    return SymbolContainer(value_sdv, None)
+    return SymbolContainer(value_sdv, value_sdv.value_type, None)
 
 
 class Failure(ABC):

@@ -1,9 +1,8 @@
 import pathlib
 import unittest
 from pathlib import Path
-from typing import Sequence, Mapping
+from typing import Sequence
 
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
@@ -11,8 +10,8 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
@@ -320,9 +319,9 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
                 fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
                 helper.files_matcher_sym_ref_arg()
             ),
-            symbols_common_to_all_cases={
-                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdtv
-            },
+            symbols_common_to_all_cases=[
+                NAME_STARTS_WITH__P1
+            ],
             symbol_references=asrt.matches_sequence([
                 NAME_STARTS_WITH__P1.reference_assertion,
                 helper.symbol_reference_assertion,
@@ -349,10 +348,10 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
                     helper.files_matcher_sym_ref_arg(),
                 ),
             ),
-            symbols_common_to_all_cases={
-                NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdtv,
-                NAME_STARTS_WITH__P2.name: NAME_STARTS_WITH__P2.sdtv,
-            },
+            symbols_common_to_all_cases=[
+                NAME_STARTS_WITH__P1,
+                NAME_STARTS_WITH__P2,
+            ],
             symbol_references=asrt.matches_sequence([
                 NAME_STARTS_WITH__P1.reference_assertion,
                 NAME_STARTS_WITH__P2.reference_assertion,
@@ -491,10 +490,10 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
                             helper.dir_arg.path_sdv,
                             contents_case.expected,
                         ),
-                        additional_symbols={
-                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdtv,
-                            NAME_STARTS_WITH__S1.name: NAME_STARTS_WITH__S1.sdtv,
-                        },
+                        additional_symbols=[
+                            NAME_STARTS_WITH__P1,
+                            NAME_STARTS_WITH__S1,
+                        ],
                     ),
                     expectation=Expectation(
                         ParseExpectation(
@@ -536,9 +535,9 @@ class TestRecursiveWithPruneAndDepthLimitations(unittest.TestCase):
                             helper.dir_arg.path_sdv,
                             nie.expected,
                         ),
-                        additional_symbols={
-                            NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdtv,
-                        },
+                        additional_symbols=[
+                            NAME_STARTS_WITH__P1
+                        ],
                     ),
                     expectation=Expectation(
                         ParseExpectation(
@@ -582,9 +581,7 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
             helper.model_constructor_for_checked_dir__recursive(),
             arrangement=
             Arrangement(
-                symbols=symbol_utils.symbol_table_from_name_and_sdv_mapping({
-                    NAME_STARTS_WITH__P1.name: NAME_STARTS_WITH__P1.sdtv,
-                }),
+                symbols=NAME_STARTS_WITH__P1.symbol_table,
                 tcds=helper.dir_arg.tcds_arrangement_dir_with_contents(actual_contents)
             ),
             expectation=
@@ -604,10 +601,10 @@ class TestPruneShouldBeIgnoredWhenModelIsNotRecursive(unittest.TestCase):
         # ARRANGE #
         helper = IntegrationCheckHelper()
 
-        test_fails_if_applied__matcher = test_fails_if_applied(self)
+        test_fails_if_applied__matcher_symbol_context = test_fails_if_applied(self)
 
         arguments = fms_args.Prune(
-            fm_args.SymbolReference(test_fails_if_applied__matcher.name),
+            fm_args.SymbolReference(test_fails_if_applied__matcher_symbol_context.name),
             helper.files_matcher_sym_ref_arg(),
         )
 
@@ -630,15 +627,15 @@ class TestPruneShouldBeIgnoredWhenModelIsNotRecursive(unittest.TestCase):
                         test_data.expected_is_actual_down_to_max_depth(0, NON_RECURSIVE__ACTUAL).expected
                     ),
                 ),
-                additional_symbols={
-                    test_fails_if_applied__matcher.name: test_fails_if_applied__matcher.sdtv,
-                },
+                additional_symbols=[
+                    test_fails_if_applied__matcher_symbol_context
+                ],
             ),
             expectation=
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_sequence([
-                        test_fails_if_applied__matcher.reference_assertion,
+                        test_fails_if_applied__matcher_symbol_context.reference_assertion,
                         helper.symbol_reference_assertion,
                     ])
                 ),
@@ -651,7 +648,7 @@ def _check_multi(
         put: unittest.TestCase,
         helper: IntegrationCheckHelper,
         arguments: FilesMatcherArg,
-        symbols_common_to_all_cases: Mapping[str, SymbolDependentTypeValue],
+        symbols_common_to_all_cases: Sequence[SymbolContext],
         symbol_references: ValueAssertion[Sequence[SymbolReference]],
         execution_cases: Sequence[NEA[Sequence[FileSystemElement], Sequence[FileSystemElement]]]):
     integration_check.CHECKER.check_multi__w_source_variants(

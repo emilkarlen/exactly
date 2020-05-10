@@ -8,18 +8,12 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.logic.test_resources.logic_symbol_utils import container_of_string_transformer_sdv
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to, FileMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
@@ -40,8 +34,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.contents_transformation import \
-    ToUppercaseStringTransformer
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import test_transformers_setup
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
@@ -417,7 +410,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         # ARRANGE #
         name_of_checked_dir = 'name-of-checked-dir'
 
-        name_starts_with_selected = NameAndValue(
+        name_starts_with_selected = FileMatcherSymbolContext.of_primitive(
             'a_file_matcher_symbol',
             FileMatcherThatMatchesAnyFileWhosNameStartsWith('selected'))
 
@@ -434,9 +427,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 'un-selected-broken-sym-link', 'non-existing-file'),
         ])
 
-        symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
-        })
+        symbol_table_with_file_matcher = name_starts_with_selected.symbol_table
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
@@ -486,7 +477,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         # ARRANGE #
         name_of_checked_dir = 'name-of-checked-dir'
 
-        name_starts_with_selected = NameAndValue(
+        name_starts_with_selected = FileMatcherSymbolContext.of_primitive(
             'a_file_matcher_symbol',
             FileMatcherThatMatchesAnyFileWhosNameStartsWith('selected'))
 
@@ -503,9 +494,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 'un-selected-broken-sym-link', 'non-existing-file'),
         ])
 
-        symbol_table_with_file_matcher = SymbolTable({
-            name_starts_with_selected.name: container(file_matcher_constant_sdv(name_starts_with_selected.value))
-        })
+        symbol_table_with_file_matcher = name_starts_with_selected.symbol_table
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
@@ -572,14 +561,9 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
         original_file_contents = 'original_file_contents'
         expected_transformer_contents = original_file_contents.upper()
 
-        transform_to_uppercase = NameAndValue(
-            'to_uppercase_lines_transformer',
-            ToUppercaseStringTransformer())
+        transform_to_uppercase = test_transformers_setup.TO_UPPER_CASE_TRANSFORMER
 
-        symbol_table_with_lines_transformer = SymbolTable({
-            transform_to_uppercase.name: container_of_string_transformer_sdv(
-                StringTransformerSdvConstant(transform_to_uppercase.value))
-        })
+        symbol_table_with_lines_transformer = transform_to_uppercase.symbol_table
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_string_transformer(transform_to_uppercase.name)
         ])

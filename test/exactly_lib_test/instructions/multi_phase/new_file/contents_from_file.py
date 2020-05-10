@@ -5,14 +5,11 @@ from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.data import paths
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.arguments_building import \
     source_of, complete_argument_elements
@@ -26,10 +23,11 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import file_w
     accepted_non_hds_source_relativities, ALLOWED_SRC_FILE_RELATIVITIES, TransformableContentsConstructor
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
+from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -88,18 +86,20 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name).as_arguments
 
-        symbols = SymbolTable({
-            src_file_symbol.name:
-                container(path_sdvs.of_rel_option(src_file_rel_conf.relativity_option,
-                                                  paths.constant_path_part(src_file_symbol.value))),
+        symbols = SymbolContext.symbol_table_of_contexts([
+            ConstantSuffixPathDdvSymbolContext(
+                src_file_symbol.name,
+                src_file_rel_conf.relativity_option,
+                src_file_symbol.value,
+            ),
+            ConstantSuffixPathDdvSymbolContext(
+                dst_file_symbol.name,
+                dst_file_rel_option,
+                dst_file_symbol.value,
+            ),
 
-            dst_file_symbol.name:
-                container(path_sdvs.of_rel_option(dst_file_rel_option,
-                                                  paths.constant_path_part(dst_file_symbol.value))),
-
-            to_upper_transformer.name:
-                to_upper_transformer.symbol_table_container,
-        })
+            to_upper_transformer,
+        ])
 
         # ACT & ASSERT #
 

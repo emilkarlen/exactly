@@ -29,31 +29,10 @@ class TestConstruction(unittest.TestCase):
         # ASSERT #
         _assert_table_contains_single_value(self, actual, symbol)
 
-    def test_singleton_symbol_table(self):
-        # ARRANGE #
-        symbol = NameAndValue('symbol name',
-                              ASymbolTableValue('symbol value'))
-        # ACT #
-        actual = sut.singleton_symbol_table(sut.Entry(symbol.name,
-                                                      symbol.value))
-        # ASSERT #
-        _assert_table_contains_single_value(self, actual, symbol)
-
     def test_symbol_table_from_none_or_value_SHOULD_give_empty_table_WHEN_argument_is_none(self):
         actual = sut.symbol_table_from_none_or_value(None)
         self.assertFalse(actual.names_set,
                          'names set should be empty')
-
-    def test_symbol_table_from_none_or_value_SHOULD_give_given_table_WHEN_argument_is_not_none(self):
-        # ARRANGE #
-        symbol = NameAndValue('symbol name',
-                              ASymbolTableValue('symbol value'))
-        symbol_table = sut.singleton_symbol_table(sut.Entry(symbol.name,
-                                                            symbol.value))
-        # ACT #
-        actual = sut.symbol_table_from_none_or_value(symbol_table)
-        # ASSERT #
-        _assert_table_contains_single_value(self, actual, symbol)
 
 
 class TestUpdate(unittest.TestCase):

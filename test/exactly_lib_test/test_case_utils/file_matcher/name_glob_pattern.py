@@ -1,12 +1,9 @@
 import pathlib
 import unittest
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
@@ -76,18 +73,18 @@ class ParseShouldFailWhenPatternArgumentIsMissing(test_case_utils.TestWithNegati
 
 
 class TestWithSymbolReferences(test_case_utils.TestWithNegationArgumentBase):
-    any_char_glob_pattern_string_symbol = NameAndValue(
+    any_char_glob_pattern_string_symbol = StringSymbolContext.of_constant(
         'glob_pattern_string_symbol',
-        container(string_sdvs.str_constant('*'))
+        '*'
     )
     argument_w_opt_neg = arg.WithOptionalNegation(
         arg.Name(arg.NameGlobPatternVariant(
             'AB' + symbol_reference_syntax_for_name(any_char_glob_pattern_string_symbol.name))
         )
     )
-    arrangement = arrangement_w_tcds(symbols=SymbolTable({
-        any_char_glob_pattern_string_symbol.name: any_char_glob_pattern_string_symbol.value,
-    }))
+    arrangement = arrangement_w_tcds(
+        symbols=any_char_glob_pattern_string_symbol.symbol_table
+    )
 
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         self._check_with_source_variants(

@@ -13,8 +13,8 @@ from exactly_lib.test_case_utils.parse.parse_path import path_or_string_referenc
 from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -62,6 +62,25 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
                                              accepted_relativities,
                                              definition_source)
 
+    @staticmethod
+    def of_rel_arbitrary_and_suffix(suffix: str,
+                                    accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+                                    definition_source: Optional[
+                                        SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                                    ) -> 'PathSymbolValueContext':
+        return PathSymbolValueContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT,
+                                                            suffix,
+                                                            accepted_relativities,
+                                                            definition_source)
+
+    @staticmethod
+    def of_arbitrary_value() -> 'PathSymbolValueContext':
+        return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PATH
+
     @property
     def accepted_relativities(self) -> PathRelativityVariants:
         return self._accepted_relativities
@@ -85,11 +104,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
@@ -123,6 +138,10 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
                                           accepted_relativities,
                                           definition_source)
         )
+
+    @staticmethod
+    def of_arbitrary_value(name: str) -> 'PathSymbolContext':
+        return PathSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
     @property
     def reference__path(self) -> SymbolReference:

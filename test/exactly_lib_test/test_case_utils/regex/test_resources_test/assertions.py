@@ -11,9 +11,9 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources import string
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
 from exactly_lib_test.test_case_utils.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
@@ -36,10 +36,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             string.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv = ARBITRARY_SDV
@@ -55,10 +55,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             string.ARBITRARY_SYMBOL_VALUE_CONTEXT).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = file_matcher_constant_sdv(FileMatcherTestImpl())
@@ -75,10 +75,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             CONSTANT_STRING_SDV).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = RegexSdvConstantTestImpl(ARBITRARY_PATTERN,
@@ -96,10 +96,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             CONSTANT_STRING_SDV).symbol_table
+                         ),
 
         ]
         sdv_of_actual = RegexSdvConstantTestImpl(None)
@@ -116,10 +116,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             CONSTANT_STRING_SDV).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = RegexSdvConstantTestImpl('not a pattern')
@@ -136,10 +136,10 @@ class TestMatchesRegexResolver(unittest.TestCase):
             NameAndValue('without symbol table',
                          None),
             NameAndValue('with symbol table',
-                         singleton_symbol_table_2(
+                         StringSymbolContext.of_sdv(
                              'the symbol name',
-                             symbol_utils.container(CONSTANT_STRING_SDV),
-                         )),
+                             CONSTANT_STRING_SDV).symbol_table,
+                         ),
 
         ]
         sdv_of_actual = ARBITRARY_SDV

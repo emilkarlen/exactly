@@ -8,7 +8,6 @@ from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
@@ -17,10 +16,9 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
+from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, LineMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -57,7 +55,7 @@ class TestSuccessfulScenarios(TestCaseBase):
             asrt_matcher.ModelInfo((1, 'no match')),
         ]
 
-        symbol = NameAndValue(
+        symbol = LineMatcherSymbolContext.of_sdtv(
             'the_symbol_name',
             CONSTANT_TRUE_MATCHER_STV)
 
@@ -90,7 +88,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 # EXPECTATION #
 
-                symbol_table = SymbolTable({symbol.name: container(symbol.value), })
+                symbol_table = symbol.symbol_table
 
                 expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 

@@ -7,9 +7,8 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.data.test_resources.string_sdvs import StringSdvTestImpl
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
-from exactly_lib_test.symbol.test_resources.symbol_utils import symbol_table_from_name_and_sdvs
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import \
     arrangement_wo_tcds, Expectation, ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -210,16 +209,16 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
-        symbol_in_regex = NameAndValue('symbol_in_regex',
-                                       'plain string pattern')
-        symbol_in_replacement = NameAndValue('symbol_in_replacement',
-                                             'the replacement')
+        symbol_in_regex = StringConstantSymbolContext('symbol_in_regex',
+                                                      'plain string pattern')
+        symbol_in_replacement = StringConstantSymbolContext('symbol_in_replacement',
+                                                            'the replacement')
 
         input_lines = [
-            symbol_in_regex.value,
+            symbol_in_regex.str_value,
         ]
         expected_lines = [
-            symbol_in_replacement.value,
+            symbol_in_replacement.str_value,
         ]
         quoting_cases = [
             NameAndValue('unquoted', lambda x: x),
@@ -239,18 +238,16 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
                     Arguments(source),
                     model_construction.of_lines(input_lines),
                     arrangement_wo_tcds(
-                        symbols=symbol_table_from_name_and_sdvs([
-                            NameAndValue(symbol_in_regex.name,
-                                         StringSdvTestImpl(symbol_in_regex.value)),
-                            NameAndValue(symbol_in_replacement.name,
-                                         StringSdvTestImpl(symbol_in_replacement.value)),
+                        symbols=SymbolContext.symbol_table_of_contexts([
+                            symbol_in_regex,
+                            symbol_in_replacement,
                         ]),
                     ),
                     expectation_of_successful_replace_execution(
                         symbol_references=
                         asrt.matches_sequence([
                             is_reference_to_valid_regex_string_part(symbol_in_regex.name),
-                            is_reference_to_data_type_symbol(symbol_in_replacement.name),
+                            symbol_in_replacement.reference_assertion__any_data_type,
                         ]),
                         output_lines=expected_lines,
                     )
@@ -268,7 +265,7 @@ class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
                     Arguments(source),
                     model_construction.arbitrary_model_constructor(),
                     arrangement_wo_tcds(
-                        symbols=symbol_table_from_name_and_sdvs(regex_case.symbols)
+                        symbols=regex_case.symbol_table
                     ),
                     Expectation(
                         ParseExpectation(

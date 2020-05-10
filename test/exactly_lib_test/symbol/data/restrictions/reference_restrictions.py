@@ -21,7 +21,6 @@ from exactly_lib_test.execution.impl.symbols_handling.symbol_validation import R
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
     is_failure_of_indirect_reference, value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     StringTransformerSymbolContext
@@ -638,16 +637,16 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
            ) -> 'TestDataSymbolValueContext':
         return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type), definition_source)
 
+    @property
+    def value_type(self) -> ValueType:
+        return self.sdtv.value_type
+
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
     @property
     def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
-    @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
@@ -717,12 +716,12 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
         raise NotImplementedError('unsupported')
 
     @property
-    def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
+    def value_type(self) -> ValueType:
+        return self.sdtv.value_type
 
     @property
-    def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+    def container(self) -> SymbolContainer:
+        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class TestLogicSymbolContext(LogicTypeSymbolContext[LogicTypeStvForTest]):

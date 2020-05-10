@@ -12,6 +12,8 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNeg
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolValueContext, \
+    FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MatcherConfiguration
@@ -32,6 +34,23 @@ def suite() -> unittest.TestSuite:
 class FilesMatcherConfiguration(MatcherConfiguration[FilesMatcherModel]):
     def mk_logic_type(self, generic: MatcherSdv[FilesMatcherModel]) -> MatcherTypeStv[FilesMatcherModel]:
         return FilesMatcherStv(generic)
+
+    def mk_logic_type_value_context_of_primitive(self,
+                                                 primitive: MatcherWTraceAndNegation[FilesMatcherModel]
+                                                 ) -> FilesMatcherSymbolValueContext:
+        return FilesMatcherSymbolValueContext.of_primitive(primitive)
+
+    def mk_logic_type_context_of_primitive(self,
+                                           name: str,
+                                           primitive: MatcherWTraceAndNegation[FilesMatcherModel]
+                                           ) -> FilesMatcherSymbolContext:
+        return FilesMatcherSymbolContext.of_primitive(name, primitive)
+
+    def mk_logic_type_context_of_stv(self,
+                                     name: str,
+                                     stv: MatcherTypeStv[FilesMatcherModel]
+                                     ) -> FilesMatcherSymbolContext:
+        return FilesMatcherSymbolContext.of_sdtv(name, stv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.FILES_MATCHER

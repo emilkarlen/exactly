@@ -141,14 +141,26 @@ NON_MATCHING_EXECUTION_EXPECTATION = ExecutionExpectation(
 MATCHING_EXECUTION_EXPECTATION = ExecutionExpectation(
     main_result=asrt.equals(True)
 )
-IS_REGULAR_FILE_FILE_MATCHER = FileMatcherSymbolContext.of_primitive(
-    'is_regular_file',
-    file_matchers.IsRegularFileMatcher()
-)
-IS_DIR_FILE_MATCHER = FileMatcherSymbolContext.of_primitive(
-    'is_dir',
-    file_matchers.IsDirectoryMatcher()
-)
+
+
+def is_regular_file_matcher(symbol_name: str) -> FileMatcherSymbolContext:
+    return FileMatcherSymbolContext.of_primitive(
+        symbol_name,
+        file_matchers.IsRegularFileMatcher()
+    )
+
+
+def is_dir_file_matcher(symbol_name: str) -> FileMatcherSymbolContext:
+    return FileMatcherSymbolContext.of_primitive(
+        symbol_name,
+        file_matchers.IsDirectoryMatcher()
+    )
+
+
+IS_REGULAR_FILE_FILE_MATCHER = is_regular_file_matcher('is_regular_file')
+
+IS_DIR_FILE_MATCHER = is_dir_file_matcher('is_dir')
+
 IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS = SymbolContext.symbol_table_of_contexts([
     IS_REGULAR_FILE_FILE_MATCHER,
     IS_DIR_FILE_MATCHER,

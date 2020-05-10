@@ -173,7 +173,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True,
                                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            symbol_name, value_sdv = _parse(fs_location_info, token_parser)
+            symbol_name, value_type, value_sdv = _parse(fs_location_info, token_parser)
 
         remaining_source_after = source.remaining_source
         num_chars_consumed = len(remaining_source_before) - len(remaining_source_after)
@@ -184,6 +184,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         source_info = fs_location_info.current_source_file.source_location_info_for(source_lines)
         sym_def = SymbolDefinition(symbol_name,
                                    SymbolContainer(value_sdv,
+                                                   value_type,
                                                    source_info))
 
         return TheInstructionEmbryo(sym_def)
@@ -194,14 +195,14 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
 
 
 def _parse(fs_location_info: FileSystemLocationInfo,
-           parser: TokenParser) -> Tuple[str, SymbolDependentTypeValue]:
+           parser: TokenParser) -> Tuple[str, ValueType, SymbolDependentTypeValue]:
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
         err_msg = 'Invalid type: {}\nExpecting one of {}'.format(type_str, _TYPES_LIST_IN_ERR_MSG)
         raise SingleInstructionInvalidArgumentException(err_msg)
 
-    value_parser = _TYPE_SETUPS[type_str]
+    type_setup = _TYPE_SETUPS[type_str]
 
     name_str = parser.consume_mandatory_unquoted_string('SYMBOL-NAME', True)
 
@@ -211,13 +212,13 @@ def _parse(fs_location_info: FileSystemLocationInfo,
 
     parser.consume_mandatory_constant_unquoted_string(syntax.ASSIGNMENT_ARGUMENT, True)
 
-    consumes_whole_line, value_sdv = value_parser(fs_location_info, parser)
+    consumes_whole_line, value_sdv = type_setup.parser(fs_location_info, parser)
 
     if not consumes_whole_line and not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
 
-    return name_str, value_sdv
+    return name_str, type_setup.value_type, value_sdv
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
@@ -310,16 +311,39 @@ def _parse_program(fs_location_info: FileSystemLocationInfo,
     return True, stv
 
 
+class TypeSetup:
+    def __init__(self,
+                 value_type: ValueType,
+                 parser: Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentTypeValue]]
+                 ):
+        self.value_type = value_type
+        self.parser = parser
+
+
 _TYPE_SETUPS = {
-    types.PATH_TYPE_INFO.identifier: _parse_not_whole_line(_parse_path),
-    types.STRING_TYPE_INFO.identifier: _parse_string,
-    types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(_parse_list),
-    types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
-    types.STRING_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_matcher),
-    types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
-    types.FILES_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_files_matcher),
-    types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_transformer),
-    types.PROGRAM_TYPE_INFO.identifier: _parse_program,
+    types.PATH_TYPE_INFO.identifier:
+        TypeSetup(ValueType.PATH, _parse_not_whole_line(_parse_path)),
+    types.STRING_TYPE_INFO.identifier:
+        TypeSetup(ValueType.STRING, _parse_string),
+    types.LIST_TYPE_INFO.identifier:
+        TypeSetup(ValueType.LIST, _parse_not_whole_line(_parse_list)),
+    types.LINE_MATCHER_TYPE_INFO.identifier:
+        TypeSetup(ValueType.LINE_MATCHER,
+                  _parse_not_whole_line(_parse_line_matcher)),
+    types.STRING_MATCHER_TYPE_INFO.identifier:
+        TypeSetup(ValueType.STRING_MATCHER,
+                  _parse_not_whole_line(_parse_string_matcher)),
+    types.FILE_MATCHER_TYPE_INFO.identifier:
+        TypeSetup(ValueType.FILE_MATCHER,
+                  _parse_not_whole_line(_parse_file_matcher)),
+    types.FILES_MATCHER_TYPE_INFO.identifier:
+        TypeSetup(ValueType.FILES_MATCHER,
+                  _parse_not_whole_line(_parse_files_matcher)),
+    types.STRING_TRANSFORMER_TYPE_INFO.identifier:
+        TypeSetup(ValueType.STRING_TRANSFORMER,
+                  _parse_not_whole_line(_parse_string_transformer)),
+    types.PROGRAM_TYPE_INFO.identifier:
+        TypeSetup(ValueType.PROGRAM, _parse_program),
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
