@@ -1,7 +1,7 @@
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -9,7 +9,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_re
     asrt_rest
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference, \
     symbol_usage_equals_symbol_reference
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -82,6 +82,14 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
             SymbolReference(symbol_name,
                             StringSymbolValueContext.reference_restriction__path_or_string(accepted_relativities))
         )
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class StringSymbolContext(DataTypeSymbolContext[StringSdv]):

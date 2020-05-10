@@ -1,7 +1,7 @@
 from exactly_lib.symbol.logic.program.program_sdv import ProgramStv, ProgramSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
@@ -24,6 +24,14 @@ class ProgramSymbolValueContext(LogicSymbolValueContext[ProgramStv]):
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_program_reference_to(symbol_name)
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class ProgramSymbolContext(LogicTypeSymbolContext[ProgramStv]):

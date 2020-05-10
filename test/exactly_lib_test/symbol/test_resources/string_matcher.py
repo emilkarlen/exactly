@@ -1,13 +1,13 @@
 from typing import Sequence
 
 from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage, SymbolContainer
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericStringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -66,6 +66,14 @@ class StringMatcherSymbolValueContext(LogicSymbolValueContext[StringMatcherStv])
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_matcher__ref(symbol_name)
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class StringMatcherSymbolContext(LogicTypeSymbolContext[StringMatcherStv]):

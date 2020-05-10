@@ -1,7 +1,8 @@
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv, FilesMatcher
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicSymbolValueContext, LogicTypeSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -23,6 +24,14 @@ class FilesMatcherSymbolValueContext(LogicSymbolValueContext[FilesMatcherStv]):
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_files_matcher__ref(symbol_name)
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class FilesMatcherSymbolContext(LogicTypeSymbolContext[FilesMatcherStv]):

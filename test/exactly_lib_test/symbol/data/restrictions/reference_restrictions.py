@@ -20,6 +20,7 @@ from exactly_lib_test.execution.impl.symbols_handling.symbol_validation import R
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
     is_failure_of_indirect_reference, value_restriction_that_is_unconditionally_unsatisfied
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
     StringTransformerSymbolContext
@@ -631,6 +632,14 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
+
 
 class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
     def __init__(self,
@@ -687,6 +696,14 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class TestLogicSymbolContext(LogicTypeSymbolContext[LogicTypeStvForTest]):

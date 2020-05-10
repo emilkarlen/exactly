@@ -11,7 +11,6 @@ from exactly_lib.util.symbol_table import Entry, SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -26,12 +25,18 @@ class SymbolValueContext(Generic[STV_TYPE], ABC):
     def sdtv(self) -> STV_TYPE:
         return self._sdtv
 
-    @property
-    def container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
-
     @abstractmethod
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        pass
+
+    @property
+    @abstractmethod
+    def container(self) -> SymbolContainer:
+        pass
+
+    @property
+    @abstractmethod
+    def container__of_builtin(self) -> SymbolContainer:
         pass
 
 
@@ -78,11 +83,11 @@ class SymbolContext(Generic[STV_TYPE], ABC):
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
-        return symbol_utils.container(self.sdtv)
+        return self.value.container
 
     @property
     def container__of_builtin(self) -> SymbolContainer:
-        return symbol_utils.container_of_builtin(self.sdtv)
+        return self.value.container__of_builtin
 
     @property
     def symbol_table(self) -> SymbolTable:

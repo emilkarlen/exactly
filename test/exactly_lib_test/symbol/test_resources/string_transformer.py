@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, SymbolContainer
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -15,7 +15,7 @@ from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransfor
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, symbol_utils
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -173,6 +173,14 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_transformer__ref(symbol_name)
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv]):

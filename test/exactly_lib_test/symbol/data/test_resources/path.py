@@ -3,7 +3,7 @@ from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_V
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -74,6 +75,14 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return self.reference_assertion__path_or_string(symbol_name)
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class PathSymbolContext(DataTypeSymbolContext[PathSdv]):

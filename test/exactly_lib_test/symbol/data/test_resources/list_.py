@@ -2,13 +2,13 @@ from typing import Sequence, List
 
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
-from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref, symbol_utils
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -39,6 +39,14 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             is_any_data_type_reference_restrictions())
+
+    @property
+    def container(self) -> SymbolContainer:
+        return symbol_utils.container(self.sdtv)
+
+    @property
+    def container__of_builtin(self) -> SymbolContainer:
+        return symbol_utils.container_of_builtin(self.sdtv)
 
 
 class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
