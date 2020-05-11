@@ -6,7 +6,6 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import OrRefere
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import concrete_strings as csv
-from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
@@ -123,17 +122,6 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
 
 
 class StringResolverTest(unittest.TestCase):
-    def test_value_type(self):
-        # ARRANGE #
-        sdv = sdv_with_single_constant_fragment('value')
-        # ACT & ASSERT #
-        self.assertIs(TypeCategory.DATA,
-                      sdv.type_category)
-        self.assertIs(DataValueType.STRING,
-                      sdv.data_value_type)
-        self.assertIs(ValueType.STRING,
-                      sdv.value_type)
-
     def test_resolve(self):
         string_constant_1 = 'string constant 1'
         string_constant_2 = 'string constant 2'

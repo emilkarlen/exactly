@@ -42,7 +42,7 @@ class TestDefinition(unittest.TestCase):
         symbol_name = 'the_symbol_name'
 
         for value_context in _VALUE_CONTEXTS_OF_EVERY_TYPE:
-            with self.subTest(str(value_context.sdtv.value_type)):
+            with self.subTest(str(value_context.value_type)):
                 symbol_definition = _symbol_definition(symbol_name, value_context)
                 definitions_resolver = _ConstantDefinitionsResolver([symbol_definition])
 

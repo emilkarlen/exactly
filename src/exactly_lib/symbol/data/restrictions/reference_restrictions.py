@@ -2,12 +2,11 @@ from typing import Callable, List, Optional, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, Failure
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, Failure
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -113,6 +112,7 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
                         references: Sequence[SymbolReference]) -> Optional[FailureOfIndirectReference]:
         for reference in references:
             container = symbol_table.lookup(reference.name)
+            assert isinstance(container, SymbolContainer)  # Type info for IDE
             result = self._indirect.is_satisfied_by(symbol_table, reference.name, container)
             if result is not None:
                 return FailureOfIndirectReference(
@@ -161,30 +161,26 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: SymbolContainer) -> Optional[Failure]:
-        sdv = container.sdv
-        assert isinstance(sdv, SymbolDependentTypeValue)  # Type info for IDE
-        if sdv.type_category is not TypeCategory.DATA:
-            return self._no_satisfied_restriction(symbol_name, sdv, container)
-        assert isinstance(sdv, DataTypeSdv)  # Type info for IDE
+        if container.type_category is not TypeCategory.DATA:
+            return self._no_satisfied_restriction(symbol_name, container)
+        data_value_type = container.data_value_type__if_is_data_type
         for part in self._parts:
-            if part.selector == sdv.data_value_type:
+            if part.selector == data_value_type:
                 return part.restriction.is_satisfied_by(symbol_table, symbol_name, container)
-        return self._no_satisfied_restriction(symbol_name, sdv, container)
+        return self._no_satisfied_restriction(symbol_name, container)
 
     def _no_satisfied_restriction(self,
                                   symbol_name: str,
-                                  sdv: SymbolDependentTypeValue,
-                                  value: SymbolContainer) -> FailureOfDirectReference:
+                                  container: SymbolContainer) -> FailureOfDirectReference:
         if self._sym_name_and_container_2_err_msg_if_no_matching_part is not None:
-            msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, value)
+            msg = self._sym_name_and_container_2_err_msg_if_no_matching_part(symbol_name, container)
         else:
-            msg = text_docs.single_pre_formatted_line_object(self._default_error_message(symbol_name, value, sdv))
+            msg = text_docs.single_pre_formatted_line_object(self._default_error_message(symbol_name, container))
         return FailureOfDirectReference(ErrorMessageWithFixTip(msg))
 
     def _default_error_message(self,
                                symbol_name: str,
-                               container: SymbolContainer,
-                               sdv: SymbolDependentTypeValue) -> str:
+                               container: SymbolContainer) -> str:
         from exactly_lib.definitions.test_case.instructions import define_symbol
         accepted_value_types = ', '.join([define_symbol.DATA_TYPE_INFO_DICT[part.selector].identifier
                                           for part in self._parts])
@@ -195,7 +191,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                  [
                      '',
                      'Accepted : ' + accepted_value_types,
-                     'Found    : ' + define_symbol.ANY_TYPE_INFO_DICT[sdv.value_type].identifier,
+                     'Found    : ' + define_symbol.ANY_TYPE_INFO_DICT[container.value_type].identifier,
                  ])
         return '\n'.join(lines)
 

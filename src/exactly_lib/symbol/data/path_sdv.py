@@ -4,7 +4,6 @@ from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
-from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -12,14 +11,6 @@ class PathSdv(DataTypeSdv):
     """
     Resolver who's resolved value is of type `ValueType.PATH` / :class:`PathDdv`
     """
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.PATH
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.PATH
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
         raise NotImplementedError('abstract method')

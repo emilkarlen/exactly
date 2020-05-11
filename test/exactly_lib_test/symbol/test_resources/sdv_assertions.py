@@ -1,16 +1,15 @@
 import unittest
 from typing import Sequence, Optional
 
-from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv, get_data_value_type
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.logic.matcher import MatcherTypeStv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv, ProgramStv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentTypeValue
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -22,7 +21,7 @@ from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
-from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.file_utils import TmpDirFileSpace, TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdtv_of_logic_type
@@ -44,50 +43,32 @@ def matches_sdtv(sdv_type: ValueAssertion[SymbolDependentTypeValue],
                         symbol_table_from_none_or_value(symbols))
 
 
-def is_sdtv_of_data_type(data_value_type: DataValueType,
-                         value_type: ValueType) -> ValueAssertion[SymbolDependentTypeValue]:
-    return asrt.is_instance_with(DataTypeSdv,
-                                 asrt.and_([
-                                     asrt.sub_component('type_category',
-                                                        sdv_structure.get_type_category,
-                                                        asrt.is_(TypeCategory.DATA)),
-
-                                     asrt.sub_component('data_value_type',
-                                                        get_data_value_type,
-                                                        asrt.is_(data_value_type)),
-
-                                     asrt.sub_component('value_type',
-                                                        sdv_structure.get_value_type,
-                                                        asrt.is_(value_type)),
-                                 ]))
-
-
 def is_sdtv_of_string_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_data_type(DataValueType.STRING, ValueType.STRING)
+    return asrt.is_instance(StringSdv)
 
 
 def is_sdtv_of_path_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_data_type(DataValueType.PATH, ValueType.PATH)
+    return asrt.is_instance(PathSdv)
 
 
 def is_sdtv_of_list_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_data_type(DataValueType.LIST, ValueType.LIST)
+    return asrt.is_instance(ListSdv)
 
 
 def is_sdtv_of_file_matcher_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_logic_type(LogicValueType.FILE_MATCHER)
+    return is_sdtv_of_logic_type(MatcherTypeStv)
 
 
 def is_sdtv_of_line_matcher_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_logic_type(LogicValueType.LINE_MATCHER)
+    return is_sdtv_of_logic_type(MatcherTypeStv)
 
 
 def is_sdtv_of_string_transformer_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_logic_type(LogicValueType.STRING_TRANSFORMER)
+    return is_sdtv_of_logic_type(StringTransformerStv)
 
 
 def is_sdtv_of_program_type() -> ValueAssertion[SymbolDependentTypeValue]:
-    return is_sdtv_of_logic_type(LogicValueType.PROGRAM)
+    return is_sdtv_of_logic_type(ProgramStv)
 
 
 def matches_sdtv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
@@ -174,12 +155,12 @@ def matches_sdtv_of_line_matcher(references: ValueAssertion[Sequence[SymbolRefer
     )
 
 
-def matches_sdtv_of_string_transformer(references: ValueAssertion[Sequence[SymbolReference]],
-                                       resolved_value: ValueAssertion[StringTransformerDdv],
-                                       custom: ValueAssertion[
-                                           StringTransformerSdv] = asrt.anything_goes(),
-                                       symbols: Optional[SymbolTable] = None) -> ValueAssertion[
-    SymbolDependentTypeValue]:
+def matches_sdtv_of_string_transformer(
+        references: ValueAssertion[Sequence[SymbolReference]],
+        resolved_value: ValueAssertion[StringTransformerDdv],
+        custom: ValueAssertion[StringTransformerSdv] = asrt.anything_goes(),
+        symbols: Optional[SymbolTable] = None
+) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_string_transformer_type(),
                         references,
                         asrt.is_instance_with(StringTransformerDdv, resolved_value),

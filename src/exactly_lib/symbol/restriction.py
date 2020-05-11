@@ -40,11 +40,11 @@ class TypeCategoryRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.sdv.type_category is self._type_category:
+        if container.type_category is self._type_category:
             return None
         else:
             return InvalidTypeCategoryFailure(self._type_category,
-                                              container.sdv.type_category)
+                                              container.type_category)
 
 
 class ValueTypeRestriction(ReferenceRestrictions):
@@ -69,11 +69,11 @@ class ValueTypeRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.sdv.value_type is self._expected:
+        if container.value_type is self._expected:
             return None
         else:
             return InvalidValueTypeFailure(self._expected,
-                                           container.sdv.value_type)
+                                           container.value_type)
 
 
 class DataTypeReferenceRestrictions(ReferenceRestrictions):

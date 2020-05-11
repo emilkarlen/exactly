@@ -114,13 +114,12 @@ class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase):
 
 
 class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentSdv]):
-    def __init__(self,
-                 expected: StringFragmentSdv):
+    def __init__(self, expected: StringFragmentSdv):
         self.expected = expected
 
     def _apply(self,
                put: unittest.TestCase,
-               value,
+               value: StringFragmentSdv,
                message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, StringFragmentSdv)
         assert isinstance(value, StringFragmentSdv)  # Type info for IDE
@@ -129,18 +128,6 @@ class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentSdv]):
         environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
 
         assertions = [
-            asrt.sub_component('type_category',
-                               lambda sfr: sfr.type_category,
-                               asrt.equals(self.expected.type_category)
-                               ),
-            asrt.sub_component('data_value_type',
-                               lambda sfr: sfr.data_value_type,
-                               asrt.equals(self.expected.data_value_type)
-                               ),
-            asrt.sub_component('value_type',
-                               lambda sfr: sfr.value_type,
-                               asrt.equals(self.expected.value_type)
-                               ),
             asrt.sub_component('is_string_constant',
                                lambda sfr: sfr.is_string_constant,
                                asrt.equals(self.expected.is_string_constant)

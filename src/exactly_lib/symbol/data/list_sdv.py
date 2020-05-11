@@ -7,7 +7,6 @@ from exactly_lib.type_system.data import concrete_strings as csv
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -91,14 +90,6 @@ class ListSdv(DataTypeSdv):
 
     def __init__(self, elements: Iterable[ElementSdv]):
         self._elements = tuple(elements)
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.LIST
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.LIST
 
     @property
     def elements(self) -> Sequence[ElementSdv]:

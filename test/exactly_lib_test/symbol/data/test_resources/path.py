@@ -63,15 +63,21 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
                                              definition_source)
 
     @staticmethod
-    def of_rel_arbitrary_and_suffix(suffix: str,
-                                    accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
-                                    definition_source: Optional[
-                                        SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                                    ) -> 'PathSymbolValueContext':
+    def of_rel_arbitrary_and_suffix(
+            suffix: str,
+            accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
+            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+    ) -> 'PathSymbolValueContext':
         return PathSymbolValueContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT,
                                                             suffix,
                                                             accepted_relativities,
                                                             definition_source)
+
+    @staticmethod
+    def of_reference(referenced_symbol_name: str,
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'PathSymbolValueContext':
+        return PathSymbolValueContext()
 
     @staticmethod
     def of_arbitrary_value() -> 'PathSymbolValueContext':

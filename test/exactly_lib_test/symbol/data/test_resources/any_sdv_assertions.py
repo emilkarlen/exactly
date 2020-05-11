@@ -36,25 +36,16 @@ class _EqualsDataTypeSdvVisitor(DataTypeSdvPseudoVisitor):
         return equals_list_sdv(expected).apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsResolver(ValueAssertionBase):
+class _EqualsResolver(ValueAssertionBase[DataTypeSdv]):
     def __init__(self, expected: DataTypeSdv):
         self.expected = expected
 
     def _apply(self,
                put: unittest.TestCase,
-               value,
+               value: DataTypeSdv,
                message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, DataTypeSdv)
         assert isinstance(value, DataTypeSdv)
-        put.assertEqual(TypeCategory.DATA,
-                        value.type_category,
-                        _ELEMENT_TYPE_ERROR_MESSAGE)
-        put.assertIs(self.expected.data_value_type,
-                     value.data_value_type,
-                     'data_value_type')
-        put.assertIs(self.expected.value_type,
-                     value.value_type,
-                     'value_type')
         _EqualsDataTypeSdvVisitor(value, put, message_builder).visit(self.expected)
 
 

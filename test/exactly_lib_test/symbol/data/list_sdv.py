@@ -7,7 +7,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string, \
     string_ddv_of_single_path
 from exactly_lib.type_system.data.list_ddv import ListDdv
-from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.list_ import ListDdvSymbolContext
@@ -25,17 +24,6 @@ def suite() -> unittest.TestSuite:
 
 
 class ListResolverTest(unittest.TestCase):
-    def test_value_type(self):
-        # ARRANGE #
-        sdv = sut.ListSdv([])
-        # ACT & ASSERT #
-        self.assertIs(TypeCategory.DATA,
-                      sdv.type_category)
-        self.assertIs(DataValueType.LIST,
-                      sdv.data_value_type)
-        self.assertIs(ValueType.LIST,
-                      sdv.value_type)
-
     def test_resolve_without_symbol_references(self):
         string_constant_1 = 'string constant 1'
         string_constant_2 = 'string constant 2'

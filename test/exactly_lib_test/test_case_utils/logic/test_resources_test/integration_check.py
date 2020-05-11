@@ -474,14 +474,6 @@ class _MatcherTypeStvTestImpl(MatcherTypeStv[int]):
                  ):
         self._matcher = matcher
 
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.LINE_MATCHER
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.LINE_MATCHER
-
     def value(self) -> MatcherSdv[int]:
         return self._matcher
 

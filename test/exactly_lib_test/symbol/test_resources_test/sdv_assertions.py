@@ -2,19 +2,24 @@ import unittest
 from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.matcher import MatcherTypeStv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv, ProgramStv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
-from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.symbol.data.test_resources.path_sdvs import PathSdvTestImplWithConstantPathAndSymbolReferences
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolValueContext
@@ -35,14 +40,14 @@ def suite() -> unittest.TestSuite:
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.STRING_MATCHER)
+        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(MatcherTypeStv)
         matching_sdtv = StringMatcherSymbolValueContext.of_primitive_constant(False).sdtv
         # ACT & ASSERT #
         assertion.apply_without_message(self, matching_sdtv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.STRING_MATCHER)
+        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(ProgramStv)
         cases = [
             NameAndValue('unexpected logic type',
                          LineMatcherSymbolValueContext.of_primitive_constant(False).sdtv,
@@ -71,7 +76,7 @@ class TestMatchesSdv(unittest.TestCase):
             ),
         ]
         assertion = sut.matches_sdtv(
-            asrt_sdv_struct.is_sdtv_of_logic_type(LogicValueType.PROGRAM),
+            asrt_sdv_struct.is_sdtv_of_logic_type(ProgramStv),
             asrt.anything_goes(),
             asrt.anything_goes())
         # ACT & ASSERT #
@@ -113,14 +118,18 @@ class TestMatchesSdv(unittest.TestCase):
 
     def test_success(self):
         # ARRANGE #
-        reference = data_symbol_utils.symbol_reference('symbol_name')
-        string_sdv = _StringSdvTestImpl(resolve_constant(STRING_DDV), [reference])
-        assertion = sut.matches_sdtv(sut.is_sdtv_of_string_type(),
+        path_symbol = PathDdvSymbolContext('symbol_name',
+                                           paths.of_rel_option(RelOptionType.REL_ACT))
+        reference = data_symbol_utils.symbol_reference(path_symbol.name)
+        path_sdv = PathSdvTestImplWithConstantPathAndSymbolReferences(path_symbol.ddv,
+                                                                      [reference])
+        assertion = sut.matches_sdtv(sut.is_sdtv_of_path_type(),
                                      asrt.len_equals(1),
-                                     asrt.is_(STRING_DDV),
-                                     asrt.is_(string_sdv))
+                                     asrt.is_(path_symbol.ddv),
+                                     asrt.is_(path_sdv),
+                                     symbols=path_symbol.symbol_table)
         # ACT & ASSERT #
-        assertion.apply_without_message(self, string_sdv)
+        assertion.apply_without_message(self, path_sdv)
 
     def test_symbol_table_is_passed_to_resolve_method(self):
         # ARRANGE #
@@ -161,7 +170,7 @@ def resolve_string_via_symbol_table(symbol_name: str) -> Callable[[SymbolTable],
     def ret_val(symbols: SymbolTable) -> StringDdv:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Value in Symbol Table must be SymbolContainer'
-        assert container.sdv.value_type == ValueType.STRING, 'Value type must be STRING'
+        assert container.value_type == ValueType.STRING, 'Value type must be STRING'
         return container.sdv.resolve(symbols)
 
     return ret_val
@@ -173,18 +182,6 @@ class _StringSdvTestImpl(DataTypeSdv):
                  explicit_references: Sequence[SymbolReference] = ()):
         self.value_getter = value_getter
         self.explicit_references = explicit_references
-
-    @property
-    def type_category(self) -> TypeCategory:
-        return TypeCategory.DATA
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.STRING
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING
 
     def resolve(self, symbols: SymbolTable) -> StringDdv:
         return self.value_getter(symbols)
@@ -198,18 +195,6 @@ class _PathSdvTestImpl(DataTypeSdv):
     def __init__(self,
                  explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references
-
-    @property
-    def type_category(self) -> TypeCategory:
-        return TypeCategory.DATA
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.PATH
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.PATH
 
     @property
     def references(self) -> Sequence[SymbolReference]:

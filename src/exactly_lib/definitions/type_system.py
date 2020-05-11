@@ -1,5 +1,6 @@
 from exactly_lib.definitions.entity import types
-from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory, LogicValueType, \
+    DATA_TYPE_2_VALUE_TYPE, LOGIC_TYPE_2_VALUE_TYPE
 from exactly_lib.util.name import NumberOfItemsString, Name
 
 DATA_TYPE_CATEGORY_NAME = 'data'
@@ -21,12 +22,6 @@ DATA_TYPE_INFO_DICT = {
     DataValueType.LIST: types.LIST_TYPE_INFO,
 }
 
-DATA_TYPE_2_VALUE_TYPE = {
-    DataValueType.STRING: ValueType.STRING,
-    DataValueType.PATH: ValueType.PATH,
-    DataValueType.LIST: ValueType.LIST,
-}
-
 DATA_TYPE_LIST_ORDER = [
     DataValueType.STRING,
     DataValueType.PATH,
@@ -42,24 +37,16 @@ LOGIC_TYPE_INFO_DICT = {
     LogicValueType.PROGRAM: types.PROGRAM_TYPE_INFO,
 }
 
-LOGIC_TYPE_2_VALUE_TYPE = {
-    LogicValueType.LINE_MATCHER: ValueType.LINE_MATCHER,
-    LogicValueType.FILE_MATCHER: ValueType.FILE_MATCHER,
-    LogicValueType.FILES_MATCHER: ValueType.FILES_MATCHER,
-    LogicValueType.STRING_MATCHER: ValueType.STRING_MATCHER,
-    LogicValueType.STRING_TRANSFORMER: ValueType.STRING_TRANSFORMER,
-    LogicValueType.PROGRAM: ValueType.PROGRAM,
-}
-
-TYPE_INFO_DICT = dict([
-                          (DATA_TYPE_2_VALUE_TYPE[data_type], DATA_TYPE_INFO_DICT[data_type])
-                          for data_type in DataValueType
-                      ] +
-                      [
-                          (LOGIC_TYPE_2_VALUE_TYPE[logic_type], LOGIC_TYPE_INFO_DICT[logic_type])
-                          for logic_type in LogicValueType
-                      ]
-                      )
+TYPE_INFO_DICT = dict(
+    [
+        (DATA_TYPE_2_VALUE_TYPE[data_type], DATA_TYPE_INFO_DICT[data_type])
+        for data_type in DataValueType
+    ] +
+    [
+        (LOGIC_TYPE_2_VALUE_TYPE[logic_type], LOGIC_TYPE_INFO_DICT[logic_type])
+        for logic_type in LogicValueType
+    ]
+)
 
 TYPE_CATEGORY_NAME = {
     TypeCategory.DATA: DATA_TYPE_CATEGORY_NAME,

@@ -2,7 +2,7 @@ from typing import Sequence, Type
 
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -43,7 +43,7 @@ def matches_matcher_stv(type_: Type[LogicTypeStv],
     return asrt.is_instance_with(
         type_,
         asrt.and_([
-            is_sdtv_of_logic_type(logic_value_type),
+            is_sdtv_of_logic_type(MatcherTypeStv),
 
             asrt.sub_component('references',
                                sdv_structure.get_references,

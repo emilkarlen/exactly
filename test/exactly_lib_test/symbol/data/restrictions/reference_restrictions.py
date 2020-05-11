@@ -3,8 +3,6 @@ from collections import Counter
 from typing import Sequence, Optional, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import type_system
-from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
@@ -12,8 +10,9 @@ from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, Va
 from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, \
     ReferenceRestrictions, Failure
+from exactly_lib.type_system import value_type
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
-from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType, DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -422,7 +421,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                                               container: SymbolContainer) -> TextRenderer:
             sdv = container.sdv
             assert isinstance(sdv, SymbolDependentTypeValue)  # Type info for IDE
-            return asrt_text_doc.new_single_string_text_for_test(mk_err_msg(symbol_name, sdv.value_type))
+            return asrt_text_doc.new_single_string_text_for_test(mk_err_msg(symbol_name, container.value_type))
 
         references = []
         referenced_symbol_cases = [
@@ -584,7 +583,7 @@ class ValueRestrictionThatRaisesErrorIfApplied(vr.ValueRestriction):
 
 
 class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
-    def __init__(self, symbol_container_2_result: Callable[[sut.SymbolContainer], str]):
+    def __init__(self, symbol_container_2_result: Callable[[sut.SymbolContainer], Optional[str]]):
         self.symbol_container_2_result = symbol_container_2_result
         self.visited = Counter()
 
@@ -601,19 +600,8 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
 
 
 class DataTypeSdvForTest(DataTypeSdv):
-    def __init__(self,
-                 references: Sequence[SymbolReference],
-                 data_value_type: DataValueType):
-        self._data_value_type = data_value_type
+    def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return self._data_value_type
-
-    @property
-    def value_type(self) -> ValueType:
-        return type_system.DATA_TYPE_2_VALUE_TYPE[self._data_value_type]
 
     def resolve(self, symbols: SymbolTable):
         raise NotImplementedError('It is an error if this method is called')
@@ -630,14 +618,14 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
-        self._value_type = type_system.DATA_TYPE_2_VALUE_TYPE[data_value_type]
+        self._value_type = value_type.DATA_TYPE_2_VALUE_TYPE[data_value_type]
 
     @staticmethod
     def of(references: Sequence[SymbolReference],
            data_value_type: DataValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestDataSymbolValueContext':
-        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type),
+        return TestDataSymbolValueContext(DataTypeSdvForTest(references),
                                           data_value_type,
                                           definition_source)
 
@@ -683,20 +671,8 @@ class _LogicSdvForTest(LogicSdv):
 
 
 class LogicTypeStvForTest(LogicTypeStv):
-    def __init__(self,
-                 references: Sequence[SymbolReference],
-                 logic_value_type: LogicValueType,
-                 ):
-        self._logic_value_type = logic_value_type
+    def __init__(self, references: Sequence[SymbolReference]):
         self._sdv = _LogicSdvForTest(references)
-
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return self._logic_value_type
-
-    @property
-    def value_type(self) -> ValueType:
-        return type_system.LOGIC_TYPE_2_VALUE_TYPE[self._logic_value_type]
 
     def value(self) -> LogicSdv:
         return self._sdv
@@ -709,14 +685,14 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
-        self._value_type = type_system.LOGIC_TYPE_2_VALUE_TYPE[logic_value_type]
+        self._value_type = value_type.LOGIC_TYPE_2_VALUE_TYPE[logic_value_type]
 
     @staticmethod
     def of(references: Sequence[SymbolReference],
            logic_value_type: LogicValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestLogicSymbolValueContext':
-        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type),
+        return TestLogicSymbolValueContext(LogicTypeStvForTest(references),
                                            logic_value_type,
                                            definition_source)
 
@@ -753,22 +729,20 @@ def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> 
     return SymbolReference(symbol.name, restrictions)
 
 
-def unconditional_satisfaction(value: sut.SymbolContainer) -> str:
+def unconditional_satisfaction(value: sut.SymbolContainer) -> Optional[str]:
     return None
 
 
-def unconditional_dissatisfaction(result: str) -> Callable[[sut.SymbolContainer], str]:
+def unconditional_dissatisfaction(result: str) -> Callable[[sut.SymbolContainer], Optional[str]]:
     def ret_val(value: sut.SymbolContainer) -> str:
         return result
 
     return ret_val
 
 
-def dissatisfaction_if_value_type_is(value_type: ValueType) -> Callable[[sut.SymbolContainer], str]:
-    def ret_val(container: sut.SymbolContainer) -> str:
-        sdv = container.sdv
-        assert isinstance(sdv, SymbolDependentTypeValue), 'Expects a SymbolDependentValue'
-        if sdv.value_type is value_type:
+def dissatisfaction_if_value_type_is(value_type: ValueType) -> Callable[[sut.SymbolContainer], Optional[str]]:
+    def ret_val(container: sut.SymbolContainer) -> Optional[str]:
+        if container.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None
 

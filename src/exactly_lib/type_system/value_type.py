@@ -52,6 +52,31 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
     ValueType.PROGRAM: TypeCategory.LOGIC,
 }
 
+DATA_TYPE_2_VALUE_TYPE = {
+    DataValueType.STRING: ValueType.STRING,
+    DataValueType.PATH: ValueType.PATH,
+    DataValueType.LIST: ValueType.LIST,
+}
+
+VALUE_TYPE_2_DATA_TYPE = {
+    item[1]: item[0]
+    for item in DATA_TYPE_2_VALUE_TYPE.items()
+}
+
+LOGIC_TYPE_2_VALUE_TYPE = {
+    LogicValueType.LINE_MATCHER: ValueType.LINE_MATCHER,
+    LogicValueType.FILE_MATCHER: ValueType.FILE_MATCHER,
+    LogicValueType.FILES_MATCHER: ValueType.FILES_MATCHER,
+    LogicValueType.STRING_MATCHER: ValueType.STRING_MATCHER,
+    LogicValueType.STRING_TRANSFORMER: ValueType.STRING_TRANSFORMER,
+    LogicValueType.PROGRAM: ValueType.PROGRAM,
+}
+
+VALUE_TYPE_2_LOGIC_TYPE = {
+    item[1]: item[0]
+    for item in LOGIC_TYPE_2_VALUE_TYPE.items()
+}
+
 TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE = {
     TypeCategory.DATA: [
         vt

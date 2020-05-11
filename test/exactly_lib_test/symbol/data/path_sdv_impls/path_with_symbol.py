@@ -13,7 +13,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as vr_tr
@@ -108,7 +107,7 @@ class TestRelSymbol(unittest.TestCase):
                                      actual,
                                      'existence pre SDS')
 
-    def test_file_path_and_value_type(self):
+    def test_file_path(self):
         relativity_test_cases = [
             (RelOptionType.REL_HDS_CASE, True),
             (RelOptionType.REL_ACT, False),
@@ -154,12 +153,6 @@ class TestRelSymbol(unittest.TestCase):
                         actual_path = path_to_check.value_post_sds(environment.sds)
                     actual_path_pre_or_post_sds = path_to_check.value_of_any_dependency(environment.tcds)
                     # ASSERT #
-                    self.assertIs(DataValueType.PATH,
-                                  fr_sdv_to_check.data_value_type,
-                                  'data value type of sdv')
-                    self.assertIs(ValueType.PATH,
-                                  fr_sdv_to_check.value_type,
-                                  'value type of sdv')
                     self.assertEqual(expected_path_str,
                                      str(actual_path),
                                      tested_path_msg)

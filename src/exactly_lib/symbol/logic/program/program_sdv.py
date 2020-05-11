@@ -7,7 +7,6 @@ from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.value_type import ValueType, LogicValueType
 
 
 class ProgramSdv(LogicWithStructureSdv[Program]):
@@ -36,14 +35,6 @@ class ProgramSdv(LogicWithStructureSdv[Program]):
 class ProgramStv(LogicTypeStv[Program]):
     def __init__(self, sdv: ProgramSdv):
         self._sdv = sdv
-
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.PROGRAM
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.PROGRAM
 
     def value(self) -> ProgramSdv:
         return self._sdv

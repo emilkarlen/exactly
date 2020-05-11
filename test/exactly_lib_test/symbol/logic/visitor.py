@@ -3,8 +3,6 @@ from typing import Type
 
 from exactly_lib.symbol.logic import visitor as sut
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv, PRIMITIVE
-from exactly_lib.type_system.value_type import LogicValueType
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
     files_matcher, string_transformer
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
@@ -119,13 +117,5 @@ class AVisitorThatRecordsVisitedMethods(sut.LogicTypeStvPseudoVisitor[str]):
 
 
 class UnknownLogicTypeStvClass(sut.LogicTypeStv):
-    @property
-    def logic_value_type(self) -> LogicValueType:
-        raise NotImplementedError('unsupported')
-
-    @property
-    def value_type(self) -> ValueType:
-        raise NotImplementedError('unsupported')
-
     def value(self) -> LogicSdv[PRIMITIVE]:
         raise NotImplementedError('unsupported')

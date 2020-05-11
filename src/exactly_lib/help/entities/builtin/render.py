@@ -19,7 +19,8 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def _builtin_docs_of_value_type(value_type: ValueType, builtin_doc_list: list) -> list:
+def _builtin_docs_of_value_type(value_type: ValueType,
+                                builtin_doc_list: List[BuiltinSymbolDocumentation]) -> List[BuiltinSymbolDocumentation]:
     return list(filter(lambda builtin_doc: builtin_doc.value_type is value_type,
                        builtin_doc_list))
 
@@ -32,11 +33,13 @@ def _header(value_type: ValueType) -> str:
 
 
 _PARTITIONS_SETUP = [
-    pes.PartitionSetup(pes.PartitionNamesSetup(
-        str(value_type).lower(),
-        _header(value_type),
-    ),
-        functools.partial(_builtin_docs_of_value_type, value_type))
+    pes.PartitionSetup(
+        pes.PartitionNamesSetup(
+            str(value_type).lower(),
+            _header(value_type),
+        ),
+        functools.partial(_builtin_docs_of_value_type, value_type)
+    )
     for value_type in ValueType
 ]
 

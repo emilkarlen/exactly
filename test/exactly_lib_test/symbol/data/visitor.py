@@ -5,8 +5,6 @@ from typing import Type
 from exactly_lib.symbol.data import visitor as sut
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
-from exactly_lib.type_system.value_type import DataValueType
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import string_sdvs, list_sdvs, path_sdvs
 
@@ -87,14 +85,6 @@ class AVisitorThatRecordsVisitedMethods(sut.DataTypeSdvPseudoVisitor[str]):
 
 
 class UnknownDataTypeSdvClass(sut.DataTypeSdv):
-    @property
-    def data_value_type(self) -> DataValueType:
-        raise NotImplementedError('unsupported')
-
-    @property
-    def value_type(self) -> ValueType:
-        raise NotImplementedError('unsupported')
-
     @property
     def references(self) -> List[SymbolReference]:
         raise NotImplementedError('unsupported')

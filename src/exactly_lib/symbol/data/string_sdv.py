@@ -3,7 +3,6 @@ from typing import Sequence
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.type_system.data import string_ddv as sv
-from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -11,14 +10,6 @@ class StringFragmentSdv(DataTypeSdv):
     """
     A part of the value of a StringSdv.
     """
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.STRING
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING
 
     @property
     def is_string_constant(self) -> bool:
@@ -43,14 +34,6 @@ class StringSdv(DataTypeSdv):
 
     def __init__(self, fragment_sdvs: Sequence[StringFragmentSdv]):
         self._fragment_sdvs = fragment_sdvs
-
-    @property
-    def data_value_type(self) -> DataValueType:
-        return DataValueType.STRING
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING
 
     def resolve(self, symbols: SymbolTable) -> sv.StringDdv:
         fragments = [fr.resolve(symbols)

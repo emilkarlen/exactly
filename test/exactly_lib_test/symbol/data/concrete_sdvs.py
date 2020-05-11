@@ -6,7 +6,6 @@ from exactly_lib.symbol.data import string_sdv as sr, path_sdv as pr, list_sdv a
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.string_sdvs import str_constant
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
-from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
@@ -102,14 +101,6 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataTypeSdvPseudoV
 
 
 class _UnknownDataTypeSdv(DataTypeSdv):
-    @property
-    def data_value_type(self) -> DataValueType:
-        raise NotImplementedError('not used')
-
-    @property
-    def value_type(self) -> ValueType:
-        raise NotImplementedError('not used')
-
     @property
     def references(self) -> list:
         raise NotImplementedError('not used')

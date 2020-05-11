@@ -1,11 +1,12 @@
+from typing import Type
+
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, get_logic_value_type, LogicSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer, SymbolDependentTypeValue
-from exactly_lib.type_system.value_type import LogicValueType, TypeCategory, ValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.util.test_resources import line_source_assertions as asrt_line_source
 
 
@@ -28,24 +29,11 @@ def matches_container(value_type: ValueAssertion[ValueType],
         ]))
 
 
-def is_sdtv_of_logic_type(logic_value_type: LogicValueType,
+def is_sdtv_of_logic_type(class_: Type[LogicTypeStv],
                           sdv: ValueAssertion[LogicSdv] = asrt.anything_goes(),
                           ) -> ValueAssertion[SymbolDependentTypeValue]:
-    value_type = LOGIC_VALUE_TYPE_2_VALUE_TYPE[logic_value_type]
-    return asrt.is_instance_with(LogicTypeStv,
+    return asrt.is_instance_with(class_,
                                  asrt.and_([
-                                     asrt.sub_component('type_category',
-                                                        sdv_structure.get_type_category,
-                                                        asrt.is_(TypeCategory.LOGIC)),
-
-                                     asrt.sub_component('logic_value_type',
-                                                        get_logic_value_type,
-                                                        asrt.is_(logic_value_type)),
-
-                                     asrt.sub_component('value_type',
-                                                        sdv_structure.get_value_type,
-                                                        asrt.is_(value_type)),
-
                                      asrt.sub_component('sdv',
                                                         _get_sdv,
                                                         asrt.is_instance_with(LogicSdv, sdv)),

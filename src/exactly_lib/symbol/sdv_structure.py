@@ -3,7 +3,8 @@ from abc import ABC
 from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.type_system.value_type import ValueType, TypeCategory
+from exactly_lib.type_system import value_type
+from exactly_lib.type_system.value_type import ValueType, TypeCategory, DataValueType, LogicValueType
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
 
@@ -32,14 +33,6 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
 
 class SymbolDependentTypeValue(SymbolDependentValue):
     """A :class:`SymbolDependentValue` that represents a value of a type in the type system"""
-
-    @property
-    def type_category(self) -> TypeCategory:
-        raise NotImplementedError('abstract method')
-
-    @property
-    def value_type(self) -> ValueType:
-        raise NotImplementedError('abstract method')
 
     @property
     def references(self) -> Sequence['SymbolReference']:
@@ -83,6 +76,24 @@ class SymbolContainer(SymbolTableValue):
         return None \
             if self._source_location is None else \
             self._source_location.source_location_path.location.source
+
+    @property
+    def type_category(self) -> TypeCategory:
+        return value_type.VALUE_TYPE_2_TYPE_CATEGORY[self._value_type]
+
+    @property
+    def data_value_type__if_is_data_type(self) -> DataValueType:
+        """
+        Raises an exception if the value type is not one of the data types.
+        """
+        return value_type.VALUE_TYPE_2_DATA_TYPE[self._value_type]
+
+    @property
+    def logic_value_type__if_is_logic_type(self) -> LogicValueType:
+        """
+        Raises an exception if the value type is not one of the data types.
+        """
+        return value_type.VALUE_TYPE_2_LOGIC_TYPE[self._value_type]
 
     @property
     def value_type(self) -> ValueType:
@@ -204,11 +215,3 @@ def get_references(stv: SymbolDependentTypeValue) -> Sequence[SymbolReference]:
 
 def get_references__sdv(sdv: SymbolDependentValue) -> Sequence[SymbolReference]:
     return sdv.references
-
-
-def get_type_category(sdv: SymbolDependentTypeValue) -> TypeCategory:
-    return sdv.type_category
-
-
-def get_value_type(sdv: SymbolDependentTypeValue) -> ValueType:
-    return sdv.value_type

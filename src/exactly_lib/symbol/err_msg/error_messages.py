@@ -36,7 +36,7 @@ def invalid_type_msg(expected_value_types: List[ValueType],
         ))
     assert isinstance(actual, SymbolDependentTypeValue)  # Type info for IDE
     header_lines = _invalid_type_header_lines(expected_value_types,
-                                              actual.value_type,
+                                              container_of_actual.value_type,
                                               symbol_name,
                                               container_of_actual)
     how_to_fix_lines = _invalid_type_how_to_fix_lines(expected_value_types)

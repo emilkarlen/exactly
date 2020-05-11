@@ -52,7 +52,7 @@ class BuiltinSymbol:
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._sdtv.value_type,
+        return BuiltinSymbolDocumentation(self._value_type,
                                           self.name,
                                           self._single_line_description,
                                           self._documentation,
