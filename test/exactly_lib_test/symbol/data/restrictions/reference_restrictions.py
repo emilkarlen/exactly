@@ -626,20 +626,24 @@ class DataTypeSdvForTest(DataTypeSdv):
 class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
     def __init__(self,
                  sdv: DataTypeSdvForTest,
+                 data_value_type: DataValueType,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
+        self._value_type = type_system.DATA_TYPE_2_VALUE_TYPE[data_value_type]
 
     @staticmethod
     def of(references: Sequence[SymbolReference],
            data_value_type: DataValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestDataSymbolValueContext':
-        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type), definition_source)
+        return TestDataSymbolValueContext(DataTypeSdvForTest(references, data_value_type),
+                                          data_value_type,
+                                          definition_source)
 
     @property
     def value_type(self) -> ValueType:
-        return self.sdtv.value_type
+        return self._value_type
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
@@ -701,23 +705,27 @@ class LogicTypeStvForTest(LogicTypeStv):
 class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
     def __init__(self,
                  sdv: LogicTypeStvForTest,
+                 logic_value_type: LogicValueType,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
+        self._value_type = type_system.LOGIC_TYPE_2_VALUE_TYPE[logic_value_type]
 
     @staticmethod
     def of(references: Sequence[SymbolReference],
            logic_value_type: LogicValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestLogicSymbolValueContext':
-        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type), definition_source)
+        return TestLogicSymbolValueContext(LogicTypeStvForTest(references, logic_value_type),
+                                           logic_value_type,
+                                           definition_source)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
     @property
     def value_type(self) -> ValueType:
-        return self.sdtv.value_type
+        return self._value_type
 
     @property
     def container(self) -> SymbolContainer:
