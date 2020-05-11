@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.string import lines_content
@@ -20,8 +21,8 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
-from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
-    string_matcher_sdv_constant_test_impl, StringMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
+    StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
@@ -71,6 +72,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                 # EXPECTATION #
 
                 expected_container = matches_container(
+                    asrt.is_(ValueType.STRING_MATCHER),
                     matches_string_matcher_sdv()
                 )
 
@@ -109,9 +111,10 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
+            asrt.is_(ValueType.STRING_MATCHER),
             matches_string_matcher_sdv(
                 references=asrt.matches_sequence([
-                    is_reference_to_string_matcher(referenced_symbol.name)
+                    referenced_symbol.reference_assertion
                 ]),
                 symbols=symbols)
         )
@@ -135,6 +138,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
+            asrt.is_(ValueType.STRING_MATCHER),
             matches_string_matcher_sdv()
         )
 

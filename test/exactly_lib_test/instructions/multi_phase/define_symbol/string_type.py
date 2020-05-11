@@ -66,7 +66,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                 expected_symbol = StringConstantSymbolContext('name1', 'v1')
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(expected_symbol.definition, ignore_source_line=True)
+                        vs_asrt.equals_symbol_definition(expected_symbol.definition, ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         'name1',
@@ -85,7 +85,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     symbol_reference=referred_symbol)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
+                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
@@ -106,7 +106,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     symbol_reference=referred_symbol)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
+                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
@@ -134,7 +134,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     sym_ref2=referred_symbol2)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
+                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
@@ -162,7 +162,7 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
         expected_symbol = StringConstantSymbolContext(symbol_name, value_str + '\n')
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(expected_symbol.definition, ignore_source_line=True)
+                vs_asrt.equals_symbol_definition(expected_symbol.definition, ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_name,
@@ -193,7 +193,7 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
         # EXPECTATION #
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(assigned_symbol.definition, ignore_source_line=True),
+                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,

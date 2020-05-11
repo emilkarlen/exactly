@@ -58,7 +58,7 @@ class TestSuccessfulDefinition(TestCaseBase):
             self.conf.arrangement(),
             self.conf.expect_success(
                 symbol_usages=asrt.matches_sequence([
-                    vs_asrt.equals_symbol(expected_definition, ignore_source_line=True)
+                    vs_asrt.equals_symbol_definition(expected_definition, ignore_source_line=True)
                 ])
             )
         )

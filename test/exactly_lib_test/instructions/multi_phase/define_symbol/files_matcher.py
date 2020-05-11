@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -74,6 +75,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                 # EXPECTATION #
 
                 expected_container = matches_container(
+                    asrt.is_(ValueType.FILES_MATCHER),
                     sdv_assertions.matches_sdtv_of_files_matcher()
                 )
 
@@ -113,6 +115,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
+            asrt.is_(ValueType.FILES_MATCHER),
             sdv_assertions.matches_sdtv_of_files_matcher(
                 references=asrt.matches_sequence([
                     is_reference_to_files_matcher__ref(referenced_symbol.name)
@@ -141,6 +144,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         defined_name = 'defined_name'
 
         expected_container = matches_container(
+            asrt.is_(ValueType.FILES_MATCHER),
             sdv_assertions.matches_sdtv_of_files_matcher()
         )
 

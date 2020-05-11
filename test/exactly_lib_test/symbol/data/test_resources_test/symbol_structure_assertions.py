@@ -65,7 +65,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
                     # ARRANGE #
                     definition = SymbolDefinition('value name', value.container)
                     # ACT #
-                    assertion = sut.equals_symbol(definition, ignore_source_line=ignore_source_line)
+                    assertion = sut.equals_symbol_definition(definition, ignore_source_line=ignore_source_line)
                     assertion.apply_without_message(self, definition)
 
     def test_pass__different_source_but_source_check_is_ignored(self):
@@ -79,7 +79,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
         expected_symbol = SymbolDefinition(common_name, expected.container)
         actual_symbol = SymbolDefinition(common_name, actual.container)
         # ACT #
-        assertion = sut.equals_symbol(expected_symbol, ignore_source_line=True)
+        assertion = sut.equals_symbol_definition(expected_symbol, ignore_source_line=True)
         assertion.apply_without_message(self, actual_symbol)
 
     def test_fail__different_name(self):
@@ -88,7 +88,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
                                                             single_line_sequence(1, 'source code'))
         expected_symbol = StringSymbolContext('expected value name', common_value).definition
         actual_symbol = StringSymbolContext('actual value name', common_value).definition
-        assertion = sut.equals_symbol(expected_symbol)
+        assertion = sut.equals_symbol_definition(expected_symbol)
         assert_that_assertion_fails(assertion, actual_symbol)
 
     def test_fail__failing_assertion_on_container(self):
@@ -103,5 +103,5 @@ class TestEqualsValueDefinition(unittest.TestCase):
                                             StringSymbolValueContext.of_constant(
                                                 'actual string value',
                                                 common_source)).definition
-        assertion = sut.equals_symbol(expected_symbol)
+        assertion = sut.equals_symbol_definition(expected_symbol)
         assert_that_assertion_fails(assertion, actual_symbol)

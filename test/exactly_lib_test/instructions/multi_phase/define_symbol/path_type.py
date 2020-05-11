@@ -88,7 +88,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                                 ArrangementWithSds(),
                                 Expectation(
                                     symbol_usages=assert_symbol_usages_is_singleton_list(
-                                        vs_asrt.equals_symbol(
+                                        vs_asrt.equals_symbol_definition(
                                             SymbolDefinition('name', expected_container))),
                                     symbols_after_main=assert_symbol_table_is_singleton(
                                         'name',
@@ -109,7 +109,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                         ArrangementWithSds(),
                         Expectation(
                             symbol_usages=assert_symbol_usages_is_singleton_list(
-                                vs_asrt.equals_symbol(
+                                vs_asrt.equals_symbol_definition(
                                     SymbolDefinition('name', expected_container))),
                             symbols_after_main=assert_symbol_table_is_singleton(
                                 'name',
@@ -131,7 +131,7 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                         ArrangementWithSds(),
                         Expectation(
                             symbol_usages=asrt.matches_sequence([
-                                vs_asrt.equals_symbol(
+                                vs_asrt.equals_symbol_definition(
                                     SymbolDefinition('ASSIGNED_NAME',
                                                      expected_container),
                                     ignore_source_line=True)
@@ -157,7 +157,7 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
                             ArrangementWithSds(fs_location_info=fs_location_info),
                             Expectation(
                                 symbol_usages=assert_symbol_usages_is_singleton_list(
-                                    vs_asrt.equals_symbol(
+                                    vs_asrt.equals_symbol_definition(
                                         SymbolDefinition('name', expected_container))),
                                 symbols_after_main=assert_symbol_table_is_singleton(
                                     'name',

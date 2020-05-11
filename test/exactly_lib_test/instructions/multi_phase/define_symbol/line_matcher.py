@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -95,6 +96,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                 expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
 
                 expected_container = matches_container(
+                    asrt.is_(ValueType.LINE_MATCHER),
                     assertion_on_sdv=
                     sdv_assertions.matches_sdtv_of_line_matcher(
                         references=asrt.matches_sequence([

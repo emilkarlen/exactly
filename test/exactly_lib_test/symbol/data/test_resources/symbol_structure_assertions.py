@@ -11,11 +11,18 @@ from exactly_lib_test.util.test_resources.line_source_assertions import equals_l
 
 def equals_container(expected: rs.SymbolContainer,
                      ignore_source_line: bool = True) -> ValueAssertion[rs.SymbolContainer]:
-    component_assertions = []
+    component_assertions = [
+        asrt.sub_component('value_type',
+                           rs.SymbolContainer.value_type.fget,
+                           asrt.is_(expected.value_type))
+    ]
     if not ignore_source_line:
-        component_assertions.append(asrt.sub_component('source',
-                                                       rs.SymbolContainer.definition_source.fget,
-                                                       equals_line_sequence(expected.definition_source)))
+        component_assertions.append(
+            asrt.sub_component('source',
+                               rs.SymbolContainer.definition_source.fget,
+                               equals_line_sequence(expected.definition_source))
+        )
+
     expected_sdv = expected.sdv
     assert isinstance(expected_sdv, DataTypeSdv), 'All actual values must be DataTypeSdv'
     component_assertions.append(asrt.sub_component('sdv',
@@ -25,20 +32,21 @@ def equals_container(expected: rs.SymbolContainer,
                                  asrt.and_(component_assertions))
 
 
-def equals_symbol(expected: SymbolDefinition,
-                  ignore_source_line: bool = True) -> ValueAssertion[SymbolDefinition]:
-    return asrt.is_instance_with(SymbolDefinition,
-                                 asrt.And([
-                                     asrt.sub_component('name',
-                                                        SymbolDefinition.name.fget,
-                                                        asrt.equals(expected.name)),
-                                     asrt.sub_component('symbol_container',
-                                                        SymbolDefinition.symbol_container.fget,
-                                                        equals_container(expected.symbol_container,
-                                                                         ignore_source_line)),
+def equals_symbol_definition(expected: SymbolDefinition,
+                             ignore_source_line: bool = True) -> ValueAssertion[SymbolDefinition]:
+    return asrt.is_instance_with(
+        SymbolDefinition,
+        asrt.And([
+            asrt.sub_component('name',
+                               SymbolDefinition.name.fget,
+                               asrt.equals(expected.name)),
+            asrt.sub_component('symbol_container',
+                               SymbolDefinition.symbol_container.fget,
+                               equals_container(expected.symbol_container,
+                                                ignore_source_line)),
 
-                                 ])
-                                 )
+        ])
+    )
 
 
 def equals_symbol_table(expected: rs.SymbolTable,
@@ -46,7 +54,7 @@ def equals_symbol_table(expected: rs.SymbolTable,
     return _EqualsSymbolTable(expected, ignore_source_line)
 
 
-class _EqualsSymbolTable(ValueAssertionBase):
+class _EqualsSymbolTable(ValueAssertionBase[rs.SymbolTable]):
     def __init__(self,
                  expected: rs.SymbolTable,
                  ignore_source_line: bool = True

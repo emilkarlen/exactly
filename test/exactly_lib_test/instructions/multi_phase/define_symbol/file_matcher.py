@@ -6,6 +6,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -91,6 +92,7 @@ class Test(TestCaseBase):
                     )
 
                     expected_container = matches_container(
+                        asrt.is_(ValueType.FILE_MATCHER),
                         sdv_assertions.matches_sdtv_of_file_matcher(
                             references=asrt.is_empty_sequence,
                             primitive_value=case.expected_value

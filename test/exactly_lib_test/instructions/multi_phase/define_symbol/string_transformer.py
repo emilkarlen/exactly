@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SEQUENCE_OPERATOR_NAME
-from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -105,6 +105,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
+            asrt.is_(ValueType.STRING_TRANSFORMER),
             assertion_on_sdv=is_sdtv_of_logic_type(
                 LogicValueType.STRING_TRANSFORMER,
                 asrt_sdv.resolved_value_matches_string_transformer(

@@ -43,8 +43,8 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(list_symbol.definition,
-                                              ignore_source_line=True)
+                        vs_asrt.equals_symbol_definition(list_symbol.definition,
+                                                         ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         list_symbol.name,
@@ -88,8 +88,8 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol(symbol_to_assign.definition,
-                                              ignore_source_line=True)
+                        vs_asrt.equals_symbol_definition(symbol_to_assign.definition,
+                                                         ignore_source_line=True)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         symbol_to_assign.name,
@@ -117,8 +117,8 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol(symbol_to_assign.definition,
-                                      ignore_source_line=True)
+                vs_asrt.equals_symbol_definition(symbol_to_assign.definition,
+                                                 ignore_source_line=True)
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_to_assign.name,
