@@ -2,6 +2,7 @@ from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolContainer
@@ -11,6 +12,7 @@ from exactly_lib.test_case_utils.parse.parse_path import path_or_string_referenc
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
+from exactly_lib_test.symbol.data.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference, \
     symbol_usage_equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -59,6 +61,15 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                     ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source)
+
+    @staticmethod
+    def of_reference(referenced_symbol_name: str,
+                     restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringSymbolValueContext':
+        return StringSymbolValueContext.of_sdv(string_sdv_of_single_symbol_reference(referenced_symbol_name,
+                                                                                     restrictions),
+                                               definition_source)
 
     @staticmethod
     def of_arbitrary_value() -> 'StringSymbolValueContext':
@@ -136,6 +147,18 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
             name,
             StringSymbolValueContext.of_constant(primitive, definition_source)
         )
+
+    @staticmethod
+    def of_reference(name: str,
+                     referenced_symbol_name: str,
+                     restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                     ) -> 'StringSymbolContext':
+        return StringSymbolContext(name,
+                                   StringSymbolValueContext.of_reference(referenced_symbol_name,
+                                                                         restrictions,
+                                                                         definition_source)
+                                   )
 
     @staticmethod
     def of_arbitrary_value(name: str) -> 'StringSymbolContext':

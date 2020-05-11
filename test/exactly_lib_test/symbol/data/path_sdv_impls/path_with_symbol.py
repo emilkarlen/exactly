@@ -17,8 +17,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as vr_tr
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.sdvs import \
-    string_sdv_of_single_symbol_reference
+from exactly_lib_test.symbol.data.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
