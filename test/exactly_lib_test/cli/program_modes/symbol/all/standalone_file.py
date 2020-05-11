@@ -4,7 +4,6 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -13,6 +12,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesParseException
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
@@ -231,11 +231,13 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_single_reference_to_builtin_symbol(self):
-        builtin_symbol_name = 'BUILTIN_STRING_SYMBOL'
+        builtin_symbol = StringSymbolContext.of_constant('BUILTIN_STRING_SYMBOL',
+                                                         'builtin string symbol value')
         case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
-                                        sym_def.reference_to(builtin_symbol_name, ValueType.STRING),
+                                        sym_def.reference_to(builtin_symbol.name,
+                                                             builtin_symbol.value.value_type),
                                     ]))
 
         check_case_and_suite(
@@ -249,8 +251,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 ]),
                 main_program_config=sym_def.main_program_config(
                     builtin_symbols=[
-                        sym_def.builtin_symbol(builtin_symbol_name,
-                                               string_sdvs.str_constant('builtin string symbol value')),
+                        sym_def.builtin_symbol(builtin_symbol),
                     ]
                 ),
             ),
@@ -262,13 +263,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_single_definition_with_reference_to_builtin_symbol(self):
-        builtin_symbol_name = 'BUILTIN_STRING_SYMBOL'
+        builtin_symbol = StringSymbolContext.of_constant('BUILTIN_STRING_SYMBOL',
+                                                         'builtin string symbol value')
         user_defined_symbol_name = 'STRING_SYMBOL'
         case_with_single_def = File('test.xly',
                                     lines_content([
                                         phase_names.SETUP.syntax,
                                         sym_def.define_string(user_defined_symbol_name,
-                                                              symbol_reference_syntax_for_name(builtin_symbol_name)),
+                                                              symbol_reference_syntax_for_name(builtin_symbol.name)),
                                     ]))
 
         check_case_and_suite(
@@ -282,8 +284,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 ]),
                 main_program_config=sym_def.main_program_config(
                     builtin_symbols=[
-                        sym_def.builtin_symbol(builtin_symbol_name,
-                                               string_sdvs.str_constant('builtin string symbol value')),
+                        sym_def.builtin_symbol(builtin_symbol),
                     ]
                 ),
             ),

@@ -93,8 +93,8 @@ class SymbolContainer(SymbolTableValue):
         return self._sdv
 
 
-def container_of_builtin(value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
-    return SymbolContainer(value_sdv, value_sdv.value_type, None)
+def container_of_builtin(value_type: ValueType, value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
+    return SymbolContainer(value_sdv, value_type, None)
 
 
 class Failure(ABC):

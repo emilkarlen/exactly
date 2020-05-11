@@ -3,7 +3,6 @@ import unittest
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
@@ -14,6 +13,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
@@ -159,7 +159,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_symbol_with_reference_to_builtin_symbol(self):
-        name_of_existing_builtin_symbol = 'BUILTIN_STRING_SYMBOL'
+        existing_builtin_symbol = StringSymbolContext.of_constant('BUILTIN_STRING_SYMBOL',
+                                                                  'the builtin symbol value')
         name_of_existing_user_defined_symbol = 'USER_DEFINED_STRING_SYMBOL'
 
         case_with_single_def = File(
@@ -167,7 +168,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             lines_content([
                 phase_names.SETUP.syntax,
                 sym_def.define_string(name_of_existing_user_defined_symbol,
-                                      symbol_reference_syntax_for_name(name_of_existing_builtin_symbol)),
+                                      symbol_reference_syntax_for_name(existing_builtin_symbol.name)),
             ])
         )
 
@@ -187,8 +188,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     case_with_single_def,
                 ]),
                 main_program_config=sym_def.main_program_config(
-                    builtin_symbols=[sym_def.builtin_symbol(name_of_existing_builtin_symbol,
-                                                            string_sdvs.str_constant('the builtin symbol value'))],
+                    builtin_symbols=[sym_def.builtin_symbol(existing_builtin_symbol)],
                 ),
             ),
             expectation=
@@ -198,7 +198,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
         )
 
     def test_builtin_symbol(self):
-        name_of_existing_builtin_symbol = 'BUILTIN_STRING_SYMBOL'
+        existing_builtin_symbol = StringSymbolContext.of_constant('BUILTIN_STRING_SYMBOL',
+                                                                  'the builtin symbol value')
 
         case_with_single_def = File(
             'test.case',
@@ -210,7 +211,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             symbol_command_arguments=
             symbol_args.individual__definition(
                 case_with_single_def.name,
-                name_of_existing_builtin_symbol,
+                existing_builtin_symbol.name,
             ),
             arrangement=
             Arrangement(
@@ -218,27 +219,28 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     case_with_single_def,
                 ]),
                 main_program_config=sym_def.main_program_config(
-                    builtin_symbols=[sym_def.builtin_symbol(name_of_existing_builtin_symbol,
-                                                            string_sdvs.str_constant('the builtin symbol value'))],
+                    builtin_symbols=[sym_def.builtin_symbol(existing_builtin_symbol)],
                 ),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=definition_of_builtin_symbol(name_of_existing_builtin_symbol,
-                                                    ValueType.STRING,
+                stdout=definition_of_builtin_symbol(existing_builtin_symbol.name,
+                                                    existing_builtin_symbol.value.value_type,
                                                     num_refs=0)
             )
         )
 
     def test_builtin_symbol_with_reference_to_it(self):
-        name_of_existing_builtin_symbol = 'BUILTIN_STRING_SYMBOL'
+        existing_builtin_symbol = StringSymbolContext.of_constant('BUILTIN_STRING_SYMBOL',
+                                                                  'the builtin symbol value')
 
         case_with_single_def = File(
             'test.case',
             lines_content([
                 phase_names.SETUP.syntax,
-                sym_def.reference_to(name_of_existing_builtin_symbol, ValueType.STRING),
+                sym_def.reference_to(existing_builtin_symbol.name,
+                                     existing_builtin_symbol.value.value_type),
             ])
         )
 
@@ -247,7 +249,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             symbol_command_arguments=
             symbol_args.individual__definition(
                 case_with_single_def.name,
-                name_of_existing_builtin_symbol,
+                existing_builtin_symbol.name,
             ),
             arrangement=
             Arrangement(
@@ -255,15 +257,16 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     case_with_single_def,
                 ]),
                 main_program_config=sym_def.main_program_config(
-                    builtin_symbols=[sym_def.builtin_symbol(name_of_existing_builtin_symbol,
-                                                            string_sdvs.str_constant('the builtin symbol value'))],
+                    builtin_symbols=[
+                        sym_def.builtin_symbol(existing_builtin_symbol)
+                    ],
                 ),
             ),
             expectation=
             asrt_proc_result.sub_process_result(
                 exitcode=asrt.equals(exit_codes.EXIT_OK),
-                stdout=definition_of_builtin_symbol(name_of_existing_builtin_symbol,
-                                                    ValueType.STRING,
+                stdout=definition_of_builtin_symbol(existing_builtin_symbol.name,
+                                                    existing_builtin_symbol.value.value_type,
                                                     num_refs=1)
             )
         )

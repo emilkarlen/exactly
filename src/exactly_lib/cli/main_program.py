@@ -19,6 +19,7 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, container_of_builtin, SymbolContainer
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
@@ -28,12 +29,14 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
+                 value_type: ValueType,
                  sdtv: SymbolDependentTypeValue,
                  single_line_description: str,
                  documentation: SectionContents,
                  see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         self._name = name
+        self._value_type = value_type
         self._sdtv = sdtv
         self._single_line_description = single_line_description
         self._documentation = documentation
@@ -45,7 +48,7 @@ class BuiltinSymbol:
 
     @property
     def container(self) -> SymbolContainer:
-        return container_of_builtin(self._sdtv)
+        return container_of_builtin(self._value_type, self._sdtv)
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
@@ -57,11 +60,13 @@ class BuiltinSymbol:
 
 
 def builtin_symbol_of_custom_symbol(name: str,
+                                    value_type: ValueType,
                                     sdtv: SymbolDependentTypeValue,
                                     documentation: CustomSymbolDocumentation
                                     ) -> BuiltinSymbol:
     return BuiltinSymbol(
         name,
+        value_type,
         sdtv,
         documentation.single_line_description,
         documentation.documentation,
