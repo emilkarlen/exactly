@@ -27,37 +27,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestIsResolverOfDataType),
         unittest.makeSuite(TestIsResolverOfLogicType),
-        unittest.makeSuite(TestMatchesResolver),
+        unittest.makeSuite(TestMatchesSdv),
     ])
-
-
-class TestIsResolverOfDataType(unittest.TestCase):
-    def test_succeed(self):
-        # ARRANGE #
-        assertion = sut.is_sdtv_of_data_type(DataValueType.STRING,
-                                             ValueType.STRING)
-        matching_sdv = _StringSdvTestImpl()
-        # ACT & ASSERT #
-        assertion.apply_without_message(self, matching_sdv)
-
-    def test_fail(self):
-        # ARRANGE #
-        assertion = sut.is_sdtv_of_data_type(DataValueType.STRING,
-                                             ValueType.STRING)
-        cases = [
-            NameAndValue('unexpected data type',
-                         _PathSdvTestImpl(),
-                         ),
-            NameAndValue('logic type',
-                         _ProgramResolverTestImpl(),
-                         ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
-                # ACT & ASSERT #
-                test_of_test_resources_util.assert_that_assertion_fails(assertion, case.value)
 
 
 class TestIsResolverOfLogicType(unittest.TestCase):
@@ -85,7 +57,7 @@ class TestIsResolverOfLogicType(unittest.TestCase):
                 test_of_test_resources_util.assert_that_assertion_fails(assertion, case.value)
 
 
-class TestMatchesResolver(unittest.TestCase):
+class TestMatchesSdv(unittest.TestCase):
     def test_fail_due_to_unexpected_sdv_type(self):
         # ARRANGE #
         cases = [

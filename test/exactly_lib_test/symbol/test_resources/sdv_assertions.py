@@ -1,5 +1,5 @@
 import unittest
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.symbol import sdv_structure
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv, get_data_value_type
@@ -36,7 +36,7 @@ def matches_sdtv(sdv_type: ValueAssertion[SymbolDependentTypeValue],
                  references: ValueAssertion[Sequence[SymbolReference]],
                  resolved_value: ValueAssertion[DirDependentValue],
                  custom: ValueAssertion[SymbolDependentTypeValue] = asrt.anything_goes(),
-                 symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                 symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return _MatchesSdtv(sdv_type,
                         references,
                         resolved_value,
@@ -93,7 +93,7 @@ def is_sdtv_of_program_type() -> ValueAssertion[SymbolDependentTypeValue]:
 def matches_sdtv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
                            resolved_value: ValueAssertion[StringDdv],
                            custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
-                           symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                           symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_string_type(),
                         references,
                         asrt.is_instance_with(StringDdv, resolved_value),
@@ -104,7 +104,7 @@ def matches_sdtv_of_string(references: ValueAssertion[Sequence[SymbolReference]]
 def matches_sdtv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
                          resolved_value: ValueAssertion[ListDdv],
                          custom: ValueAssertion[ListSdv] = asrt.anything_goes(),
-                         symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                         symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_list_type(),
                         references,
                         asrt.is_instance_with(ListDdv, resolved_value),
@@ -115,7 +115,7 @@ def matches_sdtv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
 def matches_sdtv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
                          resolved_value: ValueAssertion[PathDdv],
                          custom: ValueAssertion[PathSdv] = asrt.anything_goes(),
-                         symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                         symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_path_type(),
                         references,
                         asrt.is_instance_with(PathDdv, resolved_value),
@@ -125,7 +125,7 @@ def matches_sdtv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
 
 def matches_sdtv_of_file_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
                                  primitive_value: ValueAssertion[FileMatcher] = asrt.anything_goes(),
-                                 symbols: SymbolTable = None,
+                                 symbols: Optional[SymbolTable] = None,
                                  tcds: Tcds = fake_tcds(),
                                  tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
                                  ) -> ValueAssertion[SymbolDependentTypeValue]:
@@ -142,7 +142,7 @@ def matches_sdtv_of_file_matcher(references: ValueAssertion[Sequence[SymbolRefer
 
 def matches_sdtv_of_files_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
                                   primitive_value: ValueAssertion[FilesMatcher] = asrt.anything_goes(),
-                                  symbols: SymbolTable = None,
+                                  symbols: Optional[SymbolTable] = None,
                                   tcds: Tcds = fake_tcds(),
                                   tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
                                   ) -> ValueAssertion[SymbolDependentTypeValue]:
@@ -159,7 +159,7 @@ def matches_sdtv_of_files_matcher(references: ValueAssertion[Sequence[SymbolRefe
 
 def matches_sdtv_of_line_matcher(references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
                                  primitive_value: ValueAssertion[LineMatcher] = asrt.anything_goes(),
-                                 symbols: SymbolTable = None,
+                                 symbols: Optional[SymbolTable] = None,
                                  tcds: Tcds = fake_tcds(),
                                  tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
                                  ) -> ValueAssertion[SymbolDependentTypeValue]:
@@ -178,7 +178,8 @@ def matches_sdtv_of_string_transformer(references: ValueAssertion[Sequence[Symbo
                                        resolved_value: ValueAssertion[StringTransformerDdv],
                                        custom: ValueAssertion[
                                            StringTransformerSdv] = asrt.anything_goes(),
-                                       symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                                       symbols: Optional[SymbolTable] = None) -> ValueAssertion[
+    SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_string_transformer_type(),
                         references,
                         asrt.is_instance_with(StringTransformerDdv, resolved_value),
@@ -189,7 +190,7 @@ def matches_sdtv_of_string_transformer(references: ValueAssertion[Sequence[Symbo
 def matches_sdtv_of_program(references: ValueAssertion[Sequence[SymbolReference]],
                             resolved_program_value: ValueAssertion[DirDependentValue],
                             custom: ValueAssertion[ProgramSdv] = asrt.anything_goes(),
-                            symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentTypeValue]:
+                            symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentTypeValue]:
     return matches_sdtv(is_sdtv_of_program_type(),
                         references,
                         asrt.is_instance_with(ProgramDdv, resolved_program_value),
