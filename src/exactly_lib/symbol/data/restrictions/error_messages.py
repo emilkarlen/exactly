@@ -34,7 +34,7 @@ def unsatisfied_path_relativity(symbol_name: str,
         rows = []
         if accepted.absolute:
             rows.append([path.RELATIVITY_DESCRIPTION_ABSOLUTE])
-        for rel_opt in accepted.rel_option_types:
+        for rel_opt in path.sort_rel_options(accepted.rel_option_types):
             rows.append(option_description_row(rel_opt))
         return rows
 

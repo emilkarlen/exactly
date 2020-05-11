@@ -1,5 +1,5 @@
 from pathlib import PurePosixPath
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.common.help import documentation_text
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -197,7 +197,7 @@ DOCUMENTATION = _Documentation()
 
 
 def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
-                                     rel_opts_in_display_order: list) -> List[ParagraphItem]:
+                                     rel_opts_in_display_order: Sequence) -> List[ParagraphItem]:
     rows = list(map(lambda rel_opt: _mk_dir_info_row(rel_opt_2_rel_option_info[rel_opt]),
                     rel_opts_in_display_order))
     return [

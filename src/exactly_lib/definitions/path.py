@@ -1,4 +1,6 @@
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelSdsOptionType
+from typing import Sequence, Set
+
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelSdsOptionType, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -47,3 +49,22 @@ SDS_DIR_DISPLAY_ORDER = (
     RelSdsOptionType.REL_TMP,
     RelSdsOptionType.REL_RESULT,
 )
+
+DIR_DISPLAY_ORDER = (
+    RelOptionType.REL_HDS_CASE,
+    RelOptionType.REL_HDS_ACT,
+    RelOptionType.REL_ACT,
+    RelOptionType.REL_TMP,
+    RelOptionType.REL_RESULT,
+    RelOptionType.REL_CWD,
+)
+
+
+def sort_rel_options(options: Set[RelOptionType]) -> Sequence[RelOptionType]:
+    ret_val = []
+
+    for any_opt in DIR_DISPLAY_ORDER:
+        if any_opt in options:
+            ret_val.append(any_opt)
+
+    return ret_val

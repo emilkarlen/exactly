@@ -147,16 +147,15 @@ class _RelOptionTypeInfo(tuple):
 class RelOptionRenderer:
     def all_options_list(self) -> lists.HeaderContentList:
         items = []
-        for rel_option_type in _DISPLAY_ORDER:
+        for rel_option_type in path.DIR_DISPLAY_ORDER:
             items.append(self.sparse_item_for(rel_option_type))
         items += self.special_symbols()
         return self.list_for_items(items)
 
     def sparse_list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
         items = []
-        for rel_option_type in _DISPLAY_ORDER:
-            if rel_option_type in variants.rel_option_types:
-                items.append(self.sparse_item_for(rel_option_type))
+        for rel_option_type in path.sort_rel_options(variants.rel_option_types):
+            items.append(self.sparse_item_for(rel_option_type))
         return self.list_for_items(items)
 
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
@@ -208,15 +207,6 @@ _REL_HDS_CASE_DESCRIPTION = """\
 _REL_HDS_ACT_DESCRIPTION = """\
 {PATH} is relative the {home_act_directory}.
 """
-
-_DISPLAY_ORDER = (
-    RelOptionType.REL_HDS_CASE,
-    RelOptionType.REL_HDS_ACT,
-    RelOptionType.REL_ACT,
-    RelOptionType.REL_TMP,
-    RelOptionType.REL_RESULT,
-    RelOptionType.REL_CWD,
-)
 
 
 def _rel_sds(rel: RelSdsOptionType,
