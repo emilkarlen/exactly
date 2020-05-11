@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.sdv_structure import container_of_builtin
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as sut
@@ -19,12 +18,12 @@ class TestMatchesContainer(unittest.TestCase):
     def test_sdv_SHOULD_be_given_as_argument_to_sdv_assertion(self):
         # ARRANGE #
         actual_sdv = string_sdvs.str_constant('s')
-        actual_container = container_of_builtin(actual_sdv)
+        builtin_symbol = StringSymbolValueContext.of_sdv(actual_sdv, definition_source=None)
         assertion_that_is_expected_to_succeed = asrt.is_(actual_sdv)
         assertion_to_check = sut.matches_container(assertion_that_is_expected_to_succeed,
                                                    assertion_on_source=asrt.anything_goes())
         # ACT & ASSERT #
-        assertion_to_check.apply_without_message(self, actual_container)
+        assertion_to_check.apply_without_message(self, builtin_symbol.container)
 
     def test_source_line_SHOULD_be_given_as_argument_to_source_line_assertion(self):
         # ARRANGE #
