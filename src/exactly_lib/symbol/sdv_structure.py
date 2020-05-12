@@ -34,15 +34,6 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
 class SymbolDependentTypeValue(SymbolDependentValue):
     """A :class:`SymbolDependentValue` that represents a value of a type in the type system"""
 
-    @property
-    def references(self) -> Sequence['SymbolReference']:
-        """
-        All :class:`SymbolReference` directly referenced by this object.
-
-        :type: [`SymbolReference`]
-        """
-        raise NotImplementedError('abstract method')
-
     def resolve(self, symbols: SymbolTable):
         raise NotImplementedError('abstract method')
 
