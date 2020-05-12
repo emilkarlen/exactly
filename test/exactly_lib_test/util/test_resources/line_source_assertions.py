@@ -33,7 +33,7 @@ def is_line(description: str = '') -> ValueAssertion[Any]:
                                  description)
 
 
-def is_line_sequence(description: str = '') -> ValueAssertion[Any]:
+def is_line_sequence(description: str = '') -> ValueAssertion[LineSequence]:
     return asrt.is_instance_with(LineSequence,
                                  asrt.And([
                                      asrt.sub_component('line_number',
