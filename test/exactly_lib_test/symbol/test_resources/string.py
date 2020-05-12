@@ -5,7 +5,7 @@ from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -115,10 +115,6 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @property
     def value_type(self) -> ValueType:
         return ValueType.STRING
-
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class StringSymbolContext(DataTypeSymbolContext[StringSdv]):

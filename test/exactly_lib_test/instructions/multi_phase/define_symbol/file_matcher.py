@@ -93,7 +93,7 @@ class Test(TestCaseBase):
 
                     expected_container = matches_container_of_logic_type(
                         LogicValueType.FILE_MATCHER,
-                        sdv_assertions.matches_sdtv_of_file_matcher(
+                        sdv_assertions.matches_sdv_of_file_matcher(
                             references=asrt.is_empty_sequence,
                             primitive_value=case.expected_value
                         )

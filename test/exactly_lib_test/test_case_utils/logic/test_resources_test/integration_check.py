@@ -6,7 +6,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator, DdvValidator
@@ -88,7 +88,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_line_matcher_type(self,
                                  source: ParseSource,
                                  model: int,
-                                 parser: Parser[MatcherTypeStv[int]],
+                                 parser: Parser[MatcherSdv[int]],
                                  arrangement: sut.arrangement_w_tcds,
                                  expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
@@ -100,7 +100,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_line_matcher_type__multi(self,
                                         arguments: Arguments,
                                         model: int,
-                                        parser: Parser[MatcherTypeStv[int]],
+                                        parser: Parser[MatcherSdv[int]],
                                         arrangement: sut.arrangement_w_tcds,
                                         expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
@@ -117,7 +117,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_line_matcher_type__single_and_multi(self,
                                                    arguments: Arguments,
                                                    model: int,
-                                                   parser: Parser[MatcherTypeStv[int]],
+                                                   parser: Parser[MatcherSdv[int]],
                                                    arrangement: sut.arrangement_w_tcds,
                                                    expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
@@ -138,7 +138,7 @@ class TestCaseBase(unittest.TestCase):
             )
 
     def _check_raises_test_error__single_and_multi(self,
-                                                   parser: Parser[MatcherTypeStv[int]],
+                                                   parser: Parser[MatcherSdv[int]],
                                                    expectation: sut.Expectation,
                                                    ):
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
@@ -468,16 +468,6 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         )
 
 
-class _MatcherTypeStvTestImpl(MatcherTypeStv[int]):
-    def __init__(self,
-                 matcher: MatcherSdv[int],
-                 ):
-        self._matcher = matcher
-
-    def value(self) -> MatcherSdv[int]:
-        return self._matcher
-
-
 class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
@@ -495,16 +485,12 @@ class MatcherSdvThatAssertsThatSymbolsAreAsExpected(Generic[MODEL], MatcherSdv[M
         return matchers.ddv_of_unconditionally_matching_matcher()
 
 
-def _line_matcher_type_sdv(matcher: MatcherSdv[int]) -> MatcherSdv[int]:
-    return _MatcherTypeStvTestImpl(matcher)
-
-
 class _ConstantParserOfSingleTokenExpression(Parser[MatcherSdv[int]]):
     def __init__(self, constant_result: MatcherSdv[int]):
         super().__init__()
         self._constant_result = constant_result
 
-    def parse_from_token_parser(self, parser: TokenParser) -> MatcherTypeStv[int]:
+    def parse_from_token_parser(self, parser: TokenParser) -> MatcherSdv[int]:
         parser.consume_mandatory_token('expecting single arbitrary token')
         return self._constant_result
 
@@ -541,7 +527,7 @@ def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[Tcds]:
 
 def parser_of_matcher_that_is_an_assertion_on_tcds(put: unittest.TestCase,
                                                    assertion: ValueAssertion[Tcds],
-                                                   ) -> Parser[MatcherTypeStv[int]]:
+                                                   ) -> Parser[MatcherSdv[int]]:
     return _constant_line_matcher_type_parser_of_matcher_ddv(
         _MatcherDdvThatIsAssertionOnTcds(put, assertion)
     )

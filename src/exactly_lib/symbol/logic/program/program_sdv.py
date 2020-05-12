@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicWithStructureSdv
+from exactly_lib.symbol.logic.logic_type_sdv import LogicWithStructureSdv
 from exactly_lib.symbol.logic.program import stdin_data_sdv
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
@@ -30,11 +30,3 @@ class ProgramSdv(LogicWithStructureSdv[Program]):
         current transformations.
         """
         return self.new_accumulated(stdin_data_sdv.no_stdin(), arguments_sdvs.empty(), transformations)
-
-
-class ProgramStv(LogicTypeStv[Program]):
-    def __init__(self, sdv: ProgramSdv):
-        self._sdv = sdv
-
-    def value(self) -> ProgramSdv:
-        return self._sdv

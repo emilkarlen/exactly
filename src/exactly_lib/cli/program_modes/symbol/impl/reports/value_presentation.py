@@ -10,8 +10,8 @@ from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolDefinition
+from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
+from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
 from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.program.program import Program
@@ -39,14 +39,14 @@ class PresentationBlockConstructor:
         })
         self._symbol_table.add_table(builtin_symbols)
 
-    def block_for(self, sdv: SymbolDependentTypeValue) -> ResolvedValuePresentationBlock:
-        if isinstance(sdv, LogicTypeStv):
+    def block_for(self, sdv: SymbolDependentValue) -> ResolvedValuePresentationBlock:
+        if isinstance(sdv, LogicSdv):
             return _of_tree_structured(sdv.resolve(self._symbol_table))
         elif isinstance(sdv, DataTypeSdv):
             constructor = _DataTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
         else:
-            raise TypeError('Unknown {} type: {}'.format(str(SymbolDependentTypeValue), str(sdv)))
+            raise TypeError('Unknown {} type: {}'.format(str(SymbolDependentValue), str(sdv)))
 
 
 class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):

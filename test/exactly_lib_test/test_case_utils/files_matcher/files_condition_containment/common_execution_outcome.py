@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import \
     check_contains_and_equals__multi, check_contains_and_equals, Case, NON_MATCHING_EXECUTION_EXPECTATION, \
@@ -13,6 +13,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
     model_constructor__recursive
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, Arrangement, \
     Expectation, ParseExpectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
 from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
@@ -33,9 +34,9 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
         # ARRANGE #
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'a-dir')
 
-        unconditionally_hard_error_file_matcher = FileMatcherSymbolContext.of_sdtv(
+        unconditionally_hard_error_file_matcher = FileMatcherSymbolContext.of_primitive(
             'unconditionally_hard_error_file_matcher',
-            file_matchers.hard_error()
+            matchers.MatcherThatReportsHardError()
         )
         file_in_model = 'a-file'
         # ACT & ASSERT #

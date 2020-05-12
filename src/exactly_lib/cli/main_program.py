@@ -16,7 +16,8 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, container_of_builtin, SymbolContainer
+from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolContainer, \
+    SymbolDependentValue
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.type_system.value_type import ValueType
@@ -30,14 +31,14 @@ class BuiltinSymbol:
     def __init__(self,
                  name: str,
                  value_type: ValueType,
-                 sdtv: SymbolDependentTypeValue,
+                 sdv: SymbolDependentValue,
                  single_line_description: str,
                  documentation: SectionContents,
                  see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         self._name = name
         self._value_type = value_type
-        self._sdtv = sdtv
+        self._sdv = sdv
         self._single_line_description = single_line_description
         self._documentation = documentation
         self._see_also = see_also
@@ -48,7 +49,7 @@ class BuiltinSymbol:
 
     @property
     def container(self) -> SymbolContainer:
-        return container_of_builtin(self._value_type, self._sdtv)
+        return container_of_builtin(self._value_type, self._sdv)
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
@@ -61,13 +62,13 @@ class BuiltinSymbol:
 
 def builtin_symbol_of_custom_symbol(name: str,
                                     value_type: ValueType,
-                                    sdtv: SymbolDependentTypeValue,
+                                    sdv: SymbolDependentValue,
                                     documentation: CustomSymbolDocumentation
                                     ) -> BuiltinSymbol:
     return BuiltinSymbol(
         name,
         value_type,
-        sdtv,
+        sdv,
         documentation.single_line_description,
         documentation.documentation,
         documentation.see_also

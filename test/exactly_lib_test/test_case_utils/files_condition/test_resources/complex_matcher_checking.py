@@ -2,9 +2,8 @@ import unittest
 from pathlib import PurePosixPath
 from typing import List, Sequence, Tuple, Mapping, Optional
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher, GenericFileMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
@@ -50,16 +49,16 @@ class ApplicationSequenceFrom1Builder:
     def add_applied(self,
                     name_and_result: NameAndValue[bool],
                     expected_order: int,
-                    ) -> FileMatcherStv:
+                    ) -> GenericFileMatcherSdv:
         return self._registering_matcher_of(name_and_result, [expected_order])
 
-    def add_un_applied(self, name_and_result: NameAndValue[bool]) -> FileMatcherStv:
+    def add_un_applied(self, name_and_result: NameAndValue[bool]) -> GenericFileMatcherSdv:
         return self._registering_matcher_of(name_and_result, [])
 
     def _registering_matcher_of(self,
                                 name_and_result: NameAndValue[bool],
                                 expected_applications: List[int],
-                                ) -> FileMatcherStv:
+                                ) -> GenericFileMatcherSdv:
         matcher = ConstantMatcherThatRegistersApplication(
             name_and_result.name,
             name_and_result.value,
@@ -73,11 +72,9 @@ class ApplicationSequenceFrom1Builder:
         return self._matchers_w_expected
 
     @staticmethod
-    def _sdv(primitive: FileMatcher) -> FileMatcherStv:
-        return FileMatcherStv(
-            matchers.MatcherSdvOfConstantDdvTestImpl(
-                matchers.MatcherDdvOfConstantMatcherTestImpl(primitive)
-            )
+    def _sdv(primitive: FileMatcher) -> GenericFileMatcherSdv:
+        return matchers.MatcherSdvOfConstantDdvTestImpl(
+            matchers.MatcherDdvOfConstantMatcherTestImpl(primitive)
         )
 
 

@@ -20,8 +20,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import m
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
-from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
-    is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -76,7 +75,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
                 expected_container = matches_container_of_logic_type(
                     LogicValueType.FILES_MATCHER,
-                    sdv_assertions.matches_sdtv_of_files_matcher()
+                    sdv_assertions.matches_sdv_of_files_matcher()
                 )
 
                 expectation = Expectation(
@@ -97,8 +96,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'
 
-        referenced_symbol = FilesMatcherSymbolContext.of_sdtv('referenced_name',
-                                                              ARBITRARY_SDV)
+        referenced_symbol = FilesMatcherSymbolContext.of_arbitrary_value('referenced_name')
 
         symbols = referenced_symbol.symbol_table
 
@@ -116,7 +114,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.FILES_MATCHER,
-            sdv_assertions.matches_sdtv_of_files_matcher(
+            sdv_assertions.matches_sdv_of_files_matcher(
                 references=asrt.matches_sequence([
                     is_reference_to_files_matcher__ref(referenced_symbol.name)
                 ]),
@@ -145,7 +143,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.FILES_MATCHER,
-            sdv_assertions.matches_sdtv_of_files_matcher()
+            sdv_assertions.matches_sdv_of_files_matcher()
         )
 
         not_num_files_beginning_with_a_eq_1_arg = self._not_num_files_beginning_with_a_eq_1_arg()
@@ -282,9 +280,6 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         populator = dir_conf.populator_for_relativity_option_root(self.actual_dir_contents)
         populator.populate_tcds(environment.tcds)
 
-
-ARBITRARY_SDV = files_matcher_stv_constant_test_impl(True,
-                                                     references=[])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

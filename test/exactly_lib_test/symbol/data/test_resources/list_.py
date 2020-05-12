@@ -3,7 +3,7 @@ from typing import Sequence, List, Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.value_type import ValueType
@@ -62,10 +62,6 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
             is_any_data_type_reference_restrictions())
-
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
 
 class ListSymbolContext(DataTypeSymbolContext[ListSdv]):

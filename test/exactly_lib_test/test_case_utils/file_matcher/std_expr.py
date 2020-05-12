@@ -3,8 +3,7 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
@@ -31,9 +30,6 @@ def suite() -> unittest.TestSuite:
 
 
 class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
-    def mk_logic_type(self, generic: MatcherSdv[FileMatcherModel]) -> MatcherTypeStv[FileMatcherModel]:
-        return FileMatcherStv(generic)
-
     def mk_logic_type_value_context_of_primitive(self,
                                                  primitive: MatcherWTraceAndNegation[FileMatcherModel]
                                                  ) -> FileMatcherSymbolValueContext:
@@ -45,16 +41,16 @@ class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
                                            ) -> FileMatcherSymbolContext:
         return FileMatcherSymbolContext.of_primitive(name, primitive)
 
-    def mk_logic_type_context_of_stv(self,
+    def mk_logic_type_context_of_sdv(self,
                                      name: str,
-                                     stv: MatcherTypeStv[FileMatcherModel]
+                                     sdv: MatcherSdv[FileMatcherModel]
                                      ) -> FileMatcherSymbolContext:
-        return FileMatcherSymbolContext.of_sdtv(name, stv)
+        return FileMatcherSymbolContext.of_sdv(name, sdv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.FILE_MATCHER
 
-    def parser(self) -> Parser[MatcherTypeStv[FileMatcherModel]]:
+    def parser(self) -> Parser[MatcherSdv[FileMatcherModel]]:
         return parse_file_matcher.parser()
 
     def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FileMatcherModel],

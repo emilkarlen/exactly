@@ -42,7 +42,7 @@ class ValidationHelper:
 
     def _arrangement(self, validator: DdvValidator) -> ArrangementPostAct2:
         return ArrangementPostAct2(
-            symbols=FilesMatcherSymbolContext.of_generic(
+            symbols=FilesMatcherSymbolContext.of_sdv(
                 self.name_of_referenced_symbol,
                 matchers.sdv_from_bool(
                     unconditional_result=True,

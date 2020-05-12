@@ -15,7 +15,7 @@ class ValidationCase:
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
-        self._symbol_context = LineMatcherSymbolContext.of_generic(
+        self._symbol_context = LineMatcherSymbolContext.of_sdv(
             'line_matcher_symbol',
             sdv_from_primitive_value(
                 validator=constant_validator(actual)

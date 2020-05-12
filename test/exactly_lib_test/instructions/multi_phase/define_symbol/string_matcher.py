@@ -20,6 +20,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import m
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.sdv_assertions import matches_sdv_of_string_matcher
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext
@@ -30,7 +31,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import argum
     model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.assertions import matches_string_matcher_sdv
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -73,7 +73,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
                 expected_container = matches_container_of_logic_type(
                     LogicValueType.STRING_MATCHER,
-                    matches_string_matcher_sdv()
+                    matches_sdv_of_string_matcher()
                 )
 
                 expectation = Expectation(
@@ -112,7 +112,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.STRING_MATCHER,
-            matches_string_matcher_sdv(
+            matches_sdv_of_string_matcher(
                 references=asrt.matches_sequence([
                     referenced_symbol.reference_assertion
                 ]),
@@ -139,7 +139,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.STRING_MATCHER,
-            matches_string_matcher_sdv()
+            matches_sdv_of_string_matcher()
         )
 
         not_num_lines_eq_1_matcher_arg = self._not_num_lines_eq_1_matcher_arg()

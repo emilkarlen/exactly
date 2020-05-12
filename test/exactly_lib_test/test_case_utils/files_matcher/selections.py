@@ -152,9 +152,9 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
             remaining_source(files_matcher_source__num_files_ending_with_x_eq_1)
         )
 
-        symbols = FilesMatcherSymbolContext.of_generic(symbol_name,
-                                                       num_files_ending_with_x_eq_1_resolver,
-                                                       ).symbol_table
+        symbols = FilesMatcherSymbolContext.of_sdv(symbol_name,
+                                                   num_files_ending_with_x_eq_1_resolver,
+                                                   ).symbol_table
 
         # ASSERT #
 

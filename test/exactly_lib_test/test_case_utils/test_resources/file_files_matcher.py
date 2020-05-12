@@ -49,8 +49,8 @@ class IntegrationCheckWFilesMatcherHelperBase(ABC):
                                           additional_symbols: Sequence[SymbolContext] = (),
                                           ) -> Arrangement:
         symbols = [
-            FilesMatcherSymbolContext.of_generic(self.files_matcher_name,
-                                                 files_matcher_symbol_value)
+            FilesMatcherSymbolContext.of_sdv(self.files_matcher_name,
+                                             files_matcher_symbol_value)
         ]
         symbols += additional_symbols
 

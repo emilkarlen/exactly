@@ -1,12 +1,12 @@
 from typing import List
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case_file_structure.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class DataTypeSdv(SymbolDependentTypeValue):
+class DataTypeSdv(SymbolDependentValue):
     """ Base class for symbol values - values that represent data."""
 
     @property

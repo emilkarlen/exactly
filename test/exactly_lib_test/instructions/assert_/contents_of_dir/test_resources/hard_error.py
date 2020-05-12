@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Sequence
 
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -50,9 +49,7 @@ class _HelperBase(ABC):
 
 
 class HardErrorDueToInvalidPathArgumentHelper(_HelperBase):
-    UNCONDITIONALLY_CONSTANT_TRUE = FilesMatcherStv(
-        matchers.sdv_from_bool(True)
-    )
+    UNCONDITIONALLY_CONSTANT_TRUE = matchers.sdv_from_bool(True)
 
     def symbols(self) -> SymbolTable:
         return FilesMatcherSymbolContext.of_primitive_constant(self.name_of_referenced_symbol,

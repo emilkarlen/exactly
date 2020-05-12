@@ -2,8 +2,8 @@ import unittest
 from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherTypeStv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv, ProgramStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -40,20 +40,20 @@ def suite() -> unittest.TestSuite:
 class TestIsResolverOfLogicType(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(MatcherTypeStv)
-        matching_sdtv = StringMatcherSymbolValueContext.of_primitive_constant(False).sdtv
+        assertion = asrt_sdv_struct.is_sdv_of_logic_type(MatcherSdv)
+        matching_sdtv = StringMatcherSymbolValueContext.of_primitive_constant(False).sdv
         # ACT & ASSERT #
         assertion.apply_without_message(self, matching_sdtv)
 
     def test_fail(self):
         # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdtv_of_logic_type(ProgramStv)
+        assertion = asrt_sdv_struct.is_sdv_of_logic_type(ProgramSdv)
         cases = [
             NameAndValue('unexpected logic type',
-                         LineMatcherSymbolValueContext.of_primitive_constant(False).sdtv,
+                         LineMatcherSymbolValueContext.of_primitive_constant(False).sdv,
                          ),
             NameAndValue('data type',
-                         StringSymbolValueContext.of_constant('value').sdtv,
+                         StringSymbolValueContext.of_constant('value').sdv,
                          ),
         ]
         for case in cases:
@@ -68,15 +68,15 @@ class TestMatchesSdv(unittest.TestCase):
         cases = [
             NameAndValue(
                 'unexpected logic type',
-                LineMatcherSymbolValueContext.of_primitive_constant(False).sdtv,
+                LineMatcherSymbolValueContext.of_primitive_constant(False).sdv,
             ),
             NameAndValue(
                 'data type',
-                StringSymbolValueContext.of_constant('value').sdtv,
+                StringSymbolValueContext.of_constant('value').sdv,
             ),
         ]
-        assertion = sut.matches_sdtv(
-            asrt_sdv_struct.is_sdtv_of_logic_type(ProgramStv),
+        assertion = sut.matches_sdv(
+            asrt.is_instance(ProgramSdv),
             asrt.anything_goes(),
             asrt.anything_goes())
         # ACT & ASSERT #
@@ -89,9 +89,9 @@ class TestMatchesSdv(unittest.TestCase):
         reference = data_symbol_utils.symbol_reference('symbol_name')
         string_sdv_with_single_reference = _StringSdvTestImpl(explicit_references=[reference])
 
-        assertion = sut.matches_sdtv(asrt.anything_goes(),
-                                     asrt.is_empty_sequence,
-                                     asrt.anything_goes())
+        assertion = sut.matches_sdv(asrt.anything_goes(),
+                                    asrt.is_empty_sequence,
+                                    asrt.anything_goes())
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(
             assertion,
@@ -100,19 +100,19 @@ class TestMatchesSdv(unittest.TestCase):
     def test_fail_due_to_unexpected_resolved_value(self):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl(resolve_constant(STRING_DDV))
-        assertion = sut.matches_sdtv(asrt.anything_goes(),
-                                     asrt.anything_goes(),
-                                     asrt.not_(asrt.is_(STRING_DDV)))
+        assertion = sut.matches_sdv(asrt.anything_goes(),
+                                    asrt.anything_goes(),
+                                    asrt.not_(asrt.is_(STRING_DDV)))
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_sdv)
 
     def test_fail_due_to_failing_custom_assertion(self):
         # ARRANGE #
         string_sdv = _StringSdvTestImpl(resolve_constant(STRING_DDV))
-        assertion = sut.matches_sdtv(asrt.anything_goes(),
-                                     asrt.anything_goes(),
-                                     asrt.anything_goes(),
-                                     asrt.not_(asrt.is_(string_sdv)))
+        assertion = sut.matches_sdv(asrt.anything_goes(),
+                                    asrt.anything_goes(),
+                                    asrt.anything_goes(),
+                                    asrt.not_(asrt.is_(string_sdv)))
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_sdv)
 
@@ -123,11 +123,11 @@ class TestMatchesSdv(unittest.TestCase):
         reference = data_symbol_utils.symbol_reference(path_symbol.name)
         path_sdv = PathSdvTestImplWithConstantPathAndSymbolReferences(path_symbol.ddv,
                                                                       [reference])
-        assertion = sut.matches_sdtv(sut.is_sdtv_of_path_type(),
-                                     asrt.len_equals(1),
-                                     asrt.is_(path_symbol.ddv),
-                                     asrt.is_(path_sdv),
-                                     symbols=path_symbol.symbol_table)
+        assertion = sut.matches_sdv(sut.is_sdv_of_path_type(),
+                                    asrt.len_equals(1),
+                                    asrt.is_(path_symbol.ddv),
+                                    asrt.is_(path_sdv),
+                                    symbols=path_symbol.symbol_table)
         # ACT & ASSERT #
         assertion.apply_without_message(self, path_sdv)
 
@@ -142,10 +142,10 @@ class TestMatchesSdv(unittest.TestCase):
             _resolve_ddv,
             asrt.equals(symbol_value)
         )
-        assertion = sut.matches_sdtv(asrt.anything_goes(),
-                                     asrt.anything_goes(),
-                                     is_expected_resolved_value,
-                                     symbols=symbol_table)
+        assertion = sut.matches_sdv(asrt.anything_goes(),
+                                    asrt.anything_goes(),
+                                    is_expected_resolved_value,
+                                    symbols=symbol_table)
         # ACT & ASSERT #
         assertion.apply_without_message(self, string_sdv)
 

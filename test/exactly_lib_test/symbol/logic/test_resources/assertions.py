@@ -23,7 +23,7 @@ def matches_logic_sdv(references: ValueAssertion[Sequence[SymbolReference]],
         [
             asrt.sub_component(
                 'references',
-                sdv_structure.get_references__sdv,
+                sdv_structure.get_references,
                 asrt.and_([
                     asrt.is_sequence_of(asrt.is_instance(SymbolReference)),
                     references,

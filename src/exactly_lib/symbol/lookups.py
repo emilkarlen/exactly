@@ -1,12 +1,9 @@
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
-from exactly_lib.symbol.logic.files_matcher import FilesMatcherStv
-from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv, ProgramStv
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -56,36 +53,36 @@ def lookup_and_resolve_path(symbols: SymbolTable, name: str) -> PathDdv:
 def lookup_line_matcher(symbols: SymbolTable, name: str) -> GenericLineMatcherSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, LineMatcherStv), 'Referenced symbol must be LineMatcherStv'
-    return ret_val.value()
+    assert isinstance(ret_val, MatcherSdv), 'Referenced symbol must be MatcherSdv'
+    return ret_val
 
 
 def lookup_file_matcher(symbols: SymbolTable, name: str) -> GenericFileMatcherSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, FileMatcherStv), 'Referenced symbol must be FileMatcherStv'
-    return ret_val.value()
+    assert isinstance(ret_val, MatcherSdv), 'Referenced symbol must be MatcherSdv'
+    return ret_val
 
 
 def lookup_files_matcher(symbols: SymbolTable, name: str) -> GenericFilesMatcherSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, FilesMatcherStv), 'Referenced symbol must be FilesMatcherStv'
-    return ret_val.value()
+    assert isinstance(ret_val, MatcherSdv), 'Referenced symbol must be MatcherSdv'
+    return ret_val
 
 
 def lookup_string_matcher(symbols: SymbolTable, name: str) -> GenericStringMatcherSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, StringMatcherStv), 'Referenced symbol must be StringMatcherStv'
-    return ret_val.value()
+    assert isinstance(ret_val, MatcherSdv), 'Referenced symbol must be MatcherSdv'
+    return ret_val
 
 
 def lookup_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, StringTransformerStv), 'Referenced symbol must be StringTransformerStv'
-    return ret_val.value()
+    assert isinstance(ret_val, StringTransformerSdv), 'Referenced symbol must be StringTransformerSdv'
+    return ret_val
 
 
 def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerDdv:
@@ -95,8 +92,8 @@ def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> St
 def lookup_program(symbols: SymbolTable, name: str) -> ProgramSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
-    assert isinstance(ret_val, ProgramStv), 'Referenced symbol must be ProgramStv'
-    return ret_val.value()
+    assert isinstance(ret_val, ProgramSdv), 'Referenced symbol must be ProgramSdv'
+    return ret_val
 
 
 def lookup_and_resolve_program(symbols: SymbolTable, name: str) -> ProgramDdv:

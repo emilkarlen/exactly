@@ -1,10 +1,10 @@
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
     PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, ValidationAssertions
@@ -18,9 +18,9 @@ class ValidationCase:
                  symbol_name: str = 'files_matcher_symbol',
                  ):
         self._expectation = expectation
-        self._symbol_context = FilesMatcherSymbolContext.of_sdtv(
+        self._symbol_context = FilesMatcherSymbolContext.of_sdv(
             symbol_name,
-            files_matcher_stv_constant_test_impl(
+            matchers.sdv_from_bool(
                 True,
                 validator=pre_or_post_sds_value_validator.constant_validator(actual),
             ),

@@ -1,6 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_getters, property_matcher_describers
@@ -13,10 +12,6 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.logic_types import ExpectationType
 
 _PROPERTY_NAME = 'base-name'
-
-
-def parse(token_parser: TokenParser) -> FileMatcherStv:
-    return FileMatcherStv(parse__generic(token_parser))
 
 
 def parse__generic(token_parser: TokenParser) -> GenericFileMatcherSdv:

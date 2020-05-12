@@ -13,8 +13,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
-def equals_sdv(expected: DataTypeSdv) -> ValueAssertion:
-    return _EqualsResolver(expected)
+def equals_sdv(expected: DataTypeSdv) -> ValueAssertion[DataTypeSdv]:
+    return _EqualsSdv(expected)
 
 
 class _EqualsDataTypeSdvVisitor(DataTypeSdvPseudoVisitor):
@@ -36,7 +36,7 @@ class _EqualsDataTypeSdvVisitor(DataTypeSdvPseudoVisitor):
         return equals_list_sdv(expected).apply(self.put, self.actual, self.message_builder)
 
 
-class _EqualsResolver(ValueAssertionBase[DataTypeSdv]):
+class _EqualsSdv(ValueAssertionBase[DataTypeSdv]):
     def __init__(self, expected: DataTypeSdv):
         self.expected = expected
 

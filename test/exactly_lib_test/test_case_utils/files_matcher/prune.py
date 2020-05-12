@@ -51,7 +51,7 @@ def suite() -> unittest.TestSuite:
 def _name_starts_with__and_hard_error_if_applied_to_non_directory(name: str,
                                                                   expected_name_prefix: str,
                                                                   ) -> FileMatcherSymbolContext:
-    return FileMatcherSymbolContext.of_generic(
+    return FileMatcherSymbolContext.of_sdv(
         name,
         combinator_sdvs.Conjunction([
             sdv_components.matcher_sdv_from_constant_primitive(
@@ -93,7 +93,7 @@ NAME_STARTS_WITH__P2 = _name_starts_with__and_hard_error_if_applied_to_non_direc
     'P2',
 )
 
-NAME_STARTS_WITH__S1 = FileMatcherSymbolContext.of_generic(
+NAME_STARTS_WITH__S1 = FileMatcherSymbolContext.of_sdv(
     'name_starts_with_S1',
     sdv_components.matcher_sdv_from_constant_primitive(
         file_matchers.BaseNameStartsWithMatcher('S1')
@@ -680,7 +680,7 @@ def _check_multi(
 
 
 def test_fails_if_applied(put: unittest.TestCase) -> FileMatcherSymbolContext:
-    return FileMatcherSymbolContext.of_generic(
+    return FileMatcherSymbolContext.of_sdv(
         'test_fails_if_applied',
         sdv_components.matcher_sdv_from_constant_primitive(
             assertion_applier.MatcherThatAppliesValueAssertion(

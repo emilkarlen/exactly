@@ -17,7 +17,6 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import sub_pro
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -286,7 +285,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
     py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
     py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
 
-    program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_generic(
+    program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_sdv(
         'PROGRAM_THAT_EXECUTES_PY_FILE',
         program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
     )
@@ -330,9 +329,8 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 main_result=spr_check.is_success_result(exit_code,
                                                         self.output_to_stderr),
                 symbol_usages=asrt.matches_sequence([
-                    asrt_pgm.is_program_reference_to(self.program_that_executes_py_pgm_symbol.name)
+                    self.program_that_executes_py_pgm_symbol.reference_assertion
                 ])
-
             )
         )
 

@@ -29,8 +29,8 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
                os_services: OsServices,
                custom_environment,
                file_to_check: FileToCheck):
-        matching_result = resolving_helper_for_instruction_env(environment).apply__generic(self._string_matcher,
-                                                                                           file_to_check)
+        matching_result = resolving_helper_for_instruction_env(environment).apply(self._string_matcher,
+                                                                                  file_to_check)
         if not matching_result.value:
             raise pfh_exception.PfhFailException(
                 rend_comb.SingletonSequenceR(

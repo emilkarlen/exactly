@@ -160,13 +160,13 @@ class TestValidation(unittest.TestCase):
 
         expected_validation = validation.pre_sds_validation_fails__w_any_msg()
 
-        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_generic(
+        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
                                                                             'non-existing-exe-file')))
         )
 
-        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_generic(
+        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_SOURCE_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
@@ -211,13 +211,13 @@ class TestValidation(unittest.TestCase):
 
         expected_validation = validation.post_sds_validation_fails__w_any_msg()
 
-        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_generic(
+        program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_EXE_FILE',
             program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
                                                                             'non-existing-exe-file')))
         )
 
-        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_generic(
+        program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_SOURCE_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(
                 constant(simple_of_rel_option(RelOptionType.REL_ACT,
@@ -289,7 +289,7 @@ class TestExecution(unittest.TestCase):
 
                     sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
-                    program_that_executes_py_source = ProgramSymbolContext.of_generic(
+                    program_that_executes_py_source = ProgramSymbolContext.of_sdv(
                         'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                         sdv_of_referred_program
                     )
@@ -310,7 +310,7 @@ class TestExecution(unittest.TestCase):
                         logic_integration_check.Expectation(
                             logic_integration_check.ParseExpectation(
                                 symbol_references=asrt.matches_sequence([
-                                    asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
+                                    program_that_executes_py_source.reference_assertion,
                                 ]),
                             ),
                             logic_integration_check.ExecutionExpectation(
@@ -429,7 +429,7 @@ class TestResolving(unittest.TestCase):
                     with self.subTest(program=program_case.name,
                                       arguments=argument_case.name,
                                       resolving_case=resolving_case.name):
-                        program_symbol = ProgramSymbolContext.of_generic(
+                        program_symbol = ProgramSymbolContext.of_sdv(
                             'PROGRAM_SYMBOL',
                             resolving_case.actual_sdv)
 
@@ -438,7 +438,7 @@ class TestResolving(unittest.TestCase):
                         symbols = program_symbol.symbol_table
 
                         expected_references_assertion = asrt.matches_sequence([
-                            asrt_pgm.is_program_reference_to(program_symbol.name),
+                            program_symbol.reference_assertion,
                         ])
 
                         # ACT #

@@ -1,13 +1,11 @@
-from typing import Sequence, Optional
+from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
-from exactly_lib.test_case_utils.matcher.impls import sdv_components, ddv_components, constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherDdv, GenericFileMatcherSdv, \
+from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, GenericFileMatcherSdv, \
     FileMatcherModel
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
@@ -15,35 +13,6 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import file_matchers
-
-
-def arbitrary_sdv() -> FileMatcherStv:
-    return file_matcher_sdv_constant_test_impl(
-        file_matchers.arbitrary_file_matcher()
-    )
-
-
-def file_matcher_sdv_constant_test_impl(resolved_value: FileMatcher,
-                                        references: Sequence[SymbolReference] = ()) -> FileMatcherStv:
-    return file_matcher_sdv_constant_value_test_impl(
-        ddv_components.MatcherDdvFromConstantPrimitive(resolved_value),
-        references,
-    )
-
-
-def file_matcher_sdv_constant_value_test_impl(resolved_value: FileMatcherDdv,
-                                              references: Sequence[SymbolReference] = ()) -> FileMatcherStv:
-    def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
-        return resolved_value
-
-    return FileMatcherStv(
-        sdv_components.MatcherSdvFromParts(
-            references,
-            make_ddv,
-        )
-    )
-
 
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
@@ -63,23 +32,23 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel]):
     def __init__(self,
-                 sdv: FileMatcherStv,
+                 sdv: GenericFileMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_generic(sdv: GenericFileMatcherSdv,
-                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                   ) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext(FileMatcherStv(sdv), definition_source)
+    def of_sdv(sdv: GenericFileMatcherSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'FileMatcherSymbolValueContext':
+        return FileMatcherSymbolValueContext(sdv, definition_source)
 
     @staticmethod
     def of_primitive(primitive: FileMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'FileMatcherSymbolValueContext':
-        return FileMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
-                                                        definition_source)
+        return FileMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
+                                                    definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,
@@ -99,10 +68,6 @@ class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel])
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_file_matcher_reference_to__ref(symbol_name)
 
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
-
 
 class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
     def __init__(self,
@@ -112,23 +77,13 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str,
-                sdtv: FileMatcherStv,
-                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                ) -> 'FileMatcherSymbolContext':
+    def of_sdv(name: str,
+               sdv: GenericFileMatcherSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(
             name,
-            FileMatcherSymbolValueContext(sdtv, definition_source)
-        )
-
-    @staticmethod
-    def of_generic(name: str,
-                   sdv: GenericFileMatcherSdv,
-                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                   ) -> 'FileMatcherSymbolContext':
-        return FileMatcherSymbolContext(
-            name,
-            FileMatcherSymbolValueContext.of_generic(sdv, definition_source)
+            FileMatcherSymbolValueContext.of_sdv(sdv, definition_source)
         )
 
     @staticmethod

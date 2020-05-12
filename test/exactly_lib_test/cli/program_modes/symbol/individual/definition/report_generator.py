@@ -112,7 +112,7 @@ class TestReferences(unittest.TestCase):
         symbol_definitions = [
             _symbol_definition(referencing_symbol.name, referencing_symbol.value),
             _symbol_definition(referenced_symbol.name, referenced_symbol.value,
-                               referencing_symbol.value.sdtv.references),
+                               referencing_symbol.value.sdv.references),
         ]
 
         definitions_resolver = _ConstantDefinitionsResolver(symbol_definitions)

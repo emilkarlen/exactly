@@ -1,0 +1,4 @@
+[assert]
+
+stdout -transformed-by TO_LOWER_CASE
+       empty

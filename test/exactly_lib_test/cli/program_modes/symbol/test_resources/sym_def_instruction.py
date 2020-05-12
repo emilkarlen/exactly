@@ -230,7 +230,7 @@ def builtin_symbol(symbol: SymbolContext) -> BuiltinSymbol:
     return BuiltinSymbol(
         symbol.name,
         symbol.value.value_type,
-        symbol.sdtv,
+        symbol.sdv,
         'the single line description',
         document.empty_section_contents(),
     )

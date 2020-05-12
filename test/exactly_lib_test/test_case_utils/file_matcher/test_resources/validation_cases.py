@@ -1,9 +1,8 @@
 from typing import Sequence, List
 
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, GenericFileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
@@ -25,7 +24,7 @@ class ValidationCaseSvh:
                  actual: ValidationActual,
                  ):
         self._expectation = expectation
-        self._symbol_context = FileMatcherSymbolContext.of_sdtv(
+        self._symbol_context = FileMatcherSymbolContext.of_sdv(
             symbol_name,
             _successful_matcher_with_validation(actual)
         )
@@ -71,7 +70,7 @@ class ValidationCase:
                  symbol_name: str = 'file_matcher_symbol',
                  ):
         self._expectation = expectation
-        self._symbol_context = FileMatcherSymbolContext.of_sdtv(
+        self._symbol_context = FileMatcherSymbolContext.of_sdv(
             symbol_name,
             _successful_matcher_with_validation(actual),
         )
@@ -113,13 +112,12 @@ def failing_validation_cases__multi_exe(symbol_name: str = 'files_matcher_symbol
     ]
 
 
-def _successful_matcher_with_validation(the_validation: ValidationActual) -> FileMatcherStv:
+def _successful_matcher_with_validation(the_validation: ValidationActual) -> GenericFileMatcherSdv:
     def get_matcher(symbols: SymbolTable, tcds: Tcds) -> FileMatcher:
         return constant.MatcherWithConstantResult(True)
 
-    return FileMatcherStv(
-        matchers.sdv_from_parts(
-            references=(),
-            validator=constant_validator(the_validation),
-            matcher=get_matcher
-        ))
+    return matchers.sdv_from_parts(
+        references=(),
+        validator=constant_validator(the_validation),
+        matcher=get_matcher
+    )

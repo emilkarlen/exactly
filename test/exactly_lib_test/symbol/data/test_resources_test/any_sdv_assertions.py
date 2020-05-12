@@ -4,10 +4,9 @@ from exactly_lib.symbol.data import path_sdvs, list_sdvs
 from exactly_lib.symbol.data.string_sdvs import str_constant
 from exactly_lib_test.symbol.data.test_resources import any_sdv_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.symbol.test_resources.file_matcher import file_matcher_sdv_constant_test_impl
+from exactly_lib_test.symbol.data.visitor import UnknownDataTypeSdvClass
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -43,7 +42,7 @@ class TestEqualsResolver(unittest.TestCase):
     def test_not_equals__non_symbol_type(self):
         # ARRANGE #
         expected = path_sdvs.constant(path_test_impl('file-name'))
-        actual = file_matcher_sdv_constant_test_impl(FileMatcherThatSelectsAllFilesTestImpl())
+        actual = UnknownDataTypeSdvClass()
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_sdv(expected), actual)
 

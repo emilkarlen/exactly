@@ -8,7 +8,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_rs
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.program import is_program_reference_to, ProgramSymbolContext
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -33,7 +33,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
 
         name_of_defined_symbol = 'the_symbol'
 
-        referred_symbol = ProgramSymbolContext.of_generic(
+        referred_symbol = ProgramSymbolContext.of_sdv(
             'PRE_EXISTING_PROGRAM_SYMBOL',
             program_sdvs.for_py_source_on_command_line(python_source)
         )
@@ -65,9 +65,9 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
             with self.subTest(argument_case.name):
                 expected_symbol_container = asrt_rs.matches_container_of_logic_type(
                     LogicValueType.PROGRAM,
-                    assertion_on_sdv=asrt_sdv.matches_sdtv_of_program(
+                    assertion_on_sdv=asrt_sdv.matches_sdv_of_program(
                         references=asrt.matches_sequence([
-                            is_program_reference_to(referred_symbol.name)
+                            referred_symbol.reference_assertion
                         ]),
                         resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value__with_adv(
                             lambda tcds: matches_py_source_on_cmd_line_program(python_source)),

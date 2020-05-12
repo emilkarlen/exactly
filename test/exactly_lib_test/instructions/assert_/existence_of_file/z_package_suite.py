@@ -4,13 +4,11 @@ from typing import Optional
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.file_matcher import FileMatcherStv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHdsOptionType
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
@@ -221,10 +219,6 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
                     file_matcher_that_raises_hard_error.reference_assertion
                 ])
             ))
-
-    @staticmethod
-    def _sdv_of_matcher_that_causes_hard_error(err_msg: str) -> FileMatcherStv:
-        return file_matcher_constant_sdv(matchers.MatcherThatReportsHardError(err_msg))
 
 
 class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor):

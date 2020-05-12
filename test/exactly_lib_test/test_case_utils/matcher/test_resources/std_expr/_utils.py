@@ -3,7 +3,7 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
@@ -102,26 +102,19 @@ class AssertionsHelper(Generic[MODEL]):
             for operand_symbol_name in symbol_names
         ])
 
-    def sdv_with_validation(self, validation: ValidationActual) -> MatcherTypeStv[MODEL]:
+    def sdv_with_validation(self, validation: ValidationActual) -> MatcherSdv[MODEL]:
         validator = constant_validator(validation)
-        sdv__generic = matchers.sdv_from_bool(
+        return matchers.sdv_from_bool(
             True,
             (),
             validator,
         )
-        return self.conf.mk_logic_type(sdv__generic)
 
     def bool_matcher__generic(self, result: bool) -> MatcherSdv[MODEL]:
         return matchers.sdv_from_bool(
             result,
             (),
         )
-
-    def bool_matcher(self, result: bool) -> MatcherTypeStv[MODEL]:
-        return self.conf.mk_logic_type(self.bool_matcher__generic(result))
-
-    def logic_type_matcher_from_primitive(self, primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherTypeStv[MODEL]:
-        return self.conf.mk_logic_type(matchers.sdv_from_primitive_value(primitive))
 
     def logic_type_symbol_value_context_from_primitive(self,
                                                        primitive: MatcherWTraceAndNegation[MODEL]
@@ -175,7 +168,7 @@ class AssertionsHelper(Generic[MODEL]):
                     validation=validation_case.expected,
                 ),
                 arrangement=Arrangement(
-                    symbols=self.conf.mk_logic_type_context_of_stv(
+                    symbols=self.conf.mk_logic_type_context_of_sdv(
                         symbol_name,
                         self.sdv_with_validation(validation_case.actual)).symbol_table
                 )
@@ -218,7 +211,7 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
                     ),
                     Arrangement(
                         symbols=SymbolContext.symbol_table_of_contexts([
-                            self.helper.conf.mk_logic_type_context_of_stv(
+                            self.helper.conf.mk_logic_type_context_of_sdv(
                                 sym_and_validation[0],
                                 self.helper.sdv_with_validation(sym_and_validation[1]))
                             for sym_and_validation in zip(operand_name_validations, validations)

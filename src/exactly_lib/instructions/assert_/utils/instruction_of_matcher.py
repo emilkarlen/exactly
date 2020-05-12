@@ -53,7 +53,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
             raise HardErrorException(err_msg)
 
     def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        result = resolving_helper_for_instruction_env(environment).apply__generic(self._matcher, None)
+        result = resolving_helper_for_instruction_env(environment).apply(self._matcher, None)
         if result.value:
             return pfh.new_pfh_pass()
         else:

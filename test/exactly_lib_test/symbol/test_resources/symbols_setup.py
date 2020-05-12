@@ -4,9 +4,9 @@ from typing import Sequence, List, TypeVar, Generic, Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions import reference_restrictions
-from exactly_lib.symbol.logic.matcher import MatcherTypeStv
-from exactly_lib.symbol.sdv_structure import SymbolDependentTypeValue, SymbolContainer, SymbolUsage, SymbolReference, \
-    ReferenceRestrictions, SymbolDefinition
+from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolReference, \
+    ReferenceRestrictions, SymbolDefinition, SymbolDependentValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import line_source
 from exactly_lib.util import symbol_table
@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
-STV_TYPE = TypeVar('STV_TYPE', bound=SymbolDependentTypeValue)
+SDV_TYPE = TypeVar('SDV_TYPE', bound=SymbolDependentValue)
 
 MODEL = TypeVar('MODEL')
 
@@ -26,12 +26,12 @@ ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION = source_location.source_info_for_line_se
     line_source.single_line_sequence(1, 'definition source'))
 
 
-class SymbolValueContext(Generic[STV_TYPE], ABC):
+class SymbolValueContext(Generic[SDV_TYPE], ABC):
     def __init__(self,
-                 sdtv: STV_TYPE,
+                 sdv: SDV_TYPE,
                  definition_source: Optional[SourceLocationInfo],
                  ):
-        self._sdtv = sdtv
+        self._sdv = sdv
         self._definition_source = definition_source
 
     @property
@@ -40,8 +40,8 @@ class SymbolValueContext(Generic[STV_TYPE], ABC):
         pass
 
     @property
-    def sdtv(self) -> STV_TYPE:
-        return self._sdtv
+    def sdv(self) -> SDV_TYPE:
+        return self._sdv
 
     @abstractmethod
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
@@ -52,17 +52,16 @@ class SymbolValueContext(Generic[STV_TYPE], ABC):
         return self._definition_source
 
     @property
-    @abstractmethod
     def container(self) -> SymbolContainer:
-        pass
+        return SymbolContainer(self.sdv, self.value_type, self.definition_source)
 
 
-class DataSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
+class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], ABC):
     def __init__(self,
-                 sdtv: STV_TYPE,
+                 sdv: SDV_TYPE,
                  definition_source: Optional[SourceLocationInfo],
                  ):
-        super().__init__(sdtv, definition_source)
+        super().__init__(sdv, definition_source)
 
     @staticmethod
     def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
@@ -79,29 +78,29 @@ class DataSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], AB
         )
 
 
-class LogicSymbolValueContext(Generic[STV_TYPE], SymbolValueContext[STV_TYPE], ABC):
+class LogicSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], ABC):
     def __init__(self,
-                 sdtv: STV_TYPE,
+                 sdv: SDV_TYPE,
                  definition_source: Optional[SourceLocationInfo],
                  ):
-        super().__init__(sdtv, definition_source)
+        super().__init__(sdv, definition_source)
 
 
-class MatcherSymbolValueContext(Generic[MODEL], LogicSymbolValueContext[MatcherTypeStv[MODEL]], ABC):
+class MatcherSymbolValueContext(Generic[MODEL], LogicSymbolValueContext[MatcherSdv[MODEL]], ABC):
     def __init__(self,
-                 sdtv: MatcherTypeStv[MODEL],
+                 sdv: MatcherSdv[MODEL],
                  definition_source: Optional[SourceLocationInfo],
                  ):
-        super().__init__(sdtv, definition_source)
+        super().__init__(sdv, definition_source)
 
 
-class SymbolContext(Generic[STV_TYPE], ABC):
+class SymbolContext(Generic[SDV_TYPE], ABC):
     def __init__(self, name: str):
         self._name = name
 
     @property
     @abstractmethod
-    def value(self) -> SymbolValueContext[STV_TYPE]:
+    def value(self) -> SymbolValueContext[SDV_TYPE]:
         pass
 
     @property
@@ -113,8 +112,8 @@ class SymbolContext(Generic[STV_TYPE], ABC):
         return symbol_syntax.symbol_reference_syntax_for_name(self._name)
 
     @property
-    def sdtv(self) -> STV_TYPE:
-        return self.value.sdtv
+    def sdv(self) -> SDV_TYPE:
+        return self.value.sdv
 
     @property
     def symbol_table_container(self) -> SymbolContainer:
@@ -155,16 +154,16 @@ class SymbolContext(Generic[STV_TYPE], ABC):
         })
 
 
-class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
+class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     def __init__(self,
                  name: str,
-                 value: DataSymbolValueContext[STV_TYPE],
+                 value: DataSymbolValueContext[SDV_TYPE],
                  ):
         super().__init__(name)
         self._type_context = value
 
     @property
-    def value(self) -> DataSymbolValueContext[STV_TYPE]:
+    def value(self) -> DataSymbolValueContext[SDV_TYPE]:
         return self._type_context
 
     @property
@@ -183,20 +182,20 @@ class DataTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
         return DataSymbolValueContext.usage_assertion__any_data_type(self.name)
 
 
-class LogicTypeSymbolContext(Generic[STV_TYPE], SymbolContext[STV_TYPE], ABC):
+class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     def __init__(self,
                  name: str,
-                 value: LogicSymbolValueContext[STV_TYPE],
+                 value: LogicSymbolValueContext[SDV_TYPE],
                  ):
         super().__init__(name)
         self.__type_context = value
 
     @property
-    def value(self) -> LogicSymbolValueContext[STV_TYPE]:
+    def value(self) -> LogicSymbolValueContext[SDV_TYPE]:
         return self.__type_context
 
 
-class MatcherTypeSymbolContext(Generic[MODEL], LogicTypeSymbolContext[MatcherTypeStv[MODEL]], ABC):
+class MatcherTypeSymbolContext(Generic[MODEL], LogicTypeSymbolContext[MatcherSdv[MODEL]], ABC):
     def __init__(self,
                  name: str,
                  value: MatcherSymbolValueContext[MODEL],

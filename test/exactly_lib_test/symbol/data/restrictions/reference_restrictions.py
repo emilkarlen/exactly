@@ -7,9 +7,9 @@ from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
-from exactly_lib.symbol.logic.logic_type_sdv import LogicTypeStv, LogicSdv
-from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolDependentTypeValue, SymbolReference, \
-    ReferenceRestrictions, Failure
+from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
+from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, \
+    ReferenceRestrictions, Failure, SymbolDependentValue
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType, DATA_TYPE_2_VALUE_TYPE
@@ -420,7 +420,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         def value_type_error_message_function(symbol_name: str,
                                               container: SymbolContainer) -> TextRenderer:
             sdv = container.sdv
-            assert isinstance(sdv, SymbolDependentTypeValue)  # Type info for IDE
+            assert isinstance(sdv, SymbolDependentValue)  # Type info for IDE
             return asrt_text_doc.new_single_string_text_for_test(mk_err_msg(symbol_name, container.value_type))
 
         references = []
@@ -636,10 +636,6 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')
 
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
-
 
 class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
     def __init__(self,
@@ -658,7 +654,7 @@ class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
                                      TestDataSymbolValueContext.of(references, value_type, definition_source))
 
 
-class _LogicSdvForTest(LogicSdv):
+class LogicSdvForTest(LogicSdv):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
@@ -670,17 +666,9 @@ class _LogicSdvForTest(LogicSdv):
         raise NotImplementedError('It is an error if this method is called')
 
 
-class LogicTypeStvForTest(LogicTypeStv):
-    def __init__(self, references: Sequence[SymbolReference]):
-        self._sdv = _LogicSdvForTest(references)
-
-    def value(self) -> LogicSdv:
-        return self._sdv
-
-
-class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
+class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicSdvForTest]):
     def __init__(self,
-                 sdv: LogicTypeStvForTest,
+                 sdv: LogicSdvForTest,
                  logic_value_type: LogicValueType,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
@@ -692,7 +680,7 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
            logic_value_type: LogicValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestLogicSymbolValueContext':
-        return TestLogicSymbolValueContext(LogicTypeStvForTest(references),
+        return TestLogicSymbolValueContext(LogicSdvForTest(references),
                                            logic_value_type,
                                            definition_source)
 
@@ -703,12 +691,8 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicTypeStvForTest]):
     def value_type(self) -> ValueType:
         return self._value_type
 
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
-
-class TestLogicSymbolContext(LogicTypeSymbolContext[LogicTypeStvForTest]):
+class TestLogicSymbolContext(LogicTypeSymbolContext[LogicSdvForTest]):
     def __init__(self,
                  name: str,
                  value: TestLogicSymbolValueContext,

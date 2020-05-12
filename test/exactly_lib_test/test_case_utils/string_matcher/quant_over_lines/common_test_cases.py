@@ -112,7 +112,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
         ]
         for case in validation_cases:
 
-            symbols = LineMatcherSymbolContext.of_sdtv(
+            symbols = LineMatcherSymbolContext.of_sdv(
                 line_matcher_symbol_name,
                 successful_matcher_with_validation(case.actual)
             ).symbol_table

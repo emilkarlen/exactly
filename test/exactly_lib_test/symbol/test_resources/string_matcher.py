@@ -1,8 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage, SymbolContainer
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
@@ -17,22 +16,16 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def arbitrary_sdv() -> StringMatcherStv:
-    return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True))
-
-
 def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
                                           references: Sequence[SymbolReference] = (),
                                           validator: DdvValidator = ddv_validation.ConstantDdvValidator(),
-                                          ) -> StringMatcherStv:
-    return StringMatcherStv(
-        matchers.MatcherSdvOfConstantDdvTestImpl(
-            matchers.MatcherDdvOfConstantMatcherTestImpl(
-                resolved_value,
-                validator,
-            ),
-            references,
-        )
+                                          ) -> GenericStringMatcherSdv:
+    return matchers.MatcherSdvOfConstantDdvTestImpl(
+        matchers.MatcherDdvOfConstantMatcherTestImpl(
+            resolved_value,
+            validator,
+        ),
+        references,
     )
 
 
@@ -55,24 +48,24 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
 
 class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
     def __init__(self,
-                 sdv: StringMatcherStv,
+                 sdv: GenericStringMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_generic(sdv: GenericStringMatcherSdv,
-                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                   ) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext(StringMatcherStv(sdv),
+    def of_sdv(sdv: GenericStringMatcherSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'StringMatcherSymbolValueContext':
+        return StringMatcherSymbolValueContext(sdv,
                                                definition_source)
 
     @staticmethod
     def of_primitive(primitive: StringMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'StringMatcherSymbolValueContext':
-        return StringMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
-                                                          definition_source)
+        return StringMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
+                                                      definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,
@@ -92,10 +85,6 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
     def value_type(self) -> ValueType:
         return ValueType.STRING_MATCHER
 
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
-
 
 class StringMatcherSymbolContext(MatcherTypeSymbolContext[FileToCheck]):
     def __init__(self,
@@ -105,23 +94,13 @@ class StringMatcherSymbolContext(MatcherTypeSymbolContext[FileToCheck]):
         super().__init__(name, value)
 
     @staticmethod
-    def of_sdtv(name: str,
-                sdtv: StringMatcherStv,
-                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                ) -> 'StringMatcherSymbolContext':
-        return StringMatcherSymbolContext(
-            name,
-            StringMatcherSymbolValueContext(sdtv, definition_source)
-        )
-
-    @staticmethod
     def of_sdv(name: str,
                sdv: GenericStringMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(
             name,
-            StringMatcherSymbolValueContext.of_generic(sdv, definition_source)
+            StringMatcherSymbolValueContext.of_sdv(sdv, definition_source)
         )
 
     @staticmethod

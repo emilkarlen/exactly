@@ -72,7 +72,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
         py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
         py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
 
-        program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_generic(
+        program_that_executes_py_pgm_symbol = ProgramSymbolContext.of_sdv(
             'PROGRAM_THAT_EXECUTES_PY_FILE',
             program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
         )

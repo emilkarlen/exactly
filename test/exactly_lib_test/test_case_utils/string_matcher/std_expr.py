@@ -2,12 +2,11 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.matcher import MatcherTypeStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.symbol.logic.string_matcher import StringMatcherStv
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolValueContext, \
     StringMatcherSymbolContext
@@ -30,9 +29,6 @@ def suite() -> unittest.TestSuite:
 
 
 class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
-    def mk_logic_type(self, generic: GenericStringMatcherSdv) -> MatcherTypeStv[FileToCheck]:
-        return StringMatcherStv(generic)
-
     def mk_logic_type_value_context_of_primitive(self,
                                                  primitive: MatcherWTraceAndNegation[FileToCheck]
                                                  ) -> StringMatcherSymbolValueContext:
@@ -44,16 +40,16 @@ class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
                                            ) -> StringMatcherSymbolContext:
         return StringMatcherSymbolContext.of_primitive(name, primitive)
 
-    def mk_logic_type_context_of_stv(self,
+    def mk_logic_type_context_of_sdv(self,
                                      name: str,
-                                     stv: MatcherTypeStv[FileToCheck]
+                                     sdv: MatcherSdv[FileToCheck]
                                      ) -> StringMatcherSymbolContext:
-        return StringMatcherSymbolContext.of_sdtv(name, stv)
+        return StringMatcherSymbolContext.of_sdv(name, sdv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.STRING_MATCHER
 
-    def parser(self) -> Parser[MatcherTypeStv[FileToCheck]]:
+    def parser(self) -> Parser[MatcherSdv[FileToCheck]]:
         return parse_string_matcher.string_matcher_parser()
 
     def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FileToCheck],

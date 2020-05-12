@@ -28,7 +28,6 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
@@ -188,7 +187,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
             python_source = py_programs.single_line_pgm_that_prints_to(proc_output_file,
                                                                        text_printed_by_program)
 
-            program_that_executes_py_source_symbol = ProgramSymbolContext.of_generic(
+            program_that_executes_py_source_symbol = ProgramSymbolContext.of_sdv(
                 'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                 program_sdvs.for_py_source_on_command_line(python_source)
             )
@@ -210,7 +209,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
                                 pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
                                     program_that_executes_py_source_symbol.name))
                             ]),
-                            [asrt_pgm.is_program_reference_to(program_that_executes_py_source_symbol.name)]
+                            [program_that_executes_py_source_symbol.reference_assertion]
                             ),
             ]
 

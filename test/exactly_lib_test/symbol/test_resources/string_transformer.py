@@ -1,8 +1,8 @@
 from typing import Sequence, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv, StringTransformerStv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, SymbolContainer
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -164,9 +164,9 @@ def string_transformer_from_repeatable_result(result: Sequence[str],
     )
 
 
-class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransformerStv]):
+class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransformerSdv]):
     def __init__(self,
-                 sdv: StringTransformerStv,
+                 sdv: StringTransformerSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
@@ -175,7 +175,7 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
     def of_sdv(sdv: StringTransformerSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext(StringTransformerStv(sdv),
+        return StringTransformerSymbolValueContext(sdv,
                                                    definition_source)
 
     @staticmethod
@@ -196,27 +196,13 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return is_reference_to_string_transformer__ref(symbol_name)
 
-    @property
-    def container(self) -> SymbolContainer:
-        return SymbolContainer(self.sdtv, self.value_type, self.definition_source)
 
-
-class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerStv]):
+class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv]):
     def __init__(self,
                  name: str,
                  value: StringTransformerSymbolValueContext,
                  ):
         super().__init__(name, value)
-
-    @staticmethod
-    def of_sdtv(name: str,
-                sdtv: StringTransformerStv,
-                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                ) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext(
-            name,
-            StringTransformerSymbolValueContext(sdtv, definition_source)
-        )
 
     @staticmethod
     def of_sdv(name: str,

@@ -2,8 +2,7 @@ import unittest
 from typing import Callable
 
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MatcherTypeStv
+from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
@@ -29,9 +28,6 @@ def suite() -> unittest.TestSuite:
 
 
 class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
-    def mk_logic_type(self, generic: MatcherSdv[LineMatcherLine]) -> MatcherTypeStv[LineMatcherLine]:
-        return LineMatcherStv(generic)
-
     def mk_logic_type_value_context_of_primitive(self,
                                                  primitive: MatcherWTraceAndNegation[LineMatcherLine]
                                                  ) -> LineMatcherSymbolValueContext:
@@ -43,16 +39,16 @@ class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
                                            ) -> LineMatcherSymbolContext:
         return LineMatcherSymbolContext.of_primitive(name, primitive)
 
-    def mk_logic_type_context_of_stv(self,
+    def mk_logic_type_context_of_sdv(self,
                                      name: str,
-                                     stv: MatcherTypeStv[LineMatcherLine]
+                                     sdv: MatcherSdv[LineMatcherLine]
                                      ) -> LineMatcherSymbolContext:
-        return LineMatcherSymbolContext.of_sdtv(name, stv)
+        return LineMatcherSymbolContext.of_sdv(name, sdv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.LINE_MATCHER
 
-    def parser(self) -> Parser[MatcherTypeStv[LineMatcherLine]]:
+    def parser(self) -> Parser[MatcherSdv[LineMatcherLine]]:
         return parse_line_matcher.parser()
 
     def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[LineMatcherLine],

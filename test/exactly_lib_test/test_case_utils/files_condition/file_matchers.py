@@ -398,8 +398,8 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
     symbols = []
     symbols += additional_symbols
     symbols += [
-        FileMatcherSymbolContext.of_sdtv(fm1.name, fst_matcher),
-        FileMatcherSymbolContext.of_sdtv(fm2.name, snd_matcher__w_respect_to_laziness),
+        FileMatcherSymbolContext.of_sdv(fm1.name, fst_matcher),
+        FileMatcherSymbolContext.of_sdv(fm2.name, snd_matcher__w_respect_to_laziness),
     ]
 
     entries = (

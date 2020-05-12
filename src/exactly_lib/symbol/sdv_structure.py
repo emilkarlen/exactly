@@ -31,13 +31,6 @@ class SymbolDependentValue(ObjectWithSymbolReferences):
         raise NotImplementedError('abstract method')
 
 
-class SymbolDependentTypeValue(SymbolDependentValue):
-    """A :class:`SymbolDependentValue` that represents a value of a type in the type system"""
-
-    def resolve(self, symbols: SymbolTable):
-        raise NotImplementedError('abstract method')
-
-
 class SymbolContainer(SymbolTableValue):
     """
     The info about a Symbol Dependent Value that is stored in a symbol table.
@@ -46,7 +39,7 @@ class SymbolContainer(SymbolTableValue):
     """
 
     def __init__(self,
-                 value_sdv: SymbolDependentTypeValue,
+                 value_sdv: SymbolDependentValue,
                  value_type: ValueType,
                  source_location: Optional[SourceLocationInfo]):
         self._sdv = value_sdv
@@ -91,11 +84,11 @@ class SymbolContainer(SymbolTableValue):
         return self._value_type
 
     @property
-    def sdv(self) -> SymbolDependentTypeValue:
+    def sdv(self) -> SymbolDependentValue:
         return self._sdv
 
 
-def container_of_builtin(value_type: ValueType, value_sdv: SymbolDependentTypeValue) -> SymbolContainer:
+def container_of_builtin(value_type: ValueType, value_sdv: SymbolDependentValue) -> SymbolContainer:
     return SymbolContainer(value_sdv, value_type, None)
 
 
@@ -200,9 +193,5 @@ def references_from_objects_with_symbol_references(objects: Sequence[ObjectWithS
                 )
 
 
-def get_references(stv: SymbolDependentTypeValue) -> Sequence[SymbolReference]:
-    return stv.references
-
-
-def get_references__sdv(sdv: SymbolDependentValue) -> Sequence[SymbolReference]:
+def get_references(sdv: SymbolDependentValue) -> Sequence[SymbolReference]:
     return sdv.references

@@ -62,7 +62,7 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
 
     def symbols(self, put: unittest.TestCase) -> SymbolTable:
         return SymbolContext.symbol_table_of_contexts([
-            FilesMatcherSymbolContext.of_generic(
+            FilesMatcherSymbolContext.of_sdv(
                 self.files_matcher_name,
                 model_checker.matcher(
                     put,
