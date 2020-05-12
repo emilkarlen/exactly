@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.logic.line_matcher import LineMatcherStv
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolv
 from exactly_lib_test.symbol.test_resources import sdv_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, LineMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
@@ -95,8 +95,8 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
 
-                expected_container = matches_container(
-                    asrt.is_(ValueType.LINE_MATCHER),
+                expected_container = matches_container_of_logic_type(
+                    LogicValueType.LINE_MATCHER,
                     assertion_on_sdv=
                     sdv_assertions.matches_sdtv_of_line_matcher(
                         references=asrt.matches_sequence([

@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.string_transformer import StringTransformerStv
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SEQUENCE_OPERATOR_NAME
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
@@ -13,7 +13,8 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container, is_sdtv_of_logic_type
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import is_sdtv_of_logic_type, \
+    matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
@@ -105,8 +106,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         ]
         # EXPECTATION #
 
-        expected_container = matches_container(
-            asrt.is_(ValueType.STRING_TRANSFORMER),
+        expected_container = matches_container_of_logic_type(
+            LogicValueType.STRING_TRANSFORMER,
             assertion_on_sdv=is_sdtv_of_logic_type(
                 StringTransformerStv,
                 asrt_sdv.resolved_value_matches_string_transformer(

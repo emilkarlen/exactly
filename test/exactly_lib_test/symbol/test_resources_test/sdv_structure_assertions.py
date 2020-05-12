@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType, TypeCategory
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as sut
@@ -23,6 +23,7 @@ class TestMatchesContainer(unittest.TestCase):
         assertion_that_is_expected_to_succeed = asrt.is_(actual_sdv)
         assertion_to_check = sut.matches_container(
             asrt.anything_goes(),
+            asrt.anything_goes(),
             assertion_that_is_expected_to_succeed,
             assertion_on_source=asrt.anything_goes())
         # ACT & ASSERT #
@@ -38,6 +39,7 @@ class TestMatchesContainer(unittest.TestCase):
         assertion_that_is_expected_to_succeed = equals_line_sequence(source_line)
         assertion_to_check = sut.matches_container(
             value_type=asrt.anything_goes(),
+            type_category=asrt.anything_goes(),
             assertion_on_sdv=asrt.anything_goes(),
             assertion_on_source=assertion_that_is_expected_to_succeed)
         # ACT & ASSERT #
@@ -48,6 +50,17 @@ class TestMatchesContainer(unittest.TestCase):
         actual_container = StringSymbolValueContext.of_arbitrary_value().container
         assertion_to_check = sut.matches_container(
             value_type=asrt.is_(ValueType.PATH),
+            type_category=asrt.anything_goes(),
+            assertion_on_sdv=asrt.anything_goes(),
+            assertion_on_source=asrt.anything_goes())
+        assert_that_assertion_fails(assertion_to_check, actual_container)
+
+    def test_failure_of_type_category(self):
+        # ARRANGE #
+        actual_container = StringSymbolValueContext.of_arbitrary_value().container
+        assertion_to_check = sut.matches_container(
+            value_type=asrt.anything_goes(),
+            type_category=asrt.is_(TypeCategory.LOGIC),
             assertion_on_sdv=asrt.anything_goes(),
             assertion_on_source=asrt.anything_goes())
         assert_that_assertion_fails(assertion_to_check, actual_container)
@@ -62,6 +75,7 @@ class TestMatchesContainer(unittest.TestCase):
         assertion_that_is_expected_to_fail = asrt.not_(equals_line_sequence(source_line))
         assertion_to_check = sut.matches_container(
             value_type=asrt.anything_goes(),
+            type_category=asrt.anything_goes(),
             assertion_on_sdv=asrt.anything_goes(),
             assertion_on_source=assertion_that_is_expected_to_fail)
         assert_that_assertion_fails(assertion_to_check, actual_container)

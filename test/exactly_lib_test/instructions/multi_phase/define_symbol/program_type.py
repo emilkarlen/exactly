@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -63,8 +63,8 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
 
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
-                expected_symbol_container = asrt_rs.matches_container(
-                    asrt.is_(ValueType.PROGRAM),
+                expected_symbol_container = asrt_rs.matches_container_of_logic_type(
+                    LogicValueType.PROGRAM,
                     assertion_on_sdv=asrt_sdv.matches_sdtv_of_program(
                         references=asrt.matches_sequence([
                             is_program_reference_to(referred_symbol.name)

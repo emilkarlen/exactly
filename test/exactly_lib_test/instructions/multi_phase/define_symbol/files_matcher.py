@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
@@ -22,7 +22,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
 from exactly_lib_test.symbol.test_resources.files_matcher import files_matcher_stv_constant_test_impl, \
     is_reference_to_files_matcher__ref
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
@@ -74,8 +74,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
                 # EXPECTATION #
 
-                expected_container = matches_container(
-                    asrt.is_(ValueType.FILES_MATCHER),
+                expected_container = matches_container_of_logic_type(
+                    LogicValueType.FILES_MATCHER,
                     sdv_assertions.matches_sdtv_of_files_matcher()
                 )
 
@@ -114,8 +114,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         # EXPECTATION #
 
-        expected_container = matches_container(
-            asrt.is_(ValueType.FILES_MATCHER),
+        expected_container = matches_container_of_logic_type(
+            LogicValueType.FILES_MATCHER,
             sdv_assertions.matches_sdtv_of_files_matcher(
                 references=asrt.matches_sequence([
                     is_reference_to_files_matcher__ref(referenced_symbol.name)
@@ -143,8 +143,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         defined_name = 'defined_name'
 
-        expected_container = matches_container(
-            asrt.is_(ValueType.FILES_MATCHER),
+        expected_container = matches_container_of_logic_type(
+            LogicValueType.FILES_MATCHER,
             sdv_assertions.matches_sdtv_of_files_matcher()
         )
 

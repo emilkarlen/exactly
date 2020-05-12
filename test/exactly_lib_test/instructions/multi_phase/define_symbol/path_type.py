@@ -11,6 +11,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
@@ -20,7 +21,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext, ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
@@ -68,52 +69,58 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
 
 class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
+
+        expected_defined_symbol = ConstantSuffixPathDdvSymbolContext('name',
+                                                                     RelOptionType.REL_ACT,
+                                                                     'component')
         argument_cases = [
             NameAndValue('value on same line',
-                         '{path_type} name = {rel_act} component'
+                         '{path_type} {name} = {rel_act} {suffix}'
                          ),
             NameAndValue('value on following line',
-                         '{path_type} name = {new_line} {rel_act} component'
+                         '{path_type} {name} = {new_line} {rel_act} {suffix}'
                          ),
         ]
 
         for argument_case in argument_cases:
             with self.subTest(arguments=argument_case.name):
-                instruction_argument = src(argument_case.value)
+                instruction_argument = src(argument_case.value,
+                                           name=expected_defined_symbol.name,
+                                           suffix=expected_defined_symbol.path_suffix)
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    expected_path_sdv = path_sdvs.constant(
-                        paths.rel_act(paths.constant_path_part('component')))
-                    expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
                     self._check(source,
                                 ArrangementWithSds(),
                                 Expectation(
                                     symbol_usages=assert_symbol_usages_is_singleton_list(
                                         vs_asrt.equals_symbol_definition(
-                                            SymbolDefinition('name', expected_container))),
+                                            expected_defined_symbol.definition)),
                                     symbols_after_main=assert_symbol_table_is_singleton(
-                                        'name',
-                                        equals_container(expected_container))
+                                        expected_defined_symbol.name,
+                                        equals_container(expected_defined_symbol.symbol_table_container))
                                 )
                                 )
 
 
 class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = src('{path_type} name = component')
+        expected_defined_symbol = ConstantSuffixPathDdvSymbolContext('name',
+                                                                     REL_OPTIONS_CONFIGURATION.default_option,
+                                                                     'component')
+
+        instruction_argument = src('{path_type} {name} = {suffix}',
+                                   name=expected_defined_symbol.name,
+                                   suffix=expected_defined_symbol.path_suffix)
+
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            expected_path_sdv = path_sdvs.constant(
-                paths.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
-                                    paths.constant_path_part('component')))
-            expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
                             symbol_usages=assert_symbol_usages_is_singleton_list(
                                 vs_asrt.equals_symbol_definition(
-                                    SymbolDefinition('name', expected_container))),
+                                    expected_defined_symbol.definition)),
                             symbols_after_main=assert_symbol_table_is_singleton(
                                 'name',
-                                equals_container(expected_container)))
+                                equals_container(expected_defined_symbol.symbol_table_container)))
                         )
 
 

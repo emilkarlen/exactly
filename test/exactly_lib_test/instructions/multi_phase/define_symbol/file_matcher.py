@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -16,7 +16,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper__fake
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container
+from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
@@ -91,8 +91,8 @@ class Test(TestCaseBase):
                             selector_argument=case.input_value),
                     )
 
-                    expected_container = matches_container(
-                        asrt.is_(ValueType.FILE_MATCHER),
+                    expected_container = matches_container_of_logic_type(
+                        LogicValueType.FILE_MATCHER,
                         sdv_assertions.matches_sdtv_of_file_matcher(
                             references=asrt.is_empty_sequence,
                             primitive_value=case.expected_value
