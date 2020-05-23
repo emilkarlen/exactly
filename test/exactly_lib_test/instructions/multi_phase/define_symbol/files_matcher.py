@@ -20,7 +20,6 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import m
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage, sdv_assertions
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -116,7 +115,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
             LogicValueType.FILES_MATCHER,
             sdv_assertions.matches_sdv_of_files_matcher(
                 references=asrt.matches_sequence([
-                    is_reference_to_files_matcher__ref(referenced_symbol.name)
+                    referenced_symbol.reference_assertion
                 ]),
                 symbols=symbols)
         )

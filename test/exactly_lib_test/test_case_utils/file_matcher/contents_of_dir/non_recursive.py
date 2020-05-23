@@ -73,7 +73,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
             ).as_arguments,
             symbol_references=
             asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher__ref(unconditionally_constant_true.name)
+                unconditionally_constant_true.reference_assertion
             ),
             input_=
             integration_check.file_in_sds(location, model_file_name),
