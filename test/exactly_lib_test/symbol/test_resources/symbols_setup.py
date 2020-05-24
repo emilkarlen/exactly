@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolReference, \
     ReferenceRestrictions, SymbolDefinition, SymbolDependentValue
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib.util import line_source
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import Entry, SymbolTable
@@ -15,6 +15,8 @@ from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_data_type
+from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_definition
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -63,6 +65,11 @@ class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], AB
                  ):
         super().__init__(sdv, definition_source)
 
+    @property
+    @abstractmethod
+    def data_value_type(self) -> DataValueType:
+        pass
+
     @staticmethod
     def reference_assertion__any_data_type(symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(
@@ -76,6 +83,19 @@ class DataSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], AB
             symbol_name,
             asrt_rest.is_any_data_type_reference_restrictions()
         )
+
+    @property
+    def assert_matches_container_of_sdv(self) -> ValueAssertion[SymbolContainer]:
+        return matches_container_of_data_type(
+            data_value_type=self.data_value_type,
+            sdv=self.assert_equals_sdv,
+            definition_source=asrt.anything_goes()
+        )
+
+    @property
+    @abstractmethod
+    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+        pass
 
 
 class LogicSymbolValueContext(Generic[SDV_TYPE], SymbolValueContext[SDV_TYPE], ABC):
@@ -180,6 +200,13 @@ class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     @property
     def usage_assertion__any_data_type(self) -> ValueAssertion[SymbolUsage]:
         return DataSymbolValueContext.usage_assertion__any_data_type(self.name)
+
+    @property
+    def assert_matches_definition_of_sdv(self) -> ValueAssertion[SymbolDefinition]:
+        return matches_definition(
+            name=asrt.equals(self.name),
+            container=self.value.assert_matches_container_of_sdv
+        )
 
 
 class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):

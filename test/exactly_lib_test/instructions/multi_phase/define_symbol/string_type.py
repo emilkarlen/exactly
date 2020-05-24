@@ -10,9 +10,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources impo
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.data.test_resources.here_doc_assertion_utils import here_doc_lines
-from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.parse_string import string_sdv_from_fragments
@@ -66,11 +64,11 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                 expected_symbol = StringConstantSymbolContext('name1', 'v1')
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol_definition(expected_symbol.definition, ignore_source_line=True)
+                        expected_symbol.assert_matches_definition_of_sdv
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         'name1',
-                        equals_container(expected_symbol.symbol_table_container),
+                        expected_symbol.value.assert_matches_container_of_sdv,
                     )
                 )
                 self._check(source, ArrangementWithSds(), expectation)
@@ -85,11 +83,11 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     symbol_reference=referred_symbol)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
+                assigned_symbol.assert_matches_definition_of_sdv,
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
-                equals_container(assigned_symbol.symbol_table_container),
+                assigned_symbol.value.assert_matches_container_of_sdv,
             )
         )
         # ACT & ASSERT #
@@ -106,11 +104,11 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     symbol_reference=referred_symbol)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
+                assigned_symbol.assert_matches_definition_of_sdv,
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
-                equals_container(assigned_symbol.symbol_table_container),
+                assigned_symbol.value.assert_matches_container_of_sdv,
             )
         )
         # ACT & ASSERT #
@@ -134,11 +132,11 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                     sym_ref2=referred_symbol2)
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
+                assigned_symbol.assert_matches_definition_of_sdv,
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
-                equals_container(assigned_symbol.symbol_table_container),
+                assigned_symbol.value.assert_matches_container_of_sdv,
             )
         )
         # ACT & ASSERT #
@@ -162,11 +160,11 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
         expected_symbol = StringConstantSymbolContext(symbol_name, value_str + '\n')
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(expected_symbol.definition, ignore_source_line=True)
+                expected_symbol.assert_matches_definition_of_sdv
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_name,
-                equals_container(expected_symbol.symbol_table_container),
+                expected_symbol.value.assert_matches_container_of_sdv,
             ),
             source=asrt_source.is_at_beginning_of_line(4)
         )
@@ -193,11 +191,11 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
         # EXPECTATION #
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(assigned_symbol.definition, ignore_source_line=True),
+                assigned_symbol.assert_matches_definition_of_sdv,
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 assigned_symbol.name,
-                equals_container(assigned_symbol.symbol_table_container),
+                assigned_symbol.value.assert_matches_container_of_sdv,
             )
         )
         # ACT & ASSERT #

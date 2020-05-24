@@ -5,12 +5,11 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base impo
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources import sdv_assertions as asrt_sdv
-from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
@@ -63,14 +62,13 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
 
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
-                expected_symbol_container = asrt_rs.matches_container_of_logic_type(
+                expected_symbol_container = matches_container_of_logic_type(
                     LogicValueType.PROGRAM,
-                    assertion_on_sdv=asrt_sdv.matches_sdv_of_program(
+                    sdv=sdv_type_assertions.matches_sdv_of_program_constant(
                         references=asrt.matches_sequence([
                             referred_symbol.reference_assertion
                         ]),
-                        resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value__with_adv(
-                            lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
+                        primitive_value=matches_py_source_on_cmd_line_program(python_source),
                         symbols=symbols
                     ))
                 expectation = Expectation(

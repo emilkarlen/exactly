@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Generic, TypeVar
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import type_system
@@ -77,8 +77,11 @@ class PathRelativityRestriction(ValueRestriction):
         return self._accepted
 
 
-class ValueRestrictionVisitor:
-    def visit(self, x: ValueRestriction):
+T = TypeVar('T')
+
+
+class ValueRestrictionVisitor(Generic[T]):
+    def visit(self, x: ValueRestriction) -> T:
         if isinstance(x, AnyDataTypeRestriction):
             return self.visit_none(x)
         if isinstance(x, StringRestriction):
@@ -87,11 +90,11 @@ class ValueRestrictionVisitor:
             return self.visit_path_relativity(x)
         raise TypeError('%s is not an instance of %s' % (str(x), str(ValueRestriction)))
 
-    def visit_none(self, x: AnyDataTypeRestriction):
+    def visit_none(self, x: AnyDataTypeRestriction) -> T:
         raise NotImplementedError()
 
-    def visit_string(self, x: StringRestriction):
+    def visit_string(self, x: StringRestriction) -> T:
         raise NotImplementedError()
 
-    def visit_path_relativity(self, x: PathRelativityRestriction):
+    def visit_path_relativity(self, x: PathRelativityRestriction) -> T:
         raise NotImplementedError()

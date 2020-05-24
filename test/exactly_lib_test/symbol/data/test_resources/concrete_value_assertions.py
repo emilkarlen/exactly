@@ -12,7 +12,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources import sdv_assertions
+from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
@@ -24,25 +24,27 @@ from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions impo
 def equals_path_sdv(expected: PathSdv) -> ValueAssertion:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_path = expected.resolve(symbols)
-    return sdv_assertions.matches_sdv_of_path(equals_symbol_references(expected.references),
-                                              equals_path(expected_path),
-                                              symbols=symbols)
+    return sdv_type_assertions.matches_sdv_of_path(
+        equals_symbol_references(expected.references),
+        equals_path(expected_path),
+        symbols=symbols)
 
 
 def matches_path_sdv(expected_resolved_value: PathDdv,
                      expected_symbol_references: ValueAssertion,
                      symbol_table: SymbolTable = None) -> ValueAssertion:
-    return sdv_assertions.matches_sdv_of_path(expected_symbol_references,
-                                              equals_path(expected_resolved_value),
-                                              symbols=symbol_table)
+    return sdv_type_assertions.matches_sdv_of_path(expected_symbol_references,
+                                                   equals_path(
+                                                       expected_resolved_value),
+                                                   symbols=symbol_table)
 
 
-def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> ValueAssertion:
+def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> ValueAssertion[StringFragmentSdv]:
     if isinstance(expected, ConstantStringFragmentSdv):
         return _EqualsStringFragmentAssertionForStringConstant(expected)
     if isinstance(expected, SymbolStringFragmentSdv):
         return _EqualsStringFragmentAssertionForSymbolReference(expected)
-    raise TypeError('Not a StringFragmentResolver: ' + str(expected))
+    raise TypeError('Not a {}: {}'.format(StringFragmentSdv, expected))
 
 
 def equals_string_fragment_sdv(expected: StringFragmentSdv) -> ValueAssertion[StringFragmentSdv]:
@@ -65,17 +67,18 @@ def equals_string_sdv(expected: StringSdv,
     def get_fragment_sdvs(x: StringSdv) -> Sequence[StringFragmentSdv]:
         return x.fragments
 
-    return sdv_assertions.matches_sdv_of_string(equals_symbol_references(expected.references),
-                                                equals_string_ddv(expected_resolved_value),
-                                                asrt.sub_component('fragment resolvers',
-                                                                   get_fragment_sdvs,
-                                                                   equals_string_fragments(
-                                                                       expected.fragments)),
+    return sdv_type_assertions.matches_sdv_of_string(
+        equals_symbol_references(expected.references),
+        equals_string_ddv(expected_resolved_value),
+        asrt.sub_component('fragment resolvers',
+                           get_fragment_sdvs,
+                           equals_string_fragments(
+                               expected.fragments)),
 
-                                                symbols)
+        symbols)
 
 
-class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase):
+class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase[StringFragmentSdv]):
     def __init__(self, expected: ConstantStringFragmentSdv):
         self.expected = expected
 
@@ -94,7 +97,7 @@ class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase):
                         message_builder.apply('string_constant'))
 
 
-class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase):
+class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase[StringFragmentSdv]):
     def __init__(self, expected: SymbolStringFragmentSdv):
         self.expected = expected
 
@@ -106,11 +109,11 @@ class _EqualsStringFragmentAssertionForSymbolReference(ValueAssertionBase):
         assert isinstance(value, SymbolStringFragmentSdv)  # Type info for IDE
 
         put.assertFalse(value.is_string_constant,
-                        'is_string_constant')
+                        message_builder.apply('is_string_constant'))
 
         put.assertEqual(self.expected.symbol_name,
                         value.symbol_name,
-                        'symbol_name')
+                        message_builder.apply('symbol_name'))
 
 
 class _EqualsStringFragmentAssertion(ValueAssertionBase[StringFragmentSdv]):

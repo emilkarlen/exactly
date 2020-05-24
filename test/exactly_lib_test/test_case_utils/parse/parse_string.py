@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_sdv import StringFragmentSdv, \
     StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolDependentValue
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
@@ -254,18 +254,18 @@ def _single_line_source(s: str,
     return TokenStream(_src(s, **kwargs))
 
 
-def _multi_line_source(lines: list,
+def _multi_line_source(lines: List[str],
                        **kwargs) -> TokenStream:
     all_lines = '\n'.join([_src(line, **kwargs) for line in lines])
     return TokenStream(all_lines)
 
 
-def assert_equals_string_sdv(fragments: list) -> ValueAssertion:
+def assert_equals_string_sdv(fragments: List[Fragment]) -> ValueAssertion[SymbolDependentValue]:
     expected_sdv = string_sdv_from_fragments(fragments)
     return equals_string_sdv(expected_sdv)
 
 
-def string_sdv_from_fragments(fragments: list) -> StringSdv:
+def string_sdv_from_fragments(fragments: List[Fragment]) -> StringSdv:
     fragment_resolves = [fragment_sdv_from_fragment(f) for f in fragments]
     return StringSdv(tuple(fragment_resolves))
 
@@ -281,7 +281,7 @@ def fragment_sdv_from_fragment(fragment: Fragment) -> StringFragmentSdv:
 
 
 def single_symbol_reference(symbol_name: str,
-                            reference_restrictions: ReferenceRestrictions = None) -> sut.StringSdv:
+                            reference_restrictions: ReferenceRestrictions = None) -> StringSdv:
     if reference_restrictions is None:
         reference_restrictions = no_restrictions()
     fragments = (string_sdvs.symbol_fragment(SymbolReference(symbol_name,

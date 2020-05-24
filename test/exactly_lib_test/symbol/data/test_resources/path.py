@@ -6,14 +6,15 @@ from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType, DataValueType
+from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as asrt_value
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
@@ -86,6 +87,14 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
     @property
     def value_type(self) -> ValueType:
         return ValueType.PATH
+
+    @property
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.PATH
+
+    @property
+    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+        return asrt_value.equals_path_sdv(self.sdv)
 
     @property
     def accepted_relativities(self) -> PathRelativityVariants:

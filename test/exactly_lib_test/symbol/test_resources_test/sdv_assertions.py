@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
@@ -21,45 +21,15 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.path_sdvs import PathSdvTestImplWithConstantPathAndSymbolReferences
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
-from exactly_lib_test.symbol.test_resources import sdv_structure_assertions as asrt_sdv_struct
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolValueContext
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolValueContext
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestIsResolverOfLogicType),
-        unittest.makeSuite(TestMatchesSdv),
-    ])
-
-
-class TestIsResolverOfLogicType(unittest.TestCase):
-    def test_succeed(self):
-        # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdv_of_logic_type(MatcherSdv)
-        matching_sdtv = StringMatcherSymbolValueContext.of_primitive_constant(False).sdv
-        # ACT & ASSERT #
-        assertion.apply_without_message(self, matching_sdtv)
-
-    def test_fail(self):
-        # ARRANGE #
-        assertion = asrt_sdv_struct.is_sdv_of_logic_type(ProgramSdv)
-        cases = [
-            NameAndValue('unexpected logic type',
-                         LineMatcherSymbolValueContext.of_primitive_constant(False).sdv,
-                         ),
-            NameAndValue('data type',
-                         StringSymbolValueContext.of_constant('value').sdv,
-                         ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
-                # ACT & ASSERT #
-                test_of_test_resources_util.assert_that_assertion_fails(assertion, case.value)
+    return unittest.makeSuite(TestMatchesSdv)
 
 
 class TestMatchesSdv(unittest.TestCase):
@@ -123,7 +93,7 @@ class TestMatchesSdv(unittest.TestCase):
         reference = data_symbol_utils.symbol_reference(path_symbol.name)
         path_sdv = PathSdvTestImplWithConstantPathAndSymbolReferences(path_symbol.ddv,
                                                                       [reference])
-        assertion = sut.matches_sdv(sut.is_sdv_of_path_type(),
+        assertion = sut.matches_sdv(asrt.is_instance(PathSdv),
                                     asrt.len_equals(1),
                                     asrt.is_(path_symbol.ddv),
                                     asrt.is_(path_sdv),

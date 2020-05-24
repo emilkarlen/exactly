@@ -1,82 +1,117 @@
 import unittest
+from typing import List
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.symbol.restriction import TypeCategoryRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import StringSdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import NEA
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestEqualsFragment),
+        unittest.makeSuite(TestEqualsFragmentWithExactType),
         unittest.makeSuite(TestEqualsFragments),
         unittest.makeSuite(TestEquals),
-        unittest.makeSuite(TestNotEquals3),
     ])
 
 
-class TestEqualsFragment(unittest.TestCase):
+class TestEqualsFragmentWithExactType(unittest.TestCase):
     def test_equals(self):
+        a_string = 'a string'
+        an_identical_string = 'a string'
         test_cases = [
-            (string_sdvs.str_fragment('abc'),
-             string_sdvs.str_fragment('abc')),
-            (string_sdvs.symbol_fragment(
-                SymbolReference('symbol_name',
-                                ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))),
-             string_sdvs.symbol_fragment(
-                 SymbolReference('symbol_name',
-                                 ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))),
+            NEA('constant strings',
+                string_sdvs.str_fragment(a_string),
+                string_sdvs.str_fragment(an_identical_string),
+                ),
+            NEA('symbol references',
+                string_sdvs.symbol_fragment(
+                    SymbolReference(a_string,
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))),
+                string_sdvs.symbol_fragment(
+                    SymbolReference(an_identical_string,
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))),
+                ),
+            NEA('symbol references with different restrictions (surprisingly)',
+                string_sdvs.symbol_fragment(
+                    SymbolReference(a_string,
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))),
+                string_sdvs.symbol_fragment(
+                    SymbolReference(an_identical_string,
+                                    TypeCategoryRestriction(TypeCategory.LOGIC))),
+                ),
         ]
-        for fragment1, fragment2 in test_cases:
-            with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
-                sut.equals_string_fragment_sdv_with_exact_type(fragment1).apply_without_message(self, fragment2)
-                sut.equals_string_fragment_sdv_with_exact_type(fragment2).apply_without_message(self, fragment1)
+        for case in test_cases:
+            with self.subTest(case.name):
+                sut.equals_string_fragment_sdv_with_exact_type(case.expected).apply_without_message(self, case.actual)
+                sut.equals_string_fragment_sdv_with_exact_type(case.actual).apply_without_message(self, case.expected)
 
-    def test_string_not_equals_symbol_ref(self):
+    def test_not_equals(self):
         # ARRANGE #
         value = 'a_value'
-        string_fragment = string_sdvs.str_fragment(value)
-        symbol_fragment = string_sdvs.symbol_fragment(
-            SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment_sdv_with_exact_type(string_fragment)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, symbol_fragment)
+        cases = [
+            NEA(
+                'different constants',
+                string_sdvs.str_fragment('some value'),
+                string_sdvs.str_fragment('some other value'),
+            ),
+            NEA(
+                'constant and reference',
+                string_sdvs.str_fragment(value),
+                string_sdvs.symbol_fragment(
+                    SymbolReference(
+                        value,
+                        ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
+                ),
+            ),
+            NEA(
+                'references with different names',
+                string_sdvs.symbol_fragment(
+                    SymbolReference(
+                        'a name',
+                        ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
+                ),
+                string_sdvs.symbol_fragment(
+                    SymbolReference(
+                        'a different name',
+                        ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
+                ),
+            ),
+            # NEA(
+            #     'references with different restrictions',
+            #     string_sdvs.symbol_fragment(
+            #         SymbolReference(
+            #             'common name',
+            #             ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
+            #     ),
+            #     string_sdvs.symbol_fragment(
+            #         SymbolReference(
+            #             'common name',
+            #             TypeCategoryRestriction(TypeCategory.LOGIC))
+            #     ),
+            # ),
+        ]
 
-    def test_symbol_ref_not_equals_string(self):
-        # ARRANGE #
-        value = 'a_value'
-        string_fragment = string_sdvs.str_fragment(value)
-        symbol_fragment = string_sdvs.symbol_fragment(
-            SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment_sdv_with_exact_type(symbol_fragment)
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, string_fragment)
 
-    def test_string_not_equals_string_with_different_value(self):
-        # ARRANGE #
-        fragment1 = string_sdvs.str_fragment('value 1')
-        fragment2 = string_sdvs.str_fragment('value 2')
-        assertion = sut.equals_string_fragment_sdv_with_exact_type(fragment1)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, fragment2)
-
-    def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
-        # ARRANGE #
-        fragment1 = string_sdvs.symbol_fragment(SymbolReference('symbol_name_1',
-                                                                ReferenceRestrictionsOnDirectAndIndirect(
-                                                                         AnyDataTypeRestriction())))
-        fragment2 = string_sdvs.symbol_fragment(SymbolReference('symbol_name_2',
-                                                                ReferenceRestrictionsOnDirectAndIndirect(
-                                                                         AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment_sdv_with_exact_type(fragment1)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, fragment2)
+        for case in cases:
+            with self.subTest(case.name,
+                              order='expected == actual'):
+                assertion = sut.equals_string_fragment_sdv_with_exact_type(case.expected)
+                assert_that_assertion_fails(assertion, case.actual)
+            with self.subTest(case.name,
+                              order='actual == expected'):
+                assertion = sut.equals_string_fragment_sdv_with_exact_type(case.actual)
+                assert_that_assertion_fails(assertion, case.expected)
 
 
 class TestEqualsFragments(unittest.TestCase):
@@ -93,20 +128,20 @@ class TestEqualsFragments(unittest.TestCase):
             (
                 (string_sdvs.symbol_fragment(SymbolReference('symbol_name',
                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      AnyDataTypeRestriction()))),),
+                                                                 AnyDataTypeRestriction()))),),
                 (string_sdvs.symbol_fragment(SymbolReference('symbol_name',
                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      AnyDataTypeRestriction()))),),
+                                                                 AnyDataTypeRestriction()))),),
             ),
             (
                 (string_sdvs.str_fragment('abc'),
                  string_sdvs.symbol_fragment(SymbolReference('symbol_name',
                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      AnyDataTypeRestriction()))),),
+                                                                 AnyDataTypeRestriction()))),),
                 (string_sdvs.str_fragment('abc'),
                  string_sdvs.symbol_fragment(SymbolReference('symbol_name',
                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      AnyDataTypeRestriction()))),),
+                                                                 AnyDataTypeRestriction()))),),
             ),
         ]
         for fragments1, fragments2 in test_cases:
@@ -143,14 +178,14 @@ class TestEqualsFragments(unittest.TestCase):
         expected = (string_sdvs.str_fragment('value'),)
         actual = (string_sdvs.symbol_fragment(SymbolReference('value',
                                                               ReferenceRestrictionsOnDirectAndIndirect(
-                                                                       AnyDataTypeRestriction()))),)
+                                                                  AnyDataTypeRestriction()))),)
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
 
 class TestEquals(unittest.TestCase):
-    def test_with_and_without_references(self):
+    def test_equals(self):
         test_cases = [
             ('Plain string',
              string_sdvs.str_constant('string value'),
@@ -159,7 +194,7 @@ class TestEquals(unittest.TestCase):
             ('String with reference',
              sdv_with_references([SymbolReference('symbol_name',
                                                   ReferenceRestrictionsOnDirectAndIndirect(
-                                                           AnyDataTypeRestriction()))]),
+                                                      AnyDataTypeRestriction()))]),
              empty_symbol_table(),
              ),
         ]
@@ -170,67 +205,52 @@ class TestEquals(unittest.TestCase):
                 assertion = sut.equals_string_sdv(string_value)
                 assertion.apply_with_message(self, string_value, test_case_name)
 
-
-class TestNotEquals3(unittest.TestCase):
-    def test_differs__resolved_value(self):
-        # ARRANGE #
+    def test_not_equals(self):
         expected_string = 'expected value'
-        expected = string_sdvs.str_constant(expected_string)
-        actual = string_sdvs.str_constant('actual value')
-        assertion = sut.equals_string_sdv(expected)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, actual)
+        cases = [
+            NEA(
+                'differs__resolved_value',
+                string_sdvs.str_constant(expected_string),
+                string_sdvs.str_constant('actual value'),
+            ),
+            NEA(
+                'differs__number_of_references',
+                string_sdvs.str_constant(expected_string),
+                sdv_with_references([
+                    SymbolReference('symbol_name',
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
+                ]),
+            ),
+            NEA(
+                'different_number_of_references',
+                StringSdvTestImpl(expected_string, [
+                    SymbolReference('expected_symbol_name',
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]),
+                StringSdvTestImpl(expected_string, [
+                    SymbolReference('actual_symbol_name',
+                                    ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]),
 
-    def test_differs__number_of_references(self):
-        # ARRANGE #
-        expected_string = 'expected value'
-        expected = string_sdvs.str_constant(expected_string)
-        actual = sdv_with_references([SymbolReference('symbol_name',
-                                                      ReferenceRestrictionsOnDirectAndIndirect(
-                                                               AnyDataTypeRestriction()))])
-        assertion = sut.equals_string_sdv(expected)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, actual)
+            ),
+            NEA(
+                'different_number_of_fragments',
+                StringSdvTestImpl(expected_string, [], (string_sdvs.str_fragment('value'),)),
+                StringSdvTestImpl(expected_string, [], (())),
+            ),
+            NEA(
+                'different_fragments',
+                StringSdvTestImpl(expected_string, [], (string_sdvs.str_fragment('value 1'),)),
+                StringSdvTestImpl(expected_string, [], (string_sdvs.str_fragment('value 2'),)),
+            ),
+        ]
 
-    def test_differs__different_number_of_references(self):
-        # ARRANGE #
-        expected_string = 'expected value'
-        expected_references = [
-            SymbolReference('expected_symbol_name',
-                            ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]
-        actual_references = [
-            SymbolReference('actual_symbol_name',
-                            ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))]
-        expected = StringSdvTestImpl(expected_string, expected_references)
-        actual = StringSdvTestImpl(expected_string, actual_references)
-        assertion = sut.equals_string_sdv(expected)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, actual)
-
-    def test_differs__different_number_of_fragments(self):
-        # ARRANGE #
-        expected_string = 'expected value'
-        expected_fragments = (string_sdvs.str_fragment('value'),)
-        actual_fragments = ()
-        expected = StringSdvTestImpl(expected_string, [], expected_fragments)
-        actual = StringSdvTestImpl(expected_string, [], actual_fragments)
-        assertion = sut.equals_string_sdv(expected)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, actual)
-
-    def test_differs__different_fragments(self):
-        # ARRANGE #
-        expected_string = 'expected value'
-        expected_fragments = (string_sdvs.str_fragment('value 1'),)
-        actual_fragments = (string_sdvs.str_fragment('value 2'),)
-        expected = StringSdvTestImpl(expected_string, [], expected_fragments)
-        actual = StringSdvTestImpl(expected_string, [], actual_fragments)
-        assertion = sut.equals_string_sdv(expected)
-        # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, actual)
+        for case in cases:
+            with self.subTest(case.name):
+                assertion = sut.equals_string_sdv(case.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, case.actual)
 
 
-def sdv_with_references(symbol_references: list) -> StringSdv:
+def sdv_with_references(symbol_references: List[SymbolReference]) -> StringSdv:
     fragment_sdvs = tuple([string_sdvs.symbol_fragment(sym_ref)
                            for sym_ref in symbol_references])
     return StringSdv(fragment_sdvs)

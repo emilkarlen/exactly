@@ -5,13 +5,14 @@ from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions
+from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
+from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as asrt_value
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference, \
     symbol_usage_equals_symbol_reference
@@ -74,6 +75,14 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     @staticmethod
     def of_arbitrary_value() -> 'StringSymbolValueContext':
         return ARBITRARY_SYMBOL_VALUE_CONTEXT
+
+    @property
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.STRING
+
+    @property
+    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+        return asrt_value.equals_string_sdv(self.sdv)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_usage.matches_reference_2__ref(

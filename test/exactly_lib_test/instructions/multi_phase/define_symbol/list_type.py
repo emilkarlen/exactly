@@ -8,9 +8,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import references
-from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -43,12 +41,11 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol_definition(list_symbol.definition,
-                                                         ignore_source_line=True)
+                        list_symbol.assert_matches_definition_of_sdv
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         list_symbol.name,
-                        equals_container(list_symbol.value.container),
+                        list_symbol.value.assert_matches_container_of_sdv,
                     ),
                     source=case.source_assertion
                 )
@@ -88,12 +85,11 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             with self.subTest(case.name):
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        vs_asrt.equals_symbol_definition(symbol_to_assign.definition,
-                                                         ignore_source_line=True)
+                        symbol_to_assign.assert_matches_definition_of_sdv
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         symbol_to_assign.name,
-                        equals_container(symbol_to_assign.value.container),
+                        symbol_to_assign.value.assert_matches_container_of_sdv,
                     ),
                     source=case.source_assertion,
                 )
@@ -117,12 +113,11 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
 
         expectation = Expectation(
             symbol_usages=asrt.matches_sequence([
-                vs_asrt.equals_symbol_definition(symbol_to_assign.definition,
-                                                 ignore_source_line=True)
+                symbol_to_assign.assert_matches_definition_of_sdv
             ]),
             symbols_after_main=assert_symbol_table_is_singleton(
                 symbol_to_assign.name,
-                equals_container(symbol_to_assign.value.container),
+                symbol_to_assign.value.assert_matches_container_of_sdv,
             ),
             source=asrt_source.is_at_beginning_of_line(2),
         )

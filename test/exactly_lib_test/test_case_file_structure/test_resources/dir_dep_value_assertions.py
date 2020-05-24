@@ -38,7 +38,7 @@ def matches_dir_dependent_value(resolved_value: Callable[[Tcds], ValueAssertion[
 
 
 def matches_dir_dependent_value__with_adv(
-        resolved_value: Callable[[Tcds], ValueAssertion[T]],
+        primitive_value: Callable[[Tcds], ValueAssertion[T]],
         tcds: Tcds = fake_tcds(),
 ) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
     def adv_assertion(tcds_: Tcds) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
@@ -47,7 +47,7 @@ def matches_dir_dependent_value__with_adv(
             ApplicationEnvironmentDependentValue,
             asrt.sub_component('primitive',
                                lambda adv: adv.primitive(ae),
-                               resolved_value(tcds_)
+                               primitive_value(tcds_)
                                )
         )
 

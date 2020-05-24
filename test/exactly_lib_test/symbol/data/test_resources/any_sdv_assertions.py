@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
-def equals_sdv(expected: DataTypeSdv) -> ValueAssertion[DataTypeSdv]:
+def equals_data_type_sdv(expected: DataTypeSdv) -> ValueAssertion[DataTypeSdv]:
     return _EqualsSdv(expected)
 
 

@@ -10,7 +10,7 @@ from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax import option_syntax
@@ -20,9 +20,8 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources impo
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext, ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
+from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext, ConstantSuffixPathDdvSymbolContext, \
+    PathSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -92,11 +91,11 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                                 ArrangementWithSds(),
                                 Expectation(
                                     symbol_usages=assert_symbol_usages_is_singleton_list(
-                                        vs_asrt.equals_symbol_definition(
-                                            expected_defined_symbol.definition)),
+                                        expected_defined_symbol.assert_matches_definition_of_sdv
+                                    ),
                                     symbols_after_main=assert_symbol_table_is_singleton(
                                         expected_defined_symbol.name,
-                                        equals_container(expected_defined_symbol.symbol_table_container))
+                                        expected_defined_symbol.value.assert_matches_container_of_sdv)
                                 )
                                 )
 
@@ -116,11 +115,11 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                         ArrangementWithSds(),
                         Expectation(
                             symbol_usages=assert_symbol_usages_is_singleton_list(
-                                vs_asrt.equals_symbol_definition(
-                                    expected_defined_symbol.definition)),
+                                expected_defined_symbol.assert_matches_definition_of_sdv
+                            ),
                             symbols_after_main=assert_symbol_table_is_singleton(
                                 'name',
-                                equals_container(expected_defined_symbol.symbol_table_container)))
+                                expected_defined_symbol.value.assert_matches_container_of_sdv))
                         )
 
 
@@ -133,19 +132,17 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                                 ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
                                     REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 path_part_sdvs.from_constant_str('component'))
-            expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
+            expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
+            expected_symbol = PathSymbolContext('ASSIGNED_NAME', expected_symbol_value)
             self._check(source,
                         ArrangementWithSds(),
                         Expectation(
                             symbol_usages=asrt.matches_sequence([
-                                vs_asrt.equals_symbol_definition(
-                                    SymbolDefinition('ASSIGNED_NAME',
-                                                     expected_container),
-                                    ignore_source_line=True)
+                                expected_symbol.assert_matches_definition_of_sdv
                             ]),
                             symbols_after_main=assert_symbol_table_is_singleton(
-                                'ASSIGNED_NAME',
-                                equals_container(expected_container)))
+                                expected_symbol.name,
+                                expected_symbol_value.assert_matches_container_of_sdv))
                         )
 
 
@@ -159,15 +156,16 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
                 expected_path_sdv = path_sdvs.constant(
                     paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
                                        paths.constant_path_part('component')))
-                expected_container = PathSymbolValueContext.of_sdv(expected_path_sdv).container
+                expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
+                expected_symbol = PathSymbolContext('name', expected_symbol_value)
                 self._check(source,
                             ArrangementWithSds(fs_location_info=fs_location_info),
                             Expectation(
                                 symbol_usages=assert_symbol_usages_is_singleton_list(
-                                    vs_asrt.equals_symbol_definition(
-                                        SymbolDefinition('name', expected_container))),
+                                    expected_symbol.assert_matches_definition_of_sdv
+                                ),
                                 symbols_after_main=assert_symbol_table_is_singleton(
                                     'name',
-                                    equals_container(expected_container))
+                                    expected_symbol_value.assert_matches_container_of_sdv)
                             )
                             )

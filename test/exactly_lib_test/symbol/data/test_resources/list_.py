@@ -3,12 +3,13 @@ from typing import Sequence, List, Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string
 from exactly_lib.type_system.data.list_ddv import ListDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources import list_assertions as asrt_list
 from exactly_lib_test.symbol.data.test_resources.list_sdvs import ListSdvTestImplForConstantListDdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
@@ -57,6 +58,14 @@ class ListSymbolValueContext(DataSymbolValueContext[ListSdv]):
     @property
     def value_type(self) -> ValueType:
         return ValueType.LIST
+
+    @property
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.LIST
+
+    @property
+    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+        return asrt_list.equals_list_sdv(self.sdv)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(

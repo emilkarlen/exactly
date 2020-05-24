@@ -618,6 +618,7 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
+        self._data_value_type = data_value_type
         self._value_type = value_type.DATA_TYPE_2_VALUE_TYPE[data_value_type]
 
     @staticmethod
@@ -632,6 +633,14 @@ class TestDataSymbolValueContext(DataSymbolValueContext[DataTypeSdvForTest]):
     @property
     def value_type(self) -> ValueType:
         return self._value_type
+
+    @property
+    def data_value_type(self) -> DataValueType:
+        return self._data_value_type
+
+    @property
+    def assert_equals_sdv(self) -> ValueAssertion[SymbolDependentValue]:
+        raise NotImplementedError('unsupported')
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
         raise NotImplementedError('unsupported')

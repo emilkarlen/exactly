@@ -18,7 +18,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.logic.test_resources.assertions import matches_logic_sdv
+from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_program
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import validation_check, command_assertions as asrt_command
@@ -33,7 +33,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
 from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_transformer
-from exactly_lib_test.type_system.logic.test_resources.logic_structure_assertions import matches_logic_ddv
 
 
 def suite() -> unittest.TestSuite:
@@ -188,9 +187,9 @@ def check_parsing_of_program(put: unittest.TestCase,
                 transformer=asrt_line_transformer.is_identity_transformer(True)
             )
 
-        expectation = matches_logic_sdv(
+        expectation = matches_sdv_of_program(
             references=expected_references_assertion,
-            ddv=matches_logic_ddv(expected_program),
+            primitive_value=expected_program,
             symbols=symbols
         )
 

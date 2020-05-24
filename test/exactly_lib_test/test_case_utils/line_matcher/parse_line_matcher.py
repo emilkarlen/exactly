@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -18,7 +18,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
-from exactly_lib_test.test_case_utils.matcher.test_resources import assertions as asrt_matcher
+from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -128,10 +128,10 @@ class TestLineNumberParser(unittest.TestCase):
 def resolved_value_is_line_number_matcher(equivalent: MatcherWTrace[LineMatcherLine],
                                           model_infos: List[ModelInfo],
                                           references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence
-                                          ) -> ValueAssertion[LogicSdv]:
+                                          ) -> ValueAssertion[SymbolDependentValue]:
     expected_matcher = is_equivalent_to(equivalent,
                                         model_infos)
-    return asrt_matcher.matches_matcher_sdv(
+    return matches_sdv_of_line_matcher(
         references=references,
         primitive_value=expected_matcher
     )

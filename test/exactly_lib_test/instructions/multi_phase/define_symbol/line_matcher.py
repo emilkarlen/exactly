@@ -14,10 +14,10 @@ from exactly_lib_test.instructions.multi_phase.test_resources import \
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
-from exactly_lib_test.symbol.test_resources import sdv_assertions
+from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, LineMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.sdv_structure_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
@@ -96,8 +96,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expected_container = matches_container_of_logic_type(
                     LogicValueType.LINE_MATCHER,
-                    assertion_on_sdv=
-                    sdv_assertions.matches_sdv_of_line_matcher(
+                    sdv=sdv_type_assertions.matches_sdv_of_line_matcher(
                         references=asrt.matches_sequence([
                             is_line_matcher_reference_to(symbol.name),
                         ]),

@@ -10,7 +10,6 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -50,7 +49,7 @@ class TestFailWhenInvalidSyntax(TestCaseBase):
 class TestSuccessfulDefinition(TestCaseBase):
     def runTest(self):
         source = src('{string_type} name = value')
-        expected_definition = StringConstantSymbolContext('name', 'value').definition
+        expected_symbol = StringConstantSymbolContext('name', 'value')
 
         self.conf.run_single_line_test_with_source_variants_and_source_check(
             self,
@@ -58,7 +57,7 @@ class TestSuccessfulDefinition(TestCaseBase):
             self.conf.arrangement(),
             self.conf.expect_success(
                 symbol_usages=asrt.matches_sequence([
-                    vs_asrt.equals_symbol_definition(expected_definition, ignore_source_line=True)
+                    expected_symbol.assert_matches_definition_of_sdv
                 ])
             )
         )
