@@ -57,10 +57,10 @@ def is_sdv_of_program_type() -> ValueAssertion[SymbolDependentValue]:
     return is_sdv_of_logic_type(ProgramSdv)
 
 
-def matches_sdtv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
-                           resolved_value: ValueAssertion[StringDdv],
-                           custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
-                           symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_string(references: ValueAssertion[Sequence[SymbolReference]],
+                          resolved_value: ValueAssertion[StringDdv],
+                          custom: ValueAssertion[StringSdv] = asrt.anything_goes(),
+                          symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
     return matches_sdv(is_sdv_of_string_type(),
                        references,
                        asrt.is_instance_with(StringDdv, resolved_value),
@@ -68,10 +68,10 @@ def matches_sdtv_of_string(references: ValueAssertion[Sequence[SymbolReference]]
                        symbol_table_from_none_or_value(symbols))
 
 
-def matches_sdtv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
-                         resolved_value: ValueAssertion[ListDdv],
-                         custom: ValueAssertion[ListSdv] = asrt.anything_goes(),
-                         symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
+                        resolved_value: ValueAssertion[ListDdv],
+                        custom: ValueAssertion[ListSdv] = asrt.anything_goes(),
+                        symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
     return matches_sdv(is_sdv_of_list_type(),
                        references,
                        asrt.is_instance_with(ListDdv, resolved_value),
@@ -79,10 +79,10 @@ def matches_sdtv_of_list(references: ValueAssertion[Sequence[SymbolReference]],
                        symbol_table_from_none_or_value(symbols))
 
 
-def matches_sdtv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
-                         resolved_value: ValueAssertion[PathDdv],
-                         custom: ValueAssertion[PathSdv] = asrt.anything_goes(),
-                         symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
+def matches_sdv_of_path(references: ValueAssertion[Sequence[SymbolReference]],
+                        resolved_value: ValueAssertion[PathDdv],
+                        custom: ValueAssertion[PathSdv] = asrt.anything_goes(),
+                        symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
     return matches_sdv(is_sdv_of_path_type(),
                        references,
                        asrt.is_instance_with(PathDdv, resolved_value),

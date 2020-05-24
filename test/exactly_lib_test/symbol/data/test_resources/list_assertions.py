@@ -61,22 +61,22 @@ def equals_list_sdv(expected: ListSdv,
     def get_element_sdvs(x: ListSdv) -> Sequence[list_sdv.ElementSdv]:
         return x.elements
 
-    return sdv_assertions.matches_sdtv_of_list(equals_symbol_references(expected.references),
-                                               equals_list_ddv(expected_resolved_value),
-                                               asrt.sub_component('element SDVs',
-                                                                  get_element_sdvs,
-                                                                  equals_list_sdv_elements(
-                                                                      list(expected.elements))),
+    return sdv_assertions.matches_sdv_of_list(equals_symbol_references(expected.references),
+                                              equals_list_ddv(expected_resolved_value),
+                                              asrt.sub_component('element SDVs',
+                                                                 get_element_sdvs,
+                                                                 equals_list_sdv_elements(
+                                                                     list(expected.elements))),
 
-                                               symbols)
+                                              symbols)
 
 
 def matches_list_sdv(expected_resolved_value: ListDdv,
                      expected_symbol_references: ValueAssertion,
                      symbols: SymbolTable = None) -> ValueAssertion:
-    return sdv_assertions.matches_sdtv_of_list(expected_symbol_references,
-                                               equals_list_ddv(expected_resolved_value),
-                                               symbols=symbols)
+    return sdv_assertions.matches_sdv_of_list(expected_symbol_references,
+                                              equals_list_ddv(expected_resolved_value),
+                                              symbols=symbols)
 
 
 def equals_constant_list(expected_str_list: Iterable[str]) -> ValueAssertion:

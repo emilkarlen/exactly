@@ -24,17 +24,17 @@ from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions impo
 def equals_path_sdv(expected: PathSdv) -> ValueAssertion:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_path = expected.resolve(symbols)
-    return sdv_assertions.matches_sdtv_of_path(equals_symbol_references(expected.references),
-                                               equals_path(expected_path),
-                                               symbols=symbols)
+    return sdv_assertions.matches_sdv_of_path(equals_symbol_references(expected.references),
+                                              equals_path(expected_path),
+                                              symbols=symbols)
 
 
 def matches_path_sdv(expected_resolved_value: PathDdv,
                      expected_symbol_references: ValueAssertion,
                      symbol_table: SymbolTable = None) -> ValueAssertion:
-    return sdv_assertions.matches_sdtv_of_path(expected_symbol_references,
-                                               equals_path(expected_resolved_value),
-                                               symbols=symbol_table)
+    return sdv_assertions.matches_sdv_of_path(expected_symbol_references,
+                                              equals_path(expected_resolved_value),
+                                              symbols=symbol_table)
 
 
 def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> ValueAssertion:
@@ -65,14 +65,14 @@ def equals_string_sdv(expected: StringSdv,
     def get_fragment_sdvs(x: StringSdv) -> Sequence[StringFragmentSdv]:
         return x.fragments
 
-    return sdv_assertions.matches_sdtv_of_string(equals_symbol_references(expected.references),
-                                                 equals_string_ddv(expected_resolved_value),
-                                                 asrt.sub_component('fragment resolvers',
-                                                                    get_fragment_sdvs,
-                                                                    equals_string_fragments(
-                                                                        expected.fragments)),
+    return sdv_assertions.matches_sdv_of_string(equals_symbol_references(expected.references),
+                                                equals_string_ddv(expected_resolved_value),
+                                                asrt.sub_component('fragment resolvers',
+                                                                   get_fragment_sdvs,
+                                                                   equals_string_fragments(
+                                                                       expected.fragments)),
 
-                                                 symbols)
+                                                symbols)
 
 
 class _EqualsStringFragmentAssertionForStringConstant(ValueAssertionBase):
