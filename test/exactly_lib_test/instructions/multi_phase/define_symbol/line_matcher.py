@@ -92,7 +92,7 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
 
-                expected_matcher = resolving_helper(symbol_table).resolve(expected_matcher_sdv)
+                expected_matcher = resolving_helper(symbol_table).resolve_matcher(expected_matcher_sdv)
 
                 expected_container = matches_container_of_logic_type(
                     LogicValueType.LINE_MATCHER,

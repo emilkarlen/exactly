@@ -230,7 +230,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                         mb_validation_failure = validator.validate_post_sds_if_applicable(tcds)
                         self.assertIsNone(mb_validation_failure, 'post sds validation')
 
-                        actual = resolving_helper(case.symbols).resolve(actual_sdv)
+                        actual = resolving_helper(case.symbols).resolve_matcher(actual_sdv)
 
                     case.source_assertion.apply_with_message(self, case.source, 'source')
                     case.result.assertion(expectation_type).apply_with_message(self, actual, 'parsed value')

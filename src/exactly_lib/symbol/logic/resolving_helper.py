@@ -41,14 +41,14 @@ class LogicTypeResolvingHelper:
     def file_space(self) -> TmpDirFileSpace:
         return self.application_environment.tmp_files_space
 
-    def resolve_generic_sdv(self, sdv: LogicWithDescriberSdv[PRIMITIVE]) -> PRIMITIVE:
+    def resolve_logic_w_describer(self, sdv: LogicWithDescriberSdv[PRIMITIVE]) -> PRIMITIVE:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
                 .primitive(self.application_environment)
         )
 
-    def resolve(self, sdv: MatcherSdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
+    def resolve_matcher(self, sdv: MatcherSdv[MODEL]) -> MatcherWTraceAndNegation[MODEL]:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
@@ -72,7 +72,7 @@ class LogicTypeResolvingHelper:
         )
 
     def apply(self, sdv: MatcherSdv[MODEL], model: MODEL) -> MatchingResult:
-        return self.resolve(sdv).matches_w_trace(model)
+        return self.resolve_matcher(sdv).matches_w_trace(model)
 
 
 def resolving_helper__of_full_env(environment: FullResolvingEnvironment) -> LogicTypeResolvingHelper:

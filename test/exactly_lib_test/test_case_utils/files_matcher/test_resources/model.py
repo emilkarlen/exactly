@@ -60,7 +60,7 @@ def model_constructor__from_embryo__non_recursive(embryo: ModelEmbryo) -> ModelC
         resolved_selection = (
             None
             if fs is None
-            else resolving_helper__of_full_env(environment).resolve(fs)
+            else resolving_helper__of_full_env(environment).resolve_matcher(fs)
         )
 
         model = models.non_recursive(resolved_path)

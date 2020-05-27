@@ -122,7 +122,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                    environment: InstructionEnvironmentForPostSdsStep,
                    dir_to_check: DescribedPath,
                    ) -> FilesMatcherModel:
-        constructor = resolving_helper__of_full_env(environment.full_resolving_environment).resolve_generic_sdv(
+        constructor = resolving_helper__of_full_env(environment.full_resolving_environment).resolve_logic_w_describer(
             self._model_constructor
         )
         return constructor.make_model(FileMatcherModelForDescribedPath(dir_to_check))
