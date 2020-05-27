@@ -2,7 +2,7 @@ from typing import Sequence, List
 
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, GenericFileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
@@ -112,7 +112,7 @@ def failing_validation_cases__multi_exe(symbol_name: str = 'files_matcher_symbol
     ]
 
 
-def _successful_matcher_with_validation(the_validation: ValidationActual) -> GenericFileMatcherSdv:
+def _successful_matcher_with_validation(the_validation: ValidationActual) -> FileMatcherSdv:
     def get_matcher(symbols: SymbolTable, tcds: Tcds) -> FileMatcher:
         return constant.MatcherWithConstantResult(True)
 

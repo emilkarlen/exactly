@@ -102,4 +102,4 @@ StringMatcherAdv = MatcherAdv[FileToCheck]
 
 StringMatcherDdv = MatcherDdv[FileToCheck]
 
-GenericStringMatcherSdv = MatcherSdv[FileToCheck]
+StringMatcherSdv = MatcherSdv[FileToCheck]

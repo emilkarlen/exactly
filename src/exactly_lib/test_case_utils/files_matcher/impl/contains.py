@@ -5,14 +5,14 @@ from typing import Optional, Mapping, List
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.files_matcher.impl import equals_and_contains_utils as utils
-from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv, FileModel
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FileModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
 
 
-def contains_sdv(files_condition: FilesConditionSdv) -> GenericFilesMatcherSdv:
+def contains_sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
     return utils.MatcherSdvWithApplier(_CONTAINS_CONFIG, files_condition)
 
 

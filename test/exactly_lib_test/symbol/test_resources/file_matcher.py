@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, GenericFileMatcherSdv, \
+from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherSdv, \
     FileMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -32,13 +32,13 @@ def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
 
 class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel]):
     def __init__(self,
-                 sdv: GenericFileMatcherSdv,
+                 sdv: FileMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_sdv(sdv: GenericFileMatcherSdv,
+    def of_sdv(sdv: FileMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'FileMatcherSymbolValueContext':
         return FileMatcherSymbolValueContext(sdv, definition_source)
@@ -78,7 +78,7 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
 
     @staticmethod
     def of_sdv(name: str,
-               sdv: GenericFileMatcherSdv,
+               sdv: FileMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(

@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, GenericFileMatcherSdv, \
+from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, FileMatcherSdv, \
     FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.util import strings
@@ -86,7 +86,7 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
 
 
 class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition]):
-    def __init__(self, files: Sequence[Tuple[StringSdv, Optional[GenericFileMatcherSdv]]]):
+    def __init__(self, files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]):
         self._files = files
         self._references = []
         for file_name, mb_matcher in files:
@@ -100,10 +100,10 @@ class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition]):
 
     def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
 
-        def resolve_matcher(x: GenericFileMatcherSdv) -> FileMatcherDdv:
+        def resolve_matcher(x: FileMatcherSdv) -> FileMatcherDdv:
             return x.resolve(symbols)
 
-        def resolve_entry(file_name: StringSdv, matcher: Optional[GenericFileMatcherSdv]
+        def resolve_entry(file_name: StringSdv, matcher: Optional[FileMatcherSdv]
                           ) -> Tuple[StringDdv, Optional[FileMatcherDdv]]:
             return file_name.resolve(symbols), map_optional(resolve_matcher, matcher)
 

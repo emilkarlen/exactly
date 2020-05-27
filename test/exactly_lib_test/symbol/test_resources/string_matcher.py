@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, GenericStringMatcherSdv, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherSdv, FileToCheck
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
                                           references: Sequence[SymbolReference] = (),
                                           validator: DdvValidator = ddv_validation.ConstantDdvValidator(),
-                                          ) -> GenericStringMatcherSdv:
+                                          ) -> StringMatcherSdv:
     return matchers.MatcherSdvOfConstantDdvTestImpl(
         matchers.MatcherDdvOfConstantMatcherTestImpl(
             resolved_value,
@@ -48,13 +48,13 @@ def is_reference_to_string_matcher__ref(name_of_matcher: str
 
 class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
     def __init__(self,
-                 sdv: GenericStringMatcherSdv,
+                 sdv: StringMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_sdv(sdv: GenericStringMatcherSdv,
+    def of_sdv(sdv: StringMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'StringMatcherSymbolValueContext':
         return StringMatcherSymbolValueContext(sdv,
@@ -95,7 +95,7 @@ class StringMatcherSymbolContext(MatcherTypeSymbolContext[FileToCheck]):
 
     @staticmethod
     def of_sdv(name: str,
-               sdv: GenericStringMatcherSdv,
+               sdv: StringMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(

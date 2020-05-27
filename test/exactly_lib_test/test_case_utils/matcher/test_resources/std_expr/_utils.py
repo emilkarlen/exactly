@@ -110,12 +110,6 @@ class AssertionsHelper(Generic[MODEL]):
             validator,
         )
 
-    def bool_matcher__generic(self, result: bool) -> MatcherSdv[MODEL]:
-        return matchers.sdv_from_bool(
-            result,
-            (),
-        )
-
     def logic_type_symbol_value_context_from_primitive(self,
                                                        primitive: MatcherWTraceAndNegation[MODEL]
                                                        ) -> MatcherSymbolValueContext[MODEL]:

@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentVal
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
-from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -133,7 +133,7 @@ def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAnd
                                    tcds)
 
 
-def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> GenericStringMatcherSdv:
+def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> StringMatcherSdv:
     return string_matcher_sdv_constant_test_impl(constant.MatcherWithConstantResult(True),
                                                  references)
 

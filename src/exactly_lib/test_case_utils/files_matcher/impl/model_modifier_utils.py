@@ -11,8 +11,8 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSd
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv, \
-    GenericFileMatcherSdv
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
+    FileMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
@@ -28,8 +28,8 @@ class Configuration:
 
 
 def matcher(configuration: Configuration,
-            selector: GenericFileMatcherSdv,
-            matcher_on_result: GenericFilesMatcherSdv) -> GenericFilesMatcherSdv:
+            selector: FileMatcherSdv,
+            matcher_on_result: FilesMatcherSdv) -> FilesMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
         matcher_on_result,
         _PrunedModelGetterSdv(configuration, selector),
@@ -100,7 +100,7 @@ class _PrunedModelGetterDdv(PropertyGetterDdv[FilesMatcherModel, FilesMatcherMod
 class _PrunedModelGetterSdv(PropertyGetterSdv[FilesMatcherModel, FilesMatcherModel]):
     def __init__(self,
                  configuration: Configuration,
-                 predicate: GenericFileMatcherSdv):
+                 predicate: FileMatcherSdv):
         self._configuration = configuration
         self._predicate = predicate
 

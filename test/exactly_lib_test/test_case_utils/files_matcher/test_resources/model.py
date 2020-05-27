@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.type_system.logic.file_matcher import GenericFileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 class ModelEmbryo:
     def __init__(self,
                  dir_path_sdv: PathSdv,
-                 files_selection: Optional[GenericFileMatcherSdv] = None
+                 files_selection: Optional[FileMatcherSdv] = None
                  ):
         self.dir_path_sdv = dir_path_sdv
         self.files_selection = files_selection

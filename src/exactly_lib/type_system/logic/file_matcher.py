@@ -36,4 +36,4 @@ FileMatcherAdv = MatcherAdv[FileMatcherModel]
 
 FileMatcherDdv = MatcherDdv[FileMatcherModel]
 
-GenericFileMatcherSdv = MatcherSdv[FileMatcherModel]
+FileMatcherSdv = MatcherSdv[FileMatcherModel]

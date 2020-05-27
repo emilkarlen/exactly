@@ -15,68 +15,68 @@ from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files,
     sub_set_selection, prune, contains, equals
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
-from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 
 
-def files_matcher_parser() -> Parser[GenericFilesMatcherSdv]:
-    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher__generic,
+def files_matcher_parser() -> Parser[FilesMatcherSdv]:
+    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher,
                                                         consume_last_line_if_is_at_eol_after_parse=True)
 
 
-def parse_files_matcher__generic(parser: TokenParser,
-                                 must_be_on_current_line: bool = True) -> GenericFilesMatcherSdv:
+def parse_files_matcher(parser: TokenParser,
+                        must_be_on_current_line: bool = True) -> FilesMatcherSdv:
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
 def _file_quantified_assertion(quantifier: Quantifier,
-                               parser: TokenParser) -> GenericFilesMatcherSdv:
+                               parser: TokenParser) -> FilesMatcherSdv:
     return parse_quantified_matcher.parse_after_quantifier_token(
         quantifier,
-        parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
+        parse_file_matcher.ParserOfMatcherOnArbitraryLine(),
         quant_over_files.ELEMENT_SETUP,
         parser,
     )
 
 
-def _parse_empty_check(parser: TokenParser) -> GenericFilesMatcherSdv:
-    return emptiness.emptiness_matcher__generic()
+def _parse_empty_check(parser: TokenParser) -> FilesMatcherSdv:
+    return emptiness.emptiness_matcher()
 
 
-def _parse_num_files_check(parser: TokenParser) -> GenericFilesMatcherSdv:
-    return num_files.parse__generic(ExpectationType.POSITIVE, parser)
+def _parse_num_files_check(parser: TokenParser) -> FilesMatcherSdv:
+    return num_files.parse(ExpectationType.POSITIVE, parser)
 
 
-def _parse_selection(parser: TokenParser) -> GenericFilesMatcherSdv:
+def _parse_selection(parser: TokenParser) -> FilesMatcherSdv:
     element_matcher = parse_file_matcher.parse_sdv(parser, False)
-    matcher_on_selection = parse_files_matcher__generic(parser, False)
+    matcher_on_selection = parse_files_matcher(parser, False)
 
     return sub_set_selection.matcher(element_matcher,
                                      matcher_on_selection)
 
 
-def _parse_prune(parser: TokenParser) -> GenericFilesMatcherSdv:
+def _parse_prune(parser: TokenParser) -> FilesMatcherSdv:
     element_matcher = parse_file_matcher.parse_sdv(parser, False)
-    matcher_on_selection = parse_files_matcher__generic(parser, False)
+    matcher_on_selection = parse_files_matcher(parser, False)
 
     return prune.matcher(element_matcher,
                          matcher_on_selection)
 
 
-def _parse_equals(parser: TokenParser) -> GenericFilesMatcherSdv:
+def _parse_equals(parser: TokenParser) -> FilesMatcherSdv:
     fc = parse_fc.parse(parser, False)
     return equals.equals_sdv(fc)
 
 
-def _parse_contains(parser: TokenParser) -> GenericFilesMatcherSdv:
+def _parse_contains(parser: TokenParser) -> FilesMatcherSdv:
     fc = parse_fc.parse(parser, False)
     return contains.contains_sdv(fc)
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericFilesMatcherSdv]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[FilesMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             config.EMPTINESS_CHECK_ARGUMENT,
@@ -96,7 +96,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
     ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         quant_over_files.ELEMENT_SETUP,
-        parse_file_matcher.ParserOfGenericMatcherOnArbitraryLine(),
+        parse_file_matcher.ParserOfMatcherOnArbitraryLine(),
     )
 
     ret_val += quantification_setup.quantification_grammar_expressions()

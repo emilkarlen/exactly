@@ -9,12 +9,12 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
-from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.util.render import combinators as rend_comb
 
 
 class StringMatcherAssertionPart(FileContentsAssertionPart):
-    def __init__(self, string_matcher: GenericStringMatcherSdv):
+    def __init__(self, string_matcher: StringMatcherSdv):
         super().__init__(sdv_validation.SdvValidatorFromDdvValidator(
             lambda symbols: string_matcher.resolve(symbols).validator
         ))

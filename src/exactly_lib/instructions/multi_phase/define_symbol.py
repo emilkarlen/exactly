@@ -43,10 +43,10 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
-from exactly_lib.type_system.logic.file_matcher import GenericFileMatcherSdv
-from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
-from exactly_lib.type_system.logic.line_matcher import GenericLineMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence
@@ -272,25 +272,25 @@ def _parse_list(fs_location_info: FileSystemLocationInfo,
 
 
 def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> GenericLineMatcherSdv:
-    return parse_line_matcher.parse_line_matcher_from_token_parser__generic(token_parser,
-                                                                            must_be_on_current_line=False)
+                        token_parser: TokenParser) -> LineMatcherSdv:
+    return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser,
+                                                                   must_be_on_current_line=False)
 
 
 def _parse_string_matcher(fs_location_info: FileSystemLocationInfo,
-                          token_parser: TokenParser) -> GenericStringMatcherSdv:
+                          token_parser: TokenParser) -> StringMatcherSdv:
     return parse_string_matcher.parse_string_matcher(token_parser)
 
 
 def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
-                        token_parser: TokenParser) -> GenericFileMatcherSdv:
+                        token_parser: TokenParser) -> FileMatcherSdv:
     return parse_file_matcher.parse_sdv(token_parser, must_be_on_current_line=False)
 
 
 def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
-                         token_parser: TokenParser) -> GenericFilesMatcherSdv:
-    return parse_files_matcher.parse_files_matcher__generic(token_parser,
-                                                            must_be_on_current_line=False)
+                         token_parser: TokenParser) -> FilesMatcherSdv:
+    return parse_files_matcher.parse_files_matcher(token_parser,
+                                                   must_be_on_current_line=False)
 
 
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,

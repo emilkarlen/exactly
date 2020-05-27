@@ -5,8 +5,8 @@ from exactly_lib.test_case_utils.described_dep_val import sdv_of_constant_primit
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.logic import string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
 
 NAMES = file_contents_utils.NamesSetup(
     file_check_properties.REGULAR_FILE_CONTENTS,
@@ -24,8 +24,8 @@ class _ModelConstructor(file_contents_utils.ModelConstructor[FileToCheck]):
         )
 
 
-def sdv__generic(contents_matcher: GenericStringMatcherSdv) -> GenericFileMatcherSdv:
-    return file_contents_utils.sdv__generic(
+def sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:
+    return file_contents_utils.sdv(
         NAMES,
         sdv_of_constant_primitive(_ModelConstructor()),
         contents_matcher,

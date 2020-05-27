@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_utils.matcher.impls import constant, ddv_components
-from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, GenericLineMatcherSdv, \
+from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, LineMatcherSdv, \
     LineMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
 from exactly_lib.type_system.value_type import ValueType
@@ -33,7 +33,7 @@ def is_line_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[Symbol
     )
 
 
-def successful_matcher_with_validation(validator: DdvValidator) -> GenericLineMatcherSdv:
+def successful_matcher_with_validation(validator: DdvValidator) -> LineMatcherSdv:
     return matchers.sdv_from_primitive_value(
         matchers.MatcherWithConstantResult(True),
         (),
@@ -45,7 +45,7 @@ def sdv_from_primitive_value(
         primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = constant_success_validator(),
-) -> GenericLineMatcherSdv:
+) -> LineMatcherSdv:
     return matchers.sdv_from_primitive_value(
         primitive_value,
         references,
@@ -61,13 +61,13 @@ def ddv_of_unconditionally_matching_matcher() -> LineMatcherDdv:
 
 class LineMatcherSymbolValueContext(MatcherSymbolValueContext[LineMatcherLine]):
     def __init__(self,
-                 sdv: GenericLineMatcherSdv,
+                 sdv: LineMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_sdv(sdv: GenericLineMatcherSdv,
+    def of_sdv(sdv: LineMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'LineMatcherSymbolValueContext':
         return LineMatcherSymbolValueContext(sdv,
@@ -108,7 +108,7 @@ class LineMatcherSymbolContext(MatcherTypeSymbolContext[LineMatcherLine]):
 
     @staticmethod
     def of_sdv(name: str,
-               sdv: GenericLineMatcherSdv,
+               sdv: LineMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(

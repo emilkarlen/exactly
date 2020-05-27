@@ -24,7 +24,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv, FileMatcher
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -42,17 +42,17 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-def parser() -> parser_classes.Parser[GenericFileMatcherSdv]:
+def parser() -> parser_classes.Parser[FileMatcherSdv]:
     return _PARSER
 
 
-class _Parser(parser_classes.Parser[GenericFileMatcherSdv]):
-    def parse_from_token_parser(self, parser: TokenParser) -> GenericFileMatcherSdv:
+class _Parser(parser_classes.Parser[FileMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
         return parse_sdv(parser, must_be_on_current_line=True)
 
 
-class ParserOfGenericMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
-    def parse_from_token_parser(self, token_parser: TokenParser) -> GenericFileMatcherSdv:
+class ParserOfMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
+    def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdv:
         return parse_sdv(token_parser, must_be_on_current_line=False)
 
 
@@ -60,20 +60,20 @@ _PARSER = _Parser()
 
 
 def parse_sdv(parser: TokenParser,
-              must_be_on_current_line: bool) -> GenericFileMatcherSdv:
+              must_be_on_current_line: bool) -> FileMatcherSdv:
     parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
-def _parse_name_matcher(parser: TokenParser) -> GenericFileMatcherSdv:
-    return parser.parse_choice_of_optional_option(name_regex.parse__generic,
-                                                  name_glob_pattern.parse__generic,
+def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
+    return parser.parse_choice_of_optional_option(name_regex.parse,
+                                                  name_glob_pattern.parse,
                                                   REG_EX_OPTION)
 
 
-def _parse_type_matcher(parser: TokenParser) -> GenericFileMatcherSdv:
+def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
@@ -81,22 +81,22 @@ def _parse_type_matcher(parser: TokenParser) -> GenericFileMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(FileMatcherType(file_type))
 
 
-def _parse_regular_file_contents(parser: TokenParser) -> GenericFileMatcherSdv:
+def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdv:
     string_matcher = parse_string_matcher.parse_string_matcher(parser,
                                                                must_be_on_current_line=False)
-    return regular_file_contents.sdv__generic(string_matcher)
+    return regular_file_contents.sdv(string_matcher)
 
 
-def _parse_dir_contents(token_parser: TokenParser) -> GenericFileMatcherSdv:
+def _parse_dir_contents(token_parser: TokenParser) -> FileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
     model_constructor = DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
-    files_matcher = parse_files_matcher.parse_files_matcher__generic(token_parser,
-                                                                     False)
-    return dir_contents.dir_matches_files_matcher_sdv__generic(model_constructor,
-                                                               files_matcher)
+    files_matcher = parse_files_matcher.parse_files_matcher(token_parser,
+                                                            False)
+    return dir_contents.dir_matches_files_matcher_sdv(model_constructor,
+                                                      files_matcher)
 
 
-def _constant(matcher: FileMatcher) -> GenericFileMatcherSdv:
+def _constant(matcher: FileMatcher) -> FileMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(matcher)
 
 

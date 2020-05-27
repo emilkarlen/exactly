@@ -19,7 +19,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL, MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck, StringMatcher, \
-    GenericStringMatcherSdv
+    StringMatcherSdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -28,7 +28,7 @@ from exactly_lib.util.strings import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def sdv__generic(expected_contents: StringOrPathSdv) -> GenericStringMatcherSdv:
+def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
     def get_ddv(symbols: SymbolTable) -> MatcherDdv[FileToCheck]:
         expected_contents_ddv = expected_contents.resolve(symbols)
 

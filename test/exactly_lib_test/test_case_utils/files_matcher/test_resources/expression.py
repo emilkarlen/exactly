@@ -4,7 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
@@ -31,7 +31,7 @@ class InstructionArgumentsVariantConstructor:
 
 class Configuration:
     def __init__(self,
-                 parser: Parser[GenericFilesMatcherSdv],
+                 parser: Parser[FilesMatcherSdv],
                  arguments_constructor: InstructionArgumentsVariantConstructor,
                  invalid_integers_according_to_custom_validation: list):
         self.parser = parser

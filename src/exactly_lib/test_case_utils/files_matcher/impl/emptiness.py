@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatch
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    GenericFilesMatcherSdv
+    FilesMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util import logic_types, strings
 from exactly_lib.util.description_tree import renderers
@@ -16,7 +16,7 @@ from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.logic_types import ExpectationType
 
 
-def emptiness_matcher__generic() -> GenericFilesMatcherSdv:
+def emptiness_matcher() -> FilesMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(_EmptinessMatcher(ExpectationType.POSITIVE))
 
 

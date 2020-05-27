@@ -6,14 +6,14 @@ from exactly_lib.test_case_utils.matcher.impls import property_matcher_describer
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterSdv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
                   syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
 
-def sdv__generic(matcher: MatcherSdv[int]) -> GenericStringMatcherSdv:
+def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
         matcher,
         _operand_from_model_sdv(),

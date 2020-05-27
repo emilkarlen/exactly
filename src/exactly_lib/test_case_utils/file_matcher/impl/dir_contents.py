@@ -15,8 +15,8 @@ from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv,
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, GenericFileMatcherSdv
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.util.cli_syntax import option_syntax
@@ -63,11 +63,11 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
     )
 
 
-def dir_matches_files_matcher_sdv__generic(
+def dir_matches_files_matcher_sdv(
         model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
-        contents_matcher: GenericFilesMatcherSdv,
-) -> GenericFileMatcherSdv:
-    return file_contents_utils.sdv__generic(
+        contents_matcher: FilesMatcherSdv,
+) -> FileMatcherSdv:
+    return file_contents_utils.sdv(
         NAMES,
         model_constructor,
         contents_matcher,

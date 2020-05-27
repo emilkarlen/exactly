@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.logic.file_matcher import GenericFileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.util import strings
 from exactly_lib.util.parse.token import Token
 
@@ -51,7 +51,7 @@ def parse(tokens: TokenParser,
     return _PARSER.parse_from_token_parser(tokens, must_be_on_current_line)
 
 
-def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[GenericFileMatcherSdv]]]:
+def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]:
     _multiple_files_per_line_error = _MESSAGE_FACTORY.generator_for(_MULTIPLE_FILES_ON_SINGLE_LINE)
 
     def is_at_eol_or_end_of_set():
@@ -60,7 +60,7 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[G
         else:
             tokens.require_head_is_unquoted_and_equals(syntax.END_BRACE, _multiple_files_per_line_error)
 
-    def parse_element() -> Tuple[StringSdv, Optional[GenericFileMatcherSdv]]:
+    def parse_element() -> Tuple[StringSdv, Optional[FileMatcherSdv]]:
         file_name = parse_string.parse_string_sdv(tokens.token_stream, _FILE_NAME_STRING_CONFIGURATION)
         if tokens.head_is_unquoted_and_equals(syntax.FILE_MATCHER_SEPARATOR):
             tokens.consume_head()

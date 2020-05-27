@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
 from exactly_lib.test_case_utils.string_matcher.parse.parts import matches
 from exactly_lib.test_case_utils.string_matcher.parse.parts import num_lines
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
-from exactly_lib.type_system.logic.string_matcher import GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -30,17 +30,17 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def string_matcher_parser() -> Parser[GenericStringMatcherSdv]:
+def string_matcher_parser() -> Parser[StringMatcherSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_string_matcher,
                                                         consume_last_line_if_is_at_eol_after_parse=True)
 
 
 def parse_string_matcher(parser: TokenParser,
-                         must_be_on_current_line: bool = False) -> GenericStringMatcherSdv:
+                         must_be_on_current_line: bool = False) -> StringMatcherSdv:
     return ep.parse(GRAMMAR, parser, must_be_on_current_line)
 
 
-def _parse_on_transformed__generic(parser: TokenParser) -> GenericStringMatcherSdv:
+def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:
     transformer = parse_string_transformer.parse_string_transformer_from_token_parser(parser,
                                                                                       must_be_on_current_line=False)
     matcher_on_transformed = parse_string_matcher(parser,
@@ -65,28 +65,28 @@ class _OnTransformedDescription(grammar.SimpleExpressionDescription):
         return syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[GenericStringMatcherSdv]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[StringMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             matcher_options.EMPTY_ARGUMENT,
-            grammar.SimpleExpression(emptieness.parse__generic,
+            grammar.SimpleExpression(emptieness.parse,
                                      emptieness.Description())
         ),
         NameAndValue(
             matcher_options.EQUALS_ARGUMENT,
-            grammar.SimpleExpression(equality.parse__generic,
+            grammar.SimpleExpression(equality.parse,
                                      equality.Description())
         ),
         NameAndValue(
             matcher_options.MATCHES_ARGUMENT,
-            grammar.SimpleExpression(matches.parse__generic,
+            grammar.SimpleExpression(matches.parse,
                                      matches.Description())
         ),
     ]
 
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         line_matches.line_matchers.ELEMENT_SETUP,
-        parse_line_matcher.ParserOfGenericMatcherOnArbitraryLine(),
+        parse_line_matcher.ParserOfMatcherOnArbitraryLine(),
     )
 
     ret_val += quantification_setup.quantification_grammar_expressions()
@@ -94,13 +94,13 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Gene
     ret_val += [
         NameAndValue(
             matcher_options.NUM_LINES_ARGUMENT,
-            grammar.SimpleExpression(num_lines.parse__generic,
+            grammar.SimpleExpression(num_lines.parse,
                                      num_lines.Description())
         ),
         NameAndValue(
             option_syntax.option_syntax(
                 string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-            grammar.SimpleExpression(_parse_on_transformed__generic,
+            grammar.SimpleExpression(_parse_on_transformed,
                                      _OnTransformedDescription())
         ),
     ]

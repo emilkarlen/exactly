@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple, Iterable
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.test_case_utils.files_matcher.impl import equals_and_contains_utils as utils
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher, GenericFilesMatcherSdv, \
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv, \
     FileModel, FilesMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details
@@ -12,7 +12,7 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRend
 from exactly_lib.util.description_tree.tree import Node
 
 
-def equals_sdv(files_condition: FilesConditionSdv) -> GenericFilesMatcherSdv:
+def equals_sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
     return utils.MatcherSdvWithApplier(_EQUALS_CONFIG, files_condition)
 
 

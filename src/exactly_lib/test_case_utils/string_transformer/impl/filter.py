@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.line_matcher.model_construction import original
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
-    GenericLineMatcherSdv
+    LineMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerModel, StringTransformerAdv
@@ -27,12 +27,12 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse_filter(parser: TokenParser) -> StringTransformerSdv:
-    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser__generic(parser)
+    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
     return _StringTransformerSelectSdv(line_matcher)
 
 
 class _StringTransformerSelectSdv(StringTransformerSdv):
-    def __init__(self, line_matcher_sdv: GenericLineMatcherSdv):
+    def __init__(self, line_matcher_sdv: LineMatcherSdv):
         self.line_matcher_sdv = line_matcher_sdv
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:

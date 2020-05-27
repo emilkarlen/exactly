@@ -7,11 +7,10 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherLine, GenericLineMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -27,25 +26,25 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 
-def parser() -> Parser[GenericLineMatcherSdv]:
+def parser() -> Parser[LineMatcherSdv]:
     return _PARSER
 
 
-class _Parser(Parser[GenericLineMatcherSdv]):
-    def parse_from_token_parser(self, parser: TokenParser) -> GenericLineMatcherSdv:
-        return parse_line_matcher_from_token_parser__generic(parser)
+class _Parser(Parser[LineMatcherSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherSdv:
+        return parse_line_matcher_from_token_parser(parser)
 
 
 _PARSER = _Parser()
 
 
-class ParserOfGenericMatcherOnArbitraryLine(Parser[MatcherSdv[LineMatcherLine]]):
-    def parse_from_token_parser(self, token_parser: TokenParser) -> GenericLineMatcherSdv:
-        return parse_line_matcher_from_token_parser__generic(token_parser, must_be_on_current_line=False)
+class ParserOfMatcherOnArbitraryLine(Parser[LineMatcherSdv]):
+    def parse_from_token_parser(self, token_parser: TokenParser) -> LineMatcherSdv:
+        return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False)
 
 
-def parse_line_matcher_from_token_parser__generic(parser: TokenParser,
-                                                  must_be_on_current_line: bool = True) -> GenericLineMatcherSdv:
+def parse_line_matcher_from_token_parser(parser: TokenParser,
+                                         must_be_on_current_line: bool = True) -> LineMatcherSdv:
     return parse_expression.parse(GRAMMAR, parser,
                                   must_be_on_current_line=must_be_on_current_line)
 
@@ -120,12 +119,12 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     simple_expressions=(
         NameAndValue(
             line_matcher.REGEX_MATCHER_NAME,
-            grammar.SimpleExpression(matches_regex.parse__generic,
+            grammar.SimpleExpression(matches_regex.parse,
                                      _RegexSyntaxDescription())
         ),
         NameAndValue(
             line_matcher.LINE_NUMBER_MATCHER_NAME,
-            grammar.SimpleExpression(line_number.parse_line_number__generic,
+            grammar.SimpleExpression(line_number.parse_line_number,
                                      _LineNumberSyntaxDescription())
         ),
     ),

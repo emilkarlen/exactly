@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, GenericFileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MODEL
 from exactly_lib.util import strings
@@ -20,7 +20,7 @@ from exactly_lib.util.render import strings as string_rendering
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def parse__generic(token_parser: TokenParser) -> GenericFileMatcherSdv:
+def parse(token_parser: TokenParser) -> FileMatcherSdv:
     glob_pattern = parse_string.parse_string_from_token_parser(token_parser, _PARSE_STRING_CONFIGURATION)
 
     return _sdv(glob_pattern)
@@ -30,7 +30,7 @@ _PARSE_STRING_CONFIGURATION = parse_string.Configuration(syntax_elements.GLOB_PA
                                                          reference_restrictions=None)
 
 
-def _sdv(glob_pattern: StringSdv) -> GenericFileMatcherSdv:
+def _sdv(glob_pattern: StringSdv) -> FileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         return _Ddv(glob_pattern.resolve(symbols))
 

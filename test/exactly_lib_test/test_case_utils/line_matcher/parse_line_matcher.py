@@ -44,7 +44,7 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_sdv = line_number.parse_line_number__generic(source)
+        actual_sdv = line_number.parse_line_number(source)
         # ASSERT #
         expectation.sdv.apply_with_message(self, actual_sdv,
                                            'SDV')
@@ -75,7 +75,7 @@ class TestLineNumberParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    line_number.parse_line_number__generic(source)
+                    line_number.parse_line_number(source)
 
     def test_successful_parse(self):
         # ARRANGE #

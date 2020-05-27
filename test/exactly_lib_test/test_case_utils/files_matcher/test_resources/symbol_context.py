@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.files_matcher import GenericFilesMatcherSdv, FilesMatcher, FilesMatcherModel
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FilesMatcher, FilesMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
@@ -14,15 +14,15 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 class FilesMatcherSymbolValueContext(MatcherSymbolValueContext[FilesMatcherModel]):
     def __init__(self,
-                 sdv: GenericFilesMatcherSdv,
+                 sdv: FilesMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
         super().__init__(sdv, definition_source)
 
     @staticmethod
-    def of_generic(sdv: GenericFilesMatcherSdv,
-                   definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                   ) -> 'FilesMatcherSymbolValueContext':
+    def of_sdv(sdv: FilesMatcherSdv,
+               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               ) -> 'FilesMatcherSymbolValueContext':
         return FilesMatcherSymbolValueContext(sdv,
                                               definition_source)
 
@@ -30,8 +30,8 @@ class FilesMatcherSymbolValueContext(MatcherSymbolValueContext[FilesMatcherModel
     def of_primitive(primitive: FilesMatcher,
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'FilesMatcherSymbolValueContext':
-        return FilesMatcherSymbolValueContext.of_generic(matchers.sdv_from_primitive_value(primitive),
-                                                         definition_source)
+        return FilesMatcherSymbolValueContext.of_sdv(matchers.sdv_from_primitive_value(primitive),
+                                                     definition_source)
 
     @staticmethod
     def of_primitive_constant(result: bool,
@@ -61,12 +61,12 @@ class FilesMatcherSymbolContext(MatcherTypeSymbolContext[FilesMatcherModel]):
 
     @staticmethod
     def of_sdv(name: str,
-               sdv: GenericFilesMatcherSdv,
+               sdv: FilesMatcherSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                ) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(
             name,
-            FilesMatcherSymbolValueContext.of_generic(sdv, definition_source)
+            FilesMatcherSymbolValueContext.of_sdv(sdv, definition_source)
         )
 
     @staticmethod

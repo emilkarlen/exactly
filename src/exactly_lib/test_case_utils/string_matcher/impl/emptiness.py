@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, sdv_c
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, GenericStringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 
@@ -51,5 +51,5 @@ class EmptinessStringMatcher(StringMatcherImplBase):
         return ''
 
 
-def sdv__generic() -> GenericStringMatcherSdv:
+def sdv() -> StringMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(EmptinessStringMatcher())

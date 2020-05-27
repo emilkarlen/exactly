@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMat
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, GenericFilesMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
@@ -62,7 +62,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self,
                  model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
-                 files_matcher: GenericFilesMatcherSdv,
+                 files_matcher: FilesMatcherSdv,
                  ):
         def get_ddv_validator(symbols: SymbolTable) -> DdvValidator:
             return ddv_validators.all_of([

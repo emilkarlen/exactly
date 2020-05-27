@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, GenericLineMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
@@ -44,7 +44,7 @@ class Case:
 class TestCaseBase(unittest.TestCase):
     def _check_cases_with_non_empty_file(
             self,
-            get_assertion_part_function: Callable[[ExpectationType, GenericLineMatcherSdv], FileContentsAssertionPart],
+            get_assertion_part_function: Callable[[ExpectationType, LineMatcherSdv], FileContentsAssertionPart],
             actual_file_contents: str,
             matcher_cases: Sequence[Case]):
 
@@ -75,7 +75,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_cases_for_no_lines(
             self,
             get_assertion_part_function:
-            Callable[[ExpectationType, GenericLineMatcherSdv], AssertionPart[FileToCheck, pfh.PassOrFailOrHardError]],
+            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[FileToCheck, pfh.PassOrFailOrHardError]],
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
@@ -162,14 +162,14 @@ class TestAnyLineMatches(TestCaseBase):
 
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
-                                          line_matcher_sdv: GenericLineMatcherSdv) -> FileContentsAssertionPart:
+                                          line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
     return StringMatcherAssertionPart(
-        line_matchers.sdv(expectation_type, Quantifier.ALL, line_matcher_sdv)
+        line_matchers.sdv__of_expectation_type(expectation_type, Quantifier.ALL, line_matcher_sdv)
     )
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
-                                        line_matcher_sdv: GenericLineMatcherSdv) -> FileContentsAssertionPart:
+                                        line_matcher_sdv: LineMatcherSdv) -> FileContentsAssertionPart:
     return StringMatcherAssertionPart(
-        line_matchers.sdv(expectation_type, Quantifier.EXISTS, line_matcher_sdv)
+        line_matchers.sdv__of_expectation_type(expectation_type, Quantifier.EXISTS, line_matcher_sdv)
     )
