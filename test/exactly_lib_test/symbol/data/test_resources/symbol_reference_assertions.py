@@ -1,4 +1,3 @@
-import unittest
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
@@ -12,7 +11,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_type_category_restriction
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import matches_reference_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str,
@@ -43,35 +42,10 @@ def is_reference_to_data_category_symbol(symbol_name: str) -> ValueAssertion[Sym
 
 
 def equals_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssertion[Sequence[SymbolReference]]:
-    return _EqualsSymbolReferences(expected)
-
-
-class _EqualsSymbolReferences(ValueAssertionBase):
-    def __init__(self, expected: Sequence[SymbolReference]):
-        self._expected = expected
-        assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
-        for idx, element in enumerate(expected):
-            assert isinstance(element,
-                              SymbolReference), 'Element must be a SymbolReference #' + str(idx)
-
-    def _apply(self,
-               put: unittest.TestCase,
-               value,
-               message_builder: asrt.MessageBuilder):
-        put.assertIsInstance(value, Sequence,
-                             'Expects a Sequence of symbol references')
-        put.assertEqual(len(self._expected),
-                        len(value),
-                        message_builder.apply('Number of symbol references'))
-        for idx, expected_ref in enumerate(self._expected):
-            actual_ref = value[idx]
-            put.assertIsInstance(actual_ref, SymbolReference)
-            assert isinstance(actual_ref, SymbolReference)
-            assert isinstance(expected_ref, SymbolReference)
-            element_assertion = equals_symbol_reference(expected_ref)
-            element_assertion.apply(put,
-                                    actual_ref,
-                                    message_builder.for_sub_component('[%d]' % idx))
+    return asrt.matches_sequence([
+        equals_symbol_reference(expected_ref)
+        for expected_ref in expected
+    ])
 
 
 def is_reference_to_data_type_symbol(symbol_name: str
