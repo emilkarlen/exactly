@@ -116,8 +116,8 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
 
 
 def matches_restrictions_on_direct_and_indirect(
-        assertion_on_direct: ValueAssertion = asrt.anything_goes(),
-        assertion_on_every: ValueAssertion = asrt.anything_goes(),
+        assertion_on_direct: ValueAssertion[ValueRestriction] = asrt.anything_goes(),
+        assertion_on_every: ValueAssertion[ValueRestriction] = asrt.anything_goes(),
 ) -> ValueAssertion[ReferenceRestrictions]:
     return asrt.is_instance_with(
         ReferenceRestrictionsOnDirectAndIndirect,
