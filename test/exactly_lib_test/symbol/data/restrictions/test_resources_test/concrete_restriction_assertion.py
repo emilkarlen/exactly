@@ -1,7 +1,9 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as r
+from exactly_lib.symbol import restriction
+from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as r, \
+    reference_restrictions
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfIndirectReference
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
@@ -10,7 +12,9 @@ from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.restriction import TypeCategoryRestriction
 from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_system.value_type import DataValueType, TypeCategory
+from exactly_lib.test_case_utils.parse import parse_path, path_relativities
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -28,6 +32,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsValueRestriction),
         unittest.makeSuite(TestEqualsOrReferenceRestrictions),
         unittest.makeSuite(TestEqualsReferenceRestrictions),
+        unittest.makeSuite(TestIsStringMadeUpOfJustStringsReferenceRestrictions),
     ])
 
 
@@ -420,6 +425,44 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
     def _fail(self, expected: r.DataTypeReferenceRestrictions, actual: ReferenceRestrictions):
         assertion = sut.equals_data_type_reference_restrictions(expected)
         assert_that_assertion_fails(assertion, actual)
+
+
+class TestIsStringMadeUpOfJustStringsReferenceRestrictions(unittest.TestCase):
+    def test_pass(self):
+        actual = reference_restrictions.string_made_up_by_just_strings()
+        assertion = sut.is_string_made_up_of_just_strings_reference_restrictions()
+        assertion.apply_without_message(self, actual)
+
+    def test_fail(self):
+        # ARRANGE #
+        assertion = sut.is_string_made_up_of_just_strings_reference_restrictions()
+
+        cases = [
+            NameAndValue(
+                'is_any_data_type',
+                reference_restrictions.is_any_data_type()
+            ),
+            NameAndValue(
+                'ValueTypeRestriction / STRING',
+                restriction.ValueTypeRestriction(ValueType.STRING),
+            ),
+            NameAndValue(
+                'ValueTypeRestriction / FILE_MATCHER',
+                restriction.ValueTypeRestriction(ValueType.FILE_MATCHER),
+            ),
+            NameAndValue(
+                'path_or_string_reference_restrictions',
+                parse_path.path_or_string_reference_restrictions(
+                    path_relativities.ALL_REL_OPTION_VARIANTS
+                ),
+            ),
+        ]
+
+        for case in cases:
+            with self.subTest(case.name):
+                # ACT && ASSERT #
+
+                assert_that_assertion_fails(assertion, case.value)
 
 
 def _new_em(message: str,

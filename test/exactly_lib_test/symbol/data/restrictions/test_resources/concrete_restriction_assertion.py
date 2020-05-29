@@ -195,6 +195,13 @@ def value_restriction_that_is_unconditionally_unsatisfied(msg: str = 'error mess
     )
 
 
+def is_string_made_up_of_just_strings_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
+    return matches_restrictions_on_direct_and_indirect(
+        assertion_on_direct=asrt.is_instance(StringRestriction),
+        assertion_on_every=asrt.is_instance(StringRestriction)
+    )
+
+
 class ValueRestrictionWithConstantResult(ValueRestriction):
     def __init__(self, result: ErrorMessageWithFixTip):
         self.result = result
