@@ -44,7 +44,7 @@ from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions impor
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext, PathSymbolValueContext, \
     ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
+    equals_symbol_reference, is_reference_to_string_made_up_of_just_strings
 from exactly_lib_test.symbol.test_resources import file_matcher, string_transformer, program
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -535,7 +535,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(defined_path_symbol.name,
                                          path_reference_restrictions(accepted_relativities))),
-                     is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
+                     is_reference_to_string_made_up_of_just_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
                  SymbolContext.symbol_table_of_contexts([
@@ -571,7 +571,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(defined_path_symbol.name,
                                          path_reference_restrictions(accepted_relativities))),
-                     is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
+                     is_reference_to_string_made_up_of_just_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
                  SymbolContext.symbol_table_of_contexts([
@@ -988,7 +988,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(symbol_1.name,
                                          path_or_string_reference_restrictions(accepted_relativities))),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
+                     is_reference_to_string_made_up_of_just_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  SymbolContext.symbol_table_of_contexts([
@@ -1023,8 +1023,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(symbol.name,
                                          path_or_string_reference_restrictions(accepted_relativities))),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
+                     is_reference_to_string_made_up_of_just_strings(symbol_1.name),
+                     is_reference_to_string_made_up_of_just_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  SymbolContext.symbol_table_of_contexts([
@@ -1087,7 +1087,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                          SymbolReference(symbol_1.name,
                                          path_or_string_reference_restrictions(accepted_relativities))
                      ),
-                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
+                     is_reference_to_string_made_up_of_just_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  SymbolContext.symbol_table_of_contexts([

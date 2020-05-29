@@ -22,7 +22,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_string_restriction
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference_with_restriction_on_direct_target
+    matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -112,7 +112,7 @@ class TestSymbolUsagesOfHardCodedInstruction(TestCaseBase):
         symbol_reference = SymbolReference(symbol_name,
                                            ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
-            equals_symbol_reference_with_restriction_on_direct_target(
+            matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])
@@ -138,7 +138,7 @@ class TestSymbolUsagesOfInstructionFromParser(TestCaseBase):
         symbol_reference = SymbolReference(symbol_name,
                                            ReferenceRestrictionsOnDirectAndIndirect(string_restriction))
         expected_symbol_usages = asrt.matches_sequence([
-            equals_symbol_reference_with_restriction_on_direct_target(
+            matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name,
                 equals_string_restriction(string_restriction))
         ])

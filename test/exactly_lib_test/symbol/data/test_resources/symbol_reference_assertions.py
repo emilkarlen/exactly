@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def equals_symbol_reference_with_restriction_on_direct_target(
+def matches_symbol_reference_with_restriction_on_direct_target(
         expected_name: str,
         assertion_on_direct_restriction: ValueAssertion[ValueRestriction]
 ) -> ValueAssertion[SymbolReference]:
@@ -56,7 +56,7 @@ def is_reference_to_data_type_symbol(symbol_name: str
                                is_any_data_type_reference_restrictions())
 
 
-def is_reference_to_string_made_up_of_just_plain_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return equals_symbol_reference(
         SymbolReference(symbol_name,
                         string_made_up_of_just_strings_reference_restrictions()))

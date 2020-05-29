@@ -20,9 +20,9 @@ class TestEqualsSymbolReference(unittest.TestCase):
         symbol_reference = SymbolReference(symbol_name,
                                            r.ReferenceRestrictionsOnDirectAndIndirect(
                                                vr.AnyDataTypeRestriction()))
-        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(symbol_name,
-                                                                                  asrt.is_instance(
-                                                                                      vr.AnyDataTypeRestriction))
+        assertion = sut.matches_symbol_reference_with_restriction_on_direct_target(symbol_name,
+                                                                                   asrt.is_instance(
+                                                                                       vr.AnyDataTypeRestriction))
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
 
@@ -30,9 +30,9 @@ class TestEqualsSymbolReference(unittest.TestCase):
         # ARRANGE #
         actual = SymbolReference('actual value name',
                                  r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnyDataTypeRestriction()))
-        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target('expected value name',
-                                                                                  asrt.is_instance(
-                                                                                      vr.AnyDataTypeRestriction))
+        assertion = sut.matches_symbol_reference_with_restriction_on_direct_target('expected value name',
+                                                                                   asrt.is_instance(
+                                                                                       vr.AnyDataTypeRestriction))
         assert_that_assertion_fails(assertion, actual)
 
     def test_fail__failing_assertion_on_value_restriction(self):
@@ -40,7 +40,7 @@ class TestEqualsSymbolReference(unittest.TestCase):
         common_name = 'actual value name'
         actual = SymbolReference(common_name,
                                  r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnyDataTypeRestriction()))
-        assertion = sut.equals_symbol_reference_with_restriction_on_direct_target(
+        assertion = sut.matches_symbol_reference_with_restriction_on_direct_target(
             common_name,
             asrt.is_instance(vr.PathRelativityRestriction))
         assert_that_assertion_fails(assertion, actual)

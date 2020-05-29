@@ -24,7 +24,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_path_relativity_restriction
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference_with_restriction_on_direct_target
+    matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as path_args, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
@@ -415,7 +415,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
 
     def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:
         return [
-            equals_symbol_reference_with_restriction_on_direct_target(
+            matches_symbol_reference_with_restriction_on_direct_target(
                 self.symbol_name,
                 equals_path_relativity_restriction(
                     PathRelativityRestriction(self.expected_accepted_relativities)))

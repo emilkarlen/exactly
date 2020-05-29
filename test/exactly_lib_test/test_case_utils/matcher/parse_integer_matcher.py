@@ -206,7 +206,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                  model_of(69 + 72 + 1),
                                              ]),
                      references=asrt.matches_singleton_sequence(
-                         asrt_sym_ref.is_reference_to_string_made_up_of_just_plain_strings(symbol_69.name)
+                         asrt_sym_ref.is_reference_to_string_made_up_of_just_strings(symbol_69.name)
                      ),
                      symbols=symbol_69.symbol_table
                      ),

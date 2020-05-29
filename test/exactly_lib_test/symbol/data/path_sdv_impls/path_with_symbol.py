@@ -39,7 +39,7 @@ class TestRelSymbol(unittest.TestCase):
             AnyDataTypeRestriction()
         )
         expected_mandatory_references = [
-            vr_tr.equals_symbol_reference_with_restriction_on_direct_target(
+            vr_tr.matches_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,
                 restrictions.equals_path_relativity_restriction(expected_restriction))
         ]
