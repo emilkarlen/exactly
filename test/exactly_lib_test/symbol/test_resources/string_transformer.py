@@ -202,7 +202,8 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv
                  name: str,
                  value: StringTransformerSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -238,6 +239,10 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv
             name,
             ARBITRARY_SYMBOL_VALUE_CONTEXT
         )
+
+    @property
+    def value(self) -> StringTransformerSymbolValueContext:
+        return self._value
 
 
 class StringTransformerPrimitiveSymbolContext(StringTransformerSymbolContext):

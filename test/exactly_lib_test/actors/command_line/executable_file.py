@@ -5,7 +5,6 @@ from contextlib import contextmanager
 from exactly_lib.actors import command_line as sut
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
-from exactly_lib.test_case_utils.parse.parse_path import PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
@@ -17,7 +16,6 @@ from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
@@ -247,8 +245,8 @@ class TestSymbolUsages(unittest.TestCase):
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references([
-                symbol_for_executable.reference__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
+            symbol_usages=asrt.matches_sequence([
+                symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
             ]
             )
         )
@@ -286,9 +284,9 @@ class TestSymbolUsages(unittest.TestCase):
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references([
-                symbol_for_executable.reference__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference__any_data_type,
+            symbol_usages=asrt.matches_sequence([
+                symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
+                argument_symbol.reference_assertion__any_data_type,
             ]),
         )
         check_execution(self,
@@ -335,9 +333,9 @@ class TestSymbolUsages(unittest.TestCase):
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references([
-                dir_symbol.reference__path_or_string,
-                executable_file_name_symbol.reference(PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+            symbol_usages=asrt.matches_sequence([
+                dir_symbol.reference_assertion__path_or_string,
+                executable_file_name_symbol.reference_assertion__string_made_up_of_just_strings,
             ]),
         )
         check_execution(self,
@@ -371,8 +369,8 @@ class TestSymbolUsages(unittest.TestCase):
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references(
-                [symbol.reference__any_data_type]
+            symbol_usages=asrt.matches_sequence(
+                [symbol.reference_assertion__any_data_type]
             )
         )
         check_execution(self,

@@ -17,7 +17,6 @@ from exactly_lib_test.actors.test_resources.act_phase_execution import \
     check_execution, Arrangement, Expectation
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
@@ -87,10 +86,6 @@ class TestSymbolReferences(unittest.TestCase):
         )
         act_phase_instructions = [instr([shell_command_source_line_for(shell_source_line)])]
 
-        expected_symbol_references = [
-            symbol.reference__any_data_type,
-        ]
-
         check_execution(
             self,
             sut.Parser(),
@@ -99,7 +94,7 @@ class TestSymbolReferences(unittest.TestCase):
                 symbol_table=symbol.symbol_table
             ),
             Expectation(
-                symbol_usages=equals_symbol_references(expected_symbol_references),
+                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
                 sub_process_result_from_execute=
                 pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))
             ),

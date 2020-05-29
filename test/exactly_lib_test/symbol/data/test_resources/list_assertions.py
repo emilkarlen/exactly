@@ -3,13 +3,16 @@ from typing import Iterable, List, Sequence
 from exactly_lib.symbol.data import list_sdv
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references, \
     equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources.list_ddv_assertions import equals_list_ddv
@@ -33,8 +36,21 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
 
     ]
     symbol_reference_assertion = asrt.is_none
-    if expected.symbol_reference_if_is_symbol_reference is not None:
-        symbol_reference_assertion = equals_symbol_reference(expected.symbol_reference_if_is_symbol_reference)
+    reference = expected.symbol_reference_if_is_symbol_reference
+    if reference is not None:
+        reference_restrictions = reference.restrictions
+        if not isinstance(reference_restrictions, DataTypeReferenceRestrictions):
+            raise ValueError('A list element must reference a data type value')
+        assert isinstance(reference_restrictions, DataTypeReferenceRestrictions)  # Type info for IDE
+
+        symbol_reference_assertion = equals_symbol_reference(reference)
+
+        asrt_sym_ref.matches_reference_2(
+            reference.name,
+            concrete_restriction_assertion.equals_data_type_reference_restrictions(
+                reference_restrictions)
+        )
+
     symbol_reference_component_assertion = asrt.sub_component('symbol_reference_if_is_symbol_reference',
                                                               lambda x: x.symbol_reference_if_is_symbol_reference,
                                                               symbol_reference_assertion)

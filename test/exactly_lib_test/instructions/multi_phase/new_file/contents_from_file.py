@@ -24,12 +24,10 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import file_w
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
@@ -75,40 +73,43 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         )
 
         src_file = fs.File('src-file.txt', 'contents of source file')
-        src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
+        src_file_symbol__str = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
         src_file_rel_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
 
         expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
-        dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
-        dst_file_rel_option = RelOptionType.REL_TMP
+
+        dst_file_symbol = ConstantSuffixPathDdvSymbolContext(
+            'DST_FILE_SYMBOL',
+            RelOptionType.REL_TMP,
+            expected_dst_file.name,
+            sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants,
+        )
 
         file_contents_arg = TransformableContentsConstructor(
-            file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol.name))
+            file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol__str.name))
         ).with_transformation(to_upper_transformer.name).as_arguments
-
-        symbols = SymbolContext.symbol_table_of_contexts([
-            ConstantSuffixPathDdvSymbolContext(
-                src_file_symbol.name,
-                src_file_rel_conf.relativity_option,
-                src_file_symbol.value,
-            ),
-            ConstantSuffixPathDdvSymbolContext(
-                dst_file_symbol.name,
-                dst_file_rel_option,
-                dst_file_symbol.value,
-            ),
-
-            to_upper_transformer,
-        ])
 
         # ACT & ASSERT #
 
         for phase_is_after_act in [False, True]:
             src_file_rel_opt_arg_conf = parse_file_maker._src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
+            src_file_symbol = ConstantSuffixPathDdvSymbolContext(
+                src_file_symbol__str.name,
+                src_file_rel_conf.relativity_option,
+                src_file_symbol__str.value,
+                src_file_rel_opt_arg_conf.options.accepted_relativity_variants,
+            )
+
+            symbols = SymbolContext.symbol_table_of_contexts([
+                src_file_symbol,
+                dst_file_symbol,
+                to_upper_transformer,
+            ])
+
             source = remaining_source(
                 '{file_name} {content_arguments}'.format(
-                    file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                    file_name=dst_file_symbol.name__sym_ref_syntax,
                     content_arguments=file_contents_arg.first_line
                 ),
                 file_contents_arg.following_lines)
@@ -123,20 +124,9 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             Expectation(
                                 main_result=IS_SUCCESS,
                                 symbol_usages=asrt.matches_sequence([
-
-                                    equals_symbol_reference(
-                                        SymbolReference(dst_file_symbol.name,
-                                                        path_or_string_reference_restrictions(
-                                                            sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
-                                    ),
-
+                                    dst_file_symbol.reference_assertion__path_or_string,
                                     is_reference_to_string_transformer(to_upper_transformer.name),
-
-                                    equals_symbol_reference(
-                                        SymbolReference(src_file_symbol.name,
-                                                        path_or_string_reference_restrictions(
-                                                            src_file_rel_opt_arg_conf.options.accepted_relativity_variants))
-                                    ),
+                                    src_file_symbol.reference_assertion__path_or_string,
                                 ]),
                             ),
                             phase_is_after_act=phase_is_after_act

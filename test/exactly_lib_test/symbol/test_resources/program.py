@@ -52,7 +52,8 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramSdv]):
                  name: str,
                  value: ProgramSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -67,6 +68,10 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramSdv]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'ProgramSymbolContext':
         return ProgramSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def value(self) -> ProgramSymbolValueContext:
+        return self._value
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_sdv(arbitrary_sdv__without_symbol_references())

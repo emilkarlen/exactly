@@ -175,16 +175,13 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
 
 
 class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
-    def __init__(self,
-                 name: str,
-                 value: DataSymbolValueContext[SDV_TYPE],
-                 ):
+    def __init__(self, name: str, ):
         super().__init__(name)
-        self._type_context = value
 
     @property
+    @abstractmethod
     def value(self) -> DataSymbolValueContext[SDV_TYPE]:
-        return self._type_context
+        pass
 
     @property
     def reference__any_data_type(self) -> SymbolReference:
@@ -210,16 +207,13 @@ class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
 
 
 class LogicTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
-    def __init__(self,
-                 name: str,
-                 value: LogicSymbolValueContext[SDV_TYPE],
-                 ):
+    def __init__(self, name: str):
         super().__init__(name)
-        self.__type_context = value
 
     @property
+    @abstractmethod
     def value(self) -> LogicSymbolValueContext[SDV_TYPE]:
-        return self.__type_context
+        pass
 
 
 class MatcherTypeSymbolContext(Generic[MODEL], LogicTypeSymbolContext[MatcherSdv[MODEL]], ABC):
@@ -227,7 +221,12 @@ class MatcherTypeSymbolContext(Generic[MODEL], LogicTypeSymbolContext[MatcherSdv
                  name: str,
                  value: MatcherSymbolValueContext[MODEL],
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
+
+    @property
+    def value(self) -> MatcherSymbolValueContext[MODEL]:
+        return self._value
 
 
 class SymbolsArrEx:

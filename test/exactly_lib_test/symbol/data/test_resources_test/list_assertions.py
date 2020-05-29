@@ -8,7 +8,6 @@ from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_s
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources import list_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -167,7 +166,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        equals_symbol_references([string_symbol.reference__any_data_type]),
+                        asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
                             string_sdvs.symbol_reference(string_symbol.reference__any_data_type)
@@ -204,7 +203,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListDdv([string_ddv_of_single_string(string_symbol.str_value)]),
                         expected_references=
-                        equals_symbol_references([string_symbol.reference__any_data_type]),
+                        asrt.matches_sequence([string_symbol.reference_assertion__any_data_type]),
                         actual=
                         list_sdvs.from_elements([list_sdvs.string_element(
                             string_sdvs.symbol_reference(

@@ -1,24 +1,47 @@
+import pathlib
 from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
-from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
+    OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions, SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
-from exactly_lib.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.type_system.value_type import ValueType, DataValueType
+from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
+    string_made_up_of_just_strings_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as asrt_value
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+def path_reference_restrictions(accepted_relativities: PathRelativityVariants
+                                ) -> DataTypeReferenceRestrictions:
+    return ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(accepted_relativities))
+
+
+def path_or_string_reference_restrictions(accepted_relativities: PathRelativityVariants
+                                          ) -> DataTypeReferenceRestrictions:
+    return OrReferenceRestrictions([
+        OrRestrictionPart(
+            DataValueType.PATH,
+            ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(accepted_relativities))),
+        OrRestrictionPart(
+            DataValueType.STRING,
+            string_made_up_of_just_strings_reference_restrictions()),
+    ])
 
 
 class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
@@ -101,17 +124,25 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
         return self._accepted_relativities
 
     @property
-    def reference_restriction__path_or_string(self) -> ReferenceRestrictions:
-        return path_or_string_reference_restrictions(self._accepted_relativities)
+    def reference_restriction__path_or_string(self) -> DataTypeReferenceRestrictions:
+        return parse_path.path_or_string_reference_restrictions(self._accepted_relativities)
 
     @property
     def reference_restriction__path(self) -> DataTypeReferenceRestrictions:
-        return ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(self.accepted_relativities))
+        return path_reference_restrictions(self.accepted_relativities)
 
     def reference_assertion__path_or_string(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return equals_symbol_reference(
-            SymbolReference(symbol_name,
-                            self.reference_restriction__path_or_string)
+        return asrt_sym_ref.matches_reference_2(
+            symbol_name,
+            concrete_restriction_assertion.equals_data_type_reference_restrictions(
+                self.reference_restriction__path_or_string)
+        )
+
+    def reference_assertion__path(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
+        return asrt_sym_ref.matches_reference_2(
+            symbol_name,
+            concrete_restriction_assertion.equals_data_type_reference_restrictions(
+                self.reference_restriction__path)
         )
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
@@ -123,8 +154,8 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
                  name: str,
                  value: PathSymbolValueContext,
                  ):
-        super().__init__(name, value)
-        self._path_value = value
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -155,16 +186,24 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
         return PathSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
     @property
+    def value(self) -> PathSymbolValueContext:
+        return self._value
+
+    @property
     def reference__path(self) -> SymbolReference:
-        return SymbolReference(self.name, self._path_value.reference_restriction__path)
+        return SymbolReference(self.name, self.value.reference_restriction__path)
 
     @property
     def reference_assertion__path_or_string(self) -> ValueAssertion[SymbolReference]:
         return self.reference_assertion
 
     @property
+    def reference_assertion__path(self) -> ValueAssertion[SymbolReference]:
+        return self.value.reference_assertion__path(self.name)
+
+    @property
     def reference__path_or_string(self) -> SymbolReference:
-        return SymbolReference(self.name, self._path_value.reference_restriction__path_or_string)
+        return SymbolReference(self.name, self.value.reference_restriction__path_or_string)
 
 
 class PathDdvSymbolContext(PathSymbolContext):
@@ -214,15 +253,25 @@ class ConstantSuffixPathDdvSymbolContext(PathDdvSymbolContext):
                  accepted_relativities: PathRelativityVariants = ALL_REL_OPTION_VARIANTS,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
-        super().__init__(name, paths.of_rel_option(relativity,
-                                                   paths.constant_path_part(suffix)),
+        self._path_part = paths.constant_path_part(suffix)
+        super().__init__(name,
+                         paths.of_rel_option(relativity,
+                                             self._path_part),
                          accepted_relativities,
                          definition_source)
         self._suffix = suffix
 
     @property
+    def path_part(self) -> PathPartDdv:
+        return self._path_part
+
+    @property
     def path_suffix(self) -> str:
         return self._suffix
+
+    @property
+    def path_suffix_path(self) -> pathlib.Path:
+        return pathlib.Path(self._suffix)
 
 
 def arbitrary_path_symbol_context(symbol_name: str) -> ConstantSuffixPathDdvSymbolContext:

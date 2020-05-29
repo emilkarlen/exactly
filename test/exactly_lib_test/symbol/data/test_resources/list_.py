@@ -78,7 +78,8 @@ class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
                  name: str,
                  value: ListSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name, )
+        self._value = value
 
     @staticmethod
     def of_sdv(name: str,
@@ -111,6 +112,10 @@ class ListSymbolContext(DataTypeSymbolContext[ListSdv]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'ListSymbolContext':
         return ListSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def value(self) -> ListSymbolValueContext:
+        return self._value
 
 
 class ListDdvSymbolContext(ListSymbolContext):

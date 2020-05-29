@@ -1,4 +1,4 @@
-from typing import Sequence, Iterable, List
+from typing import Sequence, Iterable, List, Optional
 
 from exactly_lib.symbol.data.data_type_sdv import DataTypeSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
@@ -16,7 +16,7 @@ class ElementSdv:
     """
 
     @property
-    def symbol_reference_if_is_symbol_reference(self) -> SymbolReference:
+    def symbol_reference_if_is_symbol_reference(self) -> Optional[SymbolReference]:
         """
         :returns: None if this element is not a single-symbol-reference element ,
         else the reference.

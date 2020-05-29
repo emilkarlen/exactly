@@ -8,7 +8,9 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -82,13 +84,15 @@ class SymbolReferencesShouldBeReported(SingleCaseGenerator):
 
     def expected_symbols(self) -> Sequence[ValueAssertion[SymbolReference]]:
         return [
-            equals_symbol_reference(
-                SymbolReference(self.min_depth.name,
-                                reference_restrictions.string_made_up_by_just_strings())
+            asrt_sym_ref.matches_reference_2(
+                self.min_depth.name,
+                equals_data_type_reference_restrictions(
+                    reference_restrictions.string_made_up_by_just_strings())
             ),
-            equals_symbol_reference(
-                SymbolReference(self.max_depth.name,
-                                reference_restrictions.string_made_up_by_just_strings())
+            asrt_sym_ref.matches_reference_2(
+                self.max_depth.name,
+                equals_data_type_reference_restrictions(
+                    reference_restrictions.string_made_up_by_just_strings())
             ),
             self._helper.files_matcher_sym_assertion(),
         ]

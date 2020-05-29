@@ -651,7 +651,8 @@ class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
                  name: str,
                  value: TestDataSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of(symbol_name: str,
@@ -661,6 +662,10 @@ class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
            ) -> 'TestDataSymbolContext':
         return TestDataSymbolContext(symbol_name,
                                      TestDataSymbolValueContext.of(references, value_type, definition_source))
+
+    @property
+    def value(self) -> TestDataSymbolValueContext:
+        return self._value
 
 
 class LogicSdvForTest(LogicSdv):
@@ -706,7 +711,8 @@ class TestLogicSymbolContext(LogicTypeSymbolContext[LogicSdvForTest]):
                  name: str,
                  value: TestLogicSymbolValueContext,
                  ):
-        super().__init__(name, value)
+        super().__init__(name)
+        self._value = value
 
     @staticmethod
     def of(symbol_name: str,
@@ -716,6 +722,10 @@ class TestLogicSymbolContext(LogicTypeSymbolContext[LogicSdvForTest]):
            ) -> 'TestLogicSymbolContext':
         return TestLogicSymbolContext(symbol_name,
                                       TestLogicSymbolValueContext.of(references, value_type, definition_source))
+
+    @property
+    def value(self) -> TestLogicSymbolValueContext:
+        return self._value
 
 
 def reference_to(symbol: SymbolContext, restrictions: ReferenceRestrictions) -> SymbolReference:

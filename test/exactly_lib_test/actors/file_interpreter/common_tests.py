@@ -9,7 +9,6 @@ from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangeme
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
@@ -115,9 +114,9 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
             result_of_execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
-            symbol_usages=equals_symbol_references([
-                symbol_for_source_file.reference__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
-                argument_symbol.reference__any_data_type,
+            symbol_usages=asrt.matches_sequence([
+                symbol_for_source_file.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
+                argument_symbol.reference_assertion__any_data_type,
             ]),
         )
         self._check(command_line,

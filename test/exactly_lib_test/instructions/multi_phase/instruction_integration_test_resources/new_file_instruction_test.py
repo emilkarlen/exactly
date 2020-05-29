@@ -4,7 +4,6 @@ from exactly_lib.instructions.multi_phase import new_file
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
@@ -16,12 +15,14 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.instructions.test_resources import parse_file_maker as parse_file_maker_tr
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources.path import path_or_string_reference_restrictions
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSdvConstantTestImpl, StringTransformerSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_arguments
@@ -104,19 +105,22 @@ class TestSymbolUsages(TestCaseBase):
 
         expected_symbol_usages = [
 
-            equals_symbol_reference(
-                SymbolReference(dst_file_symbol.name,
-                                path_or_string_reference_restrictions(
-                                    new_file.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
+            asrt_sym_ref.matches_reference_2(
+                dst_file_symbol.name,
+                equals_data_type_reference_restrictions(
+                    path_or_string_reference_restrictions(
+                        new_file.REL_OPT_ARG_CONF.options.accepted_relativity_variants)
+                )
             ),
 
             is_reference_to_string_transformer(to_upper_transformer.name),
 
-            equals_symbol_reference(
-                SymbolReference(src_file_symbol.name,
-                                path_or_string_reference_restrictions(
-                                    parse_file_maker._src_rel_opt_arg_conf_for_phase(
-                                        self.conf.phase_is_after_act()).options.accepted_relativity_variants))
+            asrt_sym_ref.matches_reference_2(
+                src_file_symbol.name,
+                equals_data_type_reference_restrictions(
+                    path_or_string_reference_restrictions(
+                        parse_file_maker._src_rel_opt_arg_conf_for_phase(
+                            self.conf.phase_is_after_act()).options.accepted_relativity_variants))
             ),
         ]
         expected_symbol_references = asrt.matches_sequence(expected_symbol_usages)

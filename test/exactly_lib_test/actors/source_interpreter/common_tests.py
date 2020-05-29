@@ -5,7 +5,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -63,8 +62,8 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
                 symbol_table=symbol.symbol_table
             ),
             Expectation(
-                symbol_usages=equals_symbol_references([
-                    symbol.reference__any_data_type,
+                symbol_usages=asrt.matches_sequence([
+                    symbol.reference_assertion__any_data_type,
                 ]),
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                       'program output')),

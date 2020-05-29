@@ -10,10 +10,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
@@ -22,7 +19,6 @@ from exactly_lib.type_system.data import path_ddv
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation, SettingsBuilderAssertionModel
@@ -32,8 +28,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
 from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
+from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext, StringConstantSymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -201,12 +196,10 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
     def test_doc_with_symbol_references(self):
         content_line_of_here_doc_template = 'content line of here doc with {symbol}'
         here_doc_contents_template = hd.contents_str_from_lines([content_line_of_here_doc_template])
-        symbol_name = 'symbol_name'
-        symbol = NameAndValue('symbol_name', 'the symbol value')
-        expected_symbol_references = [
-            SymbolReference(symbol.name,
-                            is_any_data_type())
-        ]
+        symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
+        expected_symbol_references = asrt.matches_singleton_sequence(
+            symbol.reference_assertion__any_data_type
+        )
         cases = [
             NameAndValue('string value container',
                          StringSymbolValueContext.of_constant('string symbol value').container
@@ -219,20 +212,18 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
             with self.subTest(case.name):
                 self._run(assignment_of(' <<MARKER  ',
                                         [content_line_of_here_doc_template.format(
-                                            symbol=symbol_reference_syntax_for_name(symbol_name)),
+                                            symbol=symbol.name__sym_ref_syntax),
                                             'MARKER',
                                             'following line']),
                           Arrangement(
-                              symbols=SymbolTable({
-                                  symbol_name: case.value
-                              })
+                              symbols=symbol.symbol_table
                           ),
                           Expectation(
                               settings_builder=AssertStdinIsSetToContents(
                                   parse_string.string_sdv_from_string(
                                       here_doc_contents_template.format(
-                                          symbol=symbol_reference_syntax_for_name(symbol_name)))),
-                              symbol_usages=equals_symbol_references(expected_symbol_references),
+                                          symbol=symbol.name__sym_ref_syntax))),
+                              symbol_usages=expected_symbol_references,
                               source=is_at_beginning_of_line(4)),
                           )
 

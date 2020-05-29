@@ -2,9 +2,7 @@ import unittest
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase import new_file as sut
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -24,20 +22,15 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.parse_path import path_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -73,9 +66,14 @@ def suite() -> unittest.TestSuite:
 class TestSymbolUsages(TestCaseBase):
     def test_symbol_usages(self):
         # ARRANGE #
-        text_printed_by_shell_command_symbol = NameAndValue('STRING_TO_PRINT_SYMBOL', 'hello_world')
+        text_printed_by_shell_command_symbol = StringSymbolContext.of_constant('STRING_TO_PRINT_SYMBOL', 'hello_world')
 
-        dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
+        dst_file_symbol = ConstantSuffixPathDdvSymbolContext(
+            'DST_FILE_SYMBOL',
+            RelOptionType.REL_ACT,
+            'dst-file-name.txt',
+            sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants,
+        )
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
@@ -86,30 +84,21 @@ class TestSymbolUsages(TestCaseBase):
             output_from_program(ProcOutputFile.STDOUT,
                                 pgm_args.shell_command(
                                     shell_commands.command_that_prints_line_to_stdout(
-                                        symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
+                                        text_printed_by_shell_command_symbol.name__sym_ref_syntax
                                     ))
                                 )
         ).with_transformation(to_upper_transformer.name).as_arguments
 
         source = remaining_source(
             '{file_name} {content_arguments}'.format(
-                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                file_name=dst_file_symbol.name__sym_ref_syntax,
                 content_arguments=transformed_shell_contents_arguments.first_line
             ),
             transformed_shell_contents_arguments.following_lines)
 
         symbols = SymbolContext.symbol_table_of_contexts([
-            ConstantSuffixPathDdvSymbolContext(
-                dst_file_symbol.name,
-                RelOptionType.REL_ACT,
-                dst_file_symbol.value,
-            ),
-
-            StringSymbolContext.of_constant(
-                text_printed_by_shell_command_symbol.name,
-                text_printed_by_shell_command_symbol.value,
-            ),
-
+            dst_file_symbol,
+            text_printed_by_shell_command_symbol,
             to_upper_transformer,
         ])
 
@@ -122,17 +111,8 @@ class TestSymbolUsages(TestCaseBase):
                     Expectation(
                         main_result=IS_SUCCESS,
                         symbol_usages=asrt.matches_sequence([
-
-                            equals_symbol_reference(
-                                SymbolReference(dst_file_symbol.name,
-                                                path_or_string_reference_restrictions(
-                                                    sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
-                            ),
-
-                            matches_reference_2(
-                                text_printed_by_shell_command_symbol.name,
-                                equals_data_type_reference_restrictions(is_any_data_type())),
-
+                            dst_file_symbol.reference_assertion__path_or_string,
+                            text_printed_by_shell_command_symbol.reference_assertion__any_data_type,
                             to_upper_transformer.reference_assertion,
                         ]),
                     )
