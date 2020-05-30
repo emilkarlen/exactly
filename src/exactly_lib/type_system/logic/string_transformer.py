@@ -2,7 +2,8 @@ from abc import ABC
 from typing import Iterable
 
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, LogicWithStructureDdv
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
+    LogicWithNodeDescriptionDdv
 
 StringTransformerModel = Iterable[str]
 
@@ -29,5 +30,5 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
 StringTransformerAdv = ApplicationEnvironmentDependentValue[StringTransformer]
 
 
-class StringTransformerDdv(LogicWithStructureDdv[StringTransformer], ABC):
+class StringTransformerDdv(LogicWithNodeDescriptionDdv[StringTransformer], ABC):
     pass

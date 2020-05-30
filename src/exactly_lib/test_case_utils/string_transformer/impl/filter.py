@@ -35,12 +35,12 @@ class _StringTransformerSelectSdv(StringTransformerSdv):
     def __init__(self, line_matcher_sdv: LineMatcherSdv):
         self.line_matcher_sdv = line_matcher_sdv
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return _SelectStringTransformerDdv(self.line_matcher_sdv.resolve(symbols))
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self.line_matcher_sdv.references
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return _SelectStringTransformerDdv(self.line_matcher_sdv.resolve(symbols))
 
 
 class _SelectStringTransformerDdv(StringTransformerDdv):

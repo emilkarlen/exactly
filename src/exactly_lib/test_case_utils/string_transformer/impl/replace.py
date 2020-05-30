@@ -62,15 +62,14 @@ class _Sdv(StringTransformerSdv):
             self._regex,
             self._replacement
         ])
-        pass
-
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return _Ddv(self._regex.resolve(symbols),
-                    self._replacement.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return _Ddv(self._regex.resolve(symbols),
+                    self._replacement.resolve(symbols))
 
 
 class _Adv(ApplicationEnvironmentDependentValue[StringTransformer]):

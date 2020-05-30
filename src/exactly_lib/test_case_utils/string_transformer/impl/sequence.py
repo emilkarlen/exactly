@@ -108,6 +108,10 @@ class StringTransformerSequenceSdv(StringTransformerSdv):
         self.transformers = transformers
         self._references = references_from_objects_with_symbol_references(transformers)
 
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
         num_transformers = len(self.transformers)
         if num_transformers == 0:
@@ -119,10 +123,6 @@ class StringTransformerSequenceSdv(StringTransformerSdv):
                 transformer.resolve(symbols)
                 for transformer in self.transformers
             ])
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references
 
 
 _SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\

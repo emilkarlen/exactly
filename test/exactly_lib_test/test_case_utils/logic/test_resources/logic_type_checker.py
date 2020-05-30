@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import LogicWithStructureDdv, LogicDdv
+from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv, LogicDdv
 from exactly_lib_test.test_case_utils.logic.test_resources import assertions as asrt_logic
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, CommonExecutionPropertiesChecker
@@ -37,7 +37,7 @@ class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
 
 class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesChecker[WithTreeStructureDescription]):
     def __init__(self,
-                 expected_ddv_object_type: Type[LogicWithStructureDdv],
+                 expected_ddv_object_type: Type[LogicWithNodeDescriptionDdv],
                  expected_primitive_object_type: Type[WithTreeStructureDescription],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type

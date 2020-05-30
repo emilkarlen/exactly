@@ -13,9 +13,11 @@ from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
 from exactly_lib.test_case_utils.description_tree import structure_rendering
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.description import DescriptionVisitor, DetailsDescription, NodeDescription
+from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
@@ -41,7 +43,7 @@ class PresentationBlockConstructor:
 
     def block_for(self, sdv: SymbolDependentValue) -> ResolvedValuePresentationBlock:
         if isinstance(sdv, LogicSdv):
-            return _of_tree_structured(sdv.resolve(self._symbol_table))
+            return _of_logic_type(sdv.resolve(self._symbol_table))
         elif isinstance(sdv, DataTypeSdv):
             constructor = _DataTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
@@ -50,9 +52,7 @@ class PresentationBlockConstructor:
 
 
 class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentationBlock]):
-    def __init__(self,
-                 symbols: SymbolTable,
-                 ):
+    def __init__(self, symbols: SymbolTable):
         self.symbols = symbols
 
     def visit_string(self, value: StringSdv) -> ResolvedValuePresentationBlock:
@@ -66,16 +66,32 @@ class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentati
         return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
-def _of_tree_structured(x: WithTreeStructureDescription) -> ResolvedValuePresentationBlock:
-    return _BlockForTree(x.structure().render())
+def _of_logic_type(ddv: LogicDdv) -> ResolvedValuePresentationBlock:
+    return ddv.description().accept(_LogicValueDescriptionRenderer())
 
 
-class _BlockForTree(ResolvedValuePresentationBlock):
-    def __init__(self, tree: Node[None]):
+class _LogicValueDescriptionRenderer(DescriptionVisitor[ResolvedValuePresentationBlock]):
+    def visit_node(self, description: NodeDescription) -> ResolvedValuePresentationBlock:
+        return _BlockForNode(description.structure())
+
+    def visit_details(self, description: DetailsDescription) -> ResolvedValuePresentationBlock:
+        return _BlockForDetails(description.details())
+
+
+class _BlockForNode(ResolvedValuePresentationBlock):
+    def __init__(self, tree: StructureRenderer):
         self._tree = tree
 
     def render(self) -> text_struct.MajorBlock:
-        return structure_rendering.as_major_block(self._tree).render()
+        return structure_rendering.as_major_block(self._tree.render()).render()
+
+
+class _BlockForDetails(ResolvedValuePresentationBlock):
+    def __init__(self, details: DetailsRenderer):
+        self._details = details
+
+    def render(self) -> text_struct.MajorBlock:
+        raise NotImplementedError('unsupported')
 
 
 class _BlockForCustomRenderer(ResolvedValuePresentationBlock):

@@ -48,17 +48,17 @@ class LogicDdv(Generic[VALUE_TYPE],
         pass
 
 
-class LogicWithStructureDdv(Generic[VALUE_TYPE],
-                            LogicDdv[VALUE_TYPE],
-                            WithTreeStructureDescription,
-                            ABC):
+class LogicWithNodeDescriptionDdv(Generic[VALUE_TYPE],
+                                  LogicDdv[VALUE_TYPE],
+                                  WithTreeStructureDescription,
+                                  ABC):
     """A :class:`LogicDdv` that can report its structure in terms of a node tree"""
 
     def description(self) -> NodeDescription:
-        return _DescriptionOfWithTreeStructure(self)
+        return _DescriptionOfTreeStructure(self)
 
 
-class _DescriptionOfWithTreeStructure(NodeDescription):
+class _DescriptionOfTreeStructure(NodeDescription):
     def __init__(self, tree_structured: WithTreeStructureDescription):
         self._tree_structured = tree_structured
 

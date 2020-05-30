@@ -91,9 +91,9 @@ class StringTransformerSdvWithReferences(StringTransformerSdv):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        raise NotImplementedError('should not be used in these tests')
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        raise NotImplementedError('should not be used in these tests')

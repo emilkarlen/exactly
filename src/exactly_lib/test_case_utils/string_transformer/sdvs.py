@@ -18,12 +18,12 @@ class StringTransformerSdvConstant(StringTransformerSdv):
     def __init__(self, value: StringTransformer):
         self._value = string_transformer_ddvs.StringTransformerConstantDdv(value)
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return self._value
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return []
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return self._value
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._value) + '\''
@@ -37,12 +37,12 @@ class StringTransformerSdvConstantOfDdv(StringTransformerSdv):
     def __init__(self, ddv: StringTransformerDdv):
         self._ddv = ddv
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return self._ddv
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return []
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return self._ddv
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._ddv) + '\''
@@ -58,13 +58,13 @@ class StringTransformerSdvReference(StringTransformerSdv):
         self._references = [SymbolReference(name_of_referenced_sdv,
                                             ValueTypeRestriction(ValueType.STRING_TRANSFORMER))]
 
-    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        sdv = lookups.lookup_string_transformer(symbols, self._name_of_referenced_sdv)
-        return sdv.resolve(symbols)
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        sdv = lookups.lookup_string_transformer(symbols, self._name_of_referenced_sdv)
+        return sdv.resolve(symbols)
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._name_of_referenced_sdv) + '\''
