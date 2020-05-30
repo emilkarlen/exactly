@@ -176,7 +176,7 @@ class TestSymbolReferences(TestCaseBase):
             ),
             sut.Expectation(
                 ParseExpectation(
-                    symbol_references=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)
+                    symbol_references=sym_asrt.equals_data_type_symbol_references(symbol_usages_of_expectation)
                 ),
             )
         )

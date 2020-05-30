@@ -23,7 +23,7 @@ from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils
 from exactly_lib_test.symbol.data.test_resources import string_assertions as asrt_string
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_utils.parse.test_resources import relativity_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
@@ -440,7 +440,7 @@ def _expect_path(put: unittest.TestCase,
                  'source type')
     put.assertTrue(actual.is_path,
                    'is_path')
-    symbol_references_assertion = equals_symbol_references(expectation.common.symbol_references)
+    symbol_references_assertion = equals_data_type_symbol_references(expectation.common.symbol_references)
     expected_path_sdv = matches_path_sdv(expectation.path_ddv,
                                          symbol_references_assertion,
                                          symbol_table=expectation.common.symbol_table)
@@ -494,7 +494,7 @@ def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
                    actual_result: string_or_path.StringOrPathSdv,
                    expectation: CommonExpectation):
-    symbol_references_assertion = equals_symbol_references(expectation.symbol_references)
+    symbol_references_assertion = equals_data_type_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,
                                                    'symbol_usages of StringOrPath')
 

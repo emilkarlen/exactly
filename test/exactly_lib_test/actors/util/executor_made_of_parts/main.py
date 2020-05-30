@@ -11,12 +11,15 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -75,9 +78,11 @@ class TestConstructor(unittest.TestCase):
 
     def test_symbol_usages_of_object_returned_by_parser_SHOULD_be_reported(self):
         # ARRANGE #
+        symbol_reference = NameAndValue('symbol_name',
+                                        is_any_data_type())
         expected_symbol_references = [
-            SymbolReference('symbol_name',
-                            is_any_data_type())
+            SymbolReference(symbol_reference.name,
+                            symbol_reference.value)
         ]
         parser = sut.ActorFromParts(ParserWithConstantResult(
             SymbolUserWithConstantSymbolReferences(expected_symbol_references)),
@@ -89,7 +94,13 @@ class TestConstructor(unittest.TestCase):
                         [],
                         Arrangement(),
                         Expectation(
-                            symbol_usages=equals_symbol_references(expected_symbol_references)
+                            symbol_usages=asrt.matches_sequence([
+                                asrt_sym_ref.matches_reference_2(
+                                    symbol_reference.name,
+                                    concrete_restriction_assertion.equals_data_type_reference_restrictions(
+                                        symbol_reference.value)
+                                )
+                            ])
                         ))
 
 

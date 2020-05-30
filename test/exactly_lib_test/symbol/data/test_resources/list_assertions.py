@@ -9,8 +9,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references, \
-    equals_symbol_reference
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references, \
+    equals_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -29,7 +29,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
     component_assertions = [
         asrt.sub_component('references',
                            lambda x: list(x.references),
-                           equals_symbol_references(list(expected.references))),
+                           equals_data_type_symbol_references(list(expected.references))),
         asrt.sub_component('resolved value',
                            lambda x: x.resolve(symbols),
                            assertion_on_resolved_value),
@@ -43,7 +43,7 @@ def equals_list_sdv_element(expected: list_sdv.ElementSdv,
             raise ValueError('A list element must reference a data type value')
         assert isinstance(reference_restrictions, DataTypeReferenceRestrictions)  # Type info for IDE
 
-        symbol_reference_assertion = equals_symbol_reference(reference)
+        symbol_reference_assertion = equals_data_type_symbol_reference(reference)
 
         asrt_sym_ref.matches_reference_2(
             reference.name,
@@ -78,7 +78,7 @@ def equals_list_sdv(expected: ListSdv,
         return x.elements
 
     return sdv_type_assertions.matches_sdv_of_list(
-        equals_symbol_references(expected.references),
+        equals_data_type_symbol_references(expected.references),
         equals_list_ddv(expected_resolved_value),
         asrt.sub_component('element SDVs',
                            get_element_sdvs,

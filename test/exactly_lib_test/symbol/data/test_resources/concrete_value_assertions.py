@@ -11,7 +11,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -25,7 +25,7 @@ def equals_path_sdv(expected: PathSdv) -> ValueAssertion:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_path = expected.resolve(symbols)
     return sdv_type_assertions.matches_sdv_of_path(
-        equals_symbol_references(expected.references),
+        equals_data_type_symbol_references(expected.references),
         equals_path(expected_path),
         symbols=symbols)
 
@@ -68,7 +68,7 @@ def equals_string_sdv(expected: StringSdv,
         return x.fragments
 
     return sdv_type_assertions.matches_sdv_of_string(
-        equals_symbol_references(expected.references),
+        equals_data_type_symbol_references(expected.references),
         equals_string_ddv(expected_resolved_value),
         asrt.sub_component('fragment resolvers',
                            get_fragment_sdvs,

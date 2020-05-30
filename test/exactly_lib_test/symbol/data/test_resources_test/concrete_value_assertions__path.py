@@ -15,7 +15,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import PathDdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -64,8 +64,7 @@ class TestEqualsCommonToBothAssertionMethods(unittest.TestCase):
                         assertion.apply_without_message(self, path_sdv)
                     with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                         assertion = sut.matches_path_sdv(path,
-                                                         equals_symbol_references(
-                                                             path_sdv.references),
+                                                         equals_data_type_symbol_references(path_sdv.references),
                                                          symbols)
                         assertion.apply_without_message(self, path_sdv)
 
@@ -83,8 +82,8 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
                     assertion.apply_without_message(self, path_sdv)
                 with self.subTest(msg=sut.matches_path_sdv.__name__ + ' :: ' + test_case_descr):
                     assertion = sut.matches_path_sdv(path,
-                                                     equals_symbol_references(path_sdv.references),
-                                                          symbols)
+                                                     equals_data_type_symbol_references(path_sdv.references),
+                                                     symbols)
                     assertion.apply_without_message(self, path_sdv)
 
 
@@ -126,12 +125,12 @@ class Test1NotEquals(unittest.TestCase):
         path = arbitrary_path()
         expected = sdv_from_constants(path,
                                       [SymbolReference('expected_symbol_name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(
-                                                                AnyDataTypeRestriction()))])
+                                                       ReferenceRestrictionsOnDirectAndIndirect(
+                                                           AnyDataTypeRestriction()))])
         actual = sdv_from_constants(path,
                                     [SymbolReference('actual_symbol_name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(
-                                                              AnyDataTypeRestriction()))])
+                                                     ReferenceRestrictionsOnDirectAndIndirect(
+                                                         AnyDataTypeRestriction()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -141,8 +140,8 @@ class Test1NotEquals(unittest.TestCase):
         path = arbitrary_path()
         expected = sdv_from_constants(path,
                                       [SymbolReference('reffed-name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(
-                                                                AnyDataTypeRestriction()))])
+                                                       ReferenceRestrictionsOnDirectAndIndirect(
+                                                           AnyDataTypeRestriction()))])
         actual = sdv_from_constants(path, [])
         # ACT & ASSERT #
         assertion = sut.equals_path_sdv(expected)
@@ -153,9 +152,9 @@ class Test1NotEquals(unittest.TestCase):
         path = arbitrary_path()
         expected = sdv_from_constants(path, [])
         actual = sdv_from_constants(path,
-                                         [SymbolReference('reffed-name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(
-                                                              AnyDataTypeRestriction()))])
+                                    [SymbolReference('reffed-name',
+                                                     ReferenceRestrictionsOnDirectAndIndirect(
+                                                         AnyDataTypeRestriction()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -165,14 +164,14 @@ class Test1NotEquals(unittest.TestCase):
         path = arbitrary_path()
         expected = sdv_from_constants(path,
                                       [SymbolReference('reffed-name',
-                                                            ReferenceRestrictionsOnDirectAndIndirect(
-                                                                _relativity_restriction(
-                                                                    {RelOptionType.REL_ACT},
-                                                                    False)))])
+                                                       ReferenceRestrictionsOnDirectAndIndirect(
+                                                           _relativity_restriction(
+                                                               {RelOptionType.REL_ACT},
+                                                               False)))])
         actual = sdv_from_constants(path,
                                     [SymbolReference('reffed-name',
-                                                          ReferenceRestrictionsOnDirectAndIndirect(
-                                                              AnyDataTypeRestriction()))])
+                                                     ReferenceRestrictionsOnDirectAndIndirect(
+                                                         AnyDataTypeRestriction()))])
         assertion = sut.equals_path_sdv(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)

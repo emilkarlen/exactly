@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
@@ -101,7 +101,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
         expected_symbol_references = [
             operand_sym_ref,
         ]
-        assertion = equals_symbol_references(expected_symbol_references)
+        assertion = equals_data_type_symbol_references(expected_symbol_references)
 
         assertion.apply_without_message(self, actual_symbol_references)
 

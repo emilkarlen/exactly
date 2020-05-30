@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.svh_exception import SvhValidationException
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import instruction_environment
@@ -156,7 +156,7 @@ class TestValidateAndResolve(unittest.TestCase):
                 self.assertEqual(case.expected.resolved_value,
                                  actual)
 
-                equals_symbol_references(case.expected.symbol_references) \
+                equals_data_type_symbol_references(case.expected.symbol_references) \
                     .apply_without_message(self,
                                            actual_symbol_references)
 
@@ -204,7 +204,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         expected_references = [reference_of_string_sdv]
 
-        assertion = equals_symbol_references(expected_references)
+        assertion = equals_data_type_symbol_references(expected_references)
 
         assertion.apply_without_message(self, actual)
 

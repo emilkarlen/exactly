@@ -109,7 +109,7 @@ class SymbolUsagesTest(unittest.TestCase):
         path_symbol_name = 'the_path_symbol'
         file_matcher_symbol_name = 'the_file_matcher_symbol'
 
-        expected_path_symbol_ref = asrt_sym_ref.symbol_usage_equals_symbol_reference(
+        expected_path_symbol_ref = asrt_sym_ref.symbol_usage_equals_data_type_symbol_reference(
             SymbolReference(path_symbol_name,
                             path_or_string_reference_restrictions(
                                 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))

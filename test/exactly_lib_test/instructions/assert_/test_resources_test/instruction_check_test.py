@@ -5,6 +5,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -15,7 +16,8 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import is_pass, \
     Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
@@ -29,6 +31,7 @@ from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     sds_2_tcds_assertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -101,7 +104,6 @@ class TestSymbolUsages(TestCaseBase):
     def test_that_fails_due_to_missing_symbol_reference(self):
         with self.assertRaises(utils.TestError):
             symbol_usages_of_instruction = []
-            symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 utils.ParserThatGives(
                     assert_phase_instruction_that(
@@ -109,7 +111,9 @@ class TestSymbolUsages(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 sut.Expectation(
-                    symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
+                    symbol_usages=asrt.matches_singleton_sequence(
+                        matches_data_type_symbol_reference('symbol_name', is_any_data_type())
+                    )),
             )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):

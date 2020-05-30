@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data import list_sdv as sut
 from exactly_lib.symbol.data import list_sdvs
-from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, is_any_data_type
 from exactly_lib.type_system.data.concrete_strings import string_ddv_of_single_string, \
     string_ddv_of_single_path
 from exactly_lib.type_system.data.list_ddv import ListDdv
@@ -12,7 +11,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.list_ import ListDdvSymbolContext
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_sdv_element
 from exactly_lib_test.symbol.data.test_resources.path import arbitrary_path_symbol_context
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import DataTypeSymbolReference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -171,34 +170,36 @@ class ListResolverTest(unittest.TestCase):
                 assertion.apply_without_message(self, actual)
 
     def test_references(self):
-        reference_1 = su.symbol_reference('symbol_1_name')
-        reference_2 = SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
+        reference_1 = DataTypeSymbolReference('symbol_1_name', is_any_data_type())
+        reference_2 = DataTypeSymbolReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
                 'no elements',
                 sut.ListSdv([]),
-                [],
+                asrt.is_empty_sequence,
             ),
             (
                 'single string constant element',
                 sut.ListSdv([list_sdvs.str_element('string value')]),
-                [],
+                asrt.is_empty_sequence,
             ),
             (
                 'multiple elements with multiple references',
                 sut.ListSdv([
-                    list_sdvs.symbol_element(reference_1),
+                    list_sdvs.symbol_element(reference_1.reference),
                     list_sdvs.str_element('constant value'),
-                    list_sdvs.symbol_element(reference_2),
+                    list_sdvs.symbol_element(reference_2.reference),
                 ]),
-                [reference_1, reference_2],
+                asrt.matches_sequence([
+                    reference_1.reference_assertion,
+                    reference_2.reference_assertion,
+                ]),
             ),
         ]
-        for test_name, list_sdv, expected in cases:
+        for test_name, list_sdv, expected_references_assertion in cases:
             with self.subTest(test_name=test_name):
                 actual = list_sdv.references
-                assertion = equals_symbol_references(expected)
-                assertion.apply_without_message(self, actual)
+                expected_references_assertion.apply_without_message(self, actual)
 
     def test_elements(self):
         # ARRANGE #

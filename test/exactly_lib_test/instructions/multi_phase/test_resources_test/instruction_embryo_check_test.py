@@ -9,6 +9,7 @@ from exactly_lib.instructions.multi_phase.utils import instruction_embryo as emb
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelSdsOptionType
@@ -22,7 +23,8 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as sut
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_instruction import \
     instruction_embryo_that
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -136,7 +138,6 @@ class TestSymbols(TestCaseBase):
     def test_that_fails_due_to_missing_symbol_reference(self):
         with self.assertRaises(utils.TestError):
             symbol_usages_of_instruction = []
-            symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 ParserThatGives(
                     instruction_embryo_that(
@@ -144,7 +145,12 @@ class TestSymbols(TestCaseBase):
                 single_line_source(),
                 ArrangementWithSds(),
                 sut.Expectation(
-                    symbol_usages=sym_asrt.equals_symbol_references(symbol_usages_of_expectation)),
+                    symbol_usages=asrt.matches_singleton_sequence(
+                        matches_data_type_symbol_reference(
+                            'symbol_name',
+                            is_any_data_type()
+                        )
+                    )),
             )
 
     def test_that_symbols_from_arrangement_exist_in_environment(self):

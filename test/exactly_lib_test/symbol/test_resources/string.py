@@ -14,7 +14,8 @@ from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_re
     asrt_rest
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as asrt_value
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import symbol_usage_equals_symbol_reference
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
+    symbol_usage_equals_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
@@ -119,7 +120,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     def usage_assertion__path_or_string(symbol_name: str,
                                         accepted_relativities: PathRelativityVariants,
                                         ) -> ValueAssertion[SymbolUsage]:
-        return symbol_usage_equals_symbol_reference(
+        return symbol_usage_equals_data_type_symbol_reference(
             SymbolReference(symbol_name,
                             StringSymbolValueContext.reference_restriction__path_or_string(accepted_relativities))
         )

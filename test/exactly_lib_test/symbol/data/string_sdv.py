@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data import string_sdv as sut
 from exactly_lib.symbol.data.impl import string_sdv_impls as impl
-from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import concrete_strings as csv
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -11,9 +10,10 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import DataTypeSymbolReference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions import equals_string_fragment_ddv, \
     equals_string_ddv
 
@@ -62,12 +62,12 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
 
     def test_should_have_exactly_one_references(self):
         # ARRANGE #
-        symbol_reference = su.symbol_reference('the_symbol_name')
-        fragment = impl.SymbolStringFragmentSdv(symbol_reference)
+        symbol_reference = DataTypeSymbolReference('the_symbol_name', is_any_data_type())
+        fragment = impl.SymbolStringFragmentSdv(symbol_reference.reference)
         # ACT #
         actual = list(fragment.references)
         # ASSERT #
-        assertion = equals_symbol_references([symbol_reference])
+        assertion = asrt.matches_singleton_sequence(symbol_reference.reference_assertion)
         assertion.apply_without_message(self, actual)
 
     def test_string_constant_SHOULD_raise_exception(self):
@@ -206,34 +206,36 @@ class StringResolverTest(unittest.TestCase):
 
     def test_references(self):
         string_constant_1 = 'string constant 1'
-        reference_1 = su.symbol_reference('symbol_1_name')
-        reference_2 = SymbolReference('symbol_2_name', OrReferenceRestrictions([]))
+        reference_1 = DataTypeSymbolReference('symbol_1_name', is_any_data_type())
+        reference_2 = DataTypeSymbolReference('symbol_2_name', OrReferenceRestrictions([]))
         cases = [
             (
                 'no fragments',
                 sut.StringSdv(()),
-                [],
+                asrt.is_empty_sequence,
             ),
             (
                 'single string constant fragment',
                 sut.StringSdv((impl.ConstantStringFragmentSdv(' value'),)),
-                [],
+                asrt.is_empty_sequence,
             ),
             (
                 'multiple fragments of different types',
                 sut.StringSdv((
-                    impl.SymbolStringFragmentSdv(reference_1),
+                    impl.SymbolStringFragmentSdv(reference_1.reference),
                     impl.ConstantStringFragmentSdv(string_constant_1),
-                    impl.SymbolStringFragmentSdv(reference_2),
+                    impl.SymbolStringFragmentSdv(reference_2.reference),
                 )),
-                [reference_1, reference_2],
+                asrt.matches_sequence([
+                    reference_1.reference_assertion,
+                    reference_2.reference_assertion,
+                ]),
             ),
         ]
-        for test_name, string_sdv, expected in cases:
+        for test_name, string_sdv, expected_references_assertion in cases:
             with self.subTest(test_name=test_name):
                 actual = string_sdv.references
-                assertion = equals_symbol_references(expected)
-                assertion.apply_without_message(self, actual)
+                expected_references_assertion.apply_without_message(self, actual)
 
     def test_fragments(self):
         # ARRANGE #

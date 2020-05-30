@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
@@ -24,17 +25,52 @@ def matches_symbol_reference_with_restriction_on_direct_target(
                                                 assertion_on_every=asrt.ValueIsNone()))
 
 
-def equals_symbol_reference(expected: SymbolReference) -> ValueAssertion[SymbolReference]:
+def equals_data_type_symbol_reference(expected: SymbolReference) -> ValueAssertion[SymbolReference]:
+    restrictions = expected.restrictions
+    if not isinstance(restrictions, DataTypeReferenceRestrictions):
+        raise ValueError('Restrictions must be {}. Found {}'.format(
+            DataTypeReferenceRestrictions,
+            restrictions,
+        ))
     return asrt_sym_ref.matches_reference_2(expected.name,
-                                            equals_data_type_reference_restrictions(expected.restrictions))
+                                            equals_data_type_reference_restrictions(restrictions))
 
 
-def symbol_usage_equals_symbol_reference(expected: SymbolReference) -> ValueAssertion[SymbolUsage]:
+def matches_data_type_symbol_reference(symbol_name: str,
+                                       restrictions: DataTypeReferenceRestrictions) -> ValueAssertion[SymbolReference]:
+    return asrt_sym_ref.matches_reference_2(symbol_name,
+                                            equals_data_type_reference_restrictions(restrictions))
+
+
+class DataTypeSymbolReference:
+    def __init__(self,
+                 name: str,
+                 restrictions: DataTypeReferenceRestrictions,
+                 ):
+        self.name = name
+        self.restrictions = restrictions
+
+    @property
+    def reference(self) -> SymbolReference:
+        return SymbolReference(self.name, self.restrictions)
+
+    @property
+    def reference_assertion(self) -> ValueAssertion[SymbolReference]:
+        return matches_data_type_symbol_reference(self.name, self.restrictions)
+
+
+def symbol_usage_equals_data_type_symbol_reference(expected: SymbolReference) -> ValueAssertion[SymbolUsage]:
+    restrictions = expected.restrictions
+    if not isinstance(restrictions, DataTypeReferenceRestrictions):
+        raise ValueError('Restrictions must be {}. Found {}'.format(
+            DataTypeReferenceRestrictions,
+            restrictions,
+        ))
     return asrt.is_instance_with(
         SymbolUsage,
         asrt_sym_ref.matches_reference_2(
             expected.name,
-            equals_data_type_reference_restrictions(expected.restrictions)))
+            equals_data_type_reference_restrictions(restrictions)))
 
 
 def is_reference_to_data_category_symbol(symbol_name: str) -> ValueAssertion[SymbolReference]:
@@ -42,9 +78,10 @@ def is_reference_to_data_category_symbol(symbol_name: str) -> ValueAssertion[Sym
                                             is_type_category_restriction(TypeCategory.DATA))
 
 
-def equals_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssertion[Sequence[SymbolReference]]:
+def equals_data_type_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssertion[
+    Sequence[SymbolReference]]:
     return asrt.matches_sequence([
-        equals_symbol_reference(expected_ref)
+        equals_data_type_symbol_reference(expected_ref)
         for expected_ref in expected
     ])
 
