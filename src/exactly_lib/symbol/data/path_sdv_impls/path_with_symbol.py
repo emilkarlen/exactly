@@ -17,7 +17,13 @@ class PathSdvRelSymbol(PathSdv):
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
         base_path = lookups.lookup_and_resolve_path(symbols, self.symbol_reference_of_path.name)
-        return paths.stacked(base_path, self.path_suffix.resolve(symbols))
+        suffix = self.path_suffix.resolve(symbols)
+        return (
+            paths.stacked(base_path, suffix)
+            if suffix.value()
+            else
+            base_path
+        )
 
     @property
     def references(self) -> Sequence[SymbolReference]:
