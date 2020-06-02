@@ -21,7 +21,7 @@ from exactly_lib_test.type_system.data.test_resources.string_ddv_assertions impo
     equals_string_fragment_ddv
 
 
-def equals_path_sdv(expected: PathSdv) -> ValueAssertion:
+def equals_path_sdv(expected: PathSdv) -> ValueAssertion[SymbolDependentValue]:
     symbols = symbol_table_with_values_matching_references(expected.references)
     expected_path = expected.resolve(symbols)
     return sdv_type_assertions.matches_sdv_of_path(
@@ -32,7 +32,7 @@ def equals_path_sdv(expected: PathSdv) -> ValueAssertion:
 
 def matches_path_sdv(expected_resolved_value: PathDdv,
                      expected_symbol_references: ValueAssertion,
-                     symbol_table: SymbolTable = None) -> ValueAssertion:
+                     symbol_table: SymbolTable = None) -> ValueAssertion[SymbolDependentValue]:
     return sdv_type_assertions.matches_sdv_of_path(expected_symbol_references,
                                                    equals_path(
                                                        expected_resolved_value),

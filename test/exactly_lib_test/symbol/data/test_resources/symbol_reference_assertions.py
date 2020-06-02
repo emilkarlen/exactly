@@ -78,8 +78,8 @@ def is_reference_to_data_category_symbol(symbol_name: str) -> ValueAssertion[Sym
                                             is_type_category_restriction(TypeCategory.DATA))
 
 
-def equals_data_type_symbol_references(expected: Sequence[SymbolReference]) -> ValueAssertion[
-    Sequence[SymbolReference]]:
+def equals_data_type_symbol_references(expected: Sequence[SymbolReference]
+                                       ) -> ValueAssertion[Sequence[SymbolReference]]:
     return asrt.matches_sequence([
         equals_data_type_symbol_reference(expected_ref)
         for expected_ref in expected
