@@ -13,8 +13,8 @@ from exactly_lib.util.string import StringFormatter
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines, \
     remaining_source_string
-from exactly_lib_test.test_case_utils.expression import test_resources as ast
-from exactly_lib_test.test_case_utils.expression.test_resources import ComplexA, ComplexB, PrefixExprP
+from exactly_lib_test.test_case_utils.expression.test_resources import test_grammars as ast
+from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import ComplexA, ComplexB, PrefixExprP
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

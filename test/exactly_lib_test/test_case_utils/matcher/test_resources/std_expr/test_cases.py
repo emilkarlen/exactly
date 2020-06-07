@@ -11,6 +11,7 @@ from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.test_case_utils.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
     ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -42,31 +43,11 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_syntax_is_invalid(self):
         # ARRANGE #
         conf = self.configuration
-        cases = [
-            NameAndValue(
-                'eof after (',
-                remaining_source('(  ')
-            ),
-            NameAndValue(
-                'missing )',
-                remaining_source('(  {symbol_name}'.format(
-                    symbol_name=conf.valid_symbol_name_and_not_valid_primitive_or_operator())
-                )
-            ),
-            NameAndValue(
-                'missing space after (',
-                remaining_source('({symbol_name} )'.format(
-                    symbol_name=conf.valid_symbol_name_and_not_valid_primitive_or_operator())
-                )
-            ),
-            NameAndValue(
-                'invalid expression inside ()',
-                remaining_source('( {symbol_name} )'.format(
-                    symbol_name=conf.not_a_valid_symbol_name_nor_valid_primitive_or_operator())
-                )
-            ),
-        ]
-        for case in cases:
+        case_generator = TestCaseGeneratorForParenthesis(
+            conf.valid_symbol_name_and_not_valid_primitive_or_operator(),
+            conf.not_a_valid_symbol_name_nor_valid_primitive_or_operator(),
+        )
+        for case in case_generator.parse_should_fail_when_syntax_is_invalid():
             with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     conf.parser().parse(case.value)
