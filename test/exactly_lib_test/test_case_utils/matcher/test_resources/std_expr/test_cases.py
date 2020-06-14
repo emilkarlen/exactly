@@ -5,7 +5,6 @@ from typing import List, Generic, Sequence
 from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
@@ -14,6 +13,7 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
     ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds, PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.symbol_ref_syntax import symbol_ref_syntax_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import _utils
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr._utils import AssertionsHelper, \
@@ -154,11 +154,11 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
+        for symbol_ref_syntax in symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
                 conf.checker().check_multi__w_source_variants(
                     self,
-                    arguments=Arguments(symbol_name),
+                    arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
                     input_=conf.arbitrary_model,
                     execution=helper.failing_validation_cases(symbol_name),
@@ -174,7 +174,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        for symbol_ref_syntax in self._symbol_ref_syntax_cases(symbol_name):
+        for symbol_ref_syntax in symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
                 conf.checker().check_multi__w_source_variants(
                     self,
@@ -183,17 +183,6 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                     input_=conf.arbitrary_model,
                     execution=helper.execution_cases_for_constant_reference_expressions(symbol_name),
                 )
-
-    @staticmethod
-    def _symbol_ref_syntax_cases(symbol_name: str) -> Sequence[NameAndValue[str]]:
-        return [
-            NameAndValue('plain',
-                         symbol_name,
-                         ),
-            NameAndValue('reference syntax',
-                         symbol_reference_syntax_for_name(symbol_name),
-                         ),
-        ]
 
 
 class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
