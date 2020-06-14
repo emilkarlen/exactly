@@ -118,6 +118,12 @@ PROGRAM_TYPE_INFO = name_and_ref_target(
     'An external program, with optional arguments, and optional transformation of the output.',
 )
 
+FILES_CONDITION_TYPE_INFO = name_and_ref_target(
+    ValueType.FILES_CONDITION,
+    a_name_with_plural_s('files condition'),
+    'A condition of existence of a set of named files',
+)
+
 ALL_TYPES_INFO_TUPLE = (
     STRING_TYPE_INFO,
     LIST_TYPE_INFO,
@@ -128,4 +134,5 @@ ALL_TYPES_INFO_TUPLE = (
     STRING_MATCHER_TYPE_INFO,
     STRING_TRANSFORMER_TYPE_INFO,
     PROGRAM_TYPE_INFO,
+    FILES_CONDITION_TYPE_INFO,
 )

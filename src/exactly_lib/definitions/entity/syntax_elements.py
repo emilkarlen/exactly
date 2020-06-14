@@ -63,6 +63,8 @@ PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
 
 FILES_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_MATCHER_TYPE_INFO)
 
+FILES_CONDITION_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_CONDITION_TYPE_INFO)
+
 SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.COMMAND_ARGUMENT.name,
     'A shell command line, as the remaining part of the current line.'
@@ -102,9 +104,4 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
 INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
     'INTEGER-MATCHER',
     'Matches an integer'
-)
-
-FILES_CONDITION_SYNTAX_ELEMENT = name_and_ref_target(
-    'FILES-CONDITION',
-    'A condition of existence of a set of named files'
 )

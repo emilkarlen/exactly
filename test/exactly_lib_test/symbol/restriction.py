@@ -6,7 +6,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, string_transformer, \
-    file_matcher, program
+    file_matcher, program, files_condition
 from exactly_lib_test.symbol.test_resources import string
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
@@ -96,6 +96,9 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         ValueType.PROGRAM:
             program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+
+        ValueType.FILES_CONDITION:
+            files_condition.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     }
 
     def test_satisfied_restriction(self):
@@ -123,6 +126,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.STRING_MATCHER: ValueType.STRING_TRANSFORMER,
             ValueType.STRING_TRANSFORMER: ValueType.STRING,
             ValueType.PROGRAM: ValueType.STRING_TRANSFORMER,
+            ValueType.FILES_CONDITION: ValueType.PROGRAM,
         }
 
         symbols = empty_symbol_table()

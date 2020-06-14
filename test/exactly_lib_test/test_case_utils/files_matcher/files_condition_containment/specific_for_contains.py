@@ -30,7 +30,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         # ACT & ASSERT #
         integration_check.CHECKER.check__w_source_variants(
             self,
-            args.Contains(fc_args.FilesCondition.empty()).as_arguments,
+            args.Contains(fc_args.FilesConditionArg.empty()).as_arguments,
             model_constructor__non_recursive(checked_dir.path_sdv),
             Arrangement(
                 tcds=checked_dir.tcds_arrangement_dir_with_contents([

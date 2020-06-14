@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.test_case_utils.files_condition import invalid_syntax, symbol_references, file_names, \
-    file_matchers
+    file_matchers, parentheses, symbol_reference
 
 
 def suite() -> unittest.TestSuite:
@@ -10,6 +10,8 @@ def suite() -> unittest.TestSuite:
         symbol_references.suite(),
         file_names.suite(),
         file_matchers.suite(),
+        symbol_reference.suite(),
+        parentheses.suite(),
     ])
 
 

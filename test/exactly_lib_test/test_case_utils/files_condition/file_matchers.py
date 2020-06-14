@@ -68,7 +68,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        is_file_matcher_reference_to__ref(valid_fm.name)
+                        valid_fm.reference_assertion
                     )
                 ),
                 ExecutionExpectation(

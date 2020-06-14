@@ -94,6 +94,10 @@ class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition]):
             if mb_matcher:
                 self._references += mb_matcher.references
 
+    @staticmethod
+    def empty() -> 'FilesConditionSdv':
+        return FilesConditionSdv(())
+
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._references

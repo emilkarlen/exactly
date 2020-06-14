@@ -101,6 +101,11 @@ DATA_TYPE_INFO_DICT = {
                            a.Named(type_system.LIST_ELEMENT))]),
 }
 
+
+def _logic_type_info(type_info: TypeNameAndCrossReferenceId) -> TypeInfo:
+    return TypeInfo(type_info, _standard_type_value_args(type_info))
+
+
 ANY_TYPE_INFO_DICT = {
     ValueType.STRING:
         DATA_TYPE_INFO_DICT[DataValueType.STRING],
@@ -110,28 +115,25 @@ ANY_TYPE_INFO_DICT = {
         DATA_TYPE_INFO_DICT[DataValueType.LIST],
 
     ValueType.LINE_MATCHER:
-        TypeInfo(types.LINE_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.LINE_MATCHER_TYPE_INFO)),
+        _logic_type_info(types.LINE_MATCHER_TYPE_INFO),
 
     ValueType.FILE_MATCHER:
-        TypeInfo(types.FILE_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.FILE_MATCHER_TYPE_INFO)),
+        _logic_type_info(types.FILE_MATCHER_TYPE_INFO),
 
     ValueType.FILES_MATCHER:
-        TypeInfo(types.FILES_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.FILES_MATCHER_TYPE_INFO)),
+        _logic_type_info(types.FILES_MATCHER_TYPE_INFO),
 
     ValueType.STRING_MATCHER:
-        TypeInfo(types.STRING_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_MATCHER_TYPE_INFO)),
+        _logic_type_info(types.STRING_MATCHER_TYPE_INFO),
 
     ValueType.STRING_TRANSFORMER:
-        TypeInfo(types.STRING_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO)),
+        _logic_type_info(types.STRING_TRANSFORMER_TYPE_INFO),
 
     ValueType.PROGRAM:
-        TypeInfo(types.PROGRAM_TYPE_INFO,
-                 _standard_type_value_args(types.PROGRAM_TYPE_INFO)),
+        _logic_type_info(types.PROGRAM_TYPE_INFO),
+
+    ValueType.FILES_CONDITION:
+        _logic_type_info(types.FILES_CONDITION_TYPE_INFO),
 }
 
 
