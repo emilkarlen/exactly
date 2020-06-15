@@ -2,6 +2,7 @@ from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case_utils.files_condition import structure
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -15,7 +16,7 @@ IS_FILES_CONDITION_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.F
 
 
 def arbitrary_sdv() -> FilesConditionSdv:
-    return FilesConditionSdv.empty()
+    return structure.new_empty()
 
 
 def is_files_condition_reference_to(symbol_name: str) -> ValueAssertion:

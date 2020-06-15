@@ -4,8 +4,7 @@ from pathlib import PurePosixPath
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case_utils.files_condition import parse as sut
-from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
+from exactly_lib.test_case_utils.files_condition import parse as sut, structure
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.files_condition import is_files_condition_reference_to, \
@@ -47,7 +46,7 @@ class TestReference(unittest.TestCase):
     def test_reference_SHOULD_be_equal_to_referenced_value(self):
         # ARRANGE #
         file_name = 'the-file-name'
-        referenced_sdv = FilesConditionSdv([
+        referenced_sdv = structure.new_constant([
             (string_sdvs.str_constant(file_name), None)
         ])
         expected = asrt_primitive.files_matches({

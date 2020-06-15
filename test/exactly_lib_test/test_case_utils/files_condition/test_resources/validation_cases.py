@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_utils.file_matcher import sdvs as fm_sdvs
-from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
+from exactly_lib.test_case_utils.files_condition import structure
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext
@@ -22,7 +22,7 @@ class ValidationCase:
         self._expectation = fm_validation_case.expectation
         self._symbol_context = FilesConditionSymbolContext.of_sdv(
             symbol_name,
-            FilesConditionSdv([
+            structure.new_constant([
                 (string_sdvs.str_constant('a_valid_file_name'),
                  fm_sdvs.new_reference(fm_validation_case.symbol_context.name))
             ]),

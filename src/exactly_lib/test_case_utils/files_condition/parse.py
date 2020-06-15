@@ -8,6 +8,7 @@ from exactly_lib.section_document.parser_classes import ParserWithCurrentLineVar
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_condition import structure
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.parse import parse_string
@@ -43,7 +44,7 @@ class _Parser(ParserWithCurrentLineVariants[FilesConditionSdv]):
             syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
         )
 
-        return FilesConditionSdv(elements)
+        return structure.new_constant(elements)
 
 
 def parse(tokens: TokenParser,

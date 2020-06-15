@@ -1,6 +1,7 @@
 """
 FilesCondition - a set of file names, each with an optional `FileMatcher`.
 """
+from abc import ABC, abstractmethod
 from pathlib import PurePosixPath
 from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
@@ -85,7 +86,21 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
         })
 
 
-class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition]):
+class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition], ABC):
+    @abstractmethod
+    def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
+        pass
+
+
+def new_constant(files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]) -> FilesConditionSdv:
+    return _ConstantSdv(files)
+
+
+def new_empty() -> FilesConditionSdv:
+    return _ConstantSdv(())
+
+
+class _ConstantSdv(FilesConditionSdv):
     def __init__(self, files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]):
         self._files = files
         self._references = []
@@ -93,10 +108,6 @@ class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition]):
             self._references += file_name.references
             if mb_matcher:
                 self._references += mb_matcher.references
-
-    @staticmethod
-    def empty() -> 'FilesConditionSdv':
-        return FilesConditionSdv(())
 
     @property
     def references(self) -> Sequence[SymbolReference]:
