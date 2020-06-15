@@ -5,6 +5,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
+from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -93,6 +94,13 @@ def lookup_program(symbols: SymbolTable, name: str) -> ProgramSdv:
     container = lookup_container(symbols, name)
     ret_val = container.sdv
     assert isinstance(ret_val, ProgramSdv), 'Referenced symbol must be ProgramSdv'
+    return ret_val
+
+
+def lookup_files_condition(symbols: SymbolTable, name: str) -> FilesConditionSdv:
+    container = lookup_container(symbols, name)
+    ret_val = container.sdv
+    assert isinstance(ret_val, FilesConditionSdv), 'Referenced symbol must be FilesConditionSdv'
     return ret_val
 
 

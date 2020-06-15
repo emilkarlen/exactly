@@ -4,6 +4,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, PRIMITIVE
+from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
@@ -63,6 +64,9 @@ class LogicTypeResolvingHelper:
 
     def resolve_program_command(self, sdv: ProgramSdv) -> Command:
         return sdv.resolve(self.symbols).command.value_of_any_dependency(self.tcds)
+
+    def resolve_files_condition(self, sdv: FilesConditionSdv) -> FilesCondition:
+        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
 
     def resolve_files_matcher(self, sdv: FilesMatcherSdv) -> FilesMatcher:
         return (

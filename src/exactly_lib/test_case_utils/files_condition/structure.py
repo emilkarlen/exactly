@@ -7,6 +7,7 @@ from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.symbol import restriction, lookups
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import ddv_validators
@@ -23,6 +24,7 @@ from exactly_lib.type_system.description.tree_structured import WithTreeStructur
 from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, FileMatcherSdv, \
     FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -100,6 +102,10 @@ def new_empty() -> FilesConditionSdv:
     return _ConstantSdv(())
 
 
+def new_reference(symbol_name: str) -> FilesConditionSdv:
+    return _ReferenceSdv(symbol_name)
+
+
 class _ConstantSdv(FilesConditionSdv):
     def __init__(self, files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]):
         self._files = files
@@ -126,6 +132,23 @@ class _ConstantSdv(FilesConditionSdv):
             resolve_entry(fn, mb_matcher)
             for fn, mb_matcher in self._files
         ])
+
+
+class _ReferenceSdv(FilesConditionSdv):
+    def __init__(self, symbol_name: str):
+        self._symbol_name = symbol_name
+        self._references = (
+            SymbolReference(symbol_name,
+                            restriction.ValueTypeRestriction(ValueType.FILES_CONDITION)),
+        )
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
+        referenced_sdv = lookups.lookup_files_condition(symbols, self._symbol_name)
+        return referenced_sdv.resolve(symbols)
 
 
 class _IsRelativePosixPath(DdvValidator):
