@@ -1,12 +1,16 @@
 from typing import Optional, Tuple, Sequence
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import ParserWithCurrentLineVariants
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
+from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.expression import parser as grammar_parser
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import structure
 from exactly_lib.test_case_utils.files_condition import syntax
@@ -14,7 +18,11 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.util import strings
+from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parser() -> ParserWithCurrentLineVariants[FilesConditionSdv]:
@@ -28,28 +36,26 @@ class _Parser(ParserWithCurrentLineVariants[FilesConditionSdv]):
     def parse_from_token_parser(self,
                                 tokens: TokenParser,
                                 must_be_on_current_line: bool = False) -> FilesConditionSdv:
-        tokens.consume_mandatory_keyword__part_of_syntax_element(
-            syntax.BEGIN_BRACE,
-            must_be_on_current_line,
-            syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
-        )
-
-        elements = _parse_elements(tokens)
-
-        tokens.require_has_valid_head_token(_FILE_NAME_OR_SET_END)
-
-        tokens.consume_mandatory_keyword__part_of_syntax_element(
-            syntax.END_BRACE,
-            False,
-            syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
-        )
-
-        return structure.new_constant(elements)
+        return parse(tokens, must_be_on_current_line)
 
 
 def parse(tokens: TokenParser,
           must_be_on_current_line: bool = True) -> FilesConditionSdv:
-    return _PARSER.parse_from_token_parser(tokens, must_be_on_current_line)
+    return grammar_parser.parse(_GRAMMAR, tokens, must_be_on_current_line)
+
+
+def _parse_constant(tokens: TokenParser) -> FilesConditionSdv:
+    elements = _parse_elements(tokens)
+
+    tokens.require_has_valid_head_token(_FILE_NAME_OR_SET_END)
+
+    tokens.consume_mandatory_keyword__part_of_syntax_element(
+        syntax.END_BRACE,
+        False,
+        syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
+    )
+
+    return structure.new_constant(elements)
 
 
 def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]:
@@ -88,6 +94,23 @@ def _token_is_matcher_separator(token: Token) -> bool:
 
 _PARSER = _Parser()
 
+
+class _ConstantSyntaxDescription(grammar.SimpleExpressionDescription):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return ()
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TP.fnap(_CONSTANT__DESCRIPTION_REST)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
+        ])
+
+
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
         strings.FormatMap(
@@ -113,3 +136,28 @@ Reading {FILES_CONDITION}"""
 _MULTIPLE_FILES_ON_SINGLE_LINE = """\
 There can only be one file per line.
 """
+
+_TP = TextParser()
+
+_CONSTANT__DESCRIPTION_REST = """\
+A constant
+"""
+
+_GRAMMAR = grammar.Grammar(
+    concept=grammar.Concept(
+        name=types.FILES_CONDITION_TYPE_INFO.name,
+        type_system_type_name=types.FILES_CONDITION_TYPE_INFO.identifier,
+        syntax_element_name=syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.argument,
+    ),
+    mk_reference=structure.new_reference,
+    simple_expressions=(
+        NameAndValue(
+            syntax.BEGIN_BRACE,
+            grammar.SimpleExpression(_parse_constant,
+                                     _ConstantSyntaxDescription())
+
+        ),
+    ),
+    complex_expressions=(),
+    prefix_expressions=(),
+)
