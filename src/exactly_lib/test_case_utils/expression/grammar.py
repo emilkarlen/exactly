@@ -43,6 +43,15 @@ class SimpleExpressionDescriptionWithNameAsInitialSyntaxToken(SimpleExpressionDe
                         a.Constant(name))
 
 
+class SimpleExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken(SimpleExpressionDescription, ABC):
+    def __init__(self, syntax_element_name: str):
+        self._syntax_element_name = syntax_element_name
+
+    def initial_argument(self, name: str) -> a.ArgumentUsage:
+        return a.Single(a.Multiplicity.MANDATORY,
+                        a.Named(self._syntax_element_name))
+
+
 class ExpressionWithDescription(ABC):
     @abstractmethod
     def description(self) -> ExpressionDescriptionBase:
