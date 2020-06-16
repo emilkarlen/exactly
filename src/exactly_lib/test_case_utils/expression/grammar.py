@@ -27,10 +27,20 @@ class ExpressionDescriptionBase(ABC):
 
 
 class SimpleExpressionDescription(ExpressionDescriptionBase, ABC):
+    @abstractmethod
+    def initial_argument(self, name: str) -> a.ArgumentUsage:
+        pass
+
     @property
     @abstractmethod
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         pass
+
+
+class SimpleExpressionDescriptionWithNameAsInitialSyntaxToken(SimpleExpressionDescription, ABC):
+    def initial_argument(self, name: str) -> a.ArgumentUsage:
+        return a.Single(a.Multiplicity.MANDATORY,
+                        a.Constant(name))
 
 
 class ExpressionWithDescription(ABC):

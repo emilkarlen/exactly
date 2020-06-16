@@ -129,7 +129,7 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-class _NameSyntaxDescription(grammar.SimpleExpressionDescription):
+class _NameSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -152,7 +152,7 @@ class _NameSyntaxDescription(grammar.SimpleExpressionDescription):
         ])
 
 
-class _TypeSyntaxDescription(grammar.SimpleExpressionDescription):
+class _TypeSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

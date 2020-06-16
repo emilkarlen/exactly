@@ -95,7 +95,7 @@ def _token_is_matcher_separator(token: Token) -> bool:
 _PARSER = _Parser()
 
 
-class _ConstantSyntaxDescription(grammar.SimpleExpressionDescription):
+class _ConstantSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()

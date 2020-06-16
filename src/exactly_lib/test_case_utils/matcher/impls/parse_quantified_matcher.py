@@ -69,7 +69,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
         )
 
 
-class QuantificationDoc(grammar.SimpleExpressionDescription):
+class QuantificationDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self,
                  quantifier: Quantifier,
                  element_name: str,

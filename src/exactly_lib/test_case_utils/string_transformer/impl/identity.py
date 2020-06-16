@@ -36,7 +36,7 @@ class IdentityStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
 IDENTITY_TRANSFORMER_SDV = sdvs.StringTransformerSdvConstant(IdentityStringTransformer())
 
 
-class SyntaxDescription(grammar.SimpleExpressionDescription):
+class SyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()

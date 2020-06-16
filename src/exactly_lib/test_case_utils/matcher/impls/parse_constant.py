@@ -24,7 +24,7 @@ def _make_constant_matcher(boolean_keyword: str) -> MatcherSdv:
     )
 
 
-class _Description(grammar.SimpleExpressionDescription):
+class _Description(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

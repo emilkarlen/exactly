@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class EmptyDoc(grammar.SimpleExpressionDescription):
+class EmptyDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()
@@ -20,7 +20,7 @@ class EmptyDoc(grammar.SimpleExpressionDescription):
         return _TP.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)
 
 
-class NumFilesDoc(grammar.SimpleExpressionDescription):
+class NumFilesDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
@@ -30,7 +30,7 @@ class NumFilesDoc(grammar.SimpleExpressionDescription):
         return _TP.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)
 
 
-class SelectionDoc(grammar.SimpleExpressionDescription):
+class SelectionDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -43,7 +43,7 @@ class SelectionDoc(grammar.SimpleExpressionDescription):
         return _TP.fnap(_SELECTION_DESCRIPTION)
 
 
-class PruneDoc(grammar.SimpleExpressionDescription):
+class PruneDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -56,7 +56,7 @@ class PruneDoc(grammar.SimpleExpressionDescription):
         return _TP.fnap(_PRUNE_DESCRIPTION)
 
 
-class _EqualsAndContainsDoc(grammar.SimpleExpressionDescription):
+class _EqualsAndContainsDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self, description_rest_template: str):
         self._description_rest_template = description_rest_template
 

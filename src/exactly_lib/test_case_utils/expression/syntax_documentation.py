@@ -74,9 +74,7 @@ class Syntax:
     def _invokation_variants_simple(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
                                   syntax: SimpleExpressionDescription) -> InvokationVariant:
-            name_argument = a.Single(a.Multiplicity.MANDATORY,
-                                     a.Constant(name))
-            all_arguments = [name_argument] + list(syntax.argument_usage_list)
+            all_arguments = [syntax.initial_argument(name)] + list(syntax.argument_usage_list)
             return invokation_variant_from_args(all_arguments,
                                                 syntax.description_rest)
 

@@ -48,7 +48,7 @@ def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:
     return on_transformed.StringMatcherWithTransformationSdv(transformer, matcher_on_transformed)
 
 
-class _OnTransformedDescription(grammar.SimpleExpressionDescription):
+class _OnTransformedDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (

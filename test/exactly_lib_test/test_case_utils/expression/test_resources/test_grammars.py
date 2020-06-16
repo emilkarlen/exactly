@@ -137,7 +137,7 @@ CONCEPT = grammar.Concept(
     a.Named('SYNTAX-ELEMENT-NAME'))
 
 
-class ConstantSimpleExprDescription(grammar.SimpleExpressionDescription):
+class ConstantSimpleExprDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self,
                  argument_usage_list: Sequence[a.ArgumentUsage],
                  description_rest: Sequence[ParagraphItem],
