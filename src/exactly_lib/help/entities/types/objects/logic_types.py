@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import types, syntax_elements, conf_params, 
 from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
@@ -32,6 +33,12 @@ FILE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.FILE_MATCHER_TYPE_INFO,
     syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
     parse_file_matcher.GRAMMAR,
+    empty_section_contents())
+
+FILES_CONDITION_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+    types.FILES_CONDITION_TYPE_INFO,
+    syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT,
+    parse_files_condition.GRAMMAR,
     empty_section_contents())
 
 STRING_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(

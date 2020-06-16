@@ -27,6 +27,7 @@ class Syntax:
         self._tp = TextParser({
             'symbol_concept': formatting.concept_name_with_formatting(concepts.SYMBOL_CONCEPT_INFO.name),
             'concept_name': self.grammar.concept.name,
+            'BIN_OP_PRECEDENCE': _BIN_OP_PRECEDENCE,
         })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
@@ -45,7 +46,21 @@ class Syntax:
                 )
 
     def global_description(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_GLOBAL_DESCRIPTION)
+        ret_val = self._precedence_description()
+        ret_val += self._tp.fnap(_DESCRIPTION__SYNTAX)
+        return ret_val
+
+    def _precedence_description(self) -> List[ParagraphItem]:
+        has_prefix_op = bool(self.grammar.prefix_expressions)
+        has_bin_op = bool(self.grammar.complex_expressions)
+
+        if has_bin_op:
+            if has_prefix_op:
+                return self._tp.fnap(_DESCRIPTION__PRECEDENCE__PREFIX_AND_BINARY)
+            else:
+                return self._tp.fnap(_DESCRIPTION__PRECEDENCE__ONLY_BINARY)
+        else:
+            return []
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         expression_lists = [
@@ -181,11 +196,18 @@ A string that is not the name of {concept_name:a}
 is interpreted as the name of {symbol_concept:a}.
 """
 
-_GLOBAL_DESCRIPTION = """\
+_BIN_OP_PRECEDENCE = 'All binary operators have the same precedence.'
+
+_DESCRIPTION__PRECEDENCE__ONLY_BINARY = """\
+{BIN_OP_PRECEDENCE}
+"""
+
+_DESCRIPTION__PRECEDENCE__PREFIX_AND_BINARY = """\
 Prefix operators have the highest precedence.
 
-All binary operators have the same precedence.
+{BIN_OP_PRECEDENCE}
+"""
 
-
+_DESCRIPTION__SYNTAX = """\
 Operators and parentheses must be separated by whitespace.
 """
