@@ -15,8 +15,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -66,7 +66,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
+class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
     def test(self):
 
         expected_defined_symbol = ConstantSuffixPathDdvSymbolContext('name',
@@ -87,20 +87,21 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
                                            name=expected_defined_symbol.name,
                                            suffix=expected_defined_symbol.path_suffix)
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    self._check(source,
-                                ArrangementWithSds(),
-                                Expectation(
-                                    symbol_usages=assert_symbol_usages_is_singleton_list(
-                                        expected_defined_symbol.assert_matches_definition_of_sdv
-                                    ),
-                                    symbols_after_main=assert_symbol_table_is_singleton(
-                                        expected_defined_symbol.name,
-                                        expected_defined_symbol.value.assert_matches_container_of_sdv)
-                                )
-                                )
+                    INSTRUCTION_CHECKER.check(self,
+                                              source,
+                                              ArrangementWithSds(),
+                                              Expectation(
+                                                  symbol_usages=assert_symbol_usages_is_singleton_list(
+                                                      expected_defined_symbol.assert_matches_definition_of_sdv
+                                                  ),
+                                                  symbols_after_main=assert_symbol_table_is_singleton(
+                                                      expected_defined_symbol.name,
+                                                      expected_defined_symbol.value.assert_matches_container_of_sdv)
+                                              )
+                                              )
 
 
-class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
+class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
     def test(self):
         expected_defined_symbol = ConstantSuffixPathDdvSymbolContext('name',
                                                                      REL_OPTIONS_CONFIGURATION.default_option,
@@ -111,19 +112,21 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
                                    suffix=expected_defined_symbol.path_suffix)
 
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            self._check(source,
-                        ArrangementWithSds(),
-                        Expectation(
-                            symbol_usages=assert_symbol_usages_is_singleton_list(
-                                expected_defined_symbol.assert_matches_definition_of_sdv
-                            ),
-                            symbols_after_main=assert_symbol_table_is_singleton(
-                                'name',
-                                expected_defined_symbol.value.assert_matches_container_of_sdv))
-                        )
+            INSTRUCTION_CHECKER.check(
+                self,
+                source,
+                ArrangementWithSds(),
+                Expectation(
+                    symbol_usages=assert_symbol_usages_is_singleton_list(
+                        expected_defined_symbol.assert_matches_definition_of_sdv
+                    ),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        'name',
+                        expected_defined_symbol.value.assert_matches_container_of_sdv))
+            )
 
 
-class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
+class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
     def test(self):
         instruction_argument = src('{path_type} ASSIGNED_NAME = {rel_symbol} REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
@@ -134,19 +137,21 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                 path_part_sdvs.from_constant_str('component'))
             expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
             expected_symbol = PathSymbolContext('ASSIGNED_NAME', expected_symbol_value)
-            self._check(source,
-                        ArrangementWithSds(),
-                        Expectation(
-                            symbol_usages=asrt.matches_sequence([
-                                expected_symbol.assert_matches_definition_of_sdv
-                            ]),
-                            symbols_after_main=assert_symbol_table_is_singleton(
-                                expected_symbol.name,
-                                expected_symbol_value.assert_matches_container_of_sdv))
-                        )
+            INSTRUCTION_CHECKER.check(
+                self,
+                source,
+                ArrangementWithSds(),
+                Expectation(
+                    symbol_usages=asrt.matches_sequence([
+                        expected_symbol.assert_matches_definition_of_sdv
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        expected_symbol.name,
+                        expected_symbol_value.assert_matches_container_of_sdv))
+            )
 
 
-class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
+class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
     def test(self):
         with tmp_dir() as abs_path_of_dir_containing_last_file_base_name:
             fs_location_info = FileSystemLocationInfo(
@@ -158,14 +163,16 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
                                        paths.constant_path_part('component')))
                 expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
                 expected_symbol = PathSymbolContext('name', expected_symbol_value)
-                self._check(source,
-                            ArrangementWithSds(fs_location_info=fs_location_info),
-                            Expectation(
-                                symbol_usages=assert_symbol_usages_is_singleton_list(
-                                    expected_symbol.assert_matches_definition_of_sdv
-                                ),
-                                symbols_after_main=assert_symbol_table_is_singleton(
-                                    'name',
-                                    expected_symbol_value.assert_matches_container_of_sdv)
-                            )
-                            )
+                INSTRUCTION_CHECKER.check(
+                    self,
+                    source,
+                    ArrangementWithSds(fs_location_info=fs_location_info),
+                    Expectation(
+                        symbol_usages=assert_symbol_usages_is_singleton_list(
+                            expected_symbol.assert_matches_definition_of_sdv
+                        ),
+                        symbols_after_main=assert_symbol_table_is_singleton(
+                            'name',
+                            expected_symbol_value.assert_matches_container_of_sdv)
+                    )
+                )

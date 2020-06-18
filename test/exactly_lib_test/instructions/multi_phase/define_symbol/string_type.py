@@ -5,8 +5,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -47,7 +47,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestSuccessfulDefinition(TestCaseBaseForParser):
+class TestSuccessfulDefinition(unittest.TestCase):
     def test_assignment_of_single_constant_word(self):
         argument_cases = [
             NameAndValue('value on same line',
@@ -71,7 +71,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                         expected_symbol.value.assert_matches_container_of_sdv,
                     )
                 )
-                self._check(source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
@@ -91,7 +91,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
             )
         )
         # ACT & ASSERT #
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_single_symbol_reference_syntax_within_hard_quotes(self):
         # ARRANGE #
@@ -112,7 +112,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
             )
         )
         # ACT & ASSERT #
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_symbols_and_constant_text_within_soft_quotes(self):
         # ARRANGE #
@@ -140,10 +140,10 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
             )
         )
         # ACT & ASSERT #
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
 
-class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
+class TestSuccessfulDefinitionFromHereDocument(unittest.TestCase):
     def test_assignment_of_single_constant_line(self):
         value_str = 'value'
         symbol_name = 'name1'
@@ -169,7 +169,7 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
             source=asrt_source.is_at_beginning_of_line(4)
         )
         # ACT & ASSERT #
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_single_symbol_reference(self):
         # ARRANGE #
@@ -199,4 +199,4 @@ class TestSuccessfulDefinitionFromHereDocument(TestCaseBaseForParser):
             )
         )
         # ACT & ASSERT #
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)

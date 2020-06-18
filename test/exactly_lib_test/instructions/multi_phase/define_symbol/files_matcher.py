@@ -14,9 +14,9 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_rsrcs import matcher_helpers
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
@@ -48,7 +48,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestSuccessfulScenarios(TestCaseBaseForParser):
+class TestSuccessfulScenarios(unittest.TestCase):
     def test_successful_parse_of_arbitrary_matcher(self):
         defined_name = 'defined_name'
 
@@ -91,7 +91,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
                 # ACT & ASSERT #
 
-                self._check(source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_successful_parse_of_reference(self):
         defined_name = 'defined_name'
@@ -134,7 +134,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         # ACT & ASSERT #
 
-        self._check(source, arrangement, expectation)
+        INSTRUCTION_CHECKER.check(self, source, arrangement, expectation)
 
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
         # ARRANGE #
@@ -191,7 +191,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                self._check(source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     @staticmethod
     def _not_num_files_beginning_with_a_eq_1_arg() -> str:
@@ -213,7 +213,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         )
 
 
-class TestUnsuccessfulScenarios(TestCaseBaseForParser):
+class TestUnsuccessfulScenarios(unittest.TestCase):
     def test_failing_parse(self):
         cases = [
             NameAndValue(

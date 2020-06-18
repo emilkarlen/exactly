@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.symbol.data import list_sdvs as lrs
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestListSuccessfulParse)
 
 
-class TestListSuccessfulParse(TestCaseBaseForParser):
+class TestListSuccessfulParse(unittest.TestCase):
     def test_assignment_of_empty_list(self):
         list_symbol = ListSymbolContext.of_empty('the_symbol_name')
         sb = SB.new_with(symbol_name=list_symbol.name)
@@ -49,7 +49,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                     ),
                     source=case.source_assertion
                 )
-                self._check(case.source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, case.source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_list_with_multiple_constant_elements(self):
         value_without_space = 'value_without_space'
@@ -93,7 +93,7 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
                     ),
                     source=case.source_assertion,
                 )
-                self._check(case.source, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, case.source, ArrangementWithSds(), expectation)
 
     def test_assignment_of_list_with_symbol_references(self):
         referred_symbol = SymbolWithReferenceSyntax('referred_symbol')
@@ -121,4 +121,4 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
             ),
             source=asrt_source.is_at_beginning_of_line(2),
         )
-        self._check(source, ArrangementWithSds(), expectation)
+        INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)

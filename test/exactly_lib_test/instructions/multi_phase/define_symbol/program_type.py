@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.type_system.value_type import LogicValueType
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_case_base import TestCaseBaseForParser
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
@@ -26,7 +26,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestSuccessfulDefinition(TestCaseBaseForParser):
+class TestSuccessfulDefinition(unittest.TestCase):
     def test_assignment_of_program_without_arguments(self):
         python_source = 'exit(72)'
 
@@ -83,4 +83,4 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                         value_assertion=expected_symbol_container,
                     )
                 )
-                self._check(argument_case.input_value, ArrangementWithSds(), expectation)
+                INSTRUCTION_CHECKER.check(self, argument_case.input_value, ArrangementWithSds(), expectation)

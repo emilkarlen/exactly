@@ -8,9 +8,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
-from exactly_lib_test.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
@@ -33,17 +32,7 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               source: ParseSource,
-               arrangement: ArrangementWithSds,
-               expectation: Expectation,
-               ):
-        parser = sut.EmbryoParser()
-        embryo_check.check(self, parser, source, arrangement, expectation)
-
-
-class Test(TestCaseBase):
+class Test(unittest.TestCase):
     def test_successful_parse(self):
         name_pattern = 'the name pattern'
         non_matching_name = 'non-matching name'
@@ -111,7 +100,7 @@ class Test(TestCaseBase):
                         )
                     )
                     # ACT & ASSERT #
-                    self._check(source, ArrangementWithSds(), expectation)
+                    INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
 
     def test_failing_parse(self):
         cases = [
