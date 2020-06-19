@@ -3,7 +3,7 @@ from typing import Tuple, Callable, List, Sequence
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
@@ -53,6 +53,30 @@ from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.table import TableCell
+
+
+class _TypeSetup:
+    def __init__(self,
+                 type_info: TypeNameAndCrossReferenceId,
+                 parser: Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentValue]],
+                 value_arguments: List[a.ArgumentUsage],
+                 ):
+        self.type_info = type_info
+        self.parser = parser
+        self.value_type = type_info.value_type
+        self.value_arguments = value_arguments
+
+    @staticmethod
+    def new_with_std_syntax(
+            type_info: TypeNameAndCrossReferenceId,
+            parser: Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentValue]],
+    ) -> '_TypeSetup':
+        return _TypeSetup(
+            type_info,
+            parser,
+            syntax.ANY_TYPE_INFO_DICT[type_info.value_type].value_arguments,
+        )
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
@@ -63,16 +87,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         super().__init__(name,
                          {
                              'NAME': self.name.name,
-                             'current_directory_concept': formatting.concept_(
-                                 concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-                             'PATH_ARG': _PATH_ARGUMENT.name,
-                             'SYMBOL_CONCEPT': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
-                             'SYMBOLS_CONCEPT': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
+                             'SYMBOL': concepts.SYMBOL_CONCEPT_INFO.name,
                          },
                          is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._tp.format('Defines a ' + concepts.SYMBOL_CONCEPT_INFO.singular_name)
+        return self._tp.format('Defines {SYMBOL:a}')
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
@@ -113,22 +133,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     @staticmethod
     def _types_table() -> docs.ParagraphItem:
-        def type_row(type_info: TypeNameAndCrossReferenceId) -> list:
-            type_syntax_info = syntax.ANY_TYPE_INFO_DICT[type_info.value_type]
-
-            first_column = docs.text_cell(syntax_text(type_info.identifier))
-
-            if type_info.value_type == ValueType.STRING:
-                arg = a.Choice(a.Multiplicity.MANDATORY,
-                               [instruction_arguments.STRING,
-                                instruction_arguments.HERE_DOCUMENT])
-                second_column = [arg]
-            else:
-                second_column = type_syntax_info.value_arguments
-
+        def type_row(type_setup: _TypeSetup) -> List[TableCell]:
             return [
-                first_column,
-                docs.text_cell(syntax_text(cl_syntax.cl_syntax_for_args(second_column))),
+                docs.text_cell(syntax_text(type_setup.type_info.identifier)),
+                docs.text_cell(syntax_text(cl_syntax.cl_syntax_for_args(type_setup.value_arguments))),
             ]
 
         rows = [
@@ -138,7 +146,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             ]
         ]
 
-        rows += map(type_row, types.ALL_TYPES_INFO_TUPLE)
+        rows += map(type_row, _TYPE_SETUPS_LIST)
 
         return docs.first_row_is_header_table(rows)
 
@@ -307,39 +315,34 @@ def _parse_program(fs_location_info: FileSystemLocationInfo,
     return True, sdv
 
 
-class TypeSetup:
-    def __init__(self,
-                 value_type: ValueType,
-                 parser: Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolDependentValue]]
-                 ):
-        self.value_type = value_type
-        self.parser = parser
-
+_TYPE_SETUPS_LIST = [
+    _TypeSetup(types.STRING_TYPE_INFO,
+               _parse_string,
+               [
+                   a.Choice(a.Multiplicity.MANDATORY,
+                            [instruction_arguments.STRING,
+                             instruction_arguments.HERE_DOCUMENT])
+               ]),
+    _TypeSetup.new_with_std_syntax(types.LIST_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_list)),
+    _TypeSetup.new_with_std_syntax(types.PATH_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_path)),
+    _TypeSetup.new_with_std_syntax(types.LINE_MATCHER_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_line_matcher)),
+    _TypeSetup.new_with_std_syntax(types.FILE_MATCHER_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_file_matcher)),
+    _TypeSetup.new_with_std_syntax(types.FILES_MATCHER_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_files_matcher)),
+    _TypeSetup.new_with_std_syntax(types.STRING_MATCHER_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_string_matcher)),
+    _TypeSetup.new_with_std_syntax(types.STRING_TRANSFORMER_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_string_transformer)),
+    _TypeSetup.new_with_std_syntax(types.PROGRAM_TYPE_INFO, _parse_program),
+]
 
 _TYPE_SETUPS = {
-    types.PATH_TYPE_INFO.identifier:
-        TypeSetup(ValueType.PATH, _parse_not_whole_line(_parse_path)),
-    types.STRING_TYPE_INFO.identifier:
-        TypeSetup(ValueType.STRING, _parse_string),
-    types.LIST_TYPE_INFO.identifier:
-        TypeSetup(ValueType.LIST, _parse_not_whole_line(_parse_list)),
-    types.LINE_MATCHER_TYPE_INFO.identifier:
-        TypeSetup(ValueType.LINE_MATCHER,
-                  _parse_not_whole_line(_parse_line_matcher)),
-    types.STRING_MATCHER_TYPE_INFO.identifier:
-        TypeSetup(ValueType.STRING_MATCHER,
-                  _parse_not_whole_line(_parse_string_matcher)),
-    types.FILE_MATCHER_TYPE_INFO.identifier:
-        TypeSetup(ValueType.FILE_MATCHER,
-                  _parse_not_whole_line(_parse_file_matcher)),
-    types.FILES_MATCHER_TYPE_INFO.identifier:
-        TypeSetup(ValueType.FILES_MATCHER,
-                  _parse_not_whole_line(_parse_files_matcher)),
-    types.STRING_TRANSFORMER_TYPE_INFO.identifier:
-        TypeSetup(ValueType.STRING_TRANSFORMER,
-                  _parse_not_whole_line(_parse_string_transformer)),
-    types.PROGRAM_TYPE_INFO.identifier:
-        TypeSetup(ValueType.PROGRAM, _parse_program),
+    ts.type_info.identifier: ts
+    for ts in _TYPE_SETUPS_LIST
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
