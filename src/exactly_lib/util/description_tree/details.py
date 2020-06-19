@@ -33,6 +33,16 @@ class SequenceRenderer(DetailsRenderer):
         )
 
 
+class IndentedRenderer(DetailsRenderer):
+    def __init__(self, details: DetailsRenderer):
+        self._details = details
+
+    def render(self) -> Sequence[Detail]:
+        return [
+            tree.IndentedDetail(self._details.render())
+        ]
+
+
 class String(DetailsRenderer):
     def __init__(self, to_string_object: ToStringObject):
         self._to_string_object = to_string_object

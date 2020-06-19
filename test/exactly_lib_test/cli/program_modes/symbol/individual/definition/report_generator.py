@@ -18,7 +18,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.symbol.data.test_resources import path, list_
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
-    string_transformer, program, string
+    files_condition, string_transformer, program, string
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
@@ -255,6 +255,7 @@ _VALUE_CONTEXTS_OF_EVERY_TYPE = [
     file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     files_matcher_sc.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
+    files_condition.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 ]

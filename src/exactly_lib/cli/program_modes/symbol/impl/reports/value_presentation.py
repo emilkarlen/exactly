@@ -91,7 +91,7 @@ class _BlockForDetails(ResolvedValuePresentationBlock):
         self._details = details
 
     def render(self) -> text_struct.MajorBlock:
-        raise NotImplementedError('unsupported')
+        return structure_rendering.details_as_major_block(self._details.render()).render()
 
 
 class _BlockForCustomRenderer(ResolvedValuePresentationBlock):

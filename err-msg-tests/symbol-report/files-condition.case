@@ -1,0 +1,16 @@
+[setup]
+
+def file-matcher FM_CONSTANT = constant true
+
+def files-condition CONSTANT__EMPTY = { }
+
+def files-condition CONSTANT__WO_FILE_MATCHERS = {
+  1st-name
+  2nd-name
+  }
+
+def files-condition CONSTANT__W_FILE_MATCHERS = {
+  1st-name : constant true
+  2nd-name : FM_CONSTANT
+  3rd-name
+  }

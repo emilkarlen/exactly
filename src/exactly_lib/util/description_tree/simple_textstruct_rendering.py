@@ -78,12 +78,18 @@ class TreeRendererToMinorBlocks(Generic[NODE_DATA], SequenceRenderer[MinorBlock]
         )
 
     def _details_renderer(self) -> SequenceRenderer[LineElement]:
-        return rend_comb.ConcatenationR(
-            [
-                _LineElementRendererForDetail(self._configuration, 0, detail)
-                for detail in self._tree.details
-            ]
-        )
+        return details_renderer_to_line_elements(self._configuration, self._tree.details)
+
+
+def details_renderer_to_line_elements(configuration: RenderingConfiguration[NODE_DATA],
+                                      details: Sequence[Detail]
+                                      ) -> SequenceRenderer[LineElement]:
+    return rend_comb.ConcatenationR(
+        [
+            _LineElementRendererForDetail(configuration, 0, detail)
+            for detail in details
+        ]
+    )
 
 
 class _LineElementRendererForDetail(SequenceRenderer[LineElement],

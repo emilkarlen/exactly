@@ -205,10 +205,20 @@ class _Describer(Generic[TSD], DetailsRenderer):
         if len(entries) == 0:
             return _EMPTY_RENDERER
         else:
-            return details.SequenceRenderer([
-                self._file(fn, mb_matcher)
-                for fn, mb_matcher in entries
-            ])
+            return self._renderer_of_non_empty(entries)
+
+    def _renderer_of_non_empty(self, entries: Sequence[Tuple[Renderer[str], Optional[TSD]]]
+                               ) -> DetailsRenderer:
+        entries_renderer = details.SequenceRenderer([
+            self._file(fn, mb_matcher)
+            for fn, mb_matcher in entries
+        ])
+
+        return details.SequenceRenderer([
+            _BEGIN_BRACE_RENDERER,
+            details.IndentedRenderer(entries_renderer),
+            _END_BRACE_RENDERER,
+        ])
 
     @staticmethod
     def _file(path: Renderer[str],
@@ -267,3 +277,7 @@ class _DdvHelper:
 
 
 _EMPTY_RENDERER = details.String(' '.join((syntax.BEGIN_BRACE, syntax.END_BRACE)))
+
+_BEGIN_BRACE_RENDERER = details.String(syntax.BEGIN_BRACE)
+
+_END_BRACE_RENDERER = details.String(syntax.END_BRACE)
