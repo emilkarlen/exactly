@@ -64,10 +64,10 @@ class Test(unittest.TestCase):
         defined_name = 'defined_name'
         argument_cases = [
             NameAndValue('value on same line',
-                         '{file_matcher_type} {defined_name} = {selector_argument}'
+                         '{selector_argument}'
                          ),
             NameAndValue('value on following line',
-                         '{file_matcher_type} {defined_name} = {new_line} {selector_argument}'
+                         '{new_line} {selector_argument}'
                          ),
         ]
 
@@ -76,9 +76,8 @@ class Test(unittest.TestCase):
                 with self.subTest(case.name,
                                   arguments=argument_case.name):
                     source = single_line_source(
-                        src(argument_case.value,
-                            defined_name=defined_name,
-                            selector_argument=case.input_value),
+                        src2(ValueType.FILE_MATCHER, defined_name, argument_case.value,
+                             selector_argument=case.input_value),
                     )
 
                     expected_container = matches_container_of_logic_type(
@@ -123,9 +122,7 @@ class Test(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 source = single_line_source(
-                    src('{file_matcher_type} {defined_name} = {selector_argument}',
-                        defined_name=defined_name,
-                        selector_argument=case.value),
+                    src2(ValueType.FILE_MATCHER, defined_name, case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

@@ -103,11 +103,8 @@ class TestListSuccessfulParse(unittest.TestCase):
             lrs.from_elements([lrs.symbol_element(expected_symbol_reference)])
         )
 
-        source = remaining_source(src(
-            '{list_type} {symbol_name} = {symbol_reference} ',
-            symbol_name=symbol_to_assign.name,
-            symbol_reference=referred_symbol,
-        ),
+        source = remaining_source(
+            src2(ValueType.LIST, symbol_to_assign.name, str(referred_symbol)),
             ['following line'],
         )
 

@@ -2,10 +2,11 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
     INVALID_SYNTAX_CASES
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import src
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import src2
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -48,7 +49,7 @@ class TestFailWhenInvalidSyntax(TestCaseBase):
 
 class TestSuccessfulDefinition(TestCaseBase):
     def runTest(self):
-        source = src('{string_type} name = value')
+        source = src2(ValueType.STRING, 'name', 'value')
         expected_symbol = StringConstantSymbolContext('name', 'value')
 
         self.conf.run_single_line_test_with_source_variants_and_source_check(

@@ -1,6 +1,10 @@
+from typing import List
+
 from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as file_matcher_syntax
@@ -22,6 +26,20 @@ def src(s: str,
         return s.format_map(formats)
 
 
+def src2(type_: ValueType,
+         symbol_name: str,
+         value_template: str,
+         **kwargs) -> str:
+    format_map = _STD_FORMAT_MAP
+    if kwargs:
+        format_map = dict(_STD_FORMAT_MAP, **kwargs)
+
+    return ' '.join([ANY_TYPE_INFO_DICT[type_].identifier,
+                     symbol_name,
+                     '=',
+                     value_template.format_map(format_map)])
+
+
 _STD_FORMAT_MAP = {
     'path_type': types.PATH_TYPE_INFO.identifier,
     'string_type': types.STRING_TYPE_INFO.identifier,
@@ -30,7 +48,7 @@ _STD_FORMAT_MAP = {
     'string_matcher_type': types.STRING_MATCHER_TYPE_INFO.identifier,
     'file_matcher_type': types.FILE_MATCHER_TYPE_INFO.identifier,
     'files_matcher_type': types.FILES_MATCHER_TYPE_INFO.identifier,
-    'lines_trans_type': types.STRING_TRANSFORMER_TYPE_INFO.identifier,
+    'string_trans_type': types.STRING_TRANSFORMER_TYPE_INFO.identifier,
     'program_type': types.PROGRAM_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
@@ -71,7 +89,7 @@ def arbitrary_string_source(s: str,
 
 
 def multi_line_source(first_line: str,
-                      following_lines: list,
+                      following_lines: List[str],
                       **kwargs) -> ParseSource:
     return remaining_source(src(first_line, **kwargs),
                             [src(line, **kwargs) for line in following_lines])

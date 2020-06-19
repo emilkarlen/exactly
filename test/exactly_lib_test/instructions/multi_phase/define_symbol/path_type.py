@@ -46,16 +46,15 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
             NameAndValue('Invalid path syntax',
-                         src('{path_type} name = {invalid_option} x',
-                             invalid_option=option_syntax.long_option_syntax('invalid-option'))
+                         src2(ValueType.PATH, 'name', '{invalid_option} x',
+                              invalid_option=option_syntax.long_option_syntax('invalid-option'))
                          ),
             NameAndValue('Superfluous arguments',
-                         src('{path_type} name = {rel_opt} x superfluous-arg',
-                             rel_opt=REL_ACT_OPTION)
+                         src2(ValueType.PATH, 'name', '{rel_opt} x superfluous-arg',
+                              rel_opt=REL_ACT_OPTION)
                          ),
             NameAndValue('Missing PATH',
-                         src('{path_type} name = ',
-                             rel_opt=REL_ACT_OPTION)
+                         src2(ValueType.PATH, 'name', '')
                          ),
         ]
         parser = sut.EmbryoParser()
@@ -74,18 +73,19 @@ class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
                                                                      'component')
         argument_cases = [
             NameAndValue('value on same line',
-                         '{path_type} {name} = {rel_act} {suffix}'
+                         '{rel_act} {suffix}'
                          ),
             NameAndValue('value on following line',
-                         '{path_type} {name} = {new_line} {rel_act} {suffix}'
+                         '{new_line} {rel_act} {suffix}'
                          ),
         ]
 
         for argument_case in argument_cases:
             with self.subTest(arguments=argument_case.name):
-                instruction_argument = src(argument_case.value,
-                                           name=expected_defined_symbol.name,
-                                           suffix=expected_defined_symbol.path_suffix)
+                instruction_argument = src2(ValueType.PATH,
+                                            expected_defined_symbol.name,
+                                            argument_case.value,
+                                            suffix=expected_defined_symbol.path_suffix)
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     INSTRUCTION_CHECKER.check(self,
                                               source,
@@ -107,9 +107,9 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
                                                                      REL_OPTIONS_CONFIGURATION.default_option,
                                                                      'component')
 
-        instruction_argument = src('{path_type} {name} = {suffix}',
-                                   name=expected_defined_symbol.name,
-                                   suffix=expected_defined_symbol.path_suffix)
+        instruction_argument = src2(ValueType.PATH,
+                                    expected_defined_symbol.name,
+                                    expected_defined_symbol.path_suffix)
 
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             INSTRUCTION_CHECKER.check(
@@ -128,7 +128,7 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
 
 class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
     def test(self):
-        instruction_argument = src('{path_type} ASSIGNED_NAME = {rel_symbol} REFERENCED_SYMBOL component')
+        instruction_argument = src2(ValueType.PATH, 'ASSIGNED_NAME', '{rel_symbol} REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_path_sdv = path_sdvs.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
@@ -156,7 +156,7 @@ class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
         with tmp_dir() as abs_path_of_dir_containing_last_file_base_name:
             fs_location_info = FileSystemLocationInfo(
                 FileLocationInfo(abs_path_of_dir_containing_last_file_base_name))
-            instruction_argument = src('{path_type} name = {rel_source_file} component')
+            instruction_argument = src2(ValueType.PATH, 'name', '{rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                 expected_path_sdv = path_sdvs.constant(
                     paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,

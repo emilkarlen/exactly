@@ -55,12 +55,12 @@ class TestSuccessfulScenarios(unittest.TestCase):
             SourceCase('Expression on single line',
                        source=
                        remaining_source(
-                           src('{lines_trans_type} {defined_name} = {transformer_argument}',
-                               defined_name=defined_name,
-                               transformer_argument=argument_syntax.syntax_for_sequence_of_transformers([
-                                   symbol.name,
-                                   replace_transformer_syntax,
-                               ])),
+                           src2(ValueType.STRING_TRANSFORMER,
+                                defined_name,
+                                argument_syntax.syntax_for_sequence_of_transformers([
+                                    symbol.name,
+                                    replace_transformer_syntax,
+                                ])),
                            following_lines=['following line'],
                        ),
                        source_assertion=asrt_source.is_at_beginning_of_line(2)
@@ -68,12 +68,11 @@ class TestSuccessfulScenarios(unittest.TestCase):
             SourceCase('Expression on following line',
                        source=
                        remaining_source(
-                           src('{lines_trans_type} {defined_name} = {new_line} {transformer_argument}',
-                               defined_name=defined_name,
-                               transformer_argument=argument_syntax.syntax_for_sequence_of_transformers([
-                                   symbol.name,
-                                   replace_transformer_syntax,
-                               ])),
+                           src2(ValueType.STRING_TRANSFORMER, defined_name, '{new_line} {transformer_argument}',
+                                transformer_argument=argument_syntax.syntax_for_sequence_of_transformers([
+                                    symbol.name,
+                                    replace_transformer_syntax,
+                                ])),
                            following_lines=['following line'],
                        ),
                        source_assertion=asrt_source.is_at_beginning_of_line(3)
@@ -81,10 +80,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
             SourceCase('1st expr on first line followed by operator, 2nd expr on next line',
                        source=
                        remaining_source(
-                           src('{lines_trans_type} {defined_name} = {symbol_name} {sequence_operator}',
-                               defined_name=defined_name,
-                               symbol_name=symbol.name,
-                               sequence_operator=SEQUENCE_OPERATOR_NAME),
+                           src2(ValueType.STRING_TRANSFORMER, defined_name, '{the_symbol_name} {sequence_operator}',
+                                the_symbol_name=symbol.name,
+                                sequence_operator=SEQUENCE_OPERATOR_NAME),
                            following_lines=[replace_transformer_syntax],
                        ),
                        source_assertion=asrt_source.source_is_at_end
@@ -92,10 +90,9 @@ class TestSuccessfulScenarios(unittest.TestCase):
             SourceCase('1st expr on first line followed by operator, 2nd expr on next line, non-exr on 3rd line',
                        source=
                        remaining_source(
-                           src('{lines_trans_type} {defined_name} = {symbol_name} {sequence_operator}',
-                               defined_name=defined_name,
-                               symbol_name=symbol.name,
-                               sequence_operator=SEQUENCE_OPERATOR_NAME),
+                           src2(ValueType.STRING_TRANSFORMER, defined_name, '{the_symbol_name} {sequence_operator}',
+                                the_symbol_name=symbol.name,
+                                sequence_operator=SEQUENCE_OPERATOR_NAME),
                            following_lines=[replace_transformer_syntax,
                                             'following line'],
                        ),
@@ -156,9 +153,7 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 source = single_line_source(
-                    src('{lines_trans_type} {defined_name} = {transformer_argument}',
-                        defined_name=defined_name,
-                        transformer_argument=case.value),
+                    src2(ValueType.STRING_TRANSFORMER, defined_name, case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

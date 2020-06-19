@@ -56,19 +56,18 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         argument_cases = [
             NameAndValue('value on same line',
-                         '{files_matcher_type} {defined_name} = {matcher_argument}'
+                         '{matcher_argument}'
                          ),
             NameAndValue('value on following line',
-                         '{files_matcher_type} {defined_name} = {new_line} {matcher_argument}'
+                         '{new_line} {matcher_argument}'
                          ),
         ]
 
         for case in argument_cases:
             with self.subTest(case.name):
                 source = single_line_source(
-                    src(case.value,
-                        defined_name=defined_name,
-                        matcher_argument=arg_syntax.arbitrary_single_line_value_that_must_not_be_quoted()),
+                    src2(ValueType.FILES_MATCHER, defined_name, case.value,
+                         matcher_argument=arg_syntax.arbitrary_single_line_value_that_must_not_be_quoted()),
                 )
 
                 # EXPECTATION #
@@ -103,9 +102,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
         # ARRANGE #
 
         source = single_line_source(
-            src('{files_matcher_type} {defined_name} = {matcher_argument}',
-                defined_name=defined_name,
-                matcher_argument=referenced_symbol.name),
+            src2(ValueType.FILES_MATCHER, defined_name, referenced_symbol.name),
         )
 
         arrangement = ArrangementWithSds()
@@ -170,9 +167,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         for case in cases:
             source = single_line_source(
-                src('{files_matcher_type} {defined_name} = {matcher_argument}',
-                    defined_name=defined_name,
-                    matcher_argument=not_num_files_beginning_with_a_eq_1_arg),
+                src2(ValueType.FILES_MATCHER, defined_name, not_num_files_beginning_with_a_eq_1_arg),
             )
             expectation = Expectation(
                 symbol_usages=asrt.matches_sequence([
@@ -235,9 +230,7 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 source = single_line_source(
-                    src('{files_matcher_type} {defined_name} = {matcher_argument}',
-                        defined_name=defined_name,
-                        matcher_argument=case.value),
+                    src2(ValueType.FILES_MATCHER, defined_name, case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #

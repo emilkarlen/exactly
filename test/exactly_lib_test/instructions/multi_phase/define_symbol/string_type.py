@@ -29,20 +29,23 @@ def suite() -> unittest.TestSuite:
 class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
-            ('Missing end quote (soft)',
-             src('{string_type} name = "string')
-             ),
-            ('Missing end quote (hard)',
-             src('{string_type} name = \'string')
-             ),
-            ('Superfluous arguments',
-             src('{path_type} name = x superfluous-arg')
-             ),
+            NameAndValue(
+                'Missing end quote (soft)',
+                src2(ValueType.STRING, 'name', '{soft_quote}string')
+            ),
+            NameAndValue(
+                'Missing end quote (hard)',
+                src2(ValueType.STRING, 'name', '{hard_quote}string')
+            ),
+            NameAndValue(
+                'Superfluous arguments',
+                src2(ValueType.PATH, 'name', 'x superfluous-arg')
+            ),
         ]
         parser = sut.EmbryoParser()
-        for (case_name, source_str) in test_cases:
-            source = remaining_source(source_str)
-            with self.subTest(msg=case_name):
+        for case in test_cases:
+            source = remaining_source(case.value)
+            with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 

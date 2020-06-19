@@ -59,19 +59,18 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         argument_cases = [
             NameAndValue('value on same line',
-                         '{line_match_type} {defined_name} = {matcher_argument}'
+                         '{matcher_argument}'
                          ),
             NameAndValue('value on following line',
-                         '{line_match_type} {defined_name} = {new_line} {matcher_argument}'
+                         '{new_line} {matcher_argument}'
                          ),
         ]
 
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
                 source = remaining_source(
-                    src(argument_case.value,
-                        defined_name=defined_name,
-                        matcher_argument=matcher_argument),
+                    src2(ValueType.LINE_MATCHER, defined_name, argument_case.value,
+                         matcher_argument=matcher_argument),
                     following_lines=['following line'],
                 )
 
@@ -128,14 +127,11 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
             ),
         ]
         # ARRANGE #
-        defined_name = 'defined_name'
         parser = sut.EmbryoParser()
         for case in cases:
             with self.subTest(name=case.name):
                 source = single_line_source(
-                    src('{line_match_type} {defined_name} = {matcher_argument}',
-                        defined_name=defined_name,
-                        matcher_argument=case.value),
+                    src2(ValueType.LINE_MATCHER, 'defined_name', case.value),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #
