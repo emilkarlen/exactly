@@ -1,0 +1,10 @@
+[setup]
+
+file r/s
+
+[assert]
+
+dir-contents . -recursive equals {
+  r
+  r/s
+  }
