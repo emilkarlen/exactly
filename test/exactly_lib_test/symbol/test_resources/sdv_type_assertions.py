@@ -8,6 +8,7 @@ from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionSdv, FilesConditionDdv
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -125,6 +126,25 @@ def matches_sdv_of_string_matcher(references: ValueAssertion[Sequence[SymbolRefe
         references,
         symbols,
         tcds)
+
+
+def matches_sdv_of_files_condition_constant(
+        references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
+        primitive_value: ValueAssertion[FilesCondition] = asrt.anything_goes(),
+        symbols: SymbolTable = None
+) -> ValueAssertion[SymbolDependentValue]:
+    return matches_sdv(
+        asrt.is_instance(FilesConditionSdv),
+        references,
+        asrt.is_instance_with(
+            FilesConditionDdv,
+            asrt_logic.matches_logic_ddv(
+                lambda tcds: asrt.is_instance_with(FilesCondition, primitive_value)
+            )
+        ),
+        asrt.anything_goes(),
+        symbol_table_from_none_or_value(symbols)
+    )
 
 
 def matches_sdv_of_string_transformer_constant(

@@ -43,6 +43,9 @@ class FilesConditionArg(FromArgumentElementsBase, ABC):
     def elements(self) -> List[WithToString]:
         raise ValueError('unsupported')
 
+    def __str__(self):
+        return self.as_arguments.as_single_string
+
 
 class FilesCondition(FilesConditionArg):
     def __init__(self, files: Sequence[FileCondition]):

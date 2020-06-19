@@ -33,6 +33,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
+from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_path, parse_list
@@ -301,6 +303,12 @@ def _parse_files_matcher(fs_location_info: FileSystemLocationInfo,
                                                    must_be_on_current_line=False)
 
 
+def _parse_files_condition(fs_location_info: FileSystemLocationInfo,
+                           token_parser: TokenParser) -> FilesConditionSdv:
+    return parse_files_condition.parse(token_parser,
+                                       must_be_on_current_line=False)
+
+
 def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
                               token_parser: TokenParser) -> StringTransformerSdv:
     return parse_string_transformer.parse_string_transformer_from_token_parser(
@@ -335,6 +343,8 @@ _TYPE_SETUPS_LIST = [
                                    _parse_not_whole_line(_parse_files_matcher)),
     _TypeSetup.new_with_std_syntax(types.STRING_MATCHER_TYPE_INFO,
                                    _parse_not_whole_line(_parse_string_matcher)),
+    _TypeSetup.new_with_std_syntax(types.FILES_CONDITION_TYPE_INFO,
+                                   _parse_not_whole_line(_parse_files_condition)),
     _TypeSetup.new_with_std_syntax(types.STRING_TRANSFORMER_TYPE_INFO,
                                    _parse_not_whole_line(_parse_string_transformer)),
     _TypeSetup.new_with_std_syntax(types.PROGRAM_TYPE_INFO, _parse_program),

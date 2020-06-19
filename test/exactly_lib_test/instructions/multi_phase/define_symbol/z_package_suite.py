@@ -4,7 +4,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.define_symbol import \
     source_location, common_failing_cases, string_type, path_type, list_type, line_matcher, file_matcher, \
-    string_transformer, string_matcher, files_matcher, program_type
+    string_transformer, string_matcher, files_condition, files_matcher, program_type
 
 
 def suite() -> unittest.TestSuite:
@@ -16,6 +16,7 @@ def suite() -> unittest.TestSuite:
         list_type.suite(),
         line_matcher.suite(),
         file_matcher.suite(),
+        files_condition.suite(),
         files_matcher.suite(),
         string_transformer.suite(),
         string_matcher.suite(),
