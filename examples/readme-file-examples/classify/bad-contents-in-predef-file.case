@@ -18,6 +18,6 @@ classify-files-by-moving-to-appropriate-dir GOOD input/ output/
 
 dir-contents input        empty
 
-dir-contents output/good  equals { a.txt : type file }
+dir-contents output/good  matches -full { a.txt : type file }
 
-dir-contents output/bad   equals { b.txt : type file }
+dir-contents output/bad   matches -full { b.txt : type file }

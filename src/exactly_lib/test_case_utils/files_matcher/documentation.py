@@ -5,6 +5,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -56,29 +58,21 @@ class PruneDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
         return _TP.fnap(_PRUNE_DESCRIPTION)
 
 
-class _EqualsAndContainsDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
-    def __init__(self, description_rest_template: str):
-        self._description_rest_template = description_rest_template
-
+class MatchesDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.single_mandatory,
+        return (
+            a.Single(a.Multiplicity.OPTIONAL, config.MATCHES_FULL_OPTION),
+            syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.single_mandatory,
+        )
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(self._description_rest_template)
+        return _TP.fnap(_MATCHES_DESCRIPTION)
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
         return syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.cross_reference_target,
-
-
-def equals() -> grammar.SimpleExpressionDescription:
-    return _EqualsAndContainsDoc(_EQUALS_DESCRIPTION)
-
-
-def contains() -> grammar.SimpleExpressionDescription:
-    return _EqualsAndContainsDoc(_CONTAINS_DESCRIPTION)
 
 
 _TP = TextParser({
@@ -90,14 +84,16 @@ _TP = TextParser({
     'NOTE': misc_texts.NOTE_LINE_HEADER,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'symbolic_link': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK].name,
+    'matches_full_option': option_syntax.option_syntax(config.MATCHES_FULL_OPTION.name),
 })
 
-_EQUALS_DESCRIPTION = """\
-Tests that the set of files are exactly those of {FILES_CONDITION}.
-"""
-
-_CONTAINS_DESCRIPTION = """\
+_MATCHES_DESCRIPTION = """\
 Tests that the set of files contains every file in {FILES_CONDITION}.
+
+
+If {matches_full_option} is given,
+the set of files must contain no other files
+than those in {FILES_CONDITION}.
 """
 
 _SELECTION_DESCRIPTION = """\

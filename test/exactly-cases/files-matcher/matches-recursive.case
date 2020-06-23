@@ -4,7 +4,7 @@ file r/s
 
 [assert]
 
-dir-contents . -recursive equals {
+dir-contents . -recursive matches -full {
   r
   r/s
   }

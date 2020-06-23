@@ -104,26 +104,27 @@ class Prune(FilesMatcherArg):
         )
 
 
-class _FilesConditionContainmentBase(FromArgumentElementsBase, FilesMatcherArg, ABC):
+class MatchesFilesCondition(FromArgumentElementsBase, FilesMatcherArg, ABC):
     def __init__(self,
-                 files_matcher: str,
+                 full: bool,
                  files_condition: FilesConditionArg):
-        self.files_matcher = files_matcher
+        self.full = full
         self.files_condition = files_condition
 
     @property
     def as_argument_elements(self) -> ArgumentElements:
-        return self.files_condition.as_argument_elements.with_first_line_preceded_by([self.files_matcher])
+        form_arguments = [config.MATCHES_ARGUMENT]
+        if self.full:
+            form_arguments.append(option_syntax.option_syntax(config.MATCHES_FULL_OPTION.name))
+        return self.files_condition.as_argument_elements.with_first_line_preceded_by(form_arguments)
 
 
-class Contains(_FilesConditionContainmentBase):
-    def __init__(self, files_condition: FilesConditionArg):
-        super().__init__(config.CONTAINS_ARGUMENT, files_condition)
+def matches_non_full(files_condition: FilesConditionArg) -> FilesMatcherArg:
+    return MatchesFilesCondition(False, files_condition)
 
 
-class Equals(_FilesConditionContainmentBase):
-    def __init__(self, files_condition: FilesConditionArg):
-        super().__init__(config.EQUALS_ARGUMENT, files_condition)
+def matches_full(files_condition: FilesConditionArg) -> FilesMatcherArg:
+    return MatchesFilesCondition(True, files_condition)
 
 
 class AssertionVariantArgumentsConstructor:

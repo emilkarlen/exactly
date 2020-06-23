@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
+    MATCHES_NON_FULL__STRUCTURE_NAME
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
@@ -30,7 +31,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         # ACT & ASSERT #
         integration_check.CHECKER.check__w_source_variants(
             self,
-            args.Contains(fc_args.FilesConditionArg.empty()).as_arguments,
+            args.matches_non_full(fc_args.FilesConditionArg.empty()).as_arguments,
             model_constructor__non_recursive(checked_dir.path_sdv),
             Arrangement(
                 tcds=checked_dir.tcds_arrangement_dir_with_contents([
@@ -41,7 +42,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
                 ParseExpectation(
                     symbol_references=asrt.is_empty_sequence
                 ),
-                exe_w_added_header_matcher(config.CONTAINS_ARGUMENT,
+                exe_w_added_header_matcher(MATCHES_NON_FULL__STRUCTURE_NAME,
                                            MATCHING_EXECUTION_EXPECTATION),
             ),
         )
@@ -52,7 +53,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         name_of_file_not_in_fc_1 = 'file-not-in-files-condition-1'
         name_of_file_not_in_fc_2 = 'file-not-in-files-condition-2'
 
-        arguments = args.Contains(
+        arguments = args.matches_non_full(
             fc_args.FilesCondition([fc_args.FileCondition(name_of_file_in_fc)])
         )
 
@@ -106,7 +107,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         name_of_file_not_in_fc_1 = 'file-not-in-files-condition-1'
         name_of_file_not_in_fc_2 = 'file-not-in-files-condition-2'
 
-        arguments = args.Contains(
+        arguments = args.matches_non_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc,
                                       fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
@@ -171,7 +172,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         name_of_file_not_in_fc__3 = 'file-not-in-files-condition-3'
 
         file_matcher_name = 'the_file_matcher'
-        arguments = args.Contains(
+        arguments = args.matches_non_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc__1,
                                       fm_args.SymbolReferenceWSyntax(file_matcher_name)),
@@ -270,11 +271,11 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
 
 
 PRIM_AND_EXE_EXPECTATION__NON_MATCH = prim_and_exe_w_header_matcher(
-    config.CONTAINS_ARGUMENT,
+    MATCHES_NON_FULL__STRUCTURE_NAME,
     PrimAndExeExpectation.of_exe(main_result=asrt.equals(False))
 )
 
 PRIM_AND_EXE_EXPECTATION__MATCH = prim_and_exe_w_header_matcher(
-    config.CONTAINS_ARGUMENT,
+    MATCHES_NON_FULL__STRUCTURE_NAME,
     PrimAndExeExpectation.of_exe(main_result=asrt.equals(True))
 )

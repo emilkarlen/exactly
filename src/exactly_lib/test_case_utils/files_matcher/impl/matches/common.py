@@ -19,6 +19,7 @@ from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, Files
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherAdv, MatcherDdv, \
     MatchingResult
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -168,9 +169,15 @@ class MatcherSdvWithApplier(MatcherSdv[FilesMatcherModel]):
                            self._files_condition.resolve(symbols))
 
 
-def _structure_name(matcher: str) -> str:
-    return ' '.join((matcher, syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name))
+def _structure_name(full: bool) -> str:
+    elements = [
+        config.MATCHES_ARGUMENT,
+        syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
+    ]
+    if full:
+        elements.insert(1, option_syntax.option_syntax(config.MATCHES_FULL_OPTION.name))
+    return ' '.join(elements)
 
 
-EQUALS_STRUCTURE_NAME = _structure_name(config.EQUALS_ARGUMENT)
-CONTAINS_STRUCTURE_NAME = _structure_name(config.CONTAINS_ARGUMENT)
+MATCHES_FULL__STRUCTURE_NAME = _structure_name(True)
+MATCHES_NON_FULL__STRUCTURE_NAME = _structure_name(False)

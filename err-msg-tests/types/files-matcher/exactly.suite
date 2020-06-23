@@ -5,6 +5,5 @@ num-files
 file-quant
 selection
 prune
-contains
-equals
+matches
 complex

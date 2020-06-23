@@ -10,8 +10,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Added
 
  - Type `files-condition`
- - Type `files-matcher` - primitive `contains`
- - Type `files-matcher` - primitive `equals`
+ - Type `files-matcher` - primitive `matches`
 
 ### Changed
 

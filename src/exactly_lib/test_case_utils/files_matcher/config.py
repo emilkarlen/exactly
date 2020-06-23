@@ -29,9 +29,9 @@ NUM_FILES_PROPERTY_NAME = 'number of files in dir'
 
 EMPTINESS_PROPERTY_NAME = 'contents of dir'
 
-CONTAINS_ARGUMENT = 'contains'
+MATCHES_ARGUMENT = 'matches'
 
-EQUALS_ARGUMENT = 'equals'
+MATCHES_FULL_OPTION = a.option('full')
 
 SELECTION_OPTION = a.option('selection')
 

@@ -101,9 +101,9 @@ appropriate directory::
 
     dir-contents input        empty
 
-    dir-contents output/good  equals { a.txt : type file }
+    dir-contents output/good  matches -full { a.txt : type file }
 
-    dir-contents output/bad   equals { b.txt : type file }
+    dir-contents output/bad   matches -full { b.txt : type file }
 
 
 ``file`` and ``dir`` makes files in the current directory (by default).
@@ -336,7 +336,7 @@ and must contain a 'Makefile' with a target 'all'::
 
         type dir &&
         dir-contents
-          contains { Makefile : @[IS_VALID_MAKEFILE]@ }
+          matches { Makefile : @[IS_VALID_MAKEFILE]@ }
 
 
     def file-matcher ALL_PROJECT_DIRS_ARE_VALID =

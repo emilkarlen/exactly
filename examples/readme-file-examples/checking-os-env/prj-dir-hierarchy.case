@@ -22,7 +22,7 @@ def file-matcher IS_VALID_PROJECT_DIR =
 
     type dir &&
     dir-contents
-       contains { Makefile : @[IS_VALID_MAKEFILE]@ }
+       matches { Makefile : @[IS_VALID_MAKEFILE]@ }
 
 
 def file-matcher ALL_PROJECT_DIRS_ARE_VALID =

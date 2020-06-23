@@ -6,7 +6,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbo
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import \
-    check_contains_and_equals__multi, check_contains_and_equals, Case, NON_MATCHING_EXECUTION_EXPECTATION, \
+    check_non_full_and_full__multi, check_non_full_and_full, Case, NON_MATCHING_EXECUTION_EXPECTATION, \
     MATCHING_EXECUTION_EXPECTATION, IS_REGULAR_FILE_FILE_MATCHER, IS_DIR_FILE_MATCHER, \
     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_constructor__non_recursive, \
@@ -40,7 +40,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
         )
         file_in_model = 'a-file'
         # ACT & ASSERT #
-        check_contains_and_equals(
+        check_non_full_and_full(
             self,
             fc_args.FilesCondition([
                 fc_args.FileCondition(
@@ -158,7 +158,7 @@ class TestFailWhenFewerFilesInModel(unittest.TestCase):
         for files_condition_w_2_files_case in files_condition_w_2_files_cases:
             with self.subTest(files_condition_w_2_files_case.name):
                 # ACT & ASSERT #
-                check_contains_and_equals__multi(
+                check_non_full_and_full__multi(
                     self,
                     files_condition_w_2_files_case.input_value,
                     symbol_references=files_condition_w_2_files_case.expected_value,
@@ -244,7 +244,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                check_contains_and_equals(
+                check_non_full_and_full(
                     self,
                     case.files_condition,
                     model_constructor__non_recursive(checked_dir.path_sdv),
@@ -343,7 +343,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                check_contains_and_equals(
+                check_non_full_and_full(
                     self,
                     case.files_condition,
                     model_constructor__non_recursive(checked_dir.path_sdv),
@@ -360,7 +360,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         )
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'the-dir')
         # ACT & ASSERT #
-        check_contains_and_equals(
+        check_non_full_and_full(
             self,
             fc_args.FilesCondition([
                 fc_args.FileCondition(dir_in_checked_dir.name),
@@ -386,7 +386,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         # ARRANGE #
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'empty-dir')
         # ACT & ASSERT #
-        check_contains_and_equals(
+        check_non_full_and_full(
             self,
             fc_args.FilesCondition([]),
             model_constructor__non_recursive(checked_dir.path_sdv),
@@ -476,7 +476,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                check_contains_and_equals(
+                check_non_full_and_full(
                     self,
                     case.files_condition,
                     model_constructor__non_recursive(checked_dir.path_sdv),
@@ -575,7 +575,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                check_contains_and_equals(
+                check_non_full_and_full(
                     self,
                     case.files_condition,
                     model_constructor__non_recursive(checked_dir.path_sdv),
@@ -592,7 +592,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         )
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'the-dir')
         # ACT & ASSERT #
-        check_contains_and_equals(
+        check_non_full_and_full(
             self,
             fc_args.FilesCondition([
                 fc_args.FileCondition(dir_in_checked_dir.name),

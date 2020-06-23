@@ -7,7 +7,7 @@ file y
 
 [assert]
 
-dir-contents . contains {
+dir-contents . matches {
  a : type file
  b : type file
  c : type dir

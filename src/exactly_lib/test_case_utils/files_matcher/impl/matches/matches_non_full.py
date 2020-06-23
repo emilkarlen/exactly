@@ -4,7 +4,7 @@ from typing import Optional, Mapping, List
 
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
-from exactly_lib.test_case_utils.files_matcher.impl import equals_and_contains_utils as utils
+from exactly_lib.test_case_utils.files_matcher.impl.matches import common
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FileModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details
@@ -12,11 +12,11 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRend
 from exactly_lib.util.description_tree.tree import Node
 
 
-def contains_sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
-    return utils.MatcherSdvWithApplier(_CONTAINS_CONFIG, files_condition)
+def sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
+    return common.MatcherSdvWithApplier(_CONTAINS_CONFIG, files_condition)
 
 
-class _ContainsApplier(utils.Applier):
+class _Applier(common.Applier):
     def apply(self) -> MatchingResult:
         if len(self.files_condition.files) == 0:
             return self._result_true()
@@ -37,9 +37,9 @@ class _ContainsApplier(utils.Applier):
                     if not matching_result.value:
                         return MatchingResult(
                             False,
-                            utils.RendererOfNonMatchingFileMatcher(self.name,
-                                                                   actual_file.relative_to_root_dir,
-                                                                   matching_result))
+                            common.RendererOfNonMatchingFileMatcher(self.name,
+                                                                    actual_file.relative_to_root_dir,
+                                                                    matching_result))
 
                 files_found.append(relative_file_name)
                 del expected_files[relative_file_name]
@@ -51,8 +51,8 @@ class _ContainsApplier(utils.Applier):
                               _RendererOfFilesNotFound(self.name, files_found, expected_files))
 
 
-_CONTAINS_CONFIG = utils.Conf(utils.CONTAINS_STRUCTURE_NAME,
-                              _ContainsApplier)
+_CONTAINS_CONFIG = common.Conf(common.MATCHES_NON_FULL__STRUCTURE_NAME,
+                               _Applier)
 
 
 class _RendererOfFilesNotFound(NodeRenderer[bool]):
@@ -79,14 +79,14 @@ class _RendererOfFilesNotFound(NodeRenderer[bool]):
         if self._files_found:
             parts.append(
                 custom_details.HeaderAndValue(
-                    utils.FILES_FOUND,
+                    common.FILES_FOUND,
                     custom_details.string_list(self._files_found)
                 ),
             )
 
         parts.append(
             custom_details.HeaderAndValue(
-                utils.FILES_NOT_FOUND,
+                common.FILES_NOT_FOUND,
                 custom_details.string_list(sorted(self._files_not_found.keys()))
             )
         )

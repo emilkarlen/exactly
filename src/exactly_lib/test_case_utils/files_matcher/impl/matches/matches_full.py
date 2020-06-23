@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Iterable
 
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
-from exactly_lib.test_case_utils.files_matcher.impl import equals_and_contains_utils as utils
+from exactly_lib.test_case_utils.files_matcher.impl.matches import common
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv, \
     FileModel, FilesMatcherModel
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
@@ -12,8 +12,8 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRend
 from exactly_lib.util.description_tree.tree import Node
 
 
-def equals_sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
-    return utils.MatcherSdvWithApplier(_EQUALS_CONFIG, files_condition)
+def sdv(files_condition: FilesConditionSdv) -> FilesMatcherSdv:
+    return common.MatcherSdvWithApplier(_CONFIG, files_condition)
 
 
 class _NameMatch:
@@ -27,7 +27,7 @@ class _NameMatch:
         self.match_from_model = match_from_model
 
 
-class _EqualsApplier(utils.Applier):
+class _Applier(common.Applier):
     def __init__(self,
                  name: str,
                  files_condition: FilesCondition,
@@ -77,9 +77,9 @@ class _EqualsApplier(utils.Applier):
                 matching_result = name_match.fc_matcher.matches_w_trace(file_model)
                 if not matching_result.value:
                     return MatchingResult(False,
-                                          utils.RendererOfNonMatchingFileMatcher(self.name,
-                                                                                 name_match.fc_path,
-                                                                                 matching_result))
+                                          common.RendererOfNonMatchingFileMatcher(self.name,
+                                                                                  name_match.fc_path,
+                                                                                  matching_result))
 
         return self._result_true()
 
@@ -98,14 +98,14 @@ class _EqualsApplier(utils.Applier):
         return ret_val
 
 
-_EQUALS_CONFIG = utils.Conf(utils.EQUALS_STRUCTURE_NAME,
-                            _EqualsApplier)
+_CONFIG = common.Conf(common.MATCHES_FULL__STRUCTURE_NAME,
+                      _Applier)
 
 
 class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
     def __init__(self,
                  fetch_of_expected_plus_1: List[FileModel],
-                 applier: _EqualsApplier,
+                 applier: _Applier,
                  ):
         self._fetch_of_expected_plus_1 = fetch_of_expected_plus_1
         self._applier = applier
@@ -136,7 +136,7 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
 
     def _too_few_files(self) -> Tuple[str, DetailsRenderer]:
         return (
-            utils.NUM_FILES_LESS,
+            common.NUM_FILES_LESS,
             custom_details.string_list(self._consumed_file_names())
         )
 
@@ -146,7 +146,7 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
             file_list_elements.append(custom_details.HAS_MORE_DATA_MARKER)
 
         return (
-            utils.NUM_FILES_MORE,
+            common.NUM_FILES_MORE,
             custom_details.string_list(file_list_elements)
         )
 
@@ -163,7 +163,7 @@ class _RendererOfFileWithUnexpectedName(NodeRenderer[bool]):
     def __init__(self,
                  unexpected_file: FileModel,
                  actual: List[FileModel],
-                 applier: _EqualsApplier,
+                 applier: _Applier,
                  ):
         self._unexpected_file = unexpected_file
         self._actual = actual
@@ -174,7 +174,7 @@ class _RendererOfFileWithUnexpectedName(NodeRenderer[bool]):
             _expected_file_names_renderer(self._applier.files_condition),
             custom_details.string_list(_files_in_model_list(self._actual)),
             details.HeaderAndValue(
-                utils.UNEXPECTED_NAME,
+                common.UNEXPECTED_NAME,
                 details.String(self._unexpected_file.relative_to_root_dir),
             )
         )

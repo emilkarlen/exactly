@@ -12,7 +12,8 @@ from exactly_lib.test_case_utils.files_condition import parse as parse_fc
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import documentation
 from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files, quant_over_files, \
-    sub_set_selection, prune, contains, equals
+    sub_set_selection, prune
+from exactly_lib.test_case_utils.files_matcher.impl.matches import matches_non_full, matches_full
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
@@ -66,14 +67,14 @@ def _parse_prune(parser: TokenParser) -> FilesMatcherSdv:
                          matcher_on_selection)
 
 
-def _parse_equals(parser: TokenParser) -> FilesMatcherSdv:
+def _parse_matches(parser: TokenParser) -> FilesMatcherSdv:
+    is_full = parser.consume_optional_option(config.MATCHES_FULL_OPTION.name)
     fc = parse_fc.parse(parser, False)
-    return equals.equals_sdv(fc)
-
-
-def _parse_contains(parser: TokenParser) -> FilesMatcherSdv:
-    fc = parse_fc.parse(parser, False)
-    return contains.contains_sdv(fc)
+    return (
+        matches_full.sdv(fc)
+        if is_full
+        else matches_non_full.sdv(fc)
+    )
 
 
 def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[FilesMatcherSdv]]]:
@@ -84,14 +85,9 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[File
                                      documentation.EmptyDoc())
         ),
         NameAndValue(
-            config.EQUALS_ARGUMENT,
-            grammar.SimpleExpression(_parse_equals,
-                                     documentation.equals())
-        ),
-        NameAndValue(
-            config.CONTAINS_ARGUMENT,
-            grammar.SimpleExpression(_parse_contains,
-                                     documentation.contains())
+            config.MATCHES_ARGUMENT,
+            grammar.SimpleExpression(_parse_matches,
+                                     documentation.MatchesDoc())
         ),
     ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(

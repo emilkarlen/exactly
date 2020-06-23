@@ -1,9 +1,9 @@
 import unittest
 from typing import Callable, Sequence
 
-from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_utils.files_matcher import config
+from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
+    MATCHES_NON_FULL__STRUCTURE_NAME, MATCHES_FULL__STRUCTURE_NAME
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
@@ -31,26 +31,26 @@ class MatcherCase:
         self.arguments_for_fc = arguments_for_fc
 
 
-CONTAINS_AND_EQUALS_CASES = [
+FULL_AND_NON_FULL_CASES = [
     MatcherCase(
-        config.CONTAINS_ARGUMENT,
-        args.Contains,
+        MATCHES_NON_FULL__STRUCTURE_NAME,
+        args.matches_non_full,
     ),
     MatcherCase(
-        config.EQUALS_ARGUMENT,
-        args.Equals,
+        MATCHES_FULL__STRUCTURE_NAME,
+        args.matches_full,
     ),
 ]
 
 
-def check_contains_and_equals(
+def check_non_full_and_full(
         put: unittest.TestCase,
         files_condition_argument: FilesConditionArg,
         model: ModelConstructor,
         arrangement: Arrangement,
         expectation: Expectation[FilesMatcher, bool],
 ):
-    for case in CONTAINS_AND_EQUALS_CASES:
+    for case in FULL_AND_NON_FULL_CASES:
         with put.subTest(case.name):
             matcher_argument = case.arguments_for_fc(files_condition_argument)
             integration_check.CHECKER.check__w_source_variants(
@@ -62,7 +62,7 @@ def check_contains_and_equals(
             )
 
 
-def check_contains_and_equals__multi(
+def check_non_full_and_full__multi(
         put: unittest.TestCase,
         files_condition_argument: FilesConditionArg,
         symbol_references: ValueAssertion[Sequence[SymbolReference]],
@@ -71,7 +71,7 @@ def check_contains_and_equals__multi(
                                    Arrangement]],
 
 ):
-    for case in CONTAINS_AND_EQUALS_CASES:
+    for case in FULL_AND_NON_FULL_CASES:
         execution_w_trace_assertion = [
             n_ex_arr.translate(lambda pee: prim_and_exe_w_header_matcher(case.name, pee),
                                lambda x: x)
@@ -108,10 +108,9 @@ def prim_and_exe_w_header_matcher(matcher_name: str,
     )
 
 
-def exe_w_added_header_matcher(matcher_name: str,
+def exe_w_added_header_matcher(matcher_header: str,
                                original: ExecutionExpectation[bool],
                                ) -> ExecutionExpectation[MatchingResult]:
-    matcher_header = ' '.join((matcher_name, syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name))
     return ExecutionExpectation(
         original.validation,
         asrt_matching_result.matches_value__w_header(
