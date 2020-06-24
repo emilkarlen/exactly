@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_utils.description_tree import custom_details, custom_renderers
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -12,36 +12,28 @@ from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.logic_types import ExpectationType
 
 
 def emptiness_matcher() -> FilesMatcherSdv:
-    return sdv_components.matcher_sdv_from_constant_primitive(_EmptinessMatcher(ExpectationType.POSITIVE))
+    return sdv_components.matcher_sdv_from_constant_primitive(_EmptinessMatcher())
 
 
 class _EmptinessMatcher(FilesMatcherImplBase):
     NAME = file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
 
     @staticmethod
-    def new_structure_tree(expectation_type: ExpectationType) -> StructureRenderer:
-        positive = renderers.header_only(_EmptinessMatcher.NAME)
-        return (
-            positive
-            if expectation_type is ExpectationType.POSITIVE
-            else
-            custom_renderers.negation(positive)
-        )
+    def new_structure_tree() -> StructureRenderer:
+        return renderers.header_only(_EmptinessMatcher.NAME)
 
-    def __init__(self, expectation_type: ExpectationType):
+    def __init__(self):
         super().__init__()
-        self._expectation_type = expectation_type
 
     @property
     def name(self) -> str:
-        return file_or_dir_contents.EMPTINESS_CHECK_ARGUMENT
+        return self.NAME
 
     def _structure(self) -> StructureRenderer:
-        return self.new_structure_tree(self._expectation_type)
+        return self.new_structure_tree()
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         files_list = list(model.files())

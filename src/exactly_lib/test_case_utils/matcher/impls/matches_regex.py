@@ -9,7 +9,6 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -19,7 +18,6 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MODEL, 
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -32,12 +30,10 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
     ))
 
     def __init__(self,
-                 expectation_type: ExpectationType,
                  is_full_match: bool,
                  pattern: Pattern[str],
                  ):
         super().__init__()
-        self._expectation_type = expectation_type
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._pattern_renderer = custom_details.PatternRenderer(pattern)
@@ -69,15 +65,6 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
         )
 
     def matches_w_trace(self, model: str) -> MatchingResult:
-        if self._expectation_type is ExpectationType.NEGATIVE:
-            positive_matcher = MatchesRegex(ExpectationType.POSITIVE,
-                                            self._is_full_match,
-                                            self._pattern)
-            return combinator_matchers.Negation(positive_matcher).matches_w_trace(model)
-        else:
-            return self._matches_positive(model)
-
-    def _matches_positive(self, model: str) -> MatchingResult:
         tb = self._new_tb_with_expected().append_details(
             custom_details.actual(
                 custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(model))
@@ -104,11 +91,9 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
 
 class MatchesRegexDdv(MatcherDdv[str]):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  regex: RegexDdv,
                  is_full_match: bool,
                  ):
-        self._expectation_type = expectation_type
         self._regex = regex
         self._is_full_match = is_full_match
 
@@ -128,7 +113,6 @@ class MatchesRegexDdv(MatcherDdv[str]):
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(
             MatchesRegex(
-                self._expectation_type,
                 self._is_full_match,
                 self._regex.value_of_any_dependency(tcds),
             )
@@ -137,11 +121,9 @@ class MatchesRegexDdv(MatcherDdv[str]):
 
 class MatchesRegexSdv(MatcherSdv[str]):
     def __init__(self,
-                 expectation_type: ExpectationType,
                  regex: RegexSdv,
                  is_full_match: bool,
                  ):
-        self._expectation_type = expectation_type
         self._regex = regex
         self._is_full_match = is_full_match
 
@@ -151,7 +133,6 @@ class MatchesRegexSdv(MatcherSdv[str]):
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[MODEL]:
         return MatchesRegexDdv(
-            self._expectation_type,
             self._regex.resolve(symbols),
             self._is_full_match,
         )

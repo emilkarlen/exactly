@@ -11,14 +11,12 @@ class ExpectationType(Enum):
 
 
 def from_is_negated(is_negated: bool) -> ExpectationType:
-    return ExpectationType.NEGATIVE if is_negated else ExpectationType.POSITIVE
-
-
-def negation(expectation_type: ExpectationType) -> ExpectationType:
-    return (ExpectationType.POSITIVE
-            if expectation_type is ExpectationType.NEGATIVE
-            else ExpectationType.NEGATIVE
-            )
+    return (
+        ExpectationType.NEGATIVE
+        if is_negated
+        else
+        ExpectationType.POSITIVE
+    )
 
 
 class Quantifier(Enum):

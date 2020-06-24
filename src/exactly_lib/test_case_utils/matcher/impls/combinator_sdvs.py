@@ -21,15 +21,6 @@ class _ImplBase(Generic[MODEL], MatcherSdv[MODEL], ABC):
         return self._references
 
 
-def of_expectation_type(matcher: MatcherSdv[MODEL], expectation_type: ExpectationType) -> MatcherSdv[MODEL]:
-    return (
-        matcher
-        if expectation_type is ExpectationType.POSITIVE
-        else
-        Negation(matcher)
-    )
-
-
 class Negation(_ImplBase[MODEL]):
     def __init__(self, operand: MatcherSdv[MODEL]):
         super().__init__((operand,))
@@ -47,6 +38,14 @@ def optionally_negated(matcher: MatcherSdv[MODEL],
         else
         Negation(matcher)
     )
+
+
+def new_maybe_negated(matcher: MatcherSdv[MODEL],
+                      expectation_type: ExpectationType) -> MatcherSdv[MODEL]:
+    if expectation_type is ExpectationType.NEGATIVE:
+        matcher = Negation(matcher)
+
+    return matcher
 
 
 class Conjunction(_ImplBase[MODEL]):

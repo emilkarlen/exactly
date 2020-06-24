@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
-from exactly_lib.util.logic_types import Quantifier, ExpectationType
+from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.name_and_value import NameAndValue
 
 
@@ -48,7 +48,7 @@ def _parse_empty_check(parser: TokenParser) -> FilesMatcherSdv:
 
 
 def _parse_num_files_check(parser: TokenParser) -> FilesMatcherSdv:
-    return num_files.parse(ExpectationType.POSITIVE, parser)
+    return num_files.parse(parser)
 
 
 def _parse_selection(parser: TokenParser) -> FilesMatcherSdv:

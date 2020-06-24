@@ -7,21 +7,11 @@ from exactly_lib.test_case_utils.line_matcher.model_construction import model_it
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.test_case_utils.string_matcher.impl import sdvs
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.logic_types import ExpectationType, Quantifier
-
-
-def sdv__of_expectation_type(expectation_type: ExpectationType,
-                             quantifier: Quantifier,
-                             line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
-    return sdvs.new_maybe_negated(
-        sdv(quantifier, line_matcher_sdv),
-        expectation_type,
-    )
+from exactly_lib.util.logic_types import Quantifier
 
 
 def sdv(quantifier: Quantifier, line_matcher_sdv: LineMatcherSdv) -> StringMatcherSdv:
@@ -39,7 +29,7 @@ def _get_line_elements(tcds: Tcds,
                        string_matcher_model: FileToCheck
                        ) -> ContextManager[Iterator[LineMatcherLine]]:
     with string_matcher_model.lines() as lines:
-        yield model_iter_from_file_line_iter(lines)
+        yield model_iter_from_file_line_iter(iter(lines))
 
 
 def _line_renderer(line: LineMatcherLine) -> DetailsRenderer:

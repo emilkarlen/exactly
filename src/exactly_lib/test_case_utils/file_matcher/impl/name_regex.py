@@ -9,7 +9,6 @@ from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
 from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.logic_types import ExpectationType
 
 _PROPERTY_NAME = 'base-name'
 
@@ -24,7 +23,7 @@ def parse(token_parser: TokenParser) -> FileMatcherSdv:
 
 def _sdv(regex: RegexSdv) -> FileMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
-        matches_regex.MatchesRegexSdv(ExpectationType.POSITIVE, regex, False),
+        matches_regex.MatchesRegexSdv(regex, False),
         property_getters.sdv_of_constant_primitive(
             _BaseNamePropertyGetter(),
         ),
