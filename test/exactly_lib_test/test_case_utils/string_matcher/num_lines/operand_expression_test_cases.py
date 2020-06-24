@@ -52,7 +52,7 @@ class _NumLinesMatchesWithOperandAsSymbolReference(TestCaseBase):
             expected_result_of_positive_test=PassOrFail.PASS,
             actual_file_contents=actual_contents,
             symbols=symbol_table_with_operand_symbol,
-            expected_symbol_usages=expected_symbol_usages,
+            expected_symbol_references=expected_symbol_usages,
         )
 
 
@@ -85,7 +85,7 @@ class _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression(TestC
             expected_result_of_positive_test=PassOrFail.PASS,
             actual_file_contents=actual_contents,
             symbols=symbol_table_with_operand_symbol,
-            expected_symbol_usages=expected_symbol_usages,
+            expected_symbol_references=expected_symbol_usages,
         )
 
 

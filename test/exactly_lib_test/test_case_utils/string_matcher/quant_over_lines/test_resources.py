@@ -88,7 +88,7 @@ class TestCaseBase(unittest.TestCase):
             quantifier: Quantifier,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
+            expected_symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = expectation_type_config__non_is_success(expectation_type)
             with self.subTest(expectation_type=expectation_type,
@@ -113,7 +113,7 @@ class TestCaseBase(unittest.TestCase):
                         ),
                         Expectation(
                             ParseExpectation(
-                                symbol_references=expected_symbol_usages,
+                                symbol_references=expected_symbol_references,
                             ),
                             ExecutionExpectation(
                                 main_result=etc.main_result(expected_result_of_positive_test),

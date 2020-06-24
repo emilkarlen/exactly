@@ -7,8 +7,8 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
-    StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext, \
+    is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
@@ -154,8 +154,8 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
             named_transformer.name: named_transformer.symbol_table_container
         })
 
-        expected_symbol_usages = asrt.matches_sequence([
-            is_reference_to_string_transformer__usage(named_transformer.name)
+        expected_symbol_references = asrt.matches_sequence([
+            is_reference_to_string_transformer(named_transformer.name)
         ])
 
         self._check_variants_with_expectation_type(
@@ -166,7 +166,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
             expected_result_of_positive_test=PassOrFail.PASS,
             actual_file_contents=actual_original_contents,
             symbols=symbol_table_with_transformer,
-            expected_symbol_usages=expected_symbol_usages,
+            expected_symbol_references=expected_symbol_references,
         )
 
 
