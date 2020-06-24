@@ -116,17 +116,11 @@ appropriate directory::
 
     [setup]
 
-    dir input
+    file input/a.txt = 'GOOD contents'
+    file input/b.txt = 'bad contents'
+
     dir output/good
     dir output/bad
-
-    file input/a.txt = <<EOF
-    GOOD contents
-    EOF
-
-    file input/b.txt = <<EOF
-    bad contents
-    EOF
 
     [act]
 
