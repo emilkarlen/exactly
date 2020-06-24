@@ -24,7 +24,7 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import file_w
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -125,7 +125,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                 main_result=IS_SUCCESS,
                                 symbol_usages=asrt.matches_sequence([
                                     dst_file_symbol.reference_assertion__path_or_string,
-                                    is_reference_to_string_transformer(to_upper_transformer.name),
+                                    is_reference_to_string_transformer__usage(to_upper_transformer.name),
                                     src_file_symbol.reference_assertion__path_or_string,
                                 ]),
                             ),
@@ -273,7 +273,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             main_result=IS_SUCCESS,
                             main_side_effects_on_sds=expected_non_hds_contents,
                             symbol_usages=asrt.matches_sequence([
-                                is_reference_to_string_transformer(to_upper_transformer.name),
+                                is_reference_to_string_transformer__usage(to_upper_transformer.name),
                             ])
                         ))
 

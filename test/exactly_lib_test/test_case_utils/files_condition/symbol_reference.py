@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.files_condition import parse as sut
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext, \
-    is_reference_to_files_condition__ref
+    is_reference_to_files_condition
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
@@ -40,7 +40,7 @@ class TestReference(unittest.TestCase):
                     self,
                     arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(
-                        is_reference_to_files_condition__ref(symbol_name)),
+                        is_reference_to_files_condition(symbol_name)),
                     input_=None,
                     execution=failing_validation_cases__multi_exe(symbol_name),
                 )

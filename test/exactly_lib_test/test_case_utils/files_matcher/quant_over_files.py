@@ -12,8 +12,9 @@ from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher, FileMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__usage, \
+    FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
@@ -431,7 +432,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_file_matcher(name_starts_with_selected.name)
+            is_reference_to_file_matcher__usage(name_starts_with_selected.name)
         ])
 
         # ACT & ASSERT #
@@ -498,7 +499,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_file_matcher(name_starts_with_selected.name)
+            is_reference_to_file_matcher__usage(name_starts_with_selected.name)
         ])
 
         # ACT & ASSERT #
@@ -565,7 +566,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
 
         symbol_table_with_lines_transformer = transform_to_uppercase.symbol_table
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_string_transformer(transform_to_uppercase.name)
+            is_reference_to_string_transformer__usage(transform_to_uppercase.name)
         ])
 
         for_all__equals__arguments = args.complete_arguments_constructor(

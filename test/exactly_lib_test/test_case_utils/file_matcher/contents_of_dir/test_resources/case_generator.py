@@ -6,7 +6,7 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
@@ -86,7 +86,7 @@ class Helper:
         return fms_args.SymbolReference(self.files_matcher_name)
 
     def files_matcher_sym_assertion(self) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_files_matcher__ref(self.files_matcher_name)
+        return is_reference_to_files_matcher(self.files_matcher_name)
 
     def tcds_arrangement_for_contents_of_checked_dir(self,
                                                      contents: List[FileSystemElement],

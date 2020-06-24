@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ExecutionExpectation, ParseExpectation
@@ -84,7 +84,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
             named_transformer.name: named_transformer.symbol_table_container
         })
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__ref(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
 

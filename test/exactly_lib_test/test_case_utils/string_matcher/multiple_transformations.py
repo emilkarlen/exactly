@@ -7,9 +7,9 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher__ref, \
+from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
     StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
@@ -77,8 +77,8 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
             prepend_and_equals_expected_matcher,
         ])
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_string_transformer__ref(prepend_transformer_symbol.name),
-            is_reference_to_string_matcher__ref(prepend_and_equals_expected_matcher.name),
+            is_reference_to_string_transformer(prepend_transformer_symbol.name),
+            is_reference_to_string_matcher(prepend_and_equals_expected_matcher.name),
         ])
 
         self._check_with_source_variants(

@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as args
@@ -37,7 +37,7 @@ class ValidationHelper:
 
     def expected_symbol_usages(self) -> ValueAssertion[Sequence[SymbolUsage]]:
         return asrt.matches_singleton_sequence(
-            is_reference_to_files_matcher(self.name_of_referenced_symbol)
+            is_reference_to_files_matcher__usage(self.name_of_referenced_symbol)
         )
 
     def _arrangement(self, validator: DdvValidator) -> ArrangementPostAct2:

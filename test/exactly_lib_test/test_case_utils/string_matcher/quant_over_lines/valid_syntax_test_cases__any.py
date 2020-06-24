@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines.test_resources import \
@@ -80,7 +80,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
 
         symbol_table_with_transformer = named_transformer.symbol_table
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__usage(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([
             expected_symbol_reference_to_transformer

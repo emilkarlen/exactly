@@ -19,7 +19,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.path import path_or_string_reference_restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSdvConstantTestImpl, StringTransformerSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
@@ -113,7 +113,7 @@ class TestSymbolUsages(TestCaseBase):
                 )
             ),
 
-            is_reference_to_string_transformer(to_upper_transformer.name),
+            is_reference_to_string_transformer__usage(to_upper_transformer.name),
 
             asrt_sym_ref.matches_reference_2(
                 src_file_symbol.name,

@@ -30,13 +30,13 @@ IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION = asrt_rest.equals_data_
     string_made_up_by_just_strings())
 
 
-def is_reference_to_string_made_up_of_just_strings(name_of_symbol: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_string_made_up_of_just_strings__usage(name_of_symbol: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_symbol),
                                             IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_string_made_up_of_just_strings__ref(name_of_symbol: str,
-                                                        ) -> ValueAssertion[SymbolReference]:
+def is_reference_to_string_made_up_of_just_strings(name_of_symbol: str,
+                                                   ) -> ValueAssertion[SymbolReference]:
     return asrt_sym_usage.matches_reference__ref(asrt.equals(name_of_symbol),
                                                  IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION)
 
@@ -93,11 +93,11 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
 
     @staticmethod
     def reference_assertion__string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_string_made_up_of_just_strings__ref(symbol_name)
+        return is_reference_to_string_made_up_of_just_strings(symbol_name)
 
     @staticmethod
     def usage_assertion__string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolUsage]:
-        return is_reference_to_string_made_up_of_just_strings(symbol_name)
+        return is_reference_to_string_made_up_of_just_strings__usage(symbol_name)
 
     @staticmethod
     def reference_restriction__path_or_string(accepted_relativities: PathRelativityVariants

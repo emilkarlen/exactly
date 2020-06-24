@@ -4,7 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
@@ -158,7 +158,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                             logic_integration_check.ParseExpectation(
                                 symbol_references=asrt.matches_sequence([
                                     program_that_executes_py_source.reference_assertion,
-                                    is_reference_to_string_transformer__ref(to_upper_transformer.name),
+                                    is_reference_to_string_transformer(to_upper_transformer.name),
                                 ]),
                             ),
                             logic_integration_check.ExecutionExpectation(

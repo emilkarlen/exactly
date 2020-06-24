@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
     ExecutionExpectation, ParseExpectation
@@ -272,7 +272,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         symbols.put(named_transformer.name,
                     named_transformer.symbol_table_container)
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__usage(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence(
             [expected_symbol_reference_to_transformer] +

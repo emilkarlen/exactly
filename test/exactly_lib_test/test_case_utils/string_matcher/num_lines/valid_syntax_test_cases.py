@@ -7,7 +7,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ParseExpectation, ExecutionExpectation
@@ -155,7 +155,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         })
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_reference_to_string_transformer(named_transformer.name)
+            is_reference_to_string_transformer__usage(named_transformer.name)
         ])
 
         self._check_variants_with_expectation_type(

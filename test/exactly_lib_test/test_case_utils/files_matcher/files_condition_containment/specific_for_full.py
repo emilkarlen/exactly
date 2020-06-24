@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
     MATCHES_FULL__STRUCTURE_NAME
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__ref
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
@@ -158,7 +158,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([
-                is_reference_to_file_matcher__ref(file_matcher_name),
+                is_reference_to_file_matcher(file_matcher_name),
             ]),
             input_=model_constructor__non_recursive(checked_dir.path_sdv),
             execution=execution_cases
@@ -238,7 +238,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([
-                is_reference_to_file_matcher__ref(file_matcher_name),
+                is_reference_to_file_matcher(file_matcher_name),
             ]),
             input_=model_constructor__non_recursive(checked_dir.path_sdv),
             execution=execution_cases

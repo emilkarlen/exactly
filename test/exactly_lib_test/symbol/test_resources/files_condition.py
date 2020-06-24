@@ -19,12 +19,12 @@ def arbitrary_sdv() -> FilesConditionSdv:
     return files_conditions.new_empty()
 
 
-def is_reference_to_files_condition(symbol_name: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_files_condition__usage(symbol_name: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_FILES_CONDITION_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_files_condition__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_files_condition(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
@@ -55,7 +55,7 @@ class FilesConditionSymbolValueContext(LogicSymbolValueContext[FilesConditionSdv
         return ValueType.FILES_CONDITION
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_files_condition__ref(symbol_name)
+        return is_reference_to_files_condition(symbol_name)
 
 
 class FilesConditionSymbolContext(LogicTypeSymbolContext[FilesConditionSdv]):

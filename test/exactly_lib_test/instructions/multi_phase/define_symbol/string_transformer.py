@@ -14,7 +14,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_string_transformer_constant
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -105,7 +105,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
             LogicValueType.STRING_TRANSFORMER,
             sdv=matches_sdv_of_string_transformer_constant(
                 references=asrt.matches_sequence([
-                    is_reference_to_string_transformer__ref(symbol.name),
+                    is_reference_to_string_transformer(symbol.name),
                 ]),
                 primitive_value=asrt_string_transformer.is_identity_transformer(False),
                 symbols=symbol.symbol_table,

@@ -194,7 +194,7 @@ class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransfor
         return ValueType.STRING_TRANSFORMER
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_string_transformer__ref(symbol_name)
+        return is_reference_to_string_transformer(symbol_name)
 
 
 class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv]):
@@ -279,12 +279,12 @@ def arbitrary_transformer_sdv() -> StringTransformerSdv:
 IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
 
 
-def is_reference_to_string_transformer(name_of_transformer: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_string_transformer__usage(name_of_transformer: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
                                             IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_string_transformer__ref(name_of_transformer: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_string_transformer(name_of_transformer: str) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(SymbolReference,
                                  asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
                                                                   IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)

@@ -7,7 +7,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test_that_equals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, Expectation
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2, ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument, RelOptPathArgument
@@ -44,7 +44,7 @@ class _HelperBase(ABC):
 
     def expected_symbol_usages(self) -> ValueAssertion[Sequence[SymbolUsage]]:
         return asrt.matches_singleton_sequence(
-            is_reference_to_files_matcher(self.name_of_referenced_symbol)
+            is_reference_to_files_matcher__usage(self.name_of_referenced_symbol)
         )
 
 
@@ -101,7 +101,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper(_HelperBase):
     def expectation(self) -> Expectation:
         return Expectation(
             symbol_usages=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher(self.name_of_referenced_symbol)
+                is_reference_to_files_matcher__usage(self.name_of_referenced_symbol)
             ),
             main_result=asrt_pfh.is_hard_error(
                 is_string_for_test_that_equals(self.error_message)

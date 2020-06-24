@@ -20,12 +20,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 IS_LINE_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.LINE_MATCHER)
 
 
-def is_reference_to_line_matcher(symbol_name: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_line_matcher__usage(symbol_name: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_LINE_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_line_matcher__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_line_matcher(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
@@ -96,7 +96,7 @@ class LineMatcherSymbolValueContext(MatcherSymbolValueContext[LineMatcherLine]):
         return ValueType.LINE_MATCHER
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_line_matcher__ref(symbol_name)
+        return is_reference_to_line_matcher(symbol_name)
 
 
 class LineMatcherSymbolContext(MatcherTypeSymbolContext[LineMatcherLine]):

@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
@@ -51,7 +51,7 @@ def suite() -> unittest.TestSuite:
 
 
 SYMBOL_NAME = 'FILES_MATCHER_SYMBOL'
-EXPECTED_REFERENCE = is_reference_to_files_matcher(SYMBOL_NAME)
+EXPECTED_REFERENCE = is_reference_to_files_matcher__usage(SYMBOL_NAME)
 
 PARSER = sut.parser.Parser()
 
@@ -196,7 +196,7 @@ class TestFilesOfModel(unittest.TestCase):
             SourceArrangement.new_w_arbitrary_fs_location(arguments.as_arguments),
             ParseExpectation(
                 symbol_usages=asrt.matches_singleton_sequence(
-                    is_reference_to_files_matcher(model_checker_symbol_name)
+                    is_reference_to_files_matcher__usage(model_checker_symbol_name)
                 )),
             execution=[
                 NExArr(
@@ -279,7 +279,7 @@ class TestMultiLineSyntax(unittest.TestCase):
                 INSTRUCTION_CHECKER.check_multi__with_source_variants(
                     self,
                     SourceArrangement.new_w_arbitrary_fs_location(source_case.value),
-                    symbol_usages=asrt.matches_singleton_sequence(is_reference_to_files_matcher(
+                    symbol_usages=asrt.matches_singleton_sequence(is_reference_to_files_matcher__usage(
                         files_matcher_name)
                     ),
                     execution=execution_cases,

@@ -32,13 +32,12 @@ def string_matcher_sdv_constant_test_impl(resolved_value: StringMatcher,
 IS_STRING_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_MATCHER)
 
 
-def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_string_matcher__usage(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_STRING_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_string_matcher__ref(name_of_matcher: str
-                                        ) -> ValueAssertion[SymbolReference]:
+def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
@@ -79,7 +78,7 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
         return ARBITRARY_SYMBOL_VALUE_CONTEXT
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_string_matcher__ref(symbol_name)
+        return is_reference_to_string_matcher(symbol_name)
 
     @property
     def value_type(self) -> ValueType:

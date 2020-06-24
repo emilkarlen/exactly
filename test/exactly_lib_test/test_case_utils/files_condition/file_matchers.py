@@ -6,8 +6,8 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__ref, \
-    FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher, \
+    FileMatcherSymbolContext, FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
@@ -44,7 +44,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_singleton_sequence(
-                is_reference_to_file_matcher__ref(fm_symbol_name)
+                is_reference_to_file_matcher(fm_symbol_name)
             ),
             input_=None,
             execution=validation_cases.failing_validation_cases__multi_exe(fm_symbol_name)
@@ -113,7 +113,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                     self,
                     case.value.as_arguments,
                     asrt.matches_sequence([
-                        is_reference_to_file_matcher__ref(fm_symbol)
+                        is_reference_to_file_matcher(fm_symbol)
                     ]),
                     None,
                     [
@@ -151,7 +151,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
             self,
             arguments.as_arguments,
             asrt.matches_sequence([
-                is_reference_to_file_matcher__ref(fm_symbol)
+                is_reference_to_file_matcher(fm_symbol)
             ]),
             None,
             [
@@ -180,7 +180,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
         file_name__constant = 'file-name-with-constant-matcher'
         file_name__w_variations = 'file-name-with-matcher-with-variations'
 
-        fm__constant = NameAndValue('fm_constant', True)
+        fm__constant = FileMatcherSymbolContextOfPrimitiveConstant('fm_constant', True)
         fm__w_variations = 'fm_w_variations'
 
         arguments = args.FilesCondition([
@@ -192,8 +192,8 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
             self,
             arguments.as_arguments,
             asrt.matches_sequence([
-                is_reference_to_file_matcher__ref(fm__constant.name),
-                is_reference_to_file_matcher__ref(fm__w_variations),
+                fm__constant.reference_assertion,
+                is_reference_to_file_matcher(fm__w_variations),
             ]),
             None,
             [
@@ -203,7 +203,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                         asrt_primitive.files_matches({
 
                             PurePosixPath(file_name__constant):
-                                asrt_primitive.is_matcher_that_gives(fm__constant.value),
+                                asrt_primitive.is_matcher_that_gives(fm__constant.result_value),
 
                             PurePosixPath(file_name__w_variations):
                                 asrt_primitive.is_matcher_that_gives(expected_result_of_matcher_w_variations)
@@ -211,8 +211,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                     ),
                     arrangement_wo_tcds(
                         SymbolContext.symbol_table_of_contexts([
-                            FileMatcherSymbolContext.of_primitive_constant(fm__constant.name,
-                                                                           fm__constant.value),
+                            fm__constant,
                             FileMatcherSymbolContext.of_primitive_constant(fm__w_variations,
                                                                            expected_result_of_matcher_w_variations),
                         ])
@@ -270,8 +269,8 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
                     case.value.as_arguments,
                     ParseExpectation(
                         symbol_references=asrt.matches_sequence([
-                            is_reference_to_file_matcher__ref(fm1_symbol.name),
-                            is_reference_to_file_matcher__ref(fm2_symbol.name),
+                            is_reference_to_file_matcher(fm1_symbol.name),
+                            is_reference_to_file_matcher(fm2_symbol.name),
                         ])
                     ),
                     None,
@@ -302,9 +301,9 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
             NIE(
                 'files wo matcher combination : before',
                 [
-                    is_reference_to_file_matcher__ref(fn_1_time__fm.name),
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_1.name),
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_2.name),
+                    is_reference_to_file_matcher(fn_1_time__fm.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_1.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_2.name),
 
                 ],
                 args.FilesCondition([
@@ -317,9 +316,9 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
             NIE(
                 'files wo matcher combination : between',
                 [
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_1.name),
-                    is_reference_to_file_matcher__ref(fn_1_time__fm.name),
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_2.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_1.name),
+                    is_reference_to_file_matcher(fn_1_time__fm.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_2.name),
                 ],
                 args.FilesCondition([
                     args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_1.name)),
@@ -331,9 +330,9 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
             NIE(
                 'files wo matcher combination : after',
                 [
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_1.name),
-                    is_reference_to_file_matcher__ref(fn_2_times__fm_2.name),
-                    is_reference_to_file_matcher__ref(fn_1_time__fm.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_1.name),
+                    is_reference_to_file_matcher(fn_2_times__fm_2.name),
+                    is_reference_to_file_matcher(fn_1_time__fm.name),
                 ],
                 args.FilesCondition([
                     args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_1.name)),

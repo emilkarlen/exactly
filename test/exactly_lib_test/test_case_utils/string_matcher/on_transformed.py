@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
@@ -63,7 +63,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
                 args2.Equals(surrounded_by_hard_quotes_str(expected_model_contents))
             ).as_arguments,
             asrt.matches_singleton_sequence(
-                is_reference_to_string_transformer__ref(_TRANSFORMER_SYMBOL_NAME)
+                is_reference_to_string_transformer(_TRANSFORMER_SYMBOL_NAME)
             ),
             integration_check.model_of(original_model_contents),
             [
@@ -211,7 +211,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_singleton_sequence(
-                        is_reference_to_string_transformer__ref(to_upper_transformer.name)
+                        is_reference_to_string_transformer(to_upper_transformer.name)
                     )
                 ),
                 ExecutionExpectation(

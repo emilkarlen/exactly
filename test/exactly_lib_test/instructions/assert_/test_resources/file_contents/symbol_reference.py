@@ -8,9 +8,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
+from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher__usage, \
     StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
@@ -75,7 +75,7 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         symbols = SYMBOL_FOR_EMPTINESS_MATCHER.symbol_table
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_string_matcher(SYMBOL_FOR_EMPTINESS_MATCHER.name),
+            is_reference_to_string_matcher__usage(SYMBOL_FOR_EMPTINESS_MATCHER.name),
         ])
 
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
@@ -110,8 +110,8 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
         ])
 
         expected_symbol_references = asrt.matches_sequence([
-            is_reference_to_string_transformer(named_transformer.name),
-            is_reference_to_string_matcher(SYMBOL_FOR_EMPTINESS_MATCHER.name),
+            is_reference_to_string_transformer__usage(named_transformer.name),
+            is_reference_to_string_matcher__usage(SYMBOL_FOR_EMPTINESS_MATCHER.name),
         ])
 
         self._check_with_source_variants(

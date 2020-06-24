@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     TestCaseBase
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
@@ -121,7 +121,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         symbol_table_with_transformer = named_transformer.symbol_table
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_reference_to_string_transformer(named_transformer.name)
+            is_reference_to_string_transformer__usage(named_transformer.name)
         ])
 
         self._check_variants_with_expectation_type(

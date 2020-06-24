@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import executor_for_dir_contents
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
@@ -63,7 +63,7 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
             args.DirContentsRecursive(args.SymbolReference(fsm_symbol_name)
                                       ).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher__ref(fsm_symbol_name)
+                is_reference_to_files_matcher(fsm_symbol_name)
             ),
             input_=
             integration_check.constant_relative_file_name('arbitrary-file-argument'),
@@ -144,7 +144,7 @@ class TestApplication(unittest.TestCase):
             input_=
             integration_check.file_in_sds(checked_dir_location, checked_dir.name),
             symbol_references=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher__ref(files_matcher_name)
+                is_reference_to_files_matcher(files_matcher_name)
             ),
             execution=[
                 NExArr(

@@ -6,7 +6,7 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
@@ -170,7 +170,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
 
         symbols = named_transformer.symbol_table
 
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__ref(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
 

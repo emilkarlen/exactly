@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.identity import Identit
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
@@ -89,7 +89,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     expectation_of_successful_execution(
                         output_lines=expected_output_lines,
                         symbol_references=asrt.matches_sequence([
-                            is_reference_to_string_transformer__ref(symbol.name)
+                            is_reference_to_string_transformer(symbol.name)
                             for symbol in sequenced_transformer_symbols
                         ]),
                         is_identity_transformer=False,
@@ -121,7 +121,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
             for order_case in order_cases:
                 arguments = st_args.syntax_for_sequence_of_transformers(order_case.value)
                 expected_symbol_references = asrt.matches_sequence([
-                    is_reference_to_string_transformer__ref(symbol_name)
+                    is_reference_to_string_transformer(symbol_name)
                     for symbol_name in order_case.value
                 ])
 

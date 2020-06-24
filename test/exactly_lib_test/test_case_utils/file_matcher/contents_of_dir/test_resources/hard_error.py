@@ -1,5 +1,5 @@
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
@@ -44,7 +44,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper:
         return Expectation(
             ParseExpectation(
                 symbol_references=asrt.matches_singleton_sequence(
-                    is_reference_to_files_matcher__ref(self.files_matcher_name)
+                    is_reference_to_files_matcher(self.files_matcher_name)
                 ),
             ),
             ExecutionExpectation(

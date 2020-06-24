@@ -67,12 +67,12 @@ def value_with_result(result: bool,
 IS_FILES_MATCHER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILES_MATCHER)
 
 
-def is_reference_to_files_matcher(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
+def is_reference_to_files_matcher__usage(name_of_matcher: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_matcher),
                                             IS_FILES_MATCHER_REFERENCE_RESTRICTION)
 
 
-def is_reference_to_files_matcher__ref(name_of_matcher: str
-                                       ) -> ValueAssertion[SymbolReference]:
+def is_reference_to_files_matcher(name_of_matcher: str
+                                  ) -> ValueAssertion[SymbolReference]:
     return asrt_sym_usage.matches_reference__ref(asrt.equals(name_of_matcher),
                                                  IS_FILES_MATCHER_REFERENCE_RESTRICTION)

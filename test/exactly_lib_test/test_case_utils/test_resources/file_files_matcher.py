@@ -4,7 +4,7 @@ from typing import Sequence, List
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
@@ -36,7 +36,7 @@ class IntegrationCheckWFilesMatcherHelperBase(ABC):
 
     @property
     def symbol_reference_assertion(self) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_files_matcher__ref(self.files_matcher_name)
+        return is_reference_to_files_matcher(self.files_matcher_name)
 
     def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
         return asrt.matches_singleton_sequence(
@@ -70,7 +70,7 @@ class IntegrationCheckWFilesMatcherHelperBase(ABC):
         return Expectation(
             ParseExpectation(
                 symbol_references=asrt.matches_singleton_sequence(
-                    is_reference_to_files_matcher__ref(self.files_matcher_name)
+                    is_reference_to_files_matcher(self.files_matcher_name)
                 ),
             ),
             execution

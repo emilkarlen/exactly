@@ -7,8 +7,8 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
+from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher__usage
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import test_resources as tr
@@ -79,7 +79,7 @@ class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
         lines_transformer_name = 'the_transformer'
 
         common_arguments = arguments_building.CommonArgumentsConstructor(lines_transformer_name)
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(lines_transformer_name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer__usage(lines_transformer_name)
 
         expected_symbol_usages = asrt.matches_sequence([
             expected_symbol_reference_to_transformer
@@ -109,7 +109,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
         line_matcher_name = 'the_line_matcher'
 
         common_arguments = arguments_building.CommonArgumentsConstructor()
-        expected_symbol_reference_to_transformer = is_reference_to_line_matcher(line_matcher_name)
+        expected_symbol_reference_to_transformer = is_reference_to_line_matcher__usage(line_matcher_name)
 
         expected_symbol_usages = asrt.matches_sequence([
             expected_symbol_reference_to_transformer

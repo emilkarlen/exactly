@@ -130,7 +130,7 @@ class TestSelectTransformer(unittest.TestCase):
                     expectation_of_successful_filter_execution(
                         output_lines=case.expected,
                         symbol_references=asrt.matches_singleton_sequence(
-                            line_matcher.is_reference_to_line_matcher__ref(matcher.name)
+                            line_matcher.is_reference_to_line_matcher(matcher.name)
                         ),
                     )
                 )
@@ -194,7 +194,7 @@ class TestSelectTransformer(unittest.TestCase):
                     expectation_of_successful_filter_execution(
                         output_lines=expected_output_lines,
                         symbol_references=asrt.matches_singleton_sequence(
-                            line_matcher.is_reference_to_line_matcher__ref(line_matcher_name)
+                            line_matcher.is_reference_to_line_matcher(line_matcher_name)
                         )
                     )
                 )

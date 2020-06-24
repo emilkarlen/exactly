@@ -104,7 +104,7 @@ class TestSymbolReferences(unittest.TestCase):
             NIE('just program reference symbol',
                 expected_value=
                 asrt.matches_sequence([
-                    asrt_pgm.is_reference_to_program__ref(program_symbol_name),
+                    asrt_pgm.is_reference_to_program(program_symbol_name),
                 ]),
                 input_value=
                 sym_ref_args.sym_ref_cmd_line(program_symbol_name),
@@ -112,7 +112,7 @@ class TestSymbolReferences(unittest.TestCase):
             NIE('single argument that is a reference to a symbol',
                 expected_value=
                 asrt.matches_sequence([
-                    asrt_pgm.is_reference_to_program__ref(program_symbol_name),
+                    asrt_pgm.is_reference_to_program(program_symbol_name),
                     asrt_sym_ref.is_reference_to_data_type_symbol(argument_symbol_name),
                 ]),
                 input_value=

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
     files_matcher_integration, executor_for_dir_contents
@@ -47,7 +47,7 @@ class TestFilesMatcherShouldBeValidated(unittest.TestCase):
             args.DirContents(args.SymbolReference(fsm_symbol_name)
                              ).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher__ref(fsm_symbol_name)
+                is_reference_to_files_matcher(fsm_symbol_name)
             ),
             input_=
             integration_check.constant_relative_file_name('arbitrary-file-argument'),
@@ -129,7 +129,7 @@ class TestApplication(unittest.TestCase):
             input_=
             integration_check.file_in_sds(checked_dir_location, checked_dir.name),
             symbol_references=asrt.matches_singleton_sequence(
-                is_reference_to_files_matcher__ref(files_matcher_name)
+                is_reference_to_files_matcher(files_matcher_name)
             ),
             execution=[
                 NExArr(
@@ -178,7 +178,7 @@ class TestFilesOfModel(unittest.TestCase):
             parse_expectation=
             ParseExpectation(
                 symbol_references=asrt.matches_singleton_sequence(
-                    is_reference_to_files_matcher__ref(model_checker_symbol_name)
+                    is_reference_to_files_matcher(model_checker_symbol_name)
                 ),
             ),
             input_=

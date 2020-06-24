@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FilesMatcher, FilesMatcherModel
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
+from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
     MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -49,7 +49,7 @@ class FilesMatcherSymbolValueContext(MatcherSymbolValueContext[FilesMatcherModel
         return ValueType.FILES_MATCHER
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_files_matcher__ref(symbol_name)
+        return is_reference_to_files_matcher(symbol_name)
 
 
 class FilesMatcherSymbolContext(MatcherTypeSymbolContext[FilesMatcherModel]):
