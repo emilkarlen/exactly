@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.files_condition import parse as sut
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
-from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__ref
+from exactly_lib_test.symbol.test_resources.string import is_reference_to_string_made_up_of_just_strings
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.test_utils import NIE
@@ -22,14 +22,14 @@ class TestSymbolReferenceReporting(unittest.TestCase):
         cases = [
             NIE(
                 'file name reference',
-                [is_string_made_up_of_just_strings_reference_to(STRING_SYMBOL_NAME)],
+                [is_reference_to_string_made_up_of_just_strings(STRING_SYMBOL_NAME)],
                 args.FilesCondition([
                     args.FileCondition(SymbolWithReferenceSyntax(STRING_SYMBOL_NAME)),
                 ]),
             ),
             NIE(
                 'file name reference (embedded)',
-                [is_string_made_up_of_just_strings_reference_to(STRING_SYMBOL_NAME)],
+                [is_reference_to_string_made_up_of_just_strings(STRING_SYMBOL_NAME)],
                 args.FilesCondition([
                     args.FileCondition(
                         'file-name-prefix-' +
@@ -40,7 +40,7 @@ class TestSymbolReferenceReporting(unittest.TestCase):
             ),
             NIE(
                 'file matcher reference',
-                [is_file_matcher_reference_to__ref(FILE_MATCHER_SYMBOL_NAME)],
+                [is_reference_to_file_matcher__ref(FILE_MATCHER_SYMBOL_NAME)],
                 args.FilesCondition([
                     args.FileCondition(
                         'constant-file-name',
@@ -51,8 +51,8 @@ class TestSymbolReferenceReporting(unittest.TestCase):
             NIE(
                 'file name and file matcher reference',
                 [
-                    is_string_made_up_of_just_strings_reference_to(STRING_SYMBOL_NAME),
-                    is_file_matcher_reference_to__ref(FILE_MATCHER_SYMBOL_NAME),
+                    is_reference_to_string_made_up_of_just_strings(STRING_SYMBOL_NAME),
+                    is_reference_to_file_matcher__ref(FILE_MATCHER_SYMBOL_NAME),
                 ],
                 args.FilesCondition([
                     args.FileCondition(
@@ -64,10 +64,10 @@ class TestSymbolReferenceReporting(unittest.TestCase):
             NIE(
                 'multiple file name and file matcher reference',
                 [
-                    is_string_made_up_of_just_strings_reference_to(STRING_SYMBOL_NAME),
-                    is_file_matcher_reference_to__ref(FILE_MATCHER_SYMBOL_NAME),
-                    is_string_made_up_of_just_strings_reference_to(STRING_SYMBOL_NAME_2),
-                    is_file_matcher_reference_to__ref(FILE_MATCHER_SYMBOL_NAME_2),
+                    is_reference_to_string_made_up_of_just_strings(STRING_SYMBOL_NAME),
+                    is_reference_to_file_matcher__ref(FILE_MATCHER_SYMBOL_NAME),
+                    is_reference_to_string_made_up_of_just_strings(STRING_SYMBOL_NAME_2),
+                    is_reference_to_file_matcher__ref(FILE_MATCHER_SYMBOL_NAME_2),
                 ],
                 args.FilesCondition([
                     args.FileCondition(

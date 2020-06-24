@@ -8,7 +8,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, \
+from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher, \
     successful_matcher_with_validation, LineMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__ref
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -77,7 +77,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
         line_matcher_symbol_name = 'line_matcher_with_failing_validation'
 
         asserted_symbol_references = asrt.matches_sequence([
-            is_line_matcher_reference_to(line_matcher_symbol_name)
+            is_reference_to_line_matcher(line_matcher_symbol_name)
         ])
 
         validation_cases = [
@@ -155,7 +155,7 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
 
             expected_symbol_references = asrt.matches_sequence([
                 symbol_context.reference_assertion,
-                is_line_matcher_reference_to(line_matcher_symbol.name)
+                is_reference_to_line_matcher(line_matcher_symbol.name)
             ])
 
             for quantifier in Quantifier:
@@ -235,7 +235,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestSymbolReferencesBase):
         line_matcher = 'the_line_matcher'
 
         common_arguments = arguments_building.CommonArgumentsConstructor()
-        expected_symbol_reference_to_transformer = is_line_matcher_reference_to(line_matcher)
+        expected_symbol_reference_to_transformer = is_reference_to_line_matcher(line_matcher)
 
         expected_symbol_references = asrt.matches_sequence([
             expected_symbol_reference_to_transformer

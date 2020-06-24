@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__ref
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__ref
 from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args2, validation_cases
@@ -40,7 +40,7 @@ class TestSymbolReferenceFromBothSelectorAndFilesMatcherShouldBeReported(unittes
         name_of_referenced_files_matcher = 'FILES_MATCHER'
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_file_matcher_reference_to__ref(name_of_referenced_selector),
+            is_reference_to_file_matcher__ref(name_of_referenced_selector),
             is_reference_to_files_matcher__ref(name_of_referenced_files_matcher),
         ])
 

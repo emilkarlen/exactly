@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_utils.files_condition import structure
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.type_system.value_type import ValueType
@@ -19,9 +19,17 @@ def arbitrary_sdv() -> FilesConditionSdv:
     return structure.new_empty()
 
 
-def is_files_condition_reference_to(symbol_name: str) -> ValueAssertion:
+def is_reference_to_files_condition(symbol_name: str) -> ValueAssertion[SymbolUsage]:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_FILES_CONDITION_REFERENCE_RESTRICTION)
+
+
+def is_reference_to_files_condition__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+    return asrt.is_instance_with(
+        SymbolReference,
+        asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
+                                         IS_FILES_CONDITION_REFERENCE_RESTRICTION)
+    )
 
 
 class FilesConditionSymbolValueContext(LogicSymbolValueContext[FilesConditionSdv]):
@@ -47,7 +55,7 @@ class FilesConditionSymbolValueContext(LogicSymbolValueContext[FilesConditionSdv
         return ValueType.FILES_CONDITION
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_files_condition_reference_to(symbol_name)
+        return is_reference_to_files_condition__ref(symbol_name)
 
 
 class FilesConditionSymbolContext(LogicTypeSymbolContext[FilesConditionSdv]):

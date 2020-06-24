@@ -115,7 +115,7 @@ class SymbolUsagesTest(unittest.TestCase):
                                 EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS))
         )
 
-        expected_file_matcher_ref = asrt_file_matcher.is_file_matcher_reference_to__ref(file_matcher_symbol_name)
+        expected_file_matcher_ref = asrt_file_matcher.is_reference_to_file_matcher__ref(file_matcher_symbol_name)
 
         cases = [
             NEA('no symbols',

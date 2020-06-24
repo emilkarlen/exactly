@@ -16,7 +16,8 @@ from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolv
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to, LineMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
+    is_reference_to_line_matcher__ref
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
@@ -86,7 +87,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     LogicValueType.LINE_MATCHER,
                     sdv=sdv_type_assertions.matches_sdv_of_line_matcher(
                         references=asrt.matches_sequence([
-                            is_line_matcher_reference_to(symbol.name),
+                            is_reference_to_line_matcher__ref(symbol.name),
                         ]),
                         primitive_value=asrt_matcher.is_equivalent_to(expected_matcher,
                                                                       models_for_equivalence_check),

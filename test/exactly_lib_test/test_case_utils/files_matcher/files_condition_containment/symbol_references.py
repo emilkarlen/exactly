@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to__ref
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher__ref
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import FULL_AND_NON_FULL_CASES
@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
                                   fm_args.SymbolReferenceWSyntax(fm_symbol_name))
         ])
         symbol_references_expectation = asrt.matches_singleton_sequence(
-            is_file_matcher_reference_to__ref(fm_symbol_name),
+            is_reference_to_file_matcher__ref(fm_symbol_name),
         )
 
         parser = sut.files_matcher_parser()

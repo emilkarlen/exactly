@@ -17,12 +17,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 IS_FILE_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.FILE_MATCHER)
 
 
-def is_file_matcher_reference_to(symbol_name: str) -> ValueAssertion:
+def is_reference_to_file_matcher(symbol_name: str) -> ValueAssertion:
     return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
                                             IS_FILE_REFERENCE_RESTRICTION)
 
 
-def is_file_matcher_reference_to__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
+def is_reference_to_file_matcher__ref(symbol_name: str) -> ValueAssertion[SymbolReference]:
     return asrt.is_instance_with(
         SymbolReference,
         asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
@@ -66,7 +66,7 @@ class FileMatcherSymbolValueContext(MatcherSymbolValueContext[FileMatcherModel])
         return ValueType.FILE_MATCHER
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_file_matcher_reference_to__ref(symbol_name)
+        return is_reference_to_file_matcher__ref(symbol_name)
 
 
 class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
@@ -108,6 +108,22 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+
+class FileMatcherSymbolContextOfPrimitiveConstant(FileMatcherSymbolContext):
+    def __init__(self,
+                 name: str,
+                 result: bool,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(name,
+                         FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
+                                                                    definition_source))
+        self._result = result
+
+    @property
+    def result_value(self) -> bool:
+        return self._result
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

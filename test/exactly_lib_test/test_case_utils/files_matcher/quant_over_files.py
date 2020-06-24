@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to, FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher, FileMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
@@ -431,7 +431,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_starts_with_selected.name)
+            is_reference_to_file_matcher(name_starts_with_selected.name)
         ])
 
         # ACT & ASSERT #
@@ -498,7 +498,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
 
         expected_symbol_references = asrt.matches_sequence([
-            is_file_matcher_reference_to(name_starts_with_selected.name)
+            is_reference_to_file_matcher(name_starts_with_selected.name)
         ])
 
         # ACT & ASSERT #

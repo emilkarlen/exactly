@@ -9,7 +9,7 @@ from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
@@ -99,7 +99,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         expected_references = asrt.matches_sequence(
             list(self.assertion_variant.expected_references) +
-            [is_file_matcher_reference_to(name_of_file_matcher)]
+            [is_reference_to_file_matcher(name_of_file_matcher)]
         )
         expected_references.apply_without_message(self, actual)
         asrt_source.is_at_end_of_line(1)

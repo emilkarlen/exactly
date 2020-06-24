@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to, \
+from exactly_lib_test.symbol.test_resources.string import is_reference_to_string_made_up_of_just_strings, \
     StringSymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
@@ -48,7 +48,7 @@ class _NumLinesMatchesWithOperandAsSymbolReference(TestCaseBase):
         symbol_table_with_operand_symbol = operand_symbol.symbol_table
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_string_made_up_of_just_strings_reference_to(operand_symbol.name)
+            is_reference_to_string_made_up_of_just_strings(operand_symbol.name)
         ])
 
         self._check_variants_with_expectation_type(
@@ -81,7 +81,7 @@ class _NumLinesMatchesWithOperandAsSymbolReferenceAsPartOfPythonExpression(TestC
         symbol_table_with_operand_symbol = operand_symbol.symbol_table
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_string_made_up_of_just_strings_reference_to(operand_symbol.name)
+            is_reference_to_string_made_up_of_just_strings(operand_symbol.name)
         ])
 
         self._check_variants_with_expectation_type(

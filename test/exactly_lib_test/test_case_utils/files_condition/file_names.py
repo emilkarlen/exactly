@@ -4,7 +4,7 @@ from typing import Mapping, Optional
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to__ref, \
+from exactly_lib_test.symbol.test_resources.string import is_reference_to_string_made_up_of_just_strings__ref, \
     StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
@@ -78,7 +78,7 @@ class TestInvalidFileNamesShouldCauseValidationError(unittest.TestCase):
                     [
                         StringConstantSymbolContext(ABS_POSIX_PATH_SYMBOL_NAME, ABS_POSIX_PATH)
                     ],
-                    [is_string_made_up_of_just_strings_reference_to__ref(ABS_POSIX_PATH_SYMBOL_NAME)]
+                    [is_reference_to_string_made_up_of_just_strings__ref(ABS_POSIX_PATH_SYMBOL_NAME)]
                 ),
             ),
         ]
@@ -129,7 +129,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
                 ]),
                 SymbolsArrEx(
                     [multi_part_file_name_symbol],
-                    [is_string_made_up_of_just_strings_reference_to__ref(multi_part_file_name_symbol.name)]
+                    [is_reference_to_string_made_up_of_just_strings__ref(multi_part_file_name_symbol.name)]
                 ),
             ),
         ]
@@ -236,8 +236,8 @@ class TestEachUniqueFileNameShouldHaveAnEntryInFilesMapping(unittest.TestCase):
                         StringConstantSymbolContext('sym_ref2', 'fn'),
                     ],
                     [
-                        is_string_made_up_of_just_strings_reference_to__ref('sym_ref1'),
-                        is_string_made_up_of_just_strings_reference_to__ref('sym_ref2'),
+                        is_reference_to_string_made_up_of_just_strings__ref('sym_ref1'),
+                        is_reference_to_string_made_up_of_just_strings__ref('sym_ref2'),
                     ]
                 ),
                 {

@@ -6,8 +6,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_utils.files_condition import parse as sut, structure
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.files_condition import is_files_condition_reference_to, \
-    FilesConditionSymbolContext
+from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext, \
+    is_reference_to_files_condition__ref
 from exactly_lib_test.test_case_utils.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
@@ -40,7 +40,7 @@ class TestParenthesisSyntax(unittest.TestCase):
         CHECKER.check_multi__w_source_variants(
             self,
             arguments=args.Parentheses(args.SymbolReferenceReferenceSyntax(symbol_name)).as_arguments,
-            symbol_references=asrt.matches_singleton_sequence(is_files_condition_reference_to(symbol_name)),
+            symbol_references=asrt.matches_singleton_sequence(is_reference_to_files_condition__ref(symbol_name)),
             input_=None,
             execution=failing_validation_cases__multi_exe(symbol_name),
         )
