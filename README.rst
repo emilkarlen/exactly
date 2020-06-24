@@ -56,12 +56,47 @@ If the file 'contacts.case' contains this test case, then Exactly can execute it
 
 "PASS" means that all assertions were satisfied.
 
+
+If the actual email address of "Pablo Gauss" is not the expected one,
+then Exactly will report failure. For example::
+
+    > exactly contacts.case
+    FAIL
+    In [assert]
+    contacts.case, line 13
+
+      stdout equals <<EOF
+      pablo@gauss.org
+      EOF
+
+
+    Unexpected contents of stdout from [act]
+
+      @[EXACTLY_RESULT]@/stdout
+
+
+    (F) equals
+          Expected
+            STRING
+              'pablo@gauss.org\n'
+          Diff:
+    --- Expected
+
+    +++ Actual
+
+    @@ -1 +1 @@
+
+    -pablo@gauss.org
+
+    +pablo.gauss@masters.org
+
+
 This test assumes that
 
  * the system under test - ``my-contacts-program`` - is is found in the same directory as the test case file
  * the file "some-test-contacts.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
-The ``home`` and ``act-home`` instructions
+Note: The ``home`` and ``act-home`` instructions
 can be used to change the directories where Exactly looks for files referenced from the test case.
 
 
