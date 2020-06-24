@@ -6,7 +6,7 @@ from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case.instructions import define_symbol
@@ -35,6 +35,7 @@ class _SymbolConcept(ConceptDocumentation):
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': SYMBOL_CONCEPT_INFO.name,
+            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
             'symbol_name_syntax_element': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'data': type_system.DATA_TYPE_CATEGORY_NAME,
             'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
@@ -160,7 +161,7 @@ For example:
 
 
 ```
-{def} {string_type: <{max_type_width}} {LIST_SYMBOL: <{max_symbol_name_width}} = first second "the third"
+{def} {list_type: <{max_type_width}} {LIST_SYMBOL: <{max_symbol_name_width}} = first second "the third"
 
 {def} {file_trans_type: <{max_type_width}} {FILE_TRANS_SYMBOL: <{max_symbol_name_width}} = replace [0-9]{{10}} ID
 ```
@@ -176,8 +177,11 @@ and in following phases.
 
 
 A {symbol} reference may appear in {string_type:s} and
-as instruction arguments,
-in most places where an argument of a certain type is expected.
+as {instruction} arguments,
+in places where an argument of a certain type is expected.
+
+Thus, {symbol:s} cannot be used for {instruction} names or
+arbitrary {instruction} arguments (as in unix shell scripts, e.g.).
 
 
 There are two forms of {symbol} references:
