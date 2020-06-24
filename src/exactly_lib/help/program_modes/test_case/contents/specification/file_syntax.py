@@ -85,7 +85,8 @@ Syntax is line oriented.
 
 
 Top level elements start at the beginning of a line,
-and line ends mark the end of elements, although some may span several lines.
+and line ends mark the end of elements, although some may span several lines
+(e.g. expressions inside parentheses).
 """
 
 PHASES_DOC = """\
