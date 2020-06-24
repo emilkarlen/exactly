@@ -4,7 +4,8 @@ from pathlib import PurePosixPath
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case_utils.files_condition import parse as sut, structure
+from exactly_lib.test_case_utils.files_condition import files_conditions
+from exactly_lib.test_case_utils.files_condition import parse as sut
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext, \
     is_reference_to_files_condition__ref
@@ -48,7 +49,7 @@ class TestParenthesisSyntax(unittest.TestCase):
     def test_expression_inside_parentheses_SHOULD_be_equal_to_expression_inside_parentheses(self):
         # ARRANGE #
         file_name = 'the-file-name'
-        referenced_sdv = structure.new_constant([
+        referenced_sdv = files_conditions.new_constant([
             (string_sdvs.str_constant(file_name), None)
         ])
         expected = asrt_primitive.files_matches({

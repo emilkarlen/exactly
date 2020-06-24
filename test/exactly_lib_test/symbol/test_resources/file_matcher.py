@@ -110,20 +110,4 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
         return FileMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
-class FileMatcherSymbolContextOfPrimitiveConstant(FileMatcherSymbolContext):
-    def __init__(self,
-                 name: str,
-                 result: bool,
-                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 ):
-        super().__init__(name,
-                         FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
-                                                                    definition_source))
-        self._result = result
-
-    @property
-    def result_value(self) -> bool:
-        return self._result
-
-
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FileMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

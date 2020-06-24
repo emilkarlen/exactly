@@ -10,7 +10,7 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as grammar_parser
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.files_condition import structure
+from exactly_lib.test_case_utils.files_condition import files_conditions
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.parse import parse_string
@@ -51,7 +51,7 @@ def _parse_constant(tokens: TokenParser) -> FilesConditionSdv:
         syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
     )
 
-    return structure.new_constant(elements)
+    return files_conditions.new_constant(elements)
 
 
 def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]:
@@ -122,7 +122,7 @@ GRAMMAR = grammar.Grammar(
         type_system_type_name=types.FILES_CONDITION_TYPE_INFO.identifier,
         syntax_element_name=syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.argument,
     ),
-    mk_reference=structure.new_reference,
+    mk_reference=files_conditions.new_reference,
     simple_expressions=(
         NameAndValue(
             syntax.BEGIN_BRACE,
