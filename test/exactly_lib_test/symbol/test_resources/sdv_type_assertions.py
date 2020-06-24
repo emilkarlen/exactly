@@ -15,7 +15,7 @@ from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTrace
 from exactly_lib.type_system.logic.program.program import ProgramDdv, Program
 from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
@@ -27,7 +27,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.test_resources import logic_structure_assertions as asrt_logic
 
 
-def matches_matcher_sdv(primitive_value: ValueAssertion[MatcherWTraceAndNegation] = asrt.anything_goes(),
+def matches_matcher_sdv(primitive_value: ValueAssertion[MatcherWTrace] = asrt.anything_goes(),
                         references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                         symbols: SymbolTable = None,
                         tcds: Tcds = fake_tcds(),

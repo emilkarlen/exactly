@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext, FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models
@@ -31,13 +31,13 @@ def suite() -> unittest.TestSuite:
 
 class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
     def mk_logic_type_value_context_of_primitive(self,
-                                                 primitive: MatcherWTraceAndNegation[FileMatcherModel]
+                                                 primitive: MatcherWTrace[FileMatcherModel]
                                                  ) -> FileMatcherSymbolValueContext:
         return FileMatcherSymbolValueContext.of_primitive(primitive)
 
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
-                                           primitive: MatcherWTraceAndNegation[FileMatcherModel]
+                                           primitive: MatcherWTrace[FileMatcherModel]
                                            ) -> FileMatcherSymbolContext:
         return FileMatcherSymbolContext.of_primitive(name, primitive)
 
@@ -53,7 +53,7 @@ class FileMatcherConfiguration(MatcherConfiguration[FileMatcherModel]):
     def parser(self) -> Parser[MatcherSdv[FileMatcherModel]]:
         return parse_file_matcher.parser()
 
-    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FileMatcherModel],
+    def checker(self) -> IntegrationChecker[MatcherWTrace[FileMatcherModel],
                                             Callable[[FullResolvingEnvironment], FileMatcherModel],
                                             MatchingResult]:
         return integration_check.CHECKER

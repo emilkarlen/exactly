@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.description import LogicValueDescription, DescriptionVisitor, DetailsDescription, \
     NodeDescription
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTrace
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_ddv
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -31,11 +31,11 @@ def matches_logic_ddv(primitive_value: Callable[[Tcds], ValueAssertion],
         ])
 
 
-def matches_matcher_ddv(primitive_value: Callable[[Tcds], ValueAssertion[MatcherWTraceAndNegation]],
+def matches_matcher_ddv(primitive_value: Callable[[Tcds], ValueAssertion[MatcherWTrace]],
                         tcds: Tcds = fake_tcds()
                         ) -> ValueAssertion[DirDependentValue]:
     def get_primitive_value_assertion(tcds_: Tcds) -> ValueAssertion:
-        return asrt.is_instance_with(MatcherWTraceAndNegation, primitive_value(tcds_))
+        return asrt.is_instance_with(MatcherWTrace, primitive_value(tcds_))
 
     return asrt.is_instance_with__many(
         MatcherDdv,

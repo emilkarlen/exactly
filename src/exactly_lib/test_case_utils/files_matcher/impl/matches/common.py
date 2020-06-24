@@ -11,14 +11,13 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionAdv, FilesConditionDdv, \
     FilesConditionSdv
 from exactly_lib.test_case_utils.files_matcher import config
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
     FilesMatcherDdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherAdv, MatcherDdv, \
-    MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
+    MatchingResult, MatcherWTrace
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
@@ -87,7 +86,7 @@ class RendererOfNonMatchingFileMatcher(NodeRenderer[bool]):
                     )
 
 
-class _Matcher(MatcherWTraceAndNegation[FilesMatcherModel]):
+class _Matcher(MatcherWTrace[FilesMatcherModel]):
     def __init__(self,
                  conf: Conf,
                  files_condition: FilesCondition,
@@ -106,10 +105,6 @@ class _Matcher(MatcherWTraceAndNegation[FilesMatcherModel]):
 
     def structure(self) -> StructureRenderer:
         return self._structure
-
-    @property
-    def negation(self) -> FilesMatcher:
-        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         applier = self._conf.applier_for_model(self._conf.name,

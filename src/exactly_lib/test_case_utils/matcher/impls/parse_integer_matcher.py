@@ -8,12 +8,10 @@ from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomInte
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcherSdv
 from exactly_lib.test_case_utils.matcher.impls.operand_object import ObjectSdvOfOperandSdv
 from exactly_lib.util.description_tree import details
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import expected_found
 
 
 def parse(parser: TokenParser,
-          expectation_type: ExpectationType,
           custom_integer_restriction: Optional[CustomIntegerValidator],
           ) -> MatcherSdv[int]:
     op_and_rhs = parse_integer_condition.parse_integer_comparison_operator_and_rhs(
@@ -21,7 +19,6 @@ def parse(parser: TokenParser,
         custom_integer_restriction,
     )
     return ComparisonMatcherSdv(
-        expectation_type,
         op_and_rhs.operator,
         ObjectSdvOfOperandSdv(op_and_rhs.rhs_operand),
         lambda x: details.String(x),

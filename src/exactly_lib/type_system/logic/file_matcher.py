@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
+    MatcherWTrace
 
 
 class FileTypeAccess(ABC):
@@ -30,7 +31,7 @@ class FileMatcherModel(ABC):
         pass
 
 
-FileMatcher = MatcherWTraceAndNegation[FileMatcherModel]
+FileMatcher = MatcherWTrace[FileMatcherModel]
 
 FileMatcherAdv = MatcherAdv[FileMatcherModel]
 

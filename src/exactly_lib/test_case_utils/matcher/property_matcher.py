@@ -5,12 +5,11 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, \
-    TraceRenderer, MatcherWTraceAndNegation, MatcherAdv, ApplicationEnvironment
+    TraceRenderer, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')
@@ -30,7 +29,7 @@ class PropertyMatcherDescriber:
         pass
 
 
-class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]):
+class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
     """Matches a property of a model"""
 
     def __init__(self,
@@ -51,10 +50,6 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTraceAndNegation[MODEL]
 
     def structure(self) -> StructureRenderer:
         return self._structure
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         """
@@ -78,7 +73,7 @@ class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
         self._property_getter = property_getter
         self._describer = describer
 
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return PropertyMatcher(
             self._matcher.primitive(environment),
             self._property_getter.applier(environment),

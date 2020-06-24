@@ -1,11 +1,10 @@
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, sdv_components
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import details, renderers
 
 
@@ -25,10 +24,6 @@ class EmptinessStringMatcher(StringMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree()
-
-    @property
-    def negation(self) -> StringMatcher:
-        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
         first_line = self._first_line(model)

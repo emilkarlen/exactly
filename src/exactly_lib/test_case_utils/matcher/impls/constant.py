@@ -2,11 +2,12 @@ from typing import Generic
 
 from exactly_lib.definitions import logic
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MODEL, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatchingResult, \
+    MatcherWTrace
 from exactly_lib.util.description_tree import renderers, tree
 
 
-class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class MatcherWithConstantResult(Generic[MODEL], MatcherWTrace[MODEL]):
     def __init__(self, result: bool):
         self._result = result
         self._matching_result = MatchingResult(
@@ -26,14 +27,10 @@ class MatcherWithConstantResult(Generic[MODEL], MatcherWTraceAndNegation[MODEL])
 
     @property
     def name(self) -> str:
-        return self.NAME
+        return logic.CONSTANT_MATCHER
 
     def structure(self) -> StructureRenderer:
         return self._structure
-
-    @property
-    def negation(self) -> 'MatcherWithConstantResult[MODEL]':
-        return MatcherWithConstantResult(not self._result)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         return self._matching_result

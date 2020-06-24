@@ -5,7 +5,7 @@ from typing import List, Generic, Sequence
 from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -217,7 +217,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         mk_operand_trace = get_mk_operand_trace('the_operand')
 
-        def execution_case_for(operand_result: bool) -> NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+        def execution_case_for(operand_result: bool) -> NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
                                                                                      MatchingResult],
                                                                Arrangement]:
             operand_matcher = helper.logic_type_symbol_context_from_primitive(
@@ -573,7 +573,7 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def _check(self,
                arguments: ArgumentElements,
                expected_result: bool,
-               all_symbols: Sequence[NameAndValue[MatcherWTraceAndNegation[MODEL]]],
+               all_symbols: Sequence[NameAndValue[MatcherWTrace[MODEL]]],
                expected_trace: tree.Node[bool],
                ):
         conf = self.configuration

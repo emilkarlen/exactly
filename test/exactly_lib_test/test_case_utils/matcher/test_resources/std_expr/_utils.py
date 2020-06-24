@@ -6,7 +6,7 @@ from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.util.description_tree import tree, renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -111,19 +111,19 @@ class AssertionsHelper(Generic[MODEL]):
         )
 
     def logic_type_symbol_value_context_from_primitive(self,
-                                                       primitive: MatcherWTraceAndNegation[MODEL]
+                                                       primitive: MatcherWTrace[MODEL]
                                                        ) -> MatcherSymbolValueContext[MODEL]:
         return self.conf.mk_logic_type_value_context_of_primitive(primitive)
 
     def logic_type_symbol_context_from_primitive(self,
                                                  name: str,
-                                                 primitive: MatcherWTraceAndNegation[MODEL]
+                                                 primitive: MatcherWTrace[MODEL]
                                                  ) -> MatcherTypeSymbolContext[MODEL]:
         return self.conf.mk_logic_type_context_of_primitive(name, primitive)
 
     def execution_cases_for_constant_reference_expressions(
             self, symbol_name: str
-    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
                                                MatchingResult],
                          Arrangement]]:
         helper = AssertionsHelper(self.conf)
@@ -152,7 +152,7 @@ class AssertionsHelper(Generic[MODEL]):
         ]
 
     def failing_validation_cases(self, symbol_name: str
-                                 ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                                 ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
                                                                             MatchingResult],
                                                       Arrangement]]:
         return [
@@ -188,11 +188,11 @@ class BinaryOperatorValidationCheckHelper(Generic[MODEL]):
     def symbol_references_expectation(self) -> ValueAssertion[Sequence[SymbolReference]]:
         return self.helper.is_sym_refs_to(self.operands)
 
-    def failing_validation_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+    def failing_validation_cases(self) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
                                                                                 MatchingResult],
                                                           Arrangement]]:
         def cases_for(validation_case: NEA[ValidationAssertions, ValidationActual]
-                      ) -> List[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL],
+                      ) -> List[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL],
                                                              MatchingResult],
                                        Arrangement]]:
             validations = [validation_case.actual] + ([ValidationActual.passes()] * (len(self.operands) - 1))
@@ -289,7 +289,7 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
             self,
             operand_symbol_names: List[str],
             cases_with_same_number_of_operands: List[Case],
-    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL], MatchingResult],
+    ) -> Sequence[NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL], MatchingResult],
                          Arrangement]]:
         return [
             self._execution_case(operand_symbol_names, case)
@@ -299,7 +299,7 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
     def _execution_case(self,
                         operand_symbol_names: List[str],
                         case: Case,
-                        ) -> NExArr[PrimAndExeExpectation[MatcherWTraceAndNegation[MODEL], MatchingResult],
+                        ) -> NExArr[PrimAndExeExpectation[MatcherWTrace[MODEL], MatchingResult],
                                     Arrangement]:
         operands = [
             NameAndValue(sym_and_behaviour[0], sym_and_behaviour[1])
@@ -359,7 +359,7 @@ class _ApplicationTraceConstructor(_MatcherBehaviourVisitor[Optional[tree.Node[b
         return None
 
 
-class _OperandMatcherConstructor(Generic[MODEL], _MatcherBehaviourVisitor[MatcherWTraceAndNegation[MODEL]]):
+class _OperandMatcherConstructor(Generic[MODEL], _MatcherBehaviourVisitor[MatcherWTrace[MODEL]]):
     def __init__(self,
                  put: unittest.TestCase,
                  operand_name: str,
@@ -367,17 +367,17 @@ class _OperandMatcherConstructor(Generic[MODEL], _MatcherBehaviourVisitor[Matche
         self._put = put
         self._operand_name = operand_name
 
-    def visit_constant(self, x: ConstantIncludedInTrace) -> MatcherWTraceAndNegation[MODEL]:
+    def visit_constant(self, x: ConstantIncludedInTrace) -> MatcherWTrace[MODEL]:
         return matchers.ConstantMatcherWithCustomTrace(get_mk_operand_trace(self._operand_name),
                                                        x.result)
 
-    def visit_ignored(self, x: IgnoredDueToLaziness) -> MatcherWTraceAndNegation[MODEL]:
+    def visit_ignored(self, x: IgnoredDueToLaziness) -> MatcherWTrace[MODEL]:
         return _MatcherThatShouldBeIgnoredDueToLaziness(self._put,
                                                         self._operand_name,
                                                         get_mk_operand_trace(self._operand_name))
 
 
-class _MatcherThatShouldBeIgnoredDueToLaziness(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class _MatcherThatShouldBeIgnoredDueToLaziness(Generic[MODEL], MatcherWTrace[MODEL]):
     def __init__(self,
                  put: unittest.TestCase,
                  name: str,
@@ -393,9 +393,6 @@ class _MatcherThatShouldBeIgnoredDueToLaziness(Generic[MODEL], MatcherWTraceAndN
 
     def structure(self) -> StructureRenderer:
         return renderers.Constant(self._trace_renderer(None))
-
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return self
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         self._put.fail(self._name + ': This matcher must not be applied, due to laziness')

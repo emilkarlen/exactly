@@ -4,7 +4,7 @@ from typing import Optional, Set, Mapping
 
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
@@ -40,7 +40,7 @@ def assert_files(expected: ValueAssertion[Mapping[PurePosixPath, Optional[FileMa
 
 def is_matcher_that_gives(expected: bool) -> ValueAssertion[Optional[FileMatcher]]:
     return asrt.is_not_none_and_instance_with(
-        MatcherWTraceAndNegation,
+        MatcherWTrace,
         _MatcherGives(expected),
     )
 

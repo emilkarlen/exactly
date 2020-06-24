@@ -24,7 +24,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatch
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
-    MatcherWTraceAndNegation, MODEL, MatcherAdv, MatcherDdv
+    MODEL, MatcherAdv, MatcherDdv, MatcherWTrace
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -97,7 +97,7 @@ class _FileContentsMatcher(FileMatcherImplBase,
     def __init__(self,
                  names: NamesSetup,
                  model_constructor: ModelConstructor[CONTENTS_MATCHER_MODEL],
-                 contents_matcher: MatcherWTraceAndNegation[CONTENTS_MATCHER_MODEL],
+                 contents_matcher: MatcherWTrace[CONTENTS_MATCHER_MODEL],
                  ):
         super().__init__()
         self._names = names
@@ -145,7 +145,7 @@ class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
         self._model_constructor = model_constructor
         self._contents_matcher = contents_matcher
 
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return _FileContentsMatcher(self._names,
                                     self._model_constructor.primitive(environment),
                                     self._contents_matcher.primitive(environment))
@@ -220,7 +220,7 @@ class FileContentsSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameA
 
 def _new_structure_tree(name: str,
                         options: DetailsRenderer,
-                        contents_matcher: MatcherWTraceAndNegation) -> StructureRenderer:
+                        contents_matcher: MatcherWTrace) -> StructureRenderer:
     return renderers.NodeRendererFromParts(
         name,
         None,

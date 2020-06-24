@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.logic.string_matcher import FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolValueContext, \
@@ -30,13 +30,13 @@ def suite() -> unittest.TestSuite:
 
 class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
     def mk_logic_type_value_context_of_primitive(self,
-                                                 primitive: MatcherWTraceAndNegation[FileToCheck]
+                                                 primitive: MatcherWTrace[FileToCheck]
                                                  ) -> StringMatcherSymbolValueContext:
         return StringMatcherSymbolValueContext.of_primitive(primitive)
 
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
-                                           primitive: MatcherWTraceAndNegation[FileToCheck]
+                                           primitive: MatcherWTrace[FileToCheck]
                                            ) -> StringMatcherSymbolContext:
         return StringMatcherSymbolContext.of_primitive(name, primitive)
 
@@ -52,7 +52,7 @@ class StringMatcherConfiguration(MatcherConfiguration[FileToCheck]):
     def parser(self) -> Parser[MatcherSdv[FileToCheck]]:
         return parse_string_matcher.string_matcher_parser()
 
-    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[FileToCheck],
+    def checker(self) -> IntegrationChecker[MatcherWTrace[FileToCheck],
                                             Callable[[FullResolvingEnvironment], FileToCheck],
                                             MatchingResult]:
         return integration_check.CHECKER

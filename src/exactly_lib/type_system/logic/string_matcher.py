@@ -5,7 +5,7 @@ from typing import Iterable, ContextManager
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
-    MatcherWTraceAndNegation, MatcherAdv
+    MatcherAdv, MatcherWTrace
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, TmpDirFileSpace
 
@@ -96,7 +96,7 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-StringMatcher = MatcherWTraceAndNegation[FileToCheck]
+StringMatcher = MatcherWTrace[FileToCheck]
 
 StringMatcherAdv = MatcherAdv[FileToCheck]
 

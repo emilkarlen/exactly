@@ -14,7 +14,8 @@ from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatcherDdv, MODEL, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MODEL, MatcherAdv, \
+    MatcherWTrace
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -23,7 +24,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 class MatchesRegex(WithCachedTreeStructureDescriptionBase,
-                   MatcherWTraceAndNegation[str]
+                   MatcherWTrace[str]
                    ):
     NAME = ' '.join((
         str_matcher.MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT,
@@ -66,10 +67,6 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
             self._is_full_match,
             self._pattern_renderer,
         )
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[str]:
-        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: str) -> MatchingResult:
         if self._expectation_type is ExpectationType.NEGATIVE:

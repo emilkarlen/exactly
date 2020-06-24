@@ -23,10 +23,6 @@ class FilesMatcherTestImpl(FilesMatcherImplBase):
     def name(self) -> str:
         return str(type(self)) + ': test impl with constant ' + str(self._result)
 
-    @property
-    def negation(self) -> FilesMatcher:
-        return FilesMatcherTestImpl(not self._result)
-
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         return (
             self._new_tb()

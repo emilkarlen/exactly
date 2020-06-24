@@ -21,7 +21,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg.header_rendering import unexpected_attribute__major_block
-from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.property_getters import PropertyGetterAdvConstant
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter, PropertyGetterAdv
@@ -83,11 +83,13 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
         parser = new_token_parser(rest_of_line)
         expectation_type = parser.consume_optional_negation_operator()
+
         matcher = parse_integer_matcher.parse(
             parser,
-            expectation_type,
             _must_be_within_byte_range,
         )
+        matcher = combinator_sdvs.optionally_negated(matcher, expectation_type)
+
         property_matcher = PropertyMatcherSdv(
             matcher,
             property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),

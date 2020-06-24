@@ -2,13 +2,12 @@ from abc import ABC
 from typing import Generic
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MODEL
+from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherWTrace
 
 
 class MatcherImplBase(Generic[MODEL],
-                      MatcherWTraceAndNegation[MODEL],
+                      MatcherWTrace[MODEL],
                       WithCachedNameAndTreeStructureDescriptionBase,
                       ABC):
     def __init__(self):
@@ -16,7 +15,3 @@ class MatcherImplBase(Generic[MODEL],
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return combinator_matchers.Negation(self)

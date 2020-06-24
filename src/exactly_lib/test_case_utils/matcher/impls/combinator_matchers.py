@@ -9,14 +9,14 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, \
     MatcherDdv, MODEL, MatcherAdv, ApplicationEnvironment
 from exactly_lib.util.description_tree import renderers
 
 
 class _CombinatorBase(Generic[MODEL],
                       WithCachedNameAndTreeStructureDescriptionBase,
-                      MatcherWTraceAndNegation[MODEL],
+                      MatcherWTrace[MODEL],
                       ABC):
     def __init__(self):
         WithCachedNameAndTreeStructureDescriptionBase.__init__(self)
@@ -34,7 +34,7 @@ class Negation(_CombinatorBase[MODEL]):
             (negated.structure(),),
         )
 
-    def __init__(self, negated: MatcherWTraceAndNegation[MODEL]):
+    def __init__(self, negated: MatcherWTrace[MODEL]):
         _CombinatorBase.__init__(self)
         self._negated = negated
 
@@ -44,9 +44,6 @@ class Negation(_CombinatorBase[MODEL]):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._negated)
-
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return self._negated
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         result_to_negate = self._negated.matches_w_trace(model)
@@ -64,7 +61,7 @@ class _NegationAdv(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self, operand: MatcherAdv[MODEL]):
         self._operand = operand
 
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return Negation(self._operand.primitive(environment))
 
 
@@ -85,7 +82,7 @@ class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
 
 class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self,
-                 make_matcher: Callable[[Sequence[MatcherWTraceAndNegation[MODEL]]], MatcherWTraceAndNegation[MODEL]],
+                 make_matcher: Callable[[Sequence[MatcherWTrace[MODEL]]], MatcherWTrace[MODEL]],
                  operands: Sequence[MatcherAdv[MODEL]],
                  ):
         self._make_matcher = make_matcher
@@ -93,7 +90,7 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
 
     @staticmethod
     def of(
-            make_matcher: Callable[[Sequence[MatcherWTraceAndNegation[MODEL]]], MatcherWTraceAndNegation[MODEL]],
+            make_matcher: Callable[[Sequence[MatcherWTrace[MODEL]]], MatcherWTrace[MODEL]],
             operands: Sequence[MatcherDdv[MODEL]],
             tcds: Tcds,
     ) -> MatcherAdv[MODEL]:
@@ -105,7 +102,7 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
             ]
         )
 
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return self._make_matcher([
             operand.primitive(environment)
             for operand in self._operands
@@ -134,9 +131,6 @@ class Conjunction(_CombinatorBase[MODEL]):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._parts)
-
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return Negation(self)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)
@@ -199,9 +193,6 @@ class Disjunction(_CombinatorBase[MODEL]):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._parts)
-
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return Negation(self)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         tb = TraceBuilder(self.name)

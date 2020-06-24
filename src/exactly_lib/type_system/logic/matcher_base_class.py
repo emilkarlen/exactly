@@ -38,25 +38,18 @@ class MatcherWTrace(Generic[MODEL], WithNameAndTreeStructureDescription, ABC):
         pass
 
 
-class MatcherWTraceAndNegation(Generic[MODEL], MatcherWTrace[MODEL], ABC):
-    @property
-    @abstractmethod
-    def negation(self) -> 'MatcherWTraceAndNegation[MODEL]':
-        pass
-
-
 class MatcherAdv(Generic[MODEL],
-                 ApplicationEnvironmentDependentValue[MatcherWTraceAndNegation[MODEL]],
+                 ApplicationEnvironmentDependentValue[MatcherWTrace[MODEL]],
                  ABC):
     """Application Environment Dependent Matcher"""
 
     @abstractmethod
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         pass
 
 
 class MatcherDdv(Generic[MODEL],
-                 LogicWithNodeDescriptionDdv[MatcherWTraceAndNegation[MODEL]],
+                 LogicWithNodeDescriptionDdv[MatcherWTrace[MODEL]],
                  ABC):
     @property
     def validator(self) -> DdvValidator:

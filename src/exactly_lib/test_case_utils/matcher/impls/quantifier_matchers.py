@@ -8,11 +8,10 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherWTraceAndNegation, \
-    MatcherDdv, MatcherAdv, ApplicationEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, MatcherDdv, MatcherAdv, \
+    ApplicationEnvironment
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -70,7 +69,7 @@ class _ApplicationConf(Generic[MODEL, ELEMENT]):
 
 class _QuantifierBase(Generic[MODEL, ELEMENT],
                       WithCachedTreeStructureDescriptionBase,
-                      MatcherWTraceAndNegation[MODEL],
+                      MatcherWTrace[MODEL],
                       ABC):
     def __init__(self,
                  quantifier: Quantifier,
@@ -110,9 +109,6 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
         return self.new_structure_tree(self._quantifier,
                                        self._conf.setup.rendering,
                                        self._conf.predicate)
-
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return combinator_matchers.Negation(self)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         conf = self._conf
@@ -250,7 +246,7 @@ class _QuantifierAdv(Generic[MODEL, ELEMENT], MatcherAdv[MODEL]):
         self._predicate = predicate
         self._tcds = tcds
 
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         conf = _ApplicationConf(self._element_setup,
                                 self._predicate.primitive(environment),
                                 self._tcds,

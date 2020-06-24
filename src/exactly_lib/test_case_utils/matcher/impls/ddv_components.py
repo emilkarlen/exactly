@@ -7,12 +7,13 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.impls.advs import ConstantMatcherAdv
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
+    MatcherWTrace
 
 
 class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 primitive_value: MatcherWTraceAndNegation[MODEL],
+                 primitive_value: MatcherWTrace[MODEL],
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
@@ -31,7 +32,7 @@ class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
 
 class MatcherDdvFromPartsWConstantAdv(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 make_matcher: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
+                 make_matcher: Callable[[Tcds], MatcherWTrace[MODEL]],
                  structure: StructureRenderer,
                  ):
         self._make_matcher = make_matcher

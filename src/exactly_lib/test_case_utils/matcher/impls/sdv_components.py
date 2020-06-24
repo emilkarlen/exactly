@@ -2,7 +2,7 @@ from typing import Sequence, Callable, Generic
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv, MODEL
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTrace
 from exactly_lib.util.symbol_table import SymbolTable
 from . import ddv_components
 
@@ -40,7 +40,7 @@ class MatcherSdvFromConstantDdv(Generic[MODEL], MatcherSdv[MODEL]):
         return str(type(self)) + '\'' + str(self._ddv) + '\''
 
 
-def matcher_sdv_from_constant_primitive(primitive: MatcherWTraceAndNegation[MODEL]) -> MatcherSdv[MODEL]:
+def matcher_sdv_from_constant_primitive(primitive: MatcherWTrace[MODEL]) -> MatcherSdv[MODEL]:
     return MatcherSdvFromConstantDdv(
         ddv_components.MatcherDdvFromConstantPrimitive(primitive)
     )

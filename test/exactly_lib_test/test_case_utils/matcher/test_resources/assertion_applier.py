@@ -12,8 +12,8 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.impls.advs import MatcherAdvFromFunction
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult, MatcherDdv, \
-    MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, \
+    MatcherAdv, MatcherWTrace
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherDdvFromParts2TestImpl
@@ -88,7 +88,7 @@ def matcher(put: unittest.TestCase,
             ) -> MatcherSdv[MODEL]:
     def make_ddv(symbols: SymbolTable) -> MatcherDdv[MODEL]:
         def make_adv(tcds: Tcds) -> MatcherAdv[MODEL]:
-            def make_matcher(environment: ApplicationEnvironment) -> MatcherWTraceAndNegation[MODEL]:
+            def make_matcher(environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
                 return MatcherThatAppliesValueAssertion(
                     put,
                     application_assertion.get_assertion(symbols, tcds, environment),
@@ -140,7 +140,7 @@ class ValidatorThatAppliesValueAssertions(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SD
         return None
 
 
-class MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTraceAndNegation[MODEL]):
+class MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTrace[MODEL]):
     NAME = 'MatcherThatAppliesValueAssertion'
     STRUCTURE = renderers.header_only(NAME)
 
@@ -163,14 +163,6 @@ class MatcherThatAppliesValueAssertion(Generic[MODEL, ACTUAL], MatcherWTraceAndN
 
     def structure(self) -> StructureRenderer:
         return self.STRUCTURE
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[FilesMatcherModel]:
-        return MatcherThatAppliesValueAssertion(self.put,
-                                                self.assertion,
-                                                self.get_actual,
-                                                self.message_builder,
-                                                not self.matching_result)
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         self._apply_assertion(model)

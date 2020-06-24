@@ -6,7 +6,7 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolValueContext, LineMatcherSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
@@ -29,13 +29,13 @@ def suite() -> unittest.TestSuite:
 
 class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
     def mk_logic_type_value_context_of_primitive(self,
-                                                 primitive: MatcherWTraceAndNegation[LineMatcherLine]
+                                                 primitive: MatcherWTrace[LineMatcherLine]
                                                  ) -> LineMatcherSymbolValueContext:
         return LineMatcherSymbolValueContext.of_primitive(primitive)
 
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
-                                           primitive: MatcherWTraceAndNegation[LineMatcherLine]
+                                           primitive: MatcherWTrace[LineMatcherLine]
                                            ) -> LineMatcherSymbolContext:
         return LineMatcherSymbolContext.of_primitive(name, primitive)
 
@@ -51,7 +51,7 @@ class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
     def parser(self) -> Parser[MatcherSdv[LineMatcherLine]]:
         return parse_line_matcher.parser()
 
-    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[LineMatcherLine],
+    def checker(self) -> IntegrationChecker[MatcherWTrace[LineMatcherLine],
                                             Callable[[FullResolvingEnvironment], LineMatcherLine],
                                             MatchingResult]:
         return integration_check.CHECKER

@@ -5,7 +5,8 @@ from typing import Iterator
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherWTraceAndNegation, MatcherDdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
+    MatcherWTrace
 
 
 class FileModel(ABC):
@@ -44,7 +45,7 @@ class FilesMatcherModel(ABC):
         pass
 
 
-FilesMatcher = MatcherWTraceAndNegation[FilesMatcherModel]
+FilesMatcher = MatcherWTrace[FilesMatcherModel]
 
 FilesMatcherAdv = MatcherAdv[FilesMatcherModel]
 

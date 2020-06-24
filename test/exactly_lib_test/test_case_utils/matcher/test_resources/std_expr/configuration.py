@@ -4,7 +4,7 @@ from typing import TypeVar, Generic, Callable
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
@@ -12,7 +12,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 MODEL = TypeVar('MODEL')
 
-MatcherCheckerAlias = IntegrationChecker[MatcherWTraceAndNegation[MODEL],
+MatcherCheckerAlias = IntegrationChecker[MatcherWTrace[MODEL],
                                          Callable[[FullResolvingEnvironment], MODEL],
                                          ValueAssertion[MatchingResult]]
 
@@ -20,14 +20,14 @@ MatcherCheckerAlias = IntegrationChecker[MatcherWTraceAndNegation[MODEL],
 class MatcherConfiguration(Generic[MODEL], ABC):
     @abstractmethod
     def mk_logic_type_value_context_of_primitive(self,
-                                                 primitive: MatcherWTraceAndNegation[MODEL]
+                                                 primitive: MatcherWTrace[MODEL]
                                                  ) -> MatcherSymbolValueContext[MODEL]:
         pass
 
     @abstractmethod
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
-                                           primitive: MatcherWTraceAndNegation[MODEL]
+                                           primitive: MatcherWTrace[MODEL]
                                            ) -> MatcherTypeSymbolContext[MODEL]:
         pass
 
@@ -47,7 +47,7 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         pass
 
     @abstractmethod
-    def checker(self) -> IntegrationChecker[MatcherWTraceAndNegation[MODEL],
+    def checker(self) -> IntegrationChecker[MatcherWTrace[MODEL],
                                             Callable[[FullResolvingEnvironment], MODEL],
                                             MatchingResult]:
         pass

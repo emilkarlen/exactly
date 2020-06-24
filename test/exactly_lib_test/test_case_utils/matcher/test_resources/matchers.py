@@ -14,7 +14,8 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
+    MatcherWTrace
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
@@ -27,14 +28,14 @@ MODEL = TypeVar('MODEL')
 
 
 class MatcherTestImplBase(Generic[MODEL],
-                          MatcherWTraceAndNegation[MODEL],
+                          MatcherWTrace[MODEL],
                           ABC):
     def structure(self) -> StructureRenderer:
         return renderers_tr.structure_renderer_for_arbitrary_object(self)
 
 
 def sdv_from_primitive_value(
-        primitive_value: MatcherWTraceAndNegation[MODEL] = MatcherWithConstantResult(True),
+        primitive_value: MatcherWTrace[MODEL] = MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = ddv_validation.constant_success_validator(),
 ) -> MatcherSdv[MODEL]:
@@ -63,7 +64,7 @@ def sdv_of_unconditionally_matching_matcher() -> MatcherSdv[MODEL]:
 
 def sdv_from_parts(references: Sequence[SymbolReference],
                    validator: DdvValidator,
-                   matcher: Callable[[SymbolTable, Tcds], MatcherWTraceAndNegation[MODEL]],
+                   matcher: Callable[[SymbolTable, Tcds], MatcherWTrace[MODEL]],
                    ) -> MatcherSdv[MODEL]:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
         def make_primitive(tcds: Tcds) -> FileMatcher:
@@ -88,7 +89,7 @@ def ddv_of_unconditionally_matching_matcher() -> MatcherDdv[MODEL]:
 
 class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 primitive_value: MatcherWTraceAndNegation[MODEL],
+                 primitive_value: MatcherWTrace[MODEL],
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._primitive_value = primitive_value
@@ -129,7 +130,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     APPLICATION_ENVIRONMENT = application_environment()
 
     def __init__(self,
-                 make_primitive: Callable[[Tcds], MatcherWTraceAndNegation[MODEL]],
+                 make_primitive: Callable[[Tcds], MatcherWTrace[MODEL]],
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._make_primitive = make_primitive
@@ -173,7 +174,7 @@ class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._make_adv(tcds)
 
 
-class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTrace[MODEL]):
     def __init__(self,
                  name: str,
                  result: bool,
@@ -202,10 +203,6 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
     def structure(self) -> StructureRenderer:
         return renderers.header_only(self._name)
 
-    @property
-    def negation(self) -> 'MatcherWithConstantResult[MODEL]':
-        return MatcherWithConstantResult(not self._matching_result.value)
-
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         return self._matching_result
 
@@ -213,7 +210,7 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTraceAndNegation[MOD
 T = TypeVar('T')
 
 
-class ConstantMatcherWithCustomTrace(Generic[MODEL], MatcherWTraceAndNegation[MODEL]):
+class ConstantMatcherWithCustomTrace(Generic[MODEL], MatcherWTrace[MODEL]):
     def __init__(self,
                  mk_trace: Callable[[T], tree.Node[T]],
                  result: bool,
@@ -227,14 +224,10 @@ class ConstantMatcherWithCustomTrace(Generic[MODEL], MatcherWTraceAndNegation[MO
 
     @property
     def name(self) -> str:
-        return self._name
+        raise NotImplementedError('name: unsupported')
 
     def structure(self) -> StructureRenderer:
         return renderers.Constant(self._mk_trace(None))
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return MatcherWithConstantResult(not self._matching_result.value)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         return self._matching_result
@@ -250,10 +243,6 @@ class MatcherThatRegistersModelArgument(Generic[MODEL], MatcherTestImplBase[MODE
     @property
     def name(self) -> str:
         return str(type(self))
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return MatcherThatRegistersModelArgument(self._registry, not self._constant_result)
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         self._registry.append(model)
@@ -272,10 +261,6 @@ class MatcherThatReportsHardError(Generic[MODEL], MatcherTestImplBase[MODEL]):
     @property
     def name(self) -> str:
         return str(type(self))
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[MODEL]:
-        return self
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         raise HardErrorException(new_single_string_text_for_test(self.error_message))

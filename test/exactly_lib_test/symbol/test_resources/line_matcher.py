@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
 from exactly_lib.test_case_utils.matcher.impls import constant, ddv_components
 from exactly_lib.type_system.logic.line_matcher import LineMatcherDdv, LineMatcherLine, LineMatcherSdv, \
     LineMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTraceAndNegation
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
@@ -42,7 +42,7 @@ def successful_matcher_with_validation(validator: DdvValidator) -> LineMatcherSd
 
 
 def sdv_from_primitive_value(
-        primitive_value: MatcherWTraceAndNegation[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
+        primitive_value: MatcherWTrace[LineMatcherLine] = matchers.MatcherWithConstantResult(True),
         references: Sequence[SymbolReference] = (),
         validator: DdvValidator = constant_success_validator(),
 ) -> LineMatcherSdv:

@@ -5,10 +5,9 @@ from exactly_lib.test_case_utils.description_tree import custom_details, custom_
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcher, \
-    FilesMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
-from exactly_lib.util import logic_types, strings
+from exactly_lib.util import strings
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
@@ -43,10 +42,6 @@ class _EmptinessMatcher(FilesMatcherImplBase):
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._expectation_type)
-
-    @property
-    def negation(self) -> FilesMatcher:
-        return _EmptinessMatcher(logic_types.negation(self._expectation_type))
 
     def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
         files_list = list(model.files())

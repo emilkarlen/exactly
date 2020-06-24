@@ -39,6 +39,16 @@ class Negation(_ImplBase[MODEL]):
         return combinator_matchers.NegationDdv(self._operand.resolve(symbols))
 
 
+def optionally_negated(matcher: MatcherSdv[MODEL],
+                       expectation_type: ExpectationType) -> MatcherSdv[MODEL]:
+    return (
+        matcher
+        if expectation_type is ExpectationType.POSITIVE
+        else
+        Negation(matcher)
+    )
+
+
 class Conjunction(_ImplBase[MODEL]):
     def __init__(self, operands: Sequence[MatcherSdv[MODEL]]):
         super().__init__(operands)

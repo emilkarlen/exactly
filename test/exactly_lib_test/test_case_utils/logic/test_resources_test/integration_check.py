@@ -18,8 +18,8 @@ from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTraceAndNegation, MODEL, \
-    MatchingResult, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MODEL, \
+    MatchingResult, MatcherAdv, MatcherWTrace
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.render import combinators as rend_comb
@@ -359,7 +359,7 @@ class TestFailingExpectations(TestCaseBase):
 
 class TestPopulateDirectoriesAndCwd(TestCaseBase):
     def test_tcds_SHOULD_not_exist_WHEN_flag_for_not_creating_tcds_is_given(self):
-        def make_primitive(tcds: Tcds) -> MatcherWTraceAndNegation[int]:
+        def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
             return matchers.MatcherWithConstantResult(True)
 
         self._check_line_matcher_type__single_and_multi(
@@ -376,7 +376,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
-        def make_primitive(tcds: Tcds) -> MatcherWTraceAndNegation[int]:
+        def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
             return MatcherThatAssertsThatCwdIsIsActDir(self, tcds)
 
         self._check_line_matcher_type__single_and_multi(
@@ -503,7 +503,7 @@ def _constant_line_matcher_type_parser_of_matcher_ddv(matcher: MatcherDdv[int]) 
     return _ConstantParserOfSingleTokenExpression(matchers.MatcherSdvOfConstantDdvTestImpl(matcher))
 
 
-def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTraceAndNegation[int]
+def _constant_line_matcher_type_parser_of_matcher(matcher: MatcherWTrace[int]
                                                   ) -> Parser[MatcherSdv[int]]:
     return _ConstantParserOfSingleTokenExpression(matchers.sdv_from_primitive_value(matcher))
 
@@ -567,10 +567,6 @@ class MatcherThatAssertsThatCwdIsIsActDir(MatcherTestImplBase[int]):
                  ):
         self._put = put
         self._tcds = tcds
-
-    @property
-    def negation(self) -> MatcherWTraceAndNegation[int]:
-        raise NotImplementedError('unsupported')
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         cwd = pathlib.Path.cwd()
