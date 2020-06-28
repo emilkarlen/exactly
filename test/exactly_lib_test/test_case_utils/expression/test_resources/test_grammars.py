@@ -37,7 +37,7 @@ class RefExpr(Expr):
                                self.symbol_name)
 
 
-class PrefixExprBase(Expr):
+class PrefixOpExprBase(Expr):
     def __init__(self, expression: Expr):
         self.expression = expression
 
@@ -46,19 +46,19 @@ class PrefixExprBase(Expr):
                                str(self.expression))
 
 
-class PrefixExprP(PrefixExprBase):
+class PrefixOpExprP(PrefixOpExprBase):
     pass
 
 
-class PrefixExprQ(PrefixExprBase):
+class PrefixOpExprQ(PrefixOpExprBase):
     pass
 
 
-class SimpleExpr(Expr):
+class PrimitiveExpr(Expr):
     pass
 
 
-class SimpleWithArg(SimpleExpr):
+class PrimitiveWithArg(PrimitiveExpr):
     def __init__(self, argument: str):
         self.argument = argument
 
@@ -67,12 +67,12 @@ class SimpleWithArg(SimpleExpr):
                                repr(self.argument))
 
 
-class SimpleSansArg(SimpleExpr):
+class PrimitiveSansArg(PrimitiveExpr):
     def __str__(self):
         return self.__class__.__name__
 
 
-class SimpleRecursive(SimpleExpr):
+class PrimitiveRecursive(PrimitiveExpr):
     def __init__(self, argument: Expr):
         self.argument = argument
 
@@ -81,7 +81,7 @@ class SimpleRecursive(SimpleExpr):
                                str(self.argument))
 
 
-class ComplexExpr(Expr):
+class InfixOpExpr(Expr):
     def __init__(self, expressions: Sequence[Expr]):
         self.expressions = expressions
 
@@ -90,43 +90,43 @@ class ComplexExpr(Expr):
                                ', '.join(map(str, self.expressions)))
 
 
-class ComplexA(ComplexExpr):
+class InfixOpA(InfixOpExpr):
     pass
 
 
-class ComplexB(ComplexExpr):
+class InfixOpB(InfixOpExpr):
     pass
 
 
-def parse_simple_with_arg(parser: TokenParser) -> SimpleWithArg:
+def parse_primitive_with_arg(parser: TokenParser) -> PrimitiveWithArg:
     token = parser.consume_mandatory_token('failed parse of simple expression with arg')
-    return SimpleWithArg(token.string)
+    return PrimitiveWithArg(token.string)
 
 
-def parse_simple_sans_arg(parser: TokenParser) -> SimpleSansArg:
-    return SimpleSansArg()
+def parse_primitive_sans_arg(parser: TokenParser) -> PrimitiveSansArg:
+    return PrimitiveSansArg()
 
 
-def parse_recursive_simple_of_grammar_w_all_components(parser: TokenParser) -> SimpleRecursive:
+def parse_recursive_primitive_of_grammar_w_all_components(parser: TokenParser) -> PrimitiveRecursive:
     argument = expression_parser.parse(GRAMMAR_WITH_ALL_COMPONENTS,
                                        parser,
                                        must_be_on_current_line=False)
-    return SimpleRecursive(argument)
+    return PrimitiveRecursive(argument)
 
 
 CROSS_REF_ID = CustomCrossReferenceId('custom-target')
 
-SIMPLE_WITH_ARG = 'simple_with_arg'
-SIMPLE_SANS_ARG = 'simple_sans_arg'
-SIMPLE_RECURSIVE = 'simple_recursive'
+PRIMITIVE_WITH_ARG = 'primitive_with_arg'
+PRIMITIVE_SANS_ARG = 'primitive_sans_arg'
+PRIMITIVE_RECURSIVE = 'primitive_recursive'
 
-NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/simple/expr/name/and/not/a/valid/symbol/name'
+NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME = 'not/a/primitive/expr/name/and/not/a/valid/symbol/name'
 
 PREFIX_P = '!'
 PREFIX_Q = 'prefix_q'
 
-COMPLEX_A = 'complex_a'
-COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
+INFIX_OP_A = 'infix_op_a'
+INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
 CONCEPT = grammar.Concept(
     NameWithGenderWithFormatting(
@@ -137,7 +137,7 @@ CONCEPT = grammar.Concept(
     a.Named('SYNTAX-ELEMENT-NAME'))
 
 
-class ConstantSimpleExprDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class ConstantPrimitiveExprDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self,
                  argument_usage_list: Sequence[a.ArgumentUsage],
                  description_rest: Sequence[ParagraphItem],
@@ -189,42 +189,46 @@ class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
         return self._see_also_targets
 
 
-SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE = (
+PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE = (
     NameAndValue(
-        SIMPLE_WITH_ARG,
-        grammar.SimpleExpression(parse_simple_with_arg,
-                                 ConstantSimpleExprDescription([], [],
-                                                               [SyntaxElementDescription(SIMPLE_WITH_ARG + '-SED', ())],
-                                                               [CROSS_REF_ID]))
+        PRIMITIVE_WITH_ARG,
+        grammar.PrimitiveExpression(parse_primitive_with_arg,
+                                    ConstantPrimitiveExprDescription([], [],
+                                                                     [SyntaxElementDescription(
+                                                                         PRIMITIVE_WITH_ARG + '-SED',
+                                                                         ())],
+                                                                     [CROSS_REF_ID]))
     ),
     NameAndValue(
-        SIMPLE_SANS_ARG,
-        grammar.SimpleExpression(parse_simple_sans_arg,
-                                 ConstantSimpleExprDescription([], []))
+        PRIMITIVE_SANS_ARG,
+        grammar.PrimitiveExpression(parse_primitive_sans_arg,
+                                    ConstantPrimitiveExprDescription([], []))
     ),
 )
 
-SIMPLE_EXPRESSIONS__INCLUDING_RECURSIVE = (
-        list(SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE) +
+PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE = (
+        list(PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE) +
         [
             NameAndValue(
-                SIMPLE_RECURSIVE,
-                grammar.SimpleExpression(parse_recursive_simple_of_grammar_w_all_components,
-                                         ConstantSimpleExprDescription([], []))
+                PRIMITIVE_RECURSIVE,
+                grammar.PrimitiveExpression(
+                    parse_recursive_primitive_of_grammar_w_all_components,
+                    ConstantPrimitiveExprDescription([], [])
+                )
             )
         ]
 )
 
-PREFIX_EXPRESSIONS = (
+PREFIX_OP_EXPRESSIONS = (
     NameAndValue(
         PREFIX_P,
-        grammar.PrefixExpression(PrefixExprP,
-                                 ConstantOperatorExpressionDescription([]))
+        grammar.PrefixOpExpression(PrefixOpExprP,
+                                   ConstantOperatorExpressionDescription([]))
     ),
     NameAndValue(
         PREFIX_Q,
-        grammar.PrefixExpression(PrefixExprQ,
-                                 ConstantOperatorExpressionDescription([]))
+        grammar.PrefixOpExpression(PrefixOpExprQ,
+                                   ConstantOperatorExpressionDescription([]))
     ),
 )
 
@@ -236,28 +240,28 @@ def _mk_reference(name: str) -> Expr:
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions=SIMPLE_EXPRESSIONS__INCLUDING_RECURSIVE,
-    complex_expressions=(
+    primitive_expressions=PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE,
+    infix_op_expressions=(
         NameAndValue(
-            COMPLEX_A,
-            grammar.ComplexExpression(ComplexA,
+            INFIX_OP_A,
+            grammar.InfixOpExpression(InfixOpA,
                                       ConstantOperatorExpressionDescription([], [],
                                                                             [CROSS_REF_ID]))
         ),
         NameAndValue(
-            COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            grammar.ComplexExpression(ComplexB,
+            INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            grammar.InfixOpExpression(InfixOpB,
                                       ConstantOperatorExpressionDescription([], [],
                                                                             [CROSS_REF_ID]))
         ),
     ),
-    prefix_expressions=PREFIX_EXPRESSIONS,
+    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
 )
 
-GRAMMAR_SANS_COMPLEX_EXPRESSIONS = grammar.Grammar(
+GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions=SIMPLE_EXPRESSIONS__EXCEPT_RECURSIVE,
-    prefix_expressions=PREFIX_EXPRESSIONS,
-    complex_expressions=(),
+    primitive_expressions=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
+    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
+    infix_op_expressions=(),
 )

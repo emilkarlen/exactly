@@ -32,7 +32,7 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
     return equality.sdv(expected_contents)
 
 
-class Description(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self):
         self._string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
             _EXPECTED_PATH_NAME,

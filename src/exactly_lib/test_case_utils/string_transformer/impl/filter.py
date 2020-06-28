@@ -114,7 +114,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
                                str(self._line_matcher))
 
 
-class SyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

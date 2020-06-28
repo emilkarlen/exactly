@@ -80,31 +80,31 @@ def _mk_reference(name: str) -> StringTransformerSdv:
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=_mk_reference,
-    simple_expressions=(
+    primitive_expressions=(
         NameAndValue(
             names.REPLACE_TRANSFORMER_NAME,
-            grammar.SimpleExpression(replace.parse_replace,
-                                     replace.SyntaxDescription())
+            grammar.PrimitiveExpression(replace.parse_replace,
+                                        replace.SyntaxDescription())
         ),
         NameAndValue(
             names.SELECT_TRANSFORMER_NAME,
-            grammar.SimpleExpression(filter.parse_filter,
-                                     filter.SyntaxDescription())
+            grammar.PrimitiveExpression(filter.parse_filter,
+                                        filter.SyntaxDescription())
         ),
         NameAndValue(
             names.IDENTITY_TRANSFORMER_NAME,
-            grammar.SimpleExpression(identity.parse_identity,
-                                     identity.SyntaxDescription())
+            grammar.PrimitiveExpression(identity.parse_identity,
+                                        identity.SyntaxDescription())
         ),
     ),
-    complex_expressions=[
+    infix_op_expressions=[
         NameAndValue(
             names.SEQUENCE_OPERATOR_NAME,
-            grammar.ComplexExpression(
+            grammar.InfixOpExpression(
                 sequence.StringTransformerSequenceSdv,
                 sequence.SYNTAX_DESCRIPTION,
             )
         ),
     ],
-    prefix_expressions=(),
+    prefix_op_expressions=(),
 )

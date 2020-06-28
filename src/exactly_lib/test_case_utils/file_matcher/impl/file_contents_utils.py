@@ -180,7 +180,7 @@ class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
                                        self._contents_matcher.value_of_any_dependency(tcds))
 
 
-class FileContentsSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class FileContentsSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self, documentation: DocumentationSetup):
         self._documentation = documentation
 

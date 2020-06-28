@@ -14,7 +14,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines, \
     remaining_source_string
 from exactly_lib_test.test_case_utils.expression.test_resources import test_grammars as ast
-from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import ComplexA, ComplexB, PrefixExprP
+from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import InfixOpA, InfixOpB, PrefixOpExprP
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -24,21 +24,21 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailuresCommonToAllGrammars),
-        unittest.makeSuite(TestSingleSimpleExpression),
-        unittest.makeSuite(TestSinglePrefixExpression),
+        unittest.makeSuite(TestSinglePrimitiveExpression),
+        unittest.makeSuite(TestSinglePrefixOpExpression),
         unittest.makeSuite(TestSingleRefExpression),
-        unittest.makeSuite(TestComplexExpression),
+        unittest.makeSuite(TestInfixOpExpression),
         unittest.makeSuite(TestCombinedExpressions),
     ])
 
 
 GRAMMARS = [
     NameAndValue(
-        'sans complex expressions',
-        ast.GRAMMAR_SANS_COMPLEX_EXPRESSIONS,
+        'sans infix-op expressions',
+        ast.GRAMMAR_SANS_INFIX_OP_EXPRESSIONS,
     ),
     NameAndValue(
-        'with complex expressions',
+        'with infix-op expressions',
         ast.GRAMMAR_WITH_ALL_COMPONENTS,
     ),
 ]
@@ -87,7 +87,7 @@ class TestFailuresCommonToAllGrammars(TestCaseBase):
                 ),
                 NameAndValue(
                     'missing )',
-                    remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG)),
+                    remaining_source('( {primitive} '.format(primitive=ast.PRIMITIVE_SANS_ARG)),
                 ),
             ]
             for case in cases:
@@ -163,13 +163,13 @@ class SourceCase:
         )
 
 
-class TestSingleSimpleExpression(TestCaseBase):
+class TestSinglePrimitiveExpression(TestCaseBase):
     def test_successful_parse_of_expr_sans_argument(self):
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
 
         format_map = {
-            'simple_expr': ast.SIMPLE_SANS_ARG,
+            'primitive_expr': ast.PRIMITIVE_SANS_ARG,
             'space_after': space_after,
             'token_after': token_after,
         }
@@ -179,41 +179,41 @@ class TestSingleSimpleExpression(TestCaseBase):
 
         cases = [
             SourceCase(
-                'first line is only simple expr',
-                source('{simple_expr}'),
+                'first line is only primitive expr',
+                source('{primitive_expr}'),
                 SourceExpectation.is_at_end_of_line(1)
             ),
             SourceCase(
-                'first line is simple expr with space around',
-                source('  {simple_expr}{space_after}'),
+                'first line is primitive expr with space around',
+                source('  {primitive_expr}{space_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                        remaining_part_of_current_line=space_after[1:])
             ),
             SourceCase(
                 'expression is followed by non-expression',
-                source('{simple_expr} {token_after}'),
+                source('{primitive_expr} {token_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                        remaining_part_of_current_line=token_after)
             ),
             SourceCase(
-                '( simple )',
-                source('( {simple_expr} )'),
+                '( primitive )',
+                source('( {primitive_expr} )'),
                 SourceExpectation.is_at_end_of_line(1),
             ),
             SourceCase(
-                '( simple ) followed by non-expression',
-                source('( {simple_expr} ) {token_after}'),
+                '( primitive ) followed by non-expression',
+                source('( {primitive_expr} ) {token_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                        remaining_part_of_current_line=token_after),
             ),
             SourceCase(
-                '( ( simple ) )',
-                source('( ( {simple_expr} ) )'),
+                '( ( primitive ) )',
+                source('( ( {primitive_expr} ) )'),
                 SourceExpectation.is_at_end_of_line(1),
             ),
         ]
         # ACT & ASSERT #
-        _check_with_must_be_on_current_line_variants(self, ast.SimpleSansArg(), GRAMMARS, cases)
+        _check_with_must_be_on_current_line_variants(self, ast.PrimitiveSansArg(), GRAMMARS, cases)
 
     def test_successful_parse_of_expr_with_argument(self):
         # ARRANGE #
@@ -223,7 +223,7 @@ class TestSingleSimpleExpression(TestCaseBase):
         token_after = str(surrounded_by_hard_quotes('not an expression'))
 
         format_map = {
-            'simple_with_arg': ast.SIMPLE_WITH_ARG,
+            'primitive_with_arg': ast.PRIMITIVE_WITH_ARG,
             'argument': the_argument,
             'space_after': space_after,
             'token_after': token_after,
@@ -234,41 +234,41 @@ class TestSingleSimpleExpression(TestCaseBase):
 
         cases = [
             SourceCase(
-                'first line is only simple expr',
-                source('{simple_with_arg} {argument}'),
+                'first line is only primitive expr',
+                source('{primitive_with_arg} {argument}'),
                 SourceExpectation.is_at_end_of_line(1)
             ),
             SourceCase(
-                'first line is simple expr with space around',
-                source('  {simple_with_arg}    {argument}{space_after}'),
+                'first line is primitive expr with space around',
+                source('  {primitive_with_arg}    {argument}{space_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                        remaining_part_of_current_line=space_after[1:])
             ),
             SourceCase(
                 'expression is followed by non-expression',
-                source('  {simple_with_arg}    {argument} {token_after}'),
+                source('  {primitive_with_arg}    {argument} {token_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                        remaining_part_of_current_line=token_after)
             ),
             SourceCase(
-                '( simple )',
-                source('( {simple_with_arg} {argument} )'),
+                '( primitive )',
+                source('( {primitive_with_arg} {argument} )'),
                 SourceExpectation.is_at_end_of_line(1),
             ),
             SourceCase(
-                'simple, within parenthesis, with tokens on separate lines',
-                source('( \n {simple_with_arg} \n {argument} \n )'),
+                'primitive, within parenthesis, with tokens on separate lines',
+                source('( \n {primitive_with_arg} \n {argument} \n )'),
                 SourceExpectation.is_at_end_of_line(4),
             ),
             SourceCase(
-                'simple, within parenthesis, with expression tokens on separate lines, followed by non-expression',
-                source('( \n {simple_with_arg} \n {argument} \n ) {token_after}'),
+                'primitive, within parenthesis, with expression tokens on separate lines, followed by non-expression',
+                source('( \n {primitive_with_arg} \n {argument} \n ) {token_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=4,
                                                        remaining_part_of_current_line=token_after),
             ),
             SourceCase(
-                '( ( simple ) )',
-                source('( ( {simple_with_arg} {argument} ) )'),
+                '( ( primitive ) )',
+                source('( ( {primitive_with_arg} {argument} ) )'),
                 SourceExpectation.is_at_end_of_line(1),
             ),
         ]
@@ -276,23 +276,23 @@ class TestSingleSimpleExpression(TestCaseBase):
         # ACT & ASSERT #
 
         _check_with_must_be_on_current_line_variants(self,
-                                                     ast.SimpleWithArg(the_argument),
+                                                     ast.PrimitiveWithArg(the_argument),
                                                      GRAMMARS,
                                                      cases)
 
     def test_fail__expr_on_following_line_is_accepted(self):
         cases = [
             NameAndValue(
-                'token is not the name of a simple expression',
-                ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
+                'token is not the name of a primitive expression',
+                ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
             ),
             NameAndValue(
-                'token is the name of a simple expression, but it is quoted/soft',
-                str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG)),
+                'token is the name of a primitive expression, but it is quoted/soft',
+                str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG)),
             ),
             NameAndValue(
-                'token is the name of a simple expression, but it is quoted/hard',
-                str(surrounded_by_hard_quotes(ast.SIMPLE_SANS_ARG)),
+                'token is the name of a primitive expression, but it is quoted/hard',
+                str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG)),
             ),
         ]
         for grammar_description, grammar in GRAMMARS:
@@ -324,27 +324,27 @@ class TestSingleSimpleExpression(TestCaseBase):
         for grammar_description, grammar in GRAMMARS:
             cases = [
                 NameAndValue(
-                    'token is not the name of a simple expression',
+                    'token is not the name of a primitive expression',
                     remaining_source('',
-                                     [ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME],
+                                     [ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME],
                                      ),
                 ),
                 NameAndValue(
-                    'token is the name of a simple expression, but it is quoted/soft',
+                    'token is the name of a primitive expression, but it is quoted/soft',
                     remaining_source('',
-                                     [str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG))]
+                                     [str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG))]
                                      ),
                 ),
                 NameAndValue(
-                    'token is the name of a simple expression, but it is quoted/hard',
+                    'token is the name of a primitive expression, but it is quoted/hard',
                     remaining_source('',
-                                     [str(surrounded_by_hard_quotes(ast.SIMPLE_SANS_ARG))]
+                                     [str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG))]
                                      ),
                 ),
                 NameAndValue(
-                    'token is the name of a simple expression, but it is on the next line',
+                    'token is the name of a primitive expression, but it is on the next line',
                     remaining_source('',
-                                     [ast.SIMPLE_SANS_ARG]),
+                                     [ast.PRIMITIVE_SANS_ARG]),
                 ),
             ]
             for case in cases:
@@ -356,71 +356,71 @@ class TestSingleSimpleExpression(TestCaseBase):
                                                     must_be_on_current_line=True)
 
 
-class TestSinglePrefixExpression(TestCaseBase):
+class TestSinglePrefixOpExpression(TestCaseBase):
     PREFIX_OPERATORS = [
         (
             ast.PREFIX_P,
-            ast.PrefixExprP,
+            ast.PrefixOpExprP,
         ),
         (
             ast.PREFIX_Q,
-            ast.PrefixExprQ,
+            ast.PrefixOpExprQ,
         ),
     ]
 
-    def test_successful_parse_with_simple_expr(self):
+    def test_successful_parse_with_primitive_expr(self):
 
         space_after = '           '
         token_after = str(surrounded_by_hard_quotes('not an expression'))
 
-        simple_expr = ast.SimpleSansArg()
-        simple_expr_src = ast.SIMPLE_SANS_ARG
+        primitive_expr = ast.PrimitiveSansArg()
+        primitive_expr_src = ast.PRIMITIVE_SANS_ARG
 
         def cases_for_operator(the_prefix_operator: str) -> List[SourceCase]:
             sf = StringFormatter({
                 'op': the_prefix_operator,
-                'simple_expr': simple_expr_src,
+                'primitive_expr': primitive_expr_src,
                 'space_after': space_after,
                 'token_after': token_after,
             })
             return [
                 SourceCase(
-                    'first line is only simple expr',
-                    sf.format('{op} {simple_expr}'),
+                    'first line is only primitive expr',
+                    sf.format('{op} {primitive_expr}'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
-                    'first line is simple expr with space around',
-                    sf.format(' {op}  {simple_expr}{space_after}'),
+                    'first line is primitive expr with space around',
+                    sf.format(' {op}  {primitive_expr}{space_after}'),
                     SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                            remaining_part_of_current_line=space_after[1:])
                 ),
                 SourceCase(
                     'expression is followed by non-expression',
-                    sf.format('{op} {simple_expr} {token_after}'),
+                    sf.format('{op} {primitive_expr} {token_after}'),
                     SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                            remaining_part_of_current_line=token_after)
                 ),
                 SourceCase(
-                    '( op simple )',
-                    sf.format('( {op} {simple_expr} )'),
+                    '( op primitive )',
+                    sf.format('( {op} {primitive_expr} )'),
                     SourceExpectation.is_at_end_of_line(1),
                 ),
                 SourceCase(
-                    'op ( simple )',
-                    sf.format('{op} ( {simple_expr} )'),
+                    'op ( primitive )',
+                    sf.format('{op} ( {primitive_expr} )'),
                     SourceExpectation.is_at_end_of_line(1),
                 ),
                 SourceCase(
                     'no source after operator, but expr on following line',
-                    sf.format('{op}\n{simple_expr}'),
+                    sf.format('{op}\n{primitive_expr}'),
                     SourceExpectation.is_at_end_of_line(2),
                 ),
             ]
 
         operator_cases = [
             (prefix_operator,
-             mk_prefix_expr(simple_expr),
+             mk_prefix_expr(primitive_expr),
              cases_for_operator(prefix_operator))
             for prefix_operator, mk_prefix_expr in self.PREFIX_OPERATORS
         ]
@@ -438,37 +438,37 @@ class TestSinglePrefixExpression(TestCaseBase):
                             case.arrangement,
                             case.expectation)
 
-    def test_successful_parse_with_complex_expressions(self):
-        s = ast.SimpleSansArg()
+    def test_successful_parse_with_infix_op_expressions(self):
+        s = ast.PrimitiveSansArg()
         cases = [
             NArrEx(
-                'prefix operator binds to following simple expression (single complex ops)',
+                'prefix operator binds to following primitive expression (single infix ops)',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('{p_op} {s}  {bin_op}  {s}  {bin_op}  {p_op} {s}'.format(
-                        s=ast.SIMPLE_SANS_ARG,
+                        s=ast.PRIMITIVE_SANS_ARG,
                         p_op=ast.PREFIX_P,
-                        bin_op=ast.COMPLEX_A,
+                        bin_op=ast.INFIX_OP_A,
                     )),
                 ),
                 Expectation(
-                    expression=ComplexA([PrefixExprP(s), s, PrefixExprP(s)]),
+                    expression=InfixOpA([PrefixOpExprP(s), s, PrefixOpExprP(s)]),
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
             NArrEx(
-                'prefix operator binds to following simple expression (different complex ops)',
+                'prefix operator binds to following primitive expression (different infix ops)',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('{p_op} {s}  {bin_op_a}  {s}  {bin_op_b}  {p_op} {s}'.format(
-                        s=ast.SIMPLE_SANS_ARG,
+                        s=ast.PRIMITIVE_SANS_ARG,
                         p_op=ast.PREFIX_P,
-                        bin_op_a=ast.COMPLEX_A,
-                        bin_op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                        bin_op_a=ast.INFIX_OP_A,
+                        bin_op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
                     )),
                 ),
                 Expectation(
-                    expression=ComplexB([ComplexA([PrefixExprP(s), s]), PrefixExprP(s)]),
+                    expression=InfixOpB([InfixOpA([PrefixOpExprP(s), s]), PrefixOpExprP(s)]),
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
@@ -492,7 +492,7 @@ class TestSinglePrefixExpression(TestCaseBase):
                         'operator followed by non-expression',
                         remaining_source('{op} {non_expr}'.format(
                             op=prefix_operator,
-                            non_expr=str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG)))),
+                            non_expr=str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG)))),
                     ),
                 ]
                 for case in cases:
@@ -536,12 +536,12 @@ class TestSingleRefExpression(TestCaseBase):
 
             return [
                 SourceCase(
-                    name('first line is only simple expr'),
+                    name('first line is only primitive expr'),
                     source('{symbol_name}'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
-                    name('first line is simple expr with space around'),
+                    name('first line is primitive expr with space around'),
                     source('  {symbol_name}{space_after}'),
                     SourceExpectation.source_is_not_at_end(current_line_number=1,
                                                            remaining_part_of_current_line=space_after[1:])
@@ -575,11 +575,11 @@ class TestSingleRefExpression(TestCaseBase):
                     Arrangement(
                         grammar=grammar,
                         source=remaining_source(
-                            symbol_reference_syntax_for_name(ast.SIMPLE_SANS_ARG)
+                            symbol_reference_syntax_for_name(ast.PRIMITIVE_SANS_ARG)
                         ),
                     ),
                     Expectation(
-                        expression=ast.RefExpr(ast.SIMPLE_SANS_ARG),
+                        expression=ast.RefExpr(ast.PRIMITIVE_SANS_ARG),
                         source=asrt_source.is_at_end_of_line(1),
                     )
                 )
@@ -609,36 +609,36 @@ class TestSingleRefExpression(TestCaseBase):
                                                     case.value)
 
 
-class TestComplexExpression(unittest.TestCase):
+class TestInfixOpExpression(unittest.TestCase):
     def test_success_of_single_operator(self):
-        valid_simple_expressions = [
+        valid_primitive_expressions = [
             (
-                '{simple_expression}'.format(simple_expression=ast.SIMPLE_SANS_ARG),
-                ast.SimpleSansArg()
+                '{primitive_expression}'.format(primitive_expression=ast.PRIMITIVE_SANS_ARG),
+                ast.PrimitiveSansArg()
             ),
             (
-                '{simple_expression_name} {argument}'.format(
-                    simple_expression_name=ast.SIMPLE_WITH_ARG,
-                    argument='simple-expr-argument'),
-                ast.SimpleWithArg('simple-expr-argument')
+                '{primitive_expression_name} {argument}'.format(
+                    primitive_expression_name=ast.PRIMITIVE_WITH_ARG,
+                    argument='primitive-expr-argument'),
+                ast.PrimitiveWithArg('primitive-expr-argument')
             ),
 
         ]
         operators = [
             (
-                ast.COMPLEX_A,
-                ast.ComplexA,
+                ast.INFIX_OP_A,
+                ast.InfixOpA,
             ),
             (
-                ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-                ast.ComplexB,
+                ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                ast.InfixOpB,
             ),
         ]
 
-        def source_cases_for_expressions(simple_expr: str,
+        def source_cases_for_expressions(primitive_expr: str,
                                          operator: str) -> List[SourceCase]:
             sf = StringFormatter({
-                'simple_expr': simple_expr,
+                'primitive_expr': primitive_expr,
                 'operator': operator,
                 'quoted_operator': surrounded_by_soft_quotes(operator_source),
                 'space_after': '           ',
@@ -651,65 +651,65 @@ class TestComplexExpression(unittest.TestCase):
 
             return [
                 SourceCase(
-                    'first line is just complex expr',
-                    source('{simple_expr} {operator} {simple_expr}'),
+                    'first line is just infix op expr',
+                    source('{primitive_expr} {operator} {primitive_expr}'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
-                    'first line is complex expr, followed by space',
-                    source('{simple_expr} {operator} {simple_expr}{space_after}'),
+                    'first line is infix op expr, followed by space',
+                    source('{primitive_expr} {operator} {primitive_expr}{space_after}'),
                     SourceExpectation.source_is_not_at_end(
                         current_line_number=1,
                         remaining_part_of_current_line=sf.format('{space_after}')[1:])
                 ),
                 SourceCase(
-                    'complex expr followed by non-operator',
-                    source('{simple_expr} {operator} {simple_expr} {quoted_string}'),
+                    'infix op expr followed by non-operator',
+                    source('{primitive_expr} {operator} {primitive_expr} {quoted_string}'),
                     SourceExpectation.source_is_not_at_end(
                         current_line_number=1,
                         remaining_part_of_current_line=sf.format('{quoted_string}'))
                 ),
                 SourceCase(
-                    'complex expr followed by simple expression',
-                    source('{simple_expr} {operator} {simple_expr} {simple_expr}'),
+                    'infix op expr followed by primitive expression',
+                    source('{primitive_expr} {operator} {primitive_expr} {primitive_expr}'),
                     SourceExpectation.source_is_not_at_end(
                         current_line_number=1,
-                        remaining_part_of_current_line=sf.format('{simple_expr}'))
+                        remaining_part_of_current_line=sf.format('{primitive_expr}'))
                 ),
                 SourceCase(
-                    'complex expr followed by quoted operator',
-                    source('{simple_expr} {operator} {simple_expr} {quoted_operator}'),
+                    'infix op expr followed by quoted operator',
+                    source('{primitive_expr} {operator} {primitive_expr} {quoted_operator}'),
                     SourceExpectation.source_is_not_at_end(
                         current_line_number=1,
                         remaining_part_of_current_line=sf.format('{quoted_operator}'))
                 ),
                 SourceCase(
-                    'first line is just complex expr: inside ()',
-                    source('( {simple_expr} {operator} {simple_expr} )'),
+                    'first line is just infix op expr: inside ()',
+                    source('( {primitive_expr} {operator} {primitive_expr} )'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
-                    'first simple expr inside ()',
-                    source('( {simple_expr} ) {operator} {simple_expr}'),
+                    'first primitive expr inside ()',
+                    source('( {primitive_expr} ) {operator} {primitive_expr}'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
-                    'second simple expr inside ()',
-                    source('{simple_expr} {operator} ( {simple_expr} )'),
+                    'second primitive expr inside ()',
+                    source('{primitive_expr} {operator} ( {primitive_expr} )'),
                     SourceExpectation.is_at_end_of_line(1)
                 ),
                 SourceCase(
                     'second expr on following line',
-                    source('{simple_expr} {operator}\n{simple_expr}'),
+                    source('{primitive_expr} {operator}\n{primitive_expr}'),
                     SourceExpectation.is_at_end_of_line(2)
                 ),
             ]
 
-        for valid_simple_expr_source, expected_simple_expr in valid_simple_expressions:
+        for valid_primitive_expr_source, expected_primitive_expr in valid_primitive_expressions:
             for operator_source, operator_constructor in operators:
-                expected_expression = operator_constructor([expected_simple_expr,
-                                                            expected_simple_expr])
-                source_cases = source_cases_for_expressions(valid_simple_expr_source, operator_source)
+                expected_expression = operator_constructor([expected_primitive_expr,
+                                                            expected_primitive_expr])
+                source_cases = source_cases_for_expressions(valid_primitive_expr_source, operator_source)
                 cases = _current_line_case_variants_for_grammar(expected_expression,
                                                                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
                                                                 source_cases)
@@ -717,25 +717,25 @@ class TestComplexExpression(unittest.TestCase):
                 for case in cases:
                     with self.subTest(name=case.name,
                                       operator_source=operator_source,
-                                      valid_simple_expr_source=valid_simple_expr_source):
+                                      valid_primitive_expr_source=valid_primitive_expr_source):
                         _check(self,
                                case.arrangement,
                                case.expectation)
 
     def test_success_of_expression_within_parentheses(self):
-        s = ast.SimpleSansArg()
+        s = ast.PrimitiveSansArg()
         cases = [
             NArrEx(
                 'parentheses around first expr to make nested expr instead of "linear" args to op',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('( {s} {op}  {s} ) {op} {s}'.format(
-                        s=ast.SIMPLE_SANS_ARG,
-                        op=ast.COMPLEX_A,
+                        s=ast.PRIMITIVE_SANS_ARG,
+                        op=ast.INFIX_OP_A,
                     )),
                 ),
                 Expectation(
-                    expression=ComplexA([ComplexA([s, s]), s]),
+                    expression=InfixOpA([InfixOpA([s, s]), s]),
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
@@ -744,12 +744,12 @@ class TestComplexExpression(unittest.TestCase):
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('{s} {op} ( {s} {op} {s} )'.format(
-                        s=ast.SIMPLE_SANS_ARG,
-                        op=ast.COMPLEX_A,
+                        s=ast.PRIMITIVE_SANS_ARG,
+                        op=ast.INFIX_OP_A,
                     )),
                 ),
                 Expectation(
-                    expression=ComplexA([s, ComplexA([s, s])]),
+                    expression=InfixOpA([s, InfixOpA([s, s])]),
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
@@ -758,13 +758,13 @@ class TestComplexExpression(unittest.TestCase):
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('{s} {op_a} ( {s} {op_b} {s} ) {op_a} {s}'.format(
-                        s=ast.SIMPLE_SANS_ARG,
-                        op_a=ast.COMPLEX_A,
-                        op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                        s=ast.PRIMITIVE_SANS_ARG,
+                        op_a=ast.INFIX_OP_A,
+                        op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
                     )),
                 ),
                 Expectation(
-                    expression=ComplexA([s, ComplexB([s, s]), s]),
+                    expression=InfixOpA([s, InfixOpB([s, s]), s]),
                     source=asrt_source.is_at_end_of_line(1),
                 ),
             ),
@@ -774,14 +774,14 @@ class TestComplexExpression(unittest.TestCase):
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=source_of_lines([
                         '(',
-                        ast.SIMPLE_SANS_ARG,
-                        ast.COMPLEX_A,
-                        ast.SIMPLE_SANS_ARG,
+                        ast.PRIMITIVE_SANS_ARG,
+                        ast.INFIX_OP_A,
+                        ast.PRIMITIVE_SANS_ARG,
                         ')',
                     ]),
                 ),
                 Expectation(
-                    expression=ComplexA([s, s]),
+                    expression=InfixOpA([s, s]),
                     source=asrt_source.is_at_end_of_line(5),
                 ),
             ),
@@ -795,14 +795,14 @@ class TestComplexExpression(unittest.TestCase):
                        )
 
     def test_success_of_expression_within_parentheses_spanning_several_lines(self):
-        s = ast.SimpleSansArg()
+        s = ast.PrimitiveSansArg()
         cases = [
             NArrEx(
-                'simple expr and ) on following line',
+                'primitive expr and ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('(',
-                                            ['{s} )'.format(s=ast.SIMPLE_SANS_ARG)]),
+                                            ['{s} )'.format(s=ast.PRIMITIVE_SANS_ARG)]),
                 ),
                 Expectation(
                     expression=s,
@@ -810,11 +810,11 @@ class TestComplexExpression(unittest.TestCase):
                 ),
             ),
             NArrEx(
-                'simple expr and ) on following line, followed by non-expr',
+                'primitive expr and ) on following line, followed by non-expr',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('(',
-                                            ['{s} ) non-expr'.format(s=ast.SIMPLE_SANS_ARG)]),
+                                            ['{s} ) non-expr'.format(s=ast.PRIMITIVE_SANS_ARG)]),
                 ),
                 Expectation(
                     expression=s,
@@ -823,10 +823,10 @@ class TestComplexExpression(unittest.TestCase):
                 ),
             ),
             NArrEx(
-                'simple expr with ) on following line',
+                'primitive expr with ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                    source=remaining_source('( {s}'.format(s=ast.SIMPLE_SANS_ARG),
+                    source=remaining_source('( {s}'.format(s=ast.PRIMITIVE_SANS_ARG),
                                             [' )']),
                 ),
                 Expectation(
@@ -835,10 +835,10 @@ class TestComplexExpression(unittest.TestCase):
                 ),
             ),
             NArrEx(
-                'simple expr with ) on following line, and non-expr on line after that',
+                'primitive expr with ) on following line, and non-expr on line after that',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                    source=remaining_source('( {s}'.format(s=ast.SIMPLE_SANS_ARG),
+                    source=remaining_source('( {s}'.format(s=ast.PRIMITIVE_SANS_ARG),
                                             [' )',
                                              'non-expr']),
                 ),
@@ -852,12 +852,12 @@ class TestComplexExpression(unittest.TestCase):
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
                     source=remaining_source('(',
-                                            [' {s} {op} {s} )'.format(s=ast.SIMPLE_SANS_ARG,
-                                                                      op=ast.COMPLEX_A)
+                                            [' {s} {op} {s} )'.format(s=ast.PRIMITIVE_SANS_ARG,
+                                                                      op=ast.INFIX_OP_A)
                                              ]),
                 ),
                 Expectation(
-                    expression=ComplexA([s, s]),
+                    expression=InfixOpA([s, s]),
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
@@ -865,12 +865,12 @@ class TestComplexExpression(unittest.TestCase):
                 'binary op with ) on following line',
                 Arrangement(
                     grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                    source=remaining_source('( {s} {op} {s}'.format(s=ast.SIMPLE_SANS_ARG,
-                                                                    op=ast.COMPLEX_A),
+                    source=remaining_source('( {s} {op} {s}'.format(s=ast.PRIMITIVE_SANS_ARG,
+                                                                    op=ast.INFIX_OP_A),
                                             [' ) ']),
                 ),
                 Expectation(
-                    expression=ComplexA([s, s]),
+                    expression=InfixOpA([s, s]),
                     source=asrt_source.is_at_end_of_line(2),
                 ),
             ),
@@ -882,58 +882,58 @@ class TestComplexExpression(unittest.TestCase):
                        case.expectation
                        )
 
-    def test_fail_parse_of_complex_expression(self):
+    def test_fail_parse_of_infix_op_expression(self):
         # ARRANGE #
-        valid_simple_expressions = [
-            '{simple_expression}'.format(simple_expression=ast.SIMPLE_SANS_ARG),
-            '{simple_expression_name} {argument}'.format(
-                simple_expression_name=ast.SIMPLE_WITH_ARG,
-                argument='simple-expr-argument'),
+        valid_primitive_expressions = [
+            '{primitive_expression}'.format(primitive_expression=ast.PRIMITIVE_SANS_ARG),
+            '{primitive_expression_name} {argument}'.format(
+                primitive_expression_name=ast.PRIMITIVE_WITH_ARG,
+                argument='primitive-expr-argument'),
 
         ]
-        operators = [ast.COMPLEX_A,
-                     ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME]
+        operators = [ast.INFIX_OP_A,
+                     ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME]
 
-        def cases_for(simple_expr: str, the_operator: str) -> List[NameAndValue[str]]:
+        def cases_for(primitive_expr: str, the_operator: str) -> List[NameAndValue[str]]:
             sf = StringFormatter({
-                'simple_expr': simple_expr,
+                'primitive_expr': primitive_expr,
                 'operator': the_operator,
-                'non_expr': ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
+                'non_expr': ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
 
             })
 
             return [
                 NameAndValue(
                     'operator not followed by expression',
-                    sf.format('{simple_expr} {operator}'),
+                    sf.format('{primitive_expr} {operator}'),
                 ),
                 NameAndValue(
                     'operator followed by non-expression',
-                    sf.format('{simple_expr} {operator} {non_expr}'),
+                    sf.format('{primitive_expr} {operator} {non_expr}'),
                 ),
                 NameAndValue(
                     'operator followed by non-expression/two operators',
-                    sf.format('{simple_expr} {operator} {simple_expr} {operator} {non_expr}'),
+                    sf.format('{primitive_expr} {operator} {primitive_expr} {operator} {non_expr}'),
                 ),
                 NameAndValue(
                     '( at start of expr: missing )',
-                    sf.format('( {simple_expr} {operator} {simple_expr} '),
+                    sf.format('( {primitive_expr} {operator} {primitive_expr} '),
                 ),
                 NameAndValue(
                     '( in middle of expr: missing )',
-                    sf.format('( {simple_expr} {operator} ( {simple_expr} '),
+                    sf.format('( {primitive_expr} {operator} ( {primitive_expr} '),
                 ),
             ]
 
-        for valid_simple_expr in valid_simple_expressions:
+        for valid_primitive_expr in valid_primitive_expressions:
             for operator in operators:
-                cases = cases_for(valid_simple_expr, operator)
+                cases = cases_for(valid_primitive_expr, operator)
                 # With source on first line
                 for must_be_on_current_line in [False, True]:
                     for case in cases:
                         with self.subTest(case_name=case.name,
                                           operator=operator,
-                                          valid_simple_expr=valid_simple_expr,
+                                          valid_primitive_expr=valid_primitive_expr,
                                           source='appears on first line',
                                           must_be_on_current_line=must_be_on_current_line):
                             # ACT & ASSERT #
@@ -945,7 +945,7 @@ class TestComplexExpression(unittest.TestCase):
                 for case in cases:
                     with self.subTest(case_name=case.name,
                                       operator=operator,
-                                      valid_simple_expr=valid_simple_expr,
+                                      valid_primitive_expr=valid_primitive_expr,
                                       source='appears not on first line',
                                       must_be_on_current_line=must_be_on_current_line):
                         parse_source = remaining_source_string('\n' + case.value)
@@ -957,15 +957,15 @@ class TestComplexExpression(unittest.TestCase):
 
 
 class TestCombinedExpressions(TestCaseBase):
-    def test__inside_parentheses__simple_recursive_followed_by_binary_op_on_following_line(self):
-        s = ast.SimpleSansArg()
+    def test__inside_parentheses__primitive_recursive_followed_by_binary_op_on_following_line(self):
+        s = ast.PrimitiveSansArg()
 
-        expected = ast.ComplexA([ast.SimpleRecursive(s), s])
+        expected = ast.InfixOpA([ast.PrimitiveRecursive(s), s])
 
         arguments = '( \n {r} {s} \n {op_a} \n {s} \n )'.format(
-            r=ast.SIMPLE_RECURSIVE,
-            s=ast.SIMPLE_SANS_ARG,
-            op_a=ast.COMPLEX_A,
+            r=ast.PRIMITIVE_RECURSIVE,
+            s=ast.PRIMITIVE_SANS_ARG,
+            op_a=ast.INFIX_OP_A,
         )
 
         self._check(
@@ -982,16 +982,16 @@ class TestCombinedExpressions(TestCaseBase):
             )
         )
 
-    def test__inside_parentheses__simple_recursive_followed_by_binary_op_on_same_line(self):
-        s = ast.SimpleSansArg()
+    def test__inside_parentheses__primitive_recursive_followed_by_binary_op_on_same_line(self):
+        s = ast.PrimitiveSansArg()
 
-        expected = ast.SimpleRecursive(ast.ComplexA([s, s]))
+        expected = ast.PrimitiveRecursive(ast.InfixOpA([s, s]))
         # TODO want this to be same as above - fix with precedences
 
         arguments = '( \n {r} {s} {op_a} \n {s} \n )'.format(
-            r=ast.SIMPLE_RECURSIVE,
-            s=ast.SIMPLE_SANS_ARG,
-            op_a=ast.COMPLEX_A,
+            r=ast.PRIMITIVE_RECURSIVE,
+            s=ast.PRIMITIVE_SANS_ARG,
+            op_a=ast.INFIX_OP_A,
         )
 
         self._check(
@@ -1008,15 +1008,15 @@ class TestCombinedExpressions(TestCaseBase):
             )
         )
 
-    def test__simple_recursive_followed_by_binary_op_on_same_line(self):
-        s = ast.SimpleSansArg()
+    def test__primitive_recursive_followed_by_binary_op_on_same_line(self):
+        s = ast.PrimitiveSansArg()
 
-        expected = ast.SimpleRecursive(ast.ComplexA([s, s]))
+        expected = ast.PrimitiveRecursive(ast.InfixOpA([s, s]))
 
         arguments = '{r} {s} {op_a} {s}'.format(
-            r=ast.SIMPLE_RECURSIVE,
-            s=ast.SIMPLE_SANS_ARG,
-            op_a=ast.COMPLEX_A,
+            r=ast.PRIMITIVE_RECURSIVE,
+            s=ast.PRIMITIVE_SANS_ARG,
+            op_a=ast.INFIX_OP_A,
         )
 
         self._check(
@@ -1033,19 +1033,19 @@ class TestCombinedExpressions(TestCaseBase):
             )
         )
 
-    def test_combined_expression_with_single_simple_expr(self):
+    def test_combined_expression_with_single_primitive_expr(self):
         # [ [ [ s A s ] B s B  s ] A s ]
 
-        s = ast.SimpleSansArg()
+        s = ast.PrimitiveSansArg()
 
-        op_sequence_1 = ast.ComplexA([s, s])
-        op_sequence_2 = ast.ComplexB([op_sequence_1, s, s])
-        expected = ast.ComplexA([op_sequence_2, s])
+        op_sequence_1 = ast.InfixOpA([s, s])
+        op_sequence_2 = ast.InfixOpB([op_sequence_1, s, s])
+        expected = ast.InfixOpA([op_sequence_2, s])
 
         arguments = '{s} {op_a} {s} {op_b} {s} {op_b} {s} {op_a} {s}'.format(
-            op_a=ast.COMPLEX_A,
-            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            s=ast.SIMPLE_SANS_ARG,
+            op_a=ast.INFIX_OP_A,
+            op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s=ast.PRIMITIVE_SANS_ARG,
         )
 
         self._check(
@@ -1069,33 +1069,33 @@ class TestCombinedExpressions(TestCaseBase):
         ref_2 = ast.RefExpr('symbol_2')
         ref_3 = ast.RefExpr('symbol_3')
 
-        s = ast.SimpleSansArg()
+        s = ast.PrimitiveSansArg()
 
-        s_x = ast.SimpleWithArg('X')
+        s_x = ast.PrimitiveWithArg('X')
 
-        e1 = ast.ComplexA([
+        e1 = ast.InfixOpA([
             ref_1,
             s,
         ])
-        e2 = ast.ComplexB([
+        e2 = ast.InfixOpB([
             e1,
             s,
             ref_2,
         ])
-        expected = ast.ComplexA([
+        expected = ast.InfixOpA([
             e2,
             s_x,
             ref_3,
         ])
 
         argument_string = '{ref_1} {op_a} {s} {op_b} {s} {op_b} {ref_2} {op_a} {s_w_arg} {x} {op_a} {ref_3}'.format(
-            s=ast.SIMPLE_SANS_ARG,
+            s=ast.PRIMITIVE_SANS_ARG,
             ref_1=ref_1.symbol_name,
             ref_2=ref_2.symbol_name,
             ref_3=ref_3.symbol_name,
-            op_a=ast.COMPLEX_A,
-            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            s_w_arg=ast.SIMPLE_WITH_ARG,
+            op_a=ast.INFIX_OP_A,
+            op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s_w_arg=ast.PRIMITIVE_WITH_ARG,
             x=s_x.argument,
 
         )
@@ -1120,27 +1120,27 @@ class TestCombinedExpressions(TestCaseBase):
         ref_2 = ast.RefExpr('symbol_2')
         ref_3 = ast.RefExpr('symbol_3')
 
-        s = ast.SimpleSansArg()
+        s = ast.PrimitiveSansArg()
 
-        s_x = ast.SimpleWithArg('X')
-        s_y = ast.SimpleWithArg('Y')
+        s_x = ast.PrimitiveWithArg('X')
+        s_y = ast.PrimitiveWithArg('Y')
 
-        expected = ComplexB([
-            ComplexA([
+        expected = InfixOpB([
+            InfixOpA([
                 ref_1,
-                ComplexB([s, s_x, ref_2])
+                InfixOpB([s, s_x, ref_2])
             ]),
             s_y,
         ])
 
         argument_string = '{ref_1} {op_a} ( {s} {op_b} {s_w_arg} {x} {op_b} {ref_2} ) {op_b} {s_w_arg} {y}'.format(
-            s=ast.SIMPLE_SANS_ARG,
+            s=ast.PRIMITIVE_SANS_ARG,
             ref_1=ref_1.symbol_name,
             ref_2=ref_2.symbol_name,
             ref_3=ref_3.symbol_name,
-            op_a=ast.COMPLEX_A,
-            op_b=ast.COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            s_w_arg=ast.SIMPLE_WITH_ARG,
+            op_a=ast.INFIX_OP_A,
+            op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+            s_w_arg=ast.PRIMITIVE_WITH_ARG,
             x=s_x.argument,
             y=s_y.argument,
 

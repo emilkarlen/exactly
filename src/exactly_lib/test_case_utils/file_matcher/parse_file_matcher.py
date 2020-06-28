@@ -129,7 +129,7 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-class _NameSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _NameSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -152,7 +152,7 @@ class _NameSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitia
         ])
 
 
-class _TypeSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _TypeSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -176,19 +176,19 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     simple_expressions=(
         NameAndValue(
             NAME_MATCHER_NAME,
-            grammar.SimpleExpression(_parse_name_matcher,
-                                     _NameSyntaxDescription())
+            grammar.PrimitiveExpression(_parse_name_matcher,
+                                        _NameSyntaxDescription())
         ),
 
         NameAndValue(
             TYPE_MATCHER_NAME,
-            grammar.SimpleExpression(_parse_type_matcher,
-                                     _TypeSyntaxDescription())
+            grammar.PrimitiveExpression(_parse_type_matcher,
+                                        _TypeSyntaxDescription())
         ),
 
         NameAndValue(
             REGULAR_FILE_CONTENTS,
-            grammar.SimpleExpression(
+            grammar.PrimitiveExpression(
                 _parse_regular_file_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
                     file_or_dir_contents_doc.REGULAR_FILE_DOCUMENTATION_SETUP
@@ -198,7 +198,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 
         NameAndValue(
             DIR_CONTENTS,
-            grammar.SimpleExpression(
+            grammar.PrimitiveExpression(
                 _parse_dir_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
                     file_or_dir_contents_doc.DIR_DOCUMENTATION

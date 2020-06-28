@@ -73,7 +73,7 @@ Line numbers start at {FIRST_LINE_NUMBER}.
 """
 
 
-class _RegexSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _RegexSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -90,7 +90,7 @@ class _RegexSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsIniti
         return [syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target]
 
 
-class _LineNumberSyntaxDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _LineNumberSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -119,13 +119,13 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     simple_expressions=(
         NameAndValue(
             line_matcher.REGEX_MATCHER_NAME,
-            grammar.SimpleExpression(matches_regex.parse,
-                                     _RegexSyntaxDescription())
+            grammar.PrimitiveExpression(matches_regex.parse,
+                                        _RegexSyntaxDescription())
         ),
         NameAndValue(
             line_matcher.LINE_NUMBER_MATCHER_NAME,
-            grammar.SimpleExpression(line_number.parse_line_number,
-                                     _LineNumberSyntaxDescription())
+            grammar.PrimitiveExpression(line_number.parse_line_number,
+                                        _LineNumberSyntaxDescription())
         ),
     ),
 )

@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class ConstantSyntaxDescription(grammar.SimpleExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken):
+class ConstantSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken):
     def __init__(self):
         super().__init__(_CONSTANT_SYNTAX_ELEMENT_NAME)
 

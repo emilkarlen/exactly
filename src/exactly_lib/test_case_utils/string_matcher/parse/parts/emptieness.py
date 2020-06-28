@@ -13,7 +13,7 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
     return emptiness.sdv()
 
 
-class Description(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()

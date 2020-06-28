@@ -77,17 +77,17 @@ def _parse_matches(parser: TokenParser) -> FilesMatcherSdv:
     )
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[FilesMatcherSdv]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[FilesMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             config.EMPTINESS_CHECK_ARGUMENT,
-            grammar.SimpleExpression(_parse_empty_check,
-                                     documentation.EmptyDoc())
+            grammar.PrimitiveExpression(_parse_empty_check,
+                                        documentation.EmptyDoc())
         ),
         NameAndValue(
             config.MATCHES_ARGUMENT,
-            grammar.SimpleExpression(_parse_matches,
-                                     documentation.MatchesDoc())
+            grammar.PrimitiveExpression(_parse_matches,
+                                        documentation.MatchesDoc())
         ),
     ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(
@@ -100,18 +100,18 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[File
     ret_val += [
         NameAndValue(
             config.NUM_FILES_CHECK_ARGUMENT,
-            grammar.SimpleExpression(_parse_num_files_check,
-                                     documentation.NumFilesDoc())
+            grammar.PrimitiveExpression(_parse_num_files_check,
+                                        documentation.NumFilesDoc())
         ),
         NameAndValue(
             option_syntax.option_syntax(config.SELECTION_OPTION.name),
-            grammar.SimpleExpression(_parse_selection,
-                                     documentation.SelectionDoc())
+            grammar.PrimitiveExpression(_parse_selection,
+                                        documentation.SelectionDoc())
         ),
         NameAndValue(
             option_syntax.option_syntax(config.PRUNE_OPTION.name),
-            grammar.SimpleExpression(_parse_prune,
-                                     documentation.PruneDoc())
+            grammar.PrimitiveExpression(_parse_prune,
+                                        documentation.PruneDoc())
         ),
     ]
     return ret_val

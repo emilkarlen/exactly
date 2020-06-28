@@ -26,7 +26,7 @@ class ExpressionDescriptionBase(ABC):
         return ()
 
 
-class SimpleExpressionDescription(ExpressionDescriptionBase, ABC):
+class PrimitiveExpressionDescription(ExpressionDescriptionBase, ABC):
     @abstractmethod
     def initial_argument(self, name: str) -> a.ArgumentUsage:
         pass
@@ -37,13 +37,13 @@ class SimpleExpressionDescription(ExpressionDescriptionBase, ABC):
         pass
 
 
-class SimpleExpressionDescriptionWithNameAsInitialSyntaxToken(SimpleExpressionDescription, ABC):
+class PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken(PrimitiveExpressionDescription, ABC):
     def initial_argument(self, name: str) -> a.ArgumentUsage:
         return a.Single(a.Multiplicity.MANDATORY,
                         a.Constant(name))
 
 
-class SimpleExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken(SimpleExpressionDescription, ABC):
+class PrimitiveExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken(PrimitiveExpressionDescription, ABC):
     def __init__(self, syntax_element_name: str):
         self._syntax_element_name = syntax_element_name
 
@@ -61,10 +61,11 @@ class ExpressionWithDescription(ABC):
 EXPR = TypeVar('EXPR')
 
 
-class SimpleExpression(Generic[EXPR], ExpressionWithDescription):
+class PrimitiveExpression(Generic[EXPR], ExpressionWithDescription):
     def __init__(self,
                  parse_arguments: Callable[[TokenParser], EXPR],
-                 syntax: SimpleExpressionDescription):
+                 syntax: PrimitiveExpressionDescription,
+                 ):
         self.parse_arguments = parse_arguments
         self.syntax = syntax
 
@@ -76,10 +77,11 @@ class OperatorExpressionDescription(ExpressionDescriptionBase, ABC):
     pass
 
 
-class ComplexExpression(Generic[EXPR], ExpressionWithDescription):
+class InfixOpExpression(Generic[EXPR], ExpressionWithDescription):
     def __init__(self,
                  mk_complex: Callable[[Sequence[EXPR]], EXPR],
-                 syntax: OperatorExpressionDescription):
+                 syntax: OperatorExpressionDescription,
+                 ):
         self.mk_complex = mk_complex
         self.syntax = syntax
 
@@ -87,10 +89,11 @@ class ComplexExpression(Generic[EXPR], ExpressionWithDescription):
         return self.syntax
 
 
-class PrefixExpression(Generic[EXPR], ExpressionWithDescription):
+class PrefixOpExpression(Generic[EXPR], ExpressionWithDescription):
     def __init__(self,
                  mk_expression: Callable[[EXPR], EXPR],
-                 syntax: OperatorExpressionDescription):
+                 syntax: OperatorExpressionDescription,
+                 ):
         self.mk_expression = mk_expression
         self.syntax = syntax
 
@@ -102,7 +105,8 @@ class Concept:
     def __init__(self,
                  name: NameWithGenderWithFormatting,
                  type_system_type_name: str,
-                 syntax_element_name: a.Named):
+                 syntax_element_name: a.Named,
+                 ):
         self.type_system_type_name = type_system_type_name
         self.name = name
         self.syntax_element = syntax_element_name
@@ -112,14 +116,15 @@ class Grammar(Generic[EXPR]):
     def __init__(self,
                  concept: Concept,
                  mk_reference: Callable[[str], EXPR],
-                 simple_expressions: Sequence[NameAndValue[SimpleExpression[EXPR]]],
-                 complex_expressions: Sequence[NameAndValue[ComplexExpression[EXPR]]],
-                 prefix_expressions: Optional[Sequence[NameAndValue[PrefixExpression[EXPR]]]] = None):
+                 primitive_expressions: Sequence[NameAndValue[PrimitiveExpression[EXPR]]],
+                 infix_op_expressions: Sequence[NameAndValue[InfixOpExpression[EXPR]]],
+                 prefix_op_expressions: Optional[Sequence[NameAndValue[PrefixOpExpression[EXPR]]]] = None,
+                 ):
         self.concept = concept
         self.mk_reference = mk_reference
-        self.simple_expressions_list = simple_expressions
-        self.simple_expressions = name_and_value.to_dict(simple_expressions)
-        self.complex_expressions_list = complex_expressions
-        self.complex_expressions = name_and_value.to_dict(complex_expressions)
-        self.prefix_expressions = name_and_value.to_dict(prefix_expressions) if prefix_expressions else {}
-        self.prefix_expressions_list = prefix_expressions if prefix_expressions else ()
+        self.primitive_expressions_list = primitive_expressions
+        self.primitive_expressions = name_and_value.to_dict(primitive_expressions)
+        self.infix_op_expressions_list = infix_op_expressions
+        self.infix_op_expressions = name_and_value.to_dict(infix_op_expressions)
+        self.prefix_op_expressions = name_and_value.to_dict(prefix_op_expressions) if prefix_op_expressions else {}
+        self.prefix_op_expressions_list = prefix_op_expressions if prefix_op_expressions else ()

@@ -16,7 +16,7 @@ MODEL = TypeVar('MODEL')
 def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
-                simple_expressions: Sequence[NameAndValue[grammar.SimpleExpression[MatcherSdv[MODEL]]]],
+                simple_expressions: Sequence[NameAndValue[grammar.PrimitiveExpression[MatcherSdv[MODEL]]]],
                 ) -> grammar.Grammar[MatcherSdv[MODEL]]:
     tp = TextParser({
         'model': model,
@@ -30,30 +30,30 @@ def new_grammar(concept: grammar.Concept,
     return grammar.Grammar(
         concept,
         mk_reference=mk_reference,
-        simple_expressions=all_simple_expressions,
-        complex_expressions=[
+        primitive_expressions=all_simple_expressions,
+        infix_op_expressions=[
             NameAndValue(
                 logic.AND_OPERATOR_NAME,
-                grammar.ComplexExpression(combinator_sdvs.Conjunction,
+                grammar.InfixOpExpression(combinator_sdvs.Conjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_AND_SED_DESCRIPTION)
                                           ))
             ),
             NameAndValue(
                 logic.OR_OPERATOR_NAME,
-                grammar.ComplexExpression(combinator_sdvs.Disjunction,
+                grammar.InfixOpExpression(combinator_sdvs.Disjunction,
                                           OperatorExpressionDescriptionFromFunctions(
                                               tp.fnap__fun(_OR_SED_DESCRIPTION)
                                           ))
             ),
         ],
-        prefix_expressions=[
+        prefix_op_expressions=[
             NameAndValue(
                 logic.NOT_OPERATOR_NAME,
-                grammar.PrefixExpression(combinator_sdvs.Negation,
-                                         OperatorExpressionDescriptionFromFunctions(
-                                             tp.fnap__fun(_NOT_SED_DESCRIPTION)
-                                         ))
+                grammar.PrefixOpExpression(combinator_sdvs.Negation,
+                                           OperatorExpressionDescriptionFromFunctions(
+                                               tp.fnap__fun(_NOT_SED_DESCRIPTION)
+                                           ))
             )
         ],
     )

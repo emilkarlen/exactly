@@ -46,11 +46,12 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
     def parse_exists(self, parser: TokenParser) -> MatcherSdv[MODEL]:
         return parse_after_quantifier_token(Quantifier.EXISTS, self._element_predicate_parser, self._setup, parser)
 
-    def quantification_grammar_expressions(self) -> Sequence[NameAndValue[grammar.SimpleExpression[MatcherSdv[MODEL]]]]:
+    def quantification_grammar_expressions(self) -> Sequence[
+        NameAndValue[grammar.PrimitiveExpression[MatcherSdv[MODEL]]]]:
         return (
             NameAndValue(
                 logic.ALL_QUANTIFIER_ARGUMENT,
-                grammar.SimpleExpression(
+                grammar.PrimitiveExpression(
                     self.parse_all,
                     QuantificationDoc(Quantifier.ALL,
                                       self._setup.rendering.type_name,
@@ -59,7 +60,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
             ),
             NameAndValue(
                 logic.EXISTS_QUANTIFIER_ARGUMENT,
-                grammar.SimpleExpression(
+                grammar.PrimitiveExpression(
                     self.parse_exists,
                     QuantificationDoc(Quantifier.EXISTS,
                                       self._setup.rendering.type_name,
@@ -69,7 +70,7 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
         )
 
 
-class QuantificationDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class QuantificationDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self,
                  quantifier: Quantifier,
                  element_name: str,

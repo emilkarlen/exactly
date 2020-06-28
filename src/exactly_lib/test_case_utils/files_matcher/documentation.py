@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class EmptyDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class EmptyDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()
@@ -22,7 +22,7 @@ class EmptyDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
         return _TP.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)
 
 
-class NumFilesDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class NumFilesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
@@ -32,7 +32,7 @@ class NumFilesDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToke
         return _TP.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)
 
 
-class SelectionDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class SelectionDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -45,7 +45,7 @@ class SelectionDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxTok
         return _TP.fnap(_SELECTION_DESCRIPTION)
 
 
-class PruneDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class PruneDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -58,7 +58,7 @@ class PruneDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
         return _TP.fnap(_PRUNE_DESCRIPTION)
 
 
-class MatchesDoc(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class MatchesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (

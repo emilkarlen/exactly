@@ -24,7 +24,7 @@ def _make_constant_matcher(boolean_keyword: str) -> MatcherSdv:
     )
 
 
-class _Description(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -41,7 +41,7 @@ class _Description(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxTok
 
 CONSTANT_PRIMITIVE = NameAndValue(
     logic.CONSTANT_MATCHER,
-    grammar.SimpleExpression(
+    grammar.PrimitiveExpression(
         parse_constant,
         _Description()
     )

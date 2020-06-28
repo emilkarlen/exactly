@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription, ExpressionWithDescription
+from .grammar import Grammar, PrimitiveExpressionDescription, OperatorExpressionDescription, ExpressionWithDescription
 from ...definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from ...definitions.entity.syntax_elements import SyntaxElementInfo
 from ...util.name_and_value import NameAndValue
@@ -51,8 +51,8 @@ class Syntax:
         return ret_val
 
     def _precedence_description(self) -> List[ParagraphItem]:
-        has_prefix_op = bool(self.grammar.prefix_expressions)
-        has_bin_op = bool(self.grammar.complex_expressions)
+        has_prefix_op = bool(self.grammar.prefix_op_expressions)
+        has_bin_op = bool(self.grammar.infix_op_expressions)
 
         if has_bin_op:
             if has_prefix_op:
@@ -64,9 +64,9 @@ class Syntax:
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         expression_lists = [
-            self.grammar.simple_expressions_list,
-            self.grammar.prefix_expressions_list,
-            self.grammar.complex_expressions_list,
+            self.grammar.primitive_expressions_list,
+            self.grammar.prefix_op_expressions_list,
+            self.grammar.infix_op_expressions_list,
         ]
         return list(itertools.chain.from_iterable(
             map(_seds_for_expr, expression_lists)
@@ -77,9 +77,9 @@ class Syntax:
         :returns: A new list, which may contain duplicate elements.
         """
         expression_dicts = [
-            self.grammar.simple_expressions,
-            self.grammar.prefix_expressions,
-            self.grammar.complex_expressions,
+            self.grammar.primitive_expressions,
+            self.grammar.prefix_op_expressions,
+            self.grammar.infix_op_expressions,
         ]
         return list(itertools.chain.from_iterable(
             map(_see_also_targets_for_expr,
@@ -88,14 +88,14 @@ class Syntax:
 
     def _invokation_variants_simple(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
-                                  syntax: SimpleExpressionDescription) -> InvokationVariant:
+                                  syntax: PrimitiveExpressionDescription) -> InvokationVariant:
             all_arguments = [syntax.initial_argument(name)] + list(syntax.argument_usage_list)
             return invokation_variant_from_args(all_arguments,
                                                 syntax.description_rest)
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.simple_expressions_list
+            for expr in self.grammar.primitive_expressions_list
         ]
 
     def _invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
@@ -131,7 +131,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.complex_expressions_list
+            for expr in self.grammar.infix_op_expressions_list
         ]
 
     def _invokation_variants_prefix(self) -> List[InvokationVariant]:
@@ -145,7 +145,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.prefix_expressions_list
+            for expr in self.grammar.prefix_op_expressions_list
         ]
 
     def _invokation_variants_parentheses(self) -> List[InvokationVariant]:

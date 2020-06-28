@@ -123,14 +123,14 @@ GRAMMAR = grammar.Grammar(
         syntax_element_name=syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.argument,
     ),
     mk_reference=files_conditions.new_reference,
-    simple_expressions=(
+    primitive_expressions=(
         NameAndValue(
             syntax.BEGIN_BRACE,
-            grammar.SimpleExpression(_parse_constant,
-                                     documentation.ConstantSyntaxDescription())
+            grammar.PrimitiveExpression(_parse_constant,
+                                        documentation.ConstantSyntaxDescription())
 
         ),
     ),
-    complex_expressions=(),
-    prefix_expressions=(),
+    infix_op_expressions=(),
+    prefix_op_expressions=(),
 )

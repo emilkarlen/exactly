@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.string_transformer import parse_string_transfor
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import \
-    NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
+    NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 
 
 def suite() -> unittest.TestSuite:
@@ -22,7 +22,7 @@ class TestFailingParse(unittest.TestCase):
             ),
             NameAndValue(
                 'neither a symbol, nor a transformer',
-                parse_source.remaining_source(NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
+                parse_source.remaining_source(NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME),
             ),
         ]
         for case in cases:

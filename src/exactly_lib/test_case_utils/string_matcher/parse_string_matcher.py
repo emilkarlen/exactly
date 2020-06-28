@@ -48,7 +48,7 @@ def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:
     return on_transformed.StringMatcherWithTransformationSdv(transformer, matcher_on_transformed)
 
 
-class _OnTransformedDescription(grammar.SimpleExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _OnTransformedDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -65,22 +65,22 @@ class _OnTransformedDescription(grammar.SimpleExpressionDescriptionWithNameAsIni
         return syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[StringMatcherSdv]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[StringMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             matcher_options.EMPTY_ARGUMENT,
-            grammar.SimpleExpression(emptieness.parse,
-                                     emptieness.Description())
+            grammar.PrimitiveExpression(emptieness.parse,
+                                        emptieness.Description())
         ),
         NameAndValue(
             matcher_options.EQUALS_ARGUMENT,
-            grammar.SimpleExpression(equality.parse,
-                                     equality.Description())
+            grammar.PrimitiveExpression(equality.parse,
+                                        equality.Description())
         ),
         NameAndValue(
             matcher_options.MATCHES_ARGUMENT,
-            grammar.SimpleExpression(matches.parse,
-                                     matches.Description())
+            grammar.PrimitiveExpression(matches.parse,
+                                        matches.Description())
         ),
     ]
 
@@ -94,14 +94,14 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.SimpleExpression[Stri
     ret_val += [
         NameAndValue(
             matcher_options.NUM_LINES_ARGUMENT,
-            grammar.SimpleExpression(num_lines.parse,
-                                     num_lines.Description())
+            grammar.PrimitiveExpression(num_lines.parse,
+                                        num_lines.Description())
         ),
         NameAndValue(
             option_syntax.option_syntax(
                 string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-            grammar.SimpleExpression(_parse_on_transformed,
-                                     _OnTransformedDescription())
+            grammar.PrimitiveExpression(_parse_on_transformed,
+                                        _OnTransformedDescription())
         ),
     ]
 
