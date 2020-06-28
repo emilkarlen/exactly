@@ -11,17 +11,17 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 
 
-def matches_primitive_string(resolved_str: ValueAssertion,
-                             symbol_references: list,
-                             symbols: SymbolTable) -> ValueAssertion:
+def matches_primitive_string(resolved_str: ValueAssertion[str],
+                             symbol_references: Sequence[SymbolReference],
+                             symbols: SymbolTable) -> ValueAssertion[StringSdv]:
     return MatchesPrimitiveValueResolvedOfAnyDependency(resolved_str,
                                                         symbol_references,
                                                         symbols)
 
 
-class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase):
+class MatchesPrimitiveValueResolvedOfAnyDependency(ValueAssertionBase[StringSdv]):
     def __init__(self,
-                 expected_resolved_primitive_value: ValueAssertion,
+                 expected_resolved_primitive_value: ValueAssertion[str],
                  symbol_references: Sequence[SymbolReference],
                  symbols: SymbolTable):
         self.symbol_references = symbol_references
