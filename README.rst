@@ -10,7 +10,7 @@ Exactly has a `Wiki
 It also has a built in help system,
 which can, among other things,
 generate this `Reference manual
-<https://emilkarlen.github.io/exactly/reference-manual/0-12-0.html>`_.
+<https://emilkarlen.github.io/exactly/version/0-12-1-1/reference-manual.html>`_.
 
 
 .. contents::
@@ -700,25 +700,9 @@ Thanks for the great
 DEDICATION
 ========================================
 
-Project dedications
-----------------------------------------
 
 Aron Karlén
 
 Tommy Karlsson
 
 Götabergsgatan 10, lägenhet 4
-
-
-Release dedications
-----------------------------------------
-
-Elizabeth Wulcan
-
-Sven Karlén
-
-
-Release soundtrack
-----------------------------------------
-
-"Reachy Prints" by "Plaid"
