@@ -19,7 +19,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  hds: HomeDirectoryStructure,
-                 environ: dict,
+                 environ: Dict[str, str],
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None):
         self.__hds = hds
@@ -138,7 +138,7 @@ def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  hds: HomeDirectoryStructure,
-                 environ: dict,
+                 environ: Dict[str, str],
                  sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None,

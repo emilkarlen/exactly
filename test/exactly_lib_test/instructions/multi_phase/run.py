@@ -106,7 +106,7 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
             pgm_args.interpret_py_source_line('exit(1)').as_str,
             tcds_test.Arrangement(),
             tcds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
-                                                                                             '')))
+                                                                                     '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
@@ -114,7 +114,7 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
             pgm_args.interpret_py_source_line(python_program).as_str,
             tcds_test.Arrangement(),
             tcds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
-                                                                                             'on stderr')))
+                                                                                     'on stderr')))
 
     def test_invalid_executable(self):
         self._check_single_line_arguments_with_source_variants(
@@ -204,7 +204,7 @@ class TestSource(TestCaseBase):
             self._python_interpreter_for_source_on_command_line('exit(1)'),
             tcds_test.Arrangement(),
             tcds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
-                                                                                             '')))
+                                                                                     '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
@@ -212,7 +212,7 @@ class TestSource(TestCaseBase):
             self._python_interpreter_for_source_on_command_line(python_program),
             tcds_test.Arrangement(),
             tcds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
-                                                                                             'on stderr')))
+                                                                                     'on stderr')))
 
     @staticmethod
     def _python_interpreter_for_source_on_command_line(argument: str) -> str:

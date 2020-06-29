@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Union, Sequence
 
 
 class ProcessExecutionSettings(tuple):
@@ -30,7 +30,7 @@ def with_environ(environ: dict) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=environ)
 
 
-def with_environ_copy(environ_to_copy: dict) -> ProcessExecutionSettings:
+def with_environ_copy(environ_to_copy: Dict[str, str]) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=dict(environ_to_copy))
 
 
@@ -41,15 +41,12 @@ class Executable:
 
     def __init__(self,
                  is_shell: bool,
-                 arg_list_or_str):
+                 arg_list_or_str: Union[str, Sequence[str]]):
         self._is_shell = is_shell
         self._arg_list_or_str = arg_list_or_str
 
     @property
-    def arg_list_or_str(self):
-        """
-        :return: Either a string or an iterable of strings
-        """
+    def arg_list_or_str(self) -> Union[str, Sequence[str]]:
         return self._arg_list_or_str
 
     @property
