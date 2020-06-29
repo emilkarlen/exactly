@@ -16,9 +16,6 @@ See https://keepachangelog.com/en/1.0.0/
 ### Security
 * README/Future development
 Make sure to be in line with the release
-* Test
-** run-test-suite.py
-** Run tests towards installed program
 * doc/
 ** TODOs
 ** BUGSs
@@ -28,14 +25,34 @@ Make sure the contact info at the end of the COPYRIGHT is correct.
 ** proram_info.py
 ** setup.py
 ** README
-* Set version number and date
+* Set version number
 ** code
 src/exactly_lib/program_info.py
 ** CHANGELOG
-  - version
-  - release date
+* Test
+** run-test-suite.py
+** Run tests towards installed program
+In virtual environment
+Make release artifacts
+ > make clean
+ > make build
+ > make install
+ > python test/run-test-suite-towards-installed-program.py
+ > make uninstall-venv
+** run exactly tests
+ > exactly suite test/exactly-cases
+* Make sure syntax of examples is correct
+* github pages - Add Ref Man for release
+** exactly/version/Z-Y-Z/reference-manual.html
+* README - link to Ref Man on github pages
+** README - update link to Ref Man on github pages
+** Check that link from README shows Ref Man for correct version
+* github pages - Add README for the new release
+** exactly/version/Z-Y-Z/README.rst
+* Set release date
 ** COPYRIGHT
 Make sure release year is included in COPYRIGHT
+** CHANGELOG
 * Make release artifacts
 ** Remove existing distributables
 > make clean
@@ -45,6 +62,8 @@ Distribute source and wheel
 > make build
 * Upload
 > make upload
+* github pages: Make "latest" sym link point to latest release
+exactly/version/latest
 * wiki
 ** Update examples
 Run tests in examples/wiki,
@@ -56,9 +75,6 @@ so that the release on PyPi is verified.
 
 > git tag vVERSION
 > git push --tags
-* github pages
-** Generate new Reference Manual
-exactly/reference-manual.html
 * Make release on github
 * Learning PyPi
 http://peterdowns.com/posts/first-time-with-pypi.html
