@@ -83,7 +83,7 @@ class _BlockForNode(ResolvedValuePresentationBlock):
         self._tree = tree
 
     def render(self) -> text_struct.MajorBlock:
-        return rendering__node_wo_data.as_major_block(self._tree.render()).render()
+        return rendering__node_wo_data.NodeAsMajorBlockRenderer(self._tree).render()
 
 
 class _BlockForDetails(ResolvedValuePresentationBlock):
@@ -91,7 +91,7 @@ class _BlockForDetails(ResolvedValuePresentationBlock):
         self._details = details
 
     def render(self) -> text_struct.MajorBlock:
-        return rendering__node_wo_data.details_as_major_block(self._details.render()).render()
+        return rendering__node_wo_data.DetailsAsMajorBlockRenderer(self._details).render()
 
 
 class _BlockForCustomRenderer(ResolvedValuePresentationBlock):

@@ -153,5 +153,5 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         return header_rendering.UnexpectedAttrOfObjMajorBlockRenderer(
             file_check_properties.CONTENTS,
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output),
-            rendering__node_wo_data.as_minor_blocks(program.structure().render()),
+            rendering__node_wo_data.NodeAsMinorBlocksRenderer(program.structure()),
         )
