@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.test_case_utils.description_tree import bool_trace_rendering as sut
+from exactly_lib.common.report_rendering.description_tree import rendering__node_bool as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.description_tree.tree import Node, StringDetail
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, INDENTATION__NEUTRAL, TextStyle, \
     Indentation, TEXT_STYLE__NEUTRAL
-from exactly_lib_test.test_case_utils.description_tree.test_resources import ConstantNodeRendererTestImpl
+from exactly_lib_test.common.report_rendering.description_tree.test_resources import ConstantNodeRendererTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_struct

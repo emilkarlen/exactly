@@ -4,6 +4,7 @@ from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.report_rendering.description_tree import rendering__node_wo_data
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
@@ -26,7 +27,6 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, header_rendering
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
@@ -153,5 +153,5 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         return header_rendering.UnexpectedAttrOfObjMajorBlockRenderer(
             file_check_properties.CONTENTS,
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_program(self._checked_output),
-            structure_rendering.as_minor_blocks(program.structure().render()),
+            rendering__node_wo_data.as_minor_blocks(program.structure().render()),
         )

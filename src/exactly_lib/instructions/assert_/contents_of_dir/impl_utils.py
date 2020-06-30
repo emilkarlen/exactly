@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -13,7 +14,6 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv
-from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
@@ -109,7 +109,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                             file_or_dir_contents_headers.unexpected_of_file_type(FileType.DIRECTORY),
                             path_to_check.describer,
                         ),
-                        bool_trace_rendering.BoolTraceRenderer(result.trace),
+                        rendering__node_bool.BoolTraceRenderer(result.trace),
                     ]
                     )
                 )

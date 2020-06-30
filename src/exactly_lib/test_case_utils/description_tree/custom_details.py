@@ -2,11 +2,12 @@ import re
 from typing import Sequence, Iterable, Pattern, Match, Any, TypeVar, Generic, Callable
 
 from exactly_lib.common.report_rendering import print
+from exactly_lib.common.report_rendering.description_tree import layout__detail
+from exactly_lib.common.report_rendering.description_tree import layout__node_wo_data
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
@@ -16,7 +17,6 @@ from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.render.renderer import Renderer
-from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.strings import ToStringObject
 
 HAS_MORE_DATA_MARKER = '...'
@@ -32,13 +32,10 @@ _REGEX_FULL_MATCH = 'Full match'
 _REGEX_CONTAINS = 'Contains'
 _REGEX_IGNORE_CASE = 'Case insensitive'
 
-_STANDARD_HEADER_TEXT_STYLE = structure.TextStyle(font_style=structure.FontStyle.ITALIC)
-
-_STRUCTURE_TREE_HEADER_TEXT_STYLE = structure.TextStyle(color=structure_rendering.STRUCTURE_NODE_TEXT_COLOR)
-
 
 def expected(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_EXPECTED, value, _STANDARD_HEADER_TEXT_STYLE)
+    return HeaderAndValue(_EXPECTED, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 def rhs(value: DetailsRenderer) -> DetailsRenderer:
@@ -46,19 +43,23 @@ def rhs(value: DetailsRenderer) -> DetailsRenderer:
 
 
 def actual(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_ACTUAL, value, _STANDARD_HEADER_TEXT_STYLE)
+    return HeaderAndValue(_ACTUAL, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 def actual__custom(header: ToStringObject, value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(header, value, _STANDARD_HEADER_TEXT_STYLE)
+    return HeaderAndValue(header, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 def actual_lhs(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_ACTUAL_LHS, value, _STANDARD_HEADER_TEXT_STYLE)
+    return HeaderAndValue(_ACTUAL_LHS, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 def match(matching_object: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_MATCH, matching_object, _STANDARD_HEADER_TEXT_STYLE)
+    return HeaderAndValue(_MATCH, matching_object,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
 class PathDdvDetailsRenderer(DetailsRenderer):
@@ -294,7 +295,7 @@ class WithTreeStructure(DetailsRenderer):
 
 def structure_tree_detail(structure_tree: tree.Node[Any]) -> tree.Detail:
     return tree.TreeDetail(structure_tree,
-                           _STRUCTURE_TREE_HEADER_TEXT_STYLE)
+                           layout__node_wo_data.STRUCTURE_NODE_HEADER_TEXT_STYLE)
 
 
 class ExpectedAndActual(DetailsRenderer):

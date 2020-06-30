@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Sequence
 
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
+from exactly_lib.common.report_rendering.description_tree import rendering__node_wo_data
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
@@ -12,7 +13,6 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
-from exactly_lib.test_case_utils.description_tree import structure_rendering
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.description import DescriptionVisitor, DetailsDescription, NodeDescription
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
@@ -83,7 +83,7 @@ class _BlockForNode(ResolvedValuePresentationBlock):
         self._tree = tree
 
     def render(self) -> text_struct.MajorBlock:
-        return structure_rendering.as_major_block(self._tree.render()).render()
+        return rendering__node_wo_data.as_major_block(self._tree.render()).render()
 
 
 class _BlockForDetails(ResolvedValuePresentationBlock):
@@ -91,7 +91,7 @@ class _BlockForDetails(ResolvedValuePresentationBlock):
         self._details = details
 
     def render(self) -> text_struct.MajorBlock:
-        return structure_rendering.details_as_major_block(self._details.render()).render()
+        return rendering__node_wo_data.details_as_major_block(self._details.render()).render()
 
 
 class _BlockForCustomRenderer(ResolvedValuePresentationBlock):

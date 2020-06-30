@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.description_tree import bool_trace_rendering
+from exactly_lib_test.common.report_rendering.description_tree import bool_trace_rendering
 
 
 def suite() -> unittest.TestSuite:

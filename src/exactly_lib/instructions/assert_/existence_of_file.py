@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
 from exactly_lib.definitions import instruction_arguments, logic
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -25,7 +26,6 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
-from exactly_lib.test_case_utils.description_tree import bool_trace_rendering
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.err_msg.header_rendering import SimpleHeaderMinorBlockRenderer
@@ -291,7 +291,7 @@ class _Assertion:
                                       _EXISTING_PATH_FAILURE_FORMAT_MAP),
                     self.described_path.describer,
                 ),
-                bool_trace_rendering.BoolTraceRenderer(matching_result.trace),
+                rendering__node_bool.BoolTraceRenderer(matching_result.trace),
             ])
 
             return pfh.new_pfh_fail(err_msg)
