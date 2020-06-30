@@ -2,7 +2,7 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import directives, concepts
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
-from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.render import see_also
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
@@ -12,8 +12,8 @@ from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as 
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
-    tp = _text_parser(setup)
+def root(header: str) -> generator.SectionHierarchyGenerator:
+    tp = _text_parser()
 
     def paragraphs_of(template: str) -> paragraphs.ParagraphItemsConstructor:
         return paragraphs.constant(tp.fnap(template))
@@ -59,12 +59,12 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     )
 
 
-def _text_parser(setup: Setup) -> TextParser:
+def _text_parser() -> TextParser:
     return TextParser({
         'phase_declaration_for_NAME': section_header('NAME'),
         'instruction': AnyInstructionNameDictionary(),
-        'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
-        'phase': setup.phase_names,
+        'default_phase': phase_names.PHASE_NAME_DICTIONARY[DEFAULT_PHASE.identifier].syntax,
+        'phase': phase_names.PHASE_NAME_DICTIONARY,
         'actor': formatting.concept_(ACTOR_CONCEPT_INFO),
         'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
         'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,

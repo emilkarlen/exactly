@@ -1,10 +1,8 @@
-from typing import List, Dict, Tuple
+from typing import List, Tuple
 
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
-from exactly_lib.definitions.formatting import SectionName
-from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
@@ -16,20 +14,6 @@ from exactly_lib.util.textformat.structure.structures import first_column_is_hea
 class TestCaseHelpConstructorBase(SectionContentsConstructor):
     def __init__(self, test_case_help: TestCaseHelp):
         self.test_case_help = test_case_help
-
-
-class Setup(tuple):
-    def __new__(cls,
-                test_case_help: TestCaseHelp):
-        return tuple.__new__(cls, (test_case_help, PHASE_NAME_DICTIONARY))
-
-    @property
-    def test_case_help(self) -> TestCaseHelp:
-        return self[0]
-
-    @property
-    def phase_names(self) -> Dict[str, SectionName]:
-        return self[1]
 
 
 def singe_exit_value_display(exit_value: ExitValue) -> ParagraphItem:

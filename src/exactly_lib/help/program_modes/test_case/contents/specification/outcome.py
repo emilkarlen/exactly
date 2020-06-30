@@ -9,7 +9,7 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.help.program_modes.test_case.contents.specification.processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
-from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import \
     step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
@@ -20,7 +20,7 @@ from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
+def root(header: str) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
     def const_contents(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
@@ -42,7 +42,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                         children=[
                             h.child('complete-execution',
                                     const_contents('Complete execution',
-                                                   _description_of_complete_execution(setup))
+                                                   _description_of_complete_execution())
 
                                     ),
                             h.child('error-during-validation',
@@ -52,12 +52,12 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                                     ),
                             h.child('error-during-execution',
                                     const_contents('Error during execution',
-                                                   _interrupted_execution(setup))
+                                                   _interrupted_execution())
 
                                     ),
                             h.child('other-errors',
                                     const_contents('Other errors',
-                                                   _other_errors(setup))
+                                                   _other_errors())
 
                                     ),
                         ]
@@ -73,29 +73,31 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
 
 
 TEXT_PARSER = TextParser({
+    'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
     'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
     'default_status': test_case_status.NAME_DEFAULT,
-    'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
-    'an_exit_code': misc_texts.EXIT_CODE.singular_determined,
-    'an_exit_identifier': misc_texts.EXIT_IDENTIFIER.singular_determined,
+    'error_in_source': formatting.misc_name_with_formatting(misc_texts.SYNTAX_ERROR_NAME),
+    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'exit_identifier': formatting.misc_name_with_formatting(misc_texts.EXIT_IDENTIFIER),
     'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
 })
 
 PREAMBLE = ''
 
 REPORTING = """\
-Outcome is reported either as {an_exit_code}, or as an exit code together with {an_exit_identifier} printed as a single
+Outcome is reported either as {exit_code:a},
+or as {exit_code:a} together with {exit_identifier:a} printed as a single
 line on stdout.
 """
 
 
-def _description_of_complete_execution(setup: Setup) -> List[ParagraphItem]:
+def _description_of_complete_execution() -> List[ParagraphItem]:
     ret_val = []
     ret_val.extend(TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
     ret_val.append(_what_outcome_depends_on(TEXT_PARSER))
     ret_val.extend(TEXT_PARSER.fnap(TABLE_INTRO))
-    ret_val.append(_outcomes_per_status_and_assert(setup))
+    ret_val.append(_outcomes_per_status_and_assert())
     ret_val.extend(TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
     ret_val.append(_exit_value_table_for_full_execution())
     return ret_val
@@ -134,8 +136,8 @@ The outcome of the {phase[assert]} phase.
 """
 
 
-def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
-    def _row(tc_status: str, assert_outcome: Optional[ExitValue], test_outcome: FullExeResultStatus) -> list:
+def _outcomes_per_status_and_assert() -> ParagraphItem:
+    def _row(tc_status: str, assert_outcome: Optional[ExitValue], test_outcome: FullExeResultStatus) -> List[TableCell]:
         return [cell(paras(tc_status)),
                 cell(paras(assert_outcome.exit_identifier if assert_outcome is not None else '')),
                 cell(paras(test_outcome.name)),
@@ -144,7 +146,7 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
     return first_row_is_header_table([
         [
             cell(paras(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.singular_name.capitalize())),
-            cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
+            cell(TEXT_PARSER.paras('{phase[assert]:syntax}')),
             cell(paras('Test Case')),
         ],
         _row(test_case_status.NAME_PASS, exit_values.EXECUTION__PASS, FullExeResultStatus.PASS),
@@ -158,12 +160,12 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
         '  ')
 
 
-def _interrupted_execution(setup: Setup) -> List[ParagraphItem]:
+def _interrupted_execution() -> List[ParagraphItem]:
     ret_val = []
-    ret_val += normalize_and_parse(_INTERRUPTED_EXECUTION_PREAMBLE.format(phase=setup.phase_names))
+    ret_val += TEXT_PARSER.fnap(_INTERRUPTED_EXECUTION_PREAMBLE)
     ret_val += TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
-    ret_val.append(para(_INTERRUPTED_EXECUTION_CAUSES))
-    ret_val.append(interrupted_execution_list(setup))
+    ret_val.append(TEXT_PARSER.para(_INTERRUPTED_EXECUTION_CAUSES))
+    ret_val.append(interrupted_execution_list())
     return ret_val
 
 
@@ -179,18 +181,18 @@ both the {phase[act]} and {phase[assert]} phases have been executed successfully
 _INTERRUPTED_EXECUTION_CAUSES = """The execution may be interrupted by the following causes:"""
 
 
-def interrupted_execution_list(setup: Setup) -> ParagraphItem:
+def interrupted_execution_list() -> ParagraphItem:
     items = [
         list_item('Hard error',
                   step_with_single_exit_value(
                       [],
-                      _failure_condition_of_hard_error(setup),
+                      TEXT_PARSER.para(_FAILURE_CONDITION_OF_HARD_ERROR),
                       exit_values.EXECUTION__HARD_ERROR)
                   ),
         list_item('Implementation error',
                   step_with_single_exit_value(
                       [],
-                      _failure_condition_of_implementation_error(),
+                      TEXT_PARSER.para(_FAILURE_CONDITION_OF_IMPLEMENTATION_ERROR),
                       exit_values.EXECUTION__IMPLEMENTATION_ERROR)
                   ),
     ]
@@ -211,10 +213,6 @@ def _error_in_validation_before_execution() -> List[ParagraphItem]:
 _ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE = """\
 If validation fails, the test case is not executed.
 """
-
-
-# def _exit_value_table_for_all_exit_values() -> ParagraphItem:
-#     return _outcome_and_exit_value_table_for(exit_values.ALL_EXIT_VALUES)
 
 
 def _exit_value_table_for(exit_value_list: List[ExitValue]) -> ParagraphItem:
@@ -272,41 +270,33 @@ def all_exit_values_summary_table() -> ParagraphItem:
                                         key=ExitValue.exit_identifier.fget))
 
 
-def _failure_condition_of_hard_error(setup: Setup) -> ParagraphItem:
-    return para("""An instruction fails to do it's job. E.g. an instruction in the {phase[setup]} """
-                """phase fails to create a file.""".format(phase=setup.phase_names))
+_FAILURE_CONDITION_OF_IMPLEMENTATION_ERROR = 'An error in the implementation of {program_name} is detected.'
 
-
-def _failure_condition_of_implementation_error() -> ParagraphItem:
-    return para("""An error in the implementation of %s is detected.""" % _program_name())
-
-
-def _program_name() -> str:
-    return formatting.program_name(program_info.PROGRAM_NAME)
-
+_FAILURE_CONDITION_OF_HARD_ERROR = """\
+An instruction fails to do it's job.
+E.g. an instruction in the {phase[setup]} phase fails to create a file."""
 
 OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = """\
-The outcome is reported by {an_exit_code} and {an_exit_identifier} printed as a single
+The outcome is reported by {exit_code:a} and {exit_identifier:a} printed as a single
 line on stdout.
 """
 
 
-def _other_errors(setup: Setup) -> List[ParagraphItem]:
+def _other_errors() -> List[ParagraphItem]:
     ret_val = []
-    ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=_program_name(),
-                                                                 EXIT_CODE=exit_codes.EXIT_INVALID_USAGE)))
-    ret_val.extend(normalize_and_parse(_OTHER_NON_CLI_ERRORS))
+    ret_val.extend(TEXT_PARSER.fnap(_CLI_PARSING_ERROR, {'EXIT_CODE': exit_codes.EXIT_INVALID_USAGE}))
+    ret_val.extend(TEXT_PARSER.fnap(_OTHER_NON_CLI_ERRORS))
     ret_val.append(_other_non_cli_errors())
     return ret_val
 
 
 _CLI_PARSING_ERROR = """\
 If parsing of command line arguments fails,
-{program_name} halts with exit code {EXIT_CODE} (no exit identifier is printed).
+{program_name} halts with {exit_code} {EXIT_CODE} (no {exit_identifier} is printed).
 """
 
 _OTHER_NON_CLI_ERRORS = """\
-Otherwise an exit identifier is printed as a single line on stdout.
+Otherwise {exit_identifier:a} is printed as a single line on stdout.
 
 
 The following errors may occur:
@@ -343,9 +333,9 @@ def _other_non_cli_errors() -> ParagraphItem:
 _FILE_ACCESS_ERROR = 'Failure of accessing a file referenced via {including}.'
 
 _SYNTAX_ERROR = """\
-Fails if the test case contains {an_error_in_source}.
+Fails if the test case contains {error_in_source:a}.
 
 
 Also fails if the test case is run as part of a test suite,
-and the test suite contains {an_error_in_source}.
+and the test suite contains {error_in_source:a}.
 """

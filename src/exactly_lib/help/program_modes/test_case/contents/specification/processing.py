@@ -4,8 +4,8 @@ from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts, directives
-from exactly_lib.definitions.test_case import phase_infos
-from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
+from exactly_lib.definitions.test_case import phase_infos, phase_names
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import \
     step_with_single_exit_value, step_with_multiple_exit_values
 from exactly_lib.help.render import see_also
 from exactly_lib.processing import exit_values
@@ -19,10 +19,9 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class ContentsConstructor(SectionContentsConstructor):
-    def __init__(self, setup: Setup):
-        self._setup = setup
+    def __init__(self):
         self._tp = TextParser({
-            'phase': setup.phase_names,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name.singular,
             'instructions': concepts.INSTRUCTION_CONCEPT_INFO.name.plural,

@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity import concepts, actors
 from exactly_lib.definitions.test_case import phase_names_plain, phase_infos
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
-from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.render import see_also
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.constructor import sections, paragraphs
@@ -19,7 +19,7 @@ from exactly_lib.util.textformat.structure.structures import StrOrStringText
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
+def root(header: str, test_case_help: TestCaseHelp) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE,
         'act': phase_infos.ACT.name,
@@ -41,7 +41,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
 
     def phases_documentation() -> List[ParagraphItem]:
         return (tp.fnap(_PHASES_INTRO) +
-                [sections_short_list(setup.test_case_help.phase_helps_in_order_of_execution,
+                [sections_short_list(test_case_help.phase_helps_in_order_of_execution,
                                      phase_identifier.DEFAULT_PHASE.section_name,
                                      phase_names_plain.SECTION_CONCEPT_NAME)])
 
