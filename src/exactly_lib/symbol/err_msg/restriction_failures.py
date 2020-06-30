@@ -1,8 +1,8 @@
 import itertools
 from typing import List, Sequence
 
+import exactly_lib.common.report_rendering.block_text_docs
 from exactly_lib.common.err_msg.definitions import Blocks, single_str_block
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
@@ -120,7 +120,7 @@ def _path_to_failing_symbol__old(failing_symbol: str,
 def _path_to_failing_symbol(failing_symbol: str,
                             path_to_failing_symbol: List[str],
                             symbols: SymbolTable) -> TextRenderer:
-    return text_docs.major_blocks_of_string_blocks(
+    return exactly_lib.common.report_rendering.block_text_docs.major_blocks_of_string_blocks(
         _path_to_failing_symbol__old(failing_symbol,
                                      path_to_failing_symbol,
                                      symbols))

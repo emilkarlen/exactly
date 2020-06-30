@@ -1,3 +1,4 @@
+"""Deprecated formatting utils"""
 from typing import List
 
 SOURCE_LINE_INDENT = '  '

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Optional, List, Sequence
 
+import exactly_lib.common.report_rendering.block_text_docs
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg import source_location
 from exactly_lib.common.err_msg.definitions import Blocks, single_str_block
@@ -16,14 +17,15 @@ from exactly_lib.type_system.value_type import ValueType
 
 def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
                                 name: str) -> TextRenderer:
-    return text_docs.major_blocks_of_string_blocks(
+    return exactly_lib.common.report_rendering.block_text_docs.major_blocks_of_string_blocks(
         _duplicate_symbol_definition(already_defined_symbol,
                                      name)
     )
 
 
 def undefined_symbol(reference: SymbolReference) -> TextRenderer:
-    return text_docs.major_blocks_of_string_blocks(_undefined_symbol(reference))
+    return exactly_lib.common.report_rendering.block_text_docs.major_blocks_of_string_blocks(
+        _undefined_symbol(reference))
 
 
 def invalid_type_msg(expected_value_types: List[ValueType],
