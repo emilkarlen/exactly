@@ -1,9 +1,11 @@
 """
 Utilities to help constructing an instruction for a specific phase, from phase-independent parts.
 """
+from typing import Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -46,8 +48,8 @@ class InstructionParts(tuple):
     def __new__(cls,
                 validator: SdvValidator,
                 executor: MainStepExecutor,
-                symbol_usages: tuple = ()):
-        return tuple.__new__(cls, (validator, executor, list(symbol_usages)))
+                symbol_usages: Sequence[SymbolUsage] = ()):
+        return tuple.__new__(cls, (validator, executor, symbol_usages))
 
     @property
     def validator(self) -> SdvValidator:
@@ -58,7 +60,7 @@ class InstructionParts(tuple):
         return self[1]
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self[2]
 
 

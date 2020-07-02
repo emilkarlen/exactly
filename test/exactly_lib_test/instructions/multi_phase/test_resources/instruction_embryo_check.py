@@ -31,11 +31,11 @@ class PostActionCheck:
         pass
 
 
-class Expectation:
+class Expectation(Generic[T]):
     def __init__(self,
                  validation_pre_sds: ValidationResultAssertion = asrt.is_none,
                  validation_post_sds: ValidationResultAssertion = asrt.is_none,
-                 main_result: ValueAssertion = asrt.anything_goes(),
+                 main_result: ValueAssertion[T] = asrt.anything_goes(),
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
                  main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
@@ -60,7 +60,7 @@ class Expectation:
 
 
 def expectation(validation: ValidationAssertions = validation_utils.all_validations_passes(),
-                main_result: ValueAssertion = asrt.anything_goes(),
+                main_result: ValueAssertion[T] = asrt.anything_goes(),
                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
                 main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
@@ -70,7 +70,7 @@ def expectation(validation: ValidationAssertions = validation_utils.all_validati
                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
                 assertion_on_instruction_environment:
                 ValueAssertion[InstructionEnvironmentForPostSdsStep] = asrt.anything_goes(),
-                ):
+                ) -> Expectation[T]:
     return Expectation(
         validation_pre_sds=validation.pre_sds,
         validation_post_sds=validation.post_sds,
@@ -86,12 +86,12 @@ def expectation(validation: ValidationAssertions = validation_utils.all_validati
     )
 
 
-class TestCaseBase(unittest.TestCase):
+class TestCaseBase(Generic[T], unittest.TestCase):
     def _check(self,
-               parser: InstructionEmbryoParser,
+               parser: InstructionEmbryoParser[T],
                source: ParseSource,
                arrangement: ArrangementWithSds,
-               expectation: Expectation):
+               expectation: Expectation[T]):
         check(self,
               parser,
               source,
@@ -100,10 +100,10 @@ class TestCaseBase(unittest.TestCase):
 
 
 def check(put: unittest.TestCase,
-          parser: InstructionEmbryoParser,
+          parser: InstructionEmbryoParser[T],
           source: ParseSource,
           arrangement: ArrangementWithSds,
-          expectation: Expectation):
+          expectation: Expectation[T]):
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
@@ -115,7 +115,7 @@ class Checker(Generic[T]):
               put: unittest.TestCase,
               source: ParseSource,
               arrangement: ArrangementWithSds,
-              expectation: Expectation,
+              expectation: Expectation[T],
               ):
         Executor(put, arrangement, expectation).execute(self.parser, source)
 
@@ -129,11 +129,11 @@ class Checker(Generic[T]):
             Executor(put, arrangement, expectation).execute(self.parser, source)
 
 
-class Executor:
+class Executor(Generic[T]):
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: ArrangementWithSds,
-                 expectation: Expectation):
+                 expectation: Expectation[T]):
         self.put = put
         self.arrangement = arrangement
         self.expectation = expectation
@@ -212,7 +212,7 @@ class Executor:
     def _execute_validate_pre_sds(
             self,
             environment: InstructionEnvironmentForPreSdsStep,
-            instruction: InstructionEmbryo) -> Optional[TextRenderer]:
+            instruction: InstructionEmbryo[T]) -> Optional[TextRenderer]:
         result = instruction.validator.validate_pre_sds_if_applicable(environment.path_resolving_environment)
         self.expectation.validation_pre_sds.apply_with_message(self.put, result,
                                                                'validation_pre_sds')
@@ -221,7 +221,7 @@ class Executor:
     def _execute_validate_post_setup(
             self,
             environment: InstructionEnvironmentForPostSdsStep,
-            instruction: InstructionEmbryo) -> Optional[TextRenderer]:
+            instruction: InstructionEmbryo[T]) -> Optional[TextRenderer]:
         result = instruction.validator.validate_post_sds_if_applicable(environment.path_resolving_environment)
         self.expectation.validation_post_sds.apply_with_message(self.put, result,
                                                                 'validation_post_sds')
@@ -229,7 +229,7 @@ class Executor:
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
-                      instruction: InstructionEmbryo):
+                      instruction: InstructionEmbryo[T]):
         result = instruction.main(environment,
                                   environment.phase_logging,
                                   self.arrangement.os_services)
@@ -237,7 +237,7 @@ class Executor:
                                                         'result from main')
 
 
-def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> dict:
+def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> Dict[str, str]:
     environ = arrangement.process_execution_settings.environ
     if environ is None:
         environ = {}
