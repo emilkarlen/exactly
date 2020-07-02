@@ -13,6 +13,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 
 
 class MainStepResultTranslator(Generic[T]):
@@ -85,7 +86,11 @@ class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
                                logging_paths: PhaseLoggingPaths,
                                os_services: OsServices,
                                ) -> sh.SuccessOrHardError:
-        result = self.main_step_embryo.main(environment, logging_paths, os_services)
+        try:
+            result = self.main_step_embryo.main(environment, logging_paths, os_services)
+        except HardErrorException as ex:
+            return sh.new_sh_hard_error(ex.error)
+
         return self.result_translator.translate_for_non_assertion(result)
 
     def apply_as_assertion(self,
@@ -93,7 +98,11 @@ class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
                            logging_paths: PhaseLoggingPaths,
                            os_services: OsServices,
                            ) -> pfh.PassOrFailOrHardError:
-        result = self.main_step_embryo.main(environment, logging_paths, os_services)
+        try:
+            result = self.main_step_embryo.main(environment, logging_paths, os_services)
+        except HardErrorException as ex:
+            return pfh.new_pfh_hard_error(ex.error)
+
         return self.result_translator.translate_for_assertion(result)
 
 

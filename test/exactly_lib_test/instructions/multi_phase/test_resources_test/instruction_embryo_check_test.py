@@ -15,9 +15,11 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as sut
@@ -36,6 +38,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
+from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -317,6 +320,27 @@ class TestMiscCases(TestCaseBase):
                 ArrangementWithSds(),
                 sut.Expectation(main_result=asrt.equals('different-from-actual')),
             )
+
+    def test_fail_due_to_unexpected_hard_error_exception(self):
+        with self.assertRaises(utils.TestError):
+            self._check(
+                ParserThatGives(instruction_embryo_that(
+                    main=do_raise(HardErrorException(new_single_string_text_for_test('hard error message'))))
+                ),
+                single_line_source(),
+                ArrangementWithSds(),
+                sut.Expectation(main_result=asrt.anything_goes()),
+            )
+
+    def test_succeed_due_to_expected_hard_error_exception(self):
+        self._check(
+            ParserThatGives(instruction_embryo_that(
+                main=do_raise(HardErrorException(new_single_string_text_for_test('hard error message'))))
+            ),
+            single_line_source(),
+            ArrangementWithSds(),
+            sut.Expectation(main_raises_hard_error=True),
+        )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(utils.TestError):

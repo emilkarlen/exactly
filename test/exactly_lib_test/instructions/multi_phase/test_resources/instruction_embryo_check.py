@@ -12,7 +12,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
@@ -36,6 +38,7 @@ class Expectation(Generic[T]):
                  validation_pre_sds: ValidationResultAssertion = asrt.is_none,
                  validation_post_sds: ValidationResultAssertion = asrt.is_none,
                  main_result: ValueAssertion[T] = asrt.anything_goes(),
+                 main_raises_hard_error: bool = False,
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
                  main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
@@ -49,6 +52,7 @@ class Expectation(Generic[T]):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
         self.main_result = main_result
+        self.main_raises_hard_error = main_raises_hard_error
         self.main_side_effects_on_sds = main_side_effects_on_sds
         self.side_effects_on_tcds = side_effects_on_tcds
         self.side_effects_on_hds = side_effects_on_hds
@@ -61,6 +65,7 @@ class Expectation(Generic[T]):
 
 def expectation(validation: ValidationAssertions = validation_utils.all_validations_passes(),
                 main_result: ValueAssertion[T] = asrt.anything_goes(),
+                main_raises_hard_error: bool = False,
                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
                 main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
@@ -75,6 +80,7 @@ def expectation(validation: ValidationAssertions = validation_utils.all_validati
         validation_pre_sds=validation.pre_sds,
         validation_post_sds=validation.post_sds,
         main_result=main_result,
+        main_raises_hard_error=main_raises_hard_error,
         symbol_usages=symbol_usages,
         symbols_after_main=symbols_after_main,
         main_side_effects_on_sds=main_side_effects_on_sds,
@@ -230,9 +236,20 @@ class Executor(Generic[T]):
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: InstructionEmbryo[T]):
-        result = instruction.main(environment,
-                                  environment.phase_logging,
-                                  self.arrangement.os_services)
+        try:
+            result = instruction.main(environment,
+                                      environment.phase_logging,
+                                      self.arrangement.os_services)
+        except HardErrorException as ex:
+            if self.expectation.main_raises_hard_error:
+                text_doc_assertions.assert_is_valid_text_renderer(self.put, ex.error)
+                return
+            else:
+                self.put.fail('unexpected {} from main'.format(HardErrorException))
+
+        if self.expectation.main_raises_hard_error:
+            self.put.fail('main does not raise ' + str(HardErrorException))
+
         self.expectation.main_result.apply_with_message(self.put, result,
                                                         'result from main')
 
