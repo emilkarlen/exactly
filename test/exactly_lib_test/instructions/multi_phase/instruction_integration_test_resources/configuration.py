@@ -93,6 +93,13 @@ class ConfigurationBase:
             asrt_text_doc.is_string_for_test(assertion_on_error_message)
         )
 
+    def expect_hard_error_of_main__any(self):
+        """
+        Expectation that the result should be HARD_ERROR,
+        both for assert- and non-assert phase instructions.
+        """
+        return self.expect_failure_of_main()
+
     def expect_failing_validation_pre_sds(self,
                                           error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         raise NotImplementedError()

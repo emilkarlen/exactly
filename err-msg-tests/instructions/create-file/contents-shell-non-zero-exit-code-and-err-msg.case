@@ -1,0 +1,3 @@
+[setup]
+
+file f = -stdout-from $ exit 'not-an-int'

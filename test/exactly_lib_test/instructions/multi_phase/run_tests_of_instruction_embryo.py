@@ -13,7 +13,6 @@ from exactly_lib_test.instructions.multi_phase.test_resources import instruction
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -26,7 +25,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
     multiple, TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
@@ -137,7 +136,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                 execute_program_option_symbol.usage_assertion__any_data_type,
                 exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
+            main_result=result_assertions.equals(exit_code_symbol.int_value, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -270,7 +269,8 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                 ),
                 exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
+            main_result=result_assertions.equals(exit_code_symbol.int_value,
+                                                 ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -303,8 +303,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 symbols=self.symbols_dict
             ),
             instruction_embryo_check.Expectation(
-                main_result=spr_check.is_success_result(0,
-                                                        None),
+                main_result=result_assertions.equals(0, None),
                 symbol_usages=asrt.matches_sequence([
                     self.program_that_executes_py_pgm_symbol.reference_assertion
                 ])
@@ -326,8 +325,8 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 symbols=self.symbols_dict
             ),
             instruction_embryo_check.Expectation(
-                main_result=spr_check.is_success_result(exit_code,
-                                                        self.output_to_stderr),
+                main_result=result_assertions.equals(exit_code,
+                                                     self.output_to_stderr),
                 symbol_usages=asrt.matches_sequence([
                     self.program_that_executes_py_pgm_symbol.reference_assertion
                 ])
@@ -408,7 +407,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                 execute_program_option_symbol.usage_assertion__any_data_type,
                 exit_code_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(exit_code_symbol.int_value, ''),
+            main_result=result_assertions.equals(exit_code_symbol.int_value, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
@@ -441,20 +440,20 @@ class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line('exit(0)').as_str,
             ArrangementWithSds(),
-            Expectation(main_result=spr_check.is_success_result(0, None)))
+            Expectation(main_result=result_assertions.equals(0, None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line('exit(1)').as_str,
             ArrangementWithSds(),
-            Expectation(main_result=spr_check.is_success_result(1, '')))
+            Expectation(main_result=result_assertions.equals(1, '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line(python_program).as_str,
             ArrangementWithSds(),
-            Expectation(main_result=spr_check.is_success_result(2, 'on stderr')))
+            Expectation(main_result=result_assertions.equals(2, 'on stderr')))
 
     def test_non_existing_executable(self):
         self._check_single_line_arguments_with_source_variants(

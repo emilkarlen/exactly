@@ -1,6 +1,5 @@
 from typing import Sequence, Optional
 
-from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -16,10 +15,11 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     instruction_log_dir
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
+from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
+from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
 from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
-    execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
 
 
 class FileMaker:
@@ -82,23 +82,28 @@ class FileMakerForContentsFromProgram(FileMaker):
              os_services: OsServices,
              dst_path: DescribedPath,
              ) -> Optional[TextRenderer]:
-        executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
-
         program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
-
-        executable = os_services.executable_factory__detect_ex().make(program.command)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
-        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
+        try:
+            result = exe_wo_transformation.execute(
+                program,
+                storage_dir,
+                os_services,
+                environment.process_execution_settings
+            )
+        except HardErrorException as ex:
+            return ex.error
 
-        err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
-        if err_msg:
-            return text_docs.single_pre_formatted_line_object(err_msg)
+        if result.exit_code != 0:
+            return top_lvl_error_msg_rendering.non_zero_exit_code_msg(program.structure(),
+                                                                      result.exit_code,
+                                                                      result.stderr_contents)
 
-        path_of_output = storage_dir / result_and_std_err.result.file_names.name_of(self._output_channel)
-        return create_file_from_transformation_of_existing_file__dp(path_of_output,
-                                                                    dst_path,
-                                                                    program.transformation)
+        return create_file_from_transformation_of_existing_file__dp(
+            storage_dir / result.file_names.name_of(self._output_channel),
+            dst_path,
+            program.transformation)
 
     @property
     def validator(self) -> SdvValidator:

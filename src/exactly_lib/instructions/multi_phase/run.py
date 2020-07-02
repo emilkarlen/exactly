@@ -22,7 +22,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 def parts_parser(instruction_name: str) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(embryo_parser(instruction_name),
-                                       spe_parts.ResultAndStderrTranslator())
+                                       spe_parts.ResultTranslator())
 
 
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:

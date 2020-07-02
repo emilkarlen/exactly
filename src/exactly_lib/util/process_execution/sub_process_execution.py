@@ -1,8 +1,6 @@
-import os
 import pathlib
 import subprocess
 
-from exactly_lib.definitions import misc_texts
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
@@ -60,7 +58,7 @@ class ExecutorThatStoresResultInFilesInDir:
                 executable: Executable) -> Result:
 
         def _err_msg(exception: Exception) -> str:
-            return 'Error executing process:\n\n' + str(exception)
+            return str(exception)
 
         file_utils.ensure_directory_exists_as_a_directory__impl_error(storage_dir)
         with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:
@@ -94,29 +92,6 @@ def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
     if result.is_success and result.exit_code != 0:
         stderr_contents = file_utils.contents_of(result.output_dir_path / result.file_names.stderr)
     return ResultAndStderr(result, stderr_contents)
-
-
-def failure_message_for_failure_to_failure_to_execute_process(result_and_err: ResultAndStderr) -> str:
-    return 'Failed to execute sub process: ' + result_and_err.result.error_message
-
-
-def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
-    msg_tail = ''
-    if result_and_err.stderr_contents:
-        msg_tail = os.linesep + result_and_err.stderr_contents
-    return '{}: {}{}'.format(misc_texts.EXIT_CODE.singular.capitalize(),
-                             result_and_err.result.exit_code,
-                             msg_tail)
-
-
-def result_for_non_success_or_non_zero_exit_code(result_and_err: ResultAndStderr) -> str:
-    if result_and_err.result.is_success:
-        if result_and_err.result.exit_code == 0:
-            return None
-        else:
-            return failure_message_for_nonzero_status(result_and_err)
-    else:
-        return failure_message_for_failure_to_failure_to_execute_process(result_and_err)
 
 
 def execute_and_read_stderr_if_non_zero_exitcode(executable: Executable,

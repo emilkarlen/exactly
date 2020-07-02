@@ -278,7 +278,7 @@ class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
                 self,
                 source,
                 self.conf.arrangement(),
-                self.conf.expect_hard_error_of_main(),
+                self.conf.expect_hard_error_of_main__any(),
             )
 
 

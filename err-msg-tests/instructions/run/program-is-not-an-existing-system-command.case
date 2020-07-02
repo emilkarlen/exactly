@@ -1,0 +1,3 @@
+[setup]
+
+run % not-an-existing-system-command arg1 arg2

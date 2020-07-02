@@ -12,10 +12,9 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.util.process_execution import sub_process_execution as spe
+from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -23,7 +22,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_populators imp
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
@@ -46,28 +45,31 @@ class ExecuteAction(TcdsAction):
     def __init__(self, instruction_embryo: TheInstructionEmbryo):
         self.instruction_embryo = instruction_embryo
 
-    def apply(self, environment: PathResolvingEnvironmentPreOrPostSds) -> spe.ResultAndStderr:
-        return self.instruction_embryo.main(InstructionEnvironmentForPostSdsStep(environment.hds,
-                                                                                 dict(os.environ),
-                                                                                 environment.sds,
-                                                                                 'the-phase'),
-                                            PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
-                                            os_services.new_default())
+    def apply(self, environment: PathResolvingEnvironmentPreOrPostSds) -> ExecutionResultAndStderr:
+        return self.instruction_embryo.main(
+            InstructionEnvironmentForPostSdsStep(environment.hds,
+                                                 dict(os.environ),
+                                                 environment.sds,
+                                                 'the-phase'),
+            PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
+            os_services.new_default(),
+        )
 
 
 class EmbryoTestCaseBase(unittest.TestCase):
-    def _check_single_line_arguments_with_source_variants(self,
-                                                          instruction_argument: str,
-                                                          arrangement: ArrangementWithSds,
-                                                          expectation: instruction_embryo_check.Expectation,
-                                                          ):
+    def _check_single_line_arguments_with_source_variants(
+            self,
+            instruction_argument: str,
+            arrangement: ArrangementWithSds,
+            expectation: instruction_embryo_check.Expectation[ExecutionResultAndStderr],
+    ):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             self._check(source, arrangement, expectation)
 
     def _check(self,
                source: ParseSource,
                arrangement: ArrangementWithSds,
-               expectation: instruction_embryo_check.Expectation,
+               expectation: instruction_embryo_check.Expectation[ExecutionResultAndStderr],
                ):
         parser = sut.embryo_parser('instruction-name')
         instruction_embryo_check.check(self, parser, source, arrangement, expectation)
@@ -98,29 +100,26 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line('exit(0)').as_str,
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(0,
-                                                                                     None)))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(0, None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line('exit(1)').as_str,
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
-                                                                                     '')))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(1, '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
             pgm_args.interpret_py_source_line(python_program).as_str,
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
-                                                                                     'on stderr')))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(2, 'on stderr')))
 
     def test_invalid_executable(self):
         self._check_single_line_arguments_with_source_variants(
             '/not/an/executable/program',
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.IsFailure()))
+            tcds_test.Expectation(acton_raises_hard_error=True))
 
 
 class TestExecuteInterpret(TestCaseBase):
@@ -133,8 +132,7 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line(''))]))),
             tcds_test.Expectation(
-                expected_action_result=spr_check.is_success_result(0,
-                                                                   None),
+                expected_action_result=result_assertions.equals(0, None),
 
             )
         )
@@ -151,8 +149,7 @@ class TestExecuteInterpret(TestCaseBase):
                                                     File('exit-with-value-on-command-line.py',
                                                          py_pgm_that_exits_with_value_on_command_line(''))]))),
             tcds_test.Expectation(
-                expected_action_result=spr_check.is_success_result(0,
-                                                                   None)),
+                expected_action_result=result_assertions.equals(0, None)),
         )
 
     def test_check_non_zero_exit_code(self):
@@ -164,8 +161,7 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line('on stderr'))]))),
             tcds_test.Expectation(
-                expected_action_result=spr_check.is_success_result(2,
-                                                                   'on stderr'),
+                expected_action_result=result_assertions.equals(2, 'on stderr'),
 
             )
         )
@@ -181,7 +177,7 @@ class TestExecuteInterpret(TestCaseBase):
                     File('exit-with-value-on-command-line.py',
                          py_pgm_that_exits_with_value_on_command_line(''))]))),
             tcds_test.Expectation(
-                expected_action_result=spr_check.IsFailure(),
+                acton_raises_hard_error=True,
 
             ))
 
@@ -196,23 +192,20 @@ class TestSource(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line('exit(0)'),
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(0,
-                                                                                     None)))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(0, None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line('exit(1)'),
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(1,
-                                                                                     '')))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(1, '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
             self._python_interpreter_for_source_on_command_line(python_program),
             tcds_test.Arrangement(),
-            tcds_test.Expectation(expected_action_result=spr_check.is_success_result(2,
-                                                                                     'on stderr')))
+            tcds_test.Expectation(expected_action_result=result_assertions.equals(2, 'on stderr')))
 
     @staticmethod
     def _python_interpreter_for_source_on_command_line(argument: str) -> str:

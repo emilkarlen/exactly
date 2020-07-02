@@ -15,11 +15,12 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     instruction_log_dir, InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.util.process_execution import sub_process_execution as spe
-from exactly_lib.util.process_execution.sub_process_execution import ResultAndStderr, failure_message_for_nonzero_status
+from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
+from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr, \
+    execute
 
 
-class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ResultAndStderr]):
+class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  program: ProgramSdv):
@@ -40,19 +41,20 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ResultAndStderr]
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
-             ) -> ResultAndStderr:
-        command = resolving_helper_for_instruction_env(environment).resolve_program_command(self._program)
-        executable = os_services.executable_factory__detect_ex().make(command)
-        executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
+             ) -> ExecutionResultAndStderr:
+        program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
-        return spe.execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
+        return execute(program,
+                       storage_dir,
+                       os_services,
+                       environment.process_execution_settings)
 
 
-class ResultAndStderrTranslator(MainStepResultTranslator[ResultAndStderr]):
-    def translate_for_non_assertion(self, main_result: ResultAndStderr) -> sh.SuccessOrHardError:
+class ResultTranslator(MainStepResultTranslator[ExecutionResultAndStderr]):
+    def translate_for_non_assertion(self, main_result: ExecutionResultAndStderr) -> sh.SuccessOrHardError:
         return result_to_sh(main_result)
 
-    def translate_for_assertion(self, main_result: ResultAndStderr) -> pfh.PassOrFailOrHardError:
+    def translate_for_assertion(self, main_result: ExecutionResultAndStderr) -> pfh.PassOrFailOrHardError:
         return result_to_pfh(main_result)
 
 
@@ -75,22 +77,24 @@ def parts_parser(instruction_name: str,
                  ) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(InstructionEmbryoParser(instruction_name,
                                                                program_parser),
-                                       ResultAndStderrTranslator())
+                                       ResultTranslator())
 
 
-def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
-    result = result_and_stderr.result
-    if not result.is_success:
-        return sh.new_sh_hard_error__str(result.error_message)
+def result_to_sh(result: ExecutionResultAndStderr) -> sh.SuccessOrHardError:
     if result.exit_code != 0:
-        return sh.new_sh_hard_error__str(failure_message_for_nonzero_status(result_and_stderr))
+        return sh.new_sh_hard_error(
+            top_lvl_error_msg_rendering.non_zero_exit_code_msg(result.program,
+                                                               result.exit_code,
+                                                               result.stderr_contents)
+        )
     return sh.new_sh_success()
 
 
-def result_to_pfh(result_and_stderr: ResultAndStderr) -> pfh.PassOrFailOrHardError:
-    result = result_and_stderr.result
-    if not result.is_success:
-        return pfh.new_pfh_hard_error__str(failure_message_for_nonzero_status(result_and_stderr))
+def result_to_pfh(result: ExecutionResultAndStderr) -> pfh.PassOrFailOrHardError:
     if result.exit_code != 0:
-        return pfh.new_pfh_fail__str(failure_message_for_nonzero_status(result_and_stderr))
+        return pfh.new_pfh_fail(
+            top_lvl_error_msg_rendering.non_zero_exit_code_msg(result.program,
+                                                               result.exit_code,
+                                                               result.stderr_contents)
+        )
     return pfh.new_pfh_pass()

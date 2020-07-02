@@ -57,6 +57,11 @@ class AssertConfigurationBase(ConfigurationBase):
             asrt_text_doc.is_string_for_test(assertion_on_error_message)
         ))
 
+    def expect_hard_error_of_main__any(self):
+        return Expectation(main_result=pfh_assertions.is_hard_error(
+            asrt_text_doc.is_any_text()
+        ))
+
     def expect_failing_validation_pre_sds(self,
                                           error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()):
         return Expectation(

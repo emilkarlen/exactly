@@ -15,6 +15,13 @@ class PreFormattedString(LineObjectRenderer):
         self._x = x
         self._string_is_line_ended = string_is_line_ended
 
+    @staticmethod
+    def of_str(x: str) -> 'PreFormattedString':
+        is_line_ended = (
+                x and x[-1] == '\n'
+        )
+        return PreFormattedString(x, is_line_ended)
+
     def render(self) -> LineObject:
         return structure.PreFormattedStringLineObject(str(self._x), self._string_is_line_ended)
 

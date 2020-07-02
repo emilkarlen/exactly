@@ -1,0 +1,3 @@
+[setup]
+
+file f = -stdout-from % non-existing-program

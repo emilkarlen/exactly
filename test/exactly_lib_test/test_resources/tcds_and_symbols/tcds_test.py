@@ -1,7 +1,9 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, \
@@ -35,8 +37,10 @@ class Expectation:
     def __init__(self,
                  expected_action_result: ValueAssertion = anything_goes(),
                  expected_sds_contents_after: ValueAssertion = asrt.anything_goes(),
-                 post_action_check: PostActionCheck = PostActionCheck()):
+                 post_action_check: PostActionCheck = PostActionCheck(),
+                 acton_raises_hard_error: bool = False):
         self.expected_action_result = expected_action_result
+        self.acton_raises_hard_error = acton_raises_hard_error
         self.expected_sds_contents_after = expected_sds_contents_after
         self.post_action_check = post_action_check
 
@@ -62,7 +66,16 @@ def check(put: unittest.TestCase,
                                    symbols=arrangement.symbols,
                                    ) as environment:
         arrangement.pre_action_action.apply(environment)
-        result = action.apply(environment)
-        expectation.expected_action_result.apply(put, result)
+        try:
+            result = action.apply(environment)
+        except HardErrorException as ex:
+            if expectation.acton_raises_hard_error:
+                text_doc_assertions.assert_is_valid_text_renderer(put, ex.error)
+        else:
+            if expectation.acton_raises_hard_error:
+                put.fail('action does not raise {}'.format(HardErrorException))
+
+            expectation.expected_action_result.apply(put, result)
+
         expectation.expected_sds_contents_after.apply(put, environment.sds)
         expectation.post_action_check.apply(put, environment.tcds)

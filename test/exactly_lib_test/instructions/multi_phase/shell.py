@@ -8,7 +8,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
-from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -19,6 +18,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
+from exactly_lib_test.test_case_utils.program.test_resources import result_assertions
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -73,7 +73,7 @@ class TestSymbolReferences(unittest.TestCase):
                 python_interpreter_symbol.usage_assertion__any_data_type,
                 file_to_interpret_symbol.usage_assertion__any_data_type,
             ]),
-            main_result=spr_check.is_success_result(expected_exit_status, ''),
+            main_result=result_assertions.equals(expected_exit_status, ''),
         )
 
         parser = sut.embryo_parser('instruction-name')
