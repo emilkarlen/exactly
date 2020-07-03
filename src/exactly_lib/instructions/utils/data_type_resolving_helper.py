@@ -6,5 +6,4 @@ def resolving_helper_for_instruction_env(environment: InstructionEnvironmentForP
     return DataTypeResolvingHelper(
         environment.symbols,
         environment.tcds,
-        environment.application_environment.tmp_files_space,
     )
