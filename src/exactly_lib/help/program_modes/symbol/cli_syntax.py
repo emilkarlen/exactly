@@ -184,7 +184,7 @@ If {ref_option} is given, all references to the {symbol} are reported.
 """
 
 _OUTCOME = """\
-The report is printed on stdout.
+The report is printed on {stdout}.
 
 
 Errors are reported with {exit_code:s} and {exit_identifier:s}
@@ -208,6 +208,7 @@ _TP = TextParser({
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
     'exit_code': misc_texts.EXIT_CODE,
+    'stdout': misc_texts.STDOUT,
     'exit_identifier': misc_texts.EXIT_IDENTIFIER,
     'TEST_CASE_FILE': instruction_arguments.FILE_ARGUMENT.name,
     'TEST_SUITE_FILE': instruction_arguments.FILE_ARGUMENT.name,

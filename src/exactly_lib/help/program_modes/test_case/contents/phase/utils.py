@@ -89,8 +89,8 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
 
     rows = [
         row(misc_texts.EXIT_CODE.singular, sds.RESULT_FILE__EXITCODE),
-        row('stdout', sds.RESULT_FILE__STDOUT),
-        row('stderr', sds.RESULT_FILE__STDERR),
+        row(misc_texts.STDOUT, sds.RESULT_FILE__STDOUT),
+        row(misc_texts.STDERR, sds.RESULT_FILE__STDERR),
     ]
 
     return table.Table(table.TableFormat(first_column_is_header=True),

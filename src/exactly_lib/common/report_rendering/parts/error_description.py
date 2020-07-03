@@ -38,7 +38,7 @@ class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor[Seque
     def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError
                                       ) -> Sequence[MajorBlock]:
         minor_blocks = self._message_blocks(ed)
-        lines = [struct.StringLineObject(misc_texts.EXIT_CODE.singular.capitalize() + ': ' +
+        lines = [struct.StringLineObject(misc_texts.EXIT_CODE_TITLE + ': ' +
                                          str(ed.external_process_error.exit_code))]
 
         if ed.external_process_error.stderr_output:

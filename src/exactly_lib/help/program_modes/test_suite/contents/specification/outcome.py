@@ -40,13 +40,13 @@ PREAMBLE = ''
 
 TEXT_PARSER = TextParser({
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
-    'an_exit_code': misc_texts.EXIT_CODE.singular_determined,
-    'exit_code': misc_texts.EXIT_CODE.singular,
+    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'stdout': misc_texts.STDOUT,
     'an_exit_identifier': misc_texts.EXIT_IDENTIFIER.singular_determined,
 })
 
 REPORTING = """\
-Outcome is reported via {an_exit_code} and stdout.
+Outcome is reported via {exit_code:a} and {stdout}.
 
 stderr may contain helpful information.
 

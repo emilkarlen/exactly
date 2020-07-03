@@ -61,6 +61,7 @@ def header_and_program_block(header: str, program: StructureRenderer) -> Rendere
 
 _STRING_FORMATTER = StringFormatter({
     'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'stderr': misc_texts.STDERR,
     'program': types.PROGRAM_TYPE_INFO.name,
 })
 
@@ -73,10 +74,10 @@ _UNABLE_TO_EXECUTE_HEADER = _STRING_FORMATTER.format(
 )
 
 _OUTPUT_ON_STDERR_HEADER = _STRING_FORMATTER.format(
-    'Output on stderr:'
+    'Output on {stderr}:'
 )
 
-_EXIT_CODE_LINE_PREFIX = misc_texts.EXIT_CODE.singular.capitalize() + ': '
+_EXIT_CODE_LINE_PREFIX = misc_texts.EXIT_CODE_TITLE + ': '
 
 
 def _actual_exit_code_line(exit_code: int) -> str:

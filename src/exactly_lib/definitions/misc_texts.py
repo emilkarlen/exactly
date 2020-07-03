@@ -16,6 +16,10 @@ EXIT_IDENTIFIER = misc_name_with_formatting(
     name.an_name(name.name_with_plural_s('exit identifier')))
 
 EXIT_CODE = name.an_name(name.name_with_plural_s('exit code'))
+EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
+
+STDOUT = 'stdout'
+STDERR = 'stderr'
 
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
 SHELL_COMMAND = name.a_name(name.name_with_plural_s('shell command'))
@@ -27,8 +31,6 @@ EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
 
 RELATIVITY = misc_name_with_formatting(
     name.a_name(name.Name('relativity', 'relativities')))
-
-EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
 
 TEST_CASE_SPEC_TITLE = 'Specification of test case functionality'
 

@@ -22,7 +22,7 @@ class _PreprocessorConcept(ConceptDocumentation):
             'the_concept': formatting.concept(self.name().singular),
             'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'is_a_shell_cmd': misc_texts.IS_A_SHELL_CMD,
-            'an_exit_code': misc_texts.EXIT_CODE.singular_determined.capitalize(),
+            'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
         })
         return from_simple_description(
             Description(self.single_line_description(),
@@ -50,7 +50,7 @@ When executed, it is given a single (additional) argument: the name of the test 
 The result of the transformation is the output on stdout.
 
 
-{an_exit_code} other than 0 indicates error.
+{exit_code:a/u} other than 0 indicates error.
 
 
 A test case file is preprocessed only if a {the_concept} is given via the {preprocessor_option} option,
