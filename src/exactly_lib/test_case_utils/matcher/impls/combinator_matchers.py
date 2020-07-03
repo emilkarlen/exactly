@@ -10,8 +10,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatchingResult, \
-    MatcherDdv, MODEL, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MODEL, MatcherAdv
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers
 
 

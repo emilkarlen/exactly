@@ -12,8 +12,9 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.impls.advs import MatcherAdvFromFunction
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, \
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherAdv, MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherDdvFromParts2TestImpl

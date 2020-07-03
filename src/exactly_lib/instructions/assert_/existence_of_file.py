@@ -39,7 +39,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType

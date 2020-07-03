@@ -6,7 +6,8 @@ from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree, renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node

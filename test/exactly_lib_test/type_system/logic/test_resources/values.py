@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImp
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderers import Constant
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherTestImplBase

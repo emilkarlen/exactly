@@ -1,7 +1,7 @@
 import unittest
 from abc import ABC, abstractmethod
 
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import \
     InstructionApplicationEnvironment
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \

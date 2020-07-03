@@ -12,7 +12,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherAdv, MODEL
+from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MODEL
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

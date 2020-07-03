@@ -8,7 +8,7 @@ from exactly_lib.symbol import lookups
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType

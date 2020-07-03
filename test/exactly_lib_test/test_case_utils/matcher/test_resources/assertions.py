@@ -1,4 +1,4 @@
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 

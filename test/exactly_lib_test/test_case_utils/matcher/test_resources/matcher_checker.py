@@ -3,8 +3,9 @@ from typing import TypeVar, Generic, Callable
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherDdv, \
+from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \

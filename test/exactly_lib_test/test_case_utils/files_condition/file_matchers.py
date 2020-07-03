@@ -4,7 +4,7 @@ from typing import Optional, Mapping, Sequence
 
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
 from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher, \
     FileMatcherSymbolContext, FileMatcherSymbolContextOfPrimitiveConstant

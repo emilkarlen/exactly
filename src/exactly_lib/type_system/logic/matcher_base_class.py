@@ -8,29 +8,9 @@ from exactly_lib.type_system.description.tree_structured import WithNameAndTreeS
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
     LogicWithNodeDescriptionDdv
-from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 
 MODEL = TypeVar('MODEL')
-
-TraceRenderer = NodeRenderer[bool]
-
-
-class MatchingResult:
-    """The result of applying a matcher."""
-
-    def __init__(self,
-                 value: bool,
-                 trace: TraceRenderer):
-        self._value = value
-        self._trace = trace
-
-    @property
-    def value(self) -> bool:
-        return self._value
-
-    @property
-    def trace(self) -> TraceRenderer:
-        return self._trace
 
 
 class MatcherWTrace(Generic[MODEL], WithNameAndTreeStructureDescription, ABC):

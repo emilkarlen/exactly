@@ -9,8 +9,9 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, 
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace, MatcherDdv, \
-    TraceRenderer, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, \
+    MatcherAdv
+from exactly_lib.type_system.logic.matching_result import TraceRenderer, MatchingResult
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')

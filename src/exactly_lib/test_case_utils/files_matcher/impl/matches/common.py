@@ -17,7 +17,8 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
     FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
-    MatchingResult, MatcherWTrace
+    MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer

@@ -4,7 +4,7 @@ from typing import List, Sequence, TypeVar, Generic
 
 from exactly_lib.definitions import logic
 from exactly_lib.test_case.result import pfh
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -12,7 +12,8 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatchingResult
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream

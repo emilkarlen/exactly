@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext

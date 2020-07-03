@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
     MATCHES_NON_FULL__STRUCTURE_NAME, MATCHES_FULL__STRUCTURE_NAME
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers

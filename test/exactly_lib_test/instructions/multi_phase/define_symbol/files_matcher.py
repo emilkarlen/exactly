@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue

@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext

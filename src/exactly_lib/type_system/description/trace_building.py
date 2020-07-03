@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer, NODE_DATA
 from exactly_lib.util.description_tree.renderers import NodeRendererFromParts
 from exactly_lib.util.description_tree.tree import Node

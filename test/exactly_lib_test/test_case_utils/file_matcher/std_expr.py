@@ -7,7 +7,8 @@ from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext, FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matcher_models as models

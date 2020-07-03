@@ -19,7 +19,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MODEL, \
-    MatchingResult, MatcherAdv, MatcherWTrace
+    MatcherAdv, MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.render import combinators as rend_comb

@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -23,7 +24,7 @@ class TestDefaultAssertions(unittest.TestCase):
         assertion = sut.matches()
         for result_case in False, True:
             renderer = NodeRendererForTest(Node('header', result_case, [], []))
-            actual = sut.MatchingResult(result_case, renderer)
+            actual = MatchingResult(result_case, renderer)
             with self.subTest(case=result_case):
                 assertion.apply_without_message(self, actual)
 
@@ -32,13 +33,13 @@ class TestDefaultAssertions(unittest.TestCase):
         assertion = sut.matches()
         cases = [
             NameAndValue('invalid type of object',
-                         'not a' + str(sut.MatchingResult)
+                         'not a' + str(MatchingResult)
                          ),
             NameAndValue('invalid type of result',
-                         sut.MatchingResult('not a bool', NodeRendererForTest(_ARBITRARY_VALID_NODE))
+                         MatchingResult('not a bool', NodeRendererForTest(_ARBITRARY_VALID_NODE))
                          ),
             NameAndValue('invalid type of renderer',
-                         sut.MatchingResult(False, 'not a ' + str(sut.NodeRenderer))
+                         MatchingResult(False, 'not a ' + str(sut.NodeRenderer))
                          ),
             NameAndValue('result of rendering is object of invalid type',
                          NodeRendererForTest('not a Node')
@@ -53,8 +54,8 @@ class TestDefaultAssertions(unittest.TestCase):
 class TestAssertionOnRenderer(unittest.TestCase):
     def test_fail(self):
         actual_rendered_node = Node('actual header', False, [], [])
-        actual_result = sut.MatchingResult(actual_rendered_node.data,
-                                           NodeRendererForTest(actual_rendered_node))
+        actual_result = MatchingResult(actual_rendered_node.data,
+                                       NodeRendererForTest(actual_rendered_node))
 
         renderer_assertion = asrt_trace_rendering.matches_node_renderer(
             rendered_node=asrt_d_tree.matches_node(header=asrt.equals('expected header'))
@@ -67,8 +68,8 @@ class TestAssertionOnRenderer(unittest.TestCase):
 
     def test_succeed(self):
         actual_rendered_node = _trace_for(False)
-        actual_result = sut.MatchingResult(actual_rendered_node.data,
-                                           NodeRendererForTest(actual_rendered_node))
+        actual_result = MatchingResult(actual_rendered_node.data,
+                                       NodeRendererForTest(actual_rendered_node))
 
         renderer_assertion = asrt_trace_rendering.matches_node_renderer(
             rendered_node=asrt_d_tree.matches_node(header=asrt.equals(actual_rendered_node.header))
@@ -85,8 +86,8 @@ class TestAssertionOnValue(unittest.TestCase):
         actual_value = False
         trace = NodeRendererForTest(_trace_for(actual_value))
 
-        actual_result = sut.MatchingResult(actual_value,
-                                           trace)
+        actual_result = MatchingResult(actual_value,
+                                       trace)
 
         assertion = sut.matches(value=asrt.equals(not actual_value))
 
@@ -97,8 +98,8 @@ class TestAssertionOnValue(unittest.TestCase):
         actual_value = False
         trace = NodeRendererForTest(_trace_for(actual_value))
 
-        actual_result = sut.MatchingResult(actual_value,
-                                           trace)
+        actual_result = MatchingResult(actual_value,
+                                       trace)
 
         assertion = sut.matches(value=asrt.equals(actual_value))
 

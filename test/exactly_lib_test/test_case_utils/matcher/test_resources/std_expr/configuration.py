@@ -4,7 +4,8 @@ from typing import TypeVar, Generic, Callable
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker

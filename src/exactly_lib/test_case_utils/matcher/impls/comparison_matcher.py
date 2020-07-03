@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, MODEL, MatcherWTrace
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.symbol_table import SymbolTable

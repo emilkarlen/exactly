@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.files_matcher.impl.matches import common
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FileModel
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer
 from exactly_lib.util.description_tree.tree import Node

@@ -7,7 +7,8 @@ from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv,
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_transformer import StringTransformer

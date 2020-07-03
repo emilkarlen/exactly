@@ -5,7 +5,8 @@ from typing import List, Generic, Sequence
 from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
