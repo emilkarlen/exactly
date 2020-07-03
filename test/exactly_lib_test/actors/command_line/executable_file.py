@@ -1,8 +1,10 @@
 import pathlib
 import unittest
 from contextlib import contextmanager
+from typing import List
 
 from exactly_lib.actors import command_line as sut
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.string import lines_content
@@ -49,28 +51,37 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Parser())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
+    def program_that_prints_to_stderr(self,
+                                      hds: HomeDirectoryStructure,
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
+    def program_that_prints_to_stdout(self,
+                                      hds: HomeDirectoryStructure,
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
-    def program_that_exits_with_code(self, hds: HomeDirectoryStructure, exit_code: int) -> list:
+    def program_that_exits_with_code(self,
+                                     hds: HomeDirectoryStructure,
+                                     exit_code: int) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self,
+                                                           hds: HomeDirectoryStructure,
+                                                           ) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self, hds: HomeDirectoryStructure,
-                                                                    var_name: str) -> list:
+                                                                    var_name: str,
+                                                                    ) -> List[ActPhaseInstruction]:
         return self._instructions_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
 

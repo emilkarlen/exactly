@@ -1,11 +1,13 @@
 import os
 import unittest
 from contextlib import contextmanager
+from typing import List
 
 from exactly_lib.actors import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -106,35 +108,36 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Parser())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
         yield self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
 
     @contextmanager
     def program_that_prints_to_stderr(self,
                                       hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> list:
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         yield self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
 
     @contextmanager
     def program_that_prints_to_stdout(self,
                                       hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> list:
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         yield self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
 
     @contextmanager
     def program_that_exits_with_code(self,
                                      hds: HomeDirectoryStructure,
-                                     exit_code: int) -> list:
+                                     exit_code: int) -> List[ActPhaseInstruction]:
         yield self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> List[
+        ActPhaseInstruction]:
         yield self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self,
                                                                     hds: HomeDirectoryStructure,
-                                                                    var_name: str) -> list:
+                                                                    var_name: str) -> List[ActPhaseInstruction]:
         yield self._instruction_for(
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
@@ -144,7 +147,7 @@ class TheConfiguration(Configuration):
             shell_commands.program_that_sleeps_at_least(number_of_seconds)))
 
     @staticmethod
-    def _instruction_for(command: str) -> list:
+    def _instruction_for(command: str) -> List[ActPhaseInstruction]:
         return [SourceCodeInstruction(LineSequence(1, (shell_command_source_line_for(command),)))]
 
 

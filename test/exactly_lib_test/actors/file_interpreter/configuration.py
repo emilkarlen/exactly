@@ -1,6 +1,8 @@
 from contextlib import contextmanager
+from typing import List
 
 from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, TestCaseSourceSetup
@@ -14,33 +16,46 @@ class TheConfigurationBase(Configuration):
         super().__init__(actor)
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
+    def program_that_prints_to_stderr(self,
+                                      hds: HomeDirectoryStructure,
+                                      string_to_print: str,
+                                      ) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, hds: HomeDirectoryStructure, string_to_print: str) -> list:
+    def program_that_prints_to_stdout(self,
+                                      hds: HomeDirectoryStructure,
+                                      string_to_print: str,
+                                      ) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
-    def program_that_exits_with_code(self, hds: HomeDirectoryStructure, exit_code: int) -> list:
+    def program_that_exits_with_code(self,
+                                     hds: HomeDirectoryStructure,
+                                     exit_code: int,
+                                     ) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_prints_cwd_without_new_line_to_stdout(self,
+                                                           hds: HomeDirectoryStructure,
+                                                           ) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, hds: HomeDirectoryStructure,
-                                                                    var_name: str) -> list:
+    def program_that_prints_value_of_environment_variable_to_stdout(self,
+                                                                    hds: HomeDirectoryStructure,
+                                                                    var_name: str,
+                                                                    ) -> List[ActPhaseInstruction]:
         yield _instructions_for_file_in_hds_act_dir(hds,
                                                     py_program.write_value_of_environment_variable_to_stdout(
                                                         var_name))
@@ -54,7 +69,8 @@ class TheConfigurationBase(Configuration):
                                                     lines_content(program_lines))]))
 
 
-def _instructions_for_file_in_hds_act_dir(hds: HomeDirectoryStructure, statements: list) -> list:
+def _instructions_for_file_in_hds_act_dir(hds: HomeDirectoryStructure,
+                                          statements: List[str]) -> List[ActPhaseInstruction]:
     sut_path = hds.act_dir / 'sut.py'
     with sut_path.open('w') as f:
         f.write(lines_content(statements))

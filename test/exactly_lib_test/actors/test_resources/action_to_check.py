@@ -2,10 +2,12 @@ import os
 import random
 import unittest
 from contextlib import contextmanager
+from typing import List
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
@@ -26,8 +28,9 @@ from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_w
 
 
 class TestCaseSourceSetup:
-    def __init__(self, act_phase_instructions: list,
-                 home_act_dir_contents: DirContents = empty_dir_contents()):
+    def __init__(self, act_phase_instructions: List[ActPhaseInstruction],
+                 home_act_dir_contents: DirContents = empty_dir_contents(),
+                 ):
         self.home_act_dir_contents = home_act_dir_contents
         self.act_phase_instructions = act_phase_instructions
 
@@ -37,7 +40,7 @@ class Configuration:
         self.sut = sut
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> list:
+    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
@@ -46,7 +49,7 @@ class Configuration:
     @contextmanager
     def program_that_prints_to_stdout(self,
                                       hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> list:
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
@@ -55,7 +58,7 @@ class Configuration:
     @contextmanager
     def program_that_prints_to_stderr(self,
                                       hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> list:
+                                      string_to_print: str) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
@@ -64,7 +67,7 @@ class Configuration:
     @contextmanager
     def program_that_exits_with_code(self,
                                      hds: HomeDirectoryStructure,
-                                     exit_code: int) -> list:
+                                     exit_code: int) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
@@ -72,7 +75,7 @@ class Configuration:
 
     @contextmanager
     def program_that_prints_cwd_without_new_line_to_stdout(self,
-                                                           hds: HomeDirectoryStructure) -> list:
+                                                           hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
@@ -81,7 +84,7 @@ class Configuration:
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self,
                                                                     hds: HomeDirectoryStructure,
-                                                                    var_name: str) -> list:
+                                                                    var_name: str) -> List[ActPhaseInstruction]:
         """
         :return: List of ActPhaseInstruction
         """
