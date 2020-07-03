@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
-from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

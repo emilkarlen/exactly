@@ -10,7 +10,7 @@ from exactly_lib.execution.partial_execution.configuration import ConfPhaseValue
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh

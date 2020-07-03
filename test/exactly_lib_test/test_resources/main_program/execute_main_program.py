@@ -13,7 +13,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case import os_services
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
@@ -50,7 +50,7 @@ def execute_main_program(arguments: List[str],
                          ) -> SubProcessResult:
     program = main_program.MainProgram(the_test_case_handling_setup,
                                        sandbox_root_name_resolver.for_test(),
-                                       os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                                       atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                        TestCaseDefinitionForMainProgram(
                                            TestCaseParsingSetup(name_and_argument_splitter,
                                                                 instructions_setup,

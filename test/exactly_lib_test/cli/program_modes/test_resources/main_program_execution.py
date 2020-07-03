@@ -10,7 +10,7 @@ from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolv
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case import os_services
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
@@ -44,7 +44,7 @@ def main_program_config(
     return MainProgramConfig(TestCaseHandlingSetup(
         act_phase_setup,
         IDENTITY_PREPROCESSOR),
-        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+        atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         tc_definition,
         test_suite_definition,
     )
@@ -111,7 +111,7 @@ def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
     return main_program.MainProgram(
         default_test_case_handling_setup,
         sandbox_root_dir_name_resolver,
-        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+        atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,
     )

@@ -14,7 +14,8 @@ from exactly_lib.processing.test_case_processing import Status, Result, Processo
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.source_location import SourceLocationPath, source_location_path_of, SourceLocation
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.test_case import phase_identifier, os_services
+from exactly_lib.test_case import atc_os_proc_executors
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.line_source import Line, single_line_sequence
@@ -320,7 +321,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
     return sut.Configuration(
         tc_definition,
         tc_handling_setup,
-        os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+        atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
         is_keep_sandbox=False,
     )
 

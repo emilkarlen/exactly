@@ -8,7 +8,8 @@ from exactly_lib.actors.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
-from exactly_lib.test_case import test_case_doc, os_services
+from exactly_lib.test_case import atc_os_proc_executors
+from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -22,7 +23,7 @@ class FullExecutionTestCaseBase:
                  dbg_do_not_delete_dir_structure=False,
                  actor: Actor = None,
                  atc_os_process_executor: AtcOsProcessExecutor =
-                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                 atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                  environ: Optional[Dict[str, str]] = None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure

@@ -1,13 +1,12 @@
-import unittest
-
 import os
 import shutil
+import unittest
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case import os_services
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -25,7 +24,7 @@ class Arrangement:
                  actor: Actor,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
                  atc_os_process_executor: AtcOsProcessExecutor =
-                 os_services.DEFAULT_ATC_OS_PROCESS_EXECUTOR):
+                 atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR):
         self.test_case = test_case
         self.actor = actor
         self.initial_setup_settings = initial_setup_settings

@@ -5,7 +5,7 @@ from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
-from exactly_lib.test_case.os_services import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.actors.test_resources import act_phase_execution
