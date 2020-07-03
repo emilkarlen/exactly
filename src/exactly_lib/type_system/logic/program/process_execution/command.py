@@ -4,7 +4,7 @@ OS independent representation of something that is executable in process.
 Supports the different variants of executable things used by Exactly.
 """
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Union, Sequence
 
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 
@@ -54,6 +54,12 @@ class Command:
         super().__init__()
         self._driver = driver
         self._arguments = arguments
+
+    def new_with_appended_arguments(self, tail_arguments: Sequence[str]) -> 'Command':
+        return Command(
+            self._driver,
+            self._arguments + list(tail_arguments)
+        )
 
     def structure(self) -> StructureBuilder:
         """:returns A new object on each invokation."""

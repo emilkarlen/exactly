@@ -4,7 +4,7 @@ from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.description_tree import custom_details
-from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
+from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -13,7 +13,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import details
 
 
-class FileMatcherType(MatcherImplBase[FileMatcherModel]):
+class FileMatcherType(FileMatcherImplBase):
     """Matches the type of file."""
 
     def __init__(self, file_type: file_properties.FileType):

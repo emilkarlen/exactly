@@ -1,0 +1,8 @@
+[setup]
+
+file f.txt
+
+[assert]
+
+exists f.txt : run % non-existing-program
+

@@ -1,12 +1,12 @@
 from typing import List, Sequence
 
-from exactly_lib.definitions import doc_format, matcher_model, misc_texts
+from exactly_lib.definitions import doc_format, matcher_model, misc_texts, formatting
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types
+from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME, TYPE_MATCHER_NAME
 from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
@@ -20,6 +20,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, f
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as parse_run
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
@@ -102,8 +103,8 @@ def _constant(matcher: FileMatcher) -> FileMatcherSdv:
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_MATCHER_': types.FILE_MATCHER_TYPE_INFO.name.singular,
-    '_NAME_MATCHER_': NAME_MATCHER_NAME,
-    '_TYPE_MATCHER_': TYPE_MATCHER_NAME,
+    '_NAME_MATCHER_': file_matcher.NAME_MATCHER_NAME,
+    '_TYPE_MATCHER_': file_matcher.TYPE_MATCHER_NAME,
     '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
@@ -112,6 +113,9 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
     'MODEL': matcher_model.FILE_MATCHER_MODEL,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    'program': types.PROGRAM_TYPE_INFO.name,
+    'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
 }
 
 
@@ -165,6 +169,22 @@ class _TypeSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsIni
         return _type_matcher_sed_description()
 
 
+class _RunSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            syntax_elements.PROGRAM_SYNTAX_ELEMENT.single_mandatory
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TP.fnap(_RUN_MATCHER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
+
+
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
         name=types.FILE_MATCHER_TYPE_INFO.name,
@@ -175,15 +195,19 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     value_type=ValueType.FILE_MATCHER,
     simple_expressions=(
         NameAndValue(
-            NAME_MATCHER_NAME,
-            grammar.PrimitiveExpression(_parse_name_matcher,
-                                        _NameSyntaxDescription())
+            file_matcher.NAME_MATCHER_NAME,
+            grammar.PrimitiveExpression(
+                _parse_name_matcher,
+                _NameSyntaxDescription()
+            )
         ),
 
         NameAndValue(
-            TYPE_MATCHER_NAME,
-            grammar.PrimitiveExpression(_parse_type_matcher,
-                                        _TypeSyntaxDescription())
+            file_matcher.TYPE_MATCHER_NAME,
+            grammar.PrimitiveExpression(
+                _parse_type_matcher,
+                _TypeSyntaxDescription()
+            )
         ),
 
         NameAndValue(
@@ -203,6 +227,14 @@ GRAMMAR = standard_expression_grammar.new_grammar(
                 file_contents_utils.FileContentsSyntaxDescription(
                     file_or_dir_contents_doc.DIR_DOCUMENTATION
                 )
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.PROGRAM_MATCHER_NAME,
+            grammar.PrimitiveExpression(
+                parse_run.parse,
+                _RunSyntaxDescription(),
             )
         ),
     ),
@@ -238,6 +270,16 @@ def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
 _TYPE_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {_SYMLINK_TYPE_}).
 {_TYPE_} is one of:
+"""
+
+_RUN_MATCHER_SED_DESCRIPTION = """\
+Runs {program:a}. Matches iff the {exit_code} is 0.
+
+
+The path of the {MODEL} to match is given as the last argument.
+
+
+Transformations of the output from {PROGRAM} are ignored.
 """
 
 _TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)

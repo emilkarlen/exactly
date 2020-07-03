@@ -1,5 +1,0 @@
-[assert]
-
-dir-contents .
-             -selection name -regex [a-z]+
-             ! empty

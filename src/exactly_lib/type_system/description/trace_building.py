@@ -41,17 +41,25 @@ class TraceBuilder:
             self._children,
         )
 
-    def as_render(self, data: bool) -> NodeRenderer[bool]:
+    def build_any(self, data: NODE_DATA) -> NodeRenderer[NODE_DATA]:
+        return NodeRendererFromParts(
+            self._header,
+            data,
+            self._details,
+            self._children,
+        )
+
+    def as_render(self, data: NODE_DATA) -> NodeRenderer[NODE_DATA]:
         return _NodeRendererFromBuilder(data, self)
 
 
-class _NodeRendererFromBuilder(NodeRenderer[bool]):
+class _NodeRendererFromBuilder(NodeRenderer[NODE_DATA]):
     def __init__(self,
-                 data: bool,
+                 data: NODE_DATA,
                  builder: TraceBuilder,
                  ):
         self._data = data
         self._builder = builder
 
     def render(self) -> Node[NODE_DATA]:
-        return self._builder.build_bool(self._data).render()
+        return self._builder.build_any(self._data).render()

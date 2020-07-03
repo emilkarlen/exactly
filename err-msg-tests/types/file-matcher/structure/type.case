@@ -1,6 +1,0 @@
-[assert]
-
-
-dir-contents .
-             -selection type file
-             ! empty
