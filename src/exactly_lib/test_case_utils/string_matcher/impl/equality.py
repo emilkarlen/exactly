@@ -16,7 +16,7 @@ from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMat
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL, MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck, StringMatcher, \
     StringMatcherSdv

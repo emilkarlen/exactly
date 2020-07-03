@@ -19,7 +19,8 @@ from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
     StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv

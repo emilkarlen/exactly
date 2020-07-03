@@ -5,8 +5,8 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, PRIMITIVE
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MatcherWTrace
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.program import Program

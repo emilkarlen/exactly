@@ -1,6 +1,6 @@
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed, TmpDirFileSpace
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

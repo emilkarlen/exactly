@@ -13,8 +13,9 @@ from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMat
     StringMatcherAdvImplBase
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
-    MODEL, MatcherAdv, MatcherDdv, MatcherWTrace
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MODEL, MatcherAdv, MatcherDdv, \
+    MatcherWTrace
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv, \
     StringMatcherSdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \

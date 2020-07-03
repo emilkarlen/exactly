@@ -20,11 +20,12 @@ from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcher
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, ApplicationEnvironment, \
-    MODEL, MatcherAdv, MatcherDdv, MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatchingResult, MODEL, MatcherAdv, MatcherDdv, \
+    MatcherWTrace
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

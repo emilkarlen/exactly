@@ -10,10 +10,10 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSd
     PropertyGetterAdv, PropertyGetter
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv, \
     FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -6,9 +6,9 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 
 

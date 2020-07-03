@@ -5,8 +5,8 @@ from typing import List
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
     FilesMatcherModelContentsAssertion

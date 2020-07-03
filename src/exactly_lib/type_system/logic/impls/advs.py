@@ -1,8 +1,8 @@
 from typing import Generic, Callable, TypeVar
 
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MODEL, ApplicationEnvironment, \
-    MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MODEL, MatcherWTrace
 
 T = TypeVar('T')
 

@@ -13,9 +13,9 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
     FilesMatcherDdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
     MatchingResult, MatcherWTrace
 from exactly_lib.util.cli_syntax import option_syntax

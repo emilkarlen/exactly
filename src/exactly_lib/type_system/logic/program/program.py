@@ -7,7 +7,8 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment, \
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
     LogicWithNodeDescriptionDdv
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.process_execution.command import Command

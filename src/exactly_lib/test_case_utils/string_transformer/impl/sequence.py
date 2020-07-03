@@ -12,7 +12,8 @@ from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpr
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
     StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv

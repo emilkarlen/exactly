@@ -1,5 +1,5 @@
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
+from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 
 
