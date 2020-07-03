@@ -14,9 +14,7 @@ from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.paths import simple_of_rel_option
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -28,6 +26,8 @@ from exactly_lib_test.test_case.test_resources import command_assertions as asrt
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
@@ -355,7 +355,7 @@ class TestResolving(unittest.TestCase):
 
             def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
                 def get_program(adv: ProgramAdv) -> Program:
-                    return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+                    return adv.primitive(application_environment_for_test())
 
                 return asrt.is_instance_with(ProgramAdv,
                                              asrt.sub_component('program',
@@ -389,7 +389,7 @@ class TestResolving(unittest.TestCase):
 
         def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
             def get_program(adv: ProgramAdv) -> Program:
-                return adv.primitive(ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed()))
+                return adv.primitive(application_environment_for_test())
 
             return asrt.is_instance_with(ProgramAdv,
                                          asrt.sub_component('program',

@@ -42,7 +42,8 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ) -> ExecutionResultAndStderr:
-        program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
+        resolver = resolving_helper_for_instruction_env(os_services, environment)
+        program = resolver.resolve_program(self._program)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
         return execute(program,
                        storage_dir,

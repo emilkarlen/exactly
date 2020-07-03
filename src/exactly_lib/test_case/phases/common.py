@@ -2,7 +2,6 @@ import pathlib
 from typing import Sequence, Dict
 
 from exactly_lib.section_document.model import Instruction
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -10,7 +9,6 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.util.file_utils import TmpFileSpace, TmpDirFileSpace, TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -161,18 +159,12 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         return self._phase_logging
 
     @property
-    def application_environment(self) -> ApplicationEnvironment:
-        return ApplicationEnvironment(self._phase_logging.space_for_instruction())
+    def tmp_file_space(self) -> TmpDirFileSpace:
+        return self._phase_logging.space_for_instruction()
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
         return PathResolvingEnvironmentPostSds(self.__sds, self.symbols)
-
-    @property
-    def full_resolving_environment(self) -> FullResolvingEnvironment:
-        return FullResolvingEnvironment(self.symbols,
-                                        self.tcds,
-                                        self.application_environment)
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:

@@ -17,7 +17,8 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+    InstructionApplicationEnvironment
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
@@ -230,14 +231,16 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         self.actual_model_contents = actual_model_contents
 
     def _apply_matcher(self,
-                       environment: InstructionEnvironmentForPostSdsStep) -> MatchingResult:
+                       environment: InstructionApplicationEnvironment) -> MatchingResult:
         matcher_to_apply = self._get_matcher(environment)
-        model = self._new_model(environment)
+        model = self._new_model(environment.instruction)
         return matcher_to_apply.matches_w_trace(model)
 
-    def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcher:
-        matcher_sdv = lookups.lookup_string_matcher(environment.symbols, self.matcher_symbol_name)
-        return resolving_helper_for_instruction_env(environment).resolve_matcher(matcher_sdv)
+    def _get_matcher(self, environment: InstructionApplicationEnvironment) -> StringMatcher:
+        ie = environment.instruction
+        matcher_sdv = lookups.lookup_string_matcher(ie.symbols, self.matcher_symbol_name)
+        resolver = resolving_helper_for_instruction_env(environment.os_service, ie)
+        return resolver.resolve_matcher(matcher_sdv)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FileToCheck:
         model_builder = model_construction.model_of(self.actual_model_contents)

@@ -17,7 +17,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
-from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
+from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
+    InstructionApplicationEnvironment
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -241,21 +242,24 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
     def __init__(self,
                  matcher_symbol_name: str,
                  actual_dir_contents: DirContents,
-                 expected_matcher_result: ValueAssertion[MatchingResult]):
+                 expected_matcher_result: ValueAssertion[MatchingResult],
+                 ):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)
         self.actual_dir_contents = actual_dir_contents
 
     def _apply_matcher(self,
-                       environment: InstructionEnvironmentForPostSdsStep) -> MatchingResult:
+                       environment: InstructionApplicationEnvironment) -> MatchingResult:
         matcher_to_apply = self._get_matcher(environment)
-        model = self._new_model(environment)
+        model = self._new_model(environment.instruction)
         return matcher_to_apply.matches_w_trace(model)
 
-    def _get_matcher(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcher:
-        sdv = lookups.lookup_files_matcher(environment.symbols, self.matcher_symbol_name)
+    def _get_matcher(self, environment: InstructionApplicationEnvironment) -> FilesMatcher:
+        ie = environment.instruction
+        sdv = lookups.lookup_files_matcher(ie.symbols, self.matcher_symbol_name)
 
-        return resolving_helper_for_instruction_env(environment).resolve_files_matcher(sdv)
+        resolver = resolving_helper_for_instruction_env(environment.os_service, ie)
+        return resolver.resolve_files_matcher(sdv)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> FilesMatcherModel:
         rel_opt_conf = rel_opt_confs.conf_rel_sds(RelSdsOptionType.REL_RESULT)

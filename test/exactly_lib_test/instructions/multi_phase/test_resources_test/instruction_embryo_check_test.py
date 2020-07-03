@@ -23,6 +23,8 @@ from exactly_lib_test.common.test_resources.text_doc_assertions import new_singl
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check as sut
+from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import \
+    InstructionApplicationEnvironment
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_instruction import \
     instruction_embryo_that
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -121,7 +123,22 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             single_line_source(),
             ArrangementWithSds(),
             sut.Expectation(
-                assertion_on_instruction_environment=asrt.is_instance(InstructionEnvironmentForPostSdsStep)),
+                assertion_on_instruction_environment=
+                asrt.is_instance_with__many(
+                    InstructionApplicationEnvironment,
+                    [
+                        asrt.sub_component(
+                            'InstructionEnvironmentForPostSdsStep',
+                            InstructionApplicationEnvironment.instruction.fget,
+                            asrt.is_instance(InstructionEnvironmentForPostSdsStep),
+                        ),
+                        asrt.sub_component(
+                            'OsServices',
+                            InstructionApplicationEnvironment.os_service.fget,
+                            asrt.is_instance(OsServices),
+                        ),
+                    ]
+                )),
         )
 
 

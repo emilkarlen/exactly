@@ -5,7 +5,6 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -95,9 +94,9 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                 .value_of_any_dependency__d(environment.tcds)
         )
 
-        helper = resolving_helper_for_instruction_env(environment)
+        helper = resolving_helper_for_instruction_env(os_services, environment)
 
-        model = self._get_model(environment, path_to_check)
+        model = self._get_model(os_services, environment, path_to_check)
 
         matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
@@ -119,10 +118,12 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
             raise pfh_ex_method.PfhHardErrorException(ex.error)
 
     def _get_model(self,
+                   os_services: OsServices,
                    environment: InstructionEnvironmentForPostSdsStep,
                    dir_to_check: DescribedPath,
                    ) -> FilesMatcherModel:
-        constructor = resolving_helper__of_full_env(environment.full_resolving_environment).resolve_logic_w_describer(
+        resolver = resolving_helper_for_instruction_env(os_services, environment)
+        constructor = resolver.resolve_logic_w_describer(
             self._model_constructor
         )
         return constructor.make_model(FileMatcherModelForDescribedPath(dir_to_check))

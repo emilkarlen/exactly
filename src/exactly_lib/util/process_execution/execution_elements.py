@@ -26,7 +26,7 @@ def with_no_timeout() -> ProcessExecutionSettings:
     return ProcessExecutionSettings()
 
 
-def with_environ(environ: dict) -> ProcessExecutionSettings:
+def with_environ(environ: Dict[str, str]) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=environ)
 
 

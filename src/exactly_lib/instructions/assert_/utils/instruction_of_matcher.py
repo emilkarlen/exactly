@@ -42,7 +42,7 @@ class Instruction(Generic[T], AssertPhaseInstruction):
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         try:
             self._validate_post_setup(environment)
-            return self._execute(environment)
+            return self._execute(os_services, environment)
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
 
@@ -52,8 +52,10 @@ class Instruction(Generic[T], AssertPhaseInstruction):
         if err_msg:
             raise HardErrorException(err_msg)
 
-    def _execute(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
-        result = resolving_helper_for_instruction_env(environment).apply(self._matcher, None)
+    def _execute(self,
+                 os_services: OsServices,
+                 environment: i.InstructionEnvironmentForPostSdsStep) -> pfh.PassOrFailOrHardError:
+        result = resolving_helper_for_instruction_env(os_services, environment).apply(self._matcher, None)
         if result.value:
             return pfh.new_pfh_pass()
         else:

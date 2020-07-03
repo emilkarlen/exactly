@@ -210,7 +210,8 @@ class _Instruction(AssertPhaseInstruction):
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         try:
-            return _Assertion(environment,
+            return _Assertion(os_services,
+                              environment,
                               self._expectation_type,
                               self._path_sdv,
                               self._file_matcher).apply()
@@ -227,11 +228,13 @@ class _Instruction(AssertPhaseInstruction):
 
 class _Assertion:
     def __init__(self,
+                 os_services: OsServices,
                  environment: i.InstructionEnvironmentForPostSdsStep,
                  expectation_type: ExpectationType,
                  path_sdv: PathSdv,
                  file_matcher: Optional[FileMatcherSdv]
                  ):
+        self.os_services = os_services
         self.environment = environment
         self.expectation_type = expectation_type
         self.path_sdv = path_sdv
@@ -299,7 +302,8 @@ class _Assertion:
     def _matches_file_matcher_for_expectation_type(self) -> MatchingResult:
         sdv = self._file_matcher_for_expectation_type()
 
-        helper = resolving_helper_for_instruction_env(self.environment)
+        helper = resolving_helper_for_instruction_env(self.os_services,
+                                                      self.environment)
 
         model = file_matcher_models.FileMatcherModelForDescribedPath(self.described_path)
 

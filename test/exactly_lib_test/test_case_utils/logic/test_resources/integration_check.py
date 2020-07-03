@@ -25,6 +25,8 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
     tcds_with_act_as_curr_dir_3
@@ -438,8 +440,9 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         full_resolving_env = FullResolvingEnvironment(
             self.arrangement.symbols,
             self.tcds,
-            ApplicationEnvironment(
-                TmpDirFileSpaceAsDirCreatedOnDemand(self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
+            application_environment_for_test(
+                tmp_file_space=TmpDirFileSpaceAsDirCreatedOnDemand(
+                    self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
             ),
         )
 

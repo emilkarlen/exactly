@@ -82,5 +82,5 @@ def resolving_helper__of_full_env(environment: FullResolvingEnvironment) -> Logi
     return LogicTypeResolvingHelper(
         environment.symbols,
         environment.tcds,
-        ApplicationEnvironment(environment.application_environment.tmp_files_space),
+        environment.application_environment,
     )

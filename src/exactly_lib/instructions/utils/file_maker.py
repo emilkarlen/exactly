@@ -82,7 +82,8 @@ class FileMakerForContentsFromProgram(FileMaker):
              os_services: OsServices,
              dst_path: DescribedPath,
              ) -> Optional[TextRenderer]:
-        program = resolving_helper_for_instruction_env(environment).resolve_program(self._program)
+        resolver = resolving_helper_for_instruction_env(os_services, environment)
+        program = resolver.resolve_program(self._program)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         try:
@@ -156,7 +157,8 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         if src_validation_res:
             return src_validation_res
 
-        transformer = resolving_helper_for_instruction_env(environment).resolve_string_transformer(self._transformer)
+        resolver = resolving_helper_for_instruction_env(os_services, environment)
+        transformer = resolver.resolve_string_transformer(self._transformer)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
         return create_file_from_transformation_of_existing_file__dp(src_path,

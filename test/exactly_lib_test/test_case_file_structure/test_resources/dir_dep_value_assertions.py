@@ -5,8 +5,9 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import Dependencie
     MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, ApplicationEnvironment
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
+from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
@@ -42,7 +43,7 @@ def matches_dir_dependent_value__with_adv(
         tcds: Tcds = fake_tcds(),
 ) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
     def adv_assertion(tcds_: Tcds) -> ValueAssertion[DirDependentValue[ApplicationEnvironmentDependentValue[T]]]:
-        ae = ApplicationEnvironment(TmpDirFileSpaceThatMustNoBeUsed())
+        ae = application_environment_for_test()
         return asrt.is_instance_with(
             ApplicationEnvironmentDependentValue,
             asrt.sub_component('primitive',

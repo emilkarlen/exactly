@@ -20,7 +20,8 @@ from exactly_lib.type_system.logic.matcher_base_class import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
-from exactly_lib_test.test_case_file_structure.test_resources.application_environment import application_environment
+from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
@@ -127,7 +128,7 @@ class MatcherSdvOfConstantDdvTestImpl(Generic[MODEL], MatcherSdv[MODEL]):
 
 class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     FAKE_TCDS = fake_tcds()
-    APPLICATION_ENVIRONMENT = application_environment()
+    APPLICATION_ENVIRONMENT = application_environment_for_test()
 
     def __init__(self,
                  make_primitive: Callable[[Tcds], MatcherWTrace[MODEL]],

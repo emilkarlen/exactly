@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Any, Callable, TypeVar, Generic, List, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.instructions.utils import logic_type_resolving_helper
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, \
@@ -212,18 +213,23 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
                                                            argument_to_checker)
 
         if result.status is PassOrFailOrHardErrorEnum.FAIL:
-            return self._failure(environment, result.failure_message)
+            return self._failure(os_services, environment, result.failure_message)
         else:
             return result
 
     def _failure(self,
+                 os_services: OsServices,
                  environment: InstructionEnvironmentForPostSdsStep,
                  err_msg_from_part: TextRenderer
                  ) -> pfh.PassOrFailOrHardError:
         err_msg = err_msg_from_part
+        resolving_env = logic_type_resolving_helper.full_resolving_env_for_instruction_env(
+            os_services,
+            environment
+        )
         if self._failure_message_header:
             err_msg = rend_comb.PrependR(
-                self._failure_message_header(environment.full_resolving_environment),
+                self._failure_message_header(resolving_env),
                 err_msg_from_part,
             )
 

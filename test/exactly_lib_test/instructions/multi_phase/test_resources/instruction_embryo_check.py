@@ -8,6 +8,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import Instru
     InstructionEmbryo, T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -33,6 +34,23 @@ class PostActionCheck:
         pass
 
 
+class InstructionApplicationEnvironment:
+    def __init__(self,
+                 os_service: OsServices,
+                 instruction: InstructionEnvironmentForPostSdsStep,
+                 ):
+        self._os_service = os_service
+        self._instruction = instruction
+
+    @property
+    def os_service(self) -> OsServices:
+        return self._os_service
+
+    @property
+    def instruction(self) -> InstructionEnvironmentForPostSdsStep:
+        return self._instruction
+
+
 class Expectation(Generic[T]):
     def __init__(self,
                  validation_pre_sds: ValidationResultAssertion = asrt.is_none,
@@ -47,7 +65,7 @@ class Expectation(Generic[T]):
                  source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
                  assertion_on_instruction_environment:
-                 ValueAssertion[InstructionEnvironmentForPostSdsStep] = asrt.anything_goes(),
+                 ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                  ):
         self.validation_pre_sds = validation_pre_sds
         self.validation_post_sds = validation_post_sds
@@ -60,7 +78,7 @@ class Expectation(Generic[T]):
         self.symbol_usages = symbol_usages
         self.symbols_after_main = symbols_after_main
         self.main_side_effect_on_environment_variables = main_side_effect_on_environment_variables
-        self.assertion_on_instruction_environment = assertion_on_instruction_environment
+        self.instruction_application_environment = assertion_on_instruction_environment
 
 
 def expectation(validation: ValidationAssertions = validation_utils.all_validations_passes(),
@@ -211,9 +229,13 @@ class Executor(Generic[T]):
             self.expectation.side_effects_on_hds.apply_with_message(self.put, tcds.hds.case_dir,
                                                                     'side_effects_on_home')
 
-            self.expectation.assertion_on_instruction_environment.apply_with_message(self.put,
-                                                                                     environment,
-                                                                                     'assertion_on_environment')
+            application_environment = InstructionApplicationEnvironment(
+                self.arrangement.os_services,
+                environment
+            )
+            self.expectation.instruction_application_environment.apply_with_message(self.put,
+                                                                                    application_environment,
+                                                                                    'assertion_on_environment')
 
     def _execute_validate_pre_sds(
             self,
