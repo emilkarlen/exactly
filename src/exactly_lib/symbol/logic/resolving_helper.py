@@ -19,12 +19,11 @@ class LogicTypeResolvingHelper:
     def __init__(self,
                  symbols: SymbolTable,
                  tcds: Tcds,
-                 file_space: TmpDirFileSpace,
+                 application_environment: ApplicationEnvironment,
                  ):
         self._symbols = symbols
         self._tcds = tcds
-        self._file_space = file_space
-        self._application_environment = ApplicationEnvironment(file_space)
+        self._application_environment = application_environment
 
     @property
     def application_environment(self) -> ApplicationEnvironment:
@@ -83,5 +82,5 @@ def resolving_helper__of_full_env(environment: FullResolvingEnvironment) -> Logi
     return LogicTypeResolvingHelper(
         environment.symbols,
         environment.tcds,
-        environment.application_environment.tmp_files_space,
+        ApplicationEnvironment(environment.application_environment.tmp_files_space),
     )
