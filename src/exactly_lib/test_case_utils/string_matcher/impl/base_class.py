@@ -4,20 +4,20 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
     MatcherWTrace
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 
 
 class StringMatcherImplBase(WithCachedNameAndTreeStructureDescriptionBase,
-                            MatcherWTrace[FileToCheck],
+                            MatcherWTrace[StringMatcherModel],
                             ABC):
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
 
 
-class StringMatcherDdvImplBase(MatcherDdv[FileToCheck], ABC):
+class StringMatcherDdvImplBase(MatcherDdv[StringMatcherModel], ABC):
     pass
 
 
-class StringMatcherAdvImplBase(MatcherAdv[FileToCheck], ABC):
+class StringMatcherAdvImplBase(MatcherAdv[StringMatcherModel], ABC):
     pass

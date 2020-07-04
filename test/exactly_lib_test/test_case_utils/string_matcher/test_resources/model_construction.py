@@ -4,11 +4,11 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, DestinationFilePathGetter
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, DestinationFilePathGetter
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.type_system.data.test_resources import described_path
 
-ModelConstructor = Callable[[Tcds], FileToCheck]
+ModelConstructor = Callable[[Tcds], StringMatcherModel]
 
 
 class ModelBuilder:
@@ -43,11 +43,11 @@ class ModelFromBuilder:
         self.model_builder = model_builder
         self.sds = sds
 
-    def construct(self) -> FileToCheck:
+    def construct(self) -> StringMatcherModel:
         tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(self.sds.internal_tmp_dir)
         original_file_path = self._create_original_file(tmp_dir_file_space)
 
-        return FileToCheck(
+        return StringMatcherModel(
             original_file_path,
             IdentityStringTransformer(),
             DestinationFilePathGetter(),

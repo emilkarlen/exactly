@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_ge
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcherModel, StringMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -26,10 +26,10 @@ def sdv(is_full_match: bool,
     return sdv_components.MatcherSdvFromParts(contents_matcher.references, get_ddv)
 
 
-class _PropertyGetter(PropertyGetter[FileToCheck, str], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringMatcherModel, str], WithCachedTreeStructureDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only('contents')
 
-    def get_from(self, model: FileToCheck) -> str:
+    def get_from(self, model: StringMatcherModel) -> str:
         with model.lines() as lines:
             return ''.join(lines)

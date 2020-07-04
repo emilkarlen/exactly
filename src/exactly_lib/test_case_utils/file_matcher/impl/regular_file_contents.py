@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.string_transformer.impl import identity
 from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 
 NAMES = file_contents_utils.NamesSetup(
     file_check_properties.REGULAR_FILE_CONTENTS,
@@ -15,9 +15,9 @@ NAMES = file_contents_utils.NamesSetup(
 )
 
 
-class _ModelConstructor(file_contents_utils.ModelConstructor[FileToCheck]):
-    def make_model(self, model: FileMatcherModel) -> FileToCheck:
-        return string_matcher.FileToCheck(
+class _ModelConstructor(file_contents_utils.ModelConstructor[StringMatcherModel]):
+    def make_model(self, model: FileMatcherModel) -> StringMatcherModel:
+        return string_matcher.StringMatcherModel(
             model.path,
             identity.IdentityStringTransformer(),
             string_matcher.DestinationFilePathGetter(),

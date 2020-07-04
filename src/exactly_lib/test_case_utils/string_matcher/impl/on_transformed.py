@@ -17,7 +17,8 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
     MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, FileToCheck, StringMatcherDdv, StringMatcherAdv, \
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherModel, StringMatcherDdv, \
+    StringMatcherAdv, \
     StringMatcherSdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerAdv
@@ -57,7 +58,7 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
         return self.new_structure_tree(self._transformer.structure(),
                                        self._on_transformed.structure())
 
-    def _complete_transformer(self, model: FileToCheck) -> StringTransformer:
+    def _complete_transformer(self, model: StringMatcherModel) -> StringTransformer:
         if model.string_transformer.is_identity_transformer:
             return self._transformer
         else:
@@ -66,7 +67,7 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
                 self._transformer,
             ])
 
-    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
         complete_transformer = self._complete_transformer(model)
         transformed_model = model.with_transformation(complete_transformer)
         result_on_transformed = self._on_transformed.matches_w_trace(transformed_model)
@@ -121,7 +122,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
         )
 
 
-class StringMatcherWithTransformationSdv(MatcherSdv[FileToCheck]):
+class StringMatcherWithTransformationSdv(MatcherSdv[StringMatcherModel]):
     """
     A :class:`StringMatcherResolver` that transforms the model with a :class:`StringTransformerResolver`
     """
@@ -133,7 +134,7 @@ class StringMatcherWithTransformationSdv(MatcherSdv[FileToCheck]):
         self._transformer = transformer
         self._original = original
 
-    def resolve(self, symbols: SymbolTable) -> MatcherDdv[FileToCheck]:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[StringMatcherModel]:
         return StringMatcherWithTransformationDdv(
             self._transformer.resolve(symbols),
             self._original.resolve(symbols),

@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
@@ -14,7 +14,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker imp
     MatcherPropertiesConfiguration
 from exactly_lib_test.type_system.data.test_resources import described_path
 
-ModelConstructor = Callable[[FullResolvingEnvironment], FileToCheck]
+ModelConstructor = Callable[[FullResolvingEnvironment], StringMatcherModel]
 
 
 def empty_model() -> ModelConstructor:
@@ -25,14 +25,14 @@ def model_of(contents: str) -> ModelConstructor:
     return _ModelConstructorHelper(contents).construct
 
 
-def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> FileToCheck:
+def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> StringMatcherModel:
     return MODEL_THAT_MUST_NOT_BE_USED
 
 
-MODEL_THAT_MUST_NOT_BE_USED = FileToCheck(described_path.new_primitive(pathlib.Path('non-existing-file')),
-                                          IdentityStringTransformer(),
-                                          DestinationFilePathGetter(),
-                                          )
+MODEL_THAT_MUST_NOT_BE_USED = StringMatcherModel(described_path.new_primitive(pathlib.Path('non-existing-file')),
+                                                 IdentityStringTransformer(),
+                                                 DestinationFilePathGetter(),
+                                                 )
 
 
 class _ModelConstructorHelper:
@@ -41,11 +41,11 @@ class _ModelConstructorHelper:
                  ):
         self.contents = contents
 
-    def construct(self, environment: FullResolvingEnvironment) -> FileToCheck:
+    def construct(self, environment: FullResolvingEnvironment) -> StringMatcherModel:
         tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.tcds.sds.internal_tmp_dir)
         original_file_path = self._create_original_file(tmp_dir_file_space)
 
-        return FileToCheck(
+        return StringMatcherModel(
             original_file_path,
             IdentityStringTransformer(),
             DestinationFilePathGetter(),
@@ -63,7 +63,7 @@ class _ModelConstructorHelper:
 ARBITRARY_MODEL = empty_model()
 
 
-def constant_model(model: FileToCheck) -> ModelConstructor:
+def constant_model(model: StringMatcherModel) -> ModelConstructor:
     return matcher_integration_check.constant_model(model)
 
 

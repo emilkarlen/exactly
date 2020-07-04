@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.matcher.impls import property_matcher_describer
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterSdv
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
@@ -21,11 +21,11 @@ def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:
     )
 
 
-class _PropertyGetter(PropertyGetter[FileToCheck, int], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringMatcherModel, int], WithCachedTreeStructureDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_NAME)
 
-    def get_from(self, model: FileToCheck) -> int:
+    def get_from(self, model: StringMatcherModel) -> int:
         ret_val = 0
         with model.lines() as lines:
             for _ in lines:
@@ -33,7 +33,7 @@ class _PropertyGetter(PropertyGetter[FileToCheck, int], WithCachedTreeStructureD
         return ret_val
 
 
-def _operand_from_model_sdv() -> PropertyGetterSdv[FileToCheck, int]:
+def _operand_from_model_sdv() -> PropertyGetterSdv[StringMatcherModel, int]:
     return property_getters.PropertyGetterSdvConstant(
         property_getters.PropertyGetterDdvConstant(
             _PropertyGetter(),

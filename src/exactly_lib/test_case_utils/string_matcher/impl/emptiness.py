@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 from exactly_lib.util.description_tree import details, renderers
 
 
@@ -25,7 +25,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree()
 
-    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
         first_line = self._first_line(model)
         if first_line != '':
             return (
@@ -39,7 +39,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
             return self._new_tb().build_result(True)
 
     @staticmethod
-    def _first_line(file_to_check: FileToCheck) -> str:
+    def _first_line(file_to_check: StringMatcherModel) -> str:
         with file_to_check.lines() as lines:
             for line in lines:
                 return line

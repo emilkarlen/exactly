@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier
 
@@ -26,7 +26,7 @@ def sdv(quantifier: Quantifier, line_matcher_sdv: LineMatcherSdv) -> StringMatch
 @contextlib.contextmanager
 def _get_line_elements(tcds: Tcds,
                        environment: ApplicationEnvironment,
-                       string_matcher_model: FileToCheck
+                       string_matcher_model: StringMatcherModel
                        ) -> ContextManager[Iterator[LineMatcherLine]]:
     with string_matcher_model.lines() as lines:
         yield model_iter_from_file_line_iter(iter(lines))

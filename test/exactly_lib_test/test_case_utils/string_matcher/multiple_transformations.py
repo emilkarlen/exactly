@@ -4,7 +4,7 @@ from typing import Iterable
 from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
@@ -121,7 +121,7 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
     def name(self) -> str:
         return matcher_options.EQUALS_ARGUMENT
 
-    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
         actual = self._as_single_string(model)
         if self.expected == actual:
             return self._new_tb().build_result(True)
@@ -134,6 +134,6 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
             )
 
     @staticmethod
-    def _as_single_string(model: FileToCheck) -> str:
+    def _as_single_string(model: StringMatcherModel) -> str:
         with model.lines() as lines:
             return ''.join(list(lines))

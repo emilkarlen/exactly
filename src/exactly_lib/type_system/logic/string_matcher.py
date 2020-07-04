@@ -30,9 +30,9 @@ class DestinationFilePathGetter:
         return self._existing_unique_instruction_dir / dst_file_base_name
 
 
-class FileToCheck:
+class StringMatcherModel:
     """
-    Access to the file to check, with functionality designed to
+    Access to the string/file to check, with functionality designed to
     help assertions on the contents of the file.
     """
 
@@ -45,10 +45,10 @@ class FileToCheck:
         self._string_transformer = string_transformer
         self._tmp_file_for_transformed_getter = tmp_file_for_transformed_getter
 
-    def with_transformation(self, string_transformer: StringTransformer) -> 'FileToCheck':
-        return FileToCheck(self._original_file_path,
-                           string_transformer,
-                           self._tmp_file_for_transformed_getter)
+    def with_transformation(self, string_transformer: StringTransformer) -> 'StringMatcherModel':
+        return StringMatcherModel(self._original_file_path,
+                                  string_transformer,
+                                  self._tmp_file_for_transformed_getter)
 
     @property
     def string_transformer(self) -> StringTransformer:
@@ -96,10 +96,10 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-StringMatcher = MatcherWTrace[FileToCheck]
+StringMatcher = MatcherWTrace[StringMatcherModel]
 
-StringMatcherAdv = MatcherAdv[FileToCheck]
+StringMatcherAdv = MatcherAdv[StringMatcherModel]
 
-StringMatcherDdv = MatcherDdv[FileToCheck]
+StringMatcherDdv = MatcherDdv[StringMatcherModel]
 
-StringMatcherSdv = MatcherSdv[FileToCheck]
+StringMatcherSdv = MatcherSdv[StringMatcherModel]

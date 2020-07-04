@@ -19,7 +19,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, FileToCheck, StringMatcher, \
+from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcherModel, StringMatcher, \
     StringMatcherSdv
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import renderers, details
@@ -30,7 +30,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
-    def get_ddv(symbols: SymbolTable) -> MatcherDdv[FileToCheck]:
+    def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringMatcherModel]:
         expected_contents_ddv = expected_contents.resolve(symbols)
 
         return ddv(expected_contents_ddv)
@@ -45,7 +45,7 @@ def ddv(expected_contents: StringOrPathDdv) -> StringMatcherDdv:
     )
 
 
-class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
+class EqualityStringMatcherAdv(MatcherAdv[StringMatcherModel]):
     def __init__(self,
                  expected_contents: StringOrPath,
                  validator: PreOrPostSdsValidatorPrimitive,
@@ -62,7 +62,7 @@ class EqualityStringMatcherAdv(MatcherAdv[FileToCheck]):
         )
 
 
-class EqualityStringMatcherDdv(MatcherDdv[FileToCheck]):
+class EqualityStringMatcherDdv(MatcherDdv[StringMatcherModel]):
     def __init__(self,
                  expected_contents: StringOrPathDdv,
                  validator: DdvValidator,
@@ -120,7 +120,7 @@ class EqualityStringMatcher(StringMatcherImplBase):
             custom_details.StringOrPath(self._expected_contents),
         )
 
-    def matches_w_trace(self, model: FileToCheck) -> MatchingResult:
+    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
         error_message = self._validator.validate_post_sds_if_applicable()
         if error_message:
             return (
@@ -131,7 +131,7 @@ class EqualityStringMatcher(StringMatcherImplBase):
 
         return self._positive_matcher_application(model)
 
-    def _positive_matcher_application(self, model: FileToCheck) -> MatchingResult:
+    def _positive_matcher_application(self, model: StringMatcherModel) -> MatchingResult:
         expected_file_path = self._file_path_for_file_with_expected_contents(self._tmp_file_space)
         actual_file_path = model.transformed_file_path(self._tmp_file_space)
 

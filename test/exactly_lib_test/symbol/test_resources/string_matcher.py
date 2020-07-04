@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherSdv, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherSdv, StringMatcherModel
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
@@ -45,7 +45,7 @@ def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[Symbo
     )
 
 
-class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
+class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringMatcherModel]):
     def __init__(self,
                  sdv: StringMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
@@ -85,7 +85,7 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[FileToCheck]):
         return ValueType.STRING_MATCHER
 
 
-class StringMatcherSymbolContext(MatcherTypeSymbolContext[FileToCheck]):
+class StringMatcherSymbolContext(MatcherTypeSymbolContext[StringMatcherModel]):
     def __init__(self,
                  name: str,
                  value: StringMatcherSymbolValueContext,

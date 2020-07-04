@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, FileToCheck
+from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, StringMatcherModel
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):
@@ -27,7 +27,7 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
                                         os_services)
 
 
-class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, FileToCheck]):
+class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, StringMatcherModel]):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
@@ -37,10 +37,10 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, File
               os_services: OsServices,
               custom_environment,
               file_to_transform: ComparisonActualFile,
-              ) -> FileToCheck:
-        return FileToCheck(file_to_transform.path,
-                           IdentityStringTransformer(),
-                           DestinationFilePathGetter())
+              ) -> StringMatcherModel:
+        return StringMatcherModel(file_to_transform.path,
+                                  IdentityStringTransformer(),
+                                  DestinationFilePathGetter())
 
 
 class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualFile]):

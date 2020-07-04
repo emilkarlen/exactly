@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConsta
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import FileToCheck, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
@@ -59,14 +59,14 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            ftc = FileToCheck(described_path.new_primitive(actual_file_path),
-                                              IdentityStringTransformer(),
-                                              dst_file_path_getter)
+                            model = StringMatcherModel(described_path.new_primitive(actual_file_path),
+                                                       IdentityStringTransformer(),
+                                                       dst_file_path_getter)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
                             # ACT #
-                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
+                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', model)
                             # ASSERT #
                             pfh_assertion = pfh_expectation_type_config(
                                 expectation_type).main_result(case.expected_result_for_positive_expectation)
@@ -75,7 +75,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_cases_for_no_lines(
             self,
             get_assertion_part_function:
-            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[FileToCheck, pfh.PassOrFailOrHardError]],
+            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[StringMatcherModel, pfh.PassOrFailOrHardError]],
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
@@ -93,14 +93,14 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            ftc = FileToCheck(described_path.new_primitive(actual_file_path),
-                                              IdentityStringTransformer(),
-                                              dst_file_path_getter)
+                            model = StringMatcherModel(described_path.new_primitive(actual_file_path),
+                                                       IdentityStringTransformer(),
+                                                       dst_file_path_getter)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
                             # ACT #
-                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
+                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', model)
                             # ASSERT #
                             pfh_assertion = pfh_expectation_type_config(
                                 expectation_type).main_result(expected_result_when_positive_expectation)
