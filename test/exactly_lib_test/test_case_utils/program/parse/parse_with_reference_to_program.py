@@ -162,8 +162,8 @@ class TestValidation(unittest.TestCase):
 
         program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_EXE_FILE',
-            program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
-                                                                            'non-existing-exe-file')))
+            program_sdvs.ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_HDS_ACT,
+                                                                       'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_sdv(
@@ -213,8 +213,8 @@ class TestValidation(unittest.TestCase):
 
         program_symbol_with_ref_to_non_exit_exe_file = ProgramSymbolContext.of_sdv(
             'PGM_WITH_REF_TO_EXE_FILE',
-            program_sdvs.with_ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
-                                                                            'non-existing-exe-file')))
+            program_sdvs.ref_to_exe_file(constant(simple_of_rel_option(RelOptionType.REL_TMP,
+                                                                       'non-existing-exe-file')))
         )
 
         program_symbol_with_ref_to_non_exiting_file_as_argument = ProgramSymbolContext.of_sdv(
@@ -363,7 +363,7 @@ class TestResolving(unittest.TestCase):
                                                                 program_assertion(tcds)))
 
             return ResolvingCase('relativity=' + str(relativity),
-                                 actual_sdv=program_sdvs.with_ref_to_exe_file(
+                                 actual_sdv=program_sdvs.ref_to_exe_file(
                                      path_sdvs.constant(exe_path),
                                      arguments_sdvs.new_without_validation(
                                          list_sdvs.from_str_constants(expected_arguments))),
@@ -398,7 +398,7 @@ class TestResolving(unittest.TestCase):
 
         case = ResolvingCase(
             '',
-            actual_sdv=program_sdvs.with_ref_to_program(
+            actual_sdv=program_sdvs.system_program(
                 string_sdvs.str_constant(the_executable_program),
                 arguments_sdvs.new_without_validation(
                     list_sdvs.from_str_constants(expected_arguments))),

@@ -178,7 +178,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
         # ARRANGE #
         program_symbol = ProgramSymbolContext.of_sdv(
             'A_PROGRAM',
-            program_sdvs.arbitrary_sdv__without_symbol_references()
+            program_sdvs.arbitrary__without_symbol_references()
         )
 
         pgm_and_args_cases = [

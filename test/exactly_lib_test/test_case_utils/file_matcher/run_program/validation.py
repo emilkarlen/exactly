@@ -61,7 +61,7 @@ def validation_exe_case(validation_case: NameAndValue[str_trans_validation_cases
                         program_symbol_name: str,
                         ) -> NExArr[PrimAndExeExpectation[MatcherWTrace[FileMatcherModel], MatchingResult],
                                     Arrangement]:
-    program_w_transformer = program_sdvs.with_ref_to_program(
+    program_w_transformer = program_sdvs.system_program(
         string_sdvs.str_constant('system-program')
     ).new_with_appended_transformations([
         StringTransformerSdvReference(validation_case.value.symbol_context.name)

@@ -10,26 +10,26 @@ from exactly_lib_test.symbol.data.test_resources import string_sdvs
 from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test_command_sdvs
 
 
-def arbitrary_sdv() -> ProgramSdv:
-    return arbitrary_sdv__without_symbol_references()
+def arbitrary() -> ProgramSdv:
+    return arbitrary__without_symbol_references()
 
 
-def arbitrary_sdv__without_symbol_references() -> ProgramSdv:
-    return with_ref_to_program(
-        string_sdvs.StringSdvTestImpl('the string'))
+def arbitrary__without_symbol_references() -> ProgramSdv:
+    return system_program(
+        string_sdvs.StringSdvTestImpl('system-program'))
 
 
-def with_ref_to_exe_file(exe_file: PathSdv,
-                         arguments: ArgumentsSdv = arguments_sdvs.empty()
-                         ) -> ProgramSdvForCommand:
+def ref_to_exe_file(exe_file: PathSdv,
+                    arguments: ArgumentsSdv = arguments_sdvs.empty()
+                    ) -> ProgramSdvForCommand:
     return command_program_sdv.plain(
         command_sdvs.for_executable_file(exe_file, arguments)
     )
 
 
-def with_ref_to_program(program: StringSdv,
-                        arguments: ArgumentsSdv = arguments_sdvs.empty()
-                        ) -> ProgramSdvForCommand:
+def system_program(program: StringSdv,
+                   arguments: ArgumentsSdv = arguments_sdvs.empty()
+                   ) -> ProgramSdvForCommand:
     return command_program_sdv.plain(
         command_sdvs.for_system_program(program, arguments)
     )

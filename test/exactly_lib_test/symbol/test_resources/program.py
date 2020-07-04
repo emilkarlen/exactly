@@ -9,7 +9,7 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
-    arbitrary_sdv__without_symbol_references
+    arbitrary__without_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -84,4 +84,4 @@ class ProgramSymbolContext(LogicTypeSymbolContext[ProgramSdv]):
         return self._value
 
 
-ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_sdv(arbitrary_sdv__without_symbol_references())
+ARBITRARY_SYMBOL_VALUE_CONTEXT = ProgramSymbolValueContext.of_sdv(arbitrary__without_symbol_references())
