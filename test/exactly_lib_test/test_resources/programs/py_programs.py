@@ -1,7 +1,7 @@
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
-def py_pgm_that_exits_with_value_on_command_line(stderr_output: str) -> str:
+def py_pgm_that_exits_with_1st_value_on_command_line(stderr_output: str) -> str:
     return """\
 import sys
 

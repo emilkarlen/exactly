@@ -92,7 +92,7 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
 
 
 class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
-    _NAME = 'executable file'
+    NAME = 'executable file'
 
     def __init__(self, executable_file: DescribedPath):
         self._executable_file = executable_file
@@ -101,7 +101,7 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
     def new_structure_builder_for(executable_file: DetailsRenderer,
                                   arguments: List[ToStringObject]) -> StructureBuilder:
         return _structure_builder_w_argument_list(
-            CommandDriverForExecutableFile._NAME,
+            CommandDriverForExecutableFile.NAME,
             executable_file,
             arguments,
         )

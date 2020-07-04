@@ -13,6 +13,8 @@ from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
+NON_EXISTING_SYSTEM_PROGRAM = 'a-non-existing-system-program'
+
 IS_PROGRAM_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.PROGRAM)
 
 

@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase, FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
 from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
@@ -26,6 +27,7 @@ class Matcher(FileMatcherImplBase):
                  application_environment: ApplicationEnvironment,
                  matcher_program: Program,
                  ):
+        super().__init__()
         self._application_environment = application_environment
         self._matcher_program = matcher_program
 
@@ -66,7 +68,7 @@ class Matcher(FileMatcherImplBase):
         return Program(
             command_for_model,
             program.stdin,
-            program.transformation,
+            IdentityStringTransformer(),
         )
 
     def _new_tb(self, program: Program) -> TraceBuilder:

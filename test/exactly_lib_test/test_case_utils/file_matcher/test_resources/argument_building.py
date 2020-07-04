@@ -10,6 +10,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.arguments_building import OptionArgument, ArgumentElementsRenderer
@@ -213,6 +214,23 @@ class DirContentsRecursiveArgs(FileMatcherArg):
         ret_val.append(self.files_matcher)
 
         return ret_val
+
+
+class RunProgram(FileMatcherArg):
+    def __init__(self, program: ArgumentElements):
+        self.program = program
+
+    @property
+    def as_argument_elements(self) -> ArgumentElements:
+        run_primitive = ArgumentElements([file_matcher.PROGRAM_MATCHER_NAME])
+        return run_primitive.append_to_first_and_following_lines(self.program)
+
+    def __str__(self):
+        return self.as_argument_elements.as_arguments.as_single_string
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return self.as_argument_elements.as_elements
 
 
 class Not(FileMatcherArg):

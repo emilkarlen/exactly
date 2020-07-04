@@ -1,5 +1,8 @@
+from typing import Sequence
+
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree.renderer import NodeRenderer
+from exactly_lib.util.description_tree.tree import Detail, Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
@@ -29,6 +32,8 @@ def matches_value(expected_value: bool) -> ValueAssertion[MatchingResult]:
 
 def matches_value__w_header(value: ValueAssertion[bool],
                             header: ValueAssertion[str],
+                            details: ValueAssertion[Sequence[Detail]] = asrt.anything_goes(),
+                            children: ValueAssertion[Sequence[Node]] = asrt.anything_goes(),
                             ) -> ValueAssertion[MatchingResult]:
     return matches(
         value=value,
@@ -36,6 +41,8 @@ def matches_value__w_header(value: ValueAssertion[bool],
             asrt_d_tree.matches_node(
                 header=header,
                 data=value,
+                details=details,
+                children=children
             ),
         )
     )

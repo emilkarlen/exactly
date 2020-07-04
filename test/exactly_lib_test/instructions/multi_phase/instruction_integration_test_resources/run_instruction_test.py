@@ -18,7 +18,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.file_structure import empty_file, python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
-from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
+from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -67,7 +67,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
     def runTest(self):
         output_to_stderr = 'on stderr'
         py_file = File('exit-with-value-on-command-line.py',
-                       py_pgm_that_exits_with_value_on_command_line(output_to_stderr))
+                       py_pgm_that_exits_with_1st_value_on_command_line(output_to_stderr))
 
         py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
         py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
@@ -77,7 +77,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
             program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
         )
 
-        symbols_dict = program_that_executes_py_pgm_symbol.symbol_table
+        symbols = program_that_executes_py_pgm_symbol.symbol_table
 
         instruction_arguments = [
             pgm_args.symbol_ref_command_line(program_that_executes_py_pgm_symbol.name),
@@ -89,7 +89,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
                                home_or_sds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
                                    DirContents([py_file])
                                ),
-                               symbols=symbols_dict
+                               symbols=symbols
                            ),
                            self.conf.expect_success(
                                symbol_usages=asrt.matches_sequence([

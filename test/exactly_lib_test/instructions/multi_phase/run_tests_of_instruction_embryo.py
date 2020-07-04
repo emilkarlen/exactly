@@ -36,7 +36,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelOptionType
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
+from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.tcds_and_symbols import tcds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -280,7 +280,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 class TestProgramViaSymbolReference(TestCaseBase):
     output_to_stderr = 'on stderr'
     py_file = File('exit-with-value-on-command-line.py',
-                   py_pgm_that_exits_with_value_on_command_line(output_to_stderr))
+                   py_pgm_that_exits_with_1st_value_on_command_line(output_to_stderr))
 
     py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
     py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
@@ -290,7 +290,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
         program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
     )
 
-    symbols_dict = program_that_executes_py_pgm_symbol.symbol_table
+    symbols = program_that_executes_py_pgm_symbol.symbol_table
 
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
@@ -300,7 +300,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
-                symbols=self.symbols_dict
+                symbols=self.symbols
             ),
             instruction_embryo_check.Expectation(
                 main_result=result_assertions.equals(0, None),
@@ -322,7 +322,7 @@ class TestProgramViaSymbolReference(TestCaseBase):
                 tcds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([self.py_file])
                 ),
-                symbols=self.symbols_dict
+                symbols=self.symbols
             ),
             instruction_embryo_check.Expectation(
                 main_result=result_assertions.equals(exit_code,

@@ -125,6 +125,14 @@ class ArgumentElements:
     def as_remaining_source(self) -> ParseSource:
         return self.as_arguments.as_remaining_source
 
+    @property
+    def as_elements(self) -> List[WithToString]:
+        ret_val = self.first_line
+        for following_line in self._following_lines:
+            ret_val.append('\n')
+            ret_val += following_line
+        return ret_val
+
     def append_to_first_line(self, elements: List) -> 'ArgumentElements':
         return ArgumentElements(self.first_line + elements,
                                 self.following_lines)

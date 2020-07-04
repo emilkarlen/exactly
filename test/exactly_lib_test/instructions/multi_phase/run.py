@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
+from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.tcds_and_symbols import tcds_test
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
@@ -130,7 +130,7 @@ class TestExecuteInterpret(TestCaseBase):
             tcds_test.Arrangement(
                 hds_contents_before=hds_case_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line(''))]))),
+                         py_pgm_that_exits_with_1st_value_on_command_line(''))]))),
             tcds_test.Expectation(
                 expected_action_result=result_assertions.equals(0, None),
 
@@ -147,7 +147,7 @@ class TestExecuteInterpret(TestCaseBase):
                 sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
                                                 DirContents([
                                                     File('exit-with-value-on-command-line.py',
-                                                         py_pgm_that_exits_with_value_on_command_line(''))]))),
+                                                         py_pgm_that_exits_with_1st_value_on_command_line(''))]))),
             tcds_test.Expectation(
                 expected_action_result=result_assertions.equals(0, None)),
         )
@@ -159,7 +159,7 @@ class TestExecuteInterpret(TestCaseBase):
             tcds_test.Arrangement(
                 hds_contents_before=hds_case_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line('on stderr'))]))),
+                         py_pgm_that_exits_with_1st_value_on_command_line('on stderr'))]))),
             tcds_test.Expectation(
                 expected_action_result=result_assertions.equals(2, 'on stderr'),
 
@@ -175,7 +175,7 @@ class TestExecuteInterpret(TestCaseBase):
             tcds_test.Arrangement(
                 hds_contents_before=hds_case_dir_contents(DirContents([
                     File('exit-with-value-on-command-line.py',
-                         py_pgm_that_exits_with_value_on_command_line(''))]))),
+                         py_pgm_that_exits_with_1st_value_on_command_line(''))]))),
             tcds_test.Expectation(
                 acton_raises_hard_error=True,
 

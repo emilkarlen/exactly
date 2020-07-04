@@ -7,6 +7,18 @@ class ProcessExecutionSettings(tuple):
                 environ: Optional[Dict[str, str]] = None):
         return tuple.__new__(cls, (timeout_in_seconds, environ))
 
+    @staticmethod
+    def with_environ(environ: Dict[str, str]) -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings(environ=environ)
+
+    @staticmethod
+    def with_environ_copy(environ_to_copy: Dict[str, str]) -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings(environ=dict(environ_to_copy))
+
+    @staticmethod
+    def null() -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings()
+
     @property
     def timeout_in_seconds(self) -> Optional[int]:
         """

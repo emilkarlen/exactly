@@ -667,8 +667,8 @@ class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
                put: unittest.TestCase,
                value: Sequence[T],
                message_builder: MessageBuilder):
-        put.assertEqual(len(self.element_assertions),
-                        len(value),
+        put.assertEqual(len(value),
+                        len(self.element_assertions),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
             element_message_builder = sub_component_builder('[' + str(idx) + ']',
@@ -676,6 +676,29 @@ class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
                                                             component_separator='')
             self.element_assertions[idx].apply(put, element,
                                                element_message_builder)
+
+
+class _IsSequenceWithElementAtPos(ValueAssertionBase[Sequence[T]]):
+    def __init__(self,
+                 index: int,
+                 element_assertion: ValueAssertion[T]):
+        self.index = index
+        self.element_assertion = element_assertion
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Sequence[T],
+               message_builder: MessageBuilder):
+        put.assertGreater(len(value),
+                          self.index,
+                          message_builder.apply('number of elements'))
+        idx = self.index
+        element_message_builder = sub_component_builder('[' + str(idx) + ']',
+                                                        message_builder,
+                                                        component_separator='')
+        self.element_assertion.apply(put,
+                                     value[idx],
+                                     element_message_builder)
 
 
 class _EqualsSequence(ValueAssertionBase[Sequence[T]]):
@@ -689,8 +712,8 @@ class _EqualsSequence(ValueAssertionBase[Sequence[T]]):
                put: unittest.TestCase,
                value: Sequence[T],
                message_builder: MessageBuilder):
-        put.assertEqual(len(self.expected),
-                        len(value),
+        put.assertEqual(len(value),
+                        len(self.expected),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
             element_message_builder = sub_component_builder('[' + str(idx) + ']',
@@ -768,6 +791,10 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
 
 def matches_singleton_sequence(element: ValueAssertion[T]) -> ValueAssertion[Sequence[T]]:
     return matches_sequence([element])
+
+
+def is_sequence_with_element_at_pos(index: int, element: ValueAssertion[T]) -> ValueAssertion[Sequence[T]]:
+    return _IsSequenceWithElementAtPos(index, element)
 
 
 def is_sub_class_with(expected_class: Type[T],
