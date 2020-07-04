@@ -96,8 +96,7 @@ This test assumes that
  * the system under test - ``my-contacts-program`` - is is found in the same directory as the test case file
  * the file "some-test-contacts.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
-Note: The ``home`` and ``act-home`` instructions
-can be used to change the directories where Exactly looks for files referenced from the test case.
+.. note:: The ``home`` and ``act-home`` instructions can be used to change the directories where Exactly looks for files referenced from the test case.
 
 
 Testing side effects on files and directories
@@ -271,7 +270,7 @@ External programs can help with setup and assertions etc.
 Exactly can run executable files, shell commands  and programs in the OS PATH,
 using ``run``, ``$``, ``%``.
 
-The following case shows some examples, but doesn't make sense tough::
+The following case shows some examples, but *doesn't make sense* tough::
 
     [setup]
 
@@ -292,6 +291,9 @@ The following case shows some examples, but doesn't make sense tough::
     run my-assert-helper-program
 
     $ test -f root-files.txt
+
+    exists root-files.txt : type file &&
+                            run -python @[EXACTLY_HOME]@/my-file-matcher.py
 
     stdout -from
            % echo 'Interesting output'

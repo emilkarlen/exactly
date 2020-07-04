@@ -18,6 +18,9 @@ run my-assert-helper-program
 
 $ test -f root-files.txt
 
+exists root-files.txt : type file &&
+                        run -python @[EXACTLY_HOME]@/my-file-matcher.py
+
 stdout -from
        % echo 'Interesting output'
        equals
