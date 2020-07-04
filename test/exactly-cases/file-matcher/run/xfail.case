@@ -1,0 +1,13 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+def program IS_REGULAR_FILE_PROGRAM = -python -existing-file -rel-home arg-is-regular-file.py
+
+dir a-dir
+
+[assert]
+
+exists a-dir : run @ IS_REGULAR_FILE_PROGRAM

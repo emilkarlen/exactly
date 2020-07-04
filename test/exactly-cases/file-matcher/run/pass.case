@@ -1,0 +1,13 @@
+[setup]
+
+def program IS_REGULAR_FILE_PROGRAM = -python -existing-file -rel-home arg-is-regular-file.py
+
+file a-regular-file
+
+[assert]
+
+exists a-regular-file :
+    ( run @ IS_REGULAR_FILE_PROGRAM
+      &&
+      type file
+    )
