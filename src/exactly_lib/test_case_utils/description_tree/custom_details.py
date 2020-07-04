@@ -211,21 +211,17 @@ def regex(ignore_case: bool, pattern: DetailsRenderer) -> DetailsRenderer:
 
 
 class PatternRenderer(DetailsRenderer):
-    def __init__(self,
-                 pattern: Pattern[str],
-                 ):
+    def __init__(self, pattern: Pattern[str]):
         self._pattern = pattern
 
     def render(self) -> Sequence[Detail]:
         pattern_string = details.String(self._pattern.pattern)
-        renderer = regex(self._pattern.flags & re.IGNORECASE, pattern_string)
+        renderer = regex(bool(self._pattern.flags & re.IGNORECASE), pattern_string)
         return renderer.render()
 
 
 class PatternMatchRenderer(DetailsRenderer):
-    def __init__(self,
-                 match: Match,
-                 ):
+    def __init__(self, match: Match):
         self._match = match
 
     def render(self) -> Sequence[Detail]:
