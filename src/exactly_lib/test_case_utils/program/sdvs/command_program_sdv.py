@@ -19,8 +19,11 @@ class ProgramSdvForCommand(ProgramSdv):
         self._command = command
         self._accumulated_elements = accumulated_elements
 
-    def new_accumulated(self, additional_stdin: StdinDataSdv, additional_arguments: ArgumentsSdv,
-                        additional_transformations: Sequence[StringTransformerSdv]):
+    def new_accumulated(self,
+                        additional_stdin: StdinDataSdv,
+                        additional_arguments: ArgumentsSdv,
+                        additional_transformations: Sequence[StringTransformerSdv],
+                        ) -> 'ProgramSdvForCommand':
         return ProgramSdvForCommand(
             self._command,
             self._accumulated_elements.new_accumulated(additional_stdin,
