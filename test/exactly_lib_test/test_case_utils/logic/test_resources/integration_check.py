@@ -23,10 +23,9 @@ from exactly_lib.type_system.logic.logic_base_class import LogicDdv, Application
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
-    application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
     tcds_with_act_as_curr_dir_3
@@ -47,12 +46,14 @@ class Arrangement:
     def __init__(self,
                  symbols: Optional[SymbolTable] = None,
                  tcds: Optional[TcdsArrangement] = None,
+                 process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement()
                  ):
         """
         :param tcds: Not None iff TCDS is used (and must thus be created)
         """
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.tcds = tcds
+        self.process_execution = process_execution
 
 
 def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
@@ -62,6 +63,7 @@ def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_popul
                        pre_population_action: PlainTcdsAction = PlainTcdsAction(),
                        post_population_action: PlainTcdsAction = PlainTcdsAction(),
                        symbols: Optional[SymbolTable] = None,
+                       process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
                        ) -> Arrangement:
     """
     :return: An Arrangement with will create a TCDS
@@ -75,15 +77,19 @@ def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_popul
         post_population_action=post_population_action,
     )
     return Arrangement(symbols,
-                       tcds)
+                       tcds,
+                       process_execution)
 
 
-def arrangement_wo_tcds(symbols: Optional[SymbolTable] = None) -> Arrangement:
+def arrangement_wo_tcds(symbols: Optional[SymbolTable] = None,
+                        process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
+                        ) -> Arrangement:
     """
     :return: An Arrangement with will NOT create a TCDS
     """
     return Arrangement(symbols,
-                       None)
+                       None,
+                       process_execution)
 
 
 class ParseExpectation:
@@ -440,8 +446,10 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         full_resolving_env = FullResolvingEnvironment(
             self.arrangement.symbols,
             self.tcds,
-            application_environment_for_test(
-                tmp_file_space=TmpDirFileSpaceAsDirCreatedOnDemand(
+            ApplicationEnvironment(
+                self.arrangement.process_execution.os_services,
+                self.arrangement.process_execution.process_execution_settings,
+                TmpDirFileSpaceAsDirCreatedOnDemand(
                     self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
             ),
         )
