@@ -1,6 +1,9 @@
 import types
 from typing import TypeVar, Optional, Callable, List, Sequence
 
+T = TypeVar('T')
+U = TypeVar('U')
+
 
 def compose_first_and_second(f, g):
     return Composition(g, f)
@@ -15,7 +18,7 @@ class Composition:
         return self.g(self.f(arg))
 
 
-def and_predicate(predicates: list) -> types.FunctionType:
+def and_predicate(predicates: List[Callable[[T], bool]]) -> types.FunctionType:
     if not predicates:
         return lambda x: True
     if len(predicates) == 1:
@@ -24,7 +27,7 @@ def and_predicate(predicates: list) -> types.FunctionType:
 
 
 class _AndPredicate:
-    def __init__(self, predicates: list):
+    def __init__(self, predicates: List[Callable[[T], bool]]):
         self.predicates = predicates
 
     def __call__(self, *args, **kwargs):
@@ -32,10 +35,6 @@ class _AndPredicate:
             if not predicate(*args, **kwargs):
                 return False
         return True
-
-
-T = TypeVar('T')
-U = TypeVar('U')
 
 
 def map_optional(f: Callable[[T], U], x: Optional[T]) -> Optional[U]:
