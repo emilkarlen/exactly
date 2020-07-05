@@ -1,6 +1,6 @@
 import pathlib
 from contextlib import contextmanager
-from typing import Iterable, ContextManager
+from typing import ContextManager, Iterator
 
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
@@ -60,10 +60,10 @@ class StringMatcherModelFromFile(StringMatcherModel):
         return self._transformed_file_path
 
     @contextmanager
-    def lines(self) -> ContextManager[Iterable[str]]:
+    def lines(self) -> ContextManager[Iterator[str]]:
         with self._original_file_path.primitive.open() as f:
             if self._string_transformer.is_identity_transformer:
-                yield f
+                yield f.readlines()
             else:
                 yield self._string_transformer.transform(f)
 

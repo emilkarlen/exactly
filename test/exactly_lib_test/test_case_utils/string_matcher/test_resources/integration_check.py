@@ -1,5 +1,5 @@
 import pathlib
-from typing import Callable, ContextManager, Iterable
+from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher, file_model
@@ -40,7 +40,7 @@ class _StringMatcherModelThatMustNotBeUsed(StringMatcherModel):
     def transformed_file_path(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
         raise NotImplementedError('unsupported')
 
-    def lines(self) -> ContextManager[Iterable[str]]:
+    def lines(self) -> ContextManager[Iterator[str]]:
         raise NotImplementedError('unsupported')
 
 

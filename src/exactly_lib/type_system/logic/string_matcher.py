@@ -1,6 +1,6 @@
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Iterable, ContextManager
+from typing import ContextManager, Iterator
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
@@ -36,7 +36,7 @@ class StringMatcherModel(ABC):
         pass
 
     @abstractmethod
-    def lines(self) -> ContextManager[Iterable[str]]:
+    def lines(self) -> ContextManager[Iterator[str]]:
         """
         Gives the lines of the file contents to check.
 

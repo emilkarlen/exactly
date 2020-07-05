@@ -1,4 +1,3 @@
-import itertools
 import unittest
 
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
@@ -151,10 +150,9 @@ class _AddLineTransformer(StringTransformerTestImplBase):
         self.line_to_add = line_contents + '\n'
 
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return itertools.chain.from_iterable([
-            lines,
-            [self.line_to_add]
-        ])
+        for line in lines:
+            yield line
+        yield self.line_to_add
 
 
 class TestPrimitiveValue(unittest.TestCase):

@@ -1,7 +1,8 @@
 import itertools
-from typing import Iterable, Callable
+from typing import Callable
 
 from exactly_lib.type_system.logic import line_matcher
+from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
@@ -10,17 +11,17 @@ class MyNonIdentityTransformer(StringTransformerTestImplBase):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return map(lambda s: 'not identity', lines)
 
 
 class MyToUppercaseTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return map(str.upper, lines)
 
 
 class MyCountNumUppercaseCharactersTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return map(get_number_of_uppercase_characters, lines)
 
 
@@ -33,7 +34,7 @@ def get_number_of_uppercase_characters(line: str) -> str:
 
 
 class DuplicateWordsTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
     @staticmethod
@@ -43,7 +44,7 @@ class DuplicateWordsTransformer(StringTransformerTestImplBase):
 
 
 class DeleteInitialWordTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
     @staticmethod
@@ -58,7 +59,7 @@ class KeepSingleLine(StringTransformerTestImplBase):
     def __init__(self, line_num_to_keep: int):
         self.line_num_to_keep = line_num_to_keep
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         line_num_to_keep = self.line_num_to_keep
         for line in enumerate(lines, line_matcher.FIRST_LINE_NUMBER):
             if line[0] == line_num_to_keep:

@@ -1,5 +1,4 @@
-import functools
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -18,7 +17,6 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer, 
     StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.functional import compose_first_and_second
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -29,6 +27,12 @@ class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def __init__(self, transformers: Sequence[StringTransformer]):
         super().__init__()
         self._transformers = tuple(transformers)
+        self._non_identity_transformer_functions = [
+            transformer.transform
+            for transformer in transformers
+            if not transformer.is_identity_transformer
+        ]
+        self._is_identity = len(self._non_identity_transformer_functions) == 0
 
     @staticmethod
     def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
@@ -48,23 +52,28 @@ class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
 
     @property
     def is_identity_transformer(self) -> bool:
-        return all([t.is_identity_transformer for t in self._transformers])
+        return self._is_identity
 
     @property
     def transformers(self) -> Sequence[StringTransformer]:
         return self._transformers
 
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        if not self._transformers:
-            return lines
-        else:
-            return self._sequenced_transformers()(lines)
+        return (
+            lines
+            if self._is_identity
+            else
+            self._sequenced_transformers()(lines)
+        )
 
-    def _sequenced_transformers(self):
-        lines_to_lines_transformers = [t.transform
-                                       for t in self._transformers]
+    def _sequenced_transformers(self) -> Callable[[StringTransformerModel], StringTransformerModel]:
+        def ret_val_fun(model: StringTransformerModel) -> StringTransformerModel:
+            ret_val = model
+            for f in self._non_identity_transformer_functions:
+                ret_val = f(ret_val)
+            return ret_val
 
-        return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
+        return ret_val_fun
 
     def __str__(self):
         return '{}[{}]'.format(type(self).__name__,

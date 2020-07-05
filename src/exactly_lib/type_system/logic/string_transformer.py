@@ -1,11 +1,11 @@
 from abc import ABC
-from typing import Iterable
+from typing import Iterator
 
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
     LogicWithNodeDescriptionDdv
 
-StringTransformerModel = Iterable[str]
+StringTransformerModel = Iterator[str]
 
 
 class StringTransformer(WithNameAndTreeStructureDescription, ABC):
