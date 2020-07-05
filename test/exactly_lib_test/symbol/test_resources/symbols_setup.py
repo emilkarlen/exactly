@@ -173,6 +173,14 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
             for symbol in symbols
         })
 
+    @staticmethod
+    def references_assertion_of_contexts(symbols: Sequence['SymbolContext']
+                                         ) -> ValueAssertion[Sequence[SymbolReference]]:
+        return asrt.matches_sequence([
+            context.reference_assertion
+            for context in symbols
+        ])
+
 
 class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     def __init__(self, name: str, ):

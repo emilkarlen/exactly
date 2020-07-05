@@ -1,0 +1,16 @@
+[setup]
+
+file source.txt = <<-
+1st
+2nd
+-
+
+[assert]
+
+contents source.txt
+         -transformed-by TO_UPPER_CASE
+         (
+           -transformed-by filter line-num == 1 matches '1ST'
+           &&
+           -transformed-by filter line-num == 2 matches '2ND'
+         )

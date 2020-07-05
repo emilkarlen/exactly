@@ -1,6 +1,7 @@
 import itertools
 from typing import Iterable, Callable
 
+from exactly_lib.type_system.logic import line_matcher
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
 
 
@@ -51,6 +52,18 @@ class DeleteInitialWordTransformer(StringTransformerTestImplBase):
         if words:
             del words[0]
         return ' '.join(words)
+
+
+class KeepSingleLine(StringTransformerTestImplBase):
+    def __init__(self, line_num_to_keep: int):
+        self.line_num_to_keep = line_num_to_keep
+
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+        line_num_to_keep = self.line_num_to_keep
+        for line in enumerate(lines, line_matcher.FIRST_LINE_NUMBER):
+            if line[0] == line_num_to_keep:
+                yield line[1]
+                break
 
 
 def _with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], str]) -> Callable[[str], str]:

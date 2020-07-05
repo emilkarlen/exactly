@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -8,6 +9,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     arguments_building2 as args2
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import string_matchers
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import \
     validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases \
@@ -220,51 +222,72 @@ class TestWithBinaryOperators(unittest.TestCase):
             )
         )
 
-    def test_transformation_SHOULD_2(self):
+    def test_tree_of_transformations(self):
+        # ARRANGE #
+
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
             string_transformers.MyToUppercaseTransformer()
         )
 
-        count_num_upper_characters_transformer = StringTransformerSymbolContext.of_primitive(
-            'the_count_num_upper_transformer',
-            string_transformers.MyCountNumUppercaseCharactersTransformer()
+        keep_line_1 = StringTransformerSymbolContext.of_primitive(
+            'keep_line_1',
+            string_transformers.KeepSingleLine(1)
         )
 
-        model__original = 'text'
-        model__upper = model__original.upper()
-        model_num_upper_chars = str(len(model__upper))
+        keep_line_2 = StringTransformerSymbolContext.of_primitive(
+            'keep_line_2',
+            string_transformers.KeepSingleLine(2)
+        )
+
+        equals_1st = StringMatcherSymbolContext.of_primitive(
+            'equals_1st',
+            string_matchers.EqualsConstant('1ST\n')
+        )
+
+        equals_2nd = StringMatcherSymbolContext.of_primitive(
+            'equals_2nd',
+            string_matchers.EqualsConstant('2ND\n')
+        )
+
+        model__original = '1st\n2nd\n'
+
+        symbol_contexts = [
+            to_upper_transformer,
+            keep_line_1,
+            equals_1st,
+            keep_line_2,
+            equals_2nd,
+        ]
+
+        # ACT & ASSERT #
 
         integration_check.CHECKER.check__w_source_variants(
             self,
             args2.Transformed(
-                to_upper_transformer.name,
+                to_upper_transformer.name__sym_ref_syntax,
                 args2.Parenthesis(
                     args2.conjunction([
                         args2.Parenthesis(
-                            args2.Transformed(
-                                count_num_upper_characters_transformer.name,
-                                args2.Equals(model_num_upper_chars),
-                            )
+                            args2.Transformed(keep_line_1.name__sym_ref_syntax,
+                                              args2.SymbolReference(equals_1st.name),
+                                              )
                         ),
-                        args2.Equals(model__upper),
+                        args2.Parenthesis(
+                            args2.Transformed(keep_line_2.name__sym_ref_syntax,
+                                              args2.SymbolReference(equals_2nd.name),
+                                              )
+                        ),
                     ])
                 )
             ).as_arguments,
             integration_check.model_of(model__original),
             arrangement_w_tcds(
-                symbols=SymbolContext.symbol_table_of_contexts([
-                    to_upper_transformer,
-                    count_num_upper_characters_transformer,
-                ])
+                symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
             ),
             Expectation(
                 ParseExpectation(
-                    symbol_references=asrt.matches_sequence([
-                        to_upper_transformer.reference_assertion,
-                        count_num_upper_characters_transformer.reference_assertion,
-                    ]
-                    )
+                    symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts)
                 ),
                 ExecutionExpectation(
                     main_result=asrt_matching_result.matches_value(True)
