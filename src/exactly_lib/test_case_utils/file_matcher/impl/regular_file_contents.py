@@ -3,8 +3,8 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.described_dep_val import sdv_of_constant_primitive
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
+from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_transformer.impl import identity
-from exactly_lib.type_system.logic import string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
 
@@ -17,10 +17,10 @@ NAMES = file_contents_utils.NamesSetup(
 
 class _ModelConstructor(file_contents_utils.ModelConstructor[StringMatcherModel]):
     def make_model(self, model: FileMatcherModel) -> StringMatcherModel:
-        return string_matcher.StringMatcherModel(
+        return file_model.StringMatcherModelFromFile(
             model.path,
             identity.IdentityStringTransformer(),
-            string_matcher.DestinationFilePathGetter(),
+            file_model.DestinationFilePathGetter(),
         )
 
 

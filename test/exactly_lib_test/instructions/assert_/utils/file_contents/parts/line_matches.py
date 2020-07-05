@@ -9,6 +9,7 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
+from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
@@ -59,9 +60,11 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            model = StringMatcherModel(described_path.new_primitive(actual_file_path),
-                                                       IdentityStringTransformer(),
-                                                       dst_file_path_getter)
+                            model = file_model.StringMatcherModelFromFile(
+                                described_path.new_primitive(actual_file_path),
+                                IdentityStringTransformer(),
+                                dst_file_path_getter,
+                            )
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
@@ -93,9 +96,11 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            model = StringMatcherModel(described_path.new_primitive(actual_file_path),
-                                                       IdentityStringTransformer(),
-                                                       dst_file_path_getter)
+                            model = file_model.StringMatcherModelFromFile(
+                                described_path.new_primitive(actual_file_path),
+                                IdentityStringTransformer(),
+                                dst_file_path_getter,
+                            )
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)

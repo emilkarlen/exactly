@@ -2,9 +2,10 @@ from typing import Callable
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, DestinationFilePathGetter
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.type_system.data.test_resources import described_path
 
@@ -47,10 +48,10 @@ class ModelFromBuilder:
         tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(self.sds.internal_tmp_dir)
         original_file_path = self._create_original_file(tmp_dir_file_space)
 
-        return StringMatcherModel(
+        return file_model.StringMatcherModelFromFile(
             original_file_path,
             IdentityStringTransformer(),
-            DestinationFilePathGetter(),
+            file_model.DestinationFilePathGetter(),
         )
 
     def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPath:

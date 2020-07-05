@@ -1,12 +1,12 @@
 import pathlib
-from typing import Callable
+from typing import Callable, ContextManager, Iterable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher, file_model
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter
 from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
@@ -29,10 +29,22 @@ def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> String
     return MODEL_THAT_MUST_NOT_BE_USED
 
 
-MODEL_THAT_MUST_NOT_BE_USED = StringMatcherModel(described_path.new_primitive(pathlib.Path('non-existing-file')),
-                                                 IdentityStringTransformer(),
-                                                 DestinationFilePathGetter(),
-                                                 )
+class _StringMatcherModelThatMustNotBeUsed(StringMatcherModel):
+    def with_transformation(self, string_transformer: StringTransformer) -> StringMatcherModel:
+        raise NotImplementedError('unsupported')
+
+    @property
+    def string_transformer(self) -> StringTransformer:
+        raise NotImplementedError('unsupported')
+
+    def transformed_file_path(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
+        raise NotImplementedError('unsupported')
+
+    def lines(self) -> ContextManager[Iterable[str]]:
+        raise NotImplementedError('unsupported')
+
+
+MODEL_THAT_MUST_NOT_BE_USED = _StringMatcherModelThatMustNotBeUsed()
 
 
 class _ModelConstructorHelper:
@@ -45,10 +57,10 @@ class _ModelConstructorHelper:
         tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.tcds.sds.internal_tmp_dir)
         original_file_path = self._create_original_file(tmp_dir_file_space)
 
-        return StringMatcherModel(
+        return file_model.StringMatcherModelFromFile(
             original_file_path,
             IdentityStringTransformer(),
-            DestinationFilePathGetter(),
+            file_model.DestinationFilePathGetter(),
         )
 
     def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPath:

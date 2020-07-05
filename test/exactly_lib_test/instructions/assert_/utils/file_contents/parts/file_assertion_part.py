@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.contents_transformation import \
@@ -64,9 +64,11 @@ class Test(unittest.TestCase):
                     for trans_name, lines_trans, corresponding_expected_trans in line_trans_cases:
                         with self.subTest(case=case.name,
                                           trans=trans_name):
-                            model = StringMatcherModel(described_path.new_primitive(actual_file_path),
-                                                       lines_trans,
-                                                       dst_file_path_getter)
+                            model = file_model.StringMatcherModelFromFile(
+                                described_path.new_primitive(actual_file_path),
+                                lines_trans,
+                                dst_file_path_getter,
+                            )
                             # ACT #
                             with model.lines() as lines:
                                 # ASSERT #

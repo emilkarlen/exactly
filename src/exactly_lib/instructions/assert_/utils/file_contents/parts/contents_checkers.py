@@ -8,8 +8,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
+from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.string_matcher import DestinationFilePathGetter, StringMatcherModel
+from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):
@@ -38,9 +39,11 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               custom_environment,
               file_to_transform: ComparisonActualFile,
               ) -> StringMatcherModel:
-        return StringMatcherModel(file_to_transform.path,
-                                  IdentityStringTransformer(),
-                                  DestinationFilePathGetter())
+        return file_model.StringMatcherModelFromFile(
+            file_to_transform.path,
+            IdentityStringTransformer(),
+            file_model.DestinationFilePathGetter()
+        )
 
 
 class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualFile]):
