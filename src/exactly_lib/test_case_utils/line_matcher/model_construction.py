@@ -1,6 +1,6 @@
 from typing import Iterator, Tuple
 
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
 
 
 def model_iter_from_file_line_iter(lines: Iterator[str]) -> Iterator[LineMatcherLine]:
@@ -12,7 +12,7 @@ def model_iter_from_file_line_iter(lines: Iterator[str]) -> Iterator[LineMatcher
     @:param strings: lines from an input source
     """
     return enumerate((l.rstrip('\n') for l in lines),
-                     1)
+                     FIRST_LINE_NUMBER)
 
 
 def original_and_model_iter_from_file_line_iter(lines: Iterator[str]) -> Iterator[Tuple[str, LineMatcherLine]]:
@@ -26,5 +26,5 @@ def original_and_model_iter_from_file_line_iter(lines: Iterator[str]) -> Iterato
     """
     return (
         (original, (line_num, original.rstrip('\n')))
-        for line_num, original in enumerate(lines, 1)
+        for line_num, original in enumerate(lines, FIRST_LINE_NUMBER)
     )
