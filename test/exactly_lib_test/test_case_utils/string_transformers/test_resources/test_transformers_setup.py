@@ -1,11 +1,10 @@
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.type_system.logic.string_transformer import test_resources
-from exactly_lib_test.type_system.logic.test_resources import string_transformers
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 DELETE_EVERYTHING_TRANSFORMER = StringTransformerPrimitiveSymbolContext(
     'DELETE_EVERYTHING_TRANSFORMER',
-    test_resources.DeleteEverythingTransformer()
+    string_transformers.DeleteEverythingTransformer()
 )
 
 DUPLICATE_WORDS_TRANSFORMER = StringTransformerPrimitiveSymbolContext(

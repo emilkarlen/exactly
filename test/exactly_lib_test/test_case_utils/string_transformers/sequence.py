@@ -17,10 +17,11 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
-from exactly_lib_test.type_system.logic.test_resources.string_transformer_assertions import is_identity_transformer
-from exactly_lib_test.type_system.logic.test_resources.string_transformers import MyNonIdentityTransformer, \
-    MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
+    is_identity_transformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    StringTransformerTestImplBase, MyNonIdentityTransformer, MyToUppercaseTransformer, \
+    MyCountNumUppercaseCharactersTransformer
 
 
 def suite() -> unittest.TestSuite:

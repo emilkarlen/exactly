@@ -24,7 +24,8 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueCont
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_transformers import MyToUppercaseTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    MyToUppercaseTransformer
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_text_struct
 
 

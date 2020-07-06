@@ -21,7 +21,8 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import 
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    EveryLineEmptyStringTransformer
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

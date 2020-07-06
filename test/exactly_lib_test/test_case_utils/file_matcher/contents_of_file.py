@@ -24,7 +24,8 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_resources.files.file_structure import empty_file, File, DirContents, empty_dir, \
     FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    EveryLineEmptyStringTransformer
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 

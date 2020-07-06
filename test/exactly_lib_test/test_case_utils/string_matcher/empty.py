@@ -18,7 +18,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.validat
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import EveryLineEmptyStringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    EveryLineEmptyStringTransformer
 
 
 def suite() -> unittest.TestSuite:

@@ -36,7 +36,7 @@ from exactly_lib_test.test_resources.programs.shell_commands import command_that
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     MyToUppercaseTransformer
 
 

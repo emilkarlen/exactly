@@ -48,7 +48,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     MyToUppercaseTransformer
 
 

@@ -2,7 +2,8 @@ from typing import Iterable
 
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    StringTransformerTestImplBase
 
 
 class ToUppercaseStringTransformer(StringTransformerTestImplBase):

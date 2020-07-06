@@ -8,7 +8,8 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderers import Constant
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherTestImplBase
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    StringTransformerTestImplBase
 from exactly_lib_test.util.render.test_resources import renderers
 from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 

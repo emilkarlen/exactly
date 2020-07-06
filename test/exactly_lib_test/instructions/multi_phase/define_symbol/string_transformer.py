@@ -22,7 +22,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_string_transformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 

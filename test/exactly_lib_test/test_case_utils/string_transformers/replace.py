@@ -20,7 +20,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.integra
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.string_transformer_assertions import is_identity_transformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
+    is_identity_transformer
 from exactly_lib_test.util.test_resources import quoting
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 

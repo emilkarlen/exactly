@@ -8,7 +8,8 @@ from exactly_lib_test.test_case.test_resources import command_assertions as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_trans
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_line_trans
 
 
 def no_stdin() -> ValueAssertion[StdinData]:

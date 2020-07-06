@@ -18,8 +18,9 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.transfo
     StringTransformerThatMustNotBeUsedTestImpl
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import DeleteEverythingTransformer
-from exactly_lib_test.type_system.logic.test_resources import string_transformers
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    DeleteEverythingTransformer
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 

@@ -22,7 +22,8 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbol
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    StringTransformerTestImplBase
 
 
 def arbitrary_sdv() -> StringTransformerSdv:

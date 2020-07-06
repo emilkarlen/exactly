@@ -15,7 +15,8 @@ from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources im
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
+    StringTransformerTestImplBase
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

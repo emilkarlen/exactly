@@ -9,7 +9,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.transfo
     StringTransformerPropertiesConfiguration
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_string_transformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_string_transformer
 
 StExpectation = logic_integration_check.Expectation[StringTransformer, StringTransformerModel]
 
