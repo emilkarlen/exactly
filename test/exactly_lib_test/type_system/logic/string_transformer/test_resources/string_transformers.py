@@ -1,13 +1,13 @@
 import itertools
 from typing import Callable, Sequence, Iterator
 
+from exactly_lib.test_case_utils.string_models import transformed_model_from_lines
+from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import StringTransFun
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import line_matcher
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_models import StringTransFun
-from . import string_models
 
 
 class StringTransformerFromLinesTransformation(StringTransformer):
@@ -31,8 +31,8 @@ class StringTransformerFromLinesTransformation(StringTransformer):
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return self._transformation(lines)
 
-    def transform_2(self, model: StringModel) -> StringModel:
-        return string_models.TransformedStringModelFromLines(
+    def transform__new(self, model: StringModel) -> StringModel:
+        return transformed_model_from_lines.TransformedStringModelFromLines(
             self._transformation,
             model
         )

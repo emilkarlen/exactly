@@ -13,6 +13,8 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
+    StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
@@ -72,7 +74,7 @@ class _SelectStringTransformerAdv(ApplicationEnvironmentDependentValue[StringTra
         return _SelectStringTransformer(self._line_matcher.primitive(environment))
 
 
-class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
     """
     Keeps lines matched by a given :class:`LineMatcher`,
     and discards lines not matched.

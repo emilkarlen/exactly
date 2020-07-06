@@ -17,6 +17,8 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
+    StringTransformerFromLinesTransformer
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -107,7 +109,7 @@ class _Ddv(StringTransformerDdv):
                     self._replacement.value_of_any_dependency(tcds))
 
 
-class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
     _PATTERN_HEADER = 'pattern ' + syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name
     _REPLACEMENT_HEADER = 'replacement ' + syntax_elements.STRING_SYNTAX_ELEMENT.singular_name
 

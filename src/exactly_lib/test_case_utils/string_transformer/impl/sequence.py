@@ -10,6 +10,8 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
+from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
+    StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
@@ -21,7 +23,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
     NAME = names.SEQUENCE_OPERATOR_NAME
 
     def __init__(self, transformers: Sequence[StringTransformer]):

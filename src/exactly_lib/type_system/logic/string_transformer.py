@@ -1,9 +1,10 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Iterator
 
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
     LogicWithNodeDescriptionDdv
+from exactly_lib.type_system.logic.string_model import StringModel
 
 StringTransformerModel = Iterator[str]
 
@@ -20,8 +21,13 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         """
         return False
 
+    @abstractmethod
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        raise NotImplementedError('abstract method')
+        pass
+
+    @abstractmethod
+    def transform__new(self, model: StringModel) -> StringModel:
+        pass
 
     def __str__(self):
         return type(self).__name__
