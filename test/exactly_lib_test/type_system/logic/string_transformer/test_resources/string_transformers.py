@@ -1,49 +1,137 @@
 import itertools
-from abc import ABC
-from typing import Iterable, Callable
+from typing import Callable, Sequence, Iterator
 
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import line_matcher
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
-from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
+from exactly_lib.util.description_tree import renderers
+from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_models import StringTransFun
+from . import string_models
 
 
-class StringTransformerTestImplBase(StringTransformer, ABC):
+class StringTransformerFromLinesTransformation(StringTransformer):
+    def __init__(self,
+                 name: str,
+                 transformation: StringTransFun,
+                 is_identity: bool = False
+                 ):
+        self._name = name
+        self._transformation = transformation
+        self._is_identity = is_identity
+
     @property
     def name(self) -> str:
-        return str(type(self))
+        return self._name
 
-    def structure(self) -> StructureRenderer:
-        return renderers_tr.structure_renderer_for_arbitrary_object(self)
-
-
-class DeleteEverythingTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return []
-
-
-class EveryLineEmptyStringTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(lambda x: '', lines)
-
-
-class MyNonIdentityTransformer(StringTransformerTestImplBase):
     @property
     def is_identity_transformer(self) -> bool:
-        return False
+        return self._is_identity
 
     def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return map(lambda s: 'not identity', lines)
+        return self._transformation(lines)
+
+    def transform_2(self, model: StringModel) -> StringModel:
+        return string_models.TransformedStringModelFromLines(
+            self._transformation,
+            model
+        )
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only(self._name)
 
 
-class MyToUppercaseTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return map(str.upper, lines)
+def must_not_be_used() -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'must-no-be-used',
+        _raises_value_error('Must not be used'),
+    )
 
 
-class MyCountNumUppercaseCharactersTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return map(get_number_of_uppercase_characters, lines)
+def _raises_value_error(err_msg: str) -> StringTransFun:
+    def ret_val(lines: Iterator[str]) -> Iterator[str]:
+        raise ValueError(err_msg)
+
+    return ret_val
+
+
+def of_line_transformer(name: str,
+                        line_transformer: Callable[[str], str],
+                        ) -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        name,
+        lambda lines: map(line_transformer, lines)
+    )
+
+
+def of_line_transformer__w_preserved_line_ending(name: str,
+                                                 line_transformer: Callable[[str], str],
+                                                 ) -> StringTransformer:
+    return of_line_transformer(
+        name,
+        with_preserved_new_line_ending(line_transformer)
+    )
+
+
+def constant(result: Sequence[str]) -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'constant-test-impl',
+        lambda lines: iter(result)
+    )
+
+
+def identity_test_impl() -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'identity-test-impl',
+        lambda lines: lines,
+        is_identity=True
+    )
+
+
+def arbitrary_non_identity() -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'my-non-identity-transformer',
+        lambda lines: map(lambda s: 'not identity', lines)
+    )
+
+
+def arbitrary() -> StringTransformer:
+    return arbitrary_non_identity()
+
+
+def delete_everything() -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'delete-everything',
+        lambda lines: iter([])
+    )
+
+
+def every_line_empty__preserve_line_endings() -> StringTransformer:
+    return of_line_transformer__w_preserved_line_ending(
+        'every-line-empty',
+        lambda x: ''
+    )
+
+
+def every_line_empty() -> StringTransformer:
+    return of_line_transformer(
+        'every-line-empty',
+        lambda x: ''
+    )
+
+
+def to_uppercase() -> StringTransformer:
+    return of_line_transformer(
+        'to-upper',
+        str.upper
+    )
+
+
+def count_num_uppercase_characters() -> StringTransformer:
+    return StringTransformerFromLinesTransformation(
+        'count-num-uppercase-characters',
+        lambda lines: map(get_number_of_uppercase_characters, lines)
+    )
 
 
 def get_number_of_uppercase_characters(line: str) -> str:
@@ -54,41 +142,62 @@ def get_number_of_uppercase_characters(line: str) -> str:
     return str(ret_val)
 
 
-class DuplicateWordsTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return map(_with_preserved_new_line_ending(self._do_it), lines)
-
-    @staticmethod
-    def _do_it(line: str) -> str:
+def duplicate_words() -> StringTransformer:
+    def do_it(line: str) -> str:
         words = line.split()
         return ' '.join(itertools.chain.from_iterable(map(lambda x: [x, x], words)))
 
+    return StringTransformerFromLinesTransformation(
+        'duplicate-words',
+        lambda lines: map(with_preserved_new_line_ending(do_it), lines)
+    )
 
-class DeleteInitialWordTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return map(_with_preserved_new_line_ending(self._do_it), lines)
 
-    @staticmethod
-    def _do_it(line: str) -> str:
+def delete_initial_word() -> StringTransformer:
+    def do_it(line: str) -> str:
         words = line.split()
         if words:
             del words[0]
         return ' '.join(words)
 
+    return StringTransformerFromLinesTransformation(
+        'delete-initial-word',
+        lambda lines: map(with_preserved_new_line_ending(do_it), lines)
+    )
 
-class KeepSingleLine(StringTransformerTestImplBase):
-    def __init__(self, line_num_to_keep: int):
-        self.line_num_to_keep = line_num_to_keep
 
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        line_num_to_keep = self.line_num_to_keep
+def keep_single_line(line_num_to_keep: int) -> StringTransformer:
+    def transform(lines: StringTransformerModel) -> StringTransformerModel:
         for line in enumerate(lines, line_matcher.FIRST_LINE_NUMBER):
             if line[0] == line_num_to_keep:
                 yield line[1]
                 break
 
+    return StringTransformerFromLinesTransformation(
+        'keep-single-line',
+        transform
+    )
 
-def _with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], str]) -> Callable[[str], str]:
+
+def add_line(line_wo_ending_new_line: str) -> StringTransformer:
+    def transform(lines: StringTransformerModel) -> StringTransformerModel:
+
+        all_lines = list(lines)
+        if all_lines:
+            last_line = all_lines[-1]
+            if last_line == '' or last_line[-1] != '\n':
+                all_lines[-1] = last_line + '\n'
+
+        all_lines.append(line_wo_ending_new_line + '\n')
+        return iter(all_lines)
+
+    return StringTransformerFromLinesTransformation(
+        'add-line',
+        transform
+    )
+
+
+def with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], str]) -> Callable[[str], str]:
     def ret_val(x: str) -> str:
         has_new_line = len(x) > 0 and x[-1] == '\n'
         if has_new_line:

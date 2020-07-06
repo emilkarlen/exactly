@@ -1,72 +1,21 @@
-from typing import Sequence, Optional
+from typing import Sequence
 
-from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
     constant_success_validator
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerModel, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
-from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
-    ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def arbitrary_sdv() -> StringTransformerSdv:
-    return StringTransformerSdvConstantTestImpl(StringTransformerConstantTestImpl(()))
-
-
-class StringTransformerConstantTestImpl(StringTransformerTestImplBase):
-    """Matcher with constant result."""
-
-    def __init__(self, result: StringTransformerModel):
-        self._result = result
-
-    def is_identity_transformer(self) -> bool:
-        return False
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return self._result
-
-
-class StringTransformerIdentityTestImpl(StringTransformerTestImplBase):
-    """Matcher with no modification."""
-
-    def structure(self) -> StructureRenderer:
-        return renderers.header_only(str(type(self)))
-
-    def is_identity_transformer(self) -> bool:
-        return True
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return lines
-
-
-class StringTransformerConstantSequenceTestImpl(StringTransformerTestImplBase):
-    """Matcher with constant result."""
-
-    def __init__(self, result: Sequence[str]):
-        self._result = result
-
-    def is_identity_transformer(self) -> bool:
-        return False
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return iter(self._result)
+    return StringTransformerSdvConstantTestImpl(string_transformers.constant(()))
 
 
 class StringTransformerDdvTestImpl(StringTransformerDdv):
@@ -126,10 +75,11 @@ class StringTransformerSdvConstantValueTestImpl(StringTransformerSdv):
         return self._resolved_value
 
 
-def string_transformer_from_primitive_value(primitive_value: StringTransformer = StringTransformerIdentityTestImpl(),
-                                            references: Sequence[SymbolReference] = (),
-                                            validator: DdvValidator = constant_success_validator(),
-                                            ) -> StringTransformerSdv:
+def string_transformer_from_primitive_value(
+        primitive_value: StringTransformer = string_transformers.identity_test_impl(),
+        references: Sequence[SymbolReference] = (),
+        validator: DdvValidator = constant_success_validator(),
+) -> StringTransformerSdv:
     return StringTransformerSdvConstantValueTestImpl(
         StringTransformerDdvTestImpl(
             primitive_value,
@@ -139,134 +89,12 @@ def string_transformer_from_primitive_value(primitive_value: StringTransformer =
     )
 
 
-def string_transformer_from_result(result: StringTransformerModel,
-                                   references: Sequence[SymbolReference] = (),
-                                   validator: DdvValidator = constant_success_validator(),
-                                   ) -> StringTransformerSdv:
-    return StringTransformerSdvConstantValueTestImpl(
-        StringTransformerDdvTestImpl(
-            StringTransformerConstantTestImpl(result),
-            validator
-        ),
-        references=references,
-    )
-
-
-def string_transformer_from_repeatable_result(result: Sequence[str],
-                                              references: Sequence[SymbolReference] = (),
-                                              validator: DdvValidator = constant_success_validator(),
-                                              ) -> StringTransformerSdv:
-    return StringTransformerSdvConstantValueTestImpl(
-        StringTransformerDdvTestImpl(
-            StringTransformerConstantSequenceTestImpl(result),
-            validator
-        ),
-        references=references,
-    )
-
-
-class StringTransformerSymbolValueContext(LogicSymbolValueContext[StringTransformerSdv]):
-    def __init__(self,
-                 sdv: StringTransformerSdv,
-                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 ):
-        super().__init__(sdv, definition_source)
-
-    @staticmethod
-    def of_sdv(sdv: StringTransformerSdv,
-               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               ) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext(sdv,
-                                                   definition_source)
-
-    @staticmethod
-    def of_primitive(primitive: StringTransformer,
-                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                     ) -> 'StringTransformerSymbolValueContext':
-        return StringTransformerSymbolValueContext.of_sdv(StringTransformerSdvConstant(primitive),
-                                                          definition_source)
-
-    @staticmethod
-    def of_arbitrary_value() -> 'StringTransformerSymbolValueContext':
-        return ARBITRARY_SYMBOL_VALUE_CONTEXT
-
-    @property
-    def value_type(self) -> ValueType:
-        return ValueType.STRING_TRANSFORMER
-
-    def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return is_reference_to_string_transformer(symbol_name)
-
-
-class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv]):
-    def __init__(self,
-                 name: str,
-                 value: StringTransformerSymbolValueContext,
-                 ):
-        super().__init__(name)
-        self._value = value
-
-    @staticmethod
-    def of_sdv(name: str,
-               sdv: StringTransformerSdv,
-               definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-               ) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext(
-            name,
-            StringTransformerSymbolValueContext.of_sdv(sdv, definition_source)
-        )
-
-    @staticmethod
-    def of_primitive(name: str,
-                     primitive: StringTransformer,
-                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                     ) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext(
-            name,
-            StringTransformerSymbolValueContext.of_primitive(primitive, definition_source)
-        )
-
-    @staticmethod
-    def of_identity(name: str,
-                    definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                    ) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext.of_primitive(name,
-                                                           IdentityStringTransformer(),
-                                                           definition_source)
-
-    @staticmethod
-    def of_arbitrary_value(name: str) -> 'StringTransformerSymbolContext':
-        return StringTransformerSymbolContext(
-            name,
-            ARBITRARY_SYMBOL_VALUE_CONTEXT
-        )
-
-    @property
-    def value(self) -> StringTransformerSymbolValueContext:
-        return self._value
-
-
-class StringTransformerPrimitiveSymbolContext(StringTransformerSymbolContext):
-    def __init__(self,
-                 name: str,
-                 primitive: StringTransformer,
-                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                 ):
-        super().__init__(name,
-                         StringTransformerSymbolValueContext.of_primitive(primitive, definition_source))
-        self._primitive = primitive
-
-    @property
-    def primitive(self) -> StringTransformer:
-        return self._primitive
-
-
 def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:
     return iter(['line'] * number_of_lines)
 
 
 def arbitrary_transformer() -> StringTransformer:
-    return StringTransformerIdentityTestImpl()
+    return string_transformers.identity_test_impl()
 
 
 def arbitrary_transformer_ddv() -> StringTransformerDdv:
@@ -275,23 +103,3 @@ def arbitrary_transformer_ddv() -> StringTransformerDdv:
 
 def arbitrary_transformer_sdv() -> StringTransformerSdv:
     return string_transformer_from_primitive_value(arbitrary_transformer())
-
-
-IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
-
-
-def is_reference_to_string_transformer__usage(name_of_transformer: str) -> ValueAssertion[SymbolUsage]:
-    return asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
-                                            IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)
-
-
-def is_reference_to_string_transformer(name_of_transformer: str) -> ValueAssertion[SymbolReference]:
-    return asrt.is_instance_with(SymbolReference,
-                                 asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
-                                                                  IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)
-                                 )
-
-
-ARBITRARY_SYMBOL_VALUE_CONTEXT = StringTransformerSymbolValueContext.of_primitive(
-    IdentityStringTransformer()
-)

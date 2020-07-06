@@ -11,19 +11,21 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.sour
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_string_transformer_constant
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
-    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -44,7 +46,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         symbol = StringTransformerSymbolContext.of_primitive(
             'the_symbol_name',
-            transformers.StringTransformerThatMustNotBeUsedTestImpl()
+            string_transformers.must_not_be_used()
         )
 
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,

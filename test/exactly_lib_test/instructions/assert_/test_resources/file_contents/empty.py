@@ -1,5 +1,4 @@
 import unittest
-from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -8,15 +7,15 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
@@ -98,7 +97,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
         # ARRANGE #
         named_transformer = StringTransformerSymbolContext.of_primitive(
             'the_transformer',
-            DeleteEverythingStringTransformer()
+            string_transformers.every_line_empty()
         )
 
         original_file_contents = 'some\ntext'
@@ -122,8 +121,3 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
                 main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                 symbol_usages=expected_symbol_usages),
         )
-
-
-class DeleteEverythingStringTransformer(StringTransformerTestImplBase):
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(lambda x: '', lines)

@@ -11,9 +11,9 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
 from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
+from exactly_lib_test.symbol.test_resources import file_matcher
 from exactly_lib_test.symbol.test_resources import string
-from exactly_lib_test.symbol.test_resources import string_transformer, \
-    file_matcher
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
 
@@ -48,7 +48,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
-            string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            st_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()

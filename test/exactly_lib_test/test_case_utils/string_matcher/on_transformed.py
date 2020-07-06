@@ -1,8 +1,10 @@
 import unittest
 
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ExecutionExpectation, ParseExpectation, PrimAndExeExpectation
@@ -14,13 +16,11 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import \
     validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases \
     as string_transformer_failing_validation_cases
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformers import \
-    StringTransformerThatMustNotBeUsedTestImpl
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    DeleteEverythingTransformer
+    delete_everything
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
@@ -48,12 +48,12 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
             NEA(
                 'transformation that makes matcher match',
                 True,
-                string_transformers.MyToUppercaseTransformer(),
+                string_transformers.to_uppercase(),
             ),
             NEA(
                 'transformation that makes matcher NOT match',
                 False,
-                DeleteEverythingTransformer(),
+                delete_everything(),
             ),
         ]
 
@@ -89,7 +89,7 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
     def runTest(self):
         string_transformer = StringTransformerSymbolContext.of_primitive(
             'the_string_transformer',
-            StringTransformerThatMustNotBeUsedTestImpl()
+            string_transformers.arbitrary()
         )
         for case in string_matcher_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
@@ -150,7 +150,7 @@ class TestWithBinaryOperators(unittest.TestCase):
     def test_transformation_SHOULD_apply_to_all_operands_if_matcher_is_binary_operator_expression(self):
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            string_transformers.MyToUppercaseTransformer()
+            string_transformers.to_uppercase()
         )
 
         model = contents_transformation.TransformedContentsSetup(
@@ -188,7 +188,7 @@ class TestWithBinaryOperators(unittest.TestCase):
     def test_transformation_SHOULD_apply_only_to_matcher_argument(self):
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            string_transformers.MyToUppercaseTransformer()
+            string_transformers.to_uppercase()
         )
 
         model = contents_transformation.TransformedContentsSetup(
@@ -228,17 +228,17 @@ class TestWithBinaryOperators(unittest.TestCase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'the_to_upper_transformer',
-            string_transformers.MyToUppercaseTransformer()
+            string_transformers.to_uppercase()
         )
 
         keep_line_1 = StringTransformerSymbolContext.of_primitive(
             'keep_line_1',
-            string_transformers.KeepSingleLine(1)
+            string_transformers.keep_single_line(1)
         )
 
         keep_line_2 = StringTransformerSymbolContext.of_primitive(
             'keep_line_2',
-            string_transformers.KeepSingleLine(2)
+            string_transformers.keep_single_line(2)
         )
 
         equals_1st = StringMatcherSymbolContext.of_primitive(

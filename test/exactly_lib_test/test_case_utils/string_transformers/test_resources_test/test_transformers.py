@@ -13,13 +13,13 @@ def suite() -> unittest.TestSuite:
 
 class TestDeleteEverythingTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = string_transformers.DeleteEverythingTransformer()
+        transformer = string_transformers.delete_everything()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_no_lines(self):
         # ARRANGE #
 
-        transformer = string_transformers.DeleteEverythingTransformer()
+        transformer = string_transformers.delete_everything()
 
         # ACT #
 
@@ -33,7 +33,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
     def test_lines_SHOULD_be_removed(self):
         # ARRANGE #
 
-        transformer = string_transformers.DeleteEverythingTransformer()
+        transformer = string_transformers.delete_everything()
         input_lines = [
             'something\n',
             ''
@@ -50,13 +50,13 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
 
 class TestDuplicateWordsTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = string_transformers.DuplicateWordsTransformer()
+        transformer = string_transformers.duplicate_words()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_no_lines(self):
         # ARRANGE #
 
-        transformer = string_transformers.DuplicateWordsTransformer()
+        transformer = string_transformers.duplicate_words()
 
         # ACT #
 
@@ -70,7 +70,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
     def test_empty_lines(self):
         # ARRANGE #
 
-        transformer = string_transformers.DuplicateWordsTransformer()
+        transformer = string_transformers.duplicate_words()
         input_lines = [
             '\n',
             '  \n',
@@ -96,7 +96,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
     def test_lines_with_words(self):
         # ARRANGE #
 
-        transformer = string_transformers.DuplicateWordsTransformer()
+        transformer = string_transformers.duplicate_words()
         input_lines = [' a\n',
                        ' first second \n',
                        '%']
@@ -117,13 +117,13 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
 class TestDeleteInitialWordTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = string_transformers.DeleteInitialWordTransformer()
+        transformer = string_transformers.delete_initial_word()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_no_lines(self):
         # ARRANGE #
 
-        transformer = string_transformers.DeleteInitialWordTransformer()
+        transformer = string_transformers.delete_initial_word()
 
         # ACT #
 
@@ -137,7 +137,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
     def test_empty_lines(self):
         # ARRANGE #
 
-        transformer = string_transformers.DeleteInitialWordTransformer()
+        transformer = string_transformers.delete_initial_word()
         input_lines = ['\n',
                        '  \n',
                        '  ',
@@ -159,7 +159,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
     def test_lines_with_words(self):
         # ARRANGE #
 
-        transformer = string_transformers.DeleteInitialWordTransformer()
+        transformer = string_transformers.delete_initial_word()
         input_lines = [' a\n',
                        ' first second \n',
                        '%']

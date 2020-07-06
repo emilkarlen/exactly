@@ -17,15 +17,16 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.symbol.data.test_resources import path, list_
+from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
-    files_condition, string_transformer, program, string
+    files_condition, program, string
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    MyToUppercaseTransformer
+    to_uppercase
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_text_struct
 
 
@@ -148,7 +149,7 @@ def _rendered_blocks_are_major_blocks(put: unittest.TestCase, blocks: Sequence[R
 
 
 def _arbitrary_string_transformer() -> StringTransformerSdv:
-    return StringTransformerSdvConstant(MyToUppercaseTransformer())
+    return StringTransformerSdvConstant(to_uppercase())
 
 
 class _ConstantDefinitionsResolver(DefinitionsResolver):
@@ -257,6 +258,6 @@ _VALUE_CONTEXTS_OF_EVERY_TYPE = [
     files_matcher_sc.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
     files_condition.ARBITRARY_SYMBOL_VALUE_CONTEXT,
-    string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+    st_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
     program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 ]

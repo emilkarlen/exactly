@@ -2,15 +2,17 @@ import unittest
 
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines.test_resources import \
     TestCaseBase, args_constructor_for
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -69,7 +71,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         # ARRANGE #
         named_transformer = StringTransformerSymbolContext.of_primitive(
             'the_transformer',
-            contents_transformation.ToUppercaseStringTransformer()
+            string_transformers.to_uppercase()
         )
 
         actual_original_contents = lines_content(['only',

@@ -41,7 +41,8 @@ from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContex
     ConstantSuffixPathDdvSymbolContext, path_or_string_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     is_reference_to_string_made_up_of_just_strings
-from exactly_lib_test.symbol.test_resources import file_matcher, string_transformer, program
+from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
+from exactly_lib_test.symbol.test_resources import file_matcher, program
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -1429,7 +1430,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
         symbol_value_contexts = [
             list_.ARBITRARY_SYMBOL_VALUE_CONTEXT,
             file_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
-            string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            st_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
             program.ARBITRARY_SYMBOL_VALUE_CONTEXT,
         ]
         for symbol_value_context in symbol_value_contexts:

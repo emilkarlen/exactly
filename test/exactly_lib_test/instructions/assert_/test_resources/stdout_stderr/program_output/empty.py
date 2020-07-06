@@ -6,7 +6,8 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     configuration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
     TestCaseBase
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer__usage
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments

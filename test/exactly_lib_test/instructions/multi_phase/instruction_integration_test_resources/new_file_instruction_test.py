@@ -18,9 +18,12 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.path import path_or_string_reference_restrictions
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer__usage
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
-    StringTransformerSdvConstantTestImpl, StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -37,7 +40,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    MyToUppercaseTransformer
+    to_uppercase
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
@@ -77,7 +80,7 @@ class TestCaseBase(unittest.TestCase):
 class TestSymbolUsages(TestCaseBase):
     def runTest(self):
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerSdvConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerSdvConstantTestImpl(to_uppercase()))
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
@@ -177,7 +180,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
         symbols = to_upper_transformer.symbol_table
 
@@ -222,7 +225,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TO_UPPER_CASE',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
         symbols = to_upper_transformer.symbol_table
 

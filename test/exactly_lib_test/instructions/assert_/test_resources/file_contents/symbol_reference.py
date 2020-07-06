@@ -8,10 +8,12 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer__usage
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher__usage, \
     StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage, \
-    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
@@ -22,7 +24,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformati
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    EveryLineEmptyStringTransformer
+    every_line_empty
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:
@@ -101,7 +103,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
     def runTest(self):
         # ARRANGE #
         named_transformer = StringTransformerSymbolContext.of_primitive('the_transformer',
-                                                                        EveryLineEmptyStringTransformer())
+                                                                        every_line_empty())
 
         original_file_contents = 'some\ntext'
 

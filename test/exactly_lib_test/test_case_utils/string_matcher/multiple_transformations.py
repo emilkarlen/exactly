@@ -1,5 +1,4 @@
 import unittest
-from typing import Iterable
 
 from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
@@ -7,10 +6,12 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher, \
     StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
-    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
     ExecutionExpectation
@@ -22,8 +23,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    StringTransformerTestImplBase
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -52,7 +52,10 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
 
         prepend_transformer_symbol = StringTransformerSymbolContext.of_primitive(
             'PREPEND_TRANSFORMER',
-            PrependStringToLinesTransformer(string_to_prepend)
+            string_transformers.of_line_transformer__w_preserved_line_ending(
+                'prepend to each line',
+                lambda line: (line + string_to_prepend)
+            )
         )
 
         prepend_trans_arg = str_trans_syntax.syntax_for_transformer_option(prepend_transformer_symbol.name)
@@ -100,17 +103,6 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                 ),
             )
         )
-
-
-class PrependStringToLinesTransformer(StringTransformerTestImplBase):
-    def __init__(self, string_to_prepend: str):
-        self.string_to_prepend = string_to_prepend
-
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return map(self._prepend, lines)
-
-    def _prepend(self, to: str) -> str:
-        return self.string_to_prepend + to
 
 
 class EqualsMatcherTestImpl(StringMatcherImplBase):

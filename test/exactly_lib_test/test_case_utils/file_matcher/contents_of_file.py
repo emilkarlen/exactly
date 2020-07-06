@@ -6,7 +6,9 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
@@ -25,7 +27,7 @@ from exactly_lib_test.test_resources.files.file_structure import empty_file, Fil
     FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    EveryLineEmptyStringTransformer
+    every_line_empty
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
@@ -165,7 +167,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
         # ARRANGE #
 
         named_transformer = StringTransformerSymbolContext.of_primitive('the_transformer',
-                                                                        EveryLineEmptyStringTransformer())
+                                                                        every_line_empty())
 
         checked_file = File('actual.txt', 'some\ntext')
 

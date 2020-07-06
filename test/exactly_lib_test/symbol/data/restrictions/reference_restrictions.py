@@ -20,15 +20,16 @@ from exactly_lib_test.execution.impl.symbols_handling.symbol_validation import R
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
     is_failure_of_indirect_reference, value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataSymbolValueContext, DataTypeSymbolContext, \
     LogicSymbolValueContext, LogicTypeSymbolContext, SymbolContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -433,7 +434,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                 'logic symbol',
                 StringTransformerSymbolContext.of_sdv('referenced_logic_symbol',
                                                       StringTransformerSdvConstantTestImpl(
-                                                          FakeStringTransformer(),
+                                                          string_transformers.arbitrary(),
                                                           references=[]))
             ),
         ]

@@ -5,8 +5,8 @@ from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
-from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, string_transformer, \
-    file_matcher, program, files_condition
+from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
+from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, program, files_condition
 from exactly_lib_test.symbol.test_resources import string
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
@@ -92,7 +92,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             string_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
         ValueType.STRING_TRANSFORMER:
-            string_transformer.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+            st_symbol_context.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
         ValueType.PROGRAM:
             program.ARBITRARY_SYMBOL_VALUE_CONTEXT,

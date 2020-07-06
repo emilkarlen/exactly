@@ -5,9 +5,11 @@ from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
     ExecutionExpectation, ParseExpectation
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
@@ -28,6 +30,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
@@ -260,7 +263,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
         # ARRANGE #
         named_transformer = StringTransformerSymbolContext.of_primitive(
             _TRANSFORMER_SYMBOL_NAME,
-            contents_transformation.ToUppercaseStringTransformer()
+            string_transformers.to_uppercase()
         )
 
         contents_generator = contents_transformation.TransformedContentsSetup(

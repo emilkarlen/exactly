@@ -7,8 +7,9 @@ from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer__usage
 from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher__usage
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer__usage
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import test_resources as tr

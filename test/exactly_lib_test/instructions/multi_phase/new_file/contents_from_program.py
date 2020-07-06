@@ -23,9 +23,10 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import \
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
+    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
@@ -49,7 +50,7 @@ from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    MyToUppercaseTransformer
+    to_uppercase
 
 
 def suite() -> unittest.TestSuite:
@@ -77,7 +78,7 @@ class TestSymbolUsages(TestCaseBase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            MyToUppercaseTransformer()
+            to_uppercase()
         )
 
         transformed_shell_contents_arguments = TransformableContentsConstructor(
@@ -134,7 +135,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
         text_printed_by_program = 'the text printed by the program'
         transformer = StringTransformerSymbolContext.of_primitive(
             'TO_UPPER_CASE',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
         self._test(
             text_printed_by_program=text_printed_by_program,
@@ -235,7 +236,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TO_UPPER_CASE',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
         symbols = to_upper_transformer.symbol_table
 
@@ -339,7 +340,7 @@ class TestFailingScenarios(TestCaseBase):
         failing_program = ArgumentElements([failing_program_as_single_line])
         transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
         symbols = transformer.symbol_table
 
@@ -382,7 +383,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingSce
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            MyToUppercaseTransformer(),
+            to_uppercase(),
         )
 
         symbols = arbitrary_transformer.symbol_table

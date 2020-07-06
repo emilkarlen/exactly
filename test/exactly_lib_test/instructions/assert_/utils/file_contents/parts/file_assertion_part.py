@@ -4,10 +4,9 @@ from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     destination_file_path_getter_that_gives_seq_of_unique_paths
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.contents_transformation import \
-    ToUppercaseStringTransformer
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 from exactly_lib_test.type_system.data.test_resources import described_path
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -53,7 +52,7 @@ class Test(unittest.TestCase):
 
         line_trans_cases = [
             ('identity', IdentityStringTransformer(), lambda x: x),
-            ('to-upper', ToUppercaseStringTransformer(), str.upper),
+            ('to-upper', string_transformers.to_uppercase(), str.upper),
         ]
 
         with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:

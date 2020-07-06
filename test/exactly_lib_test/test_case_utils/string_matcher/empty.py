@@ -1,7 +1,9 @@
 import unittest
 
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
     ExecutionExpectation, ParseExpectation
@@ -19,7 +21,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    EveryLineEmptyStringTransformer
+    every_line_empty
 
 
 def suite() -> unittest.TestSuite:
@@ -76,7 +78,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
         # ARRANGE #
         named_transformer = StringTransformerSymbolContext.of_primitive(
             'the_transformer',
-            EveryLineEmptyStringTransformer()
+            every_line_empty()
         )
 
         original_file_contents = 'some\ntext'

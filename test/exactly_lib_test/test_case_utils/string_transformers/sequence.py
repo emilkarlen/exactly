@@ -2,9 +2,10 @@ import unittest
 
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
-from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
@@ -17,11 +18,12 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    StringTransformerTestImplBase, MyNonIdentityTransformer, MyToUppercaseTransformer, \
-    MyCountNumUppercaseCharactersTransformer
+    arbitrary_non_identity, to_uppercase, \
+    count_num_uppercase_characters
 
 
 def suite() -> unittest.TestSuite:
@@ -36,11 +38,11 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         symbol_1 = NameAndValue('symbol_1_name',
-                                _AddLineTransformer('added by 1st transformer'))
+                                'added by 1st transformer')
         symbol_2 = NameAndValue('symbol_2_name',
-                                _AddLineTransformer('added by 2nd transformer'))
+                                'added by 2nd transformer')
         symbol_3 = NameAndValue('symbol_3_name',
-                                _AddLineTransformer('added by 3rd transformer'))
+                                'added by 3rd transformer')
 
         cases = [
             NameAndValue('2 transformers',
@@ -69,10 +71,15 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
             initial_model_lines = [initial_line]
 
             expected_output_lines = [initial_line] + [
-                symbol.value.line_to_add
+                symbol.value + '\n'
                 for symbol in sequenced_transformer_symbols
             ]
 
+            symbol_contexts = [
+                StringTransformerSymbolContext.of_primitive(symbol.name,
+                                                            string_transformers.add_line(symbol.value))
+                for symbol in sequenced_transformer_symbols
+            ]
             # ACT & ASSERT #
 
             with self.subTest(case.name):
@@ -81,17 +88,11 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     Arguments(arguments),
                     model_construction.of_lines(initial_model_lines),
                     arrangement_wo_tcds(
-                        SymbolContext.symbol_table_of_contexts([
-                            StringTransformerSymbolContext.of_primitive(symbol.name, symbol.value)
-                            for symbol in sequenced_transformer_symbols
-                        ])
+                        SymbolContext.symbol_table_of_contexts(symbol_contexts)
                     ),
                     expectation_of_successful_execution(
                         output_lines=expected_output_lines,
-                        symbol_references=asrt.matches_sequence([
-                            is_reference_to_string_transformer(symbol.name)
-                            for symbol in sequenced_transformer_symbols
-                        ]),
+                        symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
                         is_identity_transformer=False,
                     )
                 )
@@ -146,16 +147,6 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
                     )
 
 
-class _AddLineTransformer(StringTransformerTestImplBase):
-    def __init__(self, line_contents: str):
-        self.line_to_add = line_contents + '\n'
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        for line in lines:
-            yield line
-        yield self.line_to_add
-
-
 class TestPrimitiveValue(unittest.TestCase):
     def test_SHOULD_is_identity_transformer(self):
         cases = [
@@ -177,7 +168,7 @@ class TestPrimitiveValue(unittest.TestCase):
             ),
             (
                 'non-identity transformer',
-                SequenceStringTransformer([MyNonIdentityTransformer()]),
+                SequenceStringTransformer([arbitrary_non_identity()]),
                 False,
             ),
         ]
@@ -222,7 +213,7 @@ class TestPrimitiveValue(unittest.TestCase):
     def test_WHEN_single_transformer_THEN_sequence_SHOULD_be_identical_to_the_single_transformer(self):
         # ARRANGE #
 
-        to_upper_t = MyToUppercaseTransformer()
+        to_upper_t = to_uppercase()
 
         sequence = SequenceStringTransformer([to_upper_t])
 
@@ -248,8 +239,8 @@ class TestPrimitiveValue(unittest.TestCase):
     def test_WHEN_multiple_transformers_THEN_transformers_SHOULD_be_chained(self):
         # ARRANGE #
 
-        to_upper_t = MyToUppercaseTransformer()
-        count_num_upper = MyCountNumUppercaseCharactersTransformer()
+        to_upper_t = to_uppercase()
+        count_num_upper = count_num_uppercase_characters()
 
         sequence = SequenceStringTransformer([to_upper_t,
                                               count_num_upper])
