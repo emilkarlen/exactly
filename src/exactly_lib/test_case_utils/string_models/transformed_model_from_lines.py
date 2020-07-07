@@ -3,9 +3,8 @@ from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_system.logic.string_model import StringModel, TmpFilePathGenerator
-from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 
-StringTransFun = Callable[[StringTransformerModel], StringTransformerModel]
+StringTransFun = Callable[[Iterator[str]], Iterator[str]]
 
 
 class TransformedStringModelFromLines(StringModelFromLinesBase):

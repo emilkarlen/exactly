@@ -4,8 +4,7 @@ from typing import Callable
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
-    StringTransformerDdv
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
@@ -23,7 +22,7 @@ class StringTransformerPropertiesConfiguration(
     def __init__(self):
         self._applier = _Applier()
 
-    def applier(self) -> Applier[StringTransformer, ModelConstructor, StringTransformerModel]:
+    def applier(self) -> Applier[StringTransformer, ModelConstructor, StringModel]:
         return self._applier
 
     def new_sdv_checker(self) -> LogicSdvPropertiesChecker[StringTransformer]:

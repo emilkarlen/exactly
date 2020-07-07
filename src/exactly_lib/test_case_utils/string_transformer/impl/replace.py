@@ -1,4 +1,4 @@
-from typing import Pattern, Sequence
+from typing import Pattern, Sequence, Iterator
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -23,8 +23,7 @@ from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
-    StringTransformerAdv
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers, details
@@ -153,7 +152,7 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def replacement(self) -> str:
         return self._replacement
 
-    def _transform(self, lines: StringTransformerModel) -> StringTransformerModel:
+    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (
             self._process_line(line)
             for line in lines

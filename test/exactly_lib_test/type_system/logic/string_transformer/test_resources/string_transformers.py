@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.string_models.transformed_model_from_lines impo
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import line_matcher
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
 
 
@@ -164,7 +164,7 @@ def delete_initial_word() -> StringTransformer:
 
 
 def keep_single_line(line_num_to_keep: int) -> StringTransformer:
-    def transform(lines: StringTransformerModel) -> StringTransformerModel:
+    def transform(lines: Iterator[str]) -> Iterator[str]:
         for line in enumerate(lines, line_matcher.FIRST_LINE_NUMBER):
             if line[0] == line_num_to_keep:
                 yield line[1]
@@ -177,7 +177,7 @@ def keep_single_line(line_num_to_keep: int) -> StringTransformer:
 
 
 def add_line(line_wo_ending_new_line: str) -> StringTransformer:
-    def transform(lines: StringTransformerModel) -> StringTransformerModel:
+    def transform(lines: Iterator[str]) -> Iterator[str]:
 
         all_lines = list(lines)
         if all_lines:

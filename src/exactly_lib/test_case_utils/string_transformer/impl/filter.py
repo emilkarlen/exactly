@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Iterator
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -21,7 +21,7 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherA
     LineMatcherSdv
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
-    StringTransformerModel, StringTransformerAdv
+    StringTransformerAdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
@@ -105,7 +105,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
     def line_matcher(self) -> LineMatcher:
         return self._line_matcher
 
-    def _transform(self, lines: StringTransformerModel) -> StringTransformerModel:
+    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (
             line
             for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)

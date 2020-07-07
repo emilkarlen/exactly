@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Iterator
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
-    StringTransformerModel, StringTransformerAdv
+    StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
@@ -89,7 +89,7 @@ def string_transformer_from_primitive_value(
     )
 
 
-def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:
+def model_with_num_lines(number_of_lines: int) -> Iterator[str]:
     return iter(['line'] * number_of_lines)
 
 
