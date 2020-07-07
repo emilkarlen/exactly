@@ -40,4 +40,4 @@ class _Applier(Applier[StringTransformer, ModelConstructor, StringModel]):
               primitive: StringTransformer,
               resolving_environment: FullResolvingEnvironment,
               input_: ModelConstructor) -> StringModel:
-        return primitive.transform__new(input_(resolving_environment.application_environment.tmp_files_space))
+        return primitive.transform(input_(resolving_environment.application_environment.tmp_files_space))

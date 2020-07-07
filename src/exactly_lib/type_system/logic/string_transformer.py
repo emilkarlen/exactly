@@ -22,11 +22,7 @@ class StringTransformer(WithNameAndTreeStructureDescription, ABC):
         return False
 
     @abstractmethod
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        pass
-
-    @abstractmethod
-    def transform__new(self, model: StringModel) -> StringModel:
+    def transform(self, model: StringModel) -> StringModel:
         pass
 
     def __str__(self):

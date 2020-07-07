@@ -31,7 +31,7 @@ class IdentityStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(names.IDENTITY_TRANSFORMER_NAME)
 
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
+    def _transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return lines
 
 

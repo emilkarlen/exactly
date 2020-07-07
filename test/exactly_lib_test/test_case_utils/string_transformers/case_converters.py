@@ -27,7 +27,7 @@ class TestToUpper(unittest.TestCase):
         transformer = sut.ToUpperCaseStringTransformer('arbitrary custom')
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -49,7 +49,7 @@ class TestToUpper(unittest.TestCase):
         transformer = sut.ToUpperCaseStringTransformer('arbitrary custom')
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -77,7 +77,7 @@ class TestToLower(unittest.TestCase):
         transformer = sut.ToLowerCaseStringTransformer('arbitrary custom')
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -99,7 +99,7 @@ class TestToLower(unittest.TestCase):
         transformer = sut.ToLowerCaseStringTransformer('arbitrary custom')
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 

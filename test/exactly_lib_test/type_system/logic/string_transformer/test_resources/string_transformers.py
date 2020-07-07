@@ -28,10 +28,7 @@ class StringTransformerFromLinesTransformation(StringTransformer):
     def is_identity_transformer(self) -> bool:
         return self._is_identity
 
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return self._transformation(lines)
-
-    def transform__new(self, model: StringModel) -> StringModel:
+    def transform(self, model: StringModel) -> StringModel:
         return transformed_model_from_lines.TransformedStringModelFromLines(
             self._transformation,
             model

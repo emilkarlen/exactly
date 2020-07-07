@@ -55,7 +55,7 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
         )
 
     def matches_w_trace(self, model: StringModel) -> MatchingResult:
-        transformed_model = self._transformer.transform__new(model)
+        transformed_model = self._transformer.transform(model)
         result_on_transformed = self._on_transformed.matches_w_trace(transformed_model)
         return (
             self._new_tb()

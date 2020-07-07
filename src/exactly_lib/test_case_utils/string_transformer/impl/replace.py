@@ -153,7 +153,7 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def replacement(self) -> str:
         return self._replacement
 
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
+    def _transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return (
             self._process_line(line)
             for line in lines

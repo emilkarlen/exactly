@@ -27,7 +27,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -47,7 +47,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -70,7 +70,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -97,7 +97,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -115,7 +115,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -142,7 +142,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -165,7 +165,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -183,7 +183,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 

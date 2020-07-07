@@ -105,7 +105,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
     def line_matcher(self) -> LineMatcher:
         return self._line_matcher
 
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
+    def _transform(self, lines: StringTransformerModel) -> StringTransformerModel:
         return (
             line
             for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)

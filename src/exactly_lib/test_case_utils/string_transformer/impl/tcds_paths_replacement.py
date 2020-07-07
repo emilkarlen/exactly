@@ -28,7 +28,7 @@ class TcdsPathsReplacementStringTransformer(CustomStringTransformer):
         super().__init__(name)
         self._name_and_value_list = _derive_name_and_value_list(tcds)
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def _transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (_replace(self._name_and_value_list, line) for line in lines)
 
 

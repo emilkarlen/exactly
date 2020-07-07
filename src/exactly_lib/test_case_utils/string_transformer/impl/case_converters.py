@@ -11,7 +11,7 @@ class ToUpperCaseStringTransformer(CustomStringTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def _transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 
@@ -23,5 +23,5 @@ class ToLowerCaseStringTransformer(CustomStringTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def _transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.lower, lines)

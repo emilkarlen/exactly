@@ -26,7 +26,7 @@ def suite() -> unittest.TestSuite:
 def _transform_string_to_string(tcds: Tcds, string_input: str) -> str:
     transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
     model = string_models.of_string(string_input)
-    output = transformer.transform__new(model)
+    output = transformer.transform(model)
     return string_models.as_string(output)
 
 

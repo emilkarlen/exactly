@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         transformer = sut.IdentityStringTransformer()
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         transformer = sut.IdentityStringTransformer()
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 

@@ -1,4 +1,4 @@
-from typing import Sequence, Callable
+from typing import Sequence
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -10,20 +10,19 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
-    StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerModel, \
-    StringTransformerAdv, StringTransformerDdv
+from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerAdv, \
+    StringTransformerDdv
 from exactly_lib.type_system.logic.string_transformer_ddvs import StringTransformerConstantDdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
+class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
     NAME = names.SEQUENCE_OPERATOR_NAME
 
     def __init__(self, transformers: Sequence[StringTransformer]):
@@ -56,26 +55,10 @@ class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def is_identity_transformer(self) -> bool:
         return self._is_identity
 
-    @property
-    def transformers(self) -> Sequence[StringTransformer]:
-        return self._transformers
-
-    def transform(self, lines: StringTransformerModel) -> StringTransformerModel:
-        return (
-            lines
-            if self._is_identity
-            else
-            self._sequenced_transformers()(lines)
-        )
-
-    def _sequenced_transformers(self) -> Callable[[StringTransformerModel], StringTransformerModel]:
-        def ret_val_fun(model: StringTransformerModel) -> StringTransformerModel:
-            ret_val = model
-            for f in self._non_identity_transformer_functions:
-                ret_val = f(ret_val)
-            return ret_val
-
-        return ret_val_fun
+    def transform(self, model: StringModel) -> StringModel:
+        for transformer in self._non_identity_transformer_functions:
+            model = transformer(model)
+        return model
 
     def __str__(self):
         return '{}[{}]'.format(type(self).__name__,

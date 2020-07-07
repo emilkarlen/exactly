@@ -187,7 +187,7 @@ class TestPrimitiveValue(unittest.TestCase):
                        'third']
         model = string_models.of_lines(input_lines)
         # ACT #
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
         # ASSERT #
         actual_lines = string_models.as_lines_list(actual)
 
@@ -208,7 +208,7 @@ class TestPrimitiveValue(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
@@ -237,7 +237,7 @@ class TestPrimitiveValue(unittest.TestCase):
 
         # ACT #
 
-        actual = transformer.transform__new(model)
+        actual = transformer.transform(model)
 
         # ASSERT #
 
