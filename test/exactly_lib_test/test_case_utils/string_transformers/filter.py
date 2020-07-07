@@ -7,6 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.string import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax
@@ -14,7 +15,7 @@ from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbo
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
     model_construction
@@ -73,7 +74,7 @@ class TestSelectTransformer(unittest.TestCase):
             self,
             Arguments(arguments),
             model_construction.of_lines([]),
-            arrangement_wo_tcds(
+            arrangement_w_tcds(
                 symbols=matcher.symbol_table
             ),
             expectation_of_successful_execution(
@@ -105,16 +106,16 @@ class TestSelectTransformer(unittest.TestCase):
                 expected=[],
                 ),
             NEA('some lines matches',
-                actual=[
+                actual=with_appended_new_lines([
                     'first line is a MATCH',
                     'second line is not a match',
                     'third line MATCH:es',
                     'fourth line not',
-                ],
-                expected=[
+                ]),
+                expected=with_appended_new_lines([
                     'first line is a MATCH',
                     'third line MATCH:es',
-                ],
+                ]),
                 ),
         ]
         for case in cases:
@@ -124,7 +125,7 @@ class TestSelectTransformer(unittest.TestCase):
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(case.actual),
-                    arrangement_wo_tcds(
+                    arrangement_w_tcds(
                         symbols=matcher.symbol_table
                     ),
                     expectation_of_successful_filter_execution(
@@ -146,30 +147,37 @@ class TestSelectTransformer(unittest.TestCase):
             NameAndValue(
                 'line numbers should be paired with lines in order of iterator (1)',
                 (is_identical_to(1, 'i'),
-                 ['i',
-                  'ii'],
-                 ['i'])
+                 with_appended_new_lines([
+                     'i',
+                     'ii',
+                 ]),
+                 with_appended_new_lines(['i'])
+                 )
             ),
             NameAndValue(
                 'line numbers should be paired with lines in order of iterator (2)',
                 (is_identical_to(2, 'ii'),
-                 ['i',
-                  'ii'],
-                 ['ii'])
+                 with_appended_new_lines([
+                     'i',
+                     'ii',
+                 ]),
+                 with_appended_new_lines(['ii'])
+                 )
             ),
             NameAndValue(
                 'line numbers should be propagated to line matcher',
                 (line_matcher_from_predicates(line_num_predicate=lambda x: x in {1, 3}),
-                 [
+                 with_appended_new_lines([
                      'i',
                      'ii',
                      'iii',
                      'iv',
-                 ],
-                 [
+                 ]),
+                 with_appended_new_lines([
                      'i',
                      'iii',
                  ])
+                 )
             ),
         ]
         line_matcher_name = 'the_line_matcher_symbol_name'
@@ -185,7 +193,7 @@ class TestSelectTransformer(unittest.TestCase):
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(input_lines),
-                    arrangement_wo_tcds(
+                    arrangement_w_tcds(
                         symbols=LineMatcherSymbolContext.of_primitive(
                             line_matcher_name,
                             matcher,
@@ -221,7 +229,7 @@ class TestLineMatcherPrimitive(unittest.TestCase):
             self,
             Arguments(arguments),
             model_construction.of_lines(lines),
-            arrangement_wo_tcds(),
+            arrangement_w_tcds(),
             expectation_of_successful_filter_execution(
                 output_lines=expected_lines,
                 symbol_references=asrt.is_empty_sequence,
@@ -244,7 +252,7 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
                     self,
                     Arguments(arguments),
                     model_construction.of_lines([]),
-                    arrangement_wo_tcds(
+                    arrangement_w_tcds(
                         symbols=line_matcher_symbol_context.symbol_table
                     ),
                     logic_integration_check.Expectation(

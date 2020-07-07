@@ -1,7 +1,14 @@
 import os
-from typing import Sequence, Any, Optional, Mapping
+from typing import Sequence, Any, Optional, Mapping, List
 
 from exactly_lib.util.name_and_value import NameAndValue
+
+
+def with_appended_new_lines(lines: Sequence[str]) -> List[str]:
+    return [
+        line + '\n'
+        for line in lines
+    ]
 
 
 def lines_content(lines: Sequence[str]) -> str:

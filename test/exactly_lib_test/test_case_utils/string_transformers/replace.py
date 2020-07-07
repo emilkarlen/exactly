@@ -7,16 +7,19 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.string import with_appended_new_lines
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import \
-    arrangement_wo_tcds, Expectation, ParseExpectation, ExecutionExpectation
+    Expectation, ParseExpectation, ExecutionExpectation, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.parse_regex import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
     model_construction, integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import StExpectation
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.model_assertions import \
+    model_lines_lists_matches
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -72,11 +75,11 @@ class Test(unittest.TestCase):
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         def lines(pattern_matching_string: str) -> List[str]:
-            return [
+            return with_appended_new_lines([
                 'unidentified flying {}'.format(pattern_matching_string),
                 '{} oriented'.format(pattern_matching_string),
                 'I {}!'.format(pattern_matching_string),
-            ]
+            ])
 
         source_cases = [
             TransformationCase('single word tokens',
@@ -129,7 +132,7 @@ class Test(unittest.TestCase):
             self,
             Arguments(source),
             model_construction.of_lines(input_lines),
-            arrangement_wo_tcds(),
+            arrangement_w_tcds(),
             expectation_of_successful_replace_execution(
                 output_lines=expected_lines
             )
@@ -155,7 +158,7 @@ class Test(unittest.TestCase):
             self,
             Arguments(source),
             model_construction.of_lines(input_lines),
-            arrangement_wo_tcds(),
+            arrangement_w_tcds(),
             expectation_of_successful_replace_execution(
                 output_lines=expected_lines
             )
@@ -174,9 +177,9 @@ class Test(unittest.TestCase):
                     self,
                     Arguments(source),
                     model_construction.of_lines(lines_for(source_case.actual)),
-                    arrangement_wo_tcds,
+                    arrangement_w_tcds(),
                     expectation_of_successful_replace_execution(
-                        output_lines=source_case.expected
+                        output_lines=lines_for(source_case.expected)
                     )
                 )
 
@@ -193,14 +196,15 @@ class Test(unittest.TestCase):
                     self,
                     Arguments(source),
                     model_construction.of_lines(lines_for(source_case.regex)),
-                    arrangement_wo_tcds(),
+                    arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
                             symbol_references=asrt.is_empty_sequence,
                         ),
                         ExecutionExpectation(
-                            main_result=asrt.on_transformed(list,
-                                                            asrt.equals(lines_for(source_case.replacement)))
+                            main_result=model_lines_lists_matches(
+                                asrt.equals(lines_for(source_case.replacement))
+                            )
                         )
                     )
                 )
@@ -238,7 +242,7 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
                     self,
                     Arguments(source),
                     model_construction.of_lines(input_lines),
-                    arrangement_wo_tcds(
+                    arrangement_w_tcds(
                         symbols=SymbolContext.symbol_table_of_contexts([
                             symbol_in_regex,
                             symbol_in_replacement,
@@ -265,7 +269,7 @@ class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
                     self,
                     Arguments(source),
                     model_construction.arbitrary_model_constructor(),
-                    arrangement_wo_tcds(
+                    arrangement_w_tcds(
                         symbols=regex_case.symbol_table
                     ),
                     Expectation(

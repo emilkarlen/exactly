@@ -9,7 +9,7 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
@@ -87,8 +87,8 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(initial_model_lines),
-                    arrangement_wo_tcds(
-                        SymbolContext.symbol_table_of_contexts(symbol_contexts)
+                    arrangement_w_tcds(
+                        symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
                     ),
                     expectation_of_successful_execution(
                         output_lines=expected_output_lines,
@@ -132,7 +132,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
                         self,
                         Arguments(arguments),
                         model_construction.of_lines([]),
-                        arrangement_wo_tcds(
+                        arrangement_w_tcds(
                             symbols=symbols
                         ),
                         logic_integration_check.Expectation(
