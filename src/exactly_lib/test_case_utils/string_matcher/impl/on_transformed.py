@@ -11,7 +11,6 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
     StringMatcherAdvImplBase
-from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
@@ -20,6 +19,7 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherModel, StringMatcherDdv, \
     StringMatcherAdv, \
     StringMatcherSdv
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
     StringTransformerAdv
 from exactly_lib.util.description_tree import renderers, details
@@ -54,22 +54,8 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
             (on_transformed,),
         )
 
-    def _structure(self) -> StructureRenderer:
-        return self.new_structure_tree(self._transformer.structure(),
-                                       self._on_transformed.structure())
-
-    def _complete_transformer(self, model: StringMatcherModel) -> StringTransformer:
-        if model.string_transformer.is_identity_transformer:
-            return self._transformer
-        else:
-            return SequenceStringTransformer([
-                model.string_transformer,
-                self._transformer,
-            ])
-
-    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
-        complete_transformer = self._complete_transformer(model)
-        transformed_model = model.with_transformation(complete_transformer)
+    def matches_w_trace(self, model: StringModel) -> MatchingResult:
+        transformed_model = self._transformer.transform__new(model)
         result_on_transformed = self._on_transformed.matches_w_trace(transformed_model)
         return (
             self._new_tb()
@@ -77,6 +63,10 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
                 .append_child(result_on_transformed.trace)
                 .build_result(result_on_transformed.value)
         )
+
+    def _structure(self) -> StructureRenderer:
+        return self.new_structure_tree(self._transformer.structure(),
+                                       self._on_transformed.structure())
 
 
 class _StringMatcherWithTransformationAdv(StringMatcherAdvImplBase):

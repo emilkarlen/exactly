@@ -5,6 +5,7 @@ from typing import ContextManager, Iterator
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \
     MatcherAdv, MatcherWTrace
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import TmpDirFileSpace
 
@@ -48,10 +49,10 @@ class StringMatcherModel(ABC):
         pass
 
 
-StringMatcher = MatcherWTrace[StringMatcherModel]
+StringMatcher = MatcherWTrace[StringModel]
 
-StringMatcherAdv = MatcherAdv[StringMatcherModel]
+StringMatcherAdv = MatcherAdv[StringModel]
 
-StringMatcherDdv = MatcherDdv[StringMatcherModel]
+StringMatcherDdv = MatcherDdv[StringModel]
 
-StringMatcherSdv = MatcherSdv[StringMatcherModel]
+StringMatcherSdv = MatcherSdv[StringModel]

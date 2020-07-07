@@ -21,6 +21,7 @@ from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, Matcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcherModel, StringMatcher, \
     StringMatcherSdv
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -120,7 +121,7 @@ class EqualityStringMatcher(StringMatcherImplBase):
             custom_details.StringOrPath(self._expected_contents),
         )
 
-    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringModel) -> MatchingResult:
         error_message = self._validator.validate_post_sds_if_applicable()
         if error_message:
             return (
@@ -131,9 +132,9 @@ class EqualityStringMatcher(StringMatcherImplBase):
 
         return self._positive_matcher_application(model)
 
-    def _positive_matcher_application(self, model: StringMatcherModel) -> MatchingResult:
+    def _positive_matcher_application(self, model: StringModel) -> MatchingResult:
         expected_file_path = self._file_path_for_file_with_expected_contents(self._tmp_file_space)
-        actual_file_path = model.transformed_file_path(self._tmp_file_space)
+        actual_file_path = model.as_file
 
         files_are_equal = self._do_compare(expected_file_path, actual_file_path)
 

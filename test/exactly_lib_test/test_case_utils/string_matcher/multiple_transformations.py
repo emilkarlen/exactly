@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
@@ -114,7 +114,7 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
     def name(self) -> str:
         return matcher_options.EQUALS_ARGUMENT
 
-    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringModel) -> MatchingResult:
         actual = self._as_single_string(model)
         if self.expected == actual:
             return self._new_tb().build_result(True)
@@ -127,6 +127,6 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
             )
 
     @staticmethod
-    def _as_single_string(model: StringMatcherModel) -> str:
-        with model.lines() as lines:
-            return ''.join(list(lines))
+    def _as_single_string(model: StringModel) -> str:
+        with model.as_lines as lines:
+            return ''.join(lines)

@@ -3,7 +3,7 @@ from exactly_lib.type_system.description.structure_building import StructureBuil
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.type_system.logic.string_model import StringModel
 
 
 class EqualsConstant(StringMatcherImplBase):
@@ -11,13 +11,13 @@ class EqualsConstant(StringMatcherImplBase):
         super().__init__()
         self._expected = expected
 
-    def matches_w_trace(self, model: StringMatcherModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringModel) -> MatchingResult:
         actual = self._as_string(model)
         return TraceBuilder(self.name).build_result(self._expected == actual)
 
     @staticmethod
-    def _as_string(model: StringMatcherModel) -> str:
-        with model.lines() as lines_iter:
+    def _as_string(model: StringModel) -> str:
+        with model.as_lines as lines_iter:
             return ''.join(lines_iter)
 
     @property

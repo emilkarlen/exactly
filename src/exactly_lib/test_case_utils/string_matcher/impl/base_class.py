@@ -4,20 +4,20 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
     MatcherWTrace
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.type_system.logic.string_model import StringModel
 
 
 class StringMatcherImplBase(WithCachedNameAndTreeStructureDescriptionBase,
-                            MatcherWTrace[StringMatcherModel],
+                            MatcherWTrace[StringModel],
                             ABC):
 
     def _new_tb(self) -> TraceBuilder:
         return TraceBuilder(self.name)
 
 
-class StringMatcherDdvImplBase(MatcherDdv[StringMatcherModel], ABC):
+class StringMatcherDdvImplBase(MatcherDdv[StringModel], ABC):
     pass
 
 
-class StringMatcherAdvImplBase(MatcherAdv[StringMatcherModel], ABC):
+class StringMatcherAdvImplBase(MatcherAdv[StringModel], ABC):
     pass
