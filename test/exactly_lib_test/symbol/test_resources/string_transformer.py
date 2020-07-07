@@ -15,7 +15,7 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
 
 
 def arbitrary_sdv() -> StringTransformerSdv:
-    return StringTransformerSdvConstantTestImpl(string_transformers.constant(()))
+    return StringTransformerSdvConstantTestImpl(string_transformers.arbitrary())
 
 
 class StringTransformerDdvTestImpl(StringTransformerDdv):
@@ -93,13 +93,9 @@ def model_with_num_lines(number_of_lines: int) -> StringTransformerModel:
     return iter(['line'] * number_of_lines)
 
 
-def arbitrary_transformer() -> StringTransformer:
-    return string_transformers.identity_test_impl()
-
-
 def arbitrary_transformer_ddv() -> StringTransformerDdv:
-    return StringTransformerDdvTestImpl(arbitrary_transformer())
+    return StringTransformerDdvTestImpl(string_transformers.arbitrary())
 
 
 def arbitrary_transformer_sdv() -> StringTransformerSdv:
-    return string_transformer_from_primitive_value(arbitrary_transformer())
+    return string_transformer_from_primitive_value(string_transformers.arbitrary())
