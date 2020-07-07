@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, sdv_of_constant_primitive, \
     LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
-from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
+from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv

@@ -2,14 +2,11 @@ from typing import Callable
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_matcher import file_model
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
-from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
-from exactly_lib_test.type_system.data.test_resources import described_path
+from exactly_lib.test_case_utils.tmp_path_generators import PathGeneratorOfExclusiveDir
+from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib_test.test_case_utils.test_resources.string_models import constant_root_string_model_from_string
 
-ModelConstructor = Callable[[Tcds], StringMatcherModel]
+ModelConstructor = Callable[[Tcds], StringModel]
 
 
 class ModelBuilder:
@@ -40,24 +37,15 @@ class ModelFromBuilder:
 
     def __init__(self,
                  model_builder: ModelBuilder,
-                 sds: SandboxDirectoryStructure):
+                 sds: SandboxDirectoryStructure,
+                 ):
         self.model_builder = model_builder
         self.sds = sds
 
-    def construct(self) -> StringMatcherModel:
-        tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(self.sds.internal_tmp_dir)
-        original_file_path = self._create_original_file(tmp_dir_file_space)
-
-        return file_model.StringMatcherModelFromFile(
-            original_file_path,
-            IdentityStringTransformer(),
-            file_model.DestinationFilePathGetter(),
+    def construct(self) -> StringModel:
+        return constant_root_string_model_from_string(
+            self.model_builder.original_file_contents,
+            PathGeneratorOfExclusiveDir(
+                self.sds.internal_tmp_dir / 'string-model-dir-for-test'
+            )
         )
-
-    def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPath:
-        original_file_path = file_space.new_path()
-
-        with original_file_path.open(mode='w') as f:
-            f.write(self.model_builder.original_file_contents)
-
-        return described_path.new_primitive(original_file_path)

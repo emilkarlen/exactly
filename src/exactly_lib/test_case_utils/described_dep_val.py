@@ -3,6 +3,8 @@ from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case_file_structure import ddv_validation
+from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.logic.description import DetailsDescription
@@ -40,6 +42,28 @@ class ConstantDdv(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE])
 
     def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         return self._adv
+
+
+class DdvFromParts(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE]):
+    def __init__(self,
+                 make_adv: Callable[[Tcds], ApplicationEnvironmentDependentValue[PRIMITIVE]],
+                 validator: DdvValidator = ddv_validation.constant_success_validator(),
+                 describer: DetailsRenderer = details.empty(),
+                 ):
+        self._validator = validator
+        self._describer = describer
+        self._make_adv = make_adv
+
+    @property
+    def validator(self) -> DdvValidator:
+        return self._validator
+
+    @property
+    def describer(self) -> DetailsRenderer:
+        return self._describer
+
+    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
+        return self._make_adv(tcds)
 
 
 class ConstantSdv(Generic[PRIMITIVE], LogicWithDescriberSdv[PRIMITIVE]):

@@ -8,9 +8,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.string_matcher import file_model
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.test_case_utils import tmp_path_generators
+from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
+from exactly_lib.type_system.logic.string_model import StringModel
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):
@@ -28,7 +28,7 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
                                         os_services)
 
 
-class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, StringMatcherModel]):
+class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, StringModel]):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
@@ -38,11 +38,12 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               os_services: OsServices,
               custom_environment,
               file_to_transform: ComparisonActualFile,
-              ) -> StringMatcherModel:
-        return file_model.StringMatcherModelFromFile(
+              ) -> StringModel:
+        return StringModelOfFile(
             file_to_transform.path,
-            IdentityStringTransformer(),
-            file_model.DestinationFilePathGetter()
+            tmp_path_generators.PathGeneratorOfExclusiveDir(
+                environment.tmp_file_space.new_path()
+            ),
         )
 
 

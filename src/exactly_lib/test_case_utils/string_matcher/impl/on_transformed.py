@@ -16,7 +16,7 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
     MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherModel, StringMatcherDdv, \
+from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherDdv, \
     StringMatcherAdv, \
     StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
@@ -112,7 +112,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
         )
 
 
-class StringMatcherWithTransformationSdv(MatcherSdv[StringMatcherModel]):
+class StringMatcherWithTransformationSdv(MatcherSdv[StringModel]):
     """
     A :class:`StringMatcherResolver` that transforms the model with a :class:`StringTransformerResolver`
     """
@@ -124,7 +124,7 @@ class StringMatcherWithTransformationSdv(MatcherSdv[StringMatcherModel]):
         self._transformer = transformer
         self._original = original
 
-    def resolve(self, symbols: SymbolTable) -> MatcherDdv[StringMatcherModel]:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[StringModel]:
         return StringMatcherWithTransformationDdv(
             self._transformer.resolve(symbols),
             self._original.resolve(symbols),

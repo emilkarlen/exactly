@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv
 from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_contents_headers
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
-from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
+from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv

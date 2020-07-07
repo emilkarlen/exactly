@@ -7,7 +7,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolValueContext, \
     StringMatcherSymbolContext
@@ -29,36 +29,36 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class StringMatcherConfiguration(MatcherConfiguration[StringMatcherModel]):
+class StringMatcherConfiguration(MatcherConfiguration[StringModel]):
     def mk_logic_type_value_context_of_primitive(self,
-                                                 primitive: MatcherWTrace[StringMatcherModel]
+                                                 primitive: MatcherWTrace[StringModel]
                                                  ) -> StringMatcherSymbolValueContext:
         return StringMatcherSymbolValueContext.of_primitive(primitive)
 
     def mk_logic_type_context_of_primitive(self,
                                            name: str,
-                                           primitive: MatcherWTrace[StringMatcherModel]
+                                           primitive: MatcherWTrace[StringModel]
                                            ) -> StringMatcherSymbolContext:
         return StringMatcherSymbolContext.of_primitive(name, primitive)
 
     def mk_logic_type_context_of_sdv(self,
                                      name: str,
-                                     sdv: MatcherSdv[StringMatcherModel]
+                                     sdv: MatcherSdv[StringModel]
                                      ) -> StringMatcherSymbolContext:
         return StringMatcherSymbolContext.of_sdv(name, sdv)
 
     def logic_type(self) -> LogicValueType:
         return LogicValueType.STRING_MATCHER
 
-    def parser(self) -> Parser[MatcherSdv[StringMatcherModel]]:
+    def parser(self) -> Parser[MatcherSdv[StringModel]]:
         return parse_string_matcher.string_matcher_parser()
 
-    def checker(self) -> IntegrationChecker[MatcherWTrace[StringMatcherModel],
-                                            Callable[[FullResolvingEnvironment], StringMatcherModel],
+    def checker(self) -> IntegrationChecker[MatcherWTrace[StringModel],
+                                            Callable[[FullResolvingEnvironment], StringModel],
                                             MatchingResult]:
         return integration_check.CHECKER
 
-    def arbitrary_model(self, environment: FullResolvingEnvironment) -> StringMatcherModel:
+    def arbitrary_model(self, environment: FullResolvingEnvironment) -> StringModel:
         return integration_check.MODEL_THAT_MUST_NOT_BE_USED
 
 
@@ -67,47 +67,47 @@ _STRING_MATCHER_CONFIGURATION = StringMatcherConfiguration()
 
 class _WithConfiguration:
     @property
-    def configuration(self) -> MatcherConfiguration[StringMatcherModel]:
+    def configuration(self) -> MatcherConfiguration[StringModel]:
         return _STRING_MATCHER_CONFIGURATION
 
 
-class TestConstant(_WithConfiguration, test_cases.TestConstantBase[StringMatcherModel]):
+class TestConstant(_WithConfiguration, test_cases.TestConstantBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestParenthesis(_WithConfiguration, test_cases.TestParenthesisBase[StringMatcherModel]):
+class TestParenthesis(_WithConfiguration, test_cases.TestParenthesisBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestSymbolReference(_WithConfiguration, test_cases.TestSymbolReferenceBase[StringMatcherModel]):
+class TestSymbolReference(_WithConfiguration, test_cases.TestSymbolReferenceBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestNegation(_WithConfiguration, test_cases.TestNegationBase[StringMatcherModel]):
+class TestNegation(_WithConfiguration, test_cases.TestNegationBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestConjunction(_WithConfiguration, test_cases.TestConjunctionBase[StringMatcherModel]):
+class TestConjunction(_WithConfiguration, test_cases.TestConjunctionBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestDisjunction(_WithConfiguration, test_cases.TestDisjunctionBase[StringMatcherModel]):
+class TestDisjunction(_WithConfiguration, test_cases.TestDisjunctionBase[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass
 
 
-class TestPrecedence(_WithConfiguration, test_cases.TestPrecedence[StringMatcherModel]):
+class TestPrecedence(_WithConfiguration, test_cases.TestPrecedence[StringModel]):
     # To debug an individual test case - override the test method in the super class
     # and call super.
     pass

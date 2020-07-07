@@ -115,7 +115,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                 self._check_single_expression_type(
                     args_variant_constructor,
                     ExpectationType.POSITIVE,
-                    integration_check.ARBITRARY_MODEL,
+                    integration_check.arbitrary_model(),
                     arrangement=
                     Arrangement(
                         symbols=case.symbol_table

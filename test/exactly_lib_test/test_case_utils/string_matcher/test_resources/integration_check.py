@@ -1,20 +1,16 @@
-import pathlib
+from pathlib import Path
 from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_utils.string_matcher import parse_string_matcher, file_model
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand, TmpDirFileSpace
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
+from exactly_lib.test_case_utils.tmp_path_generators import PathGeneratorOfExclusiveDir
+from exactly_lib.type_system.logic.string_model import StringModel, TmpFilePathGenerator
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
-from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
-from exactly_lib_test.type_system.data.test_resources import described_path
+from exactly_lib_test.test_case_utils.test_resources import string_models
 
-ModelConstructor = Callable[[FullResolvingEnvironment], StringMatcherModel]
+ModelConstructor = Callable[[FullResolvingEnvironment], StringModel]
 
 
 def empty_model() -> ModelConstructor:
@@ -25,61 +21,45 @@ def model_of(contents: str) -> ModelConstructor:
     return _ModelConstructorHelper(contents).construct
 
 
-def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> StringMatcherModel:
+def model_that_must_not_be_used(environment: FullResolvingEnvironment) -> StringModel:
     return MODEL_THAT_MUST_NOT_BE_USED
 
 
-class _StringMatcherModelThatMustNotBeUsed(StringMatcherModel):
-    def with_transformation(self, string_transformer: StringTransformer) -> StringMatcherModel:
-        raise NotImplementedError('unsupported')
-
-    @property
-    def string_transformer(self) -> StringTransformer:
-        raise NotImplementedError('unsupported')
-
-    def transformed_file_path(self, tmp_file_space: TmpDirFileSpace) -> pathlib.Path:
-        raise NotImplementedError('unsupported')
-
-    def lines(self) -> ContextManager[Iterator[str]]:
-        raise NotImplementedError('unsupported')
-
-
-MODEL_THAT_MUST_NOT_BE_USED = _StringMatcherModelThatMustNotBeUsed()
-
-
-class _ModelConstructorHelper:
-    def __init__(self,
-                 contents: str,
-                 ):
-        self.contents = contents
-
-    def construct(self, environment: FullResolvingEnvironment) -> StringMatcherModel:
-        tmp_dir_file_space = TmpDirFileSpaceAsDirCreatedOnDemand(environment.tcds.sds.internal_tmp_dir)
-        original_file_path = self._create_original_file(tmp_dir_file_space)
-
-        return file_model.StringMatcherModelFromFile(
-            original_file_path,
-            IdentityStringTransformer(),
-            file_model.DestinationFilePathGetter(),
-        )
-
-    def _create_original_file(self, file_space: TmpDirFileSpace) -> DescribedPath:
-        original_file_path = file_space.new_path()
-
-        with original_file_path.open(mode='w') as f:
-            f.write(self.contents)
-
-        return described_path.new_primitive(original_file_path)
-
-
-ARBITRARY_MODEL = empty_model()
-
-
-def constant_model(model: StringMatcherModel) -> ModelConstructor:
-    return matcher_integration_check.constant_model(model)
+def arbitrary_model() -> ModelConstructor:
+    return empty_model()
 
 
 CHECKER = integration_check.IntegrationChecker(
     parse_string_matcher.string_matcher_parser(),
-    MatcherPropertiesConfiguration()
+    MatcherPropertiesConfiguration(),
 )
+
+
+class _StringModelThatMustNotBeUsed(StringModel):
+    @property
+    def _path_generator(self) -> TmpFilePathGenerator:
+        raise ValueError('unsupported')
+
+    @property
+    def as_file(self) -> Path:
+        raise ValueError('unsupported')
+
+    @property
+    def as_lines(self) -> ContextManager[Iterator[str]]:
+        raise ValueError('unsupported')
+
+
+MODEL_THAT_MUST_NOT_BE_USED = _StringModelThatMustNotBeUsed()
+
+
+class _ModelConstructorHelper:
+    def __init__(self, contents: str):
+        self.contents = contents
+
+    def construct(self, environment: FullResolvingEnvironment) -> StringModel:
+        return string_models.constant_root_string_model_from_string(
+            self.contents,
+            PathGeneratorOfExclusiveDir(
+                environment.application_environment.tmp_files_space.new_path()
+            ),
+        )

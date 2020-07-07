@@ -40,6 +40,9 @@ class NodeRendererFromParts(Generic[NODE_DATA], NodeRenderer[NODE_DATA]):
         self._header = header
         self._data = data
         self._details = details
+        for d in details:
+            if not isinstance(d, DetailsRenderer):
+                raise ValueError('not a det rend: ' + str(d))
         self._children = children
 
     def render(self) -> Node[NODE_DATA]:

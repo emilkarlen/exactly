@@ -9,7 +9,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherModel
+from exactly_lib.type_system.logic.string_matcher import StringMatcher
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -242,7 +243,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         resolver = resolving_helper_for_instruction_env(environment.os_service, ie)
         return resolver.resolve_matcher(matcher_sdv)
 
-    def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> StringMatcherModel:
+    def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> StringModel:
         model_builder = model_construction.model_of(self.actual_model_contents)
         return model_construction.ModelFromBuilder(model_builder, environment.sds).construct()
 

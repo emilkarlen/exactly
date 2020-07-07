@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv
 from exactly_lib.test_case_utils.file_matcher.impl import \
     dir_contents
-from exactly_lib.test_case_utils.file_matcher.impl.file_contents_utils import ModelConstructor
+from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 

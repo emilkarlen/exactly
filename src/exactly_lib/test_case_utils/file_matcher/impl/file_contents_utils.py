@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Sequence, Callable
+from abc import ABC
+from typing import Generic, Sequence, Callable, TypeVar
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions import matcher_model, misc_texts
@@ -17,8 +17,8 @@ from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv,
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
+from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
@@ -28,13 +28,11 @@ from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, 
     MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.description_tree import renderers, details
+from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
 
 
 class NamesSetup:
@@ -66,14 +64,7 @@ class DocumentationSetup:
         self.get_syntax_elements = get_syntax_elements
 
 
-class ModelConstructor(Generic[CONTENTS_MATCHER_MODEL], WithDetailsDescription, ABC):
-    @property
-    def describer(self) -> DetailsRenderer:
-        return details.empty()
-
-    @abstractmethod
-    def make_model(self, model: FileMatcherModel) -> CONTENTS_MATCHER_MODEL:
-        pass
+CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
 
 
 def sdv(

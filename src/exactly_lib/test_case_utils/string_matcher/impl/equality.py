@@ -19,7 +19,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcherModel, StringMatcher, \
+from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcher, \
     StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util import file_utils
@@ -31,7 +31,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
-    def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringMatcherModel]:
+    def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringModel]:
         expected_contents_ddv = expected_contents.resolve(symbols)
 
         return ddv(expected_contents_ddv)
@@ -46,7 +46,7 @@ def ddv(expected_contents: StringOrPathDdv) -> StringMatcherDdv:
     )
 
 
-class EqualityStringMatcherAdv(MatcherAdv[StringMatcherModel]):
+class EqualityStringMatcherAdv(MatcherAdv[StringModel]):
     def __init__(self,
                  expected_contents: StringOrPath,
                  validator: PreOrPostSdsValidatorPrimitive,
@@ -63,7 +63,7 @@ class EqualityStringMatcherAdv(MatcherAdv[StringMatcherModel]):
         )
 
 
-class EqualityStringMatcherDdv(MatcherDdv[StringMatcherModel]):
+class EqualityStringMatcherDdv(MatcherDdv[StringModel]):
     def __init__(self,
                  expected_contents: StringOrPathDdv,
                  validator: DdvValidator,

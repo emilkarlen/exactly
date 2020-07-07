@@ -5,7 +5,7 @@ from exactly_lib.type_system.logic.string_model import TmpFilePathGenerator
 from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
 
 
-class PathGeneratorOfDirInTmpFileSpace(TmpFilePathGenerator):
+class PathGeneratorOfExclusiveDir(TmpFilePathGenerator):
     def __init__(self, root_dir_to_create_on_demand: pathlib.Path):
         """
         :param root_dir_to_create_on_demand: May or may not exist as a file.

@@ -29,3 +29,11 @@ class MatcherAdvFromFunction(Generic[MODEL], MatcherAdv[MODEL]):
 
     def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return self._constructor(environment)
+
+
+class AdvFromFunction(Generic[T], ApplicationEnvironmentDependentValue[T]):
+    def __init__(self, constructor: Callable[[ApplicationEnvironment], T]):
+        self._constructor = constructor
+
+    def primitive(self, environment: ApplicationEnvironment) -> T:
+        return self._constructor(environment)

@@ -132,7 +132,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                                       quantifier=quantifier):
                         self._check(
                             source=source,
-                            model=integration_check.ARBITRARY_MODEL,
+                            model=integration_check.arbitrary_model(),
                             arrangement=Arrangement(
                                 symbols=symbols
                             ),
@@ -174,7 +174,7 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
                                       quantifier=quantifier):
                         self._check(
                             source=source,
-                            model=integration_check.ARBITRARY_MODEL,
+                            model=integration_check.arbitrary_model(),
                             arrangement=Arrangement(
                                 symbols=symbols
                             ),

@@ -9,14 +9,13 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
-from exactly_lib.test_case_utils.string_matcher import file_model
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
-from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcherModel, StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
-    destination_file_path_getter_that_gives_seq_of_unique_paths
+    string_model_factory
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
@@ -52,7 +51,7 @@ class TestCaseBase(unittest.TestCase):
         environment = fake_post_sds_environment()
         os_services = new_default()
 
-        with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:
+        with string_model_factory() as model_factory:
             # This test is expected to not create files using the above object,
             # but to be sure, one is used that creates and destroys temporary files.
             with tmp_file_containing(actual_file_contents) as actual_file_path:
@@ -60,10 +59,8 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            model = file_model.StringMatcherModelFromFile(
-                                described_path.new_primitive(actual_file_path),
-                                IdentityStringTransformer(),
-                                dst_file_path_getter,
+                            model = model_factory.of_file(
+                                described_path.new_primitive(actual_file_path)
                             )
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
@@ -78,7 +75,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_cases_for_no_lines(
             self,
             get_assertion_part_function:
-            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[StringMatcherModel, pfh.PassOrFailOrHardError]],
+            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[StringModel, pfh.PassOrFailOrHardError]],
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
@@ -88,7 +85,7 @@ class TestCaseBase(unittest.TestCase):
             ('unconditionally true', MatcherWithConstantResult(True)),
             ('unconditionally false', MatcherWithConstantResult(False)),
         ]
-        with destination_file_path_getter_that_gives_seq_of_unique_paths() as dst_file_path_getter:
+        with string_model_factory() as model_factory:
             # This test is expected to not create files using the above object,
             # but to be sure, one is used that creates and destroys temporary files.
             with tmp_file_containing(empty_file_contents) as actual_file_path:
@@ -96,11 +93,7 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            model = file_model.StringMatcherModelFromFile(
-                                described_path.new_primitive(actual_file_path),
-                                IdentityStringTransformer(),
-                                dst_file_path_getter,
-                            )
+                            model = model_factory.of_file(described_path.new_primitive(actual_file_path))
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)

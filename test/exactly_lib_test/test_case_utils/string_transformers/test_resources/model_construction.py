@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.test_case_utils.tmp_path_generators import PathGeneratorOfDirInTmpFileSpace
+from exactly_lib.test_case_utils.tmp_path_generators import PathGeneratorOfExclusiveDir
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformerModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
@@ -12,7 +12,7 @@ def of_lines(lines: List[str]) -> ModelConstructor:
     def ret_val(tmp_file_space: TmpDirFileSpace) -> StringModel:
         return string_models.ConstantRootStringModelFromLines(
             lines,
-            PathGeneratorOfDirInTmpFileSpace(tmp_file_space.new_path())
+            PathGeneratorOfExclusiveDir(tmp_file_space.new_path())
         )
 
     return ret_val

@@ -1,0 +1,20 @@
+from abc import ABC
+
+from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.util.file_utils import TmpDirFileSpace
+from . import file_model
+from .. import tmp_path_generators
+
+
+class StringModelFactory(ABC):
+    def __init__(self, tmp_file_space: TmpDirFileSpace):
+        self._tmp_file_space = tmp_file_space
+
+    def of_file(self, file: DescribedPath) -> StringModel:
+        return file_model.StringModelOfFile(
+            file,
+            tmp_path_generators.PathGeneratorOfExclusiveDir(
+                self._tmp_file_space.new_path()
+            ),
+        )
