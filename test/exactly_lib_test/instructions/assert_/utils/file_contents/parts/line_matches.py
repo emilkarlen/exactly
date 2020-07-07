@@ -20,7 +20,6 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import fa
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
-from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, line_matcher_from_predicates
 
 
@@ -59,9 +58,7 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            model = model_factory.of_file(
-                                described_path.new_primitive(actual_file_path)
-                            )
+                            model = model_factory.of_file(actual_file_path)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
@@ -93,7 +90,7 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            model = model_factory.of_file(described_path.new_primitive(actual_file_path))
+                            model = model_factory.of_file(actual_file_path)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)

@@ -40,7 +40,7 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               file_to_transform: ComparisonActualFile,
               ) -> StringModel:
         return StringModelOfFile(
-            file_to_transform.path,
+            file_to_transform.path.primitive,
             tmp_path_generators.PathGeneratorOfExclusiveDir(
                 environment.tmp_file_space.new_path()
             ),

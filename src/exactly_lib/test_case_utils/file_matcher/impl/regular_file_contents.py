@@ -20,7 +20,7 @@ class _ModelConstructor(ModelConstructor[StringModel]):
         self._factory = factory
 
     def make_model(self, model: FileMatcherModel) -> StringModel:
-        return self._factory.of_file(model.path)
+        return self._factory.of_file(model.path.primitive)
 
 
 def sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:
