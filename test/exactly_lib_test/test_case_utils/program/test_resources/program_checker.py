@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case import executable_factories
+from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util import file_utils
@@ -40,14 +40,15 @@ class _Applier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
               message_builder: MessageBuilder,
               primitive: Program,
               resolving_environment: FullResolvingEnvironment,
-              input_: ProcOutputFile) -> ResultWithTransformationData:
-        executable_factory = executable_factories.get_factory_for_current_operating_system()
+              input_: ProcOutputFile,
+              ) -> ResultWithTransformationData:
         process_execution_settings = execution_elements.with_no_timeout()
 
         pgm_output_dir = resolving_environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            process_execution_settings,
-                                                                           executable_factory,
+                                                                           os_services.new_default(),
+                                                                           resolving_environment.application_environment.tmp_files_space,
                                                                            input_,
                                                                            primitive)
         proc_exe_result = execution_result.process_result

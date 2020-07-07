@@ -1,16 +1,23 @@
 import pathlib
-from typing import Optional, Any, Callable
+from typing import Optional, Any, Callable, TextIO
 
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.test_case.exception_detection import DetectedException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
+from exactly_lib.test_case_utils.string_models import tmp_path_generators
+from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
 from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, \
-    ensure_directory_exists
+    ensure_directory_exists, TmpDirFileSpace
 
 
 def create_file(file_path: pathlib.Path,
-                operation_on_open_file: Callable[[Any], None]) -> Optional[str]:
+                operation_on_open_file: Callable[[TextIO], None]) -> Optional[str]:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -59,36 +66,63 @@ def create_file__dp(path: DescribedPath,
     return None
 
 
-def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
-                                                     dst_path: pathlib.Path,
-                                                     transformer: StringTransformer) -> Optional[str]:
-    """
-    :return: Error message in case of failure
-    """
+class FileTransformerHelper:
+    def __init__(self,
+                 os_services: OsServices,
+                 tmp_file_space: TmpDirFileSpace,
+                 ):
+        self._os_services = os_services
+        self._tmp_file_space = tmp_file_space
 
-    def write_file(output_file):
-        with src_path.open() as in_file:
-            for line in transformer.transform(in_file):
-                output_file.write(line)
+    def transform_to_file__dp(self,
+                              src_path: pathlib.Path,
+                              dst_path: DescribedPath,
+                              transformer: StringTransformer,
+                              ) -> Optional[TextRenderer]:
+        error_message = create_file__dp(dst_path, _do_nothing_with_file)
+        if error_message is not None:
+            return error_message
+        return self._transform(src_path,
+                               dst_path.primitive,
+                               transformer)
 
-    return create_file(dst_path,
-                       write_file)
+    def transform_to_file(self,
+                          src_path: pathlib.Path,
+                          dst_path: pathlib.Path,
+                          transformer: StringTransformer,
+                          ) -> Optional[TextRenderer]:
+        error_message = create_file(dst_path, _do_nothing_with_file)
+        if error_message is not None:
+            return text_docs.single_pre_formatted_line_object(error_message)
+        return self._transform(src_path,
+                               dst_path,
+                               transformer)
 
+    def _transform(self,
+                   src_path: pathlib.Path,
+                   dst_path: pathlib.Path,
+                   transformer: StringTransformer,
+                   ) -> Optional[TextRenderer]:
+        input_model = self._model_of(src_path)
+        try:
+            output_model = transformer.transform__new(input_model)
+            self._os_services.copy_file_preserve_as_much_as_possible__detect_ex(
+                str(output_model.as_file),
+                str(dst_path),
+            )
+            return None
+        except DetectedException as ex:
+            return ex.failure_details.failure_message
+        except HardErrorException as ex:
+            return ex.error
 
-def create_file_from_transformation_of_existing_file__dp(src_path: pathlib.Path,
-                                                         dst_path: DescribedPath,
-                                                         transformer: StringTransformer) -> Optional[TextRenderer]:
-    """
-    :return: Error message in case of failure
-    """
-
-    def write_file(output_file):
-        with src_path.open() as in_file:
-            for line in transformer.transform(in_file):
-                output_file.write(line)
-
-    return create_file__dp(dst_path,
-                           write_file)
+    def _model_of(self, file: pathlib.Path) -> StringModel:
+        return StringModelOfFile(
+            file,
+            tmp_path_generators.PathGeneratorOfExclusiveDir(
+                self._tmp_file_space.new_path()
+            ),
+        )
 
 
 def ensure_path_exists_as_a_directory__dp(path: DescribedPath) -> Optional[TextRenderer]:
@@ -116,3 +150,7 @@ def ensure_parent_path_does_exist_and_is_a_directory__dp(dst_path: DescribedPath
     :return: Failure message if cannot ensure, otherwise None.
     """
     return ensure_path_exists_as_a_directory__dp(dst_path.parent())
+
+
+def _do_nothing_with_file(f: TextIO):
+    return

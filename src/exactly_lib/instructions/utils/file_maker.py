@@ -14,7 +14,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
-from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file__dp
+from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
 from exactly_lib.type_system.data.path_ddv import DescribedPath
@@ -101,10 +101,14 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                                       result.exit_code,
                                                                       result.stderr_contents)
 
-        return create_file_from_transformation_of_existing_file__dp(
-            storage_dir / result.file_names.name_of(self._output_channel),
-            dst_path,
-            program.transformation)
+        transformation_helper = FileTransformerHelper(
+            os_services,
+            environment.tmp_file_space,
+        )
+        src_path = storage_dir / result.file_names.name_of(self._output_channel)
+        return transformation_helper.transform_to_file__dp(src_path,
+                                                           dst_path,
+                                                           program.transformation)
 
     @property
     def validator(self) -> SdvValidator:
@@ -161,9 +165,13 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         transformer = resolver.resolve_string_transformer(self._transformer)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
-        return create_file_from_transformation_of_existing_file__dp(src_path,
-                                                                    dst_path,
-                                                                    transformer)
+        transformation_helper = FileTransformerHelper(
+            os_services,
+            environment.tmp_file_space,
+        )
+        return transformation_helper.transform_to_file__dp(src_path,
+                                                           dst_path,
+                                                           transformer)
 
 
 def _create_file(path_to_create: DescribedPath,

@@ -128,7 +128,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                   os_services: OsServices) -> ComparisonActualFile:
         program = resolving_helper_for_instruction_env(os_services, environment).resolve_program(self._program)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
-                                                                          os_services.executable_factory__detect_ex(),
+                                                                          os_services,
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)
