@@ -8,7 +8,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils import tmp_path_generators
+from exactly_lib.test_case_utils.string_models import tmp_path_generators
 from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
 from exactly_lib.type_system.logic.string_model import StringModel
 

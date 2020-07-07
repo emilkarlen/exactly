@@ -3,8 +3,7 @@ from abc import ABC
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
-from . import file_model
-from .. import tmp_path_generators
+from . import file_model, tmp_path_generators
 
 
 class StringModelFactory(ABC):

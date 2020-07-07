@@ -2,7 +2,7 @@ from typing import Callable
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.tmp_path_generators import PathGeneratorOfExclusiveDir
+from exactly_lib.test_case_utils.string_models.tmp_path_generators import PathGeneratorOfExclusiveDir
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.test_resources.string_models import constant_root_string_model_from_string
 
