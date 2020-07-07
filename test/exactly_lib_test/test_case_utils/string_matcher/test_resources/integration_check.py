@@ -57,7 +57,7 @@ class _ModelConstructorHelper:
         self.contents = contents
 
     def construct(self, environment: FullResolvingEnvironment) -> StringModel:
-        return string_models.constant_root_string_model_from_string(
+        return string_models.of_string(
             self.contents,
             PathGeneratorOfExclusiveDir(
                 environment.application_environment.tmp_files_space.new_path()

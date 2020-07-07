@@ -17,13 +17,13 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
+from exactly_lib_test.test_case_utils.test_resources import string_models
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    arbitrary_non_identity, to_uppercase, \
-    count_num_uppercase_characters
+    arbitrary_non_identity, to_uppercase
 
 
 def suite() -> unittest.TestSuite:
@@ -178,52 +178,37 @@ class TestPrimitiveValue(unittest.TestCase):
                                  transformer.is_identity_transformer,
                                  'is_identity_transformation')
 
-    def test_construct_and_get_transformers_list(self):
-        # ARRANGE #
-        t_1 = IdentityStringTransformer()
-        t_2 = IdentityStringTransformer()
-        transformers_given_to_constructor = [t_1, t_2]
-
-        # ACT #
-
-        sequence = SequenceStringTransformer(transformers_given_to_constructor)
-        transformers_from_sequence = sequence.transformers
-
-        # ASSERT #
-
-        self.assertEqual(transformers_given_to_constructor,
-                         list(transformers_from_sequence))
-
     def test_WHEN_sequence_of_transformers_is_empty_THEN_output_SHOULD_be_equal_to_input(self):
         # ARRANGE #
-        sequence = SequenceStringTransformer([])
+        transformer = SequenceStringTransformer([])
 
         input_lines = ['first',
                        'second',
                        'third']
-        input_iter = iter(input_lines)
+        model = string_models.of_lines(input_lines)
         # ACT #
-        output = sequence.transform(input_iter)
+        actual = transformer.transform__new(model)
         # ASSERT #
-        output_lines = list(output)
+        actual_lines = string_models.as_lines_list(actual)
 
         self.assertEqual(input_lines,
-                         output_lines)
+                         actual_lines)
 
     def test_WHEN_single_transformer_THEN_sequence_SHOULD_be_identical_to_the_single_transformer(self):
         # ARRANGE #
 
-        to_upper_t = to_uppercase()
+        to_upper_t = string_transformers.to_uppercase()
 
-        sequence = SequenceStringTransformer([to_upper_t])
+        transformer = SequenceStringTransformer([to_upper_t])
 
         input_lines = ['first',
                        'second',
                        'third']
+        model = string_models.of_lines(input_lines)
 
         # ACT #
 
-        actual = sequence.transform(iter(input_lines))
+        actual = transformer.transform__new(model)
 
         # ASSERT #
 
@@ -231,27 +216,28 @@ class TestPrimitiveValue(unittest.TestCase):
                                  'SECOND',
                                  'THIRD']
 
-        actual_as_list = list(actual)
+        actual_lines = string_models.as_lines_list(actual)
 
         self.assertEqual(expected_output_lines,
-                         actual_as_list)
+                         actual_lines)
 
     def test_WHEN_multiple_transformers_THEN_transformers_SHOULD_be_chained(self):
         # ARRANGE #
 
         to_upper_t = to_uppercase()
-        count_num_upper = count_num_uppercase_characters()
+        count_num_upper = string_transformers.count_num_uppercase_characters()
 
-        sequence = SequenceStringTransformer([to_upper_t,
-                                              count_num_upper])
+        transformer = SequenceStringTransformer([to_upper_t,
+                                                 count_num_upper])
 
         input_lines = ['this is',
                        'the',
                        'input']
+        model = string_models.of_lines(input_lines)
 
         # ACT #
 
-        actual = sequence.transform(iter(input_lines))
+        actual = transformer.transform__new(model)
 
         # ASSERT #
 
@@ -259,7 +245,7 @@ class TestPrimitiveValue(unittest.TestCase):
                                  '3',
                                  '5']
 
-        actual_as_list = list(actual)
+        actual_lines = string_models.as_lines_list(actual)
 
         self.assertEqual(expected_output_lines,
-                         actual_as_list)
+                         actual_lines)

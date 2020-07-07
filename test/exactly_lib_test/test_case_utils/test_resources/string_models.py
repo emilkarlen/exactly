@@ -1,11 +1,12 @@
 from contextlib import contextmanager
-from typing import ContextManager, Iterator, Sequence
+from pathlib import Path
+from typing import ContextManager, Iterator, Sequence, List
 
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_system.logic.string_model import TmpFilePathGenerator, StringModel
 
 
-class ConstantRootStringModelFromLines(StringModelFromLinesBase):
+class StringModelFromLines(StringModelFromLinesBase):
     def __init__(self,
                  value: Sequence[str],
                  tmp_file_path_generator: TmpFilePathGenerator,
@@ -24,10 +25,36 @@ class ConstantRootStringModelFromLines(StringModelFromLinesBase):
         yield iter(self._value)
 
 
-def constant_root_string_model_from_string(contents: str,
-                                           tmp_file_path_generator: TmpFilePathGenerator,
-                                           ) -> StringModel:
-    return ConstantRootStringModelFromLines(
+class TmpFilePathGeneratorThatMustNotBeUsed(TmpFilePathGenerator):
+    def new_path(self) -> Path:
+        raise ValueError('unsupported')
+
+
+def of_lines(
+        lines: Sequence[str],
+        tmp_file_path_generator: TmpFilePathGenerator = TmpFilePathGeneratorThatMustNotBeUsed(),
+) -> StringModel:
+    return StringModelFromLines(
+        lines,
+        tmp_file_path_generator,
+    )
+
+
+def of_string(
+        contents: str,
+        tmp_file_path_generator: TmpFilePathGenerator = TmpFilePathGeneratorThatMustNotBeUsed(),
+) -> StringModel:
+    return StringModelFromLines(
         contents.splitlines(keepends=True),
         tmp_file_path_generator,
     )
+
+
+def as_lines_list(model: StringModel) -> List[str]:
+    with model.as_lines as lines:
+        return list(lines)
+
+
+def as_string(model: StringModel) -> str:
+    with model.as_lines as lines:
+        return ''.join(lines)

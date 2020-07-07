@@ -10,7 +10,7 @@ from exactly_lib_test.test_case_utils.test_resources import string_models
 
 def of_lines(lines: List[str]) -> ModelConstructor:
     def ret_val(tmp_file_space: TmpDirFileSpace) -> StringModel:
-        return string_models.ConstantRootStringModelFromLines(
+        return string_models.StringModelFromLines(
             lines,
             PathGeneratorOfExclusiveDir(tmp_file_space.new_path())
         )

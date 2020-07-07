@@ -10,6 +10,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.replaced_env_vars import \
     ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase, \
     ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
+from exactly_lib_test.test_case_utils.test_resources import string_models
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 
@@ -24,9 +25,9 @@ def suite() -> unittest.TestSuite:
 
 def _transform_string_to_string(tcds: Tcds, string_input: str) -> str:
     transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
-    lines = string_input.splitlines(keepends=True)
-    output_lines = transformer.transform(lines)
-    return ''.join(output_lines)
+    model = string_models.of_string(string_input)
+    output = transformer.transform__new(model)
+    return string_models.as_string(output)
 
 
 class TestMisc(unittest.TestCase):
