@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
-from exactly_lib.util.file_utils.misc_utils import open_and_make_read_only_on_close, write_new_text_file
+from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 
 PhaseStepFailureConstructorType = Callable[[ExecutionFailureStatus, FailureDetails], PhaseStepFailure]
@@ -129,8 +129,8 @@ class ActionToCheckExecutor:
             yield self.exe_atc_and_skip_assertions
         else:
             sds = self.tcds.sds
-            with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
-                with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
+            with misc_utils.open_and_make_read_only_on_close__p(sds.result.stdout_file, 'w') as f_stdout:
+                with misc_utils.open_and_make_read_only_on_close__p(sds.result.stderr_file, 'w') as f_stderr:
                     yield StdOutputFiles(f_stdout, f_stderr)
 
     def _register_outcome(self, exit_code_or_hard_error: ExitCodeOrHardError):
@@ -140,7 +140,7 @@ class ActionToCheckExecutor:
                 self._store_exit_code(exit_code_or_hard_error.exit_code)
 
     def _store_exit_code(self, exitcode: int):
-        with open_and_make_read_only_on_close(str(self.tcds.sds.result.exitcode_file), 'w') as f:
+        with misc_utils.open_and_make_read_only_on_close__p(self.tcds.sds.result.exitcode_file, 'w') as f:
             f.write(str(exitcode))
 
     def _custom_stdin_file_name(self) -> pathlib.Path:
@@ -149,5 +149,5 @@ class ActionToCheckExecutor:
             return configuration.file_name
         else:
             file_path = stdin_contents_file(self.tcds.sds)
-            write_new_text_file(file_path, configuration.string_contents)
+            misc_utils.write_new_text_file(file_path, configuration.string_contents)
             return file_path

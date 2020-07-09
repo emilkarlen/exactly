@@ -10,14 +10,24 @@ from exactly_lib.util import exception
 
 @contextmanager
 def open_and_make_read_only_on_close(filename: str, mode: str):
-    f = open(filename, mode=mode)
-    yield f
-    f.close()
+    with open(filename, mode=mode) as f:
+        yield f
     make_file_read_only(filename)
+
+
+@contextmanager
+def open_and_make_read_only_on_close__p(path: pathlib.Path, mode: str):
+    with path.open(mode=mode) as f:
+        yield f
+    make_file_read_only__p(path)
 
 
 def make_file_read_only(path: str):
     os.chmod(path, S_IREAD | S_IRGRP | S_IROTH)
+
+
+def make_file_read_only__p(path: pathlib.Path):
+    path.chmod(S_IREAD | S_IRGRP | S_IROTH)
 
 
 def resolved_path(existing_path: str) -> pathlib.Path:
