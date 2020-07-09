@@ -8,7 +8,7 @@ from exactly_lib.test_case_utils.string_models.transformed_model_from_lines impo
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib_test.test_resources.files import tmp_dir
-from exactly_lib_test.util.test_resources.tmp_file_space import TmpFileSpaceThatAllowsSinglePathGeneration
+from exactly_lib_test.util.file_utils.test_resources.tmp_file_spaces import TmpFileSpaceThatAllowsSinglePathGeneration
 
 
 def suite() -> unittest.TestSuite:

@@ -1,16 +1,26 @@
+import os
 import pathlib
-from typing import Iterator
+from typing import Iterator, Optional
 
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 
 
 class FileNamesConfig:
     def __init__(self,
+                 suffix_separator: str,
                  root_file_names: Iterator[str],
                  sub_space_file_names: Iterator[Iterator[str]],
                  ):
+        self._suffix_separator = suffix_separator
         self._root_file_names = root_file_names
         self._sub_space_file_names = sub_space_file_names
+
+    @property
+    def suffix_separator(self) -> str:
+        """
+        :return: A string that precedes the name suffix, if one is given.
+        """
+        return self._suffix_separator
 
     @property
     def root_file_names(self) -> Iterator[str]:
@@ -48,19 +58,19 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
         self._root_dir_to_create_on_demand = root_dir_to_create_on_demand
         self._existing_root_dir_path = None
 
-    def new_path(self) -> pathlib.Path:
-        base_name = next(self._file_names.root_file_names)
-        return self._root_dir() / base_name
+    def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
+        return self._root_dir() / self._next_base_name(name_suffix)
 
-    def new_path_as_existing_dir(self) -> pathlib.Path:
-        ret_val = self.new_path()
+    def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
+        ret_val = self.new_path(name_suffix)
         ret_val.mkdir()
         return ret_val
 
-    def sub_dir_space(self) -> TmpDirFileSpace:
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
         return TmpDirFileSpaceAsDirCreatedOnDemand(
-            self.new_path(),
-            FileNamesConfig(next(self._file_names.sub_space_file_names),
+            self.new_path(name_suffix),
+            FileNamesConfig(self._file_names.suffix_separator,
+                            next(self._file_names.sub_space_file_names),
                             self._file_names.sub_space_file_names,
                             ),
         )
@@ -72,13 +82,20 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
                                                exist_ok=True)
         return self._existing_root_dir_path
 
+    def _next_base_name(self, name_suffix: Optional[str] = None) -> str:
+        ret_val = next(self._file_names.root_file_names)
+        if name_suffix is not None:
+            name_suffix = name_suffix.replace(os.sep, '_')
+            ret_val = ''.join((ret_val, self._file_names.suffix_separator, name_suffix))
+        return ret_val
+
 
 class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
-    def new_path(self) -> pathlib.Path:
+    def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         raise ValueError('must not be used')
 
-    def new_path_as_existing_dir(self) -> pathlib.Path:
+    def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         raise ValueError('must not be used')
 
-    def sub_dir_space(self) -> TmpDirFileSpace:
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
         raise ValueError('must not be used')

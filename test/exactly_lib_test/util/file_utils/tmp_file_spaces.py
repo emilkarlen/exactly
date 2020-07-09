@@ -1,3 +1,4 @@
+import os
 import unittest
 from pathlib import Path
 from typing import Callable, Sequence
@@ -19,7 +20,8 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             space_root_dir = existing_dir_path / 'non-existing-root'
             # ACT #
             sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                    FileNamesConfig(iter([]),
+                                                    FileNamesConfig('-',
+                                                                    iter([]),
                                                                     iter([])),
                                                     )
             # ASSERT #
@@ -31,7 +33,8 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             space_root_dir = existing_dir_path / 'non-existing-root-comp-1' / 'comp-2'
             # ACT
             space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                            FileNamesConfig(iter(['name']),
+                                                            FileNamesConfig('-',
+                                                                            iter(['name']),
                                                                             iter([])),
                                                             )
             space.new_path()
@@ -44,7 +47,8 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             space_root_dir = existing_dir_path
             # ACT
             space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                            FileNamesConfig(iter(['name']),
+                                                            FileNamesConfig('-',
+                                                                            iter(['name']),
                                                                             iter([])),
                                                             )
             space.new_path()
@@ -59,7 +63,8 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     space_root_dir = case.value(existing_dir_path)
                     # ACT
                     space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                    FileNamesConfig(iter(['a', 'b']),
+                                                                    FileNamesConfig('-',
+                                                                                    iter(['a', 'b']),
                                                                                     iter([])),
                                                                     )
                     file_1 = space.new_path()
@@ -80,6 +85,7 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     space_root_dir = case.value(existing_dir_path)
                     root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
                                                                          FileNamesConfig(
+                                                                             '-',
                                                                              iter(['a', 'b']),
                                                                              iter([
                                                                                  iter(['1', '2'])
@@ -129,22 +135,23 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     # ACT
                     space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
                                                                     FileNamesConfig(
+                                                                        '---',
                                                                         iter(['1', '2', '3', '4']),
                                                                         iter([])
                                                                     ),
                                                                     )
                     file_1 = space.new_path()
                     dir_2 = space.new_path_as_existing_dir()
-                    file_3 = space.new_path()
-                    dir_4 = space.new_path_as_existing_dir()
+                    file_3 = space.new_path('three')
+                    dir_4 = space.new_path_as_existing_dir('four')
                     # ASSERT #
                     self._assert_is_non_existing_file(space_root_dir / '1',
                                                       file_1)
                     self._assert_is_existing_dir(space_root_dir / '2',
                                                  dir_2)
-                    self._assert_is_non_existing_file(space_root_dir / '3',
+                    self._assert_is_non_existing_file(space_root_dir / '3---three',
                                                       file_3)
-                    self._assert_is_existing_dir(space_root_dir / '4',
+                    self._assert_is_existing_dir(space_root_dir / '4---four',
                                                  dir_4)
                     self._assert_num_files_in_dir(space_root_dir,
                                                   expected_number_of_files=2)
@@ -157,6 +164,7 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     space_root_dir = case.value(existing_dir_path)
                     root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
                                                                          FileNamesConfig(
+                                                                             '-',
                                                                              iter(['a', 'b']),
                                                                              iter([
                                                                                  iter(['1', '2']),
@@ -191,6 +199,85 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     self.assertEqual(
                         space_root_dir / 'b' / '20',
                         path_2_2,
+                    )
+
+    def test_sub_dir_spaces_SHOULD_use_names_from_consecutive_name_iterators__w_name_suffixes(self):
+        # ARRANGE #
+        for case in _root_dir_cases():
+            with self.subTest(case.name):
+                with tmp_dir() as existing_dir_path:
+                    space_root_dir = case.value(existing_dir_path)
+                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                         FileNamesConfig(
+                                                                             '--',
+                                                                             iter(['a', 'b']),
+                                                                             iter([
+                                                                                 iter(['1', '2']),
+                                                                                 iter(['10', '20']),
+                                                                             ])
+                                                                         ),
+                                                                         )
+                    # AC & ASSERT #
+
+                    sub_dir_space_1 = root_space.sub_dir_space('A')
+                    sub_dir_space_2 = root_space.sub_dir_space('B')
+
+                    path_1_1 = sub_dir_space_1.new_path('1_1')
+                    path_1_2 = sub_dir_space_1.new_path('1_2')
+
+                    path_2_1 = sub_dir_space_2.new_path('2_1')
+                    path_2_2 = sub_dir_space_2.new_path('2_2')
+
+                    self.assertEqual(
+                        space_root_dir / 'a--A' / '1--1_1',
+                        path_1_1,
+                    )
+                    self.assertEqual(
+                        space_root_dir / 'a--A' / '2--1_2',
+                        path_1_2,
+                    )
+
+                    self.assertEqual(
+                        space_root_dir / 'b--B' / '10--2_1',
+                        path_2_1,
+                    )
+                    self.assertEqual(
+                        space_root_dir / 'b--B' / '20--2_2',
+                        path_2_2,
+                    )
+
+    def test_dir_separator_in_name_suffixes_is_replaced_with_non_separator(self):
+        def f(template: str) -> str:
+            return template.format(dir_sep=os.sep)
+
+        # ARRANGE #
+        for case in _root_dir_cases():
+            with self.subTest(case.name):
+                with tmp_dir() as existing_dir_path:
+                    space_root_dir = case.value(existing_dir_path)
+                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                         FileNamesConfig(
+                                                                             '--',
+                                                                             iter(['a', 'b']),
+                                                                             iter([
+                                                                                 iter(['1', '2']),
+                                                                             ])
+                                                                         ),
+                                                                         )
+                    # AC & ASSERT #
+
+                    sub_dir_space_1 = root_space.sub_dir_space(f('{dir_sep}A{dir_sep}'))
+
+                    path_1_1 = sub_dir_space_1.new_path(f('1{dir_sep}1'))
+                    path_1_2 = sub_dir_space_1.new_path_as_existing_dir(f('1{dir_sep}2'))
+
+                    self.assertEqual(
+                        space_root_dir / 'a--_A_' / '1--1_1',
+                        path_1_1,
+                    )
+                    self.assertEqual(
+                        space_root_dir / 'a--_A_' / '2--1_2',
+                        path_1_2,
                     )
 
     def _assert_is_non_existing_file(self,

@@ -10,6 +10,7 @@ def std_tmp_dir_file_space(dir_path: pathlib.Path) -> TmpDirFileSpace:
     return tmp_file_spaces.TmpDirFileSpaceAsDirCreatedOnDemand(
         dir_path,
         tmp_file_spaces.FileNamesConfig(
+            '-',
             std_tmp_dir_file_names(),
             _std_tmp_sub_dir_file_names(),
         ),
