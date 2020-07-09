@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.util import functional, tables, \
-    symbol_table, collection, value_lookup, file_utils, file_printables
+    symbol_table, collection, value_lookup, file_utils
 from exactly_lib_test.util.cli_syntax import z_package_suite as cli_syntax
 from exactly_lib_test.util.description_tree import z_package_suite as description_tree
 from exactly_lib_test.util.file_utils import z_package_suite as file_utils
@@ -22,7 +22,6 @@ def suite() -> unittest.TestSuite:
         test_resources_test.suite(),  # These tests depend on symbol_table,
         tables.suite(),
         render.suite(),
-        file_printables.suite(),
         simple_textstruct.suite(),
         description_tree.suite(),
         textformat.suite(),

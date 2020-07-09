@@ -1,5 +1,4 @@
 import os
-from abc import ABC
 from typing import Optional, Sequence
 
 from exactly_lib.util import ansi_terminal_color as ansi
@@ -64,15 +63,6 @@ class FilePrinter:
         for line in lines:
             self.write_line(indent)
             self.write_line(line)
-
-
-class FilePrintable(ABC):
-    """
-    Something that is able to print itself on a FilePrinter.
-    """
-
-    def print_on(self, printer: FilePrinter):
-        pass
 
 
 class FilePrinterWithAnsiColor(FilePrinter):
