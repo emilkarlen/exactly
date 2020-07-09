@@ -14,6 +14,7 @@ from exactly_lib_test.test_case_utils.parse import z_package_suite as parse
 from exactly_lib_test.test_case_utils.program import z_package_suite as program
 from exactly_lib_test.test_case_utils.regex import z_package_suite as regex
 from exactly_lib_test.test_case_utils.string_matcher import z_package_suite as string_matcher
+from exactly_lib_test.test_case_utils.string_models import z_package_suite as string_models
 from exactly_lib_test.test_case_utils.string_transformers import z_package_suite as string_transformers
 
 
@@ -28,6 +29,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(matcher.suite())
     ret_val.addTest(regex.suite())
     ret_val.addTest(file_properties.suite())
+    ret_val.addTest(string_models.suite())
     ret_val.addTest(line_matcher.suite())
     ret_val.addTest(string_matcher.suite())
     ret_val.addTest(file_matcher.suite())

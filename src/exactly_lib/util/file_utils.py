@@ -190,10 +190,10 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
 
 class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
     def new_path(self) -> pathlib.Path:
-        raise NotImplementedError('must not be used')
+        raise ValueError('must not be used')
 
     def new_path_as_existing_dir(self) -> pathlib.Path:
-        raise NotImplementedError('must not be used')
+        raise ValueError('must not be used')
 
     def sub_dir_space(self) -> TmpDirFileSpace:
-        raise NotImplementedError('must not be used')
+        raise ValueError('must not be used')
