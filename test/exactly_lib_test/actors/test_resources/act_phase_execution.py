@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions

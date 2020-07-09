@@ -9,7 +9,7 @@ from exactly_lib.definitions.cross_ref import concrete_cross_refs
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor

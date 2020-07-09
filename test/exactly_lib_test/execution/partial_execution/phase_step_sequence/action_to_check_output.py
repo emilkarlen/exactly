@@ -14,8 +14,8 @@ from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_E
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
-from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \

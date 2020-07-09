@@ -14,7 +14,7 @@ from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instr
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import atc_os_proc_executors
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import \

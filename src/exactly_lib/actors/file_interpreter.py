@@ -29,7 +29,7 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_li
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.type_system.logic.program.process_execution import commands
 from exactly_lib.type_system.logic.program.process_execution.command import Command
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 

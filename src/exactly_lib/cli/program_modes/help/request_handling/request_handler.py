@@ -1,4 +1,4 @@
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
 class RequestHandler:

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 from exactly_lib.util import file_printer
 from exactly_lib.util.file_printer import FilePrinter
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.std import StdOutputFiles
 
 
 class StdOutputFilePrinters(tuple):

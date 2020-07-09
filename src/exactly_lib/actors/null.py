@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import eh
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles
 
 
 def actor() -> Actor:

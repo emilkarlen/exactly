@@ -1,7 +1,7 @@
 import tempfile
 from typing import TypeVar, Callable, Tuple
 
-from exactly_lib.util.std import StdOutputFiles, StdOutputFilesContents
+from exactly_lib.util.file_utils.std import StdOutputFiles, StdOutputFilesContents
 
 ResultType = TypeVar('ResultType')
 

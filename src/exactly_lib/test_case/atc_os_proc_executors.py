@@ -8,8 +8,8 @@ from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.std import StdFiles
 
 
 class AtcSubProcessExecutor(AtcOsProcessExecutor):

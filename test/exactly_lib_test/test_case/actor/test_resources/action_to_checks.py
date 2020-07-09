@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_nothing

@@ -5,7 +5,7 @@ from exactly_lib.cli.definitions.program_modes.test_case.command_line_options im
     OPTION_FOR_EXECUTING_ACT_PHASE
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import exit_values
-from exactly_lib.util.std import StdOutputFilesContents
+from exactly_lib.util.file_utils.std import StdOutputFilesContents
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor

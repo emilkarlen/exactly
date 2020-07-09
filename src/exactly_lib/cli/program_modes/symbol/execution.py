@@ -25,11 +25,11 @@ from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 from exactly_lib.util import symbol_table
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
-from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -11,7 +11,7 @@ from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.test_case import atc_os_proc_executors
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
 def default_main_program() -> main_program.MainProgram:

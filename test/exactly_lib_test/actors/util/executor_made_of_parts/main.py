@@ -11,8 +11,8 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.std import StdFiles
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion

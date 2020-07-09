@@ -22,8 +22,8 @@ from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.simple_textstruct.rendering import line_objects, line_elements
-from exactly_lib.util.std import StdOutputFiles
 
 
 class TestCaseDefinition:

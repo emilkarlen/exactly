@@ -22,7 +22,7 @@ from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import argument_parsing_utils
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.document import SectionContents
 

@@ -13,7 +13,7 @@ from exactly_lib.test_suite import reporting, structure
 from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.file_printer import FilePrinter
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 FAIL_STATUSES = {FullExeResultStatus.FAIL,
                  FullExeResultStatus.XPASS,

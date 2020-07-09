@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles
 
 
 class Validator:

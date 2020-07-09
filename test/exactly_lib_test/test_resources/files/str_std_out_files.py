@@ -1,7 +1,7 @@
 import io
 
 from exactly_lib.common.process_result_reporter import Environment
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_resources.files.file_utils import NULL_FILE
 
 

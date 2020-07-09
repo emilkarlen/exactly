@@ -12,7 +12,7 @@ from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util import name
 from exactly_lib.util.file_printer import FilePrinter, file_printer_with_color_if_terminal
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 SUCCESS_STATUSES = {FullExeResultStatus.PASS,
                     FullExeResultStatus.SKIPPED,

@@ -13,7 +13,7 @@ from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_err
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
 from exactly_lib.util.file_utils import misc_utils
-from exactly_lib.util.std import StdFiles, StdOutputFiles
+from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 
 PhaseStepFailureConstructorType = Callable[[ExecutionFailureStatus, FailureDetails], PhaseStepFailure]
 

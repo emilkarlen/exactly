@@ -10,8 +10,8 @@ from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.standalone.settings import ReportingOption
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib.util.std import StdOutputFiles
 
 
 class ResultReporter:
