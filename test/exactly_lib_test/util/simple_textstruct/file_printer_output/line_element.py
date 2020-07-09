@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import Indentation, TextStyle, ElementProperties, TEXT_STYLE__NEUTRAL
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.simple_textstruct.file_printer_output.test_resources import LINE_ELEMENT_INDENT, \
     check_line_element, indentation_cases, FilePrinterWithTextPropertiesForTest

@@ -28,9 +28,9 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDd
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
-from exactly_lib.util import strings
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.messages import expected_found
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
@@ -117,7 +117,7 @@ class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescript
         except IOError:
             rel_path = sds.relative_to_sds_root(sds.result.exitcode_file)
             err_msg = text_docs.single_line(
-                strings.FormatMap(
+                str_constructor.FormatMap(
                     'Cannot read {exit_code} from file {file}',
                     {
                         'exit_code': _PROPERTY_NAME,
@@ -131,7 +131,7 @@ class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescript
         except IOError:
             raise pfh_exception.PfhHardErrorException(
                 text_docs.single_line(
-                    strings.Concatenate([
+                    str_constructor.Concatenate([
                         _FAILED_TO_READ_CONTENTS_FROM,
                         sds.result.exitcode_file,
                     ])
@@ -143,7 +143,7 @@ class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescript
             return int(contents)
         except ValueError:
             msg = text_docs.single_line(
-                strings.FormatMap(
+                str_constructor.FormatMap(
                     'The contents of the file for {exit_code} ("{file}") is not an integer: "{contents}"',
                     {
                         'exit_code': _PROPERTY_NAME,

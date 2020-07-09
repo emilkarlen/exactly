@@ -14,7 +14,7 @@ from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as struct
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
-from exactly_lib.util.string import inside_parens
+from exactly_lib.util.str_.misc_formatting import inside_parens
 from exactly_lib.util.symbol_table import SymbolTable
 
 BUILTIN_SYMBOL_DEFINITION_SOURCE_LINE = all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.singular

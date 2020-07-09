@@ -19,7 +19,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib.util import strings
+from exactly_lib.util.str_ import str_constructor
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
 
@@ -93,7 +93,7 @@ class _Instruction(ConfigurationPhaseInstruction):
         if not new_path.exists():
             return sh.new_sh_hard_error(
                 text_docs.single_line(
-                    strings.FormatPositional(
+                    str_constructor.FormatPositional(
                         'Directory does not exist: {}',
                         new_path)
                 )
@@ -101,7 +101,7 @@ class _Instruction(ConfigurationPhaseInstruction):
         if not new_path.is_dir():
             return sh.new_sh_hard_error(
                 text_docs.single_line(
-                    strings.FormatPositional(
+                    str_constructor.FormatPositional(
                         'Not a directory: {}',
                         new_path)
                 )

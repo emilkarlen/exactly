@@ -7,7 +7,7 @@ from exactly_lib.actors import command_line as sut
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \

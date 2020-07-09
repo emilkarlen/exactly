@@ -15,8 +15,8 @@ from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util import strings
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.str_ import str_constructor
 
 
 class IntegerComparisonOperatorAndRightOperandSdv:
@@ -72,7 +72,7 @@ def _string_sdv_of(value_token: Token) -> StringSdv:
 
 _REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
-        strings.FormatMap(
+        str_constructor.FormatMap(
             'The {INTEGER} argument must be made up of just {string_type} values.',
             {
                 'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,

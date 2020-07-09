@@ -7,7 +7,7 @@ from exactly_lib.util.render import combinators
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend, blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 
 
 def hard_error_blocks(explanation: str,

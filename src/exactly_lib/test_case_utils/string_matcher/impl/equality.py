@@ -27,7 +27,7 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.file_utils.misc_utils import tmp_text_file_containing
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.strings import StringConstructor
+from exactly_lib.util.str_.str_constructor import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 

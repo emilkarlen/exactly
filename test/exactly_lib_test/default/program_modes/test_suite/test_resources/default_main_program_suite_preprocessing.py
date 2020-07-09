@@ -5,7 +5,7 @@ from exactly_lib.processing.exit_values import EXECUTION__PASS, \
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite

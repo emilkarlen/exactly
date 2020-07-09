@@ -14,10 +14,10 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatch
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.render import strings as string_rendering
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -47,7 +47,7 @@ class _Ddv(FileMatcherDdvImplBase):
 
     def structure(self) -> StructureRenderer:
         return _FileMatcherNameGlobPattern.new_structure_tree(
-            details.String(strings.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
+            details.String(str_constructor.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
         )
 
     def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
@@ -68,7 +68,7 @@ class _FileMatcherNameGlobPattern(FileMatcherImplBase):
         super().__init__()
         self._glob_pattern = glob_pattern
         self._renderer_of_expected = custom_details.expected(
-            self._sub_matcher_renderer(details.String(strings.Repr(glob_pattern)))
+            self._sub_matcher_renderer(details.String(str_constructor.Repr(glob_pattern)))
         )
 
     @property
@@ -96,7 +96,7 @@ class _FileMatcherNameGlobPattern(FileMatcherImplBase):
         )
 
     def _structure(self) -> StructureRenderer:
-        return self.new_structure_tree(details.String(strings.Repr(self._glob_pattern)))
+        return self.new_structure_tree(details.String(str_constructor.Repr(self._glob_pattern)))
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
         tb = self.__tb_with_expected().append_details(

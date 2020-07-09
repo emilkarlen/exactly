@@ -1,5 +1,5 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
-from exactly_lib.util.name import a_name_with_plural_s, NameWithGender, an_name_with_plural_s
+from exactly_lib.util.str_.name import a_name_with_plural_s, NameWithGender, an_name_with_plural_s
 
 
 def _command_line_names_as_singular_name(entity_type_identifier: str,

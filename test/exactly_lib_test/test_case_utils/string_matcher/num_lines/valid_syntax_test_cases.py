@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib.util.string import lines_content, line_separated
+from exactly_lib.util.str_.misc_formatting import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \

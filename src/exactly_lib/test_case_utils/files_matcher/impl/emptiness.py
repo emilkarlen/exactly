@@ -7,11 +7,11 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.util import strings
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.str_ import str_constructor
 
 
 def emptiness_matcher() -> FilesMatcherSdv:
@@ -70,7 +70,7 @@ class _FailureTraceRenderer(NodeRenderer[bool]):
 
     def _details(self) -> Sequence[tree.Detail]:
         renderer = custom_details.actual__custom(
-            strings.FormatPositional(
+            str_constructor.FormatPositional(
                 'Actual contents ({} files)', len(self._actual_contents),
             ),
             custom_details.string_list(self._dir_contents_err_msg_lines()),

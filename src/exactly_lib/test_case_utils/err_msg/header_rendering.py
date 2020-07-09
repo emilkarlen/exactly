@@ -1,11 +1,11 @@
-from exactly_lib.util import strings
 from exactly_lib.util.render import combinators
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, LineElement, MajorBlock
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_ import str_constructor
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 UNEXPECTED = 'Unexpected'
 
@@ -47,7 +47,7 @@ class UnexpectedAttrOfObjMajorBlockRenderer(Renderer[MajorBlock]):
 
 
 def unexpected(attribute: ToStringObject) -> ToStringObject:
-    return strings.Concatenate([
+    return str_constructor.Concatenate([
         UNEXPECTED,
         ' ',
         attribute,
@@ -57,7 +57,7 @@ def unexpected(attribute: ToStringObject) -> ToStringObject:
 
 def unexpected_attr_of_obj(attribute: ToStringObject,
                            object_: ToStringObject) -> ToStringObject:
-    return strings.Concatenate([
+    return str_constructor.Concatenate([
         UNEXPECTED,
         ' ',
         attribute,

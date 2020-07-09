@@ -1,7 +1,6 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.util import strings
 from exactly_lib.util.ansi_terminal_color import ForegroundColor, FontStyle
 from exactly_lib.util.description_tree import simple_textstruct_rendering as sut
 from exactly_lib.util.description_tree.simple_textstruct_rendering import RenderingConfiguration
@@ -11,6 +10,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct import structure as s
 from exactly_lib.util.simple_textstruct.structure import ElementProperties, TEXT_STYLE__NEUTRAL, Indentation, \
     INDENTATION__NEUTRAL, TextStyle
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib_test.test_resources.test_utils import NIE, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -623,7 +623,10 @@ STRING_OBJECT_CASES = [
                  'a string constant',
                  ),
     NameAndValue('must apply str',
-                 strings.FormatPositional('{}', 'a string that is generated'),
+                 str_constructor.FormatPositional(
+                     '{}',
+                     'a string that is generated',
+                 ),
                  ),
 ]
 

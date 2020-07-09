@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.condition.comparison_structures import OperandS
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.util import strings
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -69,7 +69,7 @@ class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
                 '\n\nPython exception:\n' + ex.python_exception_message
             )
             msg = text_docs.single_pre_formatted_line_object(
-                strings.FormatPositional(
+                str_constructor.FormatPositional(
                     'Argument must be an integer: `{}\'{}',
                     ex.value_string,
                     py_ex_str)

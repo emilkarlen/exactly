@@ -17,7 +17,7 @@ from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.render.renderer import Renderer
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 HAS_MORE_DATA_MARKER = '...'
 

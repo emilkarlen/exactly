@@ -5,7 +5,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPlur
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.name import NameWithGender, NameWithGenderWithFormatting, \
+from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
     a_name_with_plural_s
 
 

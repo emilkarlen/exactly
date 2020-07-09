@@ -4,7 +4,7 @@ from typing import List
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File

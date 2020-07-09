@@ -9,7 +9,7 @@ from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDoc
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util.name import Name
+from exactly_lib.util.str_.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 

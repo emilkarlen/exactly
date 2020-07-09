@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.util import name as sut
+from exactly_lib.util.str_ import name as sut
 from exactly_lib_test.test_resources.test_utils import NEA
 
 

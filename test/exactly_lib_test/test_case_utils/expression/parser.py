@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.expression import parser as sut
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines, \
     remaining_source_string

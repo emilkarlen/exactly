@@ -14,7 +14,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *

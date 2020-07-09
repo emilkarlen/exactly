@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check

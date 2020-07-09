@@ -9,7 +9,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 
 DOCUMENT_MARKER_PREFIX = '<<'
 DOCUMENT_TOKEN_RE = re.compile('(<<)([0-9a-zA-Z_-]+)')

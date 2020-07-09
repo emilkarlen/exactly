@@ -19,12 +19,12 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_strin
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
-from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.render import strings as string_rendering
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
@@ -129,7 +129,7 @@ class _ValidatorWhichCreatesRegex(DdvValidator):
             return None
         except Exception as ex:
             return text_docs.single_line(
-                strings.FormatPositional(
+                str_constructor.FormatPositional(
                     "Invalid {}: '{}'",
                     instruction_arguments.REG_EX.name,
                     ex,

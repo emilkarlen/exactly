@@ -14,7 +14,7 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 T = TypeVar('T')
 

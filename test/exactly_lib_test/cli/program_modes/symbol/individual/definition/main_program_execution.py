@@ -6,7 +6,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.cli.program_modes.symbol.individual.test_resources.output import definition_of_builtin_symbol
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output

@@ -1,7 +1,7 @@
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
 from exactly_lib.util.simple_textstruct.structure import LineObject
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class PreFormattedString(LineObjectRenderer):

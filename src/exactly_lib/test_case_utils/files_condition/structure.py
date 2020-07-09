@@ -21,13 +21,13 @@ from exactly_lib.type_system.description.tree_structured import WithTreeStructur
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.functional import map_optional
 from exactly_lib.util.render import strings as string_rendering
 from exactly_lib.util.render.renderer import Renderer
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -101,7 +101,7 @@ class _IsRelativePosixPath(DdvValidator):
         path = PurePosixPath(self.path_str)
         if path.is_absolute():
             return text_docs.single_line(
-                strings.FormatMap(
+                str_constructor.FormatMap(
                     'A {FILE_NAME} must not be absolute: {path}',
                     {
                         'FILE_NAME': syntax.FILE_NAME,
@@ -118,8 +118,10 @@ class _IsRelativePosixPath(DdvValidator):
 _FORMAT_MAP = {
     'FILE_NAME': syntax.FILE_NAME,
 }
-_EMPTY_FILE_NAME = strings.FormatMap('A {FILE_NAME} must not be the empty string',
-                                     _FORMAT_MAP)
+_EMPTY_FILE_NAME = str_constructor.FormatMap(
+    'A {FILE_NAME} must not be the empty string',
+    _FORMAT_MAP,
+)
 
 TSD = TypeVar('TSD', bound=WithTreeStructureDescription)
 

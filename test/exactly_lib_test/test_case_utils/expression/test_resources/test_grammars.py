@@ -8,8 +8,8 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as expression_parser
 from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.name import NameWithGenderWithFormatting, NameWithGender
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 

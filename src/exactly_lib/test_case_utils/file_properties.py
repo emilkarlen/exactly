@@ -10,11 +10,11 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import actual_file_attributes
 from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
-from exactly_lib.util import strings, name
-from exactly_lib.util.name import NameWithGenderWithFormatting
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MinorBlock, MajorBlock
+from exactly_lib.util.str_ import str_constructor, name
+from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 
 
 class FileType(enum.Enum):
@@ -175,7 +175,7 @@ def negation_of(check: FilePropertiesCheck) -> FilePropertiesCheck:
 def render_failure(properties_with_neg: PropertiesWithNegation,
                    file_path: pathlib.Path) -> TextRenderer:
     return text_docs.single_line(
-        strings.Concatenate([
+        str_constructor.Concatenate([
             render_failing_property(properties_with_neg),
             ': ',
             file_path,
@@ -185,7 +185,7 @@ def render_failure(properties_with_neg: PropertiesWithNegation,
 
 def render_failure__wo_file_name(properties_with_neg: PropertiesWithNegation) -> TextRenderer:
     return text_docs.single_line(
-        strings.Concatenate([
+        str_constructor.Concatenate([
             render_failing_property(properties_with_neg),
         ])
     )

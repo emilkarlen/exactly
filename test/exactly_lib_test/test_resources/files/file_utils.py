@@ -7,7 +7,7 @@ from typing import Sequence
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils.misc_utils import resolved_path
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 
 
 def write_file(path: pathlib.Path, contents: str):

@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.formatting import misc_name_with_formatting
-from exactly_lib.util import name
+from exactly_lib.util.str_ import name
 
 NOTE_LINE_HEADER = 'Note:'
 

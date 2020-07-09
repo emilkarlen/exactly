@@ -1,6 +1,6 @@
 from typing import List, Callable, Any, Mapping, Optional
 
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem

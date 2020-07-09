@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \

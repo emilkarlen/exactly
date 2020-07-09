@@ -7,7 +7,7 @@ from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.actors.test_resources import act_phase_execution

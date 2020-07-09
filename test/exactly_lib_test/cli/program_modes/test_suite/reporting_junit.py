@@ -6,7 +6,7 @@ import exactly_lib.cli.definitions.common_cli_options as opt
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options
 from exactly_lib.definitions.entity import suite_reporters
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \

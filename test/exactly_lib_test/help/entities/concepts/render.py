@@ -6,7 +6,7 @@ from exactly_lib.help.entities.concepts.all_concepts import all_concepts
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.util.description import Description, DescriptionWithSubSections
-from exactly_lib.util.name import Name, NameWithGender, a_name
+from exactly_lib.util.str_.name import Name, NameWithGender, a_name
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import text, para

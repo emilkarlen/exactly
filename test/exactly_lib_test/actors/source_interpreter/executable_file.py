@@ -9,7 +9,7 @@ from exactly_lib.actors.source_interpreter.source_file_management import SourceF
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.source_interpreter import common_tests
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution

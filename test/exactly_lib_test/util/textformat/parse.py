@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.textformat import parse as sut
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import StringText

@@ -36,8 +36,8 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.value_type import DataValueType, ValueType
-from exactly_lib.util import strings
 from exactly_lib.util.parse.token import TokenType, Token
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -317,7 +317,7 @@ def _path_suffix_sdv_from_fragments(fragments: list) -> PathPartSdv:
 
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
-        strings.FormatMap(
+        str_constructor.FormatMap(
             'Every symbol used as a path component of a {path_type} '
             'must be defined as a {string_type}.',
             {

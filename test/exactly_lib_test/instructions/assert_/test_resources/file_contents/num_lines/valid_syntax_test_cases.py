@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.util.string import lines_content, line_separated
+from exactly_lib.util.str_.misc_formatting import lines_content, line_separated
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \

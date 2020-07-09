@@ -13,11 +13,11 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MatcherAdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.util import strings
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_ import str_constructor
+from exactly_lib.util.str_.str_constructor import ToStringObject
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
@@ -122,10 +122,10 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
             )
 
     def _matching_element_header(self) -> ToStringObject:
-        return strings.FormatPositional('At least 1 {} matches', self._conf.setup.rendering.type_name)
+        return str_constructor.FormatPositional('At least 1 {} matches', self._conf.setup.rendering.type_name)
 
     def _non_matching_element_header(self) -> ToStringObject:
-        return strings.FormatPositional('At least 1 {} does not match', self._conf.setup.rendering.type_name)
+        return str_constructor.FormatPositional('At least 1 {} does not match', self._conf.setup.rendering.type_name)
 
     def _report_final_element(self,
                               tb: TraceBuilder,
@@ -171,7 +171,7 @@ class Exists(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
                                  )
 
     def _no_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
-        explanation = strings.FormatPositional(
+        explanation = str_constructor.FormatPositional(
             'No {} matches ({} tested)', self._conf.setup.rendering.type_name,
             tot_num_elements,
         )
@@ -204,9 +204,10 @@ class ForAll(Generic[MODEL, ELEMENT], _QuantifierBase[MODEL, ELEMENT]):
 
     def _all_match(self, tb: TraceBuilder, tot_num_elements: int) -> MatchingResult:
         actual = details.String(
-            strings.FormatPositional('Every {} matches ({} tested)', self._conf.setup.rendering.type_name,
-                                     tot_num_elements,
-                                     )
+            str_constructor.FormatPositional(
+                'Every {} matches ({} tested)', self._conf.setup.rendering.type_name,
+                tot_num_elements,
+            )
         )
         expected = custom_details.TreeStructure(self._conf.predicate.structure())
         return (

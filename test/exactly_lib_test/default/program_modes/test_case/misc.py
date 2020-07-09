@@ -8,7 +8,7 @@ from exactly_lib.section_document.syntax import section_header
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_file_structure import sandbox_directory_structure, tcds_symbols
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.default.program_modes.test_case.test_resources.utils import remove_if_is_directory, \
     get_printed_sds_or_fail
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \

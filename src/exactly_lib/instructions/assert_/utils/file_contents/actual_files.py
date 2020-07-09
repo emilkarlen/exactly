@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, pa
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class ComparisonActualFile(tuple):

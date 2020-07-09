@@ -2,7 +2,7 @@ from typing import Iterable, TypeVar, Callable
 
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class AsToStringObject:

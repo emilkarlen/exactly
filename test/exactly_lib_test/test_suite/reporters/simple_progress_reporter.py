@@ -14,9 +14,9 @@ from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
 from exactly_lib.test_suite.processing import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
-from exactly_lib.util import name
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.string import lines_content_with_os_linesep, lines_content
+from exactly_lib.util.str_ import name
+from exactly_lib.util.str_.misc_formatting import lines_content_with_os_linesep, lines_content
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
     FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR

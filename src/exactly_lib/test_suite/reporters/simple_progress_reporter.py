@@ -10,9 +10,9 @@ from exactly_lib.processing import test_case_processing, exit_values as test_cas
 from exactly_lib.processing.test_case_processing import Status, TestCaseFileReference
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
-from exactly_lib.util import name
 from exactly_lib.util.file_printer import FilePrinter, file_printer_with_color_if_terminal
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.str_ import name
 
 SUCCESS_STATUSES = {FullExeResultStatus.PASS,
                     FullExeResultStatus.SKIPPED,

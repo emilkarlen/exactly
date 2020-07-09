@@ -9,7 +9,7 @@ from exactly_lib.definitions.test_suite import file_names, section_names
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing

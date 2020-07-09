@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 from exactly_lib.processing.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_processing import ProcessError
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.processing.test_resources.preprocessor_utils import dir_contents_and_preprocessor_source
 from exactly_lib_test.processing.test_resources.result_assertions import error_info_matches
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File

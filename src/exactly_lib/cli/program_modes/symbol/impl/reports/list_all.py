@@ -7,7 +7,7 @@ from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYP
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
-from exactly_lib.util.string import inside_parens
+from exactly_lib.util.str_.misc_formatting import inside_parens
 
 
 class ListReportGenerator(ReportGenerator):

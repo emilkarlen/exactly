@@ -7,7 +7,7 @@ from exactly_lib.test_case import exception_detection, executable_factories
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util import strings
+from exactly_lib.util.str_ import str_constructor
 
 
 class OsServices:
@@ -92,7 +92,7 @@ class _Default(OsServices):
             raise exception_detection.DetectedException(
                 FailureDetails.new_message(
                     text_docs.single_line(
-                        strings.FormatMap(
+                        str_constructor.FormatMap(
                             'Failed to copy file {src} -> {dst}',
                             {'src': src,
                              'dst': dst
@@ -110,7 +110,7 @@ class _Default(OsServices):
             raise exception_detection.DetectedException(
                 FailureDetails.new_message(
                     text_docs.single_line(
-                        strings.FormatMap(
+                        str_constructor.FormatMap(
                             'Failed to copy file {src} -> {dst}',
                             {'src': src,
                              'dst': dst
@@ -128,9 +128,11 @@ class _Default(OsServices):
             raise exception_detection.DetectedException(
                 FailureDetails.new_message(
                     text_docs.single_line(
-                        strings.FormatMap('Failed to copy tree {src} -> {dst}',
-                                          {'src': src,
-                                           'dst': dst})
+                        str_constructor.FormatMap(
+                            'Failed to copy tree {src} -> {dst}',
+                            {'src': src,
+                             'dst': dst},
+                        )
                     ),
                     ex
                 ))
@@ -147,7 +149,7 @@ def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
     raise exception_detection.DetectedException(
         FailureDetails.new_message(
             text_docs.single_line(
-                strings.FormatMap(
+                str_constructor.FormatMap(
                     'Failed to make directory {path}',
                     {'path': path}
                 )),

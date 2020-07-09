@@ -17,8 +17,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
-from exactly_lib.util import strings
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_ import str_constructor
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
@@ -203,9 +203,10 @@ class AssertPhaseInstructionThatPassIffStdoutEqualsString(AssertPhaseInstruction
         else:
             return pfh.new_pfh_fail(
                 new_pre_formatted_str_for_test(
-                    strings.FormatPositional('Expected: {}\nActual  : {}',
-                                             self.expected, actual_contents,
-                                             )
+                    str_constructor.FormatPositional(
+                        'Expected: {}\nActual  : {}',
+                        self.expected, actual_contents,
+                    )
                 )
             )
 

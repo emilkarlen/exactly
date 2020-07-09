@@ -1,4 +1,4 @@
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 

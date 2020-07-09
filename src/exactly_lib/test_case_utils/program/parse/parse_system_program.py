@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
 from exactly_lib.type_system.value_type import DataValueType
-from exactly_lib.util import strings
+from exactly_lib.util.str_ import str_constructor
 
 
 def parse_as_command(parser: TokenParser) -> CommandSdv:
@@ -38,7 +38,7 @@ def program_parser() -> Parser[ProgramSdv]:
 
 _PROGRAM_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
-        strings.FormatMap(
+        str_constructor.FormatMap(
             'A program name must be defined in terms of {string_type}.',
             {'string_type': define_symbol.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier},
         )

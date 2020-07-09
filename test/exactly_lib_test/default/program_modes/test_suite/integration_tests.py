@@ -4,7 +4,7 @@ from typing import List
 
 from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.default.program_modes.test_suite.test_resources import \
     default_main_program_suite_preprocessing as pre_proc_tests
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \

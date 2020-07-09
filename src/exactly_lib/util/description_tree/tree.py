@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic, Any, Optional
 
 from exactly_lib.util.simple_textstruct.structure import TextStyle, TEXT_STYLE__NEUTRAL
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 RET = TypeVar('RET')
 

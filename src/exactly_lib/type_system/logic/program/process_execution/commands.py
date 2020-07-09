@@ -9,7 +9,7 @@ from exactly_lib.type_system.description.structure_building import StructureBuil
 from exactly_lib.type_system.logic.program.process_execution.command import Command, ProgramAndArguments, CommandDriver
 from exactly_lib.util.description_tree import details, tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class CommandDriverForShell(CommandDriver):

@@ -7,7 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.string import with_appended_new_lines
+from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax

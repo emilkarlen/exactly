@@ -23,7 +23,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util import strings
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure import document
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import MainProgramConfig
@@ -212,7 +212,7 @@ class _ActorThatParsesReferences(Actor):
                 ret_val.append(parts[1])
             else:
                 err_msg = new_pre_formatted_str_for_test(
-                    strings.FormatPositional(
+                    str_constructor.FormatPositional(
                         'Invalid act phase instruction: {}\nExpecting: {}',
                         line,
                         self._reference_instruction_name)

@@ -28,8 +28,8 @@ from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
-from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -214,7 +214,7 @@ def _install_into_directory(os_services: OsServices,
         raise exception_detection.DetectedException(
             FailureDetails.new_message(
                 text_docs.single_line(
-                    strings.FormatMap(
+                    str_constructor.FormatMap(
                         '{dst} already exists: {target}',
                         {
                             'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,

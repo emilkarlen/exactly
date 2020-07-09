@@ -1,7 +1,7 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
-from exactly_lib.util.name import NameWithGender, NameWithGenderWithFormatting
+from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting
 
 
 class SectionName:

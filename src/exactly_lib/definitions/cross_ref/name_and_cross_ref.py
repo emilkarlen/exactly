@@ -1,7 +1,7 @@
 from typing import Optional, Iterable, List
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
-from exactly_lib.util.name import Name, NameWithGender, NameWithGenderWithFormatting
+from exactly_lib.util.str_.name import Name, NameWithGender, NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import Text, StringText
 
 

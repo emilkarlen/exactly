@@ -1,6 +1,6 @@
 import enum
 
-from exactly_lib.util.name import name_with_plural_s
+from exactly_lib.util.str_.name import name_with_plural_s
 
 
 class TokenType(enum.Enum):

@@ -1,7 +1,6 @@
 from typing import Any, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.util import strings
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
@@ -9,6 +8,7 @@ from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering import \
     component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.structure import LineElement, MajorBlock
+from exactly_lib.util.str_ import str_constructor
 
 
 def single_pre_formatted_line_object(x: Any,
@@ -25,7 +25,7 @@ def single_pre_formatted_line_object(x: Any,
 def os_exception_error_message(ex: OSError) -> TextRenderer:
     return blocks.MajorBlocksOfSingleLineObject(
         line_objects.PreFormattedString(
-            strings.FormatMap(
+            str_constructor.FormatMap(
                 _OS_EXCEPTION_ERROR_MESSAGE,
                 {
                     'msg': ex.strerror,

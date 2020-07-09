@@ -1,4 +1,4 @@
-from exactly_lib.util.name import Name, NameWithGender
+from exactly_lib.util.str_.name import Name, NameWithGender
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

@@ -12,7 +12,7 @@ from exactly_lib.type_system.logic.program.process_execution import commands
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.render import strings
-from exactly_lib.util.strings import ToStringObject
+from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
 class CommandDriverDdvForShell(CommandDriverDdv):

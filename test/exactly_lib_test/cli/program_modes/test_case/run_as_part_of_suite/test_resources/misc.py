@@ -7,7 +7,7 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 
 

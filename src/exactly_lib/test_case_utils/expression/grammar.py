@@ -6,8 +6,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.util import name_and_value
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.name import NameWithGenderWithFormatting
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 

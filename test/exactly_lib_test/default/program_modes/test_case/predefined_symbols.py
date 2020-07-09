@@ -9,7 +9,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
 from exactly_lib_test.default.test_resources.actors import SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \

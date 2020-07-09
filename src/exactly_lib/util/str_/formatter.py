@@ -1,36 +1,6 @@
-import os
-from typing import Sequence, Any, Optional, Mapping, List
+from typing import Optional, Mapping, Any, Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-
-
-def with_appended_new_lines(lines: Sequence[str]) -> List[str]:
-    return [
-        line + '\n'
-        for line in lines
-    ]
-
-
-def lines_content(lines: Sequence[str]) -> str:
-    return '' \
-        if not lines \
-        else '\n'.join(lines) + '\n'
-
-
-def lines_content_with_os_linesep(lines: list) -> str:
-    return '' \
-        if not lines \
-        else os.linesep.join(lines) + os.linesep
-
-
-def line_separated(lines: list) -> str:
-    return '' \
-        if not lines \
-        else '\n'.join(lines)
-
-
-def inside_parens(x) -> str:
-    return '(' + str(x) + ')'
 
 
 class StringFormatter:

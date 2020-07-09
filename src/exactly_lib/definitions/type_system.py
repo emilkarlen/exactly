@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import types
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, LogicValueType, \
     DATA_TYPE_2_VALUE_TYPE, LOGIC_TYPE_2_VALUE_TYPE
-from exactly_lib.util.name import NumberOfItemsString, Name
+from exactly_lib.util.str_.name import NumberOfItemsString, Name
 
 DATA_TYPE_CATEGORY_NAME = 'data'
 LOGIC_TYPE_CATEGORY_NAME = 'logic'

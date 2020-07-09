@@ -7,7 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.string import with_appended_new_lines
+from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import \

@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.name import NameWithGenderWithFormatting
+from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import para
 

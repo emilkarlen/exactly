@@ -25,7 +25,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.util.string import StringFormatter
+from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 UNSET_IDENTIFIER = 'unset'

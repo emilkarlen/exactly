@@ -23,7 +23,7 @@ class SourceInfo(SymbolUser):
 
 class Parser(parts.ExecutableObjectParser):
     def apply(self, instructions: Sequence[ActPhaseInstruction]) -> SourceInfo:
-        from exactly_lib.util.string import lines_content_with_os_linesep
+        from exactly_lib.util.str_.misc_formatting import lines_content_with_os_linesep
         raw_source = lines_content_with_os_linesep(self._all_source_code_lines(instructions))
         source_sdv = parse_string.string_sdv_from_string(raw_source)
         return SourceInfo(source_sdv)

@@ -15,10 +15,10 @@ from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
-from exactly_lib.util import strings
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
 from . import documentation
+from ...util.str_ import str_constructor
 
 
 def parser() -> ParserWithCurrentLineVariants[FilesConditionSdv]:
@@ -92,7 +92,7 @@ _PARSER = _Parser()
 
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
-        strings.FormatMap(
+        str_constructor.FormatMap(
             'A file name must be defined in terms of {string_type}.',
             {'string_type': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name},
         )

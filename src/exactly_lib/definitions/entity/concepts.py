@@ -7,7 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
     SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names, phase_infos
-from exactly_lib.util.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
+from exactly_lib.util.str_.name import NameWithGender, an_name_with_plural_s, a_name_with_plural_s
 
 _CURRENT_DIRECTORY_SINGULAR = 'current directory'
 

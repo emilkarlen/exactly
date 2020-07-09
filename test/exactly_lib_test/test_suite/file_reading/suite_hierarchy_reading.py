@@ -16,7 +16,7 @@ from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceErro
     SuiteDoubleInclusion
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util.line_source import single_line_sequence
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

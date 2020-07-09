@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.type_system.logic.program.process_execution.command import Command
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN

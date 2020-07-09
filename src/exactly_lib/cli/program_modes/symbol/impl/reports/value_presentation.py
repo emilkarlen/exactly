@@ -18,12 +18,12 @@ from exactly_lib.type_system.logic.description import DescriptionVisitor, Detail
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.name import NumberOfItemsString
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects
 from exactly_lib.util.simple_textstruct.rendering.components import MajorBlockRenderer, LineObjectRenderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.str_.name import NumberOfItemsString
 from exactly_lib.util.symbol_table import SymbolTable
 
 

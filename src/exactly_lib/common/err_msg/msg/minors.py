@@ -2,13 +2,13 @@ from typing import Any
 
 from exactly_lib.common.report_rendering.text_doc import MinorTextRenderer
 from exactly_lib.definitions import misc_texts
-from exactly_lib.util import strings
-from exactly_lib.util.name import Name
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import blocks, line_objects, \
     component_renderers as comp_rend, line_elements
 from exactly_lib.util.simple_textstruct.structure import LineElement
+from exactly_lib.util.str_ import str_constructor
+from exactly_lib.util.str_.name import Name
 
 
 def _capitalize_singular(x: Name) -> str:
@@ -33,7 +33,7 @@ def header_and_message(single_line_header: Any,
 
 def category_error_message(category: Name,
                            message: SequenceRenderer[LineElement]) -> MinorTextRenderer:
-    return header_and_message(strings.Transformed(category, _capitalize_singular),
+    return header_and_message(str_constructor.Transformed(category, _capitalize_singular),
                               message)
 
 

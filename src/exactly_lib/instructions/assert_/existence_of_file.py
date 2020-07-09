@@ -40,13 +40,13 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.util import strings
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
+from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -290,8 +290,8 @@ class _Assertion:
         else:
             err_msg = rend_comb.SequenceR([
                 path_err_msgs.line_header_block__primitive(
-                    strings.FormatMap('Existing {PATH} does not satisfy {FILE_MATCHER}',
-                                      _EXISTING_PATH_FAILURE_FORMAT_MAP),
+                    str_constructor.FormatMap('Existing {PATH} does not satisfy {FILE_MATCHER}',
+                                              _EXISTING_PATH_FAILURE_FORMAT_MAP),
                     self.described_path.describer,
                 ),
                 rendering__node_bool.BoolTraceRenderer(matching_result.trace),
