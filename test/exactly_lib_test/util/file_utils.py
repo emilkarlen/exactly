@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+from typing import Callable, Sequence
 
 from exactly_lib.util import file_utils as sut
 from exactly_lib.util.name_and_value import NameAndValue
@@ -42,15 +43,7 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
 
     def test_demanded_files_SHOULD_be_sequence_of_increasing_numbers__non_existing_root_dir(self):
         # ARRANGE #
-        cases = [
-            NameAndValue('existing root dir',
-                         lambda existing_dir: existing_dir
-                         ),
-            NameAndValue('non existing root dir',
-                         lambda existing_dir: existing_dir / 'non-existing-root-dir-component'
-                         ),
-        ]
-        for case in cases:
+        for case in _root_dir_cases():
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
@@ -66,17 +59,50 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                     self._assert_num_files_in_dir(space_root_dir,
                                                   expected_number_of_files=0)
 
+    def test_sub_dir_space(self):
+        # ARRANGE #
+        for case in _root_dir_cases():
+            with self.subTest(case.name):
+                with tmp_dir() as existing_dir_path:
+                    space_root_dir = case.value(existing_dir_path)
+                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir)
+                    # AC & ASSERT #
+
+                    sub_dir_space = root_space.sub_dir_space()
+
+                    self.assertTrue(space_root_dir.is_dir(),
+                                    'Root space dir should be created when sub space is created')
+
+                    path_in_sub_dir_space = sub_dir_space.new_path()
+
+                    expected_sub_space_root_dir = space_root_dir / '01'
+                    expected_sub_space_file_1 = expected_sub_space_root_dir / '01'
+
+                    self.assertTrue(expected_sub_space_root_dir.is_dir())
+                    self._assert_num_files_in_dir(
+                        expected_sub_space_root_dir,
+                        expected_number_of_files=0,
+                        msg='Sub dir root dir should be empty'
+                    )
+
+                    self.assertEqual(path_in_sub_dir_space,
+                                     expected_sub_space_file_1)
+
+                    root_file_2 = root_space.new_path()
+                    sub_dir_file_2 = sub_dir_space.new_path_as_existing_dir()
+
+                    self._assert_is_non_existing_file(space_root_dir / '02',
+                                                      root_file_2)
+                    self._assert_is_existing_dir(expected_sub_space_root_dir / '02',
+                                                 sub_dir_file_2)
+                    self._assert_num_files_in_dir(space_root_dir,
+                                                  expected_number_of_files=1)
+                    self._assert_num_files_in_dir(expected_sub_space_root_dir,
+                                                  expected_number_of_files=1)
+
     def test_new_path_as_existing_dir(self):
         # ARRANGE #
-        cases = [
-            NameAndValue('existing root dir',
-                         lambda existing_dir: existing_dir
-                         ),
-            NameAndValue('non existing root dir',
-                         lambda existing_dir: existing_dir / 'non-existing-root-dir-component'
-                         ),
-        ]
-        for case in cases:
+        for case in _root_dir_cases():
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
@@ -114,6 +140,20 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
 
     def _assert_num_files_in_dir(self,
                                  dir_path: Path,
-                                 expected_number_of_files: int):
+                                 expected_number_of_files: int,
+                                 msg: str = ''):
         existing_files_in_space_dir = list(dir_path.iterdir())
-        self.assertEqual(expected_number_of_files, len(existing_files_in_space_dir))
+        self.assertEqual(len(existing_files_in_space_dir),
+                         expected_number_of_files,
+                         msg)
+
+
+def _root_dir_cases() -> Sequence[NameAndValue[Callable[[Path], Path]]]:
+    return [
+        NameAndValue('existing root dir',
+                     lambda existing_dir: existing_dir
+                     ),
+        NameAndValue('non existing root dir',
+                     lambda existing_dir: existing_dir / 'non-existing-root-dir-component'
+                     ),
+    ]

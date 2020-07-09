@@ -143,6 +143,10 @@ class TmpDirFileSpace(ABC):
     def new_path_as_existing_dir(self) -> pathlib.Path:
         pass
 
+    @abstractmethod
+    def sub_dir_space(self) -> 'TmpDirFileSpace':
+        pass
+
 
 class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
     """
@@ -171,6 +175,11 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
         ret_val.mkdir()
         return ret_val
 
+    def sub_dir_space(self) -> TmpDirFileSpace:
+        return TmpDirFileSpaceAsDirCreatedOnDemand(
+            self.new_path()
+        )
+
     def _root_dir(self) -> pathlib.Path:
         if self._existing_root_dir_path is None:
             self._existing_root_dir_path = self._root_dir_to_create_on_demand
@@ -184,4 +193,7 @@ class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
         raise NotImplementedError('must not be used')
 
     def new_path_as_existing_dir(self) -> pathlib.Path:
+        raise NotImplementedError('must not be used')
+
+    def sub_dir_space(self) -> TmpDirFileSpace:
         raise NotImplementedError('must not be used')
