@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -18,8 +19,10 @@ from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMat
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -95,20 +98,21 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         )
 
         helper = resolving_helper_for_instruction_env(os_services, environment)
-
-        model = self._get_model(os_services, environment, path_to_check)
+        model_constructor = self._resolve_model_constructor(os_services, environment)
+        model = self._get_model(model_constructor, path_to_check)
 
         matcher = helper.resolve_files_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)
             if not result.value:
+                final_result = self._final_result_of(model_constructor, result)
                 raise pfh_ex_method.PfhFailException(
                     rend_comb.SequenceR([
                         path_err_msgs.line_header_block__primitive(
                             file_or_dir_contents_headers.unexpected_of_file_type(FileType.DIRECTORY),
                             path_to_check.describer,
                         ),
-                        rendering__node_bool.BoolTraceRenderer(result.trace),
+                        rendering__node_bool.BoolTraceRenderer(final_result.trace),
                     ]
                     )
                 )
@@ -117,13 +121,25 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         except HardErrorException as ex:
             raise pfh_ex_method.PfhHardErrorException(ex.error)
 
-    def _get_model(self,
-                   os_services: OsServices,
-                   environment: InstructionEnvironmentForPostSdsStep,
-                   dir_to_check: DescribedPath,
-                   ) -> FilesMatcherModel:
+    @staticmethod
+    def _final_result_of(model_constructor: ModelConstructor[FilesMatcherModel],
+                         matcher: MatchingResult) -> MatchingResult:
+        tb = TraceBuilder(file_check_properties.DIR_CONTENTS)
+        tb.append_details(model_constructor.describer)
+        tb.append_child(matcher.trace)
+        return tb.build_result(matcher.value)
+
+    def _resolve_model_constructor(self,
+                                   os_services: OsServices,
+                                   environment: InstructionEnvironmentForPostSdsStep,
+                                   ) -> ModelConstructor[FilesMatcherModel]:
         resolver = resolving_helper_for_instruction_env(os_services, environment)
-        constructor = resolver.resolve_logic_w_describer(
+        return resolver.resolve_logic_w_describer(
             self._model_constructor
         )
-        return constructor.make_model(FileMatcherModelForDescribedPath(dir_to_check))
+
+    @staticmethod
+    def _get_model(model_constructor: ModelConstructor[FilesMatcherModel],
+                   dir_to_check: DescribedPath,
+                   ) -> FilesMatcherModel:
+        return model_constructor.make_model(FileMatcherModelForDescribedPath(dir_to_check))

@@ -1,0 +1,3 @@
+[assert]
+
+exists . : dir-contents -recursive -max-depth 10 ! empty

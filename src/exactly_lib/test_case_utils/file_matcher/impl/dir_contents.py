@@ -35,6 +35,11 @@ NAMES = file_contents_utils.NamesSetup(
 
 
 class _NonRecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
+    @property
+    def describer(self) -> DetailsRenderer:
+        return details.String(
+            file_or_dir_contents.NON_RECURSIVE_MODEL_NAME
+        )
 
     def make_model(self, model: FileMatcherModel) -> FilesMatcherModel:
         return models.non_recursive(model.path)
@@ -74,42 +79,6 @@ def dir_matches_files_matcher_sdv(
     )
 
 
-class _RecursiveStructureRenderer(DetailsRenderer):
-    def __init__(self,
-                 min_depth: Optional[DetailsRenderer],
-                 max_depth: Optional[DetailsRenderer],
-                 ):
-        self._min_depth = min_depth
-        self._max_depth = max_depth
-
-    def render(self) -> Sequence[Detail]:
-        return self._renderer().render()
-
-    def _renderer(self) -> DetailsRenderer:
-        recursive = details.String(
-            option_syntax.option_syntax(file_or_dir_contents.RECURSIVE_OPTION.name)
-        )
-        limits = filter_not_none([
-            map_optional(
-                lambda d: self._mk_detail(file_or_dir_contents.MIN_DEPTH_OPTION, d),
-                self._min_depth
-            ),
-            map_optional(
-                lambda d: self._mk_detail(file_or_dir_contents.MAX_DEPTH_OPTION, d),
-                self._max_depth
-            ),
-        ])
-
-        return details.SequenceRenderer([recursive] + limits)
-
-    @staticmethod
-    def _mk_detail(option: a.Option, limit: DetailsRenderer) -> DetailsRenderer:
-        return details.HeaderAndValue(
-            option_syntax.option_syntax(option.name),
-            limit
-        )
-
-
 class _RecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
     def __init__(self,
                  min_depth: Optional[int],
@@ -119,7 +88,7 @@ class _RecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
         self._max_depth = max_depth
 
     @property
-    def structure(self) -> DetailsRenderer:
+    def describer(self) -> DetailsRenderer:
         return _RecursiveStructureRenderer(
             map_optional(details.String, self._min_depth),
             map_optional(details.String, self._max_depth),
@@ -162,4 +131,51 @@ class _RecursiveModelConstructorDdv(LogicWithDetailsDescriptionDdv[ModelConstruc
         return advs.ConstantAdv(
             _RecursiveModelConstructor(map_optional(get_int_value, self._min_depth),
                                        map_optional(get_int_value, self._max_depth))
+        )
+
+
+class _RecursiveStructureRenderer(DetailsRenderer):
+    def __init__(self,
+                 min_depth: Optional[DetailsRenderer],
+                 max_depth: Optional[DetailsRenderer],
+                 ):
+        self._min_depth = min_depth
+        self._max_depth = max_depth
+
+    def render(self) -> Sequence[Detail]:
+        return self._renderer().render()
+
+    def _renderer(self) -> DetailsRenderer:
+        return details.SequenceRenderer([self._recursive(), self._limits()])
+
+    def _limits(self) -> DetailsRenderer:
+        limits = filter_not_none([
+            map_optional(
+                lambda d: self._mk_detail(file_or_dir_contents.MIN_DEPTH_OPTION, d),
+                self._min_depth
+            ),
+            map_optional(
+                lambda d: self._mk_detail(file_or_dir_contents.MAX_DEPTH_OPTION, d),
+                self._max_depth
+            ),
+        ])
+        num_limits = len(limits)
+        if num_limits == 0:
+            return details.empty()
+        elif num_limits == 1:
+            return details.IndentedRenderer(limits[0])
+        else:
+            return details.IndentedRenderer(details.SequenceRenderer(limits))
+
+    @staticmethod
+    def _recursive() -> DetailsRenderer:
+        return details.String(
+            option_syntax.option_syntax(file_or_dir_contents.RECURSIVE_OPTION.name)
+        )
+
+    @staticmethod
+    def _mk_detail(option: a.Option, limit: DetailsRenderer) -> DetailsRenderer:
+        return details.HeaderAndValue(
+            option_syntax.option_syntax(option.name),
+            limit
         )
