@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Dict
 
+from exactly_lib.common import tmp_file_spaces
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
@@ -10,7 +11,6 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.tmp_file_space import TmpFileSpace, TmpDirFileSpace
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -89,7 +89,9 @@ class PhaseLoggingPaths(TmpFileSpace):
         return self.new_path_as_existing_dir()
 
     def space_for_instruction(self) -> TmpDirFileSpace:
-        return TmpDirFileSpaceAsDirCreatedOnDemand(self.unique_instruction_file())
+        return tmp_file_spaces.std_tmp_dir_file_space(
+            self.unique_instruction_file(),
+        )
 
     def for_line(self,
                  line_number: int,

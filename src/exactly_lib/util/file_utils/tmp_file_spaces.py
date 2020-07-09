@@ -1,6 +1,32 @@
 import pathlib
+from typing import Iterator
 
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+
+
+class FileNamesConfig:
+    def __init__(self,
+                 root_file_names: Iterator[str],
+                 sub_space_file_names: Iterator[Iterator[str]],
+                 ):
+        self._root_file_names = root_file_names
+        self._sub_space_file_names = sub_space_file_names
+
+    @property
+    def root_file_names(self) -> Iterator[str]:
+        """
+        :return: Gives a sequence of different file names used for files in the root space.
+        Must be long enough to supply a name for every requested path.
+        """
+        return self._root_file_names
+
+    @property
+    def sub_space_file_names(self) -> Iterator[Iterator[str]]:
+        """
+        :return: Gives names for every sub space created. Must be long enough
+        to supply an iterator of names for every sub space.
+        """
+        return self._sub_space_file_names
 
 
 class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
@@ -9,20 +35,21 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
     but is created when tmp files are demanded.
     """
 
-    def __init__(self, root_dir_to_create_on_demand: pathlib.Path):
+    def __init__(self,
+                 root_dir_to_create_on_demand: pathlib.Path,
+                 file_names_config: FileNamesConfig,
+                 ):
         """
         :param root_dir_to_create_on_demand: Either must not exist, or must be an existing empty dir
         If it does not exit, it must be possible to create it as a dir
         (i.e no path components may be a file, and must be writable).
         """
+        self._file_names = file_names_config
         self._root_dir_to_create_on_demand = root_dir_to_create_on_demand
-        self._next_file_number = 1
         self._existing_root_dir_path = None
 
     def new_path(self) -> pathlib.Path:
-        file_num = self._next_file_number
-        self._next_file_number += 1
-        base_name = '%02d' % file_num
+        base_name = next(self._file_names.root_file_names)
         return self._root_dir() / base_name
 
     def new_path_as_existing_dir(self) -> pathlib.Path:
@@ -32,7 +59,10 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
 
     def sub_dir_space(self) -> TmpDirFileSpace:
         return TmpDirFileSpaceAsDirCreatedOnDemand(
-            self.new_path()
+            self.new_path(),
+            FileNamesConfig(next(self._file_names.sub_space_file_names),
+                            self._file_names.sub_space_file_names,
+                            ),
         )
 
     def _root_dir(self) -> pathlib.Path:

@@ -20,7 +20,6 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv, ApplicationEnvironmentDependentValue
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
@@ -40,6 +39,7 @@ from exactly_lib_test.test_case_utils.test_resources.validation import Validatio
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 
 class Arrangement:
@@ -449,7 +449,7 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             ApplicationEnvironment(
                 self.arrangement.process_execution.os_services,
                 self.arrangement.process_execution.process_execution_settings,
-                TmpDirFileSpaceAsDirCreatedOnDemand(
+                tmp_file_spaces.tmp_dir_file_space_for_test(
                     self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
             ),
         )

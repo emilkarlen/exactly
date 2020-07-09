@@ -3,8 +3,8 @@ from typing import Callable
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib_test.test_case_utils.test_resources.string_models import of_string
+from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 ModelConstructor = Callable[[Tcds], StringModel]
 
@@ -45,7 +45,7 @@ class ModelFromBuilder:
     def construct(self) -> StringModel:
         return of_string(
             self.model_builder.original_file_contents,
-            TmpDirFileSpaceAsDirCreatedOnDemand(
+            tmp_file_spaces.tmp_dir_file_space_for_test(
                 self.sds.internal_tmp_dir / 'string-model-dir-for-test'
             )
         )
