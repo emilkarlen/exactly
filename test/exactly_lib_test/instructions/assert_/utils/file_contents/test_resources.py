@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from typing import ContextManager
 
 from exactly_lib.test_case_utils.string_models.factory import StringModelFactory
-from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceAsDirCreatedOnDemand
 
 
 @contextmanager

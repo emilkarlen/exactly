@@ -7,7 +7,7 @@ from exactly_lib.execution.partial_execution.impl import executor
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
-from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable
 
 

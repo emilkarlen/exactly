@@ -5,7 +5,8 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed, TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable

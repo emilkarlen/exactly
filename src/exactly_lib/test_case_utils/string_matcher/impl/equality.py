@@ -22,10 +22,11 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcher, \
     StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util import file_utils
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
-from exactly_lib.util.file_utils import TmpDirFileSpace, tmp_text_file_containing
+from exactly_lib.util.file_utils import misc_utils
+from exactly_lib.util.file_utils.misc_utils import tmp_text_file_containing
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.strings import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -184,8 +185,8 @@ def _validator_of_expected(expected_contents: StringOrPathDdv) -> DdvValidator:
 
 def _file_diff_description(actual_file_path: pathlib.Path,
                            expected_file_path: pathlib.Path) -> Iterable[str]:
-    expected_lines = file_utils.lines_of(expected_file_path)
-    actual_lines = file_utils.lines_of(actual_file_path)
+    expected_lines = misc_utils.lines_of(expected_file_path)
+    actual_lines = misc_utils.lines_of(actual_file_path)
     diff = difflib.unified_diff(expected_lines,
                                 actual_lines,
                                 fromfile='Expected',

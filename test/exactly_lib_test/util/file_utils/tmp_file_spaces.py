@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from typing import Callable, Sequence
 
-from exactly_lib.util import file_utils as sut
+from exactly_lib.util.file_utils import tmp_file_spaces as sut
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 

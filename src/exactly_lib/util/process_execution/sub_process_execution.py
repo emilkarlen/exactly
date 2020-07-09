@@ -1,8 +1,8 @@
 import pathlib
 import subprocess
 
-from exactly_lib.util import file_utils
-from exactly_lib.util.file_utils import write_new_text_file
+from exactly_lib.util.file_utils import ensure_file_existence, misc_utils
+from exactly_lib.util.file_utils.misc_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.process_execution.process_output_files import FileNames
@@ -60,7 +60,7 @@ class ExecutorThatStoresResultInFilesInDir:
         def _err_msg(exception: Exception) -> str:
             return str(exception)
 
-        file_utils.ensure_directory_exists_as_a_directory__impl_error(storage_dir)
+        ensure_file_existence.ensure_directory_exists_as_a_directory__impl_error(storage_dir)
         with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:
             with open(str(storage_dir / process_output_files.STDERR_FILE_NAME), 'w') as f_stderr:
                 try:
@@ -90,7 +90,7 @@ class ExecutorThatStoresResultInFilesInDir:
 def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
     stderr_contents = None
     if result.is_success and result.exit_code != 0:
-        stderr_contents = file_utils.contents_of(result.output_dir_path / result.file_names.stderr)
+        stderr_contents = misc_utils.contents_of(result.output_dir_path / result.file_names.stderr)
     return ResultAndStderr(result, stderr_contents)
 
 

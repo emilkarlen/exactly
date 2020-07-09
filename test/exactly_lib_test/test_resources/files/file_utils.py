@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from typing import Sequence
 
 from exactly_lib import program_info
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils.misc_utils import resolved_path
 from exactly_lib.util.string import lines_content
 
 

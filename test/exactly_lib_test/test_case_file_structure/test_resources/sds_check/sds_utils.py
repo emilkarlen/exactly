@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from exactly_lib import program_info
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds_module
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.file_utils import resolved_path_name
+from exactly_lib.util.file_utils.misc_utils import resolved_path_name
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_resources.files.file_utils import write_file
 from exactly_lib_test.test_resources.process import SubProcessResult

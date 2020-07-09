@@ -4,7 +4,7 @@ from typing import Callable, ContextManager, Iterator
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration

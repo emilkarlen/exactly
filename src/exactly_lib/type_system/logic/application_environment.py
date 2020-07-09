@@ -1,5 +1,5 @@
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.file_utils import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 
 

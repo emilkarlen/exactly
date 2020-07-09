@@ -8,7 +8,7 @@ from typing import Callable, List, Sequence
 
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils.misc_utils import resolved_path
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import ContextManager, Iterator
 
-from exactly_lib.util.file_utils import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 
 
 class TmpFilePathGenerator(ABC):

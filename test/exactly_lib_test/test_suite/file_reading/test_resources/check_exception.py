@@ -5,7 +5,7 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
-from exactly_lib.util.file_utils import resolved_path, preserved_cwd
+from exactly_lib.util.file_utils.misc_utils import resolved_path, preserved_cwd
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_suite.test_resources.environment import default_environment
 

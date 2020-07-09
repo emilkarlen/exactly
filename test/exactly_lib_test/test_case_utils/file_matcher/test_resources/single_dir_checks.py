@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils.misc_utils import resolved_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, Dir
 from exactly_lib_test.type_system.data.test_resources import described_path
 

@@ -2,8 +2,8 @@ from abc import ABC
 from pathlib import Path
 
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils import TmpDirFileSpace
 from . import file_model
+from ...util.file_utils.tmp_file_space import TmpDirFileSpace
 
 
 class StringModelFactory(ABC):

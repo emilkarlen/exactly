@@ -22,7 +22,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
-from exactly_lib.util.file_utils import resolved_path_name
+from exactly_lib.util.file_utils.misc_utils import resolved_path_name
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -4,7 +4,7 @@ import tempfile
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils.misc_utils import resolved_path
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing, contents_of_file
 

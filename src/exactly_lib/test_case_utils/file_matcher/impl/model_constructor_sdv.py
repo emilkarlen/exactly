@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescri
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
-from exactly_lib.util.file_utils import TmpDirFileSpaceAsDirCreatedOnDemand
+from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceAsDirCreatedOnDemand
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
 from ... import described_dep_val

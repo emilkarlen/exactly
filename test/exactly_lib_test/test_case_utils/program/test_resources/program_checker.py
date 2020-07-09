@@ -5,7 +5,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
-from exactly_lib.util import file_utils
+from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
@@ -52,9 +52,9 @@ class _Applier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
                                                                            input_,
                                                                            primitive)
         proc_exe_result = execution_result.process_result
-        stderr_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDERR))
-        stdout_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDOUT))
-        result_of_transformation = file_utils.contents_of(execution_result.path_of_file_with_transformed_contents)
+        stderr_contents = misc_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDERR))
+        stdout_contents = misc_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDOUT))
+        result_of_transformation = misc_utils.contents_of(execution_result.path_of_file_with_transformed_contents)
         proc_result_data = SubProcessResult(proc_exe_result.exit_code,
                                             stdout_contents,
                                             stderr_contents)

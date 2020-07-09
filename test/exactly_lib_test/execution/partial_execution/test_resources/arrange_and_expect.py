@@ -10,7 +10,7 @@ from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

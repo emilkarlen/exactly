@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.util.file_utils import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatMustNoBeUsed
 
 
 class TmpFileSpaceThatAllowsSinglePathGeneration(TmpDirFileSpaceThatMustNoBeUsed):

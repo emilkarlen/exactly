@@ -5,7 +5,7 @@ import unittest
 from typing import List, Sequence, Callable
 
 from exactly_lib import program_info
-from exactly_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils.misc_utils import resolved_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.main_program import main_program_via_sub_process_utils

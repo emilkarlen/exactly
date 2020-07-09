@@ -5,7 +5,7 @@ from typing import ContextManager, Optional
 
 from exactly_lib import program_info
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.functional import reduce_optional
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer, \
     ActResultProducerFromActResult, NULL_ACT_RESULT_PRODUCER
