@@ -13,7 +13,7 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
-from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, LogicWithDetailsDescriptionDdv
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
@@ -69,7 +69,7 @@ CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
 
 def sdv(
         names: NamesSetup,
-        model_constructor: LogicWithDescriberSdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+        model_constructor: LogicWithDetailsDescriptionSdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
         contents_matcher: MatcherSdv[CONTENTS_MATCHER_MODEL],
 ) -> FileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:

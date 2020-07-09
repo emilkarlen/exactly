@@ -3,7 +3,7 @@ from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, PRIMITIVE
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, PRIMITIVE
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv
@@ -42,7 +42,7 @@ class LogicTypeResolvingHelper:
     def file_space(self) -> TmpDirFileSpace:
         return self.application_environment.tmp_files_space
 
-    def resolve_logic_w_describer(self, sdv: LogicWithDescriberSdv[PRIMITIVE]) -> PRIMITIVE:
+    def resolve_logic_w_describer(self, sdv: LogicWithDetailsDescriptionSdv[PRIMITIVE]) -> PRIMITIVE:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)

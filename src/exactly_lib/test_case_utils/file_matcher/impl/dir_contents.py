@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, described_dep_val
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
-from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, sdv_of_constant_primitive, \
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, sdv_of_constant_primitive, \
     LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
@@ -50,7 +50,7 @@ MODEL_CONSTRUCTOR__NON_RECURSIVE = sdv_of_constant_primitive(_NonRecursiveModelC
 
 def model_constructor__recursive(min_depth: Optional[IntegerSdv],
                                  max_depth: Optional[IntegerSdv],
-                                 ) -> LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]]:
+                                 ) -> LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]]:
     def make_ddv(symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]:
         def get_int_ddv(x: IntegerSdv) -> IntegerDdv:
             return x.resolve(symbols)
@@ -69,7 +69,7 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
 
 
 def dir_matches_files_matcher_sdv(
-        model_constructor: LogicWithDescriberSdv[ModelConstructor[FilesMatcherModel]],
+        model_constructor: LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]],
         contents_matcher: FilesMatcherSdv,
 ) -> FileMatcherSdv:
     return file_contents_utils.sdv(

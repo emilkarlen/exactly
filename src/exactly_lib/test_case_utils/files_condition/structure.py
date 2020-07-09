@@ -11,7 +11,7 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.described_dep_val import LogicWithDescriberSdv, LogicWithDetailsDescriptionDdv
+from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
@@ -84,7 +84,7 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
         })
 
 
-class FilesConditionSdv(LogicWithDescriberSdv[FilesCondition], ABC):
+class FilesConditionSdv(LogicWithDetailsDescriptionSdv[FilesCondition], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
         pass

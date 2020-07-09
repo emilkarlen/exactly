@@ -30,7 +30,7 @@ class LogicWithDetailsDescriptionDdv(Generic[PRIMITIVE],
         return _DetailsDescriptionOfDdvWDetails(self)
 
 
-class LogicWithDescriberSdv(Generic[PRIMITIVE], LogicSdv[PRIMITIVE], ABC):
+class LogicWithDetailsDescriptionSdv(Generic[PRIMITIVE], LogicSdv[PRIMITIVE], ABC):
     @abstractmethod
     def resolve(self, symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[PRIMITIVE]:
         pass
@@ -66,7 +66,7 @@ class DdvFromParts(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE]
         return self._make_adv(tcds)
 
 
-class ConstantSdv(Generic[PRIMITIVE], LogicWithDescriberSdv[PRIMITIVE]):
+class ConstantSdv(Generic[PRIMITIVE], LogicWithDetailsDescriptionSdv[PRIMITIVE]):
     def __init__(self, ddv: LogicWithDetailsDescriptionDdv[PRIMITIVE]):
         self._ddv = ddv
 
@@ -74,7 +74,7 @@ class ConstantSdv(Generic[PRIMITIVE], LogicWithDescriberSdv[PRIMITIVE]):
         return self._ddv
 
 
-class SdvFromParts(Generic[PRIMITIVE], LogicWithDescriberSdv[PRIMITIVE]):
+class SdvFromParts(Generic[PRIMITIVE], LogicWithDetailsDescriptionSdv[PRIMITIVE]):
     def __init__(self,
                  make_ddv: Callable[[SymbolTable], LogicWithDetailsDescriptionDdv[PRIMITIVE]],
                  symbol_references: Sequence[SymbolReference] = (),
@@ -90,7 +90,7 @@ class SdvFromParts(Generic[PRIMITIVE], LogicWithDescriberSdv[PRIMITIVE]):
         return self._make_ddv(symbols)
 
 
-def sdv_of_constant_primitive(primitive: PRIMITIVE) -> LogicWithDescriberSdv[PRIMITIVE]:
+def sdv_of_constant_primitive(primitive: PRIMITIVE) -> LogicWithDetailsDescriptionSdv[PRIMITIVE]:
     return ConstantSdv(
         ConstantDdv(
             ConstantAdv(primitive)
