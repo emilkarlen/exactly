@@ -106,9 +106,9 @@ class FileTransformerHelper:
         input_model = self._model_of(src_path)
         try:
             output_model = transformer.transform(input_model)
-            self._os_services.copy_file_preserve_as_much_as_possible__detect_ex(
-                str(output_model.as_file),
-                str(dst_path),
+            self._os_services.copy_file__detect_ex(
+                output_model.as_file,
+                dst_path,
             )
             return None
         except DetectedException as ex:

@@ -30,6 +30,14 @@ class OsServices:
         """
         raise NotImplementedError()
 
+    def copy_file__detect_ex(self, src: pathlib.Path, dst: pathlib.Path):
+        """
+        :param src: A readable regular file.
+        :param dst: Will be overwritten if it exists.
+        :raises DetectedException
+        """
+        raise NotImplementedError()
+
     def copy_tree_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         """
         :raises DetectedException
@@ -92,6 +100,26 @@ class _Default(OsServices):
                     ),
                     ex)
             )
+
+    def copy_file__detect_ex(self, src: pathlib.Path, dst: pathlib.Path):
+        try:
+            with src.open('r') as src_f:
+                with dst.open('w') as dst_f:
+                    shutil.copyfileobj(src_f, dst_f)
+        except IOError as ex:
+            raise exception_detection.DetectedException(
+                FailureDetails.new_message(
+                    text_docs.single_line(
+                        strings.FormatMap(
+                            'Failed to copy file {src} -> {dst}',
+                            {'src': src,
+                             'dst': dst
+                             })
+                    ),
+                    ex)
+            )
+        except Exception as ex:
+            raise ValueError('error')
 
     def copy_tree_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
         try:

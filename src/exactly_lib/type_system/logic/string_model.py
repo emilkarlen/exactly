@@ -29,6 +29,10 @@ class StringModel(ABC):
     def as_file(self) -> Path:
         """
         Gives a path to a file with contents that has been transformed using the transformer.
+
+        The path must not be modified on disk, neither its name nor its contents.
+
+        The path may be read-only.
         """
         pass
 
