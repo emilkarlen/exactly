@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import ContextManager, Iterator
 
+from exactly_lib.util.file_utils import TmpDirFileSpace
+
 
 class TmpFilePathGenerator(ABC):
     """Generates any number of unused paths."""
@@ -19,7 +21,7 @@ class StringModel(ABC):
 
     @property
     @abstractmethod
-    def _path_generator(self) -> TmpFilePathGenerator:
+    def _tmp_file_space(self) -> TmpDirFileSpace:
         pass
 
     @property

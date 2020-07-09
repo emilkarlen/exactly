@@ -3,8 +3,8 @@ from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.test_case_utils.string_models.tmp_path_generators import PathGeneratorOfExclusiveDir
-from exactly_lib.type_system.logic.string_model import StringModel, TmpFilePathGenerator
+from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
@@ -37,7 +37,7 @@ CHECKER = integration_check.IntegrationChecker(
 
 class _StringModelThatMustNotBeUsed(StringModel):
     @property
-    def _path_generator(self) -> TmpFilePathGenerator:
+    def _tmp_file_space(self) -> TmpDirFileSpace:
         raise ValueError('unsupported')
 
     @property
@@ -59,7 +59,5 @@ class _ModelConstructorHelper:
     def construct(self, environment: FullResolvingEnvironment) -> StringModel:
         return string_models.of_string(
             self.contents,
-            PathGeneratorOfExclusiveDir(
-                environment.application_environment.tmp_files_space.new_path()
-            ),
+            environment.application_environment.tmp_files_space.sub_dir_space(),
         )

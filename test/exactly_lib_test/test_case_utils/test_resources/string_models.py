@@ -1,23 +1,23 @@
 from contextlib import contextmanager
-from pathlib import Path
 from typing import ContextManager, Iterator, Sequence, List
 
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
-from exactly_lib.type_system.logic.string_model import TmpFilePathGenerator, StringModel
+from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.util.file_utils import TmpDirFileSpace, TmpDirFileSpaceThatMustNoBeUsed
 
 
 class StringModelFromLines(StringModelFromLinesBase):
     def __init__(self,
                  value: Sequence[str],
-                 tmp_file_path_generator: TmpFilePathGenerator,
+                 tmp_file_space: TmpDirFileSpace,
                  ):
         super().__init__()
         self._value = value
-        self._tmp_file_path_generator = tmp_file_path_generator
+        self.__tmp_file_space = tmp_file_space
 
     @property
-    def _path_generator(self) -> TmpFilePathGenerator:
-        return self._tmp_file_path_generator
+    def _tmp_file_space(self) -> TmpDirFileSpace:
+        return self.__tmp_file_space
 
     @property
     @contextmanager
@@ -25,28 +25,23 @@ class StringModelFromLines(StringModelFromLinesBase):
         yield iter(self._value)
 
 
-class TmpFilePathGeneratorThatMustNotBeUsed(TmpFilePathGenerator):
-    def new_path(self) -> Path:
-        raise ValueError('unsupported')
-
-
 def of_lines(
         lines: Sequence[str],
-        tmp_file_path_generator: TmpFilePathGenerator = TmpFilePathGeneratorThatMustNotBeUsed(),
+        tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
 ) -> StringModel:
     return StringModelFromLines(
         lines,
-        tmp_file_path_generator,
+        tmp_file_space,
     )
 
 
 def of_string(
         contents: str,
-        tmp_file_path_generator: TmpFilePathGenerator = TmpFilePathGeneratorThatMustNotBeUsed(),
+        tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
 ) -> StringModel:
     return StringModelFromLines(
         contents.splitlines(keepends=True),
-        tmp_file_path_generator,
+        tmp_file_space,
     )
 
 

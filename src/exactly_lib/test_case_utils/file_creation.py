@@ -6,7 +6,6 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
-from exactly_lib.test_case_utils.string_models import tmp_path_generators
 from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -119,9 +118,7 @@ class FileTransformerHelper:
     def _model_of(self, file: pathlib.Path) -> StringModel:
         return StringModelOfFile(
             file,
-            tmp_path_generators.PathGeneratorOfExclusiveDir(
-                self._tmp_file_space.new_path()
-            ),
+            self._tmp_file_space.sub_dir_space(),
         )
 
 

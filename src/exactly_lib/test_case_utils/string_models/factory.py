@@ -3,7 +3,7 @@ from pathlib import Path
 
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
-from . import file_model, tmp_path_generators
+from . import file_model
 
 
 class StringModelFactory(ABC):
@@ -13,7 +13,5 @@ class StringModelFactory(ABC):
     def of_file(self, file: Path) -> StringModel:
         return file_model.StringModelOfFile(
             file,
-            tmp_path_generators.PathGeneratorOfExclusiveDir(
-                self._tmp_file_space.new_path()
-            ),
+            self._tmp_file_space.sub_dir_space(),
         )

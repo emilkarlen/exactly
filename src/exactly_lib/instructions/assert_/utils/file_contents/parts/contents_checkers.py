@@ -8,7 +8,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.test_case_utils.string_models import tmp_path_generators
 from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
 from exactly_lib.type_system.logic.string_model import StringModel
 
@@ -41,9 +40,7 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               ) -> StringModel:
         return StringModelOfFile(
             file_to_transform.path.primitive,
-            tmp_path_generators.PathGeneratorOfExclusiveDir(
-                environment.tmp_file_space.new_path()
-            ),
+            environment.tmp_file_space.sub_dir_space(),
         )
 
 

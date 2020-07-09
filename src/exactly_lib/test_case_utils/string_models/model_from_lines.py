@@ -15,7 +15,7 @@ class StringModelFromLinesBase(StringModel, ABC):
         return self._as_file_path
 
     def _to_file(self) -> Path:
-        path = self._path_generator.new_path()
+        path = self._tmp_file_space.new_path()
 
         with path.open('x') as f:
             with self.as_lines as lines:
