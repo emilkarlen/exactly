@@ -1,9 +1,11 @@
 import pathlib
 import unittest
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Iterator, ContextManager, Sequence
 
-from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
+from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import TransformedStringModelFromLines
+from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils import TmpDirFileSpace
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.util.test_resources.tmp_file_space import TmpFileSpaceThatAllowsSinglePathGeneration
@@ -28,9 +30,16 @@ class Test(unittest.TestCase):
                 '1st\n',
                 '2nd\n',
             ]
-            model = _ModelTestImpl(
+            expected_transformed_lines = list(_the_transformer(model_lines))
+
+            source_model = _SourceModelTestImpl(
                 model_lines,
                 tmp_file_space,
+            )
+
+            model = TransformedStringModelFromLines(
+                _the_transformer,
+                source_model,
             )
 
             # ACT #
@@ -43,20 +52,20 @@ class Test(unittest.TestCase):
             # ASSERT #
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines__invokation_1,
                 'Lines, from invokation 1',
             )
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines__invokation_2,
                 'Lines, from invokation 2',
             )
 
             self.assertEqual(
-                0,
                 len(list(storage_dir.iterdir())),
+                0,
                 'No files should have been created in the storage dir',
             )
 
@@ -72,9 +81,16 @@ class Test(unittest.TestCase):
                 '1st\n',
                 '2nd\n',
             ]
-            model = _ModelTestImpl(
+            expected_transformed_lines = list(_the_transformer(model_lines))
+
+            source_model = _SourceModelTestImpl(
                 model_lines,
                 tmp_file_space,
+            )
+
+            model = TransformedStringModelFromLines(
+                _the_transformer,
+                source_model,
             )
 
             # ACT #
@@ -98,7 +114,7 @@ class Test(unittest.TestCase):
             actual_lines_of_path = _lines_of_file(path__invokation_1)
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines_of_path,
                 'Contents of the file (as lines)',
             )
@@ -116,9 +132,16 @@ class Test(unittest.TestCase):
                 '2nd\n',
                 '3rd\n',
             ]
-            model = _ModelTestImpl(
+            expected_transformed_lines = list(_the_transformer(model_lines))
+
+            source_model = _SourceModelTestImpl(
                 model_lines,
                 tmp_file_space,
+            )
+
+            model = TransformedStringModelFromLines(
+                _the_transformer,
+                source_model,
             )
 
             # ACT #
@@ -130,7 +153,7 @@ class Test(unittest.TestCase):
             # ASSERT #
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines,
                 'Lines',
             )
@@ -144,7 +167,7 @@ class Test(unittest.TestCase):
             actual_lines_of_path = _lines_of_file(actual_path)
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines_of_path,
                 'Contents of the file (as lines)',
             )
@@ -162,9 +185,16 @@ class Test(unittest.TestCase):
                 '2nd\n',
                 '3rd\n',
             ]
-            model = _ModelTestImpl(
+            expected_transformed_lines = list(_the_transformer(model_lines))
+
+            source_model = _SourceModelTestImpl(
                 model_lines,
                 tmp_file_space,
+            )
+
+            model = TransformedStringModelFromLines(
+                _the_transformer,
+                source_model,
             )
 
             # ACT #
@@ -176,7 +206,7 @@ class Test(unittest.TestCase):
             # ASSERT #
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines,
                 'Lines',
             )
@@ -190,10 +220,14 @@ class Test(unittest.TestCase):
             actual_lines_of_path = _lines_of_file(actual_path)
 
             self.assertEqual(
-                model_lines,
+                expected_transformed_lines,
                 actual_lines_of_path,
                 'Contents of the file (as lines)',
             )
+
+
+def _the_transformer(lines: Iterator[str]) -> Iterator[str]:
+    return map(str.upper, lines)
 
 
 def _lines_of_file(path: pathlib.Path) -> Sequence[str]:
@@ -201,7 +235,7 @@ def _lines_of_file(path: pathlib.Path) -> Sequence[str]:
         return list(f.readlines())
 
 
-class _ModelTestImpl(StringModelFromLinesBase):
+class _SourceModelTestImpl(StringModel):
     def __init__(self,
                  lines: Sequence[str],
                  tmp_file_space: TmpDirFileSpace,
@@ -213,6 +247,10 @@ class _ModelTestImpl(StringModelFromLinesBase):
     @property
     def _tmp_file_space(self) -> TmpDirFileSpace:
         return self.tmp_file_space
+
+    @property
+    def as_file(self) -> Path:
+        raise ValueError('must not be used')
 
     @property
     @contextmanager

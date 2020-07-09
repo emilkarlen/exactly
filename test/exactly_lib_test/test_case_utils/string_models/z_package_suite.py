@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.string_models import model_from_lines
+from exactly_lib_test.test_case_utils.string_models import model_from_lines, transformed_model_from_lines
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         model_from_lines.suite(),
+        transformed_model_from_lines.suite(),
     ])
 
 
