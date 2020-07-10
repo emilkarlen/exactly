@@ -1,12 +1,12 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.primitives import file_matcher
+from exactly_lib.definitions.primitives import matcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.test_case_utils.program.test_resources import trace_assertions as asrt_pgm_trace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
-_EXPECTED_HEADER = ' '.join((file_matcher.PROGRAM_MATCHER_NAME,
+_EXPECTED_HEADER = ' '.join((matcher.RUN_PROGRAM,
                              syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name))
 
 

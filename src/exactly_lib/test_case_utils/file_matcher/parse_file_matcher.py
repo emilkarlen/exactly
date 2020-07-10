@@ -24,6 +24,7 @@ from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as p
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
+from exactly_lib.test_case_utils.matcher.impls.run_program import documentation
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv, FileMatcher
 from exactly_lib.type_system.value_type import ValueType
@@ -169,20 +170,10 @@ class _TypeSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsIni
         return _type_matcher_sed_description()
 
 
-class _RunSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
-    @property
-    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [
-            syntax_elements.PROGRAM_SYNTAX_ELEMENT.single_mandatory
-        ]
-
+class _RunSyntaxDescription(documentation.SyntaxDescriptionBase):
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
         return _TP.fnap(_RUN_MATCHER_SED_DESCRIPTION)
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
 
 
 GRAMMAR = standard_expression_grammar.new_grammar(

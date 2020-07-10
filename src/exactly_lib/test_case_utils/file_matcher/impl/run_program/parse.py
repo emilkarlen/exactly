@@ -6,5 +6,6 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 def parse(token_parser: TokenParser) -> FileMatcherSdv:
     program = parse_program.parse_program(token_parser, False)
 
-    from . import sdv
-    return sdv.sdv(program)
+    from exactly_lib.test_case_utils.matcher.impls.run_program import sdv
+    from . import runner
+    return sdv.sdv(runner.FileMatcherRunner, program)
