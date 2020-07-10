@@ -18,6 +18,7 @@ from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr, \
     execute
+from exactly_lib.util.process_execution import file_ctx_managers
 
 
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
@@ -48,7 +49,9 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         return execute(program,
                        storage_dir,
                        os_services,
-                       environment.process_execution_settings)
+                       environment.process_execution_settings,
+                       file_ctx_managers.dev_null(),
+                       )
 
 
 class ResultTranslator(MainStepResultTranslator[ExecutionResultAndStderr]):

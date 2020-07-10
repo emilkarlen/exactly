@@ -19,6 +19,7 @@ from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -91,7 +92,8 @@ class FileMakerForContentsFromProgram(FileMaker):
                 program,
                 storage_dir,
                 os_services,
-                environment.process_execution_settings
+                environment.process_execution_settings,
+                file_ctx_managers.dev_null()
             )
         except HardErrorException as ex:
             return ex.error

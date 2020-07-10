@@ -1,5 +1,5 @@
 import pathlib
-from typing import Optional
+from typing import Optional, ContextManager
 
 from exactly_lib.common.report_rendering.parts.failure_details import FailureDetailsRenderer
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -9,8 +9,12 @@ from exactly_lib.test_case_utils.program.top_lvl_error_msg_rendering import unab
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.util.process_execution import sub_process_execution as spe, process_output_files
+from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.process_execution.exe_store_and_read_stderr import \
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionException, \
+    ProcessExecutionFile
 from exactly_lib.util.process_execution.process_output_files import FileNames
 from exactly_lib.util.simple_textstruct.rendering import line_objects, blocks
 
@@ -60,7 +64,8 @@ class ExecutionResultAndStderr(tuple):
 def execute(program: Program,
             output_dir: pathlib.Path,
             os_services: OsServices,
-            settings: ProcessExecutionSettings
+            settings: ProcessExecutionSettings,
+            stdin: ContextManager[ProcessExecutionFile],
             ) -> ExecutionResultAndStderr:
     """
     Executes the program, ignoring any transformations.
@@ -72,18 +77,17 @@ def execute(program: Program,
     :returns ExecutionResultAndStderr: Contents of stderr is included iff exit-code is non-zero.
     :raises HardErrorException: Program cannot be executed.
     """
-    executor = spe.ExecutorThatStoresResultInFilesInDir(settings)
+    executor = ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+        ProcessExecutor(),
+        output_dir,
+        stdin,
+    )
     try:
         executable = os_services.executable_factory__detect_ex().make(program.command)
-        result_and_std_err = spe.execute_and_read_stderr_if_non_zero_exitcode(executable, executor, output_dir)
-        if not result_and_std_err.result.is_success:
-            raise HardErrorException(
-                unable_to_execute_msg(program.structure(),
-                                      _string_major_blocks(result_and_std_err.result.error_message))
-            )
+        result = executor.execute(settings, executable)
         return ExecutionResultAndStderr(
-            result_and_std_err.result.exit_code,
-            result_and_std_err.stderr_contents,
+            result.exit_code,
+            result.stderr,
             output_dir,
             program.structure(),
         )
@@ -91,6 +95,11 @@ def execute(program: Program,
         raise HardErrorException(
             unable_to_execute_msg(program.structure(),
                                   FailureDetailsRenderer(ex.failure_details))
+        )
+    except ProcessExecutionException as ex:
+        raise HardErrorException(
+            unable_to_execute_msg(program.structure(),
+                                  _string_major_blocks(str(ex.cause)))
         )
 
 
