@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.util.process_execution.result
 from exactly_lib.util.process_execution import process_output_files, sub_process_execution as sut
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import FileNames
@@ -80,7 +81,7 @@ PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS = SubProcessResult(exitcode=4,
 
 def assert_is_success_and_output_dir_contains_at_least_result_files(put: unittest.TestCase,
                                                                     expected: SubProcessResult,
-                                                                    actual: sut.Result):
+                                                                    actual: exactly_lib.util.process_execution.result.Result):
     put.assertTrue(actual.is_success,
                    'Result should indicate success')
     put.assertEqual(expected.exitcode,

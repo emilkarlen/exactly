@@ -10,7 +10,8 @@ from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, Result
+from exactly_lib.util.process_execution.result import Result
+from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir
 
 
 class ResultWithTransformation:
