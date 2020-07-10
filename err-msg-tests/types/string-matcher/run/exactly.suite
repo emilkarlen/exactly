@@ -1,0 +1,5 @@
+*.case
+
+[setup]
+
+def program EXIT_1ST_CLA_VALUE = -python -existing-file -rel-home exit-with-1st-cmd-line-arg-value.py

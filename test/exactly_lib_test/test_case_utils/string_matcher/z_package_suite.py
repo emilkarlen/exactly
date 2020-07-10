@@ -4,6 +4,7 @@ from exactly_lib_test.test_case_utils.string_matcher import empty, equals, match
     on_transformed, parse_invalid_syntax, parse_with_line_breaks, std_expr
 from exactly_lib_test.test_case_utils.string_matcher.num_lines import z_package_suite as num_lines
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import z_package_suite as line_matches
+from exactly_lib_test.test_case_utils.string_matcher.run_program import z_package_suite as run_program
 
 
 def suite() -> unittest.TestSuite:
@@ -18,6 +19,7 @@ def suite() -> unittest.TestSuite:
         matches_regex.suite(),
         on_transformed.suite(),
         multiple_transformations.suite(),
+        run_program.suite(),
     ])
 
 

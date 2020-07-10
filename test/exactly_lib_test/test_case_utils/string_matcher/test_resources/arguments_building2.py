@@ -1,11 +1,14 @@
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import string_transformer
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.section_document.test_resources import parse_source
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_resources.strings import WithToString
 
 
 class StringMatcherArg:
@@ -15,6 +18,10 @@ class StringMatcherArg:
     @property
     def as_arguments(self) -> Arguments:
         return Arguments(str(self))
+
+    @property
+    def as_remaining_source(self) -> ParseSource:
+        return parse_source.remaining_source(str(self))
 
 
 class Empty(StringMatcherArg):
@@ -78,6 +85,23 @@ class LineMatches(StringMatcherArg):
             quantifier_separator=logic.QUANTIFICATION_SEPARATOR_ARGUMENT,
             condition=self._condition,
         )
+
+
+class RunProgram(StringMatcherArg):
+    def __init__(self, program: ArgumentElements):
+        self.program = program
+
+    @property
+    def as_argument_elements(self) -> ArgumentElements:
+        run_primitive = ArgumentElements([matcher_options.RUN_PROGRAM_ARGUMENT])
+        return run_primitive.append_to_first_and_following_lines(self.program)
+
+    def __str__(self):
+        return self.as_argument_elements.as_arguments.as_single_string
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return self.as_argument_elements.as_elements
 
 
 class Not(StringMatcherArg):

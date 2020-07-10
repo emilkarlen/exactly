@@ -1,0 +1,3 @@
+[assert]
+
+stdout run @ EXIT_1ST_CLA_VALUE 1

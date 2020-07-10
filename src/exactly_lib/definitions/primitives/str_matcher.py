@@ -1,1 +1,4 @@
+from . import matcher
+
 MATCH_REGEX_OR_GLOB_PATTERN_CHECK_ARGUMENT = 'matches'
+PROGRAM_MATCHER_NAME = matcher.RUN_PROGRAM

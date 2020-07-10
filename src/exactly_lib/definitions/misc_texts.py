@@ -20,6 +20,7 @@ EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
 
 STDOUT = 'stdout'
 STDERR = 'stderr'
+STDIN = 'stdin'
 
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
 SHELL_COMMAND = name.a_name(name.name_with_plural_s('shell command'))

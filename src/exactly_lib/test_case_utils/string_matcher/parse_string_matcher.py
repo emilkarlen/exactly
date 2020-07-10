@@ -15,11 +15,8 @@ from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl import on_transformed
-from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness
-from exactly_lib.test_case_utils.string_matcher.parse.parts import equality
-from exactly_lib.test_case_utils.string_matcher.parse.parts import line_matches
-from exactly_lib.test_case_utils.string_matcher.parse.parts import matches
-from exactly_lib.test_case_utils.string_matcher.parse.parts import num_lines
+from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness, equality, line_matches, matches, \
+    num_lines, run_program
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
@@ -102,6 +99,13 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[S
                 string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
             grammar.PrimitiveExpression(_parse_on_transformed,
                                         _OnTransformedDescription())
+        ),
+        NameAndValue(
+            matcher_options.RUN_PROGRAM_ARGUMENT,
+            grammar.PrimitiveExpression(
+                run_program.parse,
+                run_program.SyntaxDescription(),
+            )
         ),
     ]
 
