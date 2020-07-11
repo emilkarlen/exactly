@@ -292,8 +292,13 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     $ test -f root-files.txt
 
-    exists root-files.txt : type file &&
-                            run -python @[EXACTLY_HOME]@/my-file-matcher.py
+    exists root-files.txt : (
+                            type file
+                            &&
+                            run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
+                            &&
+                            contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
+                            )
 
     stdout -from
            % echo 'Interesting output'
@@ -658,7 +663,7 @@ Including (but not limited to):
 * Improved string character escaping
 * More string transformers, matchers, etc
 * Possibility to use PROGRAM in more places,
-  e.g. in ``[act]``, as matchers and as a string-transformer
+  e.g. in ``[act]``, and as a string-transformer
 * Type for REG-EX
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
