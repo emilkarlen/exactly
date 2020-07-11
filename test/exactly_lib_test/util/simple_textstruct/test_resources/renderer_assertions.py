@@ -31,8 +31,8 @@ RENDERED_TYPE = TypeVar('RENDERED_TYPE')
 
 class _IsSequenceRenderer(Generic[RENDERED_TYPE], asrt.ValueAssertionBase[SequenceRenderer[RENDERED_TYPE]]):
     def __init__(self,
-                 type_sanity_object_assertion: ValueAssertion[RENDERED_TYPE],
-                 custom_assertion: ValueAssertion[RENDERED_TYPE],
+                 type_sanity_object_assertion: ValueAssertion[Sequence[RENDERED_TYPE]],
+                 custom_assertion: ValueAssertion[Sequence[RENDERED_TYPE]],
                  ):
         self._type_sanity_object_assertion = type_sanity_object_assertion
         self._custom_assertion = custom_assertion
