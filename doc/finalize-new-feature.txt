@@ -2,9 +2,14 @@
 
 * Reference Manual
 Make sure documentation is correct.
+* err-msg-tests
+** types
+** symbol-report
+** instructions
 * CHANGELOG
 * README
-Update/add examples if needed.
+** examples
+** future development
 * Increase program version (if needed)
 Needed if current program version cannot include the new feature.
 * Wiki - update examples in branch for next-release
