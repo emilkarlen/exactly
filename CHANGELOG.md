@@ -11,6 +11,10 @@ with exception of a "0." prefix until version 1 is released.
 
  - Type `file-matcher` - primitive `run`
 
+### Fixed
+
+ - Instructions `contents`, `stdout`, `stderr`: Detection of HARD_ERROR from string matcher
+
 ## [0.12.1.1] - 2020-06-29
 
 ### Added

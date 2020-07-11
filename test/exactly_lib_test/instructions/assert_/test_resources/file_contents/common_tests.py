@@ -3,7 +3,8 @@
 import unittest
 
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import empty, equals, symbol_reference
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import line_matches, num_lines
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import line_matches, num_lines, \
+    hard_error_from_matcher
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import parse_invalid_syntax, \
     parse_with_line_breaks
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
@@ -14,9 +15,10 @@ def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.
     return unittest.TestSuite([
         parse_invalid_syntax.suite_for(configuration),
         parse_with_line_breaks.suite_for(configuration),
+        symbol_reference.suite_for(configuration),
+        hard_error_from_matcher.suite_for(configuration),
         empty.suite_for(configuration),
         equals.suite_for(configuration),
         line_matches.suite_for(configuration),
         num_lines.suite_for(configuration),
-        symbol_reference.suite_for(configuration),
     ])
