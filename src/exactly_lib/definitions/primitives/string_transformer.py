@@ -1,6 +1,7 @@
 from exactly_lib.definitions.entity import types
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
+from . import program
 
 STRING_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
@@ -12,3 +13,7 @@ WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_
 
 TRANSFORMATION_OPTION = a.Option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
                                  argument=types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
+
+RUN_PROGRAM = program.RUN_PROGRAM_PRIMITIVE
+
+WITH_IGNORED_EXIT_CODE_OPTION_NAME = program.WITH_IGNORED_EXIT_CODE_OPTION_NAME

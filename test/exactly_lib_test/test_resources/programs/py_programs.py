@@ -1,6 +1,14 @@
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
+def py_pgm_that_copies_stdin_to_stdout() -> str:
+    return """\
+import sys
+
+sys.stdout.writelines(sys.stdin.readlines())
+"""
+
+
 def py_pgm_that_exits_with_1st_value_on_command_line(stderr_output: str) -> str:
     return """\
 import sys
