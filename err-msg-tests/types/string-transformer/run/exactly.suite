@@ -1,0 +1,7 @@
+*.case
+
+[setup]
+
+def program MY_TO_UPPER = -python -existing-file -rel-home to-upper.py
+
+def program NON_0_EXIT_CODE = -python -existing-file -rel-home non-zero-exit-code.py

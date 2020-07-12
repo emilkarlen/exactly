@@ -1,6 +1,7 @@
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.util.cli_syntax import short_and_long_option_syntax
+from exactly_lib.util.cli_syntax import short_and_long_option_syntax, option_syntax
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting
 
 
@@ -109,6 +110,10 @@ def cli_option_argument(option_name: short_and_long_option_syntax.ShortAndLongOp
 
 def cli_argument_option_string(option: str) -> str:
     return '"' + option + '"'
+
+
+def argument_option(name: a.OptionName) -> str:
+    return option_syntax.option_syntax(name)
 
 
 def emphasis(s: str) -> str:

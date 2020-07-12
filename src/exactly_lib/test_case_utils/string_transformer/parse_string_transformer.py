@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IDENTITY_TRANSFORMER_SDV
+from exactly_lib.test_case_utils.string_transformer.impl.run_program import parse as parse_run
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 
@@ -90,6 +91,11 @@ GRAMMAR = grammar.Grammar(
             names.SELECT_TRANSFORMER_NAME,
             grammar.PrimitiveExpression(filter.parse_filter,
                                         filter.SyntaxDescription())
+        ),
+        NameAndValue(
+            names.RUN_PROGRAM_TRANSFORMER_NAME,
+            grammar.PrimitiveExpression(parse_run.parse,
+                                        parse_run.SyntaxDescription())
         ),
         NameAndValue(
             names.IDENTITY_TRANSFORMER_NAME,

@@ -1,0 +1,13 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+file f.txt
+
+[assert]
+
+contents f.txt
+         -transformed-by run @ MY_TO_UPPER arg
+         equals 'hello'

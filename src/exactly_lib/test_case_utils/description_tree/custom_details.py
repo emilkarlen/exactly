@@ -12,6 +12,8 @@ from exactly_lib.test_case_utils.err_msg import path_rendering
 from exactly_lib.type_system.data import string_or_path_ddvs
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.util.cli_syntax import option_syntax
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import tree, details
 from exactly_lib.util.description_tree.details import HeaderAndValue
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -218,6 +220,25 @@ class PatternRenderer(DetailsRenderer):
         pattern_string = details.String(self._pattern.pattern)
         renderer = regex(bool(self._pattern.flags & re.IGNORECASE), pattern_string)
         return renderer.render()
+
+
+class OptionRenderer(DetailsRenderer):
+    def __init__(self, option: a.OptionName):
+        self._option = option
+
+    def render(self) -> Sequence[Detail]:
+        renderer = details.String(option_syntax.option_syntax(self._option))
+        return renderer.render()
+
+
+def optional_option(option: a.OptionName,
+                    has_option: bool) -> DetailsRenderer:
+    return (
+        OptionRenderer(option)
+        if has_option
+        else
+        details.empty()
+    )
 
 
 class PatternMatchRenderer(DetailsRenderer):

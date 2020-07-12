@@ -4,4 +4,5 @@ string-matcher
 line-matcher
 file-matcher
 files-matcher
+string-transformer
 program

@@ -1,0 +1,10 @@
+[setup]
+
+file f.txt
+
+[assert]
+
+contents f.txt
+         -transformed-by run % non-existing-system-program
+         equals 'hello'
+
