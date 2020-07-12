@@ -11,6 +11,7 @@ with exception of a "0." prefix until version 1 is released.
 
  - Type `file-matcher` - primitive `run`
  - Type `string-matcher` - primitive `run`
+ - Type `string-transformer` - primitive `run`
 
 ### Fixed
 
