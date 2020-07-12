@@ -6,7 +6,8 @@ run my-setup-helper-program first "second arg"
 
 $ touch file
 
-file root-files.txt = -stdout-from $ ls /
+file root-files.txt = -stdout-from % ls /
+                      -transformed-by run my-string-transformer-program
 
 [act]
 
@@ -27,7 +28,7 @@ exists root-files.txt : (
                         )
 
 stdout -from
-       % echo 'Interesting output'
+       $ echo 'Interesting output'
        equals
 <<EOF
 Interesting output

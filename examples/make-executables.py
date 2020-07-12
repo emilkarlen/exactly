@@ -36,6 +36,8 @@ MY_SETUP_HELPER_PROGRAM = 'my-setup-helper-program'
 
 MY_ASSERT_HELPER_PROGRAM = 'my-assert-helper-program'
 
+MY_STRING_TRANSFORMER_PROGRAM = 'my-string-transformer-program'
+
 MY_HELPER_PROGRAM = 'my-helper-program'
 
 MANIPULATE_DATABASE_CONTENTS = 'manipulate-database-contents'
@@ -113,6 +115,7 @@ README_FILES = itertools.chain.from_iterable([
         Path('external-programs'),
         [MY_ASSERT_HELPER_PROGRAM,
          MY_SETUP_HELPER_PROGRAM,
+         MY_STRING_TRANSFORMER_PROGRAM,
          SYSTEM_UNDER_TEST,
          ]),
     sts(Path('transform'),
