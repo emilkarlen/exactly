@@ -90,7 +90,7 @@ class TestCaseBase(unittest.TestCase):
                                  source: ParseSource,
                                  model: int,
                                  parser: Parser[MatcherSdv[int]],
-                                 arrangement: sut.arrangement_w_tcds,
+                                 arrangement: sut.Arrangement,
                                  expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check(self.tc,
@@ -102,7 +102,7 @@ class TestCaseBase(unittest.TestCase):
                                         arguments: Arguments,
                                         model: int,
                                         parser: Parser[MatcherSdv[int]],
-                                        arrangement: sut.arrangement_w_tcds,
+                                        arrangement: sut.Arrangement,
                                         expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
@@ -119,7 +119,7 @@ class TestCaseBase(unittest.TestCase):
                                                    arguments: Arguments,
                                                    model: int,
                                                    parser: Parser[MatcherSdv[int]],
-                                                   arrangement: sut.arrangement_w_tcds,
+                                                   arrangement: sut.Arrangement,
                                                    expectation: sut.Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         with self.subTest('single execution'):
