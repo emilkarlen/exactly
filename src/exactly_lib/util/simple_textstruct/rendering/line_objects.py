@@ -18,7 +18,7 @@ class PreFormattedString(LineObjectRenderer):
     @staticmethod
     def of_str(x: str) -> 'PreFormattedString':
         is_line_ended = (
-                x and x[-1] == '\n'
+                bool(x) and x[-1] == '\n'
         )
         return PreFormattedString(x, is_line_ended)
 
