@@ -10,9 +10,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_util
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.replaced_env_vars import \
     ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase, \
     ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
-from exactly_lib_test.test_case_utils.test_resources import string_models
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
+from exactly_lib_test.type_system.logic.test_resources import string_models
 
 
 def suite() -> unittest.TestSuite:

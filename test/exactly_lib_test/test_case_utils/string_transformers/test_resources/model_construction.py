@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformer_checker import ModelConstructor
-from exactly_lib_test.test_case_utils.test_resources import string_models
+from exactly_lib_test.type_system.logic.test_resources import string_models
 
 
 def of_lines(lines: List[str]) -> ModelConstructor:

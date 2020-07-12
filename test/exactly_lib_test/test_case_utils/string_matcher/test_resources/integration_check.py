@@ -6,7 +6,6 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
-from exactly_lib_test.test_case_utils.test_resources import string_models
 from exactly_lib_test.type_system.logic.test_resources import string_models
 
 ModelConstructor = Callable[[FullResolvingEnvironment], StringModel]
