@@ -87,6 +87,23 @@ def equivalent_source_variants__with_source_check__for_expression_parser_2(
     ]
 
 
+def equivalent_source_variants__with_source_check__for_full_line_expression_parser(
+        original_arguments: Arguments,
+) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+    num_lines = original_arguments.num_lines
+    return [
+        NEA(
+            name='following_lines={}'.format(
+                repr(following_lines),
+            ),
+            expected=source_assertion,
+            actual=original_arguments.followed_by_lines(following_lines).as_remaining_source
+
+        )
+        for following_lines, source_assertion in _source_variants_with__for_full_line_expression_parser(num_lines)
+    ]
+
+
 def equivalent_source_variants(put: unittest.TestCase,
                                instruction_argument: str) -> Iterator[ParseSource]:
     """
@@ -142,6 +159,16 @@ def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
         (Arguments(space + following_argument, ['  ']),
          asrt_source.assert_source(current_line_number=asrt.equals(num_expression_lines),
                                    remaining_part_of_current_line=asrt.equals(space[1:] + following_argument))),
+    ]
+
+
+def _source_variants_with__for_full_line_expression_parser(num_expression_lines: int = 1
+                                                           ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
+    return [
+        ([], asrt_source.source_is_at_end),
+        (['  '], asrt_source.is_at_beginning_of_line(num_expression_lines + 1)),
+        (['following line'],
+         asrt_source.is_at_beginning_of_line(num_expression_lines + 1)),
     ]
 
 

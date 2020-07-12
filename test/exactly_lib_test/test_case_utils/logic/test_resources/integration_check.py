@@ -34,7 +34,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser, \
-    equivalent_source_variants__with_source_check__for_expression_parser_2
+    equivalent_source_variants__with_source_check__for_expression_parser_2, \
+    equivalent_source_variants__with_source_check__for_full_line_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -173,6 +174,25 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
         )
 
 
+class MultiSourceExpectation(Generic[PRIMITIVE, OUTPUT]):
+    def __init__(
+            self,
+            symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
+            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
+    ):
+        self.symbol_references = symbol_references
+        self.execution = execution
+        self.primitive = primitive
+
+    @property
+    def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
+        return PrimAndExeExpectation(
+            self.execution,
+            self.primitive
+        )
+
+
 class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     """
     Tests object of a single type.
@@ -220,6 +240,32 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         for source in equivalent_source_variants__with_source_check__for_expression_parser(
                 put, arguments):
             self.check(put, source, input_, arrangement, expectation)
+
+    def check__w_source_variants_for_full_line_parser(self,
+                                                      put: unittest.TestCase,
+                                                      arguments: Arguments,
+                                                      input_: INPUT,
+                                                      arrangement: Arrangement,
+                                                      expectation: MultiSourceExpectation[PRIMITIVE, OUTPUT]
+                                                      ):
+        checker = _IntegrationExecutionChecker(put,
+                                               input_,
+                                               arrangement,
+                                               expectation.primitive,
+                                               expectation.execution,
+                                               self._configuration.applier(),
+                                               self._configuration.new_execution_checker(),
+                                               )
+        for case in equivalent_source_variants__with_source_check__for_full_line_expression_parser(arguments):
+            with put.subTest(case.name):
+                source = case.actual
+
+                actual_sdv = self._parser.parse(source)
+
+                case.expected.apply_with_message(put, source, 'source after parse')
+                self._check_sdv(put, actual_sdv, expectation.symbol_references)
+
+                checker.check(actual_sdv)
 
     def check_multi(self,
                     put: unittest.TestCase,

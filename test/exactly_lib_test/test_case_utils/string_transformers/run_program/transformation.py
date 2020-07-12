@@ -2,11 +2,10 @@ import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, \
-    ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, \
+    MultiSourceExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
@@ -54,12 +53,12 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
             with self.subTest(with_ignored_exit_code=with_ignored_exit_code):
                 # ACT && ASSERT #
 
-                integration_check.CHECKER.check(
+                integration_check.CHECKER.check__w_source_variants_for_full_line_parser(
                     self,
                     args.syntax_for_run(
                         program_args.symbol_ref_command_elements(program_symbol.name),
                         ignore_exit_code=with_ignored_exit_code,
-                    ).as_remaining_source,
+                    ),
                     model_construction.of_lines(input_model_lines),
                     arrangement_w_tcds(
                         tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
@@ -67,17 +66,14 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
                         ),
                         symbols=program_symbol.symbol_table,
                     ),
-                    Expectation(
-                        ParseExpectation(
-                            source=asrt_source.source_is_at_end,
-                            symbol_references=program_symbol.references_assertion,
-                        ),
-                        ExecutionExpectation(
+                    MultiSourceExpectation(
+                        symbol_references=program_symbol.references_assertion,
+                        execution=ExecutionExpectation(
                             main_result=model_assertions.model_lines_lists_matches(
                                 asrt.equals(expected_output_model_lines)
                             )
                         ),
-                        asrt_string_transformer.is_identity_transformer(False),
+                        primitive=asrt_string_transformer.is_identity_transformer(False),
                     ),
                 )
 
@@ -116,12 +112,12 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
             with self.subTest(with_ignored_exit_code=with_ignored_exit_code):
                 # ACT && ASSERT #
 
-                integration_check.CHECKER.check(
+                integration_check.CHECKER.check__w_source_variants_for_full_line_parser(
                     self,
                     args.syntax_for_run(
                         program_args.symbol_ref_command_elements(program_symbol.name),
                         ignore_exit_code=with_ignored_exit_code,
-                    ).as_remaining_source,
+                    ),
                     model_construction.of_lines(input_model_lines),
                     arrangement_w_tcds(
                         tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
@@ -129,11 +125,8 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
                         ),
                         symbols=program_symbol.symbol_table,
                     ),
-                    Expectation(
-                        ParseExpectation(
-                            source=asrt_source.source_is_at_end,
-                            symbol_references=program_symbol.references_assertion,
-                        ),
+                    MultiSourceExpectation(
+                        program_symbol.references_assertion,
                         ExecutionExpectation(
                             main_result=model_assertions.model_lines_lists_matches(
                                 asrt.equals(expected_output_model_lines)

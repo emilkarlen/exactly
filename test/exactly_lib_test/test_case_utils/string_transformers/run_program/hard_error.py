@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     model_construction
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_resources.files.file_structure import File
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 
 
@@ -54,7 +54,7 @@ class TestHardError(unittest.TestCase):
 
         for non_zero_exit_code in non_zero_exit_codes:
             with self.subTest(non_zero_exit_code=non_zero_exit_code):
-                py_file = File('exit-with-value-on-command-line.py',
+                py_file = File('exit-hard-coded-exit-code.py',
                                py_programs.py_pgm_with_stdout_stderr_exit_code(
                                    '',
                                    '',
@@ -80,6 +80,9 @@ class TestHardError(unittest.TestCase):
                     model_construction.arbitrary_model_constructor(),
                     arrangement_w_tcds(
                         symbols=program_symbol.symbol_table,
+                        tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
+                            DirContents([py_file])
+                        ),
                     ),
                     Expectation(
                         ParseExpectation(
