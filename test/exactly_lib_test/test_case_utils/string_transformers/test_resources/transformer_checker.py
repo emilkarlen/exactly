@@ -39,4 +39,11 @@ class _Applier(Applier[StringTransformer, ModelConstructor, StringModel]):
               primitive: StringTransformer,
               resolving_environment: FullResolvingEnvironment,
               input_: ModelConstructor) -> StringModel:
-        return primitive.transform(input_(resolving_environment.application_environment.tmp_files_space))
+        model = primitive.transform(input_(resolving_environment.application_environment.tmp_files_space))
+        self._force_evaluation_of_model(model)
+        return model
+
+    @staticmethod
+    def _force_evaluation_of_model(model: StringModel):
+        with model.as_lines:
+            pass

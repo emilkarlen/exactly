@@ -18,3 +18,10 @@ def of_lines(lines: List[str]) -> ModelConstructor:
 
 def arbitrary_model_constructor() -> ModelConstructor:
     return of_lines(['string transformer model line'])
+
+
+def constant(result: StringModel) -> ModelConstructor:
+    def ret_val(tmp_file_space: TmpDirFileSpace) -> StringModel:
+        return result
+
+    return ret_val

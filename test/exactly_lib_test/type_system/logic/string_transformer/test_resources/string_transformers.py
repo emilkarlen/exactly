@@ -8,6 +8,7 @@ from exactly_lib.type_system.logic import line_matcher
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
+from exactly_lib_test.type_system.logic.test_resources import string_models
 
 
 class StringTransformerFromLinesTransformation(StringTransformer):
@@ -194,6 +195,12 @@ def add_line(line_wo_ending_new_line: str) -> StringTransformer:
     )
 
 
+def model_access_raises_hard_error(hard_err_msg: str = 'hard error message') -> StringTransformer:
+    return ConstantStringTransformerTestImpl(
+        string_models.StringModelThatRaisesHardErrorException(hard_err_msg)
+    )
+
+
 def with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], str]) -> Callable[[str], str]:
     def ret_val(x: str) -> str:
         has_new_line = len(x) > 0 and x[-1] == '\n'
@@ -203,3 +210,22 @@ def with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], s
             return new_line_agnostic_modifier(x)
 
     return ret_val
+
+
+class ConstantStringTransformerTestImpl(StringTransformer):
+    @property
+    def name(self) -> str:
+        return str(type(self))
+
+    def structure(self) -> StructureRenderer:
+        return renderers.header_only(self.name)
+
+    def __init__(self, result: StringModel):
+        self.result = result
+
+    @property
+    def is_identity_transformer(self) -> bool:
+        return False
+
+    def transform(self, model: StringModel) -> StringModel:
+        return self.result
