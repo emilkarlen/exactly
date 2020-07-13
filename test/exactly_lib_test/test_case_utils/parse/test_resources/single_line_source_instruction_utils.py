@@ -13,10 +13,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def equivalent_source_variants__with_source_check(put: unittest.TestCase,
-                                                  instruction_argument: str):
+                                                  instruction_argument: str,
+                                                  ) -> Iterator[ParseSource]:
     """
-    Yields a ParseSource
-
     Checks that the first line of the source has been consumed.
 
     Assumes that the body of the loop parses using the given source.
@@ -30,10 +29,9 @@ def equivalent_source_variants__with_source_check(put: unittest.TestCase,
 
 
 def equivalent_source_variants__with_source_check__multi_line(put: unittest.TestCase,
-                                                              instruction_argument: Arguments):
+                                                              instruction_argument: Arguments,
+                                                              ) -> Iterator[ParseSource]:
     """
-    Yields a ParseSource
-
     Checks that the first line of the source has been consumed.
 
     Assumes that the body of the loop parses using the given source.
@@ -47,10 +45,9 @@ def equivalent_source_variants__with_source_check__multi_line(put: unittest.Test
 
 def equivalent_source_variants__with_source_check__for_expression_parser(
         put: unittest.TestCase,
-        original_arguments: Arguments):
+        original_arguments: Arguments,
+) -> Iterator[ParseSource]:
     """
-    Yields a ParseSource
-
     Checks that the first line of the source has been consumed.
 
     Assumes that the body of the loop parses using the given source.
@@ -106,9 +103,6 @@ def equivalent_source_variants__with_source_check__for_full_line_expression_pars
 
 def equivalent_source_variants(put: unittest.TestCase,
                                instruction_argument: str) -> Iterator[ParseSource]:
-    """
-    Yields a ParseSource
-    """
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
         with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
@@ -116,10 +110,8 @@ def equivalent_source_variants(put: unittest.TestCase,
 
 
 def equivalent_source_variants_with_assertion(put: unittest.TestCase,
-                                              instruction_argument: str):
-    """
-    Yields a ParseSource, ValueAssertion
-    """
+                                              instruction_argument: str,
+                                              ) -> Iterator[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
     for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
         with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
