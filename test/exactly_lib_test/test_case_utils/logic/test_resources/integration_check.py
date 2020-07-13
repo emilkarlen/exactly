@@ -37,7 +37,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check__for_expression_parser_2, \
     equivalent_source_variants__with_source_check__for_full_line_expression_parser
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
-from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
@@ -300,25 +300,30 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                        execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
                                                                   Arrangement]],
                                        ):
-        for source_case in equivalent_source_variants__with_source_check__for_expression_parser_2(arguments):
-            with put.subTest(source_case.name):
-                source = source_case.actual
-                actual = self._parser.parse(source)
-                source_case.expected.apply_with_message(put, source, 'source after parse')
-                self._check_sdv(put, actual, symbol_references)
+        self._check_multi__w_source_variants(
+            put,
+            symbol_references,
+            input_,
+            equivalent_source_variants__with_source_check__for_expression_parser_2(arguments),
+            execution,
+        )
 
-                for case in execution:
-                    with put.subTest(source_case=source_case.name,
-                                     execution_case=case.name):
-                        checker = _IntegrationExecutionChecker(put,
-                                                               input_,
-                                                               case.arrangement,
-                                                               case.expected.primitive,
-                                                               case.expected.execution,
-                                                               self._configuration.applier(),
-                                                               self._configuration.new_execution_checker(),
-                                                               )
-                        checker.check(actual)
+    def check_multi__w_source_variants_for_full_line_parser(
+            self,
+            put: unittest.TestCase,
+            arguments: Arguments,
+            input_: INPUT,
+            symbol_references: ValueAssertion[Sequence[SymbolReference]],
+            execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
+                                       Arrangement]],
+    ):
+        self._check_multi__w_source_variants(
+            put,
+            symbol_references,
+            input_,
+            equivalent_source_variants__with_source_check__for_full_line_expression_parser(arguments),
+            execution,
+        )
 
     def check_single_multi_execution_setup__for_test_of_test_resources(
             self,
@@ -343,6 +348,35 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                self._configuration.new_execution_checker(),
                                                )
         checker.check(actual)
+
+    def _check_multi__w_source_variants(
+            self,
+            put: unittest.TestCase,
+            symbol_references: ValueAssertion[Sequence[SymbolReference]],
+            input_: INPUT,
+            source_cases: Sequence[NEA[ValueAssertion[ParseSource], ParseSource]],
+            execution: Sequence[NExArr[PrimAndExeExpectation[PRIMITIVE, OUTPUT],
+                                       Arrangement]],
+    ):
+        for source_case in source_cases:
+            with put.subTest(source_case.name):
+                source = source_case.actual
+                actual = self._parser.parse(source)
+                source_case.expected.apply_with_message(put, source, 'source after parse')
+                self._check_sdv(put, actual, symbol_references)
+
+                for case in execution:
+                    with put.subTest(source_case=source_case.name,
+                                     execution_case=case.name):
+                        checker = _IntegrationExecutionChecker(put,
+                                                               input_,
+                                                               case.arrangement,
+                                                               case.expected.primitive,
+                                                               case.expected.execution,
+                                                               self._configuration.applier(),
+                                                               self._configuration.new_execution_checker(),
+                                                               )
+                        checker.check(actual)
 
     def _check_sdv(self,
                    put: unittest.TestCase,
