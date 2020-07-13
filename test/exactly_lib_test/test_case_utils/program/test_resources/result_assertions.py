@@ -1,6 +1,6 @@
 from typing import Optional
 
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

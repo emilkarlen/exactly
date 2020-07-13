@@ -12,7 +12,7 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

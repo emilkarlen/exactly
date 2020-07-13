@@ -6,7 +6,7 @@ from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls.run_program.runner import Runner, MODEL
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.program import Program
 

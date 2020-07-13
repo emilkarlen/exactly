@@ -16,7 +16,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     instruction_log_dir, InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr, \
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr, \
     execute
 from exactly_lib.util.process_execution import file_ctx_managers
 

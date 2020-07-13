@@ -1,8 +1,8 @@
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.matcher.impls.run_program import sdv as run_pgm_sdv
 from exactly_lib.test_case_utils.matcher.impls.run_program.runner import Runner
-from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
-from exactly_lib.test_case_utils.program.execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.program_execution import exe_wo_transformation
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv

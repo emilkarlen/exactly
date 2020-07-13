@@ -16,7 +16,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program.execution import exe_wo_transformation
+from exactly_lib.test_case_utils.program_execution import exe_wo_transformation
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers

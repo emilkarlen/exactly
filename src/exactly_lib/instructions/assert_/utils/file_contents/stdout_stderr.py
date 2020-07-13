@@ -31,9 +31,9 @@ from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, he
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
-from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_tmp_dir import \
-    make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.program.parse import parse_program
+from exactly_lib.test_case_utils.program_execution.store_result_in_instruction_tmp_dir import \
+    make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files

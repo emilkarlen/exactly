@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
+from exactly_lib.test_case_utils.program_execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.process_execution import execution_elements
