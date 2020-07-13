@@ -7,7 +7,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.definitions.test_case.file_check_properties import REGULAR_FILE_CONTENTS, DIR_CONTENTS
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -21,10 +21,10 @@ from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
 from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as parse_run
+from exactly_lib.test_case_utils.file_matcher.impl.run_program.doc import RunSyntaxDescription
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.test_case_utils.matcher.impls.run_program import documentation
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv, FileMatcher
 from exactly_lib.type_system.value_type import ValueType
@@ -170,12 +170,6 @@ class _TypeSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsIni
         return _type_matcher_sed_description()
 
 
-class _RunSyntaxDescription(documentation.SyntaxDescriptionBase):
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_RUN_MATCHER_SED_DESCRIPTION)
-
-
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
         name=types.FILE_MATCHER_TYPE_INFO.name,
@@ -202,7 +196,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         ),
 
         NameAndValue(
-            REGULAR_FILE_CONTENTS,
+            file_check_properties.REGULAR_FILE_CONTENTS,
             grammar.PrimitiveExpression(
                 _parse_regular_file_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
@@ -212,7 +206,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         ),
 
         NameAndValue(
-            DIR_CONTENTS,
+            file_check_properties.DIR_CONTENTS,
             grammar.PrimitiveExpression(
                 _parse_dir_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
@@ -225,7 +219,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             file_matcher.PROGRAM_MATCHER_NAME,
             grammar.PrimitiveExpression(
                 parse_run.parse,
-                _RunSyntaxDescription(),
+                RunSyntaxDescription(),
             )
         ),
     ),
@@ -261,16 +255,6 @@ def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
 _TYPE_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {_SYMLINK_TYPE_}).
 {_TYPE_} is one of:
-"""
-
-_RUN_MATCHER_SED_DESCRIPTION = """\
-Runs {program:a}. Matches iff the {exit_code} is 0.
-
-
-The path of the {MODEL} to match is given as the last argument.
-
-
-Transformations of the output from {PROGRAM} are ignored.
 """
 
 _TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)

@@ -348,7 +348,7 @@ class TokenParser:
                                                  return_value_if_no_match: T,
                                                  key_handler: Callable[[str], T],
                                                  key_and_option_name_list: Sequence[Tuple[str, OptionName]],
-                                                 ):
+                                                 ) -> T:
         """
         Looks at the current argument and checks if it is any of a given set of options,
         and returns a value that corresponds to that option.
@@ -368,6 +368,34 @@ class TokenParser:
             if matches(option_name, self.token_stream.head.source_string):
                 self.token_stream.consume()
                 return key_handler(key)
+        return return_value_if_no_match
+
+    def consume_and_handle_first_matching_option_2(self,
+                                                   return_value_if_no_match: T,
+                                                   options: Sequence[Tuple[Option, Callable[[Optional[str]], T]]],
+                                                   ) -> T:
+        """
+        Looks at the current argument and checks if it is any of a given set of options,
+        and returns a value that corresponds to that option.
+
+        A default value is returned if the current argument is not any of the given options,
+        or if there are no arguments.
+
+        :param return_value_if_no_match: The return value if the first token matches none of the options.
+
+        :param options: The options to check for. Each together with a constructor of the
+        return value.  Iff the option as an argument, a string is parsed and given to the function as argument,
+        otherwise, None is given as argument.
+        """
+        if self.token_stream.is_null:
+            return return_value_if_no_match
+        for option, mk_value in options:
+            if matches(option.name, self.token_stream.head.source_string):
+                self.token_stream.consume()
+                option_argument = None
+                if bool(option.argument):
+                    option_argument = self.consume_mandatory_token(option.argument).string
+                return mk_value(option_argument)
         return return_value_if_no_match
 
     def consume_optional_option(self, option_name: OptionName) -> bool:

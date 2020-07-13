@@ -1,9 +1,10 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -102,7 +103,7 @@ class FileContents(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            parse_file_matcher.REGULAR_FILE_CONTENTS,
+            file_check_properties.REGULAR_FILE_CONTENTS,
             self.string_matcher,
         ]
 
@@ -114,7 +115,7 @@ class DirContents(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            parse_file_matcher.DIR_CONTENTS,
+            file_check_properties.DIR_CONTENTS,
             self.files_matcher,
         ]
 
@@ -128,7 +129,7 @@ class InvalidDirContents(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            parse_file_matcher.DIR_CONTENTS,
+            file_check_properties.DIR_CONTENTS,
             self.invalid_argument,
         ]
 
@@ -149,7 +150,7 @@ class DirContentsRecursive(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            parse_file_matcher.DIR_CONTENTS,
+            file_check_properties.DIR_CONTENTS,
             self.recursive_args,
         ]
 
@@ -162,7 +163,7 @@ class DirContentsGeneric(FileMatcherArg):
 
     @property
     def elements(self) -> List:
-        return ([parse_file_matcher.DIR_CONTENTS]
+        return ([file_check_properties.DIR_CONTENTS]
                 + self.arguments.elements
                 )
 
@@ -176,7 +177,7 @@ class DirContentsRecursiveInvalidOptionArgs(FileMatcherArg):
     @property
     def elements(self) -> List:
         return [
-            parse_file_matcher.DIR_CONTENTS,
+            file_check_properties.DIR_CONTENTS,
             OptionArgument(file_or_dir_contents.RECURSIVE_OPTION.name),
             OptionArgument(a.OptionName(self.invalid_option_name)),
             SymbolReference('valid_files_matcher_arg'),
@@ -216,13 +217,48 @@ class DirContentsRecursiveArgs(FileMatcherArg):
         return ret_val
 
 
+class PathArgumentPositionArgument(ABC):
+    @abstractmethod
+    def arguments(self) -> List[str]:
+        pass
+
+
+class PathArgumentPositionDefault(PathArgumentPositionArgument):
+    def arguments(self) -> List[str]:
+        return []
+
+
+class PathArgumentPositionLast(PathArgumentPositionArgument):
+    def arguments(self) -> List[str]:
+        return [
+            option_syntax.option_syntax(file_matcher.PROGRAM_ARG_OPTION__LAST.name)
+        ]
+
+
+class PathArgumentPositionMarker(PathArgumentPositionArgument):
+    def __init__(self, marker: str):
+        self.marker = marker
+
+    def arguments(self) -> List[str]:
+        return [
+            option_syntax.option_syntax(file_matcher.PROGRAM_ARG_OPTION__MARKER.name),
+            self.marker
+        ]
+
+
 class RunProgram(FileMatcherArg):
-    def __init__(self, program: ArgumentElements):
+    def __init__(self,
+                 program: ArgumentElements,
+                 path_arg_position: PathArgumentPositionArgument = PathArgumentPositionDefault(),
+                 ):
         self.program = program
+        self.path_arg_position = path_arg_position
 
     @property
     def as_argument_elements(self) -> ArgumentElements:
-        run_primitive = ArgumentElements([file_matcher.PROGRAM_MATCHER_NAME])
+        run_primitive = ArgumentElements(
+            [file_matcher.PROGRAM_MATCHER_NAME] + self.path_arg_position.arguments()
+        )
         return run_primitive.append_to_first_and_following_lines(self.program)
 
     def __str__(self):

@@ -2,6 +2,7 @@ from typing import Optional, List
 
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
+from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -66,7 +67,7 @@ def type_matcher_of(file_type: file_properties.FileType) -> str:
 
 
 def contents_matcher_of(string_matcher: str) -> str:
-    return parse_file_matcher.REGULAR_FILE_CONTENTS + ' ' + string_matcher
+    return file_check_properties.REGULAR_FILE_CONTENTS + ' ' + string_matcher
 
 
 def arbitrary_value_on_single_line() -> str:
