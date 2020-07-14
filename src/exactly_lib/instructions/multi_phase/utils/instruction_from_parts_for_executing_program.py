@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import MainStepResultTranslator, \
     PartsParserFromEmbryoParser
@@ -127,6 +128,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
             ProcessExecutor(),
             storage_dir,
             file_ctx_managers.dev_null(),
+            std_err_contents.STD_ERR_TEXT_READER,
         )
 
 

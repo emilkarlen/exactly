@@ -1,5 +1,6 @@
 from typing import Generic
 
+from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
@@ -90,6 +91,7 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
             process_executor,
             app_env.tmp_files_space,
             self._run_conf.stdin(model),
+            std_err_contents.STD_ERR_TEXT_READER,
         )
 
 

@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -143,6 +144,7 @@ class FileMakerForContentsFromProgram(FileMaker):
             ProcessExecutor(),
             storage_dir,
             file_ctx_managers.dev_null(),
+            std_err_contents.STD_ERR_TEXT_READER,
         )
 
 

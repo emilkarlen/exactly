@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Callable, TextIO
+from typing import Callable
 
+from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
@@ -15,7 +15,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
-    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode, TextFromFileReader
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
@@ -82,7 +82,7 @@ class _RunStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransf
             if self._ignore_exit_code
             else
             _HardErrorOnNonZeroExitCode(self._program,
-                                        LimitedFileReader(),
+                                        std_err_contents.STD_ERR_TEXT_READER,
                                         ).apply
         )
 
@@ -122,31 +122,7 @@ class _TransformedFileCreator:
             ProcessExecutor(),
             self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
-        )
-
-
-class TextFilePartReader(ABC):
-    @abstractmethod
-    def read(self, f: TextIO) -> str:
-        pass
-
-
-class WholeFileReader(TextFilePartReader):
-    def read(self, f: TextIO) -> str:
-        return f.read()
-
-
-class LimitedFileReader(TextFilePartReader):
-    def __init__(self, limit: int = 1024):
-        self._limit = limit
-
-    def read(self, f: TextIO) -> str:
-        chunk = f.read(self._limit)
-        return (
-            chunk
-            if len(f.read(1)) == 0
-            else
-            chunk + '...'
+            std_err_contents.STD_ERR_TEXT_READER,
         )
 
 
@@ -157,7 +133,7 @@ def _ignore_exit_code(exit_code: int, stderr: Path):
 class _HardErrorOnNonZeroExitCode:
     def __init__(self,
                  program: Program,
-                 err_msg_reader: TextFilePartReader,
+                 err_msg_reader: TextFromFileReader,
                  ):
         self._program = program
         self._err_msg_reader = err_msg_reader

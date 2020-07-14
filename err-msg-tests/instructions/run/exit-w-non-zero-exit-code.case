@@ -1,0 +1,3 @@
+[setup]
+
+run -python -existing-file -rel-home exit-w-non-zero-exit-code.py

@@ -1,6 +1,7 @@
 import pathlib
 import subprocess
-from typing import Optional, ContextManager
+from abc import ABC, abstractmethod
+from typing import Optional, ContextManager, TextIO
 
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from .exe_store_result_in_files import ExecutorThatStoresResultInFilesInDir
@@ -29,6 +30,12 @@ class ResultWithFiles:
         self.files = files
 
 
+class TextFromFileReader(ABC):
+    @abstractmethod
+    def read(self, f: TextIO) -> str:
+        pass
+
+
 class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[ResultWithFiles]):
     """An object must only be used for a single execution."""
 
@@ -36,10 +43,10 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
                  executor: ProcessExecutor,
                  storage_dir: pathlib.Path,
                  stdin: ContextManager[ProcessExecutionFile],
-                 max_stderr_to_read: int = 1000
+                 stderr_msg_reader: TextFromFileReader,
                  ):
         self._executor = ExecutorThatStoresResultInFilesInDir(executor, storage_dir, stdin)
-        self._max_stderr_to_read = max_stderr_to_read
+        self._stderr_msg_reader = stderr_msg_reader
 
     @property
     def storage_dir(self) -> DirWithResultFiles:
@@ -66,7 +73,7 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
             return None
 
         with self.storage_dir.path_of_result(ResultFile.STD_ERR).open('r') as f:
-            return f.read(self._max_stderr_to_read)
+            return self._stderr_msg_reader.read(f)
 
 
 class ExecutorThatReadsStderrOnNonZeroExitCode(ExecutableExecutor[Result]):
@@ -76,12 +83,12 @@ class ExecutorThatReadsStderrOnNonZeroExitCode(ExecutableExecutor[Result]):
                  executor: ProcessExecutor,
                  tmp_file_space: TmpDirFileSpace,
                  stdin: ContextManager[ProcessExecutionFile],
-                 max_stderr_to_read: int = 1000
+                 stderr_msg_reader: TextFromFileReader,
                  ):
         self._executor = executor
         self._tmp_file_space = tmp_file_space
         self._stdin = stdin
-        self._max_stderr_to_read = max_stderr_to_read
+        self._stderr_msg_reader = stderr_msg_reader
 
     def execute(self,
                 settings: ProcessExecutionSettings,
@@ -112,4 +119,4 @@ class ExecutorThatReadsStderrOnNonZeroExitCode(ExecutableExecutor[Result]):
             return None
 
         with stderr_path.open('r') as f:
-            return f.read(self._max_stderr_to_read)
+            return self._stderr_msg_reader.read(f)
