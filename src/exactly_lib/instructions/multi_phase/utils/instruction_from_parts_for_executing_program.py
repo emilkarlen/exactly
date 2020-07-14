@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import MainStepResultTranslator, \
@@ -18,11 +18,54 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
-from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
-from exactly_lib.util.process_execution import file_ctx_managers
+from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
     ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
 from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, ProcessExecutor
+from exactly_lib.util.process_execution.process_output_files import FileNames
+
+
+class ExecutionResultAndStderr(tuple):
+    """
+    Result of an execution of a sub process
+
+    Contents of stderr is included, if exit code is non zero.
+    """
+
+    def __new__(cls,
+                exit_code: int,
+                stderr_contents: Optional[str],
+                output_dir_path: pathlib.Path,
+                program: StructureRenderer,
+                ):
+        return tuple.__new__(cls, (exit_code,
+                                   stderr_contents,
+                                   output_dir_path,
+                                   program))
+
+    @property
+    def exit_code(self) -> int:
+        return self[0]
+
+    @property
+    def stderr_contents(self) -> Optional[str]:
+        return self[1]
+
+    @property
+    def output_dir_path(self) -> pathlib.Path:
+        return self[2]
+
+    @property
+    def program(self) -> StructureRenderer:
+        return self[3]
+
+    @property
+    def file_names(self) -> FileNames:
+        return process_output_files.FILE_NAMES
+
+    def path_of(self, output_file: process_output_files.ProcOutputFile) -> pathlib.Path:
+        return self.output_dir_path / self.file_names.name_of(output_file)
 
 
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
@@ -50,7 +93,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         program = resolver.resolve_program(self._program)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
-        
+
         command_executor = self._command_executor(
             os_services,
             self._executor(storage_dir)
