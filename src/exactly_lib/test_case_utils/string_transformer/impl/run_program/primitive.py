@@ -4,7 +4,7 @@ from typing import Callable, TextIO
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution import exe_wo_transformation
+from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import \
     TransformedStringModelFromFileCreatedOnDemand
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -14,6 +14,9 @@ from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution import file_ctx_managers
+from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -95,18 +98,31 @@ class _TransformedFileCreator:
         self.transformer = transformer
 
     def create(self, model: StringModel) -> Path:
+        command_executor = self._command_executor(model)
         app_env = self.environment
-        path_of_file_with_model = model.as_file
-        result = exe_wo_transformation.execute(
-            self.transformer,
-            app_env.tmp_files_space.new_path_as_existing_dir(),
-            app_env.os_services,
+        result = command_executor.execute(
             app_env.process_execution_settings,
-            file_ctx_managers.open_file(path_of_file_with_model, 'r'),
+            self.transformer.command,
+            self.transformer.structure(),
         )
         self.exit_code_handler(result.exit_code,
-                               result.path_of(ProcOutputFile.STDERR))
-        return result.path_of(ProcOutputFile.STDOUT)
+                               result.files.path_of_std(ProcOutputFile.STDERR))
+
+        return result.files.path_of_std(ProcOutputFile.STDOUT)
+
+    def _command_executor(self, model: StringModel) -> CommandExecutor[ResultWithFiles]:
+        return CommandExecutor(
+            self.environment.os_services,
+            self._executor(model)
+        )
+
+    def _executor(self, model: StringModel) -> ExecutableExecutor[ResultWithFiles]:
+        path_of_file_with_model = model.as_file
+        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+            ProcessExecutor(),
+            self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
+            file_ctx_managers.open_file(path_of_file_with_model, 'r'),
+        )
 
 
 class TextFilePartReader(ABC):

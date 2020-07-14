@@ -18,7 +18,18 @@ class Result:
         self.stderr = stderr
 
 
-class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[Result]):
+class ResultWithFiles:
+    def __init__(self,
+                 exit_code: int,
+                 stderr: Optional[str],
+                 files: DirWithResultFiles,
+                 ):
+        self.exit_code = exit_code
+        self.stderr = stderr
+        self.files = files
+
+
+class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[ResultWithFiles]):
     """An object must only be used for a single execution."""
 
     def __init__(self,
@@ -37,16 +48,17 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
     def execute(self,
                 settings: ProcessExecutionSettings,
                 executable: Executable,
-                ) -> Result:
+                ) -> ResultWithFiles:
         """
         :return: Result has stderr contents iff exit code != 0
         :raises ExecutionException: Either unable to execute, or execution timed out
         """
         exit_code = self._executor.execute(settings, executable)
 
-        return Result(
+        return ResultWithFiles(
             exit_code,
             self._stderr_for(exit_code),
+            self.storage_dir,
         )
 
     def _stderr_for(self, exit_code: int) -> Optional[str]:
