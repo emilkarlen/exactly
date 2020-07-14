@@ -30,9 +30,12 @@ class StringModel(ABC):
         """
         Gives a path to a file with contents that has been transformed using the transformer.
 
-        The path must not be modified on disk, neither its name nor its contents.
+        The path must not be modified on disk, neither its name nor its contents
+        (unless the user is sure the file is not used in other contexts).
 
         The path may be read-only.
+
+        :raises HardErrorException: Failure to generate the file
         """
         pass
 
@@ -46,5 +49,7 @@ class StringModel(ABC):
         so if it is needed to iterate over them multiple times,
         it might be better to store the result in a file,
         using transformed_file_path.
+
+        :raises HardErrorException: Failure to generate the strings
         """
         pass
