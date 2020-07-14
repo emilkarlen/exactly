@@ -667,6 +667,7 @@ Including (but not limited to):
 * Type for REG-EX
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
+* Support for non-terminating programs (e.g. as `string-transformer`s)
 * Symbol substitution in files
 * Dynamic symbol values - e.g. contents of dir, current date
 * Macros and functions
