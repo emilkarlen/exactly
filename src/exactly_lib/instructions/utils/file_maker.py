@@ -1,3 +1,4 @@
+import pathlib
 from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -16,10 +17,13 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution import exe_wo_transformation
+from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
+from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, T, ProcessExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -78,6 +82,16 @@ class FileMakerForContentsFromProgram(FileMaker):
         self._source_info = source_info
         self._program = program
 
+    @property
+    def symbol_references(self) -> Sequence[SymbolReference]:
+        return self._program.references
+
+    @property
+    def validator(self) -> SdvValidator:
+        return sdv_validation.SdvValidatorFromDdvValidator(
+            lambda symbols: self._program.resolve(symbols).validator
+        )
+
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
@@ -88,12 +102,14 @@ class FileMakerForContentsFromProgram(FileMaker):
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         try:
-            result = exe_wo_transformation.execute(
-                program,
-                storage_dir,
+            command_executor = self._command_executor(
                 os_services,
+                self._executor(storage_dir)
+            )
+            result = command_executor.execute(
                 environment.process_execution_settings,
-                file_ctx_managers.dev_null()
+                program.command,
+                program.structure(),
             )
         except HardErrorException as ex:
             return ex.error
@@ -101,26 +117,33 @@ class FileMakerForContentsFromProgram(FileMaker):
         if result.exit_code != 0:
             return top_lvl_error_msg_rendering.non_zero_exit_code_msg(program.structure(),
                                                                       result.exit_code,
-                                                                      result.stderr_contents)
+                                                                      result.stderr)
 
         transformation_helper = FileTransformerHelper(
             os_services,
             environment.tmp_file_space,
         )
-        src_path = storage_dir / result.file_names.name_of(self._output_channel)
+        src_path = result.files.path_of_std(self._output_channel)
         return transformation_helper.transform_to_file__dp(src_path,
                                                            dst_path,
                                                            program.transformation)
 
-    @property
-    def validator(self) -> SdvValidator:
-        return sdv_validation.SdvValidatorFromDdvValidator(
-            lambda symbols: self._program.resolve(symbols).validator
+    @staticmethod
+    def _command_executor(os_services: OsServices,
+                          executor: ExecutableExecutor[T],
+                          ) -> CommandExecutor[T]:
+        return CommandExecutor(
+            os_services,
+            executor
         )
 
-    @property
-    def symbol_references(self) -> Sequence[SymbolReference]:
-        return self._program.references
+    @staticmethod
+    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ResultWithFiles]:
+        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+            ProcessExecutor(),
+            storage_dir,
+            file_ctx_managers.dev_null(),
+        )
 
 
 class FileMakerForContentsFromExistingFile(FileMaker):
