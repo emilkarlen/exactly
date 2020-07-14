@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, ContextManager, Sequence
 
-from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import TransformedStringModelFromLines
+from exactly_lib.type_system.logic.impls.transformed_string_models import TransformedStringModelFromLines
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib_test.test_resources.files import tmp_dir

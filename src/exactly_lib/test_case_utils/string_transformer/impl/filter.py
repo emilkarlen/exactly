@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
+from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment

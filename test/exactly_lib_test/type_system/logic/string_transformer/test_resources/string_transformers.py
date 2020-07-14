@@ -1,10 +1,10 @@
 import itertools
 from typing import Callable, Sequence, Iterator
 
-from exactly_lib.test_case_utils.string_models import transformed_model_from_lines
-from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import StringTransFun
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import line_matcher
+from exactly_lib.type_system.logic.impls import transformed_string_models
+from exactly_lib.type_system.logic.impls.transformed_string_models import StringTransFun
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
@@ -30,7 +30,7 @@ class StringTransformerFromLinesTransformation(StringTransformer):
         return self._is_identity
 
     def transform(self, model: StringModel) -> StringModel:
-        return transformed_model_from_lines.TransformedStringModelFromLines(
+        return transformed_string_models.TransformedStringModelFromLines(
             self._transformation,
             model
         )

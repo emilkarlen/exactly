@@ -5,7 +5,7 @@ from typing import Callable, TextIO
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
-from exactly_lib.test_case_utils.string_models.transformed_model_from_lines import \
+from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     TransformedStringModelFromFileCreatedOnDemand
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment

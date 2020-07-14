@@ -1,6 +1,6 @@
 from abc import ABC
 
-from exactly_lib.test_case_utils.string_transformer.impl.transformer_from_lines import \
+from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers

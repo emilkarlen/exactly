@@ -1,10 +1,11 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.string_models import model_from_lines
+from exactly_lib_test.type_system.logic.impls import transformed_string_models
 
 
 def suite() -> unittest.TestSuite:
-    return model_from_lines.suite()
+    return transformed_string_models.suite()
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
