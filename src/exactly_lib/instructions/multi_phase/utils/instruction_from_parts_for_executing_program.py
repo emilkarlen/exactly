@@ -1,3 +1,4 @@
+import pathlib
 from typing import Sequence
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo
@@ -16,9 +17,12 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     instruction_log_dir, InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr, \
-    execute
+from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
 from exactly_lib.util.process_execution import file_ctx_managers
+from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, ProcessExecutor
 
 
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
@@ -46,12 +50,41 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         program = resolver.resolve_program(self._program)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
-        return execute(program,
-                       storage_dir,
-                       os_services,
-                       environment.process_execution_settings,
-                       file_ctx_managers.dev_null(),
-                       )
+        
+        command_executor = self._command_executor(
+            os_services,
+            self._executor(storage_dir)
+        )
+
+        result = command_executor.execute(
+            environment.process_execution_settings,
+            program.command,
+            program.structure(),
+        )
+
+        return ExecutionResultAndStderr(
+            result.exit_code,
+            result.stderr,
+            storage_dir,
+            program.structure(),
+        )
+
+    @staticmethod
+    def _command_executor(os_services: OsServices,
+                          executor: ExecutableExecutor[ResultWithFiles],
+                          ) -> CommandExecutor[ResultWithFiles]:
+        return CommandExecutor(
+            os_services,
+            executor
+        )
+
+    @staticmethod
+    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ResultWithFiles]:
+        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+            ProcessExecutor(),
+            storage_dir,
+            file_ctx_managers.dev_null(),
+        )
 
 
 class ResultTranslator(MainStepResultTranslator[ExecutionResultAndStderr]):
