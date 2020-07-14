@@ -1,12 +1,12 @@
-from typing import Callable, Generic
+from typing import Generic
 
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.test_case_utils.matcher.impls.run_program.runner import Runner, MODEL
-from exactly_lib.test_case_utils.program_execution.exe_wo_transformation import ExecutionResultAndStderr
+from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
+from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
@@ -17,6 +17,9 @@ from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
+from exactly_lib.util.process_execution.exe_store_and_read_stderr import Result, \
+    ExecutorThatReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 
 
 class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
@@ -24,11 +27,13 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
                      syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name))
 
     def __init__(self,
-                 runner: Runner[MODEL],
+                 application_environment: ApplicationEnvironment,
+                 run_conf: RunConfiguration[MODEL],
                  matcher_program: Program,
                  ):
         super().__init__()
-        self._runner = runner
+        self._application_environment = application_environment
+        self._run_conf = run_conf
         self._matcher_program = matcher_program
 
     @staticmethod
@@ -45,12 +50,20 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
         return self.NAME
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
-        program_for_model = self._runner.program_for_model(self._matcher_program, model)
-        exe_result = self._runner.run(program_for_model, model)
+        program_for_model = self._run_conf.program_for_model(self._matcher_program, model)
+        command_executor = self.__command_executor(model)
+        program_structure = program_for_model.structure()
+
+        result = command_executor.execute(
+            self._application_environment.process_execution_settings,
+            program_for_model.command,
+            program_structure,
+        )
+
         return MatchingResult(
-            exe_result.exit_code == 0,
+            result.exit_code == 0,
             _ResultRenderer(self._new_tb(program_for_model),
-                            exe_result)
+                            result)
         )
 
     def _structure(self) -> StructureRenderer:
@@ -61,6 +74,24 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
             custom_details.TreeStructure(program.structure())
         )
 
+    def __command_executor(self, model: MODEL) -> CommandExecutor[Result]:
+        app_env = self._application_environment
+        return CommandExecutor(
+            app_env.os_services,
+            self.__executor(ProcessExecutor(), model)
+        )
+
+    def __executor(self,
+                   process_executor: ProcessExecutor,
+                   model: MODEL,
+                   ) -> ExecutableExecutor[Result]:
+        app_env = self._application_environment
+        return ExecutorThatReadsStderrOnNonZeroExitCode(
+            process_executor,
+            app_env.tmp_files_space,
+            self._run_conf.stdin(model),
+        )
+
 
 class _ResultRenderer(NodeRenderer[bool]):
     OUTPUT_ON_STDERR_HEADER = 'Output on ' + misc_texts.STDERR
@@ -68,7 +99,7 @@ class _ResultRenderer(NodeRenderer[bool]):
 
     def __init__(self,
                  trace_builder_w_program_spec: TraceBuilder,
-                 result: ExecutionResultAndStderr,
+                 result: Result,
                  ):
         self._trace_builder = trace_builder_w_program_spec
         self._result = result
@@ -83,11 +114,11 @@ class _ResultRenderer(NodeRenderer[bool]):
                 details.String(exit_code),
             )
         )
-        if exit_code != 0 and self._result.stderr_contents:
+        if exit_code != 0 and self._result.stderr:
             tb.append_details(
                 details.HeaderAndValue(
                     self.OUTPUT_ON_STDERR_HEADER,
-                    details.PreFormattedString(self._result.stderr_contents),
+                    details.PreFormattedString(self._result.stderr),
                 )
             )
 
@@ -96,14 +127,15 @@ class _ResultRenderer(NodeRenderer[bool]):
 
 class Adv(Generic[MODEL], MatcherAdv[MODEL]):
     def __init__(self,
-                 mk_runner: Callable[[ApplicationEnvironment], Runner[MODEL]],
+                 run_conf: RunConfiguration[MODEL],
                  program: ProgramAdv,
                  ):
         self._program = program
-        self._mk_runner = mk_runner
+        self._run_conf = run_conf
 
     def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
         return Matcher(
-            self._mk_runner(environment),
+            environment,
+            self._run_conf,
             self._program.primitive(environment)
         )
