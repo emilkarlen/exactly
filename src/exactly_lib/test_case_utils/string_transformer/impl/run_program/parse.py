@@ -6,6 +6,7 @@ from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import names
@@ -34,6 +35,7 @@ class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialS
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'program': types.PROGRAM_TYPE_INFO.name,
+            'The_program_type_must_terminate': texts.THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE,
             'stdin': misc_texts.STDIN,
             'stdout': misc_texts.STDOUT,
             'exit_code': misc_texts.EXIT_CODE,
@@ -55,6 +57,5 @@ The result is {HARD_ERROR} if the {exit_code} is non-zero,
 unless {ignore_exit_code_option} is given.
 
 
-The {program} must terminate.
-
+{The_program_type_must_terminate}
 """

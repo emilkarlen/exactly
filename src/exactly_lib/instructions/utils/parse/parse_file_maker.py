@@ -11,7 +11,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc, texts
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_token_parser
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
@@ -48,6 +48,7 @@ class FileContentsDocumentation:
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'program_type': types.PROGRAM_TYPE_INFO.name,
+            'The_program_type_must_terminate': texts.THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE,
             'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
@@ -225,7 +226,7 @@ The output from {program_type:a/q}.
 and an optional {TRANSFORMATION} on a following line.
 
 
-The {program_type} must terminate.
+{The_program_type_must_terminate}
 """
 
 _FILE_DESCRIPTION = """\

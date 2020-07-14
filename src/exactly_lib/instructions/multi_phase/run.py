@@ -15,6 +15,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -80,6 +81,4 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-_MAIN_DESCRIPTION_REST = """\
-The {program_type} must terminate.
-"""
+_MAIN_DESCRIPTION_REST = texts.THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE

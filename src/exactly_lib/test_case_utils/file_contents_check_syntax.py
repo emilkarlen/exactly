@@ -8,6 +8,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.definitions.primitives import string_transformer
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -25,6 +26,7 @@ class FileContentsCheckerHelp:
             'contents_matcher': formatting.syntax_element_(syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT),
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'program_type': types.PROGRAM_TYPE_INFO.name,
+            'The_program_type_must_terminate': texts.THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE,
         })
 
     def invokation_variants__file(self, actual_file: a.Named) -> List[InvokationVariant]:
@@ -104,7 +106,7 @@ Asserts that {checked_file} from {program_type:a/q} satisfies {contents_matcher}
 {contents_matcher} must appear on a separate line.
 
 
-The {program_type} must terminate.
+{The_program_type_must_terminate}
 """
 
 
