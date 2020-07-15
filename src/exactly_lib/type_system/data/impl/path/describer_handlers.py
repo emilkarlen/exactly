@@ -278,9 +278,9 @@ class _ParentPathDdv(PathDdv):
 
     def _get_ddv(self) -> PathDdv:
         if self._value is None:
-            value = self._value
-            path_suffix = self._parent_path_suffix(value.path_suffix().value())
-            relativity = value.relativity()
+            original = self._original
+            path_suffix = self._parent_path_suffix(original.path_suffix().value())
+            relativity = original.relativity()
             self._value = (
                 paths.absolute_part(path_suffix)
                 if relativity.is_absolute
