@@ -33,8 +33,8 @@ class _Ddv(Generic[MODEL], MatcherDdv[MODEL]):
         self._program = program
 
     def structure(self) -> StructureRenderer:
-        from . import adv
-        return adv.Matcher.new_structure_tree(self._program.structure())
+        from . import trace
+        return trace.TheStructureRenderer(self._program.structure())
 
     @property
     def validator(self) -> DdvValidator:

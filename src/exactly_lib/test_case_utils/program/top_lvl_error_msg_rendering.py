@@ -2,6 +2,7 @@ from exactly_lib.common.report_rendering.description_tree import rendering__node
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.render import combinators
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
@@ -59,27 +60,6 @@ def header_and_program_block(header: str, program: StructureRenderer) -> Rendere
     )
 
 
-_STRING_FORMATTER = StringFormatter({
-    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
-    'stderr': misc_texts.STDERR,
-    'program': types.PROGRAM_TYPE_INFO.name,
-})
-
-_NON_ZERO_EXIT_CODE_HEADER = _STRING_FORMATTER.format(
-    'Non-zero {exit_code} from {program}'
-)
-
-_UNABLE_TO_EXECUTE_HEADER = _STRING_FORMATTER.format(
-    'Unable to execute {program}'
-)
-
-_OUTPUT_ON_STDERR_HEADER = _STRING_FORMATTER.format(
-    'Output on {stderr}:'
-)
-
-_EXIT_CODE_LINE_PREFIX = misc_texts.EXIT_CODE_TITLE + ': '
-
-
 def _actual_exit_code_line(exit_code: int) -> str:
     return _EXIT_CODE_LINE_PREFIX + str(exit_code)
 
@@ -103,7 +83,7 @@ def _actual_exit_code_and_stderr_block(exit_code: int,
     def stderr_contents_block() -> Renderer[MinorBlock]:
         return comp_rend.MinorBlockR(
             combinators.SequenceR([
-                comp_rend.LineElementR(line_objects.PreFormattedString(_OUTPUT_ON_STDERR_HEADER)),
+                comp_rend.LineElementR(line_objects.PreFormattedString(texts.OUTPUT_ON_STDERR__HEADER)),
                 comp_rend.LineElementR(line_objects.PreFormattedString.of_str(stderr_contents)),
             ])
         )
@@ -127,3 +107,19 @@ def non_zero_exit_code_msg(program: StructureRenderer,
         _actual_exit_code_and_stderr_block(exit_code, stderr_contents),
     ]
     )
+
+
+_STRING_FORMATTER = StringFormatter({
+    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'program': types.PROGRAM_TYPE_INFO.name,
+})
+
+_NON_ZERO_EXIT_CODE_HEADER = _STRING_FORMATTER.format(
+    'Non-zero {exit_code} from {program}'
+)
+
+_UNABLE_TO_EXECUTE_HEADER = _STRING_FORMATTER.format(
+    'Unable to execute {program}'
+)
+
+_EXIT_CODE_LINE_PREFIX = misc_texts.EXIT_CODE_TITLE + ': '
