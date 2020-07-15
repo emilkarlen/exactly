@@ -9,7 +9,7 @@ from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhas
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionSourceInfo
+from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 
 
 class ComparisonActualFileParser(Parser[ComparisonActualFileConstructor]):

@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForCon
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case.phases.common import InstructionSourceInfo
+from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc, texts
 from exactly_lib.test_case_utils.parse import parse_here_document

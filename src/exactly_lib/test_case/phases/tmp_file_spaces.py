@@ -5,6 +5,22 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.util.file_utils.tmp_file_space import TmpFileSpace, TmpDirFileSpace
 
 
+class InstructionSourceInfo(tuple):
+    def __new__(cls,
+                source_line_number: int,
+                instruction_name: str):
+        return tuple.__new__(cls, (source_line_number,
+                                   instruction_name))
+
+    @property
+    def instruction_name(self) -> str:
+        return self[1]
+
+    @property
+    def line_number(self) -> int:
+        return self[0]
+
+
 class PhaseLoggingPaths(TmpFileSpace):
     """
     Generator of unique logging directories for instructions in a given phase.
@@ -60,3 +76,8 @@ class PhaseLoggingPaths(TmpFileSpace):
                 return head + '-' + tail
             else:
                 return head
+
+
+def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
+                        source_info: InstructionSourceInfo) -> pathlib.Path:
+    return phase_logging_paths.for_line(source_info.line_number, source_info.instruction_name)
