@@ -1,5 +1,7 @@
 import functools
+import pathlib
 import unittest
+from typing import Dict
 
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.test_case import phase_identifier
@@ -39,7 +41,7 @@ class Test(unittest.TestCase):
             is_keep_sandbox=False)
 
 
-def log_dir_is_correct_for_each_phase(recordings: dict,
+def log_dir_is_correct_for_each_phase(recordings: Dict[PhaseEnum, pathlib.Path],
                                       put: unittest.TestCase,
                                       actual: Result):
     put.assertFalse(actual.partial_result.is_failure)
@@ -60,7 +62,7 @@ def test_case_that_does_nothing() -> TestCase:
 
 
 class RecordLogDirForPhase:
-    def __init__(self, phase: PhaseEnum, recorder: dict):
+    def __init__(self, phase: PhaseEnum, recorder: Dict[PhaseEnum, pathlib.Path]):
         self.phase = phase
         self.recorder = recorder
 
