@@ -1,23 +1,24 @@
 import pathlib
 
-from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
-from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
+from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.process_execution import exe_store_result_in_files
+from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
+from exactly_lib.util.process_execution.exe_store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib.util.process_execution.result import Result
-from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 
 
 class ResultWithTransformation:
     def __init__(self,
-                 process_result: Result,
+                 process_result: ExitCodeAndFiles,
                  file_with_transformed_contents: str
                  ):
         self.process_result = process_result
@@ -25,7 +26,7 @@ class ResultWithTransformation:
 
     @property
     def path_of_file_with_transformed_contents(self) -> pathlib.Path:
-        return self.process_result.output_dir_path / self.file_with_transformed_contents
+        return self.process_result.files.directory / self.file_with_transformed_contents
 
 
 def make_transformed_file_from_output_in_instruction_tmp_dir(environment: InstructionEnvironmentForPostSdsStep,
@@ -54,30 +55,36 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     """
     :raises PfhHardErrorException: IO error.
     """
-    executor = ExecutorThatStoresResultInFilesInDir(process_execution_settings)
+    cmd_exe = CommandExecutor(
+        os_services,
+        exe_store_result_in_files.ExecutorThatStoresResultInFilesInDir(
+            ProcessExecutor(), pgm_output_dir,
+            file_ctx_managers.dev_null(),
+        )
+    )
 
     try:
-        executable = os_services.executable_factory__detect_ex().make(program.command)
-    except DetectedException as ex:
-        raise pfh_exception.PfhHardErrorException(
-            failure_details_rendering.FailureDetailsRenderer(ex.failure_details)
-        )
+        result = cmd_exe.execute(process_execution_settings,
+                                 program.command,
+                                 program.structure())
+    except HardErrorException as ex:
+        raise pfh_exception.PfhHardErrorException(ex.error)
 
-    result = executor.execute(pgm_output_dir, executable)
     if program.transformation.is_identity_transformer:
         return ResultWithTransformation(result,
-                                        result.file_names.name_of(transformed_output))
+                                        result.files.base_name_of(transformed_output))
 
     transformation_helper = FileTransformerHelper(
         os_services,
         tmp_file_space,
     )
-    result_path = result.output_dir_path / (result.file_names.name_of(transformed_output) + '-transformed')
-    error_message = transformation_helper.transform_to_file(result.path_of(transformed_output),
+    base_name_of_path_of_transformed_output = result.files.base_name_of(transformed_output) + '-transformed'
+    result_path = pgm_output_dir / base_name_of_path_of_transformed_output
+    error_message = transformation_helper.transform_to_file(result.files.path_of_std(transformed_output),
                                                             result_path,
                                                             program.transformation)
     if error_message is not None:
         raise pfh_exception.PfhHardErrorException(error_message)
 
     return ResultWithTransformation(result,
-                                    result_path.name)
+                                    base_name_of_path_of_transformed_output)

@@ -32,7 +32,7 @@ from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.test_case_utils.program_execution.store_result_in_instruction_tmp_dir import \
+from exactly_lib.test_case_utils.program_execution.file_transformation_utils import \
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax.elements import argument as a

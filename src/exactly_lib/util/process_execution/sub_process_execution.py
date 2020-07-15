@@ -1,11 +1,11 @@
 import pathlib
 import subprocess
 
-from exactly_lib.util.file_utils import ensure_file_existence, misc_utils
+from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.file_utils.misc_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
-from .result import Result, ResultAndStderr
+from .result import Result
 
 
 class ExecutorThatStoresResultInFilesInDir:
@@ -44,17 +44,3 @@ class ExecutorThatStoresResultInFilesInDir:
                 except subprocess.TimeoutExpired as ex:
                     msg = _err_msg(ex)
                     return Result(msg, None, None)
-
-
-def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
-    stderr_contents = None
-    if result.is_success and result.exit_code != 0:
-        stderr_contents = misc_utils.contents_of(result.output_dir_path / result.file_names.stderr)
-    return ResultAndStderr(result, stderr_contents)
-
-
-def execute_and_read_stderr_if_non_zero_exitcode(executable: Executable,
-                                                 executor: ExecutorThatStoresResultInFilesInDir,
-                                                 storage_dir: pathlib.Path) -> ResultAndStderr:
-    result = executor.execute(storage_dir, executable)
-    return read_stderr_if_non_zero_exitcode(result)

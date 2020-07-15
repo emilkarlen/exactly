@@ -32,6 +32,10 @@ class DirWithResultFiles:
     def file_names(self) -> FileNames:
         return process_output_files.FILE_NAMES
 
+    @staticmethod
+    def base_name_of(output_file: ProcOutputFile) -> str:
+        return process_output_files.PROC_OUTPUT_FILE_NAMES[output_file]
+
     def path_of_std(self, output_file: ProcOutputFile) -> pathlib.Path:
         return self._directory / self.file_names.name_of(output_file)
 
