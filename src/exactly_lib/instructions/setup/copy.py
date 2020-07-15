@@ -19,8 +19,8 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.failure_details import FailureDetails

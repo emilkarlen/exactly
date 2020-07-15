@@ -4,7 +4,7 @@ from typing import Optional, Sequence
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.integer import integer_sdv as sut
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.svh_exception import SvhValidationException

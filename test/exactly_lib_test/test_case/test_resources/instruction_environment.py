@@ -1,5 +1,5 @@
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
 
 

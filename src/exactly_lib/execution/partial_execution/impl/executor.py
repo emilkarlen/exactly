@@ -16,9 +16,9 @@ from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailur
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import ActionToCheck, Actor
 from exactly_lib.test_case.os_services import new_default
-from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases import instruction_environment as instr_env
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
@@ -351,22 +351,22 @@ class _PartialExecutor:
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
     def _post_setup_validation_environment(self, phase: phase_identifier.Phase
-                                           ) -> common.InstructionEnvironmentForPostSdsStep:
-        return common.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
-                                                           self.exe_conf.environ,
-                                                           self.__sandbox_directory_structure,
-                                                           phase.identifier,
-                                                           timeout_in_seconds=self.conf_values.timeout_in_seconds,
-                                                           symbols=self._instruction_environment_pre_sds.symbols)
+                                           ) -> instr_env.InstructionEnvironmentForPostSdsStep:
+        return instr_env.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
+                                                              self.exe_conf.environ,
+                                                              self.__sandbox_directory_structure,
+                                                              phase.identifier,
+                                                              timeout_in_seconds=self.conf_values.timeout_in_seconds,
+                                                              symbols=self._instruction_environment_pre_sds.symbols)
 
     def _post_sds_environment(self,
-                              phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
-        return common.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
-                                                           self.exe_conf.environ,
-                                                           self.__sandbox_directory_structure,
-                                                           phase.identifier,
-                                                           timeout_in_seconds=self.conf_values.timeout_in_seconds,
-                                                           symbols=self.__post_sds_symbol_table)
+                              phase: phase_identifier.Phase) -> instr_env.InstructionEnvironmentForPostSdsStep:
+        return instr_env.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
+                                                              self.exe_conf.environ,
+                                                              self.__sandbox_directory_structure,
+                                                              phase.identifier,
+                                                              timeout_in_seconds=self.conf_values.timeout_in_seconds,
+                                                              symbols=self.__post_sds_symbol_table)
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
         return PartialExeResult(failure.status,

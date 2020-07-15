@@ -2,7 +2,7 @@ import types
 import unittest
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_symbol_table
 

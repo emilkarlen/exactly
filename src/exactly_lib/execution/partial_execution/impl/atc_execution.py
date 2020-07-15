@@ -7,7 +7,7 @@ from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureEx
 from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure, \
     PhaseStepFailureException
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails

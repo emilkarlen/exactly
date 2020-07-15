@@ -2,7 +2,7 @@ from typing import List, Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext

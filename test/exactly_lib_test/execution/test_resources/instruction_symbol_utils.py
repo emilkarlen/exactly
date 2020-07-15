@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as instrs
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 
@@ -17,7 +17,7 @@ class _SetupPhaseInstructionThatSetsSymbol(SetupPhaseInstruction):
         self.symbol_definition = symbol_definition
 
     def main(self,
-             environment: instrs.InstructionEnvironmentForPostSdsStep,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         environment.symbols.put(self.symbol_definition.name,

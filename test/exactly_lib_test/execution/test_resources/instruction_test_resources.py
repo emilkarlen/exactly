@@ -3,14 +3,13 @@ from typing import Sequence, Callable, Optional
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.test_case.test_case_status import TestCaseStatus
@@ -125,8 +124,8 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
         self._symbol_usages = symbol_usages
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_sds(environment)
 
     def main(self,
@@ -163,7 +162,7 @@ class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
         return self._symbol_usages()
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep
+                         environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_sds(environment)
 
@@ -197,7 +196,7 @@ class _AssertPhaseInstructionThat(AssertPhaseInstruction):
         return self._symbol_usages()
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep
+                         environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_sds(environment)
 
@@ -229,8 +228,8 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
         return self._symbol_usages()
 
     def validate_pre_sds(self,
-                         environment: instrs.InstructionEnvironmentForPreSdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         return self.do_validate_pre_sds(environment)
 
     def main(self,

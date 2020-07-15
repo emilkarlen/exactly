@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code

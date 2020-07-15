@@ -2,8 +2,9 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep, SymbolUser
+from exactly_lib.test_case.phases.common import SymbolUser
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.type_system.logic.program.process_execution.command import Command

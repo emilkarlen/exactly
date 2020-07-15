@@ -14,7 +14,7 @@ from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths, InstructionSourceInfo, instruction_log_dir
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering

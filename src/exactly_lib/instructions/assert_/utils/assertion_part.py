@@ -11,8 +11,8 @@ from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case.result.pfh import PassOrFailOrHardErrorEnum
 from exactly_lib.test_case_utils.pfh_exception import translate_pfh_exception_to_pfh

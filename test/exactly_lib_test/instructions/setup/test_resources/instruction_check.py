@@ -9,9 +9,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
-from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
@@ -33,7 +31,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class SettingsBuilderAssertionModel(tuple):
     def __new__(cls,
                 actual: SetupSettingsBuilder,
-                environment: common.InstructionEnvironmentForPostSdsStep,
+                environment: InstructionEnvironmentForPostSdsStep,
                 ):
         return tuple.__new__(cls, (actual, environment))
 
@@ -42,7 +40,7 @@ class SettingsBuilderAssertionModel(tuple):
         return self[0]
 
     @property
-    def environment(self) -> common.InstructionEnvironmentForPostSdsStep:
+    def environment(self) -> InstructionEnvironmentForPostSdsStep:
         return self[1]
 
 
@@ -171,7 +169,7 @@ class Executor:
                 if not pre_validate_result.is_success:
                     return
 
-            instruction_environment = i.InstructionEnvironmentForPostSdsStep(
+            instruction_environment = InstructionEnvironmentForPostSdsStep(
                 environment.hds,
                 environment.environ,
                 path_resolving_environment.sds,
@@ -222,7 +220,7 @@ class Executor:
         return pre_validate_result
 
     def _execute_main(self,
-                      instruction_environment: i.InstructionEnvironmentForPostSdsStep,
+                      instruction_environment: InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         settings_builder = self.arrangement.initial_settings_builder
         main_result = instruction.main(instruction_environment,

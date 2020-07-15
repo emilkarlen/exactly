@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.file_utils.std import StdFiles
 from . import parts

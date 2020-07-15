@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.actors.test_resources import \

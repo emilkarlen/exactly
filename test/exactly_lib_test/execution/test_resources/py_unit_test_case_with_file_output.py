@@ -3,7 +3,7 @@ import pathlib
 import types
 
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -23,7 +23,7 @@ def standard_phase_file_base_name(phase: phase_identifier.PhaseEnum) -> str:
 
 def write_to_standard_phase_file(phase: phase_identifier.PhaseEnum,
                                  file_lines_from_env: types.FunctionType) -> types.FunctionType:
-    def ret_val(environment: common.InstructionEnvironmentForPostSdsStep, *args):
+    def ret_val(environment: InstructionEnvironmentForPostSdsStep, *args):
         file_path = standard_phase_file_path(environment.sds.act_dir, phase)
         with open(str(file_path), 'w') as f:
             contents = os.linesep.join(file_lines_from_env(environment)) + os.linesep

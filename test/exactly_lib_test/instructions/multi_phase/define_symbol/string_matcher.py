@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.logic.matching_result import MatchingResult

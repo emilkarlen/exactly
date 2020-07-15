@@ -20,7 +20,7 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError

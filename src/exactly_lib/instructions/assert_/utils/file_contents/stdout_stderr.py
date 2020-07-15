@@ -23,7 +23,7 @@ from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType

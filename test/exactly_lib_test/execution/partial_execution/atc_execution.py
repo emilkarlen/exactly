@@ -16,8 +16,8 @@ from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code

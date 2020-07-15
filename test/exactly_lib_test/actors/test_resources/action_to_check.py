@@ -8,7 +8,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure

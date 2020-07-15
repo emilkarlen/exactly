@@ -17,7 +17,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils import file_properties

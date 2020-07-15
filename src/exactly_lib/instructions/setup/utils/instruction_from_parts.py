@@ -8,7 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh

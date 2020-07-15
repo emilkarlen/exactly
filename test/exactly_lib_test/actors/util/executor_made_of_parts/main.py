@@ -8,7 +8,9 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
+from exactly_lib.test_case.phases.common import SymbolUser
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
@@ -167,7 +169,7 @@ def executor_constructor_that_raises(*args):
 
 class UnconditionallySuccessfulExecutor(sut.Executor):
     def execute(self,
-                environment: sut.InstructionEnvironmentForPostSdsStep,
+                environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> eh.ExitCodeOrHardError:
         return eh.new_eh_exit_code(0)

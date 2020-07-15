@@ -3,8 +3,9 @@ from typing import Sequence
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep, TestCaseInstructionWithSymbols
+from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 
 

@@ -8,7 +8,7 @@ from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method

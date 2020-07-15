@@ -7,7 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue

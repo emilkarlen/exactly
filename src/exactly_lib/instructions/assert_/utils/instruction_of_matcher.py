@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh

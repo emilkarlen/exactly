@@ -6,10 +6,10 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout

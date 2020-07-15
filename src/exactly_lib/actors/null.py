@@ -6,8 +6,9 @@ from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjec
     UnconditionallySuccessfulValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep, SymbolUser
+from exactly_lib.test_case.phases.common import SymbolUser
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import eh
 from exactly_lib.util.file_utils.std import StdFiles
 

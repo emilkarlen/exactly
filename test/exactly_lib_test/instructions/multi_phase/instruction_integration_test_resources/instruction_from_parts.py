@@ -12,7 +12,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc

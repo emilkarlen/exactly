@@ -18,8 +18,8 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    SymbolUser
+from exactly_lib.test_case.phases.common import SymbolUser
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator

@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \

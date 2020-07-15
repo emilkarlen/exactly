@@ -6,7 +6,7 @@ from typing import Dict
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import sds_log_phase_dir
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \

@@ -4,7 +4,7 @@ from typing import List, Set
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
 from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that

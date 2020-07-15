@@ -6,7 +6,7 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matching_result import MatchingResult

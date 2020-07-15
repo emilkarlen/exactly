@@ -9,7 +9,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator

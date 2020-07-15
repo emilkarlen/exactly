@@ -5,7 +5,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError

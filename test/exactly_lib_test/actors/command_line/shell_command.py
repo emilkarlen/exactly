@@ -8,7 +8,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstr
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.line_source import LineSequence

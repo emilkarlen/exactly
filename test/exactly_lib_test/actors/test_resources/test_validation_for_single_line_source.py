@@ -4,7 +4,7 @@ from typing import Sequence
 
 from exactly_lib.test_case.actor import Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents

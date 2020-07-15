@@ -22,7 +22,7 @@ from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.str_.formatter import StringFormatter

@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases import common as instr
+from exactly_lib.test_case.phases import instruction_environment as instr_env
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -59,7 +59,7 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
 
 class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -69,7 +69,7 @@ class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPostSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -80,7 +80,7 @@ class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
 class SetupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  os_services: OsServices,
-                 environment: instr.InstructionEnvironmentForPostSdsStep,
+                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
                  setup_settings_builder: SetupSettingsBuilder):
         self.__os_services = os_services
         self.__environment = environment
@@ -95,7 +95,7 @@ class SetupMainExecutor(ControlledInstructionExecutor):
 
 class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPostSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -105,7 +105,7 @@ class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
 
 class AssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPostSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -115,7 +115,7 @@ class AssertValidatePostSetupExecutor(ControlledInstructionExecutor):
 
 class AssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr.InstructionEnvironmentForPostSdsStep,
+                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices):
         self.__environment = environment
         self.__os_services = os_services
@@ -127,7 +127,7 @@ class AssertMainExecutor(ControlledInstructionExecutor):
 
 class BeforeAssertValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -137,7 +137,7 @@ class BeforeAssertValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class BeforeAssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr.InstructionEnvironmentForPostSdsStep,
+                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices):
         self.__environment = environment
         self.__os_services = os_services
@@ -149,7 +149,7 @@ class BeforeAssertMainExecutor(ControlledInstructionExecutor):
 
 class AssertValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -159,7 +159,7 @@ class AssertValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class CleanupValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr.InstructionEnvironmentForPreSdsStep):
+                 instruction_environment: instr_env.InstructionEnvironmentForPreSdsStep):
         self.__instruction_environment = instruction_environment
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -169,7 +169,7 @@ class CleanupValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class CleanupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr.InstructionEnvironmentForPostSdsStep,
+                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
                  previous_phase: PreviousPhase,
                  os_services: OsServices):
         self.__environment = environment
