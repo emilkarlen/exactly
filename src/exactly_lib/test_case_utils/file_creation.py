@@ -2,6 +2,7 @@ import pathlib
 from typing import Optional, Any, Callable, TextIO
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.os_services import OsServices
@@ -112,7 +113,7 @@ class FileTransformerHelper:
             )
             return None
         except DetectedException as ex:
-            return ex.failure_details.failure_message
+            return failure_details_rendering.FailureDetailsRenderer(ex.failure_details)
         except HardErrorException as ex:
             return ex.error
 

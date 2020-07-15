@@ -1,3 +1,4 @@
+from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.failure_details import FailureDetails
 
@@ -24,4 +25,6 @@ def return_success_or_hard_error(callable_block, *args, **kwargs) -> sh.SuccessO
         callable_block(*args, **kwargs)
         return sh.new_sh_success()
     except DetectedException as ex:
-        return sh.new_sh_hard_error(ex.failure_details.failure_message)
+        return sh.new_sh_hard_error(
+            failure_details_rendering.FailureDetailsRenderer(ex.failure_details)
+        )

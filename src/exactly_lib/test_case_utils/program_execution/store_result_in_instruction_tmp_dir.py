@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
 from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
@@ -58,7 +59,9 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     try:
         executable = os_services.executable_factory__detect_ex().make(program.command)
     except DetectedException as ex:
-        raise pfh_exception.PfhHardErrorException(ex.failure_details.failure_message)
+        raise pfh_exception.PfhHardErrorException(
+            failure_details_rendering.FailureDetailsRenderer(ex.failure_details)
+        )
 
     result = executor.execute(pgm_output_dir, executable)
     if program.transformation.is_identity_transformer:
