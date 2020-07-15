@@ -13,7 +13,7 @@ from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_execut
     AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = shell_command(abs_path_to_interpreter_quoted_for_exactly())
@@ -80,7 +80,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                empty_file('quoted file name.src')])),
+                File.empty('quoted file name.src')])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,
@@ -109,7 +109,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                empty_file('existing-file.src')])),
+                File.empty('existing-file.src')])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,

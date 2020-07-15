@@ -7,7 +7,7 @@ from exactly_lib.cli.definitions.exit_codes import EXIT_INVALID_USAGE
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.cli.program_modes.test_case.run_as_part_of_suite.test_resources.cli_args import \
     cli_args_for_explicit_suite
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndTestActor
@@ -73,7 +73,7 @@ class WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeFileAccessError(m
     name_of_test_case = 'test.case'
 
     def file_structure(self, tmp_cwd_dir_path: pathlib.Path) -> DirContents:
-        return DirContents([empty_file(self.name_of_test_suite)])
+        return DirContents([File.empty(self.name_of_test_suite)])
 
     def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
         return cli_args_for_explicit_suite(self.name_of_test_suite, self.name_of_test_case)
@@ -92,7 +92,7 @@ class WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeFileAccessEr
     name_of_test_case = 'test.case'
 
     def file_structure(self, tmp_cwd_dir_path: pathlib.Path) -> DirContents:
-        return DirContents([empty_file(self.name_of_test_case)])
+        return DirContents([File.empty(self.name_of_test_case)])
 
     def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
         return cli_args_for_explicit_suite(self.name_of_test_suite, self.name_of_test_case)

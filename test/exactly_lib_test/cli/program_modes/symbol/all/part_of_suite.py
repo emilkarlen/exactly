@@ -14,7 +14,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_ins
 from exactly_lib_test.cli.program_modes.symbol.test_resources.suite_file_setup import suite_cases
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -31,7 +31,7 @@ class TestFailingScenarios(unittest.TestCase):
         suite_file_contents_with_invalid_syntax = lines_content([
             SectionName('nonExistingSection').syntax,
         ])
-        valid_empty_case_file = empty_file('empty-valid.case')
+        valid_empty_case_file = File.empty('empty-valid.case')
 
         for suite_case in suite_cases('invalid-syntax.suite'):
             with self.subTest(suite_case.name):
@@ -55,7 +55,7 @@ class TestFailingScenarios(unittest.TestCase):
                 )
 
     def test_invalid_suite_file(self):
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
         suite_file_name = 'test.suite'
 
         cases = [
@@ -64,7 +64,7 @@ class TestFailingScenarios(unittest.TestCase):
                          ),
             NameAndValue('file is a directory',
                          [
-                             empty_dir(suite_file_name)
+                             Dir.empty(suite_file_name)
                          ]),
         ]
         for case in cases:
@@ -94,7 +94,7 @@ class TestFailingScenarios(unittest.TestCase):
 class TestSuccessfulScenarios(unittest.TestCase):
     def test_empty_files(self):
         empty_suite_file_contents = ''
-        valid_empty_case_file = empty_file('empty-valid.case')
+        valid_empty_case_file = File.empty('empty-valid.case')
 
         for suite_case in suite_cases('empty.suite'):
             with self.subTest(suite_case.name):

@@ -21,7 +21,7 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, empty_dir_contents
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, Dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
@@ -234,7 +234,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                  step_result.status,
                                  'Result of validation/pre-sds')
                 with sds_with_act_as_curr_dir(contents_in(RelSdsOptionType.REL_ACT,
-                                                          DirContents([empty_dir('expected-cwd')]))
+                                                          DirContents([Dir.empty('expected-cwd')]))
                                               ) as path_resolving_env:
                     environment = InstructionEnvironmentForPostSdsStep(environment.hds,
                                                                        environment.environ,

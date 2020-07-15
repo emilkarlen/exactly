@@ -27,7 +27,7 @@ from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help imp
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -94,7 +94,7 @@ class TestSettingsBuilder(TestCaseBase):
 
 class TestPopulate(TestCaseBase):
     def test_populate_non_hds(self):
-        populated_dir_contents = DirContents([empty_file('non-hds-file.txt')])
+        populated_dir_contents = DirContents([File.empty('non-hds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
@@ -108,7 +108,7 @@ class TestPopulate(TestCaseBase):
         )
 
     def test_populate_sds(self):
-        populated_dir_contents = DirContents([empty_file('sds-file.txt')])
+        populated_dir_contents = DirContents([File.empty('sds-file.txt')])
         self._check(
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
@@ -216,7 +216,7 @@ class TestMiscCases(TestCaseBase):
                         single_line_source(),
                         sut.Arrangement(),
                         sut.Expectation(main_side_effects_on_sds=act_dir_contains_exactly(
-                            DirContents([empty_file('non-existing-file.txt')]))))
+                            DirContents([File.empty('non-existing-file.txt')]))))
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(utils.TestError):

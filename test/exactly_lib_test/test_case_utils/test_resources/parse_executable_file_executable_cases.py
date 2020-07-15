@@ -24,7 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import File, executable_file, empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import File, executable_file, DirContents
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -229,7 +229,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         source = ParseSource(arguments_str)
         exe_file = parse_executable_file_executable.parse_from_parse_source(
             source)
-        with self._tcds_and_test_as_curr_dir(empty_file('file.exe')) as environment:
+        with self._tcds_and_test_as_curr_dir(File.empty('file.exe')) as environment:
             self._assert_does_not_pass_validation(exe_file, environment)
 
 

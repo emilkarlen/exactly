@@ -25,6 +25,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
@@ -78,7 +79,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 file_name = 'file-name.txt'
-                expected_file = fs.empty_file(file_name)
+                expected_file = File.empty(file_name)
                 self._check(
                     remaining_source('{relativity_option} {file_name}'.format(
                         relativity_option=rel_opt_conf.option_argument,
@@ -98,7 +99,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 sub_dir_name = 'sub-dir'
-                expected_file = fs.empty_file('file-name.txt')
+                expected_file = File.empty('file-name.txt')
                 self._check(
                     remaining_source('{relativity_option} {sub_dir}/{file_name}'.format(
                         relativity_option=rel_opt_conf.option_argument,
@@ -121,7 +122,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 sub_dir_name = 'sub-dir'
-                expected_file = fs.empty_file('file-name.txt')
+                expected_file = File.empty('file-name.txt')
                 self._check(
                     remaining_source('{relativity_option} {sub_dir}/{file_name}'.format(
                         relativity_option=rel_opt_conf.option_argument,
@@ -130,7 +131,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                         non_hds_contents=rel_opt_conf.populator_for_relativity_option_root__non_hds(
-                            fs.DirContents([fs.empty_dir(sub_dir_name)])
+                            fs.DirContents([Dir.empty(sub_dir_name)])
                         )
                     ),
                     Expectation(
@@ -146,7 +147,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
 
 class TestParserConsumptionOfSource(TestCaseBase):
     def test_last_line(self):
-        expected_file = fs.empty_file('a-file-name.txt')
+        expected_file = File.empty('a-file-name.txt')
         self._check(
             remaining_source(
                 '{file_name}'.format(file_name=expected_file.file_name),
@@ -161,7 +162,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
         )
 
     def test_not_last_line(self):
-        expected_file = fs.empty_file('a-file-name.txt')
+        expected_file = File.empty('a-file-name.txt')
         self._check(
             remaining_source(
                 '{file_name}'.format(file_name=expected_file.file_name),

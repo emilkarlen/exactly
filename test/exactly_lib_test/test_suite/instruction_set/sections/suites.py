@@ -7,8 +7,8 @@ from exactly_lib.test_suite.instruction_set.sections import suites as sut
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
-from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, DirContents, empty_dir_contents, \
-    Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, \
+    Dir, File
 from exactly_lib_test.test_suite.instruction_set.sections.test_resources.file_resolving_test_base import \
     ResolvePathsTestBase
 
@@ -53,7 +53,7 @@ class TestParse(unittest.TestCase):
 
 class TestResolvePaths(ResolvePathsTestBase):
     def test_single_file_WHEN_argument_is_existing_single_file(self):
-        file = empty_file('suite.file')
+        file = File.empty('suite.file')
         self._expect_success(
             contents_dir_contents=DirContents([file]),
             source=file.name,
@@ -69,8 +69,8 @@ class TestResolvePaths(ResolvePathsTestBase):
         )
 
     def test_all_files_in_dir_WHEN_argument_is_glob_including_all_files(self):
-        file_1 = empty_file('1-file.ext')
-        file_2 = empty_file('2-file.ext')
+        file_1 = File.empty('1-file.ext')
+        file_2 = File.empty('2-file.ext')
         self._expect_success(
             contents_dir_contents=DirContents([file_1,
                                                file_2]),
@@ -82,7 +82,7 @@ class TestResolvePaths(ResolvePathsTestBase):
         )
 
     def test_fail_WHEN_argument_is_existing_dir_which_does_not_contain_default_suite_file(self):
-        a_dir = empty_dir('a-dir')
+        a_dir = Dir.empty('a-dir')
         self._expect_resolving_error(
             contents_dir_contents=DirContents([a_dir]),
             source=a_dir.name,
@@ -90,7 +90,7 @@ class TestResolvePaths(ResolvePathsTestBase):
 
     def test_single_file_WHEN_argument_is_existing_dir_which_contains_default_suite_file(self):
         a_dir = Dir('a-dir', [
-            empty_file(file_names.DEFAULT_SUITE_FILE)
+            File.empty(file_names.DEFAULT_SUITE_FILE)
         ])
         self._expect_success(
             contents_dir_contents=DirContents([a_dir]),
@@ -101,9 +101,9 @@ class TestResolvePaths(ResolvePathsTestBase):
         )
 
     def test_all_files_in_dir_WHEN_argument_is_glob_including_all_files_and_dir_contains_default_suite_file(self):
-        file_1 = empty_file('1-file.ext')
+        file_1 = File.empty('1-file.ext')
         dir_2 = Dir('2-dir', [
-            empty_file(file_names.DEFAULT_SUITE_FILE)
+            File.empty(file_names.DEFAULT_SUITE_FILE)
         ])
 
         self._expect_success(

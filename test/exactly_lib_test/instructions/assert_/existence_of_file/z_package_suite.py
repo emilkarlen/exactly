@@ -42,8 +42,8 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     with_negation_argument, PassOrFail, ExpectationTypeConfigForPfh
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     conf_rel_sds
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Link, \
-    empty_dir_contents
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Link, \
+    empty_dir_contents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -192,7 +192,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
 
         path_relativity = conf_rel_sds(RelSdsOptionType.REL_ACT)
 
-        checked_file = empty_file('checked-file.txt')
+        checked_file = File.empty('checked-file.txt')
 
         argument = args.CompleteInstructionArg(
             ExpectationType.POSITIVE,
@@ -264,7 +264,7 @@ class TestDifferentSourceVariants(TestCaseBase):
             default_relativity=RelOptionType.REL_CWD,
             non_default_relativity=RelOptionType.REL_TMP,
             main_result_for_positive_expectation=PassOrFail.PASS,
-            contents_of_relativity_option_root=DirContents([empty_file(file_name)]),
+            contents_of_relativity_option_root=DirContents([File.empty(file_name)]),
 
         )
 
@@ -277,7 +277,7 @@ class TestDifferentSourceVariants(TestCaseBase):
             default_relativity=RelOptionType.REL_CWD,
             non_default_relativity=RelOptionType.REL_TMP,
             main_result_for_positive_expectation=PassOrFail.PASS,
-            contents_of_relativity_option_root=DirContents([empty_file(file_name)]),
+            contents_of_relativity_option_root=DirContents([File.empty(file_name)]),
 
         )
 
@@ -291,14 +291,14 @@ class TestCheckForAnyTypeOfFile(TestCaseBase):
         cases_with_existing_file_of_different_types = [
             NameAndValue(
                 'dir',
-                DirContents([empty_dir(file_name)])),
+                DirContents([Dir.empty(file_name)])),
             NameAndValue(
                 'regular file',
-                DirContents([empty_file(file_name)])),
+                DirContents([File.empty(file_name)])),
             NameAndValue(
                 'sym-link',
                 DirContents(
-                    [empty_dir('directory'),
+                    [Dir.empty('directory'),
                      Link(file_name, 'directory')])
             ),
             NameAndValue(
@@ -331,11 +331,11 @@ class TestCheckForDirectory(TestCaseBase):
     cases_with_existing_directory = [
         NameAndValue(
             'exists as directory',
-            DirContents([empty_dir(file_name)])
+            DirContents([Dir.empty(file_name)])
         ),
         NameAndValue(
             'exists as sym-link to existing directory',
-            DirContents([empty_dir('directory'),
+            DirContents([Dir.empty('directory'),
                          Link(file_name, 'directory')]),
         ),
     ]
@@ -343,11 +343,11 @@ class TestCheckForDirectory(TestCaseBase):
     cases_with_existing_files_that_are_not_directories = [
         NameAndValue(
             'exists as regular file',
-            DirContents([empty_file(file_name)])
+            DirContents([File.empty(file_name)])
         ),
         NameAndValue(
             'exists as sym-link to existing regular file',
-            DirContents([empty_file('existing-file'),
+            DirContents([File.empty('existing-file'),
                          Link(file_name, 'directory')]),
         ),
         NameAndValue(
@@ -395,11 +395,11 @@ class TestCheckForRegularFile(TestCaseBase):
     cases_with_existing_files_that_are_regular_files = [
         NameAndValue(
             'exists as regular file',
-            DirContents([empty_file(file_name)])
+            DirContents([File.empty(file_name)])
         ),
         NameAndValue(
             'exists as sym-link to existing regular file',
-            DirContents([empty_file('existing-file'),
+            DirContents([File.empty('existing-file'),
                          Link(file_name, 'existing-file')]),
         ),
     ]
@@ -407,11 +407,11 @@ class TestCheckForRegularFile(TestCaseBase):
     cases_with_existing_files_that_are_not_regular_files = [
         NameAndValue(
             'exists as directory',
-            DirContents([empty_dir(file_name)])
+            DirContents([Dir.empty(file_name)])
         ),
         NameAndValue(
             'exists as sym-link to existing directory',
-            DirContents([empty_dir('directory'),
+            DirContents([Dir.empty('directory'),
                          Link(file_name, 'directory')]),
         ),
         NameAndValue(
@@ -459,12 +459,12 @@ class TestCheckForSymLink(TestCaseBase):
     cases_with_existing_files_that_are_symbolic_links = [
         NameAndValue(
             'exists as sym-link to directory',
-            DirContents([empty_dir('dir'),
+            DirContents([Dir.empty('dir'),
                          Link(file_name, 'dir')])
         ),
         NameAndValue(
             'exists as sym-link to existing regular file',
-            DirContents([empty_file('file'),
+            DirContents([File.empty('file'),
                          Link(file_name, 'file')]),
         ),
         NameAndValue(
@@ -476,11 +476,11 @@ class TestCheckForSymLink(TestCaseBase):
     cases_with_existing_files_that_are_not_symbolic_links = [
         NameAndValue(
             'exists as directory',
-            DirContents([empty_file(file_name)])
+            DirContents([File.empty(file_name)])
         ),
         NameAndValue(
             'exists as regular file',
-            DirContents([empty_dir(file_name)]),
+            DirContents([Dir.empty(file_name)]),
         ),
     ]
 

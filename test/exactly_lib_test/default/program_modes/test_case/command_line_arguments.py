@@ -6,7 +6,7 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
 from exactly_lib_test.test_resources.main_program.main_program_check_base import SetupWithJustMainProgramRunner, \
     SetupWithTmpCwdDirContents
@@ -75,7 +75,7 @@ class TestCaseFileIsADirectoryShouldExitWithInvalidUsageStatus(SetupWithTmpCwdDi
         return ['name-of-non-existing-test.case']
 
     def file_structure(self, tmp_cwd_dir_path: pathlib.Path) -> DirContents:
-        return DirContents([empty_dir(self.file_name)])
+        return DirContents([Dir.empty(self.file_name)])
 
     def check(self,
               put: unittest.TestCase,

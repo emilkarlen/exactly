@@ -32,7 +32,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, empty_file, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -252,20 +252,20 @@ class SelectorShouldBeApplied(MultipleExecutionCasesGenerator):
 
     num_regular_files_eq_1 = [
         Dir('lvl0', [
-            empty_file('lvl1-included'),
+            File.empty('lvl1-included'),
             Dir('lvl1-not-included', [
-                empty_file('lvl2-not-included-file'),
-                empty_dir('lvl2-not-included-dir'),
+                File.empty('lvl2-not-included-file'),
+                Dir.empty('lvl2-not-included-dir'),
             ])
         ])
     ]
     num_regular_files_eq_2 = [
         Dir('lvl0', [
-            empty_file('lvl1-included-1'),
-            empty_file('lvl1-included-2'),
+            File.empty('lvl1-included-1'),
+            File.empty('lvl1-included-2'),
             Dir('lvl1-not-included', [
-                empty_file('lvl2-not-included-file'),
-                empty_dir('lvl2-not-included-dir'),
+                File.empty('lvl2-not-included-file'),
+                Dir.empty('lvl2-not-included-dir'),
             ])
         ])
     ]

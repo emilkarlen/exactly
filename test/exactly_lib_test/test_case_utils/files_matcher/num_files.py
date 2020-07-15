@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
-from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 
 
 def suite() -> unittest.TestSuite:
@@ -108,7 +108,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
 class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_has_expected_number_of_files(self):
-        directory_with_one_file = Dir('name-of-dir', [empty_file('a-file-in-checked-dir')])
+        directory_with_one_file = Dir('name-of-dir', [File.empty('a-file-in-checked-dir')])
 
         instruction_argument_constructor = argument_constructor_for_num_files_check(
             int_condition(comparators.EQ, 1)
@@ -127,7 +127,7 @@ class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
 
     def test_file_is_a_directory_that_has_unexpected_number_of_files(self):
         directory_with_one_file = Dir('name-of-non-empty-dir',
-                                      [empty_file('file-in-dir')])
+                                      [File.empty('file-in-dir')])
 
         instruction_argument_constructor = argument_constructor_for_num_files_check(
             int_condition(comparators.EQ, 2)
@@ -150,8 +150,8 @@ class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
 
         dir_with_two_files = Dir(name_of_directory,
                                  [
-                                     empty_file('a file'),
-                                     empty_file('b file'),
+                                     File.empty('a file'),
+                                     File.empty('b file'),
                                  ])
 
         contents_of_relativity_option_root = DirContents([dir_with_two_files])

@@ -39,7 +39,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -187,7 +187,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
         the_model = model.model_with_source_path_as_sub_dir_of_rel_root(self.name_of_checked_dir)(relativity_root_conf)
 
         non_regular_files = [
-            empty_dir('a-directory'),
+            Dir.empty('a-directory'),
             sym_link('sym-link', 'non-existing-target')
         ]
 
@@ -252,7 +252,7 @@ class TestExistsContentsEmptyFile(unittest.TestCase):
             root_dir_of_dir_contents=AN_ACCEPTED_SDS_REL_OPT_CONFIG,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('empty-file.txt'),
+                    File.empty('empty-file.txt'),
                     File('non-empty-file.txt', 'contents of non-empty file'),
                 ]),
             ]),
@@ -266,7 +266,7 @@ class TestExistsContentsEmptyFile(unittest.TestCase):
             main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('empty-file.txt'),
+                    File.empty('empty-file.txt'),
                 ]),
             ]),
         )
@@ -316,8 +316,8 @@ class TestExistsTypeDir(unittest.TestCase):
             root_dir_of_dir_contents=AN_ACCEPTED_SDS_REL_OPT_CONFIG,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('regular.txt'),
-                    empty_dir('dir'),
+                    File.empty('regular.txt'),
+                    Dir.empty('dir'),
                 ]),
             ]),
         )
@@ -330,7 +330,7 @@ class TestExistsTypeDir(unittest.TestCase):
             main_result_for_positive_expectation=PassOrFail.FAIL,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('regular.txt'),
+                    File.empty('regular.txt'),
                 ]),
             ]),
         )
@@ -356,7 +356,7 @@ class TestForAllContentsEmptyFile(unittest.TestCase):
             root_dir_of_dir_contents=AN_ACCEPTED_SDS_REL_OPT_CONFIG,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('empty-file.txt'),
+                    File.empty('empty-file.txt'),
                     File('non-empty-file.txt', 'contents of non-empty file'),
                 ]),
             ]),
@@ -370,7 +370,7 @@ class TestForAllContentsEmptyFile(unittest.TestCase):
             main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=DirContents([
                 Dir(self.name_of_checked_dir, [
-                    empty_file('empty-file.txt'),
+                    File.empty('empty-file.txt'),
                 ]),
             ]),
         )
@@ -416,12 +416,10 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
             FileMatcherThatMatchesAnyFileWhosNameStartsWith('selected'))
 
         files_in_checked_dir = Dir(name_of_checked_dir, [
-            empty_file(
-                'selected-empty-file.txt'),
+            File.empty('selected-empty-file.txt'),
             File(
                 'un-selected-non-empty-file.txt', 'contents of non-emtpy file'),
-            empty_dir(
-                'un-selected-dir'),
+            Dir.empty('un-selected-dir'),
             sym_link(
                 'un-selected-sym-link-to-dir', 'un-selected-dir'),
             sym_link(
@@ -485,10 +483,8 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
         files_in_checked_dir = Dir(name_of_checked_dir, [
             File(
                 'selected-non-empty-file.txt', 'contents of non-emtpy file'),
-            empty_file(
-                'un-selected-empty-file.txt'),
-            empty_dir(
-                'un-selected-dir'),
+            File.empty('un-selected-empty-file.txt'),
+            Dir.empty('un-selected-dir'),
             sym_link(
                 'un-selected-sym-link-to-dir', 'un-selected-dir'),
             sym_link(

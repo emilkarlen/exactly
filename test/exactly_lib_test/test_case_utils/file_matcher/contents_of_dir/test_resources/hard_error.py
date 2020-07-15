@@ -8,7 +8,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
     Expectation, ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -32,7 +32,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper:
         return arrangement_w_tcds(
             non_hds_contents=sds_populator.contents_in(
                 self.checked_dir_location,
-                DirContents([empty_dir(self.checked_dir_name)])
+                DirContents([Dir.empty(self.checked_dir_name)])
             ),
             symbols=FilesMatcherSymbolContext.of_primitive(
                 self.files_matcher_name,

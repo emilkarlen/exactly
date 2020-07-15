@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_hds
 from exactly_lib_test.test_resources.files import file_structure as fs
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -140,7 +140,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         self._check_cases_for_dst_file_setup__w_relativity_options(
             dst_file_name,
             DirContents([
-                empty_file(dst_file_name)
+                File.empty(dst_file_name)
             ]),
         )
 
@@ -149,7 +149,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         self._check_cases_for_dst_file_setup__w_relativity_options(
             dst_file_name,
             DirContents([
-                empty_dir(dst_file_name)
+                Dir.empty(dst_file_name)
             ]),
         )
 
@@ -168,7 +168,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
             'existing-dir/existing-file/dst-file-name',
             DirContents([
                 Dir('existing-dir', [
-                    empty_file('existing-file')
+                    File.empty('existing-file')
                 ])
             ]),
         )

@@ -149,7 +149,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
     def test_success_when_referenced_files_does_exist(self):
         symbol_name_for_executable_file = 'EXECUTABLE_FILE_SYMBOL_NAME'
         symbol_name_for_source_file = 'SOURCE_FILE_SYMBOL_NAME'
-        source_file = fs.empty_file('source-file.src')
+        source_file = File.empty('source-file.src')
         for roc_executable_file in relativity_options(symbol_name_for_executable_file):
             for roc_source_file in relativity_options(symbol_name_for_source_file):
                 argument = '{relativity_option_executable} {executable_file} {interpret_option}' \
@@ -189,7 +189,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
     def test_validate_should_fail_when_executable_does_not_exist(self):
         existing_file_to_interpret = 'existing-file-to-interpret.src'
-        home_dir_contents = fs.DirContents([fs.empty_file(existing_file_to_interpret)])
+        home_dir_contents = fs.DirContents([File.empty(existing_file_to_interpret)])
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {interpret_option}' \
                        ' {rel_hds_case_option} {existing_file}'.format(

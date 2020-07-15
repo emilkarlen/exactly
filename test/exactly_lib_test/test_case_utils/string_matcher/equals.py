@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configu
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
@@ -101,7 +101,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithRelativityOptionAndNegationBase
             integration_check.empty_model(),
             arrangement_w_tcds(
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([empty_dir('dir')])),
+                    DirContents([Dir.empty('dir')])),
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),

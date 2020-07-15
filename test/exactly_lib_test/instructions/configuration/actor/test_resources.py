@@ -14,6 +14,7 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorTha
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -72,4 +73,4 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
 
 def file_in_hds_act_dir(file_name: str) -> hds_populators.HdsPopulator:
     return hds_populators.contents_in(RelHdsOptionType.REL_HDS_ACT,
-                                      fs.DirContents([fs.empty_file(file_name)]))
+                                      fs.DirContents([File.empty(file_name)]))

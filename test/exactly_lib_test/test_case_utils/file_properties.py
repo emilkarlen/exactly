@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from exactly_lib.test_case_utils import file_properties as sut
 from exactly_lib.test_case_utils.file_properties import FileType, CheckResult, PropertiesWithNegation, \
     new_properties_for_existence
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, sym_link
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir, tmp_dir_with
 
 
@@ -349,19 +349,19 @@ def empty_directory() -> pathlib.Path:
 
 @contextmanager
 def dir_with_file() -> pathlib.Path:
-    with tmp_dir_with(empty_file('existing-file')) as dir_path:
+    with tmp_dir_with(File.empty('existing-file')) as dir_path:
         yield dir_path / 'existing-file'
 
 
 @contextmanager
 def dir_with_dir() -> pathlib.Path:
-    with tmp_dir_with(empty_dir('existing-directory')) as dir_path:
+    with tmp_dir_with(Dir.empty('existing-directory')) as dir_path:
         yield dir_path / 'existing-directory'
 
 
 @contextmanager
 def dir_with_symlink_to_existing_file() -> pathlib.Path:
-    with tmp_dir(DirContents([empty_file('existing-file'),
+    with tmp_dir(DirContents([File.empty('existing-file'),
                               sym_link('existing-symlink',
                                        'existing-file')])) as dir_path:
         yield dir_path / 'existing-symlink'
@@ -369,7 +369,7 @@ def dir_with_symlink_to_existing_file() -> pathlib.Path:
 
 @contextmanager
 def dir_with_symlink_to_existing_dir() -> pathlib.Path:
-    with tmp_dir(DirContents([empty_dir('existing-dir'),
+    with tmp_dir(DirContents([Dir.empty('existing-dir'),
                               sym_link('existing-symlink',
                                        'existing-dir')])) as dir_path:
         yield dir_path / 'existing-symlink'

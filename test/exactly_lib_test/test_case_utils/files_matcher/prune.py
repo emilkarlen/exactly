@@ -28,7 +28,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import EXECUTION_IS_PASS
 from exactly_lib_test.test_resources import matcher_argument
-from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, sym_link, Dir, FileSystemElement
+from exactly_lib_test.test_resources.files.file_structure import sym_link, Dir, \
+    FileSystemElement, File
 from exactly_lib_test.test_resources.matcher_argument import Conjunction, Parenthesis
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -101,8 +102,8 @@ NAME_STARTS_WITH__S1 = FileMatcherSymbolContext.of_sdv(
 )
 
 NO_ACTION_ON_FILES_THEMSELVES__CONTENTS = [
-    empty_file('P1-f'),
-    empty_dir('P1-d'),
+    File.empty('P1-f'),
+    Dir.empty('P1-d'),
     sym_link('P1-s', 'P1-f'),
     sym_link('P1-sb', 'no-P2-existing'),
 ]
@@ -124,23 +125,23 @@ FILES_SHOULD_BE_INCLUDED_EVEN_IF_MATCH__DEPTH_1 = NEA.new_identical_expected_and
 EXCLUDE_CONTENTS_OF_MATCHING_DIR__DEPTH_0 = NEA(
     'exclude contents of dir iff matches/depth 0',
     expected=[
-        empty_dir('P1-match'),
+        Dir.empty('P1-match'),
         Dir('x-no-match',
             [
-                empty_file('f1'),
-                empty_dir('d1-no-match'),
+                File.empty('f1'),
+                Dir.empty('d1-no-match'),
             ]),
     ],
     actual=[
         Dir('P1-match',
             [
-                empty_file('f1'),
-                empty_dir('d1-no-match'),
+                File.empty('f1'),
+                Dir.empty('d1-no-match'),
             ]),
         Dir('x-no-match',
             [
-                empty_file('f1'),
-                empty_dir('d1-no-match'),
+                File.empty('f1'),
+                Dir.empty('d1-no-match'),
             ]),
     ],
 )
@@ -169,15 +170,15 @@ SINGLE_PRUNE_CASES = [
 COMBINATION_SHOULD_PRUNE_DIRS_MATCHED_BY_ANY_MATCHER__DEPTH_0 = NEA(
     'combination should prune dirs matched by any matcher',
     expected=[
-        empty_dir('P1-match'),
-        empty_dir('P2-match'),
+        Dir.empty('P1-match'),
+        Dir.empty('P2-match'),
     ],
     actual=[
         Dir('P1-match', [
-            empty_file('f'),
+            File.empty('f'),
         ]),
         Dir('P2-match', [
-            empty_file('g'),
+            File.empty('g'),
         ]),
     ],
 )
@@ -208,13 +209,13 @@ COMBINATION_OF_PRUNE_AND_SELECTION = NEA(
     actual=[
         Dir('P1-match',
             [
-                empty_file('S1-match'),
-                empty_file('no-S1-match'),
+                File.empty('S1-match'),
+                File.empty('no-S1-match'),
             ]),
         Dir('no-P1-match',
             [
-                empty_file('S1-match'),
-                empty_file('no-S1-match'),
+                File.empty('S1-match'),
+                File.empty('no-S1-match'),
             ]),
     ],
     expected=[
@@ -227,14 +228,14 @@ COMBINATION_OF_PRUNE_AND_DEPTH_LIMITATIONS__DEPTH_MUST_BE_1 = NEA(
     actual=[
         Dir('P1-match',
             [
-                empty_file('DEPTH-match'),
+                File.empty('DEPTH-match'),
             ]),
         Dir('no-P1-match',
             [
-                empty_file('DEPTH-match'),
+                File.empty('DEPTH-match'),
                 Dir('no-P1-match--DEPTH-match',
                     [
-                        empty_file('no-DEPTH-match'),
+                        File.empty('no-DEPTH-match'),
                     ]
                     ),
             ]),
@@ -266,10 +267,10 @@ COMBINATION_OF_PRUNE_AND_DEPTH_LIMITATIONS = [
 NON_RECURSIVE__ACTUAL = [
     Dir('non-empty-dir',
         [
-            empty_file('file-in-dir'),
+            File.empty('file-in-dir'),
         ]),
-    empty_dir('empty-dir'),
-    empty_file('regular file'),
+    Dir.empty('empty-dir'),
+    File.empty('regular file'),
     sym_link('sym-link', 'regular file'),
     sym_link('broken-sym-link', 'non-existing'),
 ]
@@ -282,7 +283,7 @@ PRUNE_TYPE_SYM_LINK = EA(
     ],
     [
         Dir('non-empty-dir', [
-            empty_file('regular-in-non-empty-dir'),
+            File.empty('regular-in-non-empty-dir'),
         ]),
         sym_link('sym-link-to-non-empty-dir', 'non-empty-dir')
     ]
@@ -296,7 +297,7 @@ BROKEN_SYM_LINKS_SHOULD_BE_TREATED_AS_NON_DIR_FILES = EA(
     ],
     [
         Dir('non-empty-dir', [
-            empty_file('regular-in-non-empty-dir'),
+            File.empty('regular-in-non-empty-dir'),
         ]),
         sym_link('broken-sym-link', 'non-existing-target')
     ]
@@ -558,7 +559,7 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
         actual_contents = [
             Dir('P1-matches',
                 [
-                    empty_file('file-in-pruned-dir'),
+                    File.empty('file-in-pruned-dir'),
                 ])
         ]
 

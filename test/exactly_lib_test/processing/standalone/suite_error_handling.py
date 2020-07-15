@@ -15,7 +15,7 @@ from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatJustReturnsConstant
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value
 from exactly_lib_test.test_suite.test_resources.test_suite_definition import configuration_section_parser
@@ -51,7 +51,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
 
         test_case_definition = test_case_definition_with_only_assert_phase_instructions([])
 
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         suite_file = File(suite_file_name,
                           lines_content([SectionName('this_is_not_a_suite_section').syntax]))
@@ -102,7 +102,7 @@ class TestFileInclusionErrorInSuiteFile(unittest.TestCase):
 
         test_case_definition = test_case_definition_with_only_assert_phase_instructions([])
 
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         suite_file = File(suite_file_name,
                           lines_content([
@@ -159,7 +159,7 @@ class TestReferenceToNonExistingTestCaseFileInSuiteShouldBeIgnored(unittest.Test
 
         test_case_definition = test_case_definition_with_only_assert_phase_instructions([])
 
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         suite_file = File(suite_file_name,
                           lines_content([

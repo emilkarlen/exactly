@@ -12,7 +12,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformerDd
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.type_system.data.test_resources import described_path
 
@@ -30,7 +30,7 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
 
         assertion_part = sut.IsExistingRegularFileAssertionPart()
 
-        existing_regular_file = empty_file('regular.txt')
+        existing_regular_file = File.empty('regular.txt')
 
         with tmp_dir(DirContents([existing_regular_file])) as path_of_existing_directory:
             path_of_existing_regular_file = path_of_existing_directory / existing_regular_file.name

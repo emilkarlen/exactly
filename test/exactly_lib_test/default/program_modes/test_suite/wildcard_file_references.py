@@ -8,7 +8,7 @@ from typing import List
 from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.str_.misc_formatting import lines_content
-from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
@@ -92,8 +92,8 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(SetupWithReplacement
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '?.case'])),
-            empty_file('b.case'),
-            empty_file('a.case'),
+            File.empty('b.case'),
+            File.empty('a.case'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -122,8 +122,8 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
         return DirContents([
             File('main.suite', lines_content(['[suites]',
                                               '?.suite'])),
-            empty_file('b.suite'),
-            empty_file('a.suite'),
+            File.empty('b.suite'),
+            File.empty('a.suite'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -153,10 +153,10 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(SetupWithReplaceme
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '_[a-bx].case'])),
-            empty_file('_b.case'),
-            empty_file('_x.case'),
-            empty_file('_a.case'),
-            empty_file('_c.case'),
+            File.empty('_b.case'),
+            File.empty('_x.case'),
+            File.empty('_a.case'),
+            File.empty('_c.case'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -185,10 +185,10 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(SetupWithReplacem
         return DirContents([
             File('main.suite', lines_content(['[suites]',
                                               '_[a-bx].suite'])),
-            empty_file('_b.suite'),
-            empty_file('_x.suite'),
-            empty_file('_a.suite'),
-            empty_file('_c.suite'),
+            File.empty('_b.suite'),
+            File.empty('_x.suite'),
+            File.empty('_a.suite'),
+            File.empty('_c.suite'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -221,10 +221,10 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
         return DirContents([
             File('main.suite', lines_content(['[suites]',
                                               '_[!a-bx].suite'])),
-            empty_file('_b.suite'),
-            empty_file('_x.suite'),
-            empty_file('_a.suite'),
-            empty_file('_c.suite'),
+            File.empty('_b.suite'),
+            File.empty('_x.suite'),
+            File.empty('_a.suite'),
+            File.empty('_c.suite'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -253,10 +253,10 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '_[!a-bx].case'])),
-            empty_file('_b.case'),
-            empty_file('_x.case'),
-            empty_file('_a.case'),
-            empty_file('_c.case'),
+            File.empty('_b.case'),
+            File.empty('_x.case'),
+            File.empty('_a.case'),
+            File.empty('_c.case'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -284,18 +284,18 @@ class ReferencesToCaseFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutpu
             File('main.suite', lines_content(['[cases]',
                                               '*/*.case'])),
             Dir('sub-dir-2', [
-                empty_file('y.case'),
-                empty_file('x.case'),
+                File.empty('y.case'),
+                File.empty('x.case'),
             ]),
             Dir('sub-dir-1', [
-                empty_file('b.case'),
-                empty_file('a.case'),
+                File.empty('b.case'),
+                File.empty('a.case'),
                 Dir('sub-dir-1-1', [
-                    empty_file('1-1.case'),
+                    File.empty('1-1.case'),
                 ])
             ]),
-            empty_file('1.case'),
-            empty_file('2.case'),
+            File.empty('1.case'),
+            File.empty('2.case'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -326,18 +326,18 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutp
             File('main.suite', lines_content(['[suites]',
                                               '*/*.suite'])),
             Dir('sub-dir-2', [
-                empty_file('y.suite'),
-                empty_file('x.suite'),
+                File.empty('y.suite'),
+                File.empty('x.suite'),
             ]),
             Dir('sub-dir-1', [
-                empty_file('b.suite'),
-                empty_file('a.suite'),
+                File.empty('b.suite'),
+                File.empty('a.suite'),
                 Dir('sub-dir-1-1', [
-                    empty_file('1-1.suite'),
+                    File.empty('1-1.suite'),
                 ])
             ]),
-            empty_file('1.suite'),
-            empty_file('2.suite'),
+            File.empty('1.suite'),
+            File.empty('2.suite'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -372,18 +372,18 @@ class ReferencesToCaseFilesInAnySubDir(SetupWithReplacementOfVariableOutputWithP
             File('main.suite', lines_content(['[cases]',
                                               '**/*.case'])),
             Dir('sub-dir-2', [
-                empty_file('y.case'),
-                empty_file('x.case'),
+                File.empty('y.case'),
+                File.empty('x.case'),
             ]),
             Dir('sub-dir-1', [
-                empty_file('b.case'),
-                empty_file('a.case'),
+                File.empty('b.case'),
+                File.empty('a.case'),
                 Dir('sub-dir-1-1', [
-                    empty_file('1-1.case'),
+                    File.empty('1-1.case'),
                 ])
             ]),
-            empty_file('1.case'),
-            empty_file('2.case'),
+            File.empty('1.case'),
+            File.empty('2.case'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -418,18 +418,18 @@ class ReferencesToSuiteFilesInAnySubDir(SetupWithReplacementOfVariableOutputWith
             File('main.suite', lines_content(['[suites]',
                                               '**/_*.suite'])),
             Dir('sub-dir-2', [
-                empty_file('_y.suite'),
-                empty_file('_x.suite'),
+                File.empty('_y.suite'),
+                File.empty('_x.suite'),
             ]),
             Dir('sub-dir-1', [
-                empty_file('_b.suite'),
-                empty_file('_a.suite'),
+                File.empty('_b.suite'),
+                File.empty('_a.suite'),
                 Dir('sub-dir-1-1', [
-                    empty_file('_1-1.suite'),
+                    File.empty('_1-1.suite'),
                 ])
             ]),
-            empty_file('_1.suite'),
-            empty_file('_2.suite'),
+            File.empty('_1.suite'),
+            File.empty('_2.suite'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -469,9 +469,9 @@ class ReferencesToCaseFilesThatAreDirectories(SetupWithReplacementOfVariableOutp
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '?'])),
-            empty_file('1'),
+            File.empty('1'),
             Dir('2', []),
-            empty_file('3'),
+            File.empty('3'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -493,9 +493,9 @@ class ReferencesToSuiteFilesThatAreDirectories(SetupWithReplacementOfVariableOut
         return DirContents([
             File('main.suite', lines_content(['[suites]',
                                               '?'])),
-            empty_file('1'),
+            File.empty('1'),
             Dir('2', []),
-            empty_file('3'),
+            File.empty('3'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
@@ -519,12 +519,12 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(SetupWithReplacementOfVariab
                                               'sub-dir-1/?.case',
                                               'sub-dir-2/*.case'])),
             Dir('sub-dir-1', [
-                empty_file('b.case'),
-                empty_file('a.case'),
+                File.empty('b.case'),
+                File.empty('a.case'),
             ]),
             Dir('sub-dir-2', [
-                empty_file('22.case'),
-                empty_file('11.case'),
+                File.empty('22.case'),
+                File.empty('11.case'),
             ]),
         ])
 

@@ -27,7 +27,7 @@ from exactly_lib_test.section_document.test_resources.element_assertions import 
     matches_instruction_info_without_description, matches_instruction_with_parse_source_info
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_sequence, \
     matches_file_location_info
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -60,7 +60,7 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
                          DirContents([])
                          ),
             NameAndValue('source file is a directory',
-                         DirContents([empty_dir(name_of_invalid_file)])
+                         DirContents([Dir.empty(name_of_invalid_file)])
                          ),
             NameAndValue('symlink to non-existing file',
                          DirContents([sym_link(name_of_invalid_file, 'non-existing-file')])

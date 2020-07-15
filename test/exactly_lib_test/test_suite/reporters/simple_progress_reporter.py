@@ -20,7 +20,7 @@ from exactly_lib.util.str_.misc_formatting import lines_content_with_os_linesep,
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
     FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR
-from exactly_lib_test.test_resources.files.file_structure import File, empty_file, Dir, DirContents
+from exactly_lib_test.test_resources.files.file_structure import File, Dir, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_suite.test_resources.environment import default_environment
@@ -271,7 +271,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
         suite_file = File('test.suite', lines_content([case_file.name]))
         dir_with_suite = Dir('dir-with-suite',
                              [suite_file,

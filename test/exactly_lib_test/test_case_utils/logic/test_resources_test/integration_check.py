@@ -50,7 +50,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import Mat
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tcds_assertion
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -393,7 +393,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
             sut.Expectation())
 
     def test_populate_hds(self):
-        populated_dir_contents = DirContents([empty_file('hds-file.txt')])
+        populated_dir_contents = DirContents([File.empty('hds-file.txt')])
         the_hds_dir = RelHdsOptionType.REL_HDS_CASE
         self._check_line_matcher_type__single_and_multi(
             utils.single_line_arguments(),
@@ -413,7 +413,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         )
 
     def test_populate_non_hds(self):
-        populated_dir_contents = DirContents([empty_file('non-home-file.txt')])
+        populated_dir_contents = DirContents([File.empty('non-home-file.txt')])
         self._check_line_matcher_type__single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,

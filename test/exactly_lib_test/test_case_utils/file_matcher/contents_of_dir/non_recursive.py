@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import valida
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, \
     ParseExpectation, PrimAndExeExpectation
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
@@ -117,7 +117,7 @@ class TestApplication(unittest.TestCase):
 
         files_matcher_name = 'the_files_matcher'
         checked_dir_location = RelSdsOptionType.REL_TMP
-        checked_dir = empty_dir('checked-dir')
+        checked_dir = Dir.empty('checked-dir')
 
         # ACT & ASSERT #
 

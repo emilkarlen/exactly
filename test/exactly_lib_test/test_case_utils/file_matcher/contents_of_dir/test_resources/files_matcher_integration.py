@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, arrangement_w_tcds, \
     PrimAndExeExpectation
-from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, Dir, DirContents
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, DirContents, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -45,9 +45,9 @@ MODEL_CONTENTS__NON_RECURSIVE = NumFilesSetup(
             'match',
             True,
             [
-                empty_file('a-file'),
+                File.empty('a-file'),
                 Dir('a-dir',
-                    [empty_file('a-file-in-a-dir')]
+                    [File.empty('a-file-in-a-dir')]
                     ),
             ]
         ),
@@ -56,7 +56,7 @@ MODEL_CONTENTS__NON_RECURSIVE = NumFilesSetup(
             False,
             [
                 Dir('a-dir',
-                    [empty_file('a-file-in-dir')]
+                    [File.empty('a-file-in-dir')]
                     ),
             ]
         ),
@@ -71,9 +71,9 @@ MODEL_CONTENTS__NON_RECURSIVE__SELECTION_TYPE_FILE = NumFilesSetup(
             'match',
             True,
             [
-                empty_file('file-1'),
+                File.empty('file-1'),
                 Dir('a-dir',
-                    [empty_file('a-file-in-a-dir')]
+                    [File.empty('a-file-in-a-dir')]
                     ),
             ]
         ),
@@ -82,7 +82,7 @@ MODEL_CONTENTS__NON_RECURSIVE__SELECTION_TYPE_FILE = NumFilesSetup(
             False,
             [
                 Dir('a-dir',
-                    [empty_file('a-file-in-dir')]
+                    [File.empty('a-file-in-dir')]
                     ),
             ]
         ),
@@ -97,9 +97,9 @@ MODEL_CONTENTS__RECURSIVE = NumFilesSetup(
             'match',
             True,
             [
-                empty_file('a-file'),
+                File.empty('a-file'),
                 Dir('a-dir',
-                    [empty_file('a-file-in-a-dir')]
+                    [File.empty('a-file-in-a-dir')]
                     ),
             ]
         ),
@@ -107,10 +107,10 @@ MODEL_CONTENTS__RECURSIVE = NumFilesSetup(
             'not match',
             False,
             [
-                empty_file('a-file'),
-                empty_file('another-file'),
+                File.empty('a-file'),
+                File.empty('another-file'),
                 Dir('a-dir',
-                    [empty_file('a-file-in-dir')]
+                    [File.empty('a-file-in-dir')]
                     ),
             ]
         ),
@@ -125,9 +125,9 @@ MODEL_CONTENTS__RECURSIVE__SELECTION_TYPE_FILE = NumFilesSetup(
             'match',
             True,
             [
-                empty_file('a-file'),
+                File.empty('a-file'),
                 Dir('a-dir',
-                    [empty_file('a-file-in-a-dir')]
+                    [File.empty('a-file-in-a-dir')]
                     ),
             ]
         ),
@@ -135,10 +135,10 @@ MODEL_CONTENTS__RECURSIVE__SELECTION_TYPE_FILE = NumFilesSetup(
             'not match',
             False,
             [
-                empty_file('file-1'),
-                empty_file('file-2'),
+                File.empty('file-1'),
+                File.empty('file-2'),
                 Dir('a-dir',
-                    [empty_file('file-in-dir')]
+                    [File.empty('file-in-dir')]
                     ),
             ]
         ),

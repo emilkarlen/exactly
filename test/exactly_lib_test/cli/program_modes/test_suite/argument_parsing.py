@@ -7,8 +7,7 @@ from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecution
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.util.argument_parsing_utils import ArgumentParsingError
 from exactly_lib_test.processing.test_resources.test_case_setup import setup_with_null_act_phase_and_null_preprocessing
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, empty_file, empty_dir, \
-    Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, Dir, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 
 
@@ -32,7 +31,7 @@ class TestSuiteFile(unittest.TestCase):
         )
 
     def test_succeed_WHEN_file_argument_do_exit(self):
-        existing_file = empty_file('existing-file.ext')
+        existing_file = File.empty('existing-file.ext')
         self._expect_successful_parse(
             cwd_contents=DirContents([existing_file]),
             arguments=[existing_file.name],
@@ -41,7 +40,7 @@ class TestSuiteFile(unittest.TestCase):
 
     def test_pass_WHEN_file_argument_do_exit_as_dir_and_dir_contains_default_suite_file(self):
         dir_with_default_suite_file = Dir('a-dir', [
-            empty_file(file_names.DEFAULT_SUITE_FILE)
+            File.empty(file_names.DEFAULT_SUITE_FILE)
         ])
         self._expect_successful_parse(
             cwd_contents=DirContents([dir_with_default_suite_file]),
@@ -50,7 +49,7 @@ class TestSuiteFile(unittest.TestCase):
         )
 
     def test_fail_WHEN_file_argument_do_exit_as_dir_but_do_not_contain_default_suite_file(self):
-        existing_dir = empty_dir('existing-dir')
+        existing_dir = Dir.empty('existing-dir')
         self._expect_raise_argument_parsing_error(
             cwd_contents=DirContents([existing_dir]),
             arguments=[existing_dir.name]

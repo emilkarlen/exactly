@@ -33,7 +33,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, sym_link, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -289,7 +289,7 @@ class TestSingleElement(unittest.TestCase):
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents(
-                                                         [empty_file(plain_file_name)])
+                                                         [File.empty(plain_file_name)])
                                                  )),
                                              expectation=
                                              validation_check.is_success())
@@ -302,7 +302,7 @@ class TestSingleElement(unittest.TestCase):
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
                                                          sym_link(plain_file_name, 'target-file'),
-                                                         empty_file('target-file'),
+                                                         File.empty('target-file'),
                                                      ])
                                                  )),
                                              expectation=
@@ -374,7 +374,7 @@ class TestSingleElement(unittest.TestCase):
                                              validation_check.Arrangement(
                                                  dir_contents=rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
-                                                         empty_file(checked_file_name),
+                                                         File.empty(checked_file_name),
                                                      ])
                                                  )
                                              ),
@@ -403,7 +403,7 @@ class TestSingleElement(unittest.TestCase):
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
-                                                         empty_dir(checked_file_name),
+                                                         Dir.empty(checked_file_name),
                                                      ])
                                                  )),
                                              expectation=
@@ -417,7 +417,7 @@ class TestSingleElement(unittest.TestCase):
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
                                                          sym_link(checked_file_name, 'target-file'),
-                                                         empty_dir('target-file'),
+                                                         Dir.empty('target-file'),
                                                      ])
                                                  )),
                                              expectation=
@@ -504,7 +504,7 @@ class TestSingleElement(unittest.TestCase):
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents(
-                                                         [empty_file(plain_file_name)])
+                                                         [File.empty(plain_file_name)])
                                                  )),
                                              expectation=
                                              validation_check.is_success())
@@ -517,7 +517,7 @@ class TestSingleElement(unittest.TestCase):
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
                                                          sym_link(plain_file_name, 'target-file'),
-                                                         empty_file('target-file'),
+                                                         File.empty('target-file'),
                                                      ])
                                                  )),
                                              expectation=
@@ -530,7 +530,7 @@ class TestSingleElement(unittest.TestCase):
                                                  dir_contents=
                                                  rel_opt_conf.populator_for_relativity_option_root(
                                                      DirContents([
-                                                         empty_dir(plain_file_name),
+                                                         Dir.empty(plain_file_name),
                                                      ])
                                                  )),
                                              expectation=

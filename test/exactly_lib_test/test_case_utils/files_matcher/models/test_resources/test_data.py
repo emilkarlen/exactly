@@ -3,41 +3,41 @@ from typing import List, Sequence
 
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, empty_file, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, EA
 
 FILE_SYS__EMPTY = ()
 
 FILE_SYS__WITH_4_LEVELS = (
-    empty_file('a1'),
-    empty_dir('b1 - no sub levels'),
+    File.empty('a1'),
+    Dir.empty('b1 - no sub levels'),
     Dir('c1 - with sub dirs and files until depth 1', [
-        empty_file('ca2'),
-        empty_dir('cb2'),
+        File.empty('ca2'),
+        Dir.empty('cb2'),
     ]),
     Dir('d1 - with sub dirs until depth 4', [
-        empty_file('da2'),
-        empty_dir('db2'),
+        File.empty('da2'),
+        Dir.empty('db2'),
         Dir('dc2', [
-            empty_file('dca3'),
-            empty_dir('dcb3'),
+            File.empty('dca3'),
+            Dir.empty('dcb3'),
             Dir('dcc3', [
-                empty_dir('dcca4'),
-                empty_file('dccb4'),
+                Dir.empty('dcca4'),
+                File.empty('dccb4'),
             ])
         ])
     ]),
     Dir('e1 - dir with only dirs until depth 4',
         [Dir('ea2',
              [Dir('eaa3',
-                  [empty_dir('eaaa4')])])]
+                  [Dir.empty('eaaa4')])])]
         ),
     Dir('f1 - dir with only dirs until depth 3',
         [Dir('fa2',
-             [empty_dir('faa3')])]
+             [Dir.empty('faa3')])]
         ),
     Dir('g1 - dir with only dirs until depth 2',
-        [empty_dir('ga2')]
+        [Dir.empty('ga2')]
         ),
 )
 
@@ -61,20 +61,20 @@ def cases() -> Sequence[NameAndValue[List[FileSystemElement]]]:
         ),
         NameAndValue(
             'single regular file',
-            [empty_file('an-empty-file')],
+            [File.empty('an-empty-file')],
         ),
         NameAndValue(
             'single empty dir',
-            [empty_dir('an-empty-dir')],
+            [Dir.empty('an-empty-dir')],
         ),
         NameAndValue(
             'directory with contents - one level',
             [
-                empty_file('an-empty-file'),
+                File.empty('an-empty-file'),
                 Dir('non-empty-dir',
                     [
-                        empty_file('file-in-dir'),
-                        empty_dir('dir-in-dir'),
+                        File.empty('file-in-dir'),
+                        Dir.empty('dir-in-dir'),
                     ]),
             ]
         ),
@@ -82,15 +82,15 @@ def cases() -> Sequence[NameAndValue[List[FileSystemElement]]]:
             'directory with contents - multiple levels',
             [
                 Dir('non-empty-dir-1',
-                    [empty_file('file-in-dir-1')]
+                    [File.empty('file-in-dir-1')]
                     ),
                 Dir('non-empty-dir-2',
                     [
-                        empty_file('file-in-dir-2'),
+                        File.empty('file-in-dir-2'),
                         Dir('non-empty-dir-2-1',
                             [
-                                empty_file('file-in-dir-2-1'),
-                                empty_dir('dir-in-dir-2-1'),
+                                File.empty('file-in-dir-2-1'),
+                                Dir.empty('dir-in-dir-2-1'),
                             ])
                     ]
                     ),

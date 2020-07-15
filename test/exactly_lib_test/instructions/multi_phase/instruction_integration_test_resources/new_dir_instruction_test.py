@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsActionFromSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -81,7 +81,7 @@ class TestCreationOfDirectory(TestCaseBase):
                         self.relativity_option.root_dir__sds,
                         DirContents([
                             Dir('first-component', [
-                                empty_dir('second-component')
+                                Dir.empty('second-component')
                             ])
                         ])),
                     symbol_usages=self.relativity_option.symbols.usages_expectation(),
@@ -100,7 +100,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                 self._arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
                     sds_contents_before_main=self.relativity_option.populator_for_relativity_option_root__sds(
                         DirContents([
-                            empty_file('file')
+                            File.empty('file')
                         ]))),
                 self.conf.expect_failure_to_create_dir(
                     symbol_usages=self.relativity_option.symbols.usages_expectation(),

@@ -35,6 +35,10 @@ class File(FileSystemElement):
         self.file_name = file_name
         self.contents = contents
 
+    @staticmethod
+    def empty(file_name: str) -> 'File':
+        return File(file_name, '')
+
     @property
     def name(self) -> str:
         return self.file_name
@@ -83,10 +87,6 @@ def python_executable_file(executable_file_name_for_invokation_at_command_line: 
     return _ExecutableFileWithPythonSourceCode(executable_file_name_for_invokation_at_command_line, python_source_code)
 
 
-def empty_file(file_name: str) -> File:
-    return File(file_name, '')
-
-
 def file_with_lines(name: str, contents: Sequence[str]) -> File:
     return File(name, lines_content(contents))
 
@@ -97,6 +97,10 @@ class Dir(FileSystemElement):
                  file_system_element_contents: List[FileSystemElement]):
         self.file_name = file_name
         self.file_system_element_contents = file_system_element_contents
+
+    @staticmethod
+    def empty(file_name: str) -> 'Dir':
+        return Dir(file_name, [])
 
     @property
     def name(self) -> str:
@@ -112,10 +116,6 @@ class Dir(FileSystemElement):
         dir_path.mkdir(parents=True)
         for file_element in self.file_system_element_contents:
             file_element.write_to(dir_path)
-
-
-def empty_dir(file_name: str) -> Dir:
-    return Dir(file_name, [])
 
 
 class Link(FileSystemElement):

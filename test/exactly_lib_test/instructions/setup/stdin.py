@@ -34,7 +34,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_populators imp
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 
@@ -138,7 +138,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ['following line']),
                     Arrangement(
                         tcds_contents=rel_opt.populator_for_relativity_option_root(DirContents([
-                            empty_file('file.txt')])),
+                            File.empty('file.txt')])),
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
@@ -166,7 +166,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ['following line']),
                     Arrangement(
                         hds_contents=hds_case_dir_contents(
-                            DirContents([empty_file('file.txt')])),
+                            DirContents([File.empty('file.txt')])),
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
@@ -279,7 +279,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             rel_home=path_syntax.REL_HDS_CASE_OPTION,
         )),
             Arrangement(
-                hds_contents=hds_case_dir_contents(DirContents([empty_dir('directory')]))
+                hds_contents=hds_case_dir_contents(DirContents([Dir.empty('directory')]))
             ),
             Expectation(pre_validation_result=svh_assertions.is_validation_error(),
                         source=source_is_at_end)

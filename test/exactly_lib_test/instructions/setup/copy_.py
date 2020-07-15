@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     ChangeDirectoryToDirectory
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -184,7 +184,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
             DestinationSetup(
                 case_name='two components - first exists as dir',
                 path_argument_str='sub/leaf',
-                dst_relativity_root_contents_arrangement=DirContents([empty_dir('sub')]),
+                dst_relativity_root_contents_arrangement=DirContents([Dir.empty('sub')]),
                 expected_relativity_root_contents=DirContents([
                     Dir('sub', [
                         File('leaf', source_file.contents)
@@ -194,7 +194,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
             DestinationSetup(
                 case_name='two components - both exist as dirs',
                 path_argument_str='sub/leaf',
-                dst_relativity_root_contents_arrangement=DirContents([Dir('sub', [empty_dir('leaf')])]),
+                dst_relativity_root_contents_arrangement=DirContents([Dir('sub', [Dir.empty('leaf')])]),
                 expected_relativity_root_contents=DirContents([
                     Dir('sub', [
                         Dir('leaf', [source_file])
@@ -266,7 +266,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
         dst = 'dst-dir'
         file_to_install = File(src, 'contents')
         home_dir_contents = [file_to_install]
-        act_dir_contents = [empty_dir(dst)]
+        act_dir_contents = [Dir.empty(dst)]
         act_dir_contents_after = [Dir(dst, [file_to_install])]
         self._run('{} {}'.format(src, dst),
                   Arrangement(
@@ -289,7 +289,7 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
                                  Dir('d2',
                                      [File('f', 'f')])
                                  ])]
-        cwd_dir_contents_before = DirContents([empty_dir(dst_dir)])
+        cwd_dir_contents_before = DirContents([Dir.empty(dst_dir)])
         cwd_dir_contents_after = DirContents([Dir(dst_dir, files_to_install)])
         self._run('{} {}'.format(src_dir, dst_dir),
                   Arrangement(
@@ -315,7 +315,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
                       hds_contents=hds_case_dir_contents(file_to_install),
                       sds_contents_before_main=sds_populator.contents_in_resolved_dir(CWD_RESOLVER,
                                                                                       DirContents(
-                                                                                          [empty_file(file_name)])),
+                                                                                          [File.empty(file_name)])),
                   ),
                   Expectation(
                       main_result=sh_assertions.is_hard_error())
@@ -324,8 +324,8 @@ class TestFailingScenarios(TestCaseBaseForParser):
     def test_destination_already_exists__with_explicit_destination(self):
         src = 'src-file-name.txt'
         dst = 'dst-file-name.txt'
-        home_dir_contents = DirContents([(empty_file(src))])
-        cwd_dir_contents = DirContents([empty_file(dst)])
+        home_dir_contents = DirContents([(File.empty(src))])
+        cwd_dir_contents = DirContents([File.empty(dst)])
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
@@ -341,9 +341,9 @@ class TestFailingScenarios(TestCaseBaseForParser):
     def test_destination_already_exists_in_destination_directory(self):
         src = 'src-file-name'
         dst = 'dst-dir-name'
-        home_dir_contents = DirContents([(empty_file(src))])
+        home_dir_contents = DirContents([(File.empty(src))])
         cwd_dir_contents = DirContents([Dir(dst,
-                                            [empty_file(src)])])
+                                            [File.empty(src)])])
         self._run('{} {}'.format(src, dst),
                   Arrangement(
                       pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,

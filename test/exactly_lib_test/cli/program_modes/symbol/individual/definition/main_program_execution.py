@@ -15,7 +15,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
-from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
@@ -31,7 +31,7 @@ def suite() -> unittest.TestSuite:
 
 class TestInvalidSymbolNameArguments(unittest.TestCase):
     def test_superfluous_symbol_name(self):
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         check_case_and_suite(
             self,
@@ -52,7 +52,7 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
         )
 
     def test_invalid_symbol_name(self):
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         check_case_and_suite(
             self,
@@ -72,7 +72,7 @@ class TestInvalidSymbolNameArguments(unittest.TestCase):
         )
 
     def test_invalid_option(self):
-        case_file = empty_file('test.case')
+        case_file = File.empty('test.case')
 
         check_case_and_suite(
             self,

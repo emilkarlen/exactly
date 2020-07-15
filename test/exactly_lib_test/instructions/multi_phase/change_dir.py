@@ -25,7 +25,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import tcds_popula
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
@@ -155,7 +155,7 @@ class TestParse(unittest.TestCase):
                             ArrangementWithSds(
                                 tcds_contents=tcds_populators.TcdsPopulatorForRelOptionType(
                                     relativity,
-                                    DirContents([empty_dir(case.expected_value)])
+                                    DirContents([Dir.empty(case.expected_value)])
                                 )
                             ),
                             embryo_check.Expectation(
@@ -277,7 +277,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                              sds_test.Arrangement(sds_contents_before=contents_in(
                                  RelSdsOptionType.REL_ACT,
                                  DirContents([
-                                     empty_dir('existing-dir')
+                                     Dir.empty('existing-dir')
                                  ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir / 'existing-dir')
@@ -289,7 +289,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                  sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
                                                                  DirContents([
                                                                      Dir('sub1', [
-                                                                         empty_dir('sub2')
+                                                                         Dir.empty('sub2')
                                                                      ])
                                                                  ])),
                                  pre_action_action=ChangeDirTo(lambda sds: sds.user_tmp_dir)),
@@ -303,7 +303,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.act_dir / 'sub-dir'),
                                                   sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
                                                                                   DirContents([
-                                                                                      empty_dir('sub-dir')
+                                                                                      Dir.empty('sub-dir')
                                                                                   ]))
                                                   ),
                              sds_test.Expectation(expected_action_result=is_success(),
@@ -329,7 +329,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                              sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
                                                                                   DirContents([
                                                                                       Dir('sub1', [
-                                                                                          empty_dir('sub2')
+                                                                                          Dir.empty('sub2')
                                                                                       ])
                                                                                   ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
@@ -352,7 +352,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check_argument('existing-file',
                              sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_ACT,
                                                                                   DirContents([
-                                                                                      empty_file('existing-file')
+                                                                                      File.empty('existing-file')
                                                                                   ]))),
                              sds_test.Expectation(expected_action_result=is_failure()))
 

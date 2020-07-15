@@ -10,7 +10,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
     model_with_source_path_as_sub_dir_of_rel_root
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, Dir, File
 
 
 def suite() -> unittest.TestSuite:
@@ -43,7 +43,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
 class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
-        empty_directory = empty_dir('name-of-empty-dir')
+        empty_directory = Dir.empty('name-of-empty-dir')
 
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
         contents_of_relativity_option_root = DirContents([empty_directory])
@@ -58,7 +58,7 @@ class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
         )
 
     def test_file_is_a_directory_that_is_not_empty(self):
-        non_empty_directory = Dir('name-of-non-empty-dir', [empty_file('file-in-dir')])
+        non_empty_directory = Dir('name-of-non-empty-dir', [File.empty('file-in-dir')])
 
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
         contents_of_relativity_option_root = DirContents([non_empty_directory])
@@ -75,7 +75,7 @@ class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_with_files_but_none_that_matches_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
-        existing_file = empty_file('b')
+        existing_file = File.empty('b')
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_option_pattern=pattern)
 
         contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
@@ -95,7 +95,7 @@ class TestPassingAndFailingScenarios(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_is_empty(self):
         name_of_empty_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
-        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory)])
+        contents_of_relativity_option_root = DirContents([Dir.empty(name_of_empty_directory)])
 
         self.checker.check_rel_opt_variants_and_expectation_type_variants(
             instruction_argument_constructor,
@@ -107,7 +107,7 @@ class TestPassingAndFailingScenarios(test_case_bases.TestCaseBaseForParser):
         name_of_directory = 'name-of-empty_directory'
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
         contents_of_relativity_option_root = DirContents([Dir(name_of_directory, [
-            empty_file('existing-file-in-checked-dir')
+            File.empty('existing-file-in-checked-dir')
         ])])
 
         self.checker.check_rel_opt_variants_and_expectation_type_variants(
@@ -121,7 +121,7 @@ class TestPassingAndFailingScenarios(test_case_bases.TestCaseBaseForParser):
         name_of_symbolic_link = 'link-to-empty_directory'
 
         instruction_argument_constructor = argument_constructor_for_emptiness_check()
-        contents_of_relativity_option_root = DirContents([empty_dir(name_of_empty_directory),
+        contents_of_relativity_option_root = DirContents([Dir.empty(name_of_empty_directory),
                                                           sym_link(name_of_symbolic_link,
                                                                    name_of_empty_directory)])
 
@@ -136,7 +136,7 @@ class TestWithFileSelection(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_contain_files_but_non_matching_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
-        existing_file = empty_file('b')
+        existing_file = File.empty('b')
         instruction_argument_constructor = argument_constructor_for_emptiness_check(name_option_pattern=pattern)
         contents_of_relativity_option_root = DirContents([Dir(name_of_directory,
                                                               [existing_file])])
@@ -150,7 +150,7 @@ class TestWithFileSelection(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_contain_files_but_non_matching_given_type_pattern(self):
         type_matcher = FileType.DIRECTORY
 
-        existing_file = empty_file('a-regular-file')
+        existing_file = File.empty('a-regular-file')
 
         name_of_directory = 'name-of-directory'
 
@@ -167,8 +167,8 @@ class TestWithFileSelection(test_case_bases.TestCaseBaseForParser):
     def test_file_is_directory_that_contain_files_with_names_that_matches_given_name_pattern(self):
         name_of_directory = 'name-of-directory'
         pattern = 'a*'
-        existing_file_1 = empty_file('a1')
-        existing_file_2 = empty_file('a2')
+        existing_file_1 = File.empty('a1')
+        existing_file_2 = File.empty('a2')
 
         instruction_argument_constructor = argument_constructor_for_emptiness_check(
             name_option_pattern=pattern)

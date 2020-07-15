@@ -34,7 +34,7 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -150,18 +150,18 @@ class TestSuccessfulScenarios(unittest.TestCase):
             NEA('should match',
                 expected=matcher_assertions.is_matching_success(),
                 actual=DirContents([
-                    empty_file('a.x'),
-                    empty_file('a.y'),
-                    empty_file('b.x'),
-                    empty_file('b.y'),
+                    File.empty('a.x'),
+                    File.empty('a.y'),
+                    File.empty('b.x'),
+                    File.empty('b.y'),
                 ])
                 ),
             NEA('should not match',
                 expected=matcher_assertions.is_arbitrary_matching_failure(),
                 actual=DirContents([
-                    empty_file('a.x'),
-                    empty_file('b.y'),
-                    empty_file('b.x'),
+                    File.empty('a.x'),
+                    File.empty('b.y'),
+                    File.empty('b.x'),
                 ])
                 ),
         ]

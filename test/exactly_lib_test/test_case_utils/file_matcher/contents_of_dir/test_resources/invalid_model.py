@@ -1,7 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, empty_file, sym_link
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, sym_link, \
+    File
 
 
 def cases(model_file_name: str) -> Sequence[NameAndValue[DirContents]]:
@@ -13,7 +14,7 @@ def cases(model_file_name: str) -> Sequence[NameAndValue[DirContents]]:
         NameAndValue(
             'file is regular file',
             DirContents([
-                empty_file(model_file_name)
+                File.empty(model_file_name)
             ]),
         ),
         NameAndValue(
@@ -26,7 +27,7 @@ def cases(model_file_name: str) -> Sequence[NameAndValue[DirContents]]:
             'file is sym link to regular file',
             DirContents([
                 sym_link(model_file_name, 'regular file'),
-                empty_file('regular file')
+                File.empty('regular file')
             ]),
         ),
     ]

@@ -24,6 +24,7 @@ from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import File
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -123,7 +124,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         ]
         arrangement = Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT,
-                                     fs.DirContents([fs.empty_file(executable_file_name)]))
+                                     fs.DirContents([File.empty(executable_file_name)]))
         )
         expectation = Expectation(
             result_of_validate_pre_sds=svh_assertions.is_validation_error()

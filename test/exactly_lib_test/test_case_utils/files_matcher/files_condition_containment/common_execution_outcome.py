@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
     Expectation, ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
-from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import Dir, File
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -53,7 +53,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
             Arrangement(
                 symbols=unconditionally_hard_error_file_matcher.symbol_table,
                 tcds=checked_dir.tcds_arrangement_dir_with_contents([
-                    empty_file(file_in_model)
+                    File.empty(file_in_model)
                 ])
             ),
             Expectation(
@@ -140,7 +140,7 @@ class TestFailWhenFewerFilesInModel(unittest.TestCase):
                 Arrangement(
                     symbols=symbol_table_with_unconditionally_matching_file_matcher,
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(fc_file_1)
+                        File.empty(fc_file_1)
                     ])
                 ),
             ),
@@ -150,7 +150,7 @@ class TestFailWhenFewerFilesInModel(unittest.TestCase):
                 Arrangement(
                     symbols=symbol_table_with_unconditionally_matching_file_matcher,
                     tcds=checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(file_name_not_in_fc)
+                        File.empty(file_name_not_in_fc)
                     ])
                 ),
             ),
@@ -184,7 +184,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(name_of_file_in_model)
+                        File.empty(name_of_file_in_model)
                     ])
                 ),
                 Expectation(
@@ -205,7 +205,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_dir(name_of_file_in_model)
+                        Dir.empty(name_of_file_in_model)
                     ])
                 ),
                 Expectation(
@@ -228,7 +228,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(name_of_file_in_model)
+                        File.empty(name_of_file_in_model)
                     ])
                 ),
                 Expectation(
@@ -263,8 +263,8 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         arrangement = Arrangement(
             IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
             checked_dir.tcds_arrangement_dir_with_contents([
-                empty_file(name_of_file_in_model__regular),
-                empty_dir(name_of_file_in_model__dir),
+                File.empty(name_of_file_in_model__regular),
+                Dir.empty(name_of_file_in_model__dir),
             ])
         )
         cases = [
@@ -353,7 +353,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
 
     def test_recursive_model(self):
         # ARRANGE #
-        file_in_sub_dir = empty_file('file-in-sub-dir')
+        file_in_sub_dir = File.empty('file-in-sub-dir')
         dir_in_checked_dir = Dir(
             'top-level-dir',
             [file_in_sub_dir],
@@ -416,7 +416,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(name_of_single_file)
+                        File.empty(name_of_single_file)
                     ])
                 ),
                 Expectation(
@@ -437,7 +437,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_file(name_of_single_file)
+                        File.empty(name_of_single_file)
                     ])
                 ),
                 Expectation(
@@ -460,7 +460,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 Arrangement(
                     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
                     checked_dir.tcds_arrangement_dir_with_contents([
-                        empty_dir(name_of_single_file)
+                        Dir.empty(name_of_single_file)
                     ])
                 ),
                 Expectation(
@@ -494,8 +494,8 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
         arrangement = Arrangement(
             IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS,
             checked_dir.tcds_arrangement_dir_with_contents([
-                empty_file(name_of_regular_file),
-                empty_dir(name_of_dir),
+                File.empty(name_of_regular_file),
+                Dir.empty(name_of_dir),
             ])
         )
         cases = [
@@ -585,7 +585,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
 
     def test_recursive_model(self):
         # ARRANGE #
-        file_in_sub_dir = empty_file('file-in-sub-dir')
+        file_in_sub_dir = File.empty('file-in-sub-dir')
         dir_in_checked_dir = Dir(
             'top-level-dir',
             [file_in_sub_dir],

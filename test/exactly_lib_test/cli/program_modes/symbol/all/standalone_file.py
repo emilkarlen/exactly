@@ -14,7 +14,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesParseException
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -155,7 +155,7 @@ class TestFailingScenarios(unittest.TestCase):
 
 class TestSuccessfulScenarios(unittest.TestCase):
     def test_empty_file(self):
-        emtpy_test_case_file = empty_file('empty.xly')
+        emtpy_test_case_file = File.empty('empty.xly')
 
         check_case_and_suite(
             self,

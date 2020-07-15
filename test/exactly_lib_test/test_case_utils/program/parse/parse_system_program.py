@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
@@ -226,7 +226,7 @@ class FileDoExistCase(FileExistenceCase):
         return validation_check.is_success()
 
     def files_for_name(self, file_name: str) -> List[FileSystemElement]:
-        return [empty_file(file_name)]
+        return [File.empty(file_name)]
 
 
 class FileDoNotExistCase(FileExistenceCase):

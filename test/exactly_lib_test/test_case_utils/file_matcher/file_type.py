@@ -8,7 +8,7 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources import integra
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, Expectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -44,20 +44,20 @@ class TestFileType(unittest.TestCase):
         cases = [
             NEA('match',
                 True,
-                DirContents([empty_file(file_to_check)]),
+                DirContents([File.empty(file_to_check)]),
                 ),
             NEA('match: symlink to regular',
                 True,
-                DirContents([empty_file('the file.txt'),
+                DirContents([File.empty('the file.txt'),
                              sym_link(file_to_check, 'the file.txt')]),
                 ),
             NEA('not match: actual is directory',
                 False,
-                DirContents([empty_dir(file_to_check)]),
+                DirContents([Dir.empty(file_to_check)]),
                 ),
             NEA('not match: actual is broken symlink',
                 False,
-                DirContents([empty_file('the file.txt'),
+                DirContents([File.empty('the file.txt'),
                              sym_link(file_to_check, 'name-of-non-existing-file')]),
                 ),
         ]
@@ -73,20 +73,20 @@ class TestFileType(unittest.TestCase):
         cases = [
             NEA('match',
                 True,
-                DirContents([empty_dir(dir_to_check)]),
+                DirContents([Dir.empty(dir_to_check)]),
                 ),
             NEA('match: symlink to directory',
                 True,
-                DirContents([empty_dir('the dir'),
+                DirContents([Dir.empty('the dir'),
                              sym_link(dir_to_check, 'the dir')]),
                 ),
             NEA('not match: actual is regular',
                 False,
-                DirContents([empty_file(dir_to_check)]),
+                DirContents([File.empty(dir_to_check)]),
                 ),
             NEA('not match: actual is broken symlink',
                 False,
-                DirContents([empty_file('the file.txt'),
+                DirContents([File.empty('the file.txt'),
                              sym_link(dir_to_check, 'name-of-non-existing-file')]),
                 ),
         ]
@@ -103,12 +103,12 @@ class TestFileType(unittest.TestCase):
         cases = [
             NEA('match: symlink to regular',
                 True,
-                DirContents([empty_file(link_target),
+                DirContents([File.empty(link_target),
                              sym_link(file_to_check, link_target)]),
                 ),
             NEA('match: symlink to directory',
                 True,
-                DirContents([empty_dir(link_target),
+                DirContents([Dir.empty(link_target),
                              sym_link(file_to_check, link_target)]),
                 ),
             NEA('match: broken symlink',
@@ -117,7 +117,7 @@ class TestFileType(unittest.TestCase):
                 ),
             NEA('not match: actual is regular',
                 False,
-                DirContents([empty_file(file_to_check)]),
+                DirContents([File.empty(file_to_check)]),
                 ),
         ]
         for case in cases:

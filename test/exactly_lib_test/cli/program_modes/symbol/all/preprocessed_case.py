@@ -13,7 +13,7 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_ins
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.processing.test_resources import preprocessor_utils
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -27,7 +27,7 @@ def suite() -> unittest.TestSuite:
 
 class TestInvalidPreprocessor(unittest.TestCase):
     def test_preprocessor_that_fails(self):
-        valid_file_without_symbol_definitions = empty_file('valid.case')
+        valid_file_without_symbol_definitions = File.empty('valid.case')
 
         py_pgm_that_fails_unconditionally = File(
             'preprocessor.py',

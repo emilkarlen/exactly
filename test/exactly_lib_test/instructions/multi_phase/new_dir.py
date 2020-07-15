@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments 
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelNonHds
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
@@ -92,7 +92,7 @@ class TestParse(unittest.TestCase):
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             sut.RELATIVITY_VARIANTS.options.default_option,
-                            DirContents([empty_dir(case.expected_value)])
+                            DirContents([Dir.empty(case.expected_value)])
                         )
                     )
                 )
@@ -111,7 +111,7 @@ class TestParse(unittest.TestCase):
                         main_result=asrt.is_none,
                         side_effects_on_tcds=asrt_tcds_contents.dir_contains_exactly(
                             path_argument.relativity_option,
-                            DirContents([empty_dir(case.expected_value)])
+                            DirContents([Dir.empty(case.expected_value)])
                         )
                     )
                 )
@@ -216,7 +216,7 @@ class test_creation_of_directory_with_single_path_component(TestWithRelativityOp
                         expected_sds_contents_after=SubDirOfSdsContainsExactly(
                             self.relativity_option.root_dir__sds,
                             DirContents([
-                                empty_dir('dir-that-should-be-constructed')
+                                Dir.empty('dir-that-should-be-constructed')
                             ]))
                         ))
 
@@ -232,7 +232,7 @@ class test_creation_of_directory_with_multiple_path_components(TestWithRelativit
                             self.relativity_option.root_dir__sds,
                             DirContents([
                                 Dir('first-component', [
-                                    empty_dir('second-component')
+                                    Dir.empty('second-component')
                                 ])
                             ]))
                         ))
@@ -245,7 +245,7 @@ class test_whole_argument_exists_as_directory__single_path_component(TestWithRel
             arrangement_with_cwd_as_none_of_the_relativity_roots(
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
-                        empty_dir('existing-directory')
+                        Dir.empty('existing-directory')
                     ])),
                 symbols=self.relativity_option.symbols.in_arrangement(),
             ),
@@ -254,7 +254,7 @@ class test_whole_argument_exists_as_directory__single_path_component(TestWithRel
                 expected_sds_contents_after=SubDirOfSdsContainsExactly(
                     self.relativity_option.root_dir__sds,
                     DirContents([
-                        empty_dir('existing-directory')
+                        Dir.empty('existing-directory')
                     ]))
             ))
 
@@ -267,7 +267,7 @@ class test_whole_argument_exists_as_directory__multiple_path_components(TestWith
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         Dir('first-component', [
-                            empty_dir('second-component')
+                            Dir.empty('second-component')
                         ])])),
                 symbols=self.relativity_option.symbols.in_arrangement(),
             ),
@@ -277,7 +277,7 @@ class test_whole_argument_exists_as_directory__multiple_path_components(TestWith
                     self.relativity_option.root_dir__sds,
                     DirContents([
                         Dir('first-component', [
-                            empty_dir('second-component')
+                            Dir.empty('second-component')
                         ])
                     ]))
             ))
@@ -291,7 +291,7 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
                 sds_contents_before=self.relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([
                         Dir('first-component-that-exists', [
-                            empty_dir('second-component')])
+                            Dir.empty('second-component')])
                     ])),
                 symbols=self.relativity_option.symbols.in_arrangement(),
             ),
@@ -301,7 +301,7 @@ class test_initial_component_of_argument_exists_as_directory__multiple_path_comp
                     self.relativity_option.root_dir__sds,
                     DirContents([
                         Dir('first-component-that-exists', [
-                            empty_dir('second-component')
+                            Dir.empty('second-component')
                         ])
                     ]))
             ))
@@ -312,7 +312,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
         self._check_argument('file',
                              arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
-                                     empty_file('file')
+                                     File.empty('file')
                                  ]))),
                              Expectation(
                                  expected_action_result=is_failure(),
@@ -323,7 +323,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
                              arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
                                      Dir('existing-dir', [
-                                         empty_file('existing-file')
+                                         File.empty('existing-file')
                                      ])
                                  ]))),
                              Expectation(
@@ -335,7 +335,7 @@ class TestFailingScenarios(TestCaseForCheckOfArgumentBase):
                              arrangement_with_cwd_as_none_of_the_relativity_roots(
                                  sds_contents_before=cwd_contents(DirContents([
                                      Dir('existing-dir', [
-                                         empty_file('existing-file')
+                                         File.empty('existing-file')
                                      ])
                                  ]))),
                              Expectation(

@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOf
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, empty_dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -49,7 +49,7 @@ class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
                     RelSdsOptionType.REL_ACT,
                     DirContents([
                         Dir('first-component', [
-                            empty_dir('second-component')
+                            Dir.empty('second-component')
                         ])]))),
             self.conf.expect_successful_execution_with_side_effect(
                 AssertCwdIsSubDirOf(RelOptionType.REL_ACT,
@@ -64,7 +64,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
             self.conf.arrangement(sds_contents_before_main=sds_populator.contents_in(
                 RelSdsOptionType.REL_ACT,
                 DirContents([
-                    empty_file('file')
+                    File.empty('file')
                 ]))),
             self.conf.expect_target_is_not_a_directory())
 
@@ -80,7 +80,7 @@ class TestExistingDirectorySpecifiedRelativeSymbol(TestCaseBase):
             '{relativity_option} existing-dir'.format(relativity_option=relativity_option.option_argument),
             self.conf.arrangement(
                 sds_contents_before_main=relativity_option.populator_for_relativity_option_root__sds(
-                    DirContents([empty_dir('existing-dir')])),
+                    DirContents([Dir.empty('existing-dir')])),
                 symbols=relativity_option.symbols.in_arrangement(),
             ),
             self.conf.expect_successful_execution_with_side_effect(

@@ -23,8 +23,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_bu
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
-from exactly_lib_test.test_resources.files.file_structure import empty_file, File, DirContents, empty_dir, \
-    FileSystemElement
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     every_line_empty
@@ -116,7 +115,7 @@ class TestHardErrorWhenActualFileDoesNotExist(tc.TestWithNegationArgumentBase):
 
 class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        checked_file = empty_dir('a-dir')
+        checked_file = Dir.empty('a-dir')
 
         self._check(
             source=
@@ -140,7 +139,7 @@ class TestHardErrorWhenActualFileIsADirectory(tc.TestWithNegationArgumentBase):
 
 class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        checked_file = empty_file('actual.txt')
+        checked_file = File.empty('actual.txt')
 
         self._check_with_source_variants(
             arguments=
@@ -272,7 +271,7 @@ class TestComplexMatcherWithParenthesis(tc.TestWithNegationArgumentBase):
 
 class TestEvaluationIsLazyFromLeftToRight(tc.TestCaseBase):
     def runTest(self):
-        checked_file = empty_dir('a-dir')
+        checked_file = Dir.empty('a-dir')
 
         self._check(
             source=

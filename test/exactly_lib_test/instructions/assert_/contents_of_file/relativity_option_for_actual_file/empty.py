@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import 
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:
@@ -60,7 +60,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
                         tcds_contents=self.rel_opt.populator_for_relativity_option_root(
-                            DirContents([empty_dir('actual-dir')])),
+                            DirContents([Dir.empty('actual-dir')])),
                         post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                         symbols=self.rel_opt.symbols.in_arrangement(),
                     ),

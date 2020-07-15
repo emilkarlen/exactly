@@ -37,7 +37,7 @@ from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity im
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration
 from exactly_lib_test.test_resources.files import file_structure as fs
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link
+from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -60,7 +60,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         NameAndValue('no file',
                      DirContents([])),
         NameAndValue('file is a directory',
-                     DirContents([empty_dir(src_file_name)])),
+                     DirContents([Dir.empty(src_file_name)])),
         NameAndValue('file is a broken symlink',
                      DirContents([sym_link(src_file_name, 'non-existing-target-file')])),
 
@@ -478,7 +478,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingSce
         )
 
         src_file_in_hds_contents = src_file.relativity.populator_for_relativity_option_root(
-            DirContents([fs.empty_file(src_file.file_name)])
+            DirContents([File.empty(src_file.file_name)])
         )
 
         file_contents_cases = [

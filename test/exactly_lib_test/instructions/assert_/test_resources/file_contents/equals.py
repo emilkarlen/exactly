@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_bu
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -115,7 +115,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
                      relativity_option=self.rel_opt.option_argument)),
             ArrangementPostAct(
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([empty_dir('dir')])),
+                    DirContents([Dir.empty('dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),

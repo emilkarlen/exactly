@@ -32,7 +32,7 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -230,7 +230,7 @@ class TestMultiLineSyntax(unittest.TestCase):
 
         files_matcher_name = 'the_files_matcher'
         checked_dir_location = RelOptionType.REL_ACT
-        checked_dir = empty_dir('checked-dir')
+        checked_dir = Dir.empty('checked-dir')
 
         matcher_argument = SymbolReferenceArgument(files_matcher_name).as_str
 

@@ -5,7 +5,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
-from exactly_lib_test.test_resources.files.file_structure import empty_dir, DirContents
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 
@@ -42,7 +42,7 @@ class TestInvalidFileArguments(unittest.TestCase):
                 ),
                 actual=
                 DirContents([
-                    empty_dir(case_file_arg)
+                    Dir.empty(case_file_arg)
                 ])
                 ),
         ]

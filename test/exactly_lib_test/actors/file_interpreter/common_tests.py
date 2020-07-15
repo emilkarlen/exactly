@@ -15,6 +15,7 @@ from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import Dir
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.py_program import \
@@ -74,7 +75,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
         command_line = source_file
         arrangement = Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.empty_dir(source_file)]))
+                Dir.empty(source_file)]))
         )
         expectation = Expectation(
             result_of_validate_pre_sds=svh_assertions.is_validation_error()

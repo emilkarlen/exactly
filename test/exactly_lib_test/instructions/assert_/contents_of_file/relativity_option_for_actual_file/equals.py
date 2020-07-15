@@ -27,7 +27,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_populators imp
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -54,7 +54,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=hds_case_dir_contents(
-                    DirContents([empty_file('expected.txt')])),
+                    DirContents([File.empty('expected.txt')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),
@@ -73,7 +73,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 hds_contents=hds_case_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([empty_dir('actual-dir')])),
+                    DirContents([Dir.empty('actual-dir')])),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
             ),

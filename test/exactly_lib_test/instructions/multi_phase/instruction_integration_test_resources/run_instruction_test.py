@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_utils.test_resources import arguments_building a
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_resources.files.file_structure import empty_file, python_executable_file
+from exactly_lib_test.test_resources.files.file_structure import python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -188,7 +188,7 @@ class TestSuccessfulValidation(TestCaseBase):
             source_for_interpreting(RelOptionType.REL_TMP, 'existing-file.py'),
             self.conf.arrangement(sds_contents_before_main=contents_in(
                 RelSdsOptionType.REL_TMP,
-                DirContents([empty_file('existing-file.py')]))),
+                DirContents([File.empty('existing-file.py')]))),
             self.conf.expect_success(),
         )
 

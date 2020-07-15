@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success
-from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -107,10 +107,10 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
         # dir contents
 
         checked_dir = Dir('checked-dir', [
-            empty_file('a.x'),
-            empty_file('a.y'),
-            empty_file('b.x'),
-            empty_file('b.y'),
+            File.empty('a.x'),
+            File.empty('a.y'),
+            File.empty('b.x'),
+            File.empty('b.y'),
         ])
 
         # arguments

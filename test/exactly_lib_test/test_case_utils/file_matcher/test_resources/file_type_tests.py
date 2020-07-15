@@ -2,10 +2,11 @@ import pathlib
 from typing import List
 
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, sym_link, FileSystemElement, Dir
+from exactly_lib_test.test_resources.files.file_structure import sym_link, FileSystemElement, \
+    Dir, File
 
-REGULAR = empty_file('regular')
-EMPTY_DIR = empty_dir('empty-directory')
+REGULAR = File.empty('regular')
+EMPTY_DIR = Dir.empty('empty-directory')
 SYMLINK__TO_REGULAR = sym_link('sym-link--to-regular', REGULAR.name)
 SYMLINK__TO_EMPTY_DIR = sym_link('sym-link--to-empty-directory', EMPTY_DIR.name)
 SYMLINK__BROKEN = sym_link('sym-link--broken', 'non-existing-target')
@@ -42,7 +43,7 @@ EXPECTED__DEPTH_0 = {
     ]),
 }
 
-REGULAR__IN_NON_EMPTY_DIR = empty_file('regular-file-in-non-empty-dir')
+REGULAR__IN_NON_EMPTY_DIR = File.empty('regular-file-in-non-empty-dir')
 SYM_LINK__BROKEN__IN_NON_EMPTY_DIR = sym_link('sym-link--broken--in-non-empty-dir', 'non-existing--in-non-empty-dir')
 
 NON_EMPTY_DIR = Dir('non-empty-dir', [

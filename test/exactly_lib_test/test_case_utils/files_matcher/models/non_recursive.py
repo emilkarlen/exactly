@@ -10,8 +10,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.checker import check
-from exactly_lib_test.test_resources.files.file_structure import Dir, empty_file, \
-    empty_dir
+from exactly_lib_test.test_resources.files.file_structure import Dir, File
 from exactly_lib_test.type_system.logic.test_resources import matching_result
 
 
@@ -69,6 +68,12 @@ class TestCase(unittest.TestCase):
         prefix_to_include = 'A'
         file_type_to_include = FileType.DIRECTORY
 
+        name = prefix_to_include + '-matching-base-name'
+        file_name = prefix_to_include + '-matching-base-name--file'
+        name1 = prefix_to_include + 'dir-in-dir-matching-base-name'
+        name2 = prefix_to_include + '-matching-base-name--dir-in-dir'
+        name3 = prefix_to_include + '-matching-base-name'
+        name4 = prefix_to_include + '-matching-base-name--empty-dir'
         actual_cases = [
             NameAndValue(
                 'empty',
@@ -76,30 +81,30 @@ class TestCase(unittest.TestCase):
             ),
             NameAndValue(
                 'single regular file that matches on base name',
-                [empty_file(prefix_to_include + '-matching-base-name')],
+                [File.empty(name)],
             ),
             NameAndValue(
                 'single dir that matches on base name',
-                [empty_dir(prefix_to_include + '-matching-base-name')],
+                [Dir.empty(name3)],
             ),
             NameAndValue(
                 'single dir that not matches on base name',
-                [empty_dir('non-matching-base-name')],
+                [Dir.empty('non-matching-base-name')],
             ),
             NameAndValue(
                 'directories with contents - one level',
                 [
-                    empty_file(prefix_to_include + '-matching-base-name--file'),
-                    empty_dir(prefix_to_include + '-matching-base-name--empty-dir'),
+                    File.empty(file_name),
+                    Dir.empty(name4),
                     Dir('non-matching-name-non-empty-dir',
                         [
-                            empty_file('file-in-dir'),
-                            empty_dir(prefix_to_include + 'dir-in-dir-matching-base-name'),
+                            File.empty('file-in-dir'),
+                            Dir.empty(name1),
                         ]),
                     Dir(prefix_to_include + '-matching-base-name--non-empty-dir',
                         [
-                            empty_file('file-in-dir'),
-                            empty_dir(prefix_to_include + '-matching-base-name--dir-in-dir'),
+                            File.empty('file-in-dir'),
+                            Dir.empty(name2),
                         ]),
                 ]
             ),

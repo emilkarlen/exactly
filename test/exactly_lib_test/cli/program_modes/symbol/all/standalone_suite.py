@@ -11,7 +11,6 @@ from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_ins
 from exactly_lib_test.cli.program_modes.test_resources import test_with_files_in_tmp_dir
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
-from exactly_lib_test.test_resources.files.file_structure import empty_dir
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -27,7 +26,7 @@ class TestFailingScenarios(unittest.TestCase):
 
     def test_file_is_dir_that_do_not_contain_default_suite_file(self):
         # ARRANGE #
-        a_dir = empty_dir('dir')
+        a_dir = Dir.empty('dir')
         test_with_files_in_tmp_dir.check(
             self,
             symbol_args.arguments__suite([a_dir.name]),

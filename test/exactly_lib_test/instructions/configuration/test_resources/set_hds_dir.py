@@ -19,7 +19,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -121,7 +121,7 @@ class TestSuccessfulExecution_path_SHOULD_be_relative_path_relativity_root_dir(T
         self._check(
             syntax_for_assignment_of(path_argument_str),
             Arrangement(
-                root_dir_contents=DirContents([empty_dir(path_argument_str)])
+                root_dir_contents=DirContents([Dir.empty(path_argument_str)])
             ),
             Expectation(
                 main_result=
@@ -148,7 +148,7 @@ class TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file(TestCaseFor
         self._check(
             syntax_for_assignment_of(file_name),
             Arrangement(
-                root_dir_contents=DirContents([empty_file(file_name)])),
+                root_dir_contents=DirContents([File.empty(file_name)])),
             Expectation(
                 main_result=sh_assertions.is_hard_error())
         )
@@ -160,7 +160,7 @@ class TestSuccessfulExecution_change_to_direct_sub_dir(TestCaseForConfigurationB
         self._check(
             syntax_for_assignment_of(directory_name),
             Arrangement(
-                root_dir_contents=DirContents([empty_dir(directory_name)])),
+                root_dir_contents=DirContents([Dir.empty(directory_name)])),
             Expectation(
                 path_rel_root_2_conf=
                 self.conf_prop_equals(
@@ -178,7 +178,7 @@ class TestSuccessfulExecution_change_to_2_level_sub_dir(TestCaseForConfiguration
             Arrangement(
                 root_dir_contents=
                 DirContents([Dir(first_dir,
-                                 [empty_dir(second_dir)])])),
+                                 [Dir.empty(second_dir)])])),
             Expectation(
                 path_rel_root_2_conf=
                 self.conf_prop_equals(

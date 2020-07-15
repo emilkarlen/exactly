@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -90,7 +90,7 @@ class HardErrorDueToHardErrorFromFilesMatcherHelper(_HelperBase):
         return ArrangementPostAct(
             tcds_contents=TcdsPopulatorForRelOptionType(
                 self.checked_file_location,
-                DirContents([empty_dir(self.checked_file_name)])
+                DirContents([Dir.empty(self.checked_file_name)])
             ),
             symbols=FilesMatcherSymbolContext.of_primitive(
                 self.name_of_referenced_symbol,
