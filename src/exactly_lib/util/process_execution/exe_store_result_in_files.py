@@ -7,7 +7,16 @@ from .process_executor import ProcessExecutor, ProcessExecutionFile, ExecutableE
 from .result_files import ResultFile, DirWithResultFiles
 
 
-class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[int]):
+class ExitCodeAndFiles:
+    def __init__(self,
+                 exit_code: int,
+                 files: DirWithResultFiles,
+                 ):
+        self.exit_code = exit_code
+        self.files = files
+
+
+class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles]):
     """An object must only be used for a single execution."""
 
     def __init__(self,
@@ -30,7 +39,7 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[int]):
     def execute(self,
                 settings: ProcessExecutionSettings,
                 executable: Executable,
-                ) -> int:
+                ) -> ExitCodeAndFiles:
         """
         :return: Exit code from successful execution
         :raises ExecutionException: Either unable to execute, or execution timed out
@@ -54,4 +63,4 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[int]):
         with exit_code_path.open('w') as exit_code_f:
             exit_code_f.write(str(exit_code))
 
-        return exit_code
+        return ExitCodeAndFiles(exit_code, self._storage_dir)

@@ -2,7 +2,7 @@ import pathlib
 from enum import Enum
 
 from exactly_lib.util.process_execution import process_output_files
-from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile, FileNames
 
 
 class ResultFile(Enum):
@@ -28,8 +28,12 @@ class DirWithResultFiles:
     def directory(self) -> pathlib.Path:
         return self._directory
 
+    @property
+    def file_names(self) -> FileNames:
+        return process_output_files.FILE_NAMES
+
     def path_of_std(self, output_file: ProcOutputFile) -> pathlib.Path:
-        return self._directory / process_output_files.PROC_OUTPUT_FILE_NAMES[output_file]
+        return self._directory / self.file_names.name_of(output_file)
 
     def path_of_result(self, result_file: ResultFile) -> pathlib.Path:
         return self._directory / RESULT_FILE_NAMES[result_file]

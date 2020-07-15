@@ -60,19 +60,19 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
         :return: Result has stderr contents iff exit code != 0
         :raises ExecutionException: Either unable to execute, or execution timed out
         """
-        exit_code = self._executor.execute(settings, executable)
+        result = self._executor.execute(settings, executable)
 
         return ResultWithFiles(
-            exit_code,
-            self._stderr_for(exit_code),
-            self.storage_dir,
+            result.exit_code,
+            self._stderr_for(result),
+            result.files,
         )
 
-    def _stderr_for(self, exit_code: int) -> Optional[str]:
-        if exit_code == 0:
+    def _stderr_for(self, result: ResultWithFiles) -> Optional[str]:
+        if result.exit_code == 0:
             return None
 
-        with self.storage_dir.path_of_result(ResultFile.STD_ERR).open('r') as f:
+        with result.files.path_of_result(ResultFile.STD_ERR).open('r') as f:
             return self._stderr_msg_reader.read(f)
 
 
