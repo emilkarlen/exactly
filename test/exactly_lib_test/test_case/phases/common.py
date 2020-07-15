@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case.phases import common as sut
+from exactly_lib.test_case.phases import tmp_file_spaces as sut
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 
