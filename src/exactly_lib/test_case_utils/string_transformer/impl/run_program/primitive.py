@@ -13,9 +13,10 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.util.file_utils.text_reader import TextFromFileReader
 from exactly_lib.util.process_execution import file_ctx_managers
-from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
-    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode, TextFromFileReader
+from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
+    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 

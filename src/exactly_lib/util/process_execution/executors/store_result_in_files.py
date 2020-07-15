@@ -3,8 +3,9 @@ from typing import ContextManager
 
 from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
-from .process_executor import ProcessExecutor, ProcessExecutionFile, ExecutableExecutor
-from .result_files import ResultFile, DirWithResultFiles
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionFile, \
+    ExecutableExecutor
+from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 
 
 class ExitCodeAndFiles:

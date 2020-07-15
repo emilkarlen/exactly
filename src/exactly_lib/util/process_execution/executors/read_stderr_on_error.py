@@ -1,13 +1,14 @@
 import pathlib
 import subprocess
-from abc import ABC, abstractmethod
-from typing import Optional, ContextManager, TextIO
+from typing import Optional, ContextManager
 
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
-from .exe_store_result_in_files import ExecutorThatStoresResultInFilesInDir
-from .process_executor import ProcessExecutor, ProcessExecutionFile, ExecutableExecutor
-from .result_files import ResultFile, DirWithResultFiles
-from ..file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionFile, \
+    ExecutableExecutor
+from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
+from . import store_result_in_files
+from ...file_utils.text_reader import TextFromFileReader
 
 
 class Result:
@@ -30,12 +31,6 @@ class ResultWithFiles:
         self.files = files
 
 
-class TextFromFileReader(ABC):
-    @abstractmethod
-    def read(self, f: TextIO) -> str:
-        pass
-
-
 class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[ResultWithFiles]):
     """An object must only be used for a single execution."""
 
@@ -45,7 +40,7 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
                  stdin: ContextManager[ProcessExecutionFile],
                  stderr_msg_reader: TextFromFileReader,
                  ):
-        self._executor = ExecutorThatStoresResultInFilesInDir(executor, storage_dir, stdin)
+        self._executor = store_result_in_files.ExecutorThatStoresResultInFilesInDir(executor, storage_dir, stdin)
         self._stderr_msg_reader = stderr_msg_reader
 
     @property
@@ -68,7 +63,7 @@ class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(Execut
             result.files,
         )
 
-    def _stderr_for(self, result: ResultWithFiles) -> Optional[str]:
+    def _stderr_for(self, result: store_result_in_files.ExitCodeAndFiles) -> Optional[str]:
         if result.exit_code == 0:
             return None
 

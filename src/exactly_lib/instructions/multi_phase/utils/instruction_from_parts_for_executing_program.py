@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
-from exactly_lib.util.process_execution.exe_store_and_read_stderr import ResultWithFiles, \
+from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
     ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
 from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, ProcessExecutor
 from exactly_lib.util.process_execution.process_output_files import FileNames

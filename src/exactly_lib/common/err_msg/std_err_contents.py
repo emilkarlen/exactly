@@ -1,6 +1,6 @@
 from typing import TextIO
 
-from exactly_lib.util.process_execution.exe_store_and_read_stderr import TextFromFileReader
+from exactly_lib.util.file_utils.text_reader import TextFromFileReader
 
 
 class InitialPartReaderWithRestIndicator(TextFromFileReader):

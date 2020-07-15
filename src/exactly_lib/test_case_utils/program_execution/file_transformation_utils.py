@@ -9,10 +9,10 @@ from exactly_lib.test_case_utils.program_execution.command_executor import Comma
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.process_execution import exe_store_result_in_files
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
-from exactly_lib.util.process_execution.exe_store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
+from exactly_lib.util.process_execution.executors import store_result_in_files
+from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 
 
@@ -57,7 +57,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     """
     cmd_exe = CommandExecutor(
         os_services,
-        exe_store_result_in_files.ExecutorThatStoresResultInFilesInDir(
+        store_result_in_files.ExecutorThatStoresResultInFilesInDir(
             ProcessExecutor(), pgm_output_dir,
             file_ctx_managers.dev_null(),
         )

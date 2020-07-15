@@ -35,11 +35,3 @@ class Result(tuple):
 
     def path_of(self, output_file: process_output_files.ProcOutputFile) -> pathlib.Path:
         return self.output_dir_path / self.file_names.name_of(output_file)
-
-
-class ResultAndStderr:
-    def __init__(self,
-                 result: Result,
-                 stderr_contents: str):
-        self.result = result
-        self.stderr_contents = stderr_contents

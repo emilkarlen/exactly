@@ -18,7 +18,7 @@ from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
-from exactly_lib.util.process_execution.exe_store_and_read_stderr import Result, \
+from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result, \
     ExecutorThatReadsStderrOnNonZeroExitCode
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 
