@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.util.process_execution import sub_process_execution
+from exactly_lib_test.util.process_execution import store_result_in_files
 
 
 def suite() -> unittest.TestSuite:
-    return sub_process_execution.suite()
+    return store_result_in_files.suite()
 
 
 if __name__ == '__main__':

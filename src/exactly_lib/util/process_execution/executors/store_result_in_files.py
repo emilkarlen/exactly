@@ -22,20 +22,21 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles])
 
     def __init__(self,
                  executor: ProcessExecutor,
-                 storage_dir: pathlib.Path,
+                 storage_dir_created_on_demand: pathlib.Path,
                  stdin: ContextManager[ProcessExecutionFile],
                  ):
         """
-        :param storage_dir: Must be a directory that does not contain a file
-        with any of the process output file names.
+        :param storage_dir_created_on_demand: Must be a directory that does not contain a file
+        with any of the process output file names, or a non-existing path,
+        that can be created as a dir.
         """
-        self._storage_dir = DirWithResultFiles(storage_dir)
+        self._storage_dir_created_on_demand = DirWithResultFiles(storage_dir_created_on_demand)
         self._executor = executor
         self._stdin = stdin
 
     @property
     def storage_dir(self) -> DirWithResultFiles:
-        return self._storage_dir
+        return self._storage_dir_created_on_demand
 
     def execute(self,
                 settings: ProcessExecutionSettings,
@@ -45,7 +46,7 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles])
         :return: Exit code from successful execution
         :raises ExecutionException: Either unable to execute, or execution timed out
         """
-        storage_dir = self._storage_dir
+        storage_dir = self._storage_dir_created_on_demand
         ensure_file_existence.ensure_directory_exists_as_a_directory__impl_error(storage_dir.directory)
         stdout_path = storage_dir.path_of_result(ResultFile.STD_OUT)
         stderr_path = storage_dir.path_of_result(ResultFile.STD_ERR)
@@ -64,4 +65,4 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles])
         with exit_code_path.open('w') as exit_code_f:
             exit_code_f.write(str(exit_code))
 
-        return ExitCodeAndFiles(exit_code, self._storage_dir)
+        return ExitCodeAndFiles(exit_code, self._storage_dir_created_on_demand)

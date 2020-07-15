@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
-from exactly_lib_test.util.process_execution.sub_process_execution import assert_dir_contains_at_least_result_files
+from exactly_lib_test.util.process_execution.store_result_in_files import assert_dir_contains_exactly_result_files
 from exactly_lib_test.util.test_resources import py_program as py
 
 
@@ -238,9 +238,9 @@ class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStru
                message_builder: asrt.MessageBuilder):
         logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
         the_instruction_log_dir = instruction_log_dir(logging_paths, self.source_info)
-        assert_dir_contains_at_least_result_files(self.expected_files_contents).apply(put,
-                                                                                      the_instruction_log_dir,
-                                                                                      message_builder)
+        assert_dir_contains_exactly_result_files(self.expected_files_contents).apply(put,
+                                                                                     the_instruction_log_dir,
+                                                                                     message_builder)
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):

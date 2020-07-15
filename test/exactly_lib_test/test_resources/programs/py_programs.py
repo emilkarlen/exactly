@@ -19,9 +19,9 @@ sys.exit(val)
 """.format(stderr_output)
 
 
-def py_pgm_with_stdout_stderr_exit_code(stdout_output: str,
-                                        stderr_output: str,
-                                        exit_code: int) -> str:
+def py_pgm_with_stdout_stderr_exit_code(stdout_output: str = '',
+                                        stderr_output: str = '',
+                                        exit_code: int = 0) -> str:
     return """\
 import sys
 
