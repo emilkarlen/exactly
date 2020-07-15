@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.util.file_utils import tmp_file_spaces
+from exactly_lib_test.util.file_utils import tmp_file_spaces, ensure_file_existence
 
 
 def suite() -> unittest.TestSuite:
-    return tmp_file_spaces.suite()
+    return unittest.TestSuite([
+        ensure_file_existence.suite(),
+        tmp_file_spaces.suite(),
+    ])
 
 
 if __name__ == '__main__':

@@ -1,14 +1,14 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.util import exception
 
 
 def ensure_directory_exists(dir_path: pathlib.Path):
-    if not dir_path.exists():
-        dir_path.mkdir(parents=True)
+    dir_path.mkdir(parents=True, exist_ok=True)
 
 
-def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path) -> str:
+def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path) -> Optional[str]:
     """
     :return: Failure message if cannot ensure, otherwise None.
     """
