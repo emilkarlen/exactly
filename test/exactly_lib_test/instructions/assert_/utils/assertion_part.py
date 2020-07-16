@@ -217,33 +217,36 @@ class TestSequence(unittest.TestCase):
 
 class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     the_os_services = oss.new_default()
-    environment = fake_post_sds_environment()
 
     def test_WHEN_custom_env_is_forwarded_to_the_part(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         output = []
         custom_env = 'the custom environment'
         instruction = sut.AssertionInstructionFromAssertionPart(PartThatRegistersCustomEnvironment(output),
                                                                 custom_env,
                                                                 lambda x: x)
         # ACT #
-        instruction.main(self.environment, self.the_os_services)
+        instruction.main(environment, self.the_os_services)
         # ASSERT #
         expected = [custom_env]
         self.assertEqual(expected, output)
 
     def test_argument_getter_SHOULD_be_given_environment_as_argument(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         assertion_part = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
 
         def argument_getter_that_depends_on_environment(env: InstructionEnvironmentForPostSdsStep) -> int:
-            return 1 if env is self.environment else 0
+            return 1 if env is environment else 0
 
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
                                                                 argument_getter_that_depends_on_environment)
         # ACT #
-        actual = instruction.main(self.environment, self.the_os_services)
+        actual = instruction.main(environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
             asrt_text_doc.is_string_for_test(
@@ -254,24 +257,28 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         assertion_part_that_not_raises = SuccessfulPartThatReturnsConstructorArgPlusOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
                                                                 'custom environment',
                                                                 lambda env: 0)
         # ACT #
-        actual = instruction.main(self.environment, self.the_os_services)
+        actual = instruction.main(environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_pass()
         assertion.apply_without_message(self, actual)
 
     def test_return_pfh_fail_WHEN_PfhFailException_is_raised(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         assertion_part_that_raises = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
                                                                 'custom environment',
                                                                 lambda env: 1)
         # ACT #
-        actual = instruction.main(self.environment, self.the_os_services)
+        actual = instruction.main(environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
             asrt_text_doc.is_string_for_test(
@@ -281,42 +288,48 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_WHEN_no_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         assertion_part_without_validation = PartForValidation()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
-            actual = instruction.validate_pre_sds(self.environment)
+            actual = instruction.validate_pre_sds(environment)
             # ASSERT #
             asrt_svh.is_success().apply_without_message(self, actual)
 
         with self.subTest(name='post setup validation'):
             # ACT #
-            actual = instruction.validate_post_setup(self.environment)
+            actual = instruction.validate_post_setup(environment)
             # ASSERT #
             asrt_svh.is_success().apply_without_message(self, actual)
 
     def test_WHEN_a_successful_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         assertion_part_without_validation = PartForValidation(ConstantSuccessSdvValidator())
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
-            actual = instruction.validate_pre_sds(self.environment)
+            actual = instruction.validate_pre_sds(environment)
             # ASSERT #
             asrt_svh.is_success().apply_without_message(self, actual)
 
         with self.subTest(name='post setup validation'):
             # ACT #
-            actual = instruction.validate_post_setup(self.environment)
+            actual = instruction.validate_post_setup(environment)
             # ASSERT #
             asrt_svh.is_success().apply_without_message(self, actual)
 
     def test_WHEN_given_validator_fails_pre_sds_THEN_validation_SHOULD_fail_pre_sds(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         the_error_message = 'the error message'
         assertion_part = PartForValidation(SdvValidatorThat(
             pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
@@ -325,7 +338,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         # ACT #
-        actual = instruction.validate_pre_sds(self.environment)
+        actual = instruction.validate_pre_sds(environment)
         # ASSERT #
         assertion = asrt_svh.is_validation_error(
             asrt_text_doc.is_single_pre_formatted_text_that_equals(the_error_message)
@@ -334,6 +347,8 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_WHEN_given_validator_fails_post_setup_THEN_main_SHOULD_report_hard_error(self):
         # ARRANGE #
+        environment = fake_post_sds_environment()
+
         the_error_message = 'the error message'
         assertion_part = PartForValidation(SdvValidatorThat(
             post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
@@ -348,13 +363,13 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        pre_sds_result = instruction.validate_pre_sds(self.environment)
+        pre_sds_result = instruction.validate_pre_sds(environment)
         is_validation_success.apply_with_message(self, pre_sds_result,
                                                  'pre sds validation should succeed')
-        post_sds_result = instruction.validate_post_setup(self.environment)
+        post_sds_result = instruction.validate_post_setup(environment)
         is_validation_success.apply_with_message(self, post_sds_result,
                                                  'post setup validation should succeed')
-        main_result = instruction.main(self.environment, self.the_os_services)
+        main_result = instruction.main(environment, self.the_os_services)
 
         main_result_is_hard_error.apply_with_message(self,
                                                      main_result,

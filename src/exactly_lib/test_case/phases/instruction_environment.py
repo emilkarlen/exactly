@@ -1,5 +1,7 @@
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Callable
 
+from exactly_lib.common import tmp_file_spaces as std_file_spaces
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
@@ -60,11 +62,15 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                  environ: Dict[str, str],
                  sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
+                 tmp_instr_spaces: Callable[[Path], TmpDirFileSpace],
                  timeout_in_seconds: int = None,
-                 symbols: SymbolTable = None):
+                 symbols: SymbolTable = None,
+                 ):
         super().__init__(hds, environ, timeout_in_seconds, symbols)
         self.__sds = sds
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
+        phase_tmp_dir = sds.internal_tmp_dir / phase_identifier
+        self._tmp_instr_dirs = tmp_instr_spaces(phase_tmp_dir)
 
     @property
     def sds(self) -> _sds.SandboxDirectoryStructure:
@@ -74,6 +80,18 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def tcds(self) -> Tcds:
         return Tcds(self.hds,
                     self.sds)
+
+    @property
+    def tmp_dir__may_not_exist(self) -> Path:
+        return self._tmp_instr_dirs.new_path()
+
+    @property
+    def tmp_dir__that_exists(self) -> Path:
+        return self._tmp_instr_dirs.new_path_as_existing_dir()
+
+    @property
+    def tmp_dir__path_access(self) -> TmpDirFileSpace:
+        return std_file_spaces.std_tmp_dir_file_space(self._tmp_instr_dirs.new_path())
 
     @property
     def phase_logging(self) -> PhaseLoggingPaths:

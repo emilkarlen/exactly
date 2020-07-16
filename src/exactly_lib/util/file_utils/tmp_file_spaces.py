@@ -3,6 +3,7 @@ import pathlib
 from typing import Iterator, Optional
 
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.str_ import sequences
 
 
 class FileNamesConfig:
@@ -99,3 +100,18 @@ class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
 
     def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
         raise ValueError('must not be used')
+
+
+class TmpDirFileSpaceThatDoNotCreateFiles(TmpDirFileSpace):
+    def __init__(self, root_dir: pathlib.Path):
+        self._root_dir = root_dir
+        self._path_name_sequence = sequences.int_strings(1, 2)
+
+    def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
+        return self._root_dir / next(self._path_name_sequence)
+
+    def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
+        raise ValueError('must not be used')
+
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
+        return TmpDirFileSpaceThatDoNotCreateFiles(self.new_path())

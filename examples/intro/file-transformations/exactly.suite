@@ -9,3 +9,5 @@ replace-test-case-dirs.case
 def-string-transformer.case
 
 filter.case
+
+run.case

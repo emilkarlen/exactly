@@ -14,7 +14,7 @@ from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvVa
     ValidationStep
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo, instruction_log_dir
+from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
@@ -100,7 +100,7 @@ class FileMakerForContentsFromProgram(FileMaker):
              ) -> Optional[TextRenderer]:
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         program = resolver.resolve_program(self._program)
-        storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
+        storage_dir = environment.tmp_dir__that_exists
 
         try:
             command_executor = self._command_executor(
@@ -122,7 +122,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
         transformation_helper = FileTransformerHelper(
             os_services,
-            environment.tmp_file_space,
+            environment.tmp_dir__path_access,
         )
         src_path = result.files.path_of_std(self._output_channel)
         return transformation_helper.transform_to_file__dp(src_path,
@@ -194,7 +194,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
         transformation_helper = FileTransformerHelper(
             os_services,
-            environment.tmp_file_space,
+            environment.tmp_dir__path_access,
         )
         return transformation_helper.transform_to_file__dp(src_path,
                                                            dst_path,

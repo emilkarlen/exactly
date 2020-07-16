@@ -1,8 +1,9 @@
 import pathlib
 
+from exactly_lib.common.tmp_file_spaces import std_tmp_dir_file_space
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo, instruction_log_dir
+from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
@@ -37,10 +38,12 @@ def make_transformed_file_from_output_in_instruction_tmp_dir(environment: Instru
     """
     :raises PfhHardErrorException: IO error.
     """
-    return make_transformed_file_from_output(instruction_log_dir(environment.phase_logging, source_info),
+    storage_dir = environment.tmp_dir__that_exists
+    tmp_file_space = std_tmp_dir_file_space(storage_dir)
+    return make_transformed_file_from_output(storage_dir,
                                              environment.process_execution_settings,
                                              os_services,
-                                             environment.tmp_file_space,
+                                             tmp_file_space,
                                              checked_output,
                                              program)
 

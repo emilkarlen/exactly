@@ -1,6 +1,7 @@
 import os
 from typing import Sequence, Optional, Tuple
 
+from exactly_lib.common import tmp_file_spaces as std_file_spaces
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.impl import phase_step_executors
@@ -352,21 +353,27 @@ class _PartialExecutor:
 
     def _post_setup_validation_environment(self, phase: phase_identifier.Phase
                                            ) -> instr_env.InstructionEnvironmentForPostSdsStep:
-        return instr_env.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
-                                                              self.exe_conf.environ,
-                                                              self.__sandbox_directory_structure,
-                                                              phase.identifier,
-                                                              timeout_in_seconds=self.conf_values.timeout_in_seconds,
-                                                              symbols=self._instruction_environment_pre_sds.symbols)
+        return instr_env.InstructionEnvironmentForPostSdsStep(
+            self.conf_values.hds,
+            self.exe_conf.environ,
+            self.__sandbox_directory_structure,
+            phase.identifier,
+            tmp_instr_spaces=lambda path: std_file_spaces.std_tmp_dir_file_space(path),
+            timeout_in_seconds=self.conf_values.timeout_in_seconds,
+            symbols=self._instruction_environment_pre_sds.symbols,
+        )
 
     def _post_sds_environment(self,
                               phase: phase_identifier.Phase) -> instr_env.InstructionEnvironmentForPostSdsStep:
-        return instr_env.InstructionEnvironmentForPostSdsStep(self.conf_values.hds,
-                                                              self.exe_conf.environ,
-                                                              self.__sandbox_directory_structure,
-                                                              phase.identifier,
-                                                              timeout_in_seconds=self.conf_values.timeout_in_seconds,
-                                                              symbols=self.__post_sds_symbol_table)
+        return instr_env.InstructionEnvironmentForPostSdsStep(
+            self.conf_values.hds,
+            self.exe_conf.environ,
+            self.__sandbox_directory_structure,
+            phase.identifier,
+            tmp_instr_spaces=lambda path: std_file_spaces.std_tmp_dir_file_space(path),
+            timeout_in_seconds=self.conf_values.timeout_in_seconds,
+            symbols=self.__post_sds_symbol_table,
+        )
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
         return PartialExeResult(failure.status,

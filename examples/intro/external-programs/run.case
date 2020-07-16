@@ -7,9 +7,9 @@
 
 run my-setup-helper-program with arguments
 
-run /usr/bin/python -existing-file my-py-setup-helper.py 'with argument'
+run -python -existing-file my-py-setup-helper.py 'with argument'
 
-run /usr/bin/python -c :> print('This does some setup!')
+run -python -c :> print('This does some setup!')
 
 
 [act]
