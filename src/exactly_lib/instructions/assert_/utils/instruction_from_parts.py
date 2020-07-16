@@ -42,7 +42,6 @@ class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
             return pfh.new_pfh_hard_error(validation_result.failure_message)
 
         return self.setup.executor.apply_as_assertion(environment,
-                                                      environment.phase_logging,
                                                       os_services)
 
 

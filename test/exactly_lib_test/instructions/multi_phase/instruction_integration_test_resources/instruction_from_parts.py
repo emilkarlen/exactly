@@ -13,7 +13,6 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestri
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
@@ -254,16 +253,14 @@ class MainStepExecutorThat(instruction_parts.MainStepExecutor):
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
-                           logging_paths: PhaseLoggingPaths,
                            os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        self.assertion_action(environment, logging_paths, os_services)
+        self.assertion_action(environment, os_services)
         return self.assertion_return_value
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
-                               logging_paths: PhaseLoggingPaths,
                                os_services: OsServices) -> sh.SuccessOrHardError:
-        self.non_assertion_action(environment, logging_paths, os_services)
+        self.non_assertion_action(environment, os_services)
         return self.non_assertion_return_value
 
 

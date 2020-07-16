@@ -6,7 +6,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
 
@@ -46,7 +45,6 @@ class _InstructionEmbryoThat(Generic[T], InstructionEmbryo[T]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ) -> T:
         return self._main(environment, os_services)

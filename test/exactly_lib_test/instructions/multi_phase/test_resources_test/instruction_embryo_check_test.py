@@ -12,7 +12,6 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -456,7 +455,6 @@ class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo[None]):
         self.variable = variable
 
     def main(self, environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ):
         variable = self.variable

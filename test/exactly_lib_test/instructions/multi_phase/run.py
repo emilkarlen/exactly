@@ -9,7 +9,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import os_services
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.process_execution.execution_elements import with_environ
@@ -53,7 +52,6 @@ class ExecuteAction(TcdsAction):
         )
         return self.instruction_embryo.main(
             environment_builder.build_post_sds(),
-            PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
             os_services.new_default(),
         )
 

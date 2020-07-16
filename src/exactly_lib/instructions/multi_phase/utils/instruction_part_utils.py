@@ -12,7 +12,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 
@@ -84,11 +83,10 @@ class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
-                               logging_paths: PhaseLoggingPaths,
                                os_services: OsServices,
                                ) -> sh.SuccessOrHardError:
         try:
-            result = self.main_step_embryo.main(environment, logging_paths, os_services)
+            result = self.main_step_embryo.main(environment, os_services)
         except HardErrorException as ex:
             return sh.new_sh_hard_error(ex.error)
 
@@ -96,11 +94,10 @@ class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
-                           logging_paths: PhaseLoggingPaths,
                            os_services: OsServices,
                            ) -> pfh.PassOrFailOrHardError:
         try:
-            result = self.main_step_embryo.main(environment, logging_paths, os_services)
+            result = self.main_step_embryo.main(environment, os_services)
         except HardErrorException as ex:
             return pfh.new_pfh_hard_error(ex.error)
 

@@ -264,7 +264,6 @@ class Executor(Generic[T]):
                       instruction: InstructionEmbryo[T]):
         try:
             result = instruction.main(environment,
-                                      environment.phase_logging,
                                       self.arrangement.os_services)
         except HardErrorException as ex:
             if self.expectation.main_raises_hard_error:

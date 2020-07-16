@@ -30,7 +30,6 @@ from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, Symbo
     SymbolDependentValue
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -164,7 +163,6 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ):
         self.custom_main(environment.symbols)

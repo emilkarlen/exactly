@@ -9,7 +9,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 
 T = TypeVar('T')
 
@@ -25,7 +24,6 @@ class MainStepExecutorEmbryo(Generic[T], ABC):
     @abstractmethod
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ) -> T:
         pass

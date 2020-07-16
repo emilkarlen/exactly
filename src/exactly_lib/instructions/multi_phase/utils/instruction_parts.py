@@ -9,7 +9,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
 
 
@@ -20,7 +19,6 @@ class MainStepExecutor:
 
     def apply_as_non_assertion(self,
                                environment: InstructionEnvironmentForPostSdsStep,
-                               logging_paths: PhaseLoggingPaths,
                                os_services: OsServices) -> sh.SuccessOrHardError:
         """
         Invokes the execution as part of an instruction that is not in the assert phase.
@@ -29,7 +27,6 @@ class MainStepExecutor:
 
     def apply_as_assertion(self,
                            environment: InstructionEnvironmentForPostSdsStep,
-                           logging_paths: PhaseLoggingPaths,
                            os_services: OsServices) -> pfh.PassOrFailOrHardError:
         """
         Invokes the execution as part of an instruction that is in the assert phase.

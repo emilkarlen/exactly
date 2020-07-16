@@ -20,7 +20,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
@@ -81,7 +80,6 @@ class InstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ) -> Optional[TextRenderer]:
         return self.custom_main(environment.path_resolving_environment)

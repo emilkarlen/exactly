@@ -42,7 +42,6 @@ class SetupPhaseInstructionFromParts(SetupPhaseInstruction):
             return sh.new_sh_hard_error(validation_result.failure_message)
 
         return self.setup.executor.apply_as_non_assertion(environment,
-                                                          environment.phase_logging,
                                                           os_services)
 
 

@@ -23,7 +23,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -79,7 +78,6 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
              os_services: OsServices,
              ):
         self.executor.execute(environment.environ,
