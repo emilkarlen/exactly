@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Iterator
 
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
@@ -9,8 +9,11 @@ from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruct
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
+
+InstructionEnvPostSdsGetter = Iterator[InstructionEnvironmentForPostSdsStep]
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -69,60 +72,60 @@ class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
-        self.__instruction_environment = instruction_environment
+                 instruction_environments: InstructionEnvPostSdsGetter):
+        self.__instruction_environments = instruction_environments
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_post_setup(self.__instruction_environment))
+            instruction.validate_post_setup(next(self.__instruction_environments)))
 
 
 class SetupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  os_services: OsServices,
-                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
+                 instruction_environments: InstructionEnvPostSdsGetter,
                  setup_settings_builder: SetupSettingsBuilder):
         self.__os_services = os_services
-        self.__environment = environment
+        self.__instruction_environments = instruction_environments
         self.__setup_settings_builder = setup_settings_builder
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__environment,
+            instruction.main(next(self.__instruction_environments),
                              self.__os_services,
                              self.__setup_settings_builder))
 
 
 class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
-        self.__instruction_environment = instruction_environment
+                 instruction_environments: InstructionEnvPostSdsGetter):
+        self.__instruction_environments = instruction_environments
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_post_setup(self.__instruction_environment))
+            instruction.validate_post_setup(next(self.__instruction_environments)))
 
 
 class AssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 instruction_environment: instr_env.InstructionEnvironmentForPostSdsStep):
-        self.__instruction_environment = instruction_environment
+                 instruction_environments: InstructionEnvPostSdsGetter):
+        self.__instruction_environments = instruction_environments
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_post_setup(self.__instruction_environment))
+            instruction.validate_post_setup(next(self.__instruction_environments)))
 
 
 class AssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
+                 instruction_environments: InstructionEnvPostSdsGetter,
                  os_services: OsServices):
-        self.__environment = environment
+        self.__instruction_environments = instruction_environments
         self.__os_services = os_services
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_pass_or_fail_or_hard_error(
-            instruction.main(self.__environment, self.__os_services))
+            instruction.main(next(self.__instruction_environments), self.__os_services))
 
 
 class BeforeAssertValidatePreSdsExecutor(ControlledInstructionExecutor):
@@ -137,14 +140,15 @@ class BeforeAssertValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class BeforeAssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
+                 instruction_environments: InstructionEnvPostSdsGetter,
                  os_services: OsServices):
-        self.__environment = environment
+        self.__instruction_environments = instruction_environments
         self.__os_services = os_services
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__environment, self.__os_services))
+            instruction.main(next(self.__instruction_environments),
+                             self.__os_services))
 
 
 class AssertValidatePreSdsExecutor(ControlledInstructionExecutor):
@@ -169,15 +173,15 @@ class CleanupValidatePreSdsExecutor(ControlledInstructionExecutor):
 
 class CleanupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 environment: instr_env.InstructionEnvironmentForPostSdsStep,
+                 instruction_environments: InstructionEnvPostSdsGetter,
                  previous_phase: PreviousPhase,
                  os_services: OsServices):
-        self.__environment = environment
+        self.__instruction_environments = instruction_environments
         self.__previous_phase = previous_phase
         self.__os_services = os_services
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__environment,
+            instruction.main(next(self.__instruction_environments),
                              self.__os_services,
                              self.__previous_phase))

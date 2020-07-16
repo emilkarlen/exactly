@@ -1,9 +1,9 @@
-from enum import Enum
+from enum import IntEnum
 
 from exactly_lib.definitions.test_case import phase_names_plain as names
 
 
-class PhaseEnum(Enum):
+class PhaseEnum(IntEnum):
     CONFIGURATION = 0
     SETUP = 1
     ACT = 2

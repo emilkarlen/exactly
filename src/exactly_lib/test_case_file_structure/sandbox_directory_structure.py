@@ -19,6 +19,8 @@ SUB_DIRECTORY__TMP_INTERNAL = 'tmp'
 SUB_DIRECTORY__TEST_CASE = 'testcase'
 SUB_DIRECTORY__LOG = 'log'
 
+INSTRUCTION_SUB_DIR_FOR_VALIDATION = 'validate'
+
 PATH__TMP_USER = SUB_DIRECTORY__TMP_USER
 
 RESULT_FILE__STDERR = process_output_files.STDERR_FILE_NAME
@@ -208,13 +210,3 @@ def construct_at_tmp_root() -> SandboxDirectoryStructure:
 
 def stdin_contents_file(sds: SandboxDirectoryStructure) -> Path:
     return sds.internal_tmp_dir / TMP_INTERNAL__STDIN_CONTENTS
-
-
-def sds_log_phase_dir(sds: SandboxDirectoryStructure,
-                      phase_name: str) -> Path:
-    return log_phase_dir(sds.log_dir, phase_name)
-
-
-def log_phase_dir(log_root_dir: Path,
-                  phase_name: str) -> Path:
-    return log_root_dir / LOG__PHASE_SUB_DIR / phase_name

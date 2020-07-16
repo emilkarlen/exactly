@@ -140,7 +140,7 @@ def execute_action_and_catch_implementation_exception(action_that_raises_phase_s
     """
     :raises PhaseStepFailureException
     """
-    # return action()  # DEBUG IMPLEMENTATION EXCEPTION
+    # return action_that_raises_phase_step_failure_exception()  # DEBUG IMPLEMENTATION EXCEPTION
     try:
         return action_that_raises_phase_step_failure_exception()
     except PhaseStepFailureException:

@@ -1,11 +1,13 @@
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Callable
 
 from exactly_lib.common import tmp_file_spaces as std_file_spaces
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+    InstructionEnvironmentForPostSdsStep, TmpFileStorage
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatDoNotCreateFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -18,13 +20,18 @@ def fake_pre_sds_environment() -> InstructionEnvironmentForPreSdsStep:
 
 
 def fake_post_sds_environment() -> InstructionEnvironmentForPostSdsStep:
+    sds = fake_sds()
     return InstructionEnvironmentForPostSdsStep(
         fake_hds(),
         {},
-        fake_sds(),
-        'the-phase-identifier',
-        lambda path: TmpDirFileSpaceThatDoNotCreateFiles(path)
+        sds,
+        TmpFileStorage(sds.internal_tmp_dir / 'instruction-dir',
+                       lambda path: TmpDirFileSpaceThatDoNotCreateFiles(path))
     )
+
+
+def _default_get_tmp_space(root_dir: Path) -> TmpDirFileSpace:
+    return std_file_spaces.std_tmp_dir_file_space(root_dir)
 
 
 class InstructionEnvironmentPostSdsBuilder:
@@ -34,7 +41,9 @@ class InstructionEnvironmentPostSdsBuilder:
                  environ: Dict[str, str] = None,
                  phase_identifier: str = 'the-phase',
                  timeout_in_seconds: int = None,
-                 symbols: SymbolTable = None
+                 symbols: SymbolTable = None,
+                 get_paths_access_for_dir:
+                 Callable[[Path], TmpDirFileSpace] = _default_get_tmp_space,
                  ):
         self._hds = hds
         self._sds = sds
@@ -42,7 +51,8 @@ class InstructionEnvironmentPostSdsBuilder:
         self._phase_identifier = phase_identifier
         self._timeout_in_seconds = timeout_in_seconds
         self._symbols = symbol_table_from_none_or_value(symbols)
-        self.get_instr_tmp_file_space = lambda path: std_file_spaces.std_tmp_dir_file_space(path)
+        self._get_paths_access_for_dir = get_paths_access_for_dir
+        self.get_instr_tmp_file_space = lambda path: TmpFileStorage(path, get_paths_access_for_dir)
 
     @staticmethod
     def new(hds: HomeDirectoryStructure = fake_hds(),
@@ -104,8 +114,7 @@ class InstructionEnvironmentPostSdsBuilder:
             self._hds,
             self._environ,
             self._sds,
-            self._phase_identifier,
-            self.get_instr_tmp_file_space,
+            self.get_instr_tmp_file_space(self._sds.internal_tmp_dir),
             self._timeout_in_seconds,
             self._symbols,
         )

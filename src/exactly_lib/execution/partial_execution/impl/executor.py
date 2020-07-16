@@ -1,12 +1,14 @@
+import itertools
 import os
 from typing import Sequence, Optional, Tuple
 
-from exactly_lib.common import tmp_file_spaces as std_file_spaces
+from exactly_lib.execution import phase_file_space
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.impl import phase_step_executors
 from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor, \
     run_instructions_phase_step, execute_action_and_catch_implementation_exception
+from exactly_lib.execution.impl.phase_step_executors import InstructionEnvPostSdsGetter
 from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.impl.atc_execution import ActionToCheckExecutor
@@ -17,9 +19,9 @@ from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailur
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import ActionToCheck, Actor
 from exactly_lib.test_case.os_services import new_default
-from exactly_lib.test_case.phases import instruction_environment as instr_env
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
@@ -92,6 +94,7 @@ class _PartialExecutor:
 
         self.__sandbox_directory_structure = None
         self._action_to_check_outcome = None
+        self._phase_tmp_space_factory = None
 
     def execute(self) -> PartialExeResult:
         try:
@@ -207,6 +210,9 @@ class _PartialExecutor:
         self._os_services = new_default()
         self._set_cwd_to_act_dir()
         self.__post_sds_symbol_table = self.exe_conf.predefined_symbols.copy()
+        self._phase_tmp_space_factory = phase_file_space.PhaseTmpFileSpaceFactory(
+            self.__sandbox_directory_structure.internal_tmp_dir
+        )
 
     def _do_validate_symbols(self) -> SymbolTable:
         symbols_validator = SymbolsValidator(self.exe_conf.predefined_symbols,
@@ -285,7 +291,7 @@ class _PartialExecutor:
             run_instructions_phase_step(phase_step.SETUP__MAIN,
                                         phase_step_executors.SetupMainExecutor(
                                             self._os_services,
-                                            self._post_sds_environment(phase_identifier.SETUP),
+                                            self._post_sds_main_environments(phase_identifier.SETUP),
                                             self._setup_settings_builder),
                                         self._test_case.setup_phase)
         finally:
@@ -294,36 +300,44 @@ class _PartialExecutor:
     def _setup__validate_post_setup(self):
         run_instructions_phase_step(phase_step.SETUP__VALIDATE_POST_SETUP,
                                     phase_step_executors.SetupValidatePostSetupExecutor(
-                                        self._post_setup_validation_environment(phase_identifier.SETUP)),
+                                        self._post_setup_validation_environments(phase_identifier.SETUP)),
                                     self._test_case.setup_phase)
 
     def _construct_act_phase_executor(self) -> ActionToCheckExecutor:
-        return ActionToCheckExecutor(self._action_to_check,
-                                     self._post_setup_validation_environment(phase_identifier.ACT),
-                                     self._post_sds_environment(phase_identifier.ACT),
-                                     self.exe_conf.atc_os_process_executor,
-                                     self._stdin_conf_from_setup,
-                                     self.exe_conf.exe_atc_and_skip_assertions)
+        return ActionToCheckExecutor(
+            self._action_to_check,
+            self._post_sds_environment(
+                self._phase_tmp_space_factory.for_phase__validation(phase_identifier.ACT),
+                self._instruction_environment_pre_sds.symbols,
+            ),
+            self._post_sds_environment(
+                self._phase_tmp_space_factory.for_phase__main(phase_identifier.ACT),
+                self.__post_sds_symbol_table,
+            ),
+            self.exe_conf.atc_os_process_executor,
+            self._stdin_conf_from_setup,
+            self.exe_conf.exe_atc_and_skip_assertions,
+        )
 
     def _before_assert__validate_post_setup(self):
         run_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                self._post_setup_validation_environment(phase_identifier.BEFORE_ASSERT)),
+                self._post_setup_validation_environments(phase_identifier.BEFORE_ASSERT)),
             self._test_case.before_assert_phase)
 
     def _assert__validate_post_setup(self):
         run_instructions_phase_step(
             phase_step.ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.AssertValidatePostSetupExecutor(
-                self._post_setup_validation_environment(phase_identifier.ASSERT)),
+                self._post_setup_validation_environments(phase_identifier.ASSERT)),
             self._test_case.assert_phase)
 
     def _assert__main(self):
         run_instructions_phase_step(
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
-                self._post_sds_environment(phase_identifier.ASSERT),
+                self._post_sds_main_environments(phase_identifier.ASSERT),
                 self._os_services),
             self._test_case.assert_phase)
 
@@ -331,7 +345,7 @@ class _PartialExecutor:
         run_instructions_phase_step(
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
-                self._post_sds_environment(phase_identifier.CLEANUP),
+                self._post_sds_main_environments(phase_identifier.CLEANUP),
                 previous_phase,
                 self._os_services),
             self._test_case.cleanup_phase)
@@ -340,7 +354,7 @@ class _PartialExecutor:
         run_instructions_phase_step(
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
-                self._post_sds_environment(phase_identifier.BEFORE_ASSERT),
+                self._post_sds_main_environments(phase_identifier.BEFORE_ASSERT),
                 self._os_services),
             self._test_case.before_assert_phase)
 
@@ -351,28 +365,33 @@ class _PartialExecutor:
         sds_root_dir_name = self.conf.exe_conf.sds_root_dir_resolver()
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
-    def _post_setup_validation_environment(self, phase: phase_identifier.Phase
-                                           ) -> instr_env.InstructionEnvironmentForPostSdsStep:
-        return instr_env.InstructionEnvironmentForPostSdsStep(
-            self.conf_values.hds,
-            self.exe_conf.environ,
-            self.__sandbox_directory_structure,
-            phase.identifier,
-            tmp_instr_spaces=lambda path: std_file_spaces.std_tmp_dir_file_space(path),
-            timeout_in_seconds=self.conf_values.timeout_in_seconds,
-            symbols=self._instruction_environment_pre_sds.symbols,
-        )
+    def _post_setup_validation_environments(self, phase: phase_identifier.Phase
+                                            ) -> InstructionEnvPostSdsGetter:
+        for instruction_number in itertools.count(1):
+            yield self._post_sds_environment(
+                self._phase_tmp_space_factory.instruction__validation(phase, instruction_number),
+                self._instruction_environment_pre_sds.symbols,
+            )
+
+    def _post_sds_main_environments(self,
+                                    phase: phase_identifier.Phase) -> InstructionEnvPostSdsGetter:
+        for instruction_number in itertools.count(1):
+            yield self._post_sds_environment(
+                self._phase_tmp_space_factory.instruction__main(phase, instruction_number),
+                self.__post_sds_symbol_table,
+            )
 
     def _post_sds_environment(self,
-                              phase: phase_identifier.Phase) -> instr_env.InstructionEnvironmentForPostSdsStep:
-        return instr_env.InstructionEnvironmentForPostSdsStep(
+                              tmp_file_storage: phase_file_space.TmpFileStorage,
+                              symbols: SymbolTable,
+                              ) -> InstructionEnvironmentForPostSdsStep:
+        return InstructionEnvironmentForPostSdsStep(
             self.conf_values.hds,
             self.exe_conf.environ,
             self.__sandbox_directory_structure,
-            phase.identifier,
-            tmp_instr_spaces=lambda path: std_file_spaces.std_tmp_dir_file_space(path),
+            tmp_file_storage,
             timeout_in_seconds=self.conf_values.timeout_in_seconds,
-            symbols=self.__post_sds_symbol_table,
+            symbols=symbols,
         )
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:

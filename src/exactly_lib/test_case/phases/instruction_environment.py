@@ -1,13 +1,12 @@
 from pathlib import Path
 from typing import Dict, Callable
 
-from exactly_lib.common import tmp_file_spaces as std_file_spaces
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
@@ -56,21 +55,44 @@ class InstructionEnvironmentForPreSdsStep:
         return PathResolvingEnvironmentPreSds(self.__hds, self.__symbols)
 
 
+class TmpFileStorage:
+    def __init__(self,
+                 root_dir__may_not_exist: Path,
+                 get_paths_access_for_dir: Callable[[Path], TmpDirFileSpace]
+                 ):
+        self._root_dir__may_not_exist = root_dir__may_not_exist
+        self._root_dir__existing = None
+        self._paths_access_for_dir = get_paths_access_for_dir(root_dir__may_not_exist)
+
+    @property
+    def root_dir__may_not_exist(self) -> Path:
+        return self._root_dir__may_not_exist
+
+    @property
+    def root_dir__existing(self) -> Path:
+        if self._root_dir__existing is None:
+            ensure_file_existence.ensure_directory_exists_as_a_directory__impl_error(self._root_dir__may_not_exist)
+            self._root_dir__existing = self._root_dir__may_not_exist
+
+        return self._root_dir__may_not_exist
+
+    @property
+    def paths_access(self) -> TmpDirFileSpace:
+        return self._paths_access_for_dir
+
+
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  hds: HomeDirectoryStructure,
                  environ: Dict[str, str],
                  sds: _sds.SandboxDirectoryStructure,
-                 phase_identifier: str,
-                 tmp_instr_spaces: Callable[[Path], TmpDirFileSpace],
+                 tmp_dir_space: TmpFileStorage,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
                  ):
         super().__init__(hds, environ, timeout_in_seconds, symbols)
+        self._tmp_dir_space = tmp_dir_space
         self.__sds = sds
-        self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
-        phase_tmp_dir = sds.internal_tmp_dir / phase_identifier
-        self._tmp_instr_dirs = tmp_instr_spaces(phase_tmp_dir)
 
     @property
     def sds(self) -> _sds.SandboxDirectoryStructure:
@@ -82,24 +104,8 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                     self.sds)
 
     @property
-    def tmp_dir__may_not_exist(self) -> Path:
-        return self._tmp_instr_dirs.new_path()
-
-    @property
-    def tmp_dir__that_exists(self) -> Path:
-        return self._tmp_instr_dirs.new_path_as_existing_dir()
-
-    @property
-    def tmp_dir__path_access(self) -> TmpDirFileSpace:
-        return std_file_spaces.std_tmp_dir_file_space(self._tmp_instr_dirs.new_path())
-
-    @property
-    def phase_logging(self) -> PhaseLoggingPaths:
-        return self._phase_logging
-
-    @property
-    def tmp_file_space(self) -> TmpDirFileSpace:
-        return self._phase_logging.space_for_instruction()
+    def tmp_dir__path_access(self) -> TmpFileStorage:
+        return self._tmp_dir_space
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:

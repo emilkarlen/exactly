@@ -41,7 +41,7 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               ) -> StringModel:
         return StringModelOfFile(
             file_to_transform.path.primitive,
-            environment.tmp_dir__path_access,
+            environment.tmp_dir__path_access.paths_access,
         )
 
 

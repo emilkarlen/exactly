@@ -24,3 +24,7 @@ def std_tmp_dir_file_names() -> Iterator[str]:
 def _std_tmp_sub_dir_file_names() -> Iterator[Iterator[str]]:
     while True:
         yield std_tmp_dir_file_names()
+
+
+def instruction_dir_name(instruction_number: int) -> str:
+    return str(instruction_number).zfill(2)

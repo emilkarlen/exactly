@@ -92,7 +92,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
              ) -> ExecutionResultAndStderr:
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         program = resolver.resolve_program(self._program)
-        storage_dir = environment.tmp_dir__that_exists
+        storage_dir = environment.tmp_dir__path_access.root_dir__existing
 
         command_executor = self._command_executor(
             os_services,

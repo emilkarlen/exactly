@@ -1,6 +1,5 @@
 import pathlib
 
-from exactly_lib.common.tmp_file_spaces import std_tmp_dir_file_space
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
@@ -38,12 +37,11 @@ def make_transformed_file_from_output_in_instruction_tmp_dir(environment: Instru
     """
     :raises PfhHardErrorException: IO error.
     """
-    storage_dir = environment.tmp_dir__that_exists
-    tmp_file_space = std_tmp_dir_file_space(storage_dir)
+    storage_dir = environment.tmp_dir__path_access.root_dir__existing
     return make_transformed_file_from_output(storage_dir,
                                              environment.process_execution_settings,
                                              os_services,
-                                             tmp_file_space,
+                                             environment.tmp_dir__path_access.paths_access,
                                              checked_output,
                                              program)
 

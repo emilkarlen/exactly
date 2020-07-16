@@ -100,7 +100,7 @@ class FileMakerForContentsFromProgram(FileMaker):
              ) -> Optional[TextRenderer]:
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         program = resolver.resolve_program(self._program)
-        storage_dir = environment.tmp_dir__that_exists
+        storage_dir = environment.tmp_dir__path_access.root_dir__existing
 
         try:
             command_executor = self._command_executor(
@@ -122,7 +122,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
         transformation_helper = FileTransformerHelper(
             os_services,
-            environment.tmp_dir__path_access,
+            environment.tmp_dir__path_access.paths_access,
         )
         src_path = result.files.path_of_std(self._output_channel)
         return transformation_helper.transform_to_file__dp(src_path,
@@ -194,7 +194,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
         transformation_helper = FileTransformerHelper(
             os_services,
-            environment.tmp_dir__path_access,
+            environment.tmp_dir__path_access.paths_access,
         )
         return transformation_helper.transform_to_file__dp(src_path,
                                                            dst_path,
