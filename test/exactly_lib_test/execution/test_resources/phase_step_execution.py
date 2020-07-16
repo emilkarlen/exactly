@@ -1,7 +1,6 @@
 from exactly_lib.execution.impl.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 
@@ -34,13 +33,8 @@ class RecordingMedia:
 
 
 class TestInstruction(TestCaseInstruction):
-    def __init__(self,
-                 name: str):
+    def __init__(self, name: str):
         self.name = name
-
-    @property
-    def phase(self) -> phase_identifier.Phase:
-        raise ValueError('should not be used in test')
 
 
 class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor):

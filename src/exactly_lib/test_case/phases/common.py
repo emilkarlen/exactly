@@ -2,13 +2,10 @@ from typing import Sequence
 
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.phase_identifier import Phase
 
 
 class TestCaseInstruction(Instruction):
-    @property
-    def phase(self) -> Phase:
-        raise NotImplementedError()
+    pass
 
 
 class SymbolUser:
@@ -35,6 +32,4 @@ class SymbolUser:
 
 
 class TestCaseInstructionWithSymbols(TestCaseInstruction, SymbolUser):
-    @property
-    def phase(self) -> Phase:
-        raise NotImplementedError()
+    pass

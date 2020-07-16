@@ -1,7 +1,6 @@
 import pathlib
 from typing import Optional
 
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
@@ -65,10 +64,6 @@ class ConfigurationPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the configuration phase.
     """
-
-    @property
-    def phase(self) -> phase_identifier.Phase:
-        return phase_identifier.CONFIGURATION
 
     def main(self, configuration_builder: ConfigurationBuilder) -> SuccessOrHardError:
         """

@@ -2,7 +2,6 @@ from enum import Enum
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -14,10 +13,6 @@ class AssertPhaseInstruction(TestCaseInstructionWithSymbols):
     """
     Abstract base class for instructions of the ASSERT phase.
     """
-
-    @property
-    def phase(self) -> phase_identifier.Phase:
-        return phase_identifier.ASSERT
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep

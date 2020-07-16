@@ -2,7 +2,6 @@ import pathlib
 from typing import Optional, Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -81,10 +80,6 @@ class SetupPhaseInstruction(TestCaseInstructionWithSymbols):
     """
     Abstract base class for instructions of the SETUP phase.
     """
-
-    @property
-    def phase(self) -> phase_identifier.Phase:
-        return phase_identifier.SETUP
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
