@@ -1,6 +1,6 @@
 from typing import Callable
 
-from exactly_lib.common import tmp_file_spaces
+from exactly_lib.common import tmp_dir_file_spaces
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -16,7 +16,7 @@ def with_string_model_construction(make_constructor: Callable[[StringModelFactor
                                    ) -> LogicWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
     def make_primitive(environment: ApplicationEnvironment) -> ModelConstructor[MODEL]:
         factory = StringModelFactory(
-            tmp_file_spaces.std_tmp_dir_file_space(environment.tmp_files_space.new_path())
+            tmp_dir_file_spaces.std_tmp_dir_file_space(environment.tmp_files_space.new_path())
         )
         return make_constructor(factory)
 

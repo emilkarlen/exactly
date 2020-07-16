@@ -4,7 +4,7 @@ from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 StringTransFun = Callable[[Iterator[str]], Iterator[str]]
 

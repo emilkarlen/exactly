@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import ensure_file_existence
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 

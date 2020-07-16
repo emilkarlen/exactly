@@ -1,9 +1,9 @@
 import pathlib
 
-from exactly_lib.common import tmp_file_spaces
+from exactly_lib.common import tmp_dir_file_spaces
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.instruction_environment import TmpFileStorage
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
 class PhaseTmpFileSpaceFactory:
@@ -68,4 +68,4 @@ def _phase_dir(phase: phase_identifier.Phase) -> str:
 
 
 def _get_paths_access_for_dir(root_dir: pathlib.Path) -> DirFileSpace:
-    return tmp_file_spaces.std_tmp_dir_file_space(root_dir)
+    return tmp_dir_file_spaces.std_tmp_dir_file_space(root_dir)

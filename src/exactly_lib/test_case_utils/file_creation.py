@@ -12,9 +12,9 @@ from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.ensure_file_existence import ensure_directory_exists, \
     ensure_parent_directory_does_exist_and_is_a_directory
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 
 
 def create_file(file_path: pathlib.Path,

@@ -2,7 +2,7 @@ import pathlib
 import subprocess
 from typing import Optional, ContextManager
 
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionFile, \
     ExecutableExecutor

@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 from typing import Callable, Sequence
 
-from exactly_lib.util.file_utils import tmp_file_spaces as sut
-from exactly_lib.util.file_utils.tmp_file_spaces import FileNamesConfig
+from exactly_lib.util.file_utils import dir_file_spaces as sut
+from exactly_lib.util.file_utils.dir_file_spaces import FileNamesConfig
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 

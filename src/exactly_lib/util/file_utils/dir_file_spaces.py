@@ -2,7 +2,7 @@ import os
 import pathlib
 from typing import Iterator, Optional
 
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.str_ import sequences
 
 

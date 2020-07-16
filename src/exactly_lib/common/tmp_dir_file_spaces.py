@@ -1,15 +1,15 @@
 import pathlib
 from typing import Iterator
 
-from exactly_lib.util.file_utils import tmp_file_spaces
-from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils import dir_file_spaces
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.str_ import sequences
 
 
 def std_tmp_dir_file_space(dir_path: pathlib.Path) -> DirFileSpace:
-    return tmp_file_spaces.DirFileSpaceAsDirCreatedOnDemand(
+    return dir_file_spaces.DirFileSpaceAsDirCreatedOnDemand(
         dir_path,
-        tmp_file_spaces.FileNamesConfig(
+        dir_file_spaces.FileNamesConfig(
             '-',
             std_tmp_dir_file_names(),
             _std_tmp_sub_dir_file_names(),
