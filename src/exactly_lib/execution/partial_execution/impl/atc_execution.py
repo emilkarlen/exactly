@@ -94,7 +94,7 @@ class ActionToCheckExecutor:
 
     def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
         if self.stdin_configuration.has_custom_stdin:
-            file_name = self._custom_stdin_file_name()
+            file_name = self._custom_stdin_file_path()
             return self._run_act_program_with_opened_stdin_file(file_name)
         else:
             return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
@@ -143,7 +143,7 @@ class ActionToCheckExecutor:
         with misc_utils.open_and_make_read_only_on_close__p(self.tcds.sds.result.exitcode_file, 'w') as f:
             f.write(str(exitcode))
 
-    def _custom_stdin_file_name(self) -> pathlib.Path:
+    def _custom_stdin_file_path(self) -> pathlib.Path:
         configuration = self.stdin_configuration
         if configuration.file_name is not None:
             return configuration.file_name

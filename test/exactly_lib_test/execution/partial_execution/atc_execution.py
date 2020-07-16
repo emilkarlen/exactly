@@ -180,7 +180,7 @@ class TestExecute(unittest.TestCase):
     def test_WHEN_stdin_set_to_file_that_does_not_exist_THEN_execution_should_result_in_hard_error(self):
         # ARRANGE #
         setup_settings = setup.default_settings()
-        setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
+        setup_settings.stdin.file_name = pathlib.Path('this-is-not-the-name-of-an-existing-file.txt')
         actor = ActorForConstantAtc(ActionToCheckThatJustReturnsSuccess())
         test_case = _empty_test_case()
         # ACT #
