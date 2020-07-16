@@ -6,6 +6,7 @@ from exactly_lib.execution.impl.single_instruction_executor import PartialContro
 from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
@@ -166,14 +167,14 @@ class Expectation:
 
 def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
     hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds, {})
+    return InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
 
 
 def env_with_singleton_symbol_table(symbol: SymbolContext) -> InstructionEnvironmentForPreSdsStep:
     table = symbol.symbol_table
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
-                                               {},
+                                               ProcessExecutionSettings.with_empty_environ(),
                                                symbols=table)
 
 
@@ -181,7 +182,7 @@ def env_with_symbol_table(symbols: List[SymbolContext]) -> InstructionEnvironmen
     symbols = SymbolContext.symbol_table_of_contexts(symbols)
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
-                                               {},
+                                               ProcessExecutionSettings.with_empty_environ(),
                                                symbols=symbols)
 
 

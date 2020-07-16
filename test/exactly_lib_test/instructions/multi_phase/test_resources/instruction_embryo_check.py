@@ -220,7 +220,7 @@ class Executor(Generic[T]):
                                                                      'side_effects_on_tcds')
             self.expectation.main_side_effect_on_environment_variables.apply_with_message(
                 self.put,
-                environment.environ,
+                environment.proc_exe_settings.environ,
                 'main side effects on environment variables')
             self.expectation.symbols_after_main.apply_with_message(
                 self.put,

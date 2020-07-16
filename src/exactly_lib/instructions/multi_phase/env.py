@@ -80,7 +80,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[None]):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              ):
-        self.executor.execute(environment.environ,
+        self.executor.execute(environment.proc_exe_settings.environ,
                               environment.path_resolving_environment_pre_or_post_sds)
 
 

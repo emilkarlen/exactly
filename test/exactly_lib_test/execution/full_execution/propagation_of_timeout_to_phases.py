@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import Optional
 
 from exactly_lib.execution.phase_step_simple import \
     ALL_SETUP_WITH_ENV_ARG, ALL_ASSERT_WITH_ENV_ARG, ALL_BEFORE_ASSERT_WITH_ENV_ARG, \
@@ -29,7 +30,7 @@ class Test(unittest.TestCase):
         default_timeout = 72
         actual_recordings = {}
         recorder_builder = PropertyRecorderBuilder(
-            InstructionEnvironmentForPreSdsStep.timeout_in_seconds.fget,
+            get_timeout_in_seconds,
             actual_recordings)
         test_case = builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution(
             recorder_builder).build()
@@ -57,10 +58,11 @@ class Test(unittest.TestCase):
     def test_WHEN_an_instruction_sets_timeout_THEN_the_that_timeout_SHOULD_be_propagated_to_instructions_and_act_phase(
             self):
         # ARRANGE #
+
         expected_timeout = 87
         actual_recordings = {}
         recorder_builder = PropertyRecorderBuilder(
-            InstructionEnvironmentForPreSdsStep.timeout_in_seconds.fget,
+            get_timeout_in_seconds,
             actual_recordings)
         test_case_builder = builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution(
             recorder_builder)
@@ -95,3 +97,7 @@ class _ConfigurationPhaseInstructionThatSetsTimeoutTo(ConfigurationPhaseInstruct
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_timeout_in_seconds(self.timeout)
         return sh.new_sh_success()
+
+
+def get_timeout_in_seconds(env: InstructionEnvironmentForPreSdsStep) -> Optional[int]:
+    return env.proc_exe_settings.timeout_in_seconds

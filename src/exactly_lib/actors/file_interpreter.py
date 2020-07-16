@@ -141,7 +141,7 @@ class _ActionToCheck(ActionToCheck):
                 std_files: StdFiles,
                 ) -> ExitCodeOrHardError:
         command = self._make_command(resolving_helper_for_instruction_env(environment))
-        return os_process_executor.execute(command, std_files, environment.process_execution_settings)
+        return os_process_executor.execute(command, std_files, environment.proc_exe_settings)
 
 
 T = TypeVar('T')

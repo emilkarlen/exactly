@@ -154,7 +154,7 @@ class SetEnvironmentVariableViaInstructionArguments:
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
                  *args, **kwargs):
-        environment.environ[self.variable_name] = 'value that is not used by the test'
+        environment.proc_exe_settings.environ[self.variable_name] = 'value that is not used by the test'
 
 
 class AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIsEmpty(ValueAssertionBase):

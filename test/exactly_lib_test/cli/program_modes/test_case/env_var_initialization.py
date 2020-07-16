@@ -68,10 +68,10 @@ class SetupPhaseInstructionThatAssertsEnvVars(SetupPhaseInstruction):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         for k, v in self.expected_to_exist.items():
-            if k not in environment.environ:
+            if k not in environment.proc_exe_settings.environ:
                 self.put.fail('Missing env var: ' + k)
             self.put.assertEqual(v,
-                                 environment.environ[k],
+                                 environment.proc_exe_settings.environ[k],
                                  'Env var value for var ' + k)
 
         return sh.new_sh_success()

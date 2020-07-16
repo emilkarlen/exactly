@@ -11,6 +11,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.simple_textstruct.file_printer_output import to_string
 from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources.act_phase_execution import \
@@ -119,8 +120,10 @@ class TestExecuteBase(unittest.TestCase):
         environ = {} if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
-        environment = InstructionEnvironmentForPreSdsStep(hds,
-                                                          environ)
+        environment = InstructionEnvironmentForPreSdsStep(
+            hds,
+            ProcessExecutionSettings.with_environ(environ),
+        )
         sut = self.actor.parse(act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
         if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
@@ -227,7 +230,10 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
         with home_directory_structure() as hds:
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
-                environment = InstructionEnvironmentForPreSdsStep(hds, {})
+                environment = InstructionEnvironmentForPreSdsStep(
+                    hds,
+                    ProcessExecutionSettings.with_empty_environ(),
+                )
                 sut = executor_constructor.parse(source)
                 step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

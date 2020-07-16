@@ -15,6 +15,7 @@ from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
@@ -108,7 +109,7 @@ class TestConstructor(unittest.TestCase):
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
     hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds, {})
+    return InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
 
 
 class ParserThatRaisesException(sut.ExecutableObjectParser):

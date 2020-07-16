@@ -12,6 +12,10 @@ class ProcessExecutionSettings(tuple):
         return ProcessExecutionSettings(environ=environ)
 
     @staticmethod
+    def with_empty_environ() -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings(environ={})
+
+    @staticmethod
     def with_environ_copy(environ_to_copy: Dict[str, str]) -> 'ProcessExecutionSettings':
         return ProcessExecutionSettings(environ=dict(environ_to_copy))
 

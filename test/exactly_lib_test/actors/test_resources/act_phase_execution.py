@@ -12,6 +12,7 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
@@ -46,6 +47,11 @@ class Arrangement:
         self.atc_process_executor = atc_process_executor
         self.symbol_table = symbol_table_from_none_or_value(symbol_table)
 
+    @property
+    def proc_exe_settings(self) -> ProcessExecutionSettings:
+        return ProcessExecutionSettings(self.timeout_in_seconds,
+                                        self.environ)
+
 
 class Expectation:
     def __init__(self,
@@ -76,10 +82,10 @@ def check_execution(put: unittest.TestCase,
                     expectation: Expectation) -> ExitCodeOrHardError:
     assert_is_list_of_act_phase_instructions(put, act_phase_instructions)
     with home_directory_structure(contents=arrangement.hds_contents) as hds:
-        instruction_environment = InstructionEnvironmentForPreSdsStep(hds,
-                                                                      arrangement.environ,
-                                                                      arrangement.timeout_in_seconds,
-                                                                      symbols=arrangement.symbol_table)
+        instruction_environment = InstructionEnvironmentForPreSdsStep(
+            hds,
+            arrangement.proc_exe_settings,
+            symbols=arrangement.symbol_table)
         sut = actor.parse(act_phase_instructions)
         expectation.symbol_usages.apply_with_message(put,
                                                      sut.symbol_usages(),

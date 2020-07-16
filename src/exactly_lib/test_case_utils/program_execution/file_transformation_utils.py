@@ -37,7 +37,7 @@ def make_transformed_file_from_output_in_instruction_tmp_dir(environment: Instru
     """
     storage_dir = environment.tmp_dir__path_access.root_dir__existing
     return make_transformed_file_from_output(storage_dir,
-                                             environment.process_execution_settings,
+                                             environment.proc_exe_settings,
                                              os_services,
                                              environment.tmp_dir__path_access.paths_access,
                                              checked_output,

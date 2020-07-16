@@ -26,6 +26,7 @@ from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -201,8 +202,9 @@ class _PartialExecutor:
         self._action_to_check = atc
         self._instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.conf_values.hds,
-            self.exe_conf.environ,
-            self.conf_values.timeout_in_seconds,
+            ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
+                                     self.exe_conf.environ,
+                                     ),
             symbols)
 
     def _setup_post_sds_environment(self):
@@ -387,11 +389,10 @@ class _PartialExecutor:
                               ) -> InstructionEnvironmentForPostSdsStep:
         return InstructionEnvironmentForPostSdsStep(
             self.conf_values.hds,
-            self.exe_conf.environ,
+            ProcessExecutionSettings(self.conf_values.timeout_in_seconds, self.exe_conf.environ),
             self.__sandbox_directory_structure,
             tmp_file_storage,
-            timeout_in_seconds=self.conf_values.timeout_in_seconds,
-            symbols=symbols,
+            symbols,
         )
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:

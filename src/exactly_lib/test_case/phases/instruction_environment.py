@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Callable
+from typing import Callable
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
@@ -15,36 +15,19 @@ from exactly_lib.util.symbol_table import SymbolTable
 class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  hds: HomeDirectoryStructure,
-                 environ: Dict[str, str],
-                 timeout_in_seconds: int = None,
+                 proc_exe_settings: ProcessExecutionSettings,
                  symbols: SymbolTable = None):
         self.__hds = hds
-        self.__timeout_in_seconds = timeout_in_seconds
-        self.__environ = environ
         self.__symbols = SymbolTable() if symbols is None else symbols
+        self._proc_exe_settings = proc_exe_settings
 
     @property
     def hds(self) -> HomeDirectoryStructure:
         return self.__hds
 
     @property
-    def environ(self) -> Dict[str, str]:
-        """
-        The set of environment variables available to instructions.
-        These may be both read and written by instructions.
-        """
-        return self.__environ
-
-    @property
-    def timeout_in_seconds(self) -> int:
-        """
-        :return: None if no timeout
-        """
-        return self.__timeout_in_seconds
-
-    @property
-    def process_execution_settings(self) -> ProcessExecutionSettings:
-        return ProcessExecutionSettings(self.timeout_in_seconds, self.environ)
+    def proc_exe_settings(self) -> ProcessExecutionSettings:
+        return self._proc_exe_settings
 
     @property
     def symbols(self) -> SymbolTable:
@@ -84,13 +67,12 @@ class TmpFileStorage:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  hds: HomeDirectoryStructure,
-                 environ: Dict[str, str],
+                 proc_exe_settings: ProcessExecutionSettings,
                  sds: _sds.SandboxDirectoryStructure,
                  tmp_dir_space: TmpFileStorage,
-                 timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
                  ):
-        super().__init__(hds, environ, timeout_in_seconds, symbols)
+        super().__init__(hds, proc_exe_settings, symbols)
         self._tmp_dir_space = tmp_dir_space
         self.__sds = sds
 

@@ -169,4 +169,5 @@ class _ConfigurationPhaseActionThatSetsHdsActDirToParentParent:
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
-        self.recorder.set_phase_step_recording(self.my_phase_step, copy.copy(environment.environ))
+        self.recorder.set_phase_step_recording(self.my_phase_step,
+                                               copy.copy(environment.proc_exe_settings.environ))

@@ -16,14 +16,14 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 
 def fake_pre_sds_environment() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(fake_hds(),
-                                               {})
+                                               ProcessExecutionSettings.with_empty_environ())
 
 
 def fake_post_sds_environment() -> InstructionEnvironmentForPostSdsStep:
     sds = fake_sds()
     return InstructionEnvironmentForPostSdsStep(
         fake_hds(),
-        {},
+        ProcessExecutionSettings.with_empty_environ(),
         sds,
         TmpFileStorage(sds.internal_tmp_dir / 'instruction-dir',
                        lambda path: DirFileSpaceThatDoNotCreateFiles(path))
@@ -88,25 +88,24 @@ class InstructionEnvironmentPostSdsBuilder:
         return InstructionEnvironmentPostSdsBuilder(
             environment.hds,
             sds,
-            environment.environ,
-            environment.timeout_in_seconds,
+            environment.proc_exe_settings.environ,
+            environment.proc_exe_settings.timeout_in_seconds,
             environment.symbols,
         )
 
     def build_pre_sds(self) -> InstructionEnvironmentForPreSdsStep:
         return InstructionEnvironmentForPreSdsStep(
             self._hds,
-            self._environ,
-            self._timeout_in_seconds,
+            ProcessExecutionSettings(self._timeout_in_seconds,
+                                     self._environ),
             self._symbols,
         )
 
     def build_post_sds(self) -> InstructionEnvironmentForPostSdsStep:
         return InstructionEnvironmentForPostSdsStep(
             self._hds,
-            self._environ,
+            ProcessExecutionSettings(self._timeout_in_seconds, self._environ),
             self._sds,
             self.get_instr_tmp_file_space(self._sds.internal_tmp_dir),
-            self._timeout_in_seconds,
             self._symbols,
         )

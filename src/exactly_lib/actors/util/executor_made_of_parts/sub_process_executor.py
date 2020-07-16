@@ -24,7 +24,7 @@ class SubProcessExecutor(parts.Executor):
         )
         return self.os_process_executor.execute(command,
                                                 std_files,
-                                                environment.process_execution_settings)
+                                                environment.proc_exe_settings)
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
         """

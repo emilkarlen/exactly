@@ -454,11 +454,12 @@ class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo[None]):
     def __init__(self, variable: NameAndValue):
         self.variable = variable
 
-    def main(self, environment: InstructionEnvironmentForPostSdsStep,
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              ):
         variable = self.variable
-        environment.environ[variable.name] = variable.value
+        environment.proc_exe_settings.environ[variable.name] = variable.value
 
 
 if __name__ == '__main__':

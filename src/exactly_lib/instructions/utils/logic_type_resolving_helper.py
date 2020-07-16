@@ -23,7 +23,7 @@ def full_resolving_env_for_instruction_env(os_services: OsServices,
         environment.tcds,
         ApplicationEnvironment(
             os_services,
-            environment.process_execution_settings,
+            environment.proc_exe_settings,
             environment.tmp_dir__path_access.paths_access,
         ),
     )

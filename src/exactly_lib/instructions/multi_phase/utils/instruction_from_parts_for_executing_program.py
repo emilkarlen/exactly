@@ -96,7 +96,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         )
 
         result = command_executor.execute(
-            environment.process_execution_settings,
+            environment.proc_exe_settings,
             program.command,
             program.structure(),
         )

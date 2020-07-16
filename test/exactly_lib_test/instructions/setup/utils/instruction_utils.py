@@ -11,6 +11,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.path_check import PathCheck
 from exactly_lib.type_system.data import paths
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_utils.file_properties import FileCheckThatEvaluatesTo
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -42,7 +43,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
                        FileCheckThatEvaluatesTo(True)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
-            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, ProcessExecutionSettings.with_empty_environ())
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
@@ -55,7 +56,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
                        FileCheckThatEvaluatesTo(False)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
-            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, ProcessExecutionSettings.with_empty_environ())
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertFalse(pre_validate.is_success)
 
@@ -70,7 +71,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
                        FileCheckThatEvaluatesTo(True)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
-            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, ProcessExecutionSettings.with_empty_environ())
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
@@ -83,7 +84,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
                        FileCheckThatEvaluatesTo(False)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
-            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, {})
+            environment = InstructionEnvironmentForPreSdsStep(tcds.hds, ProcessExecutionSettings.with_empty_environ())
             pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 

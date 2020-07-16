@@ -23,7 +23,7 @@ class SetupPhaseInstructionThatSetsEnvVar(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        environment.environ[self.var_name] = self.var_value
+        environment.proc_exe_settings.environ[self.var_name] = self.var_value
         return sh.new_sh_success()
 
 
@@ -38,7 +38,7 @@ class SetupPhaseInstructionThatRegistersExistenceOfEnvVar(SetupPhaseInstruction)
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self.registry.observation = self.env_var_to_observe in environment.environ
+        self.registry.observation = self.env_var_to_observe in environment.proc_exe_settings.environ
         return sh.new_sh_success()
 
 

@@ -105,7 +105,7 @@ class FileMakerForContentsFromProgram(FileMaker):
                 self._executor(storage_dir)
             )
             result = command_executor.execute(
-                environment.process_execution_settings,
+                environment.proc_exe_settings,
                 program.command,
                 program.structure(),
             )

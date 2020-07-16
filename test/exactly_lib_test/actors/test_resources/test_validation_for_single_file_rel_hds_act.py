@@ -5,6 +5,7 @@ from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
@@ -103,7 +104,7 @@ class test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_
         with home_directory_structure(
                 contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                     fs.executable_file('system-under-test')]))) as hds:
-            environment = InstructionEnvironmentForPreSdsStep(hds, {})
+            environment = InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
             executor = self.actor.parse(act_phase_instructions)
             actual = executor.validate_pre_sds(environment)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
@@ -43,7 +44,10 @@ class TestParsingAndValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.Parser()
         self.hds = fake_hds()
-        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.hds, dict(os.environ))
+        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(
+            self.hds,
+            ProcessExecutionSettings.with_environ(dict(os.environ)),
+        )
 
     def test_parse_fails_when_command_is_empty(self):
         act_phase_instructions = [instr([shell_command_source_line_for(''), ])]

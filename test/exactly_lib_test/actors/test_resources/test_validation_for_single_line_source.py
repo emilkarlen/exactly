@@ -5,6 +5,7 @@ from typing import Sequence
 from exactly_lib.test_case.actor import Actor, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
@@ -38,7 +39,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
     @staticmethod
     def _new_environment() -> InstructionEnvironmentForPreSdsStep:
         hds = fake_hds()
-        return InstructionEnvironmentForPreSdsStep(hds, {})
+        return InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
 
     def _do_parse(self, instructions: Sequence[ActPhaseInstruction]):
         self.actor.parse(instructions)
@@ -49,8 +50,10 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                                        ):
         with home_directory_structure(
                 contents=hds_case_dir_contents(home_dir_contents)) as hds:
-            pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
-                                                              {})
+            pre_sds_env = InstructionEnvironmentForPreSdsStep(
+                hds,
+                ProcessExecutionSettings.with_empty_environ(),
+            )
             executor = self.actor.parse(instructions)
             return executor.validate_pre_sds(pre_sds_env)
 
