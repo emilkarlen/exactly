@@ -5,14 +5,14 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
-ModelConstructor = Callable[[TmpDirFileSpace], StringModel]
+ModelConstructor = Callable[[DirFileSpace], StringModel]
 
 
 class StringTransformerPropertiesConfiguration(

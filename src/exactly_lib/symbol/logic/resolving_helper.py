@@ -12,7 +12,7 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -39,7 +39,7 @@ class LogicTypeResolvingHelper:
         return self._symbols
 
     @property
-    def file_space(self) -> TmpDirFileSpace:
+    def file_space(self) -> DirFileSpace:
         return self.application_environment.tmp_files_space
 
     def resolve_logic_w_describer(self, sdv: LogicWithDetailsDescriptionSdv[PRIMITIVE]) -> PRIMITIVE:

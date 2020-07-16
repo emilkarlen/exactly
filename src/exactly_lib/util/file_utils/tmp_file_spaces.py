@@ -2,7 +2,7 @@ import os
 import pathlib
 from typing import Iterator, Optional
 
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib.util.str_ import sequences
 
 
@@ -40,7 +40,7 @@ class FileNamesConfig:
         return self._sub_space_file_names
 
 
-class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
+class DirFileSpaceAsDirCreatedOnDemand(DirFileSpace):
     """
     A tmp file space that is a dir that (probably) do not exist,
     but is created when tmp files are demanded.
@@ -67,8 +67,8 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
         ret_val.mkdir()
         return ret_val
 
-    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
-        return TmpDirFileSpaceAsDirCreatedOnDemand(
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> DirFileSpace:
+        return DirFileSpaceAsDirCreatedOnDemand(
             self.new_path(name_suffix),
             FileNamesConfig(self._file_names.suffix_separator,
                             next(self._file_names.sub_space_file_names),
@@ -91,18 +91,18 @@ class TmpDirFileSpaceAsDirCreatedOnDemand(TmpDirFileSpace):
         return ret_val
 
 
-class TmpDirFileSpaceThatMustNoBeUsed(TmpDirFileSpace):
+class DirFileSpaceThatMustNoBeUsed(DirFileSpace):
     def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         raise ValueError('must not be used')
 
     def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         raise ValueError('must not be used')
 
-    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> DirFileSpace:
         raise ValueError('must not be used')
 
 
-class TmpDirFileSpaceThatDoNotCreateFiles(TmpDirFileSpace):
+class DirFileSpaceThatDoNotCreateFiles(DirFileSpace):
     def __init__(self, root_dir: pathlib.Path):
         self._root_dir = root_dir
         self._path_name_sequence = sequences.int_strings(1, 2)
@@ -113,5 +113,5 @@ class TmpDirFileSpaceThatDoNotCreateFiles(TmpDirFileSpace):
     def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         raise ValueError('must not be used')
 
-    def sub_dir_space(self, name_suffix: Optional[str] = None) -> TmpDirFileSpace:
-        return TmpDirFileSpaceThatDoNotCreateFiles(self.new_path())
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> DirFileSpace:
+        return DirFileSpaceThatDoNotCreateFiles(self.new_path())

@@ -14,7 +14,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.ensure_file_existence import ensure_directory_exists, \
     ensure_parent_directory_does_exist_and_is_a_directory
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 
 
 def create_file(file_path: pathlib.Path,
@@ -70,7 +70,7 @@ def create_file__dp(path: DescribedPath,
 class FileTransformerHelper:
     def __init__(self,
                  os_services: OsServices,
-                 tmp_file_space: TmpDirFileSpace,
+                 tmp_file_space: DirFileSpace,
                  ):
         self._os_services = os_services
         self._tmp_file_space = tmp_file_space

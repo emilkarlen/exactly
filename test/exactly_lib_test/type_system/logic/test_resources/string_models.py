@@ -5,14 +5,14 @@ from typing import ContextManager, Iterator, Sequence, List
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.tmp_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.common.test_resources import text_doc_assertions
 
 
 class StringModelThatMustNotBeUsed(StringModel):
     @property
-    def _tmp_file_space(self) -> TmpDirFileSpace:
+    def _tmp_file_space(self) -> DirFileSpace:
         raise ValueError('unsupported')
 
     @property
@@ -29,7 +29,7 @@ class StringModelThatRaisesHardErrorException(StringModel):
         self._err_msg = err_msg
 
     @property
-    def _tmp_file_space(self) -> TmpDirFileSpace:
+    def _tmp_file_space(self) -> DirFileSpace:
         raise ValueError('unsupported')
 
     @property
@@ -49,14 +49,14 @@ class StringModelThatRaisesHardErrorException(StringModel):
 class StringModelFromLines(StringModelFromLinesBase):
     def __init__(self,
                  value: Sequence[str],
-                 tmp_file_space: TmpDirFileSpace,
+                 tmp_file_space: DirFileSpace,
                  ):
         super().__init__()
         self._value = value
         self.__tmp_file_space = tmp_file_space
 
     @property
-    def _tmp_file_space(self) -> TmpDirFileSpace:
+    def _tmp_file_space(self) -> DirFileSpace:
         return self.__tmp_file_space
 
     @property
@@ -67,7 +67,7 @@ class StringModelFromLines(StringModelFromLinesBase):
 
 def of_lines(
         lines: Sequence[str],
-        tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
+        tmp_file_space: DirFileSpace = DirFileSpaceThatMustNoBeUsed(),
 ) -> StringModel:
     return StringModelFromLines(
         lines,
@@ -77,7 +77,7 @@ def of_lines(
 
 def of_string(
         contents: str,
-        tmp_file_space: TmpDirFileSpace = TmpDirFileSpaceThatMustNoBeUsed(),
+        tmp_file_space: DirFileSpace = DirFileSpaceThatMustNoBeUsed(),
 ) -> StringModel:
     return StringModelFromLines(
         contents.splitlines(keepends=True),

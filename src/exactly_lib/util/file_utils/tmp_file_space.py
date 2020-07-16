@@ -14,9 +14,9 @@ class TmpFileSpace(ABC):
         return path
 
 
-class TmpDirFileSpace(ABC):
+class DirFileSpace(ABC):
     """
-    A directory serving as a space for temporary files.
+    A directory serving as a space for a sequence of automatically named files.
     """
 
     @abstractmethod
@@ -36,7 +36,7 @@ class TmpDirFileSpace(ABC):
         pass
 
     @abstractmethod
-    def sub_dir_space(self, name_suffix: Optional[str] = None) -> 'TmpDirFileSpace':
+    def sub_dir_space(self, name_suffix: Optional[str] = None) -> 'DirFileSpace':
         """
         :param name_suffix: Dir separator characters are replaces with a non-dir-sep character.
         :return: A file space in a new empty directory, with name_suffix as suffix of the file name.

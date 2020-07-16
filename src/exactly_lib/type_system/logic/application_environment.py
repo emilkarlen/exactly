@@ -1,5 +1,5 @@
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 
 
@@ -7,14 +7,14 @@ class ApplicationEnvironment:
     def __init__(self,
                  os_services: OsServices,
                  process_execution_settings: ProcessExecutionSettings,
-                 tmp_files_space: TmpDirFileSpace,
+                 tmp_files_space: DirFileSpace,
                  ):
         self._os_services = os_services
         self._process_execution_settings = process_execution_settings
         self._tmp_files_space = tmp_files_space
 
     @property
-    def tmp_files_space(self) -> TmpDirFileSpace:
+    def tmp_files_space(self) -> DirFileSpace:
         return self._tmp_files_space
 
     @property

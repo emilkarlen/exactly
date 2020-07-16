@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils import ensure_file_existence
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -58,7 +58,7 @@ class InstructionEnvironmentForPreSdsStep:
 class TmpFileStorage:
     def __init__(self,
                  root_dir__may_not_exist: Path,
-                 get_paths_access_for_dir: Callable[[Path], TmpDirFileSpace]
+                 get_paths_access_for_dir: Callable[[Path], DirFileSpace]
                  ):
         self._root_dir__may_not_exist = root_dir__may_not_exist
         self._root_dir__existing = None
@@ -77,7 +77,7 @@ class TmpFileStorage:
         return self._root_dir__may_not_exist
 
     @property
-    def paths_access(self) -> TmpDirFileSpace:
+    def paths_access(self) -> DirFileSpace:
         return self._paths_access_for_dir
 
 

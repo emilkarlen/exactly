@@ -7,8 +7,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatDoNotCreateFiles
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.tmp_file_spaces import DirFileSpaceThatDoNotCreateFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds, fake_tcds
@@ -26,11 +26,11 @@ def fake_post_sds_environment() -> InstructionEnvironmentForPostSdsStep:
         {},
         sds,
         TmpFileStorage(sds.internal_tmp_dir / 'instruction-dir',
-                       lambda path: TmpDirFileSpaceThatDoNotCreateFiles(path))
+                       lambda path: DirFileSpaceThatDoNotCreateFiles(path))
     )
 
 
-def _default_get_tmp_space(root_dir: Path) -> TmpDirFileSpace:
+def _default_get_tmp_space(root_dir: Path) -> DirFileSpace:
     return std_file_spaces.std_tmp_dir_file_space(root_dir)
 
 
@@ -43,7 +43,7 @@ class InstructionEnvironmentPostSdsBuilder:
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
                  get_paths_access_for_dir:
-                 Callable[[Path], TmpDirFileSpace] = _default_get_tmp_space,
+                 Callable[[Path], DirFileSpace] = _default_get_tmp_space,
                  ):
         self._hds = hds
         self._sds = sds

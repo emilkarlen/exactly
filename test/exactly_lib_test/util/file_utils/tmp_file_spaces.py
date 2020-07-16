@@ -19,11 +19,11 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
         with tmp_dir() as existing_dir_path:
             space_root_dir = existing_dir_path / 'non-existing-root'
             # ACT #
-            sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                    FileNamesConfig('-',
-                                                                    iter([]),
-                                                                    iter([])),
-                                                    )
+            sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                 FileNamesConfig('-',
+                                                                 iter([]),
+                                                                 iter([])),
+                                                 )
             # ASSERT #
             self.assertFalse(space_root_dir.exists())
 
@@ -32,11 +32,11 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
         with tmp_dir() as existing_dir_path:
             space_root_dir = existing_dir_path / 'non-existing-root-comp-1' / 'comp-2'
             # ACT
-            space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                            FileNamesConfig('-',
-                                                                            iter(['name']),
-                                                                            iter([])),
-                                                            )
+            space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                         FileNamesConfig('-',
+                                                                         iter(['name']),
+                                                                         iter([])),
+                                                         )
             space.new_path()
             # ASSERT #
             self.assertTrue(space_root_dir.is_dir())
@@ -46,11 +46,11 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
         with tmp_dir() as existing_dir_path:
             space_root_dir = existing_dir_path
             # ACT
-            space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                            FileNamesConfig('-',
-                                                                            iter(['name']),
-                                                                            iter([])),
-                                                            )
+            space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                         FileNamesConfig('-',
+                                                                         iter(['name']),
+                                                                         iter([])),
+                                                         )
             space.new_path()
             # ASSERT #
             self.assertTrue(space_root_dir.is_dir())
@@ -62,11 +62,11 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
                     # ACT
-                    space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                    FileNamesConfig('-',
-                                                                                    iter(['a', 'b']),
-                                                                                    iter([])),
-                                                                    )
+                    space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                 FileNamesConfig('-',
+                                                                                 iter(['a', 'b']),
+                                                                                 iter([])),
+                                                                 )
                     file_1 = space.new_path()
                     file_2 = space.new_path()
                     # ASSERT #
@@ -83,15 +83,15 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
-                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                         FileNamesConfig(
-                                                                             '-',
-                                                                             iter(['a', 'b']),
-                                                                             iter([
-                                                                                 iter(['1', '2'])
-                                                                             ])
-                                                                         ),
-                                                                         )
+                    root_space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                      FileNamesConfig(
+                                                                          '-',
+                                                                          iter(['a', 'b']),
+                                                                          iter([
+                                                                              iter(['1', '2'])
+                                                                          ])
+                                                                      ),
+                                                                      )
                     # AC & ASSERT #
 
                     sub_dir_space = root_space.sub_dir_space()
@@ -133,13 +133,13 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
                     # ACT
-                    space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                    FileNamesConfig(
-                                                                        '---',
-                                                                        iter(['1', '2', '3', '4']),
-                                                                        iter([])
-                                                                    ),
-                                                                    )
+                    space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                 FileNamesConfig(
+                                                                     '---',
+                                                                     iter(['1', '2', '3', '4']),
+                                                                     iter([])
+                                                                 ),
+                                                                 )
                     file_1 = space.new_path()
                     dir_2 = space.new_path_as_existing_dir()
                     file_3 = space.new_path('three')
@@ -162,16 +162,16 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
-                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                         FileNamesConfig(
-                                                                             '-',
-                                                                             iter(['a', 'b']),
-                                                                             iter([
-                                                                                 iter(['1', '2']),
-                                                                                 iter(['10', '20']),
-                                                                             ])
-                                                                         ),
-                                                                         )
+                    root_space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                      FileNamesConfig(
+                                                                          '-',
+                                                                          iter(['a', 'b']),
+                                                                          iter([
+                                                                              iter(['1', '2']),
+                                                                              iter(['10', '20']),
+                                                                          ])
+                                                                      ),
+                                                                      )
                     # AC & ASSERT #
 
                     sub_dir_space_1 = root_space.sub_dir_space()
@@ -207,16 +207,16 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
-                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                         FileNamesConfig(
-                                                                             '--',
-                                                                             iter(['a', 'b']),
-                                                                             iter([
-                                                                                 iter(['1', '2']),
-                                                                                 iter(['10', '20']),
-                                                                             ])
-                                                                         ),
-                                                                         )
+                    root_space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                      FileNamesConfig(
+                                                                          '--',
+                                                                          iter(['a', 'b']),
+                                                                          iter([
+                                                                              iter(['1', '2']),
+                                                                              iter(['10', '20']),
+                                                                          ])
+                                                                      ),
+                                                                      )
                     # AC & ASSERT #
 
                     sub_dir_space_1 = root_space.sub_dir_space('A')
@@ -255,15 +255,15 @@ class TestTmpDirFileSpaceAsDirCreatedOnDemand(unittest.TestCase):
             with self.subTest(case.name):
                 with tmp_dir() as existing_dir_path:
                     space_root_dir = case.value(existing_dir_path)
-                    root_space = sut.TmpDirFileSpaceAsDirCreatedOnDemand(space_root_dir,
-                                                                         FileNamesConfig(
-                                                                             '--',
-                                                                             iter(['a', 'b']),
-                                                                             iter([
-                                                                                 iter(['1', '2']),
-                                                                             ])
-                                                                         ),
-                                                                         )
+                    root_space = sut.DirFileSpaceAsDirCreatedOnDemand(space_root_dir,
+                                                                      FileNamesConfig(
+                                                                          '--',
+                                                                          iter(['a', 'b']),
+                                                                          iter([
+                                                                              iter(['1', '2']),
+                                                                          ])
+                                                                      ),
+                                                                      )
                     # AC & ASSERT #
 
                     sub_dir_space_1 = root_space.sub_dir_space(f('{dir_sep}A{dir_sep}'))

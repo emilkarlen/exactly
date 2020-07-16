@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.process_execution.executors import store_result_in_files
@@ -47,7 +47,7 @@ def make_transformed_file_from_output_in_instruction_tmp_dir(environment: Instru
 def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
                                       process_execution_settings: ProcessExecutionSettings,
                                       os_services: OsServices,
-                                      tmp_file_space: TmpDirFileSpace,
+                                      tmp_file_space: DirFileSpace,
                                       transformed_output: process_output_files.ProcOutputFile,
                                       program: Program,
                                       ) -> ResultWithTransformation:

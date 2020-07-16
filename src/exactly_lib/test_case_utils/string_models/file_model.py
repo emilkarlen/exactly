@@ -3,13 +3,13 @@ from pathlib import Path
 from typing import ContextManager, Iterator
 
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 
 
 class StringModelOfFile(StringModel):
     def __init__(self,
                  file: Path,
-                 tmp_file_space: TmpDirFileSpace,
+                 tmp_file_space: DirFileSpace,
                  ):
         """
         :param file: An existing regular file (that is readable).
@@ -18,7 +18,7 @@ class StringModelOfFile(StringModel):
         self.__tmp_file_space = tmp_file_space
 
     @property
-    def _tmp_file_space(self) -> TmpDirFileSpace:
+    def _tmp_file_space(self) -> DirFileSpace:
         return self.__tmp_file_space
 
     @property

@@ -6,7 +6,7 @@ from typing import Iterator, ContextManager, Sequence
 
 from exactly_lib.type_system.logic.impls.transformed_string_models import TransformedStringModelFromLines
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.util.file_utils.test_resources.tmp_file_spaces import TmpFileSpaceThatAllowsSinglePathGeneration
 
@@ -238,14 +238,14 @@ def _lines_of_file(path: pathlib.Path) -> Sequence[str]:
 class _SourceModelTestImpl(StringModel):
     def __init__(self,
                  lines: Sequence[str],
-                 tmp_file_space: TmpDirFileSpace,
+                 tmp_file_space: DirFileSpace,
                  ):
         super().__init__()
         self.lines = lines
         self.tmp_file_space = tmp_file_space
 
     @property
-    def _tmp_file_space(self) -> TmpDirFileSpace:
+    def _tmp_file_space(self) -> DirFileSpace:
         return self.tmp_file_space
 
     @property

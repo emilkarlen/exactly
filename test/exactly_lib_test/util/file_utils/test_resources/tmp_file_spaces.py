@@ -4,12 +4,12 @@ import unittest
 from typing import Optional
 
 from exactly_lib.util.file_utils import tmp_file_spaces
-from exactly_lib.util.file_utils.tmp_file_space import TmpDirFileSpace
-from exactly_lib.util.file_utils.tmp_file_spaces import TmpDirFileSpaceThatMustNoBeUsed
+from exactly_lib.util.file_utils.tmp_file_space import DirFileSpace
+from exactly_lib.util.file_utils.tmp_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.str_ import sequences
 
 
-def tmp_dir_file_space_for_test(dir_path: pathlib.Path) -> TmpDirFileSpace:
+def tmp_dir_file_space_for_test(dir_path: pathlib.Path) -> DirFileSpace:
     file_names = tmp_file_spaces.FileNamesConfig(
         '--',
         sequences.int_strings(1, 0),
@@ -18,13 +18,13 @@ def tmp_dir_file_space_for_test(dir_path: pathlib.Path) -> TmpDirFileSpace:
             for _ in itertools.count(1)
         )
     )
-    return tmp_file_spaces.TmpDirFileSpaceAsDirCreatedOnDemand(
+    return tmp_file_spaces.DirFileSpaceAsDirCreatedOnDemand(
         dir_path,
         file_names,
     )
 
 
-class TmpFileSpaceThatAllowsSinglePathGeneration(TmpDirFileSpaceThatMustNoBeUsed):
+class TmpFileSpaceThatAllowsSinglePathGeneration(DirFileSpaceThatMustNoBeUsed):
     def __init__(self,
                  put: unittest.TestCase,
                  storage_dir: pathlib.Path,
