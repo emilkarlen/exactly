@@ -12,13 +12,12 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.phases.tmp_file_spaces import PhaseLoggingPaths, InstructionSourceInfo, instruction_log_dir
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
@@ -28,15 +27,16 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test_command_sdvs
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.programs import shell_commands
+from exactly_lib_test.test_resources.programs import shell_commands, py_programs
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
-from exactly_lib_test.util.process_execution.store_result_in_files import assert_dir_contains_exactly_result_files
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources import py_program as py
 
 
@@ -86,7 +86,6 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
                          TestInstructionIsErrorWhenProcessTimesOut,
                          TestEnvironmentVariablesArePassedToSubProcess,
-                         TestOutputIsStoredInFilesInInstructionLogDir,
                          TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage,
                          TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero,
                          ]
@@ -156,49 +155,28 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
     def runTest(self):
         var_name = 'TEST_VAR_' + str(random.getrandbits(32))
         var_value = str(random.getrandbits(32))
-        expected_sub_process_result = SubProcessResult(exitcode=0,
-                                                       stdout=var_value + '\n',
-                                                       stderr='')
+
         environ = {var_name: var_value}
-        program = lines_content(py.write_value_of_environment_variable_to_stdout(var_name))
-        program_source_as_single_line = program.replace('\n', ';')
-        source = source4(program_source_as_single_line)
+        py_pgm_file = File(
+            'check-env.py',
+            py_programs.pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(environ)
+        )
+        source = source4(py_pgm_file.name)
 
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFileRelAct()
         instruction_name = 'name-of-the-instruction'
-        source_info = InstructionSourceInfo(source.current_line_number,
-                                            instruction_name)
         self.conf.run_sub_process_test(
             self,
             source,
             execution_setup_parser,
-            self.conf.arrangement(environ=environ),
-            self.conf.expect_success(_InstructionLogDirContainsOutFiles(self.conf.phase(),
-                                                                        source_info,
-                                                                        expected_sub_process_result)),
-            instruction_name=instruction_name)
-
-
-class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
-    def runTest(self):
-        sub_process_result = SubProcessResult(exitcode=0,
-                                              stdout='output on stdout',
-                                              stderr='output on stderr')
-        program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
-        program_source_as_single_line = program.replace('\n', ';')
-        source = source4(program_source_as_single_line)
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine()
-        instruction_name = 'name-of-the-instruction'
-        source_info = InstructionSourceInfo(source.current_line_number,
-                                            instruction_name)
-        self.conf.run_sub_process_test(
-            self,
-            source,
-            execution_setup_parser,
-            self.conf.arrangement(),
-            self.conf.expect_success(_InstructionLogDirContainsOutFiles(self.conf.phase(),
-                                                                        source_info,
-                                                                        sub_process_result)),
+            self.conf.arrangement(
+                environ=environ,
+                sds_contents_before_main=sds_populator.contents_in(
+                    RelSdsOptionType.REL_ACT,
+                    DirContents([py_pgm_file]),
+                )
+            ),
+            self.conf.expect_success(),
             instruction_name=instruction_name)
 
 
@@ -222,31 +200,22 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
         )
 
 
-class _InstructionLogDirContainsOutFiles(ValueAssertionBase[SandboxDirectoryStructure]):
-    def __init__(self,
-                 phase: Phase,
-                 source_info: InstructionSourceInfo,
-                 expected_files_contents: SubProcessResult):
-        self.phase = phase
-        self.source_info = source_info
-        self.expected_files_contents = expected_files_contents
-
-    def _apply(self,
-               put: unittest.TestCase,
-               sds: SandboxDirectoryStructure,
-               message_builder: asrt.MessageBuilder):
-        logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
-        the_instruction_log_dir = instruction_log_dir(logging_paths, self.source_info)
-        assert_dir_contains_exactly_result_files(self.expected_files_contents).apply(put,
-                                                                                     the_instruction_log_dir,
-                                                                                     message_builder)
-
-
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramSdvForCommand(
             test_command_sdvs.for_py_source_on_command_line(instruction_argument),
+            accumulator.empty())
+
+
+class _SetupParserForExecutingPythonSourceFileRelAct(Parser[ProgramSdv]):
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
+        instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        return ProgramSdvForCommand(
+            test_command_sdvs.for_interpret_py_file_that_must_exist(
+                path_sdvs.of_rel_option_with_const_file_name(RelOptionType.REL_ACT,
+                                                             instruction_argument)
+            ),
             accumulator.empty())
 
 

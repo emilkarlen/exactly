@@ -69,7 +69,7 @@ def environment_exe_case(environment: Dict[str, str],
                                      Arrangement]:
     py_file = File(
         'environment-vars-checker.py',
-        py_run_programs.pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(environment)
+        py_programs.pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(environment)
     )
 
     py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)

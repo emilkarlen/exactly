@@ -1,3 +1,5 @@
+from typing import Dict
+
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -99,3 +101,32 @@ _CHANNEL_NAMES = {
     ProcOutputFile.STDOUT: 'stdout',
     ProcOutputFile.STDERR: 'stderr',
 }
+
+
+def pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(expected: Dict[str, str]) -> str:
+    return _PGM_THAT_EXISTS_WITH_ZERO_EXIT_CODE_IFF_ENVIRONMENT_VARS_IS_NOT_INCLUDED.format(
+        expected_environment=repr(expected)
+    )
+
+
+_PGM_THAT_EXISTS_WITH_ZERO_EXIT_CODE_IFF_ENVIRONMENT_VARS_IS_NOT_INCLUDED = """\
+import os;
+import sys;
+
+expected_env_vars = {expected_environment}
+
+actual_env_vars = dict(os.environ)
+
+for (key, value) in expected_env_vars.items():
+
+  if not key in actual_env_vars:
+     sys.stderr.write('Missing key: ' + key)
+     sys.exit(1)
+
+  actual_value = actual_env_vars[key]
+  if value != actual_value:
+     sys.stderr.write('Different value: %s != %s' % (key, actual_value))
+     sys.exit(1)
+
+sys.exit(0)
+"""
