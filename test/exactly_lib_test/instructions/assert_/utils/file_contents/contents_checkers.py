@@ -41,7 +41,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
             # ACT #
 
             actual = assertion_part.check(self.environment, self.the_os_services,
-                                          'custom environment',
                                           model)
             # ASSERT #
 
@@ -54,7 +53,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         with self.assertRaises(PfhHardErrorException):
             path = pathlib.Path('a file that does not exist')
             assertion_part.check(self.environment, self.the_os_services,
-                                 'custom environment',
                                  sut.ComparisonActualFile(
                                      described_path.new_primitive(path),
                                      True,
@@ -67,7 +65,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         with tmp_dir() as path_of_existing_directory:
             with self.assertRaises(PfhHardErrorException):
                 assertion_part.check(self.environment, self.the_os_services,
-                                     'custom environment',
                                      sut.ComparisonActualFile(
                                          described_path.new_primitive(path_of_existing_directory),
                                          True,
@@ -80,7 +77,6 @@ class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
         # ACT & ASSERT #
         path = pathlib.Path('a file that does not exist')
         assertion_part.check(self.environment, self.the_os_services,
-                             'custom environment',
                              sut.ComparisonActualFile(
                                  described_path.new_primitive(path),
                                  False,

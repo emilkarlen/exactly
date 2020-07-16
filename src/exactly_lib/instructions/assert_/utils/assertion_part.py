@@ -49,7 +49,6 @@ class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndSdvValidation, A
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               value_to_check: A
               ) -> B:
         """
@@ -66,13 +65,11 @@ class AssertionPart(Generic[A, B], ObjectWithSymbolReferencesAndSdvValidation, A
     def check_and_return_pfh(self,
                              environment: InstructionEnvironmentForPostSdsStep,
                              os_services: OsServices,
-                             custom_environment,
                              value_to_check: A
                              ) -> pfh.PassOrFailOrHardError:
         return translate_pfh_exception_to_pfh(self.check,
                                               environment,
                                               os_services,
-                                              custom_environment,
                                               value_to_check)
 
 
@@ -80,17 +77,15 @@ class IdentityAssertionPart(Generic[A], AssertionPart[A, A]):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               value_to_check: A
               ) -> A:
-        self._check(environment, os_services, custom_environment, value_to_check)
+        self._check(environment, os_services, value_to_check)
         return value_to_check
 
     @abstractmethod
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                os_services: OsServices,
-               custom_environment,
                value_to_check: A
                ):
         pass
@@ -110,7 +105,6 @@ class IdentityAssertionPartWithValidationAndReferences(Generic[A], IdentityAsser
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                os_services: OsServices,
-               custom_environment,
                value_to_check: A
                ):
         pass
@@ -137,10 +131,9 @@ class SequenceOfCooperativeAssertionParts(AssertionPart[A, B]):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               value_to_check: A) -> B:
         for assertion_part in self._assertion_parts:
-            value_to_check = assertion_part.check(environment, os_services, custom_environment, value_to_check)
+            value_to_check = assertion_part.check(environment, os_services, value_to_check)
         return value_to_check
 
     @property
@@ -207,7 +200,6 @@ class AssertionInstructionFromAssertionPart(Generic[A], AssertPhaseInstruction):
         argument_to_checker = self._get_argument_to_assertion_part(environment)
         result = self._assertion_part.check_and_return_pfh(environment,
                                                            os_services,
-                                                           None,
                                                            argument_to_checker)
 
         if result.status is PassOrFailOrHardErrorEnum.FAIL:

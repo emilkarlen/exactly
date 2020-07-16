@@ -29,7 +29,6 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                os_services: OsServices,
-               custom_environment,
                model: StringModel):
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         string_matcher = resolver.resolve_matcher(self._string_matcher)

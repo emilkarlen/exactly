@@ -45,7 +45,6 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               files_source: FilesSource) -> FilesSource:
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)
@@ -89,7 +88,6 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               files_source: FilesSource) -> FilesSource:
 
         path_to_check = (

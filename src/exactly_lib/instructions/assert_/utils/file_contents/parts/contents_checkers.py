@@ -20,7 +20,6 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
         return value_to_check.construct(environment,
                                         os_services)
@@ -34,7 +33,6 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
               file_to_transform: ComparisonActualFile,
               ) -> StringModel:
         return StringModelOfFile(
@@ -56,7 +54,6 @@ class IsExistingRegularFileAssertionPart(IdentityAssertionPart[ComparisonActualF
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                os_services: OsServices,
-               custom_environment,
                actual_file: ComparisonActualFile,
                ):
         if actual_file.file_access_needs_to_be_verified:
