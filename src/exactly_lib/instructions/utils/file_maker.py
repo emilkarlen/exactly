@@ -14,7 +14,6 @@ from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvVa
     ValidationStep
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
@@ -76,11 +75,9 @@ class FileMakerForConstantContents(FileMaker):
 
 class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
-                 source_info: InstructionSourceInfo,
                  output_channel: ProcOutputFile,
                  program: ProgramSdv):
         self._output_channel = output_channel
-        self._source_info = source_info
         self._program = program
 
     @property
@@ -150,10 +147,9 @@ class FileMakerForContentsFromProgram(FileMaker):
 
 class FileMakerForContentsFromExistingFile(FileMaker):
     def __init__(self,
-                 source_info: InstructionSourceInfo,
                  transformer: StringTransformerSdv,
-                 src_path: PathSdv):
-        self._source_info = source_info
+                 src_path: PathSdv,
+                 ):
         self._transformer = transformer
         self._src_path = src_path
 

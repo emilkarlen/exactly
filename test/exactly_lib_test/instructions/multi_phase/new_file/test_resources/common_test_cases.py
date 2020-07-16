@@ -33,7 +33,7 @@ class TestCaseBase(unittest.TestCase):
                expectation: Expectation,
                phase_is_after_act: bool = True,
                ):
-        parser = sut.EmbryoParser('instruction-name', phase_is_after_act)
+        parser = sut.EmbryoParser(phase_is_after_act)
         embryo_check.check(self, parser, source, arrangement, expectation)
 
 

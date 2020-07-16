@@ -56,7 +56,6 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             )
 
             return assertion_part.AssertionInstructionFromAssertionPart(assertions,
-                                                                        None,
                                                                         lambda x: FilesSource(path_to_check))
 
     @staticmethod

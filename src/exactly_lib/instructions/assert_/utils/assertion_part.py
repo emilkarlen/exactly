@@ -163,22 +163,20 @@ def compose_with_sequence(first: SequenceOfCooperativeAssertionParts[A, B],
     return SequenceOfCooperativeAssertionParts(first.parts + [second])
 
 
-class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
+class AssertionInstructionFromAssertionPart(Generic[A], AssertPhaseInstruction):
     """ An :class:`AssertPhaseInstruction` in terms of a :class:`AssertionPart`'
     """
 
     def __init__(self,
                  assertion_part: AssertionPart[A, Any],
-                 custom_environment,
                  get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], A],
                  failure_message_header:
                  Optional[Callable[[FullResolvingEnvironment], Renderer[MajorBlock]]] = None,
                  ):
         """
         :param get_argument_to_part: Returns the argument to give to
-        the assertion part, given a :class:`InstructionEnvironmentForPostSdsStep`
+        the assertion part
         """
-        self._custom_environment = custom_environment
         self._assertion_part = assertion_part
         self._get_argument_to_assertion_part = get_argument_to_part
         self._validator = PreOrPostSdsSvhValidationErrorValidator(assertion_part.validator)
@@ -209,7 +207,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
         argument_to_checker = self._get_argument_to_assertion_part(environment)
         result = self._assertion_part.check_and_return_pfh(environment,
                                                            os_services,
-                                                           self._custom_environment,
+                                                           None,
                                                            argument_to_checker)
 
         if result.status is PassOrFailOrHardErrorEnum.FAIL:

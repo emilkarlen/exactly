@@ -15,7 +15,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
@@ -70,10 +69,7 @@ class ExecutionResultAndStderr(tuple):
 
 
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultAndStderr]):
-    def __init__(self,
-                 source_info: InstructionSourceInfo,
-                 program: ProgramSdv):
-        self.source_info = source_info
+    def __init__(self, program: ProgramSdv):
         self._program = program
 
     @property
@@ -147,10 +143,8 @@ class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParserWoFileSy
         self.program_parser = program_parser
 
     def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
-        source_info = InstructionSourceInfo(source.current_line_number,
-                                            self.instruction_name)
         program = self.program_parser.parse(source)
-        return TheInstructionEmbryo(source_info, program)
+        return TheInstructionEmbryo(program)
 
 
 def parts_parser(instruction_name: str,

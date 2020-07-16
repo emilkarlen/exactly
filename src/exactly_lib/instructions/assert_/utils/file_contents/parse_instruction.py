@@ -9,7 +9,6 @@ from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhas
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 
 
 class ComparisonActualFileParser(Parser[ComparisonActualFileConstructor]):
@@ -32,7 +31,6 @@ class Parser(AssertPhaseInstructionTokenParser):
         self._actual_file_parser = actual_file_parser
 
     def parse_from_token_parser(self, parser: TokenParser) -> AssertPhaseInstruction:
-        source_info = InstructionSourceInfo(parser.first_line_number, self._instruction_name)
         actual_file_constructor = self._actual_file_parser.parse_from_token_parser(parser)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
 
@@ -51,7 +49,6 @@ class Parser(AssertPhaseInstructionTokenParser):
         )
         return AssertionInstructionFromAssertionPart(
             assertion_part_sequence,
-            source_info,
             lambda env: actual_file_constructor,
             actual_file_constructor.failure_message_header,
         )

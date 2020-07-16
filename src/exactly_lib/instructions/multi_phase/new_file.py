@@ -33,7 +33,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_path
@@ -45,7 +44,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 def parts_parser(instruction_name: str,
                  phase_is_after_act: bool) -> InstructionPartsParser:
-    return PartsParserFromEmbryoParser(EmbryoParser(instruction_name, phase_is_after_act),
+    return PartsParserFromEmbryoParser(EmbryoParser(phase_is_after_act),
                                        MainStepResultTranslatorForTextRendererAsHardError())
 
 
@@ -127,22 +126,16 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
 
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
-    def __init__(self,
-                 instruction_name: str,
-                 phase_is_after_act: bool):
+    def __init__(self, phase_is_after_act: bool):
         self._phase_is_after_act = phase_is_after_act
-        self._instruction_name = instruction_name
 
     def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
-        first_line_number = source.current_line_number
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParser)  # Type info for IDE
 
             path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, parser)
             instruction_config = InstructionConfig(
-                InstructionSourceInfo(first_line_number,
-                                      self._instruction_name),
                 _src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
                 CONTENTS_ARGUMENT
             )

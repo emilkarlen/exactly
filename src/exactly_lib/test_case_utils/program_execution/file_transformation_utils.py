@@ -2,7 +2,6 @@ import pathlib
 
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
@@ -31,7 +30,6 @@ class ResultWithTransformation:
 
 def make_transformed_file_from_output_in_instruction_tmp_dir(environment: InstructionEnvironmentForPostSdsStep,
                                                              os_services: OsServices,
-                                                             source_info: InstructionSourceInfo,
                                                              checked_output: process_output_files.ProcOutputFile,
                                                              program: Program) -> ResultWithTransformation:
     """

@@ -9,7 +9,6 @@ from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForCon
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc, texts
 from exactly_lib.test_case_utils.parse import parse_here_document
@@ -123,10 +122,9 @@ class FileContentsDocumentation:
 
 class InstructionConfig:
     def __init__(self,
-                 source_info: InstructionSourceInfo,
                  src_rel_opt_arg_conf: RelOptionArgumentConfiguration,
-                 syntax_element: str):
-        self.source_info = source_info
+                 syntax_element: str,
+                 ):
         self.src_rel_opt_arg_conf = src_rel_opt_arg_conf
         self.syntax_element = syntax_element
 
@@ -167,14 +165,12 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                           parser: TokenParser) -> FileMaker:
     def _parse_program_from_stdout(my_parser: TokenParser) -> FileMaker:
         program = parse_program.parse_program(my_parser)
-        return FileMakerForContentsFromProgram(instruction_config.source_info,
-                                               ProcOutputFile.STDOUT,
+        return FileMakerForContentsFromProgram(ProcOutputFile.STDOUT,
                                                program)
 
     def _parse_program_from_stderr(my_parser: TokenParser) -> FileMaker:
         program = parse_program.parse_program(my_parser)
-        return FileMakerForContentsFromProgram(instruction_config.source_info,
-                                               ProcOutputFile.STDERR,
+        return FileMakerForContentsFromProgram(ProcOutputFile.STDERR,
                                                program)
 
     def _parse_file(my_parser: TokenParser) -> FileMaker:
@@ -182,8 +178,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                 my_parser)
         contents_transformer = parse_optional_transformer_sdv(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
-        return FileMakerForContentsFromExistingFile(instruction_config.source_info,
-                                                    identity.IDENTITY_TRANSFORMER_SDV
+        return FileMakerForContentsFromExistingFile(identity.IDENTITY_TRANSFORMER_SDV
                                                     if contents_transformer is None
                                                     else
                                                     contents_transformer,

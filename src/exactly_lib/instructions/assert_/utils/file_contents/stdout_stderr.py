@@ -25,7 +25,6 @@ from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, header_rendering
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
@@ -123,13 +122,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         )
 
     def construct(self,
-                  source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
         program = resolving_helper_for_instruction_env(os_services, environment).resolve_program(self._program)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                           os_services,
-                                                                          source_info,
                                                                           self._checked_output,
                                                                           program)
         file_with_transformed_contents = path_sdvs.constant(

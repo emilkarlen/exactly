@@ -9,7 +9,6 @@ from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
-from exactly_lib.test_case.phases.tmp_file_spaces import InstructionSourceInfo
 from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, path_rendering, header_rendering
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.util.render.renderer import Renderer
@@ -37,9 +36,9 @@ class ComparisonActualFile(tuple):
 class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndSdvValidation, ABC):
     @abstractmethod
     def construct(self,
-                  source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
-                  os_services: OsServices) -> ComparisonActualFile:
+                  os_services: OsServices,
+                  ) -> ComparisonActualFile:
         pass
 
     @abstractmethod
@@ -76,7 +75,6 @@ class ConstructorForPath(ComparisonActualFileConstructor):
         return sdv_validation.ConstantSuccessSdvValidator()
 
     def construct(self,
-                  source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices) -> ComparisonActualFile:
         described_path = (

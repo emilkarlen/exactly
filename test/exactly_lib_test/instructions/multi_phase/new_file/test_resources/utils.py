@@ -45,4 +45,4 @@ IS_SUCCESS = asrt.is_none
 
 def just_parse(source: ParseSource,
                phase_is_after_act: bool = True):
-    sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(ARBITRARY_FS_LOCATION_INFO, source)
+    sut.EmbryoParser(phase_is_after_act).parse(ARBITRARY_FS_LOCATION_INFO, source)

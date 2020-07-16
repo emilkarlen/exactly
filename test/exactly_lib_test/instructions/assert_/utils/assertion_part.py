@@ -137,7 +137,6 @@ class TestSequence(unittest.TestCase):
 
         assertion_part_with_references = PartWithReference([ref_1])
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_with_references,
-                                                                'custom environment',
                                                                 lambda env: 'not used in this test')
 
         # ACT #
@@ -223,14 +222,12 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         environment = fake_post_sds_environment()
 
         output = []
-        custom_env = 'the custom environment'
         instruction = sut.AssertionInstructionFromAssertionPart(PartThatRegistersCustomEnvironment(output),
-                                                                custom_env,
                                                                 lambda x: x)
         # ACT #
         instruction.main(environment, self.the_os_services)
         # ASSERT #
-        expected = [custom_env]
+        expected = [None]
         self.assertEqual(expected, output)
 
     def test_argument_getter_SHOULD_be_given_environment_as_argument(self):
@@ -243,7 +240,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
             return 1 if env is environment else 0
 
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
-                                                                'custom environment',
                                                                 argument_getter_that_depends_on_environment)
         # ACT #
         actual = instruction.main(environment, self.the_os_services)
@@ -261,7 +257,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
         assertion_part_that_not_raises = SuccessfulPartThatReturnsConstructorArgPlusOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
-                                                                'custom environment',
                                                                 lambda env: 0)
         # ACT #
         actual = instruction.main(environment, self.the_os_services)
@@ -275,7 +270,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
         assertion_part_that_raises = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
-                                                                'custom environment',
                                                                 lambda env: 1)
         # ACT #
         actual = instruction.main(environment, self.the_os_services)
@@ -292,7 +286,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
         assertion_part_without_validation = PartForValidation()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
-                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
@@ -312,7 +305,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
         assertion_part_without_validation = PartForValidation(ConstantSuccessSdvValidator())
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
-                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
@@ -335,7 +327,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
             pre_sds_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
-                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         # ACT #
         actual = instruction.validate_pre_sds(environment)
@@ -354,7 +345,6 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
             post_setup_return_value=asrt_text_doc.new_single_string_text_for_test(the_error_message))
         )
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
-                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         is_validation_success = asrt_svh.is_success()
         main_result_is_hard_error = asrt_pfh.is_hard_error(
