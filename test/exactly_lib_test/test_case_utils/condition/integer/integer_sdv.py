@@ -87,7 +87,6 @@ class TestValidateAndResolve(unittest.TestCase):
             hds=fake_hds(),
             environ={},
             sds=fake_sds(),
-            phase_identifier='ignored phase identifier',
             symbols=defined_symbols,
         ).build_post_sds()
 

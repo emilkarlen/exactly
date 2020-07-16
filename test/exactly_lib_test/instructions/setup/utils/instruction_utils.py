@@ -96,7 +96,6 @@ def _env_from(sds: SandboxDirectoryStructure,
     return InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
         environment,
         sds,
-        'phase-identifier',
     ).build_post_sds()
 
 

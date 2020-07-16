@@ -39,7 +39,6 @@ class InstructionEnvironmentPostSdsBuilder:
                  hds: HomeDirectoryStructure = fake_hds(),
                  sds: SandboxDirectoryStructure = fake_sds(),
                  environ: Dict[str, str] = None,
-                 phase_identifier: str = 'the-phase',
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
                  get_paths_access_for_dir:
@@ -48,7 +47,6 @@ class InstructionEnvironmentPostSdsBuilder:
         self._hds = hds
         self._sds = sds
         self._environ = (dict() if environ is None else environ)
-        self._phase_identifier = phase_identifier
         self._timeout_in_seconds = timeout_in_seconds
         self._symbols = symbol_table_from_none_or_value(symbols)
         self._get_paths_access_for_dir = get_paths_access_for_dir
@@ -58,7 +56,6 @@ class InstructionEnvironmentPostSdsBuilder:
     def new(hds: HomeDirectoryStructure = fake_hds(),
             environ: Dict[str, str] = None,
             sds: SandboxDirectoryStructure = fake_sds(),
-            phase_identifier: str = 'the-phase',
             timeout_in_seconds: int = None,
             symbols: SymbolTable = None
             ) -> 'InstructionEnvironmentPostSdsBuilder':
@@ -66,7 +63,6 @@ class InstructionEnvironmentPostSdsBuilder:
             hds,
             sds,
             environ,
-            phase_identifier,
             timeout_in_seconds,
             symbols,
         )
@@ -75,13 +71,11 @@ class InstructionEnvironmentPostSdsBuilder:
     def new_tcds(tcds: Tcds = fake_tcds(),
                  symbols: SymbolTable = None,
                  process_execution_settings: ProcessExecutionSettings = ProcessExecutionSettings(),
-                 phase_identifier: str = 'the-phase',
                  ) -> 'InstructionEnvironmentPostSdsBuilder':
         return InstructionEnvironmentPostSdsBuilder(
             tcds.hds,
             tcds.sds,
             process_execution_settings.environ,
-            phase_identifier,
             process_execution_settings.timeout_in_seconds,
             symbols,
         )
@@ -90,13 +84,11 @@ class InstructionEnvironmentPostSdsBuilder:
     def new_from_pre_sds(
             environment: InstructionEnvironmentForPreSdsStep,
             sds: SandboxDirectoryStructure = fake_sds(),
-            phase_identifier: str = 'the-phase',
     ) -> 'InstructionEnvironmentPostSdsBuilder':
         return InstructionEnvironmentPostSdsBuilder(
             environment.hds,
             sds,
             environment.environ,
-            phase_identifier,
             environment.timeout_in_seconds,
             environment.symbols,
         )
