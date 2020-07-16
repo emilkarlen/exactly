@@ -42,8 +42,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def parts_parser(instruction_name: str,
-                 phase_is_after_act: bool) -> InstructionPartsParser:
+def parts_parser(phase_is_after_act: bool) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(EmbryoParser(phase_is_after_act),
                                        MainStepResultTranslatorForTextRendererAsHardError())
 
