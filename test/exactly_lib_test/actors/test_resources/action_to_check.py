@@ -4,12 +4,10 @@ import unittest
 from contextlib import contextmanager
 from typing import List
 
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
@@ -18,6 +16,7 @@ from exactly_lib_test.actors.test_resources import act_phase_execution
 from exactly_lib_test.actors.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
@@ -130,11 +129,12 @@ class TestExecuteBase(unittest.TestCase):
                 to_string.major_blocks(step_result.failure_message.render()),
             ))
         with sds_with_act_as_curr_dir() as path_resolving_env:
-            environment = InstructionEnvironmentForPostSdsStep(environment.hds,
-                                                               environment.environ,
-                                                               path_resolving_env.sds,
-                                                               phase_identifier.ACT.identifier,
-                                                               environment.timeout_in_seconds)
+            environment_builder = InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
+                environment,
+                path_resolving_env.sds,
+            )
+            environment = environment_builder.build_post_sds()
+
             step_result = sut.validate_post_setup(environment)
             self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                              step_result.status,
@@ -236,11 +236,12 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 with sds_with_act_as_curr_dir(contents_in(RelSdsOptionType.REL_ACT,
                                                           DirContents([Dir.empty('expected-cwd')]))
                                               ) as path_resolving_env:
-                    environment = InstructionEnvironmentForPostSdsStep(environment.hds,
-                                                                       environment.environ,
-                                                                       path_resolving_env.sds,
-                                                                       phase_identifier.ACT.identifier,
-                                                                       environment.timeout_in_seconds)
+                    environment_builder = InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
+                        environment,
+                        path_resolving_env.sds,
+                    )
+                    environment = environment_builder.build_post_sds()
+
                     process_cwd = str(path_resolving_env.sds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()

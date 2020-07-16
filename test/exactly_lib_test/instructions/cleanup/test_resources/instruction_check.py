@@ -5,9 +5,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -21,6 +19,7 @@ from exactly_lib_test.instructions.test_resources.instruction_check_utils import
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -122,13 +121,17 @@ class Executor(InstructionExecutionBase):
                 symbols=self.arrangement.symbols) as path_resolving_environment:
             tcds = path_resolving_environment.tcds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
+            environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
+                tcds,
+                self.arrangement.symbols,
+                self.arrangement.process_execution_settings,
+            )
 
             with preserved_cwd():
                 os.chdir(str(tcds.hds.case_dir))
 
-                environment = InstructionEnvironmentForPreSdsStep(tcds.hds,
-                                                                  self.arrangement.process_execution_settings.environ,
-                                                                  symbols=self.arrangement.symbols)
+                environment = environment_builder.build_pre_sds()
+
                 result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
                 self.expectation.symbol_usages.apply_with_message(self.put,
                                                                   instruction.symbol_usages(),
@@ -137,13 +140,7 @@ class Executor(InstructionExecutionBase):
                 if not result_of_validate_pre_sds.is_success:
                     return
 
-            environment = i.InstructionEnvironmentForPostSdsStep(
-                environment.hds,
-                environment.environ,
-                tcds.sds,
-                phase_identifier.CLEANUP.identifier,
-                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                symbols=self.arrangement.symbols)
+            environment = environment_builder.build_post_sds()
 
             self._execute_main(environment, instruction)
 

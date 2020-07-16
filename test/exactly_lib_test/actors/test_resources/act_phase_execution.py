@@ -3,7 +3,6 @@ import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -16,6 +15,7 @@ from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
@@ -99,12 +99,13 @@ def check_execution(put: unittest.TestCase,
                                                      phase_step.STEP__VALIDATE_PRE_SDS)
         with sds_with_act_as_curr_dir(symbols=instruction_environment.symbols
                                       ) as path_resolving_env:
-            instruction_environment = InstructionEnvironmentForPostSdsStep(instruction_environment.hds,
-                                                                           instruction_environment.environ,
-                                                                           path_resolving_env.sds,
-                                                                           phase_identifier.ACT.identifier,
-                                                                           instruction_environment.timeout_in_seconds,
-                                                                           symbols=arrangement.symbol_table)
+
+            environment_builder = InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
+                instruction_environment,
+                path_resolving_env.sds,
+            )
+            instruction_environment = environment_builder.build_post_sds()
+
             step_result = sut.validate_post_setup(instruction_environment)
             put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                             step_result.status,

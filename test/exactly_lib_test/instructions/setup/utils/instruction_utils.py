@@ -11,6 +11,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.path_check import PathCheck
 from exactly_lib.type_system.data import paths
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_utils.file_properties import FileCheckThatEvaluatesTo
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
@@ -92,10 +93,11 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
 
 def _env_from(sds: SandboxDirectoryStructure,
               environment: InstructionEnvironmentForPreSdsStep) -> InstructionEnvironmentForPostSdsStep:
-    return InstructionEnvironmentForPostSdsStep(environment.hds,
-                                                environment.environ,
-                                                sds,
-                                                'phase-identifier')
+    return InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
+        environment,
+        sds,
+        'phase-identifier',
+    ).build_post_sds()
 
 
 def _sdv_of(path: paths.PathDdv) -> PathSdv:
