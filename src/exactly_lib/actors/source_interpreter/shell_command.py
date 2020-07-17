@@ -6,6 +6,7 @@ from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.program.command import command_sdvs
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
@@ -18,9 +19,21 @@ def actor_for_interpreter_command(interpreter_shell_command: str) -> Actor:
 class Actor(parts.ActorFromParts):
     def __init__(self, interpreter_shell_command: str):
         super().__init__(pa.Parser(),
-                         parts.UnconditionallySuccessfulValidator,
-                         lambda ope, environment, source_code: Executor(ope, interpreter_shell_command, source_code))
+                         parts.UnconditionallySuccessfulValidatorConstructor(),
+                         _ExecutorConstructor(interpreter_shell_command))
 
+
+class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
+    def __init__(self, interpreter_shell_command: str):
+        self._interpreter_shell_command = interpreter_shell_command
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_process_executor: AtcOsProcessExecutor,
+                  object_to_execute: pa.SourceInfo) -> parts.Executor:
+        return Executor(os_process_executor,
+                        self._interpreter_shell_command,
+                        object_to_execute)
 
 class Executor(pa.ExecutorBase):
     def __init__(self,

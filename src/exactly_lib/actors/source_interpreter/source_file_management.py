@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
 
 
@@ -32,7 +34,7 @@ class StandardSourceFileManager(SourceFileManager):
     def __init__(self,
                  extension_after_dot: str,
                  interpreter: str,
-                 command_line_options_before_file_argument: list):
+                 command_line_options_before_file_argument: List[str]):
         self.extension_after_dot = extension_after_dot
         self.interpreter = interpreter
         self.command_line_options_before_file_argument = command_line_options_before_file_argument

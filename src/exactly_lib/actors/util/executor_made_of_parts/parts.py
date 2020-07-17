@@ -1,5 +1,6 @@
 import pathlib
-from typing import Sequence, Callable
+from abc import ABC, abstractmethod
+from typing import Sequence, TypeVar, Generic, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
@@ -26,16 +27,69 @@ class Validator:
         raise NotImplementedError(str(type(self)))
 
 
-class UnconditionallySuccessfulValidator(Validator):
-    def __init__(self, *args, **kwargs):
+
+class Executor:
+    def prepare(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        return sh.new_sh_success()
+
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        raise NotImplementedError(str(type(self)))
+
+
+EXECUTABLE_OBJECT = TypeVar('EXECUTABLE_OBJECT', bound=SymbolUser)
+
+ValidatorConstructorType = Callable[[InstructionEnvironmentForPreSdsStep,
+                                     EXECUTABLE_OBJECT],
+                                    Validator]
+
+ExecutorConstructorType = Callable[[AtcOsProcessExecutor,
+                                    InstructionEnvironmentForPreSdsStep,
+                                    EXECUTABLE_OBJECT],
+                                   Executor]
+
+
+class ValidatorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
+    @abstractmethod
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Validator:
         pass
 
+
+class ExecutorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
+    @abstractmethod
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  process_executor: AtcOsProcessExecutor,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Executor:
+        pass
+
+
+class UnconditionallySuccessfulValidatorConstructor(Generic[EXECUTABLE_OBJECT],
+                                                    ValidatorConstructor[EXECUTABLE_OBJECT]):
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Validator:
+        return UnconditionallySuccessfulValidator()
+
+
+class UnconditionallySuccessfulValidator(Validator):
     def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep,
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
@@ -55,33 +109,8 @@ class PartsValidatorFromPreOrPostSdsValidator(Validator):
         return self.validator.validate_post_sds_if_applicable(env)
 
 
-class Executor:
-    def prepare(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        raise NotImplementedError(str(type(self)))
-
-
-ExecutableObject = SymbolUser
-
-ValidatorConstructorType = Callable[[InstructionEnvironmentForPreSdsStep,
-                                     ExecutableObject],
-                                    Validator]
-
-ExecutorConstructorType = Callable[[AtcOsProcessExecutor,
-                                    InstructionEnvironmentForPreSdsStep,
-                                    ExecutableObject],
-                                   Executor]
-
-
-class ExecutableObjectParser:
-    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> ExecutableObject:
+class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT]):
+    def apply(self, instructions: Sequence[ActPhaseInstruction]) -> EXECUTABLE_OBJECT:
         """
         :raises ParseException
 
@@ -91,11 +120,11 @@ class ExecutableObjectParser:
         raise NotImplementedError(str(type(self)))
 
 
-class ActorFromParts(Actor):
+class ActorFromParts(Generic[EXECUTABLE_OBJECT], Actor):
     def __init__(self,
-                 parser: ExecutableObjectParser,
-                 validator_constructor: ValidatorConstructorType,
-                 executor_constructor: ExecutorConstructorType):
+                 parser: ExecutableObjectParser[EXECUTABLE_OBJECT],
+                 validator_constructor: ValidatorConstructor[EXECUTABLE_OBJECT],
+                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT]):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
@@ -109,21 +138,22 @@ class ActorFromParts(Actor):
         )
 
 
-class ActionToCheckFromParts(ActionToCheck):
+class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     """
     An ActSourceAndExecutor that can be used once to process the given act phase instructions.
     """
 
     def __init__(self,
-                 object_to_execute: ExecutableObject,
-                 validator_constructor: ValidatorConstructorType,
-                 executor_constructor: ExecutorConstructorType):
+                 object_to_execute: EXECUTABLE_OBJECT,
+                 validator_constructor: ValidatorConstructor[EXECUTABLE_OBJECT],
+                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT]):
         self.object_to_execute = object_to_execute
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
 
         self.__validator = None
         self.__executor = None
+        self.__script_storage_dir = None
 
         self.__symbol_usages = self.object_to_execute.symbol_usages()
 
@@ -145,7 +175,8 @@ class ActionToCheckFromParts(ActionToCheck):
                 os_process_executor: AtcOsProcessExecutor,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self._construct_executor(environment, os_process_executor)
-        return self._executor.prepare(environment, script_output_dir_path)
+        return self._executor.prepare(environment,
+                                      script_output_dir_path)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -156,8 +187,8 @@ class ActionToCheckFromParts(ActionToCheck):
 
     def _construct_validator(self,
                              environment: InstructionEnvironmentForPreSdsStep):
-        self.__validator = self.validator_constructor(environment,
-                                                      self.object_to_execute)
+        self.__validator = self.validator_constructor.construct(environment,
+                                                                self.object_to_execute)
         assert isinstance(self.__validator, Validator), \
             'Constructed validator must be instance of ' + str(Validator)
 
@@ -165,9 +196,9 @@ class ActionToCheckFromParts(ActionToCheck):
                             environment: InstructionEnvironmentForPostSdsStep,
                             os_process_executor: AtcOsProcessExecutor,
                             ):
-        self.__executor = self.executor_constructor(os_process_executor,
-                                                    environment,
-                                                    self.object_to_execute)
+        self.__executor = self.executor_constructor.construct(environment,
+                                                              os_process_executor,
+                                                              self.object_to_execute)
         assert isinstance(self.__executor, Executor), \
             'Constructed executor must be instance of ' + str(Executor)
 

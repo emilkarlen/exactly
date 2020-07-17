@@ -2,8 +2,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser, \
-    UnconditionallySuccessfulValidator
+from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
@@ -24,8 +23,8 @@ class _ObjectToExecute(SymbolUser):
 class Parser(parts.ActorFromParts):
     def __init__(self):
         super().__init__(_Parser(),
-                         UnconditionallySuccessfulValidator,
-                         _executor_parser)
+                         parts.UnconditionallySuccessfulValidatorConstructor(),
+                         _ExecutorConstructor())
 
 
 class _Parser(ExecutableObjectParser):
@@ -41,7 +40,9 @@ class _Executor(parts.Executor):
         return eh.new_eh_exit_code(0)
 
 
-def _executor_parser(os_process_executor: AtcOsProcessExecutor,
-                     environment: InstructionEnvironmentForPreSdsStep,
-                     object_to_execute: _ObjectToExecute) -> parts.Executor:
-    return _Executor()
+class _ExecutorConstructor(parts.ExecutorConstructor[_ObjectToExecute]):
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  os_process_executor: AtcOsProcessExecutor,
+                  object_to_execute: _ObjectToExecute) -> parts.Executor:
+        return _Executor()

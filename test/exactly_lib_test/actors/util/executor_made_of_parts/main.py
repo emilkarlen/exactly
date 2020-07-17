@@ -1,12 +1,13 @@
 import pathlib
 import unittest
-from typing import Sequence, Dict
+from typing import Sequence, Dict, Generic
 
 from exactly_lib.actors.util.executor_made_of_parts import parts as sut
+from exactly_lib.actors.util.executor_made_of_parts.parts import EXECUTABLE_OBJECT, Executor, Validator
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
-from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.actor import ParseException, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -36,8 +37,8 @@ class TestConstructor(unittest.TestCase):
         # ARRANGE #
         parser_error = svh.new_svh_validation_error__str('msg')
         parser = sut.ActorFromParts(ParserThatRaisesException(parser_error),
-                                    validator_constructor_that_raises,
-                                    executor_constructor_that_raises)
+                                    ValidatorConstructorThatRaises(),
+                                    ExecutorConstructorThatRaises())
         act_phase_instructions = []
         # ACT #
         with self.assertRaises(ParseException) as ex:
@@ -50,15 +51,9 @@ class TestConstructor(unittest.TestCase):
         step_recorder = dict()
         parser = ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(step_recorder)
 
-        def validator_constructor(environment, x):
-            return ValidatorThatRecordsSteps(step_recorder, x)
-
-        def executor_constructor(os_process_executor, environment, x):
-            return ExecutorThatRecordsSteps(step_recorder, x)
-
         parser = sut.ActorFromParts(parser,
-                                    validator_constructor,
-                                    executor_constructor)
+                                    ValidatorConstructorThatRecordsStep(step_recorder),
+                                    ExecutorConstructorThatRecordsStep(step_recorder))
         act_phase_instructions = [instr(['act phase source'])]
         arrangement = Arrangement()
         expectation = simple_success()
@@ -87,10 +82,13 @@ class TestConstructor(unittest.TestCase):
             SymbolReference(symbol_reference.name,
                             symbol_reference.value)
         ]
-        parser = sut.ActorFromParts(ParserWithConstantResult(
-            SymbolUserWithConstantSymbolReferences(expected_symbol_references)),
-            lambda *x: sut.UnconditionallySuccessfulValidator(),
-            lambda *x: UnconditionallySuccessfulExecutor())
+        parser = sut.ActorFromParts(
+            ParserWithConstantResult(
+                SymbolUserWithConstantSymbolReferences(expected_symbol_references)
+            ),
+            sut.UnconditionallySuccessfulValidatorConstructor(),
+            _ExecutorConstructorForConstant(UnconditionallySuccessfulExecutor()),
+        )
         # ACT & ASSERT #
         check_execution(self,
                         parser,
@@ -160,12 +158,58 @@ class ParserWithConstantResult(sut.ExecutableObjectParser):
         return self._constant_result
 
 
-def validator_constructor_that_raises(*args):
-    raise ValueError('validator_constructor_that_raises')
+class ValidatorConstructorThatRaises(Generic[EXECUTABLE_OBJECT], sut.ValidatorConstructor[EXECUTABLE_OBJECT]):
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Validator:
+        raise ValueError('validator_constructor_that_raises')
 
 
-def executor_constructor_that_raises(*args):
-    raise ValueError('executor_constructor_that_raises')
+class ExecutorConstructorThatRaises(Generic[EXECUTABLE_OBJECT], sut.ExecutorConstructor[EXECUTABLE_OBJECT]):
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  process_executor: AtcOsProcessExecutor,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Executor:
+        raise ValueError('validator_constructor_that_raises')
+
+
+class ValidatorConstructorThatRecordsStep(Generic[EXECUTABLE_OBJECT],
+                                          sut.ValidatorConstructor[EXECUTABLE_OBJECT]):
+    def __init__(self, step_recorder: dict):
+        self._step_recorder = step_recorder
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Validator:
+        return ValidatorThatRecordsSteps(self._step_recorder, executable_object)
+
+
+class ExecutorConstructorThatRecordsStep(Generic[EXECUTABLE_OBJECT],
+                                         sut.ExecutorConstructor[EXECUTABLE_OBJECT]):
+    def __init__(self, step_recorder: dict):
+        self._step_recorder = step_recorder
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  process_executor: AtcOsProcessExecutor,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> Executor:
+        return ExecutorThatRecordsSteps(self._step_recorder, executable_object)
+
+
+class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorConstructor[EXECUTABLE_OBJECT]):
+    def __init__(self, constant: sut.Executor):
+        self._constant = constant
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  process_executor: AtcOsProcessExecutor,
+                  executable_object: EXECUTABLE_OBJECT,
+                  ) -> sut.Executor:
+        return self._constant
 
 
 class UnconditionallySuccessfulExecutor(sut.Executor):
@@ -193,7 +237,8 @@ class ValidatorThatRecordsSteps(sut.Validator):
 
 
 class ExecutorThatRecordsSteps(sut.Executor):
-    def __init__(self, recorder: dict,
+    def __init__(self,
+                 recorder: dict,
                  object_with_act_phase_source: SymbolThatRemembersSource):
         self.recorder = recorder
         self.act_phase_source = object_with_act_phase_source.source

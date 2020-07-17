@@ -19,7 +19,8 @@ from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
-from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -39,8 +40,8 @@ RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXE
 class Parser(parts.ActorFromParts):
     def __init__(self):
         super().__init__(_Parser(),
-                         _validator,
-                         _executor)
+                         _TheValidatorConstructor(),
+                         _TheExecutorConstructor())
 
 
 class CommandConfiguration(SymbolUser):
@@ -59,8 +60,9 @@ class CommandConfiguration(SymbolUser):
         )
 
     def executor(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
                  os_process_executor: AtcOsProcessExecutor,
-                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
+                 ) -> parts.Executor:
         return CommandResolverExecutor(os_process_executor,
                                        self._command_sdv)
 
@@ -100,12 +102,18 @@ class _Parser(ExecutableObjectParser):
             raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
 
 
-def _validator(environment: InstructionEnvironmentForPreSdsStep,
-               command_configuration: CommandConfiguration) -> parts.Validator:
-    return command_configuration.validator()
+class _TheValidatorConstructor(parts.ValidatorConstructor[CommandConfiguration]):
+    def construct(self,
+                  environment: InstructionEnvironmentForPreSdsStep,
+                  command_configuration: CommandConfiguration,
+                  ) -> parts.Validator:
+        return command_configuration.validator()
 
 
-def _executor(os_process_executor: AtcOsProcessExecutor,
-              environment: InstructionEnvironmentForPreSdsStep,
-              command_configuration: CommandConfiguration) -> parts.Executor:
-    return command_configuration.executor(os_process_executor, environment)
+class _TheExecutorConstructor(parts.ExecutorConstructor[CommandConfiguration]):
+    def construct(self,
+                  os_process_executor: AtcOsProcessExecutor,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  command_configuration: CommandConfiguration,
+                  ) -> parts.Executor:
+        return command_configuration.executor(os_process_executor, environment)

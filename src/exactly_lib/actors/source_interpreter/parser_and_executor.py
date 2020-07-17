@@ -1,5 +1,6 @@
 import pathlib
-from typing import Sequence
+from abc import ABC
+from typing import Sequence, List
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
@@ -22,7 +23,7 @@ class SourceInfo(SymbolUser):
         return self.source.references
 
 
-class Parser(parts.ExecutableObjectParser):
+class Parser(parts.ExecutableObjectParser[SourceInfo]):
     def apply(self, instructions: Sequence[ActPhaseInstruction]) -> SourceInfo:
         from exactly_lib.util.str_.misc_formatting import lines_content_with_os_linesep
         raw_source = lines_content_with_os_linesep(self._all_source_code_lines(instructions))
@@ -30,7 +31,7 @@ class Parser(parts.ExecutableObjectParser):
         return SourceInfo(source_sdv)
 
     @staticmethod
-    def _all_source_code_lines(act_phase_instructions) -> list:
+    def _all_source_code_lines(act_phase_instructions) -> List[str]:
         ret_val = []
         for instruction in act_phase_instructions:
             assert isinstance(instruction, ActPhaseInstruction)
@@ -60,7 +61,7 @@ class ActSourceFileNameGeneratorForConstantFileName(ActSourceFileNameGenerator):
         return self._base_name
 
 
-class ExecutorBase(SubProcessExecutor):
+class ExecutorBase(SubProcessExecutor, ABC):
     """
     Base class for executors that executes source code by putting it in a file
     and then interpreting this file.

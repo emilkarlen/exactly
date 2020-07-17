@@ -5,6 +5,7 @@ from exactly_lib.actors.source_interpreter.source_file_management import SourceI
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
@@ -15,11 +16,22 @@ def actor(setup: SourceInterpreterSetup) -> Actor:
 class Parser(parts.ActorFromParts):
     def __init__(self, setup: SourceInterpreterSetup):
         super().__init__(pa.Parser(),
-                         parts.UnconditionallySuccessfulValidator,
-                         lambda os_process_executor, environment, source_code: ExecutorForSourceInterpreterSetup(
-                             os_process_executor,
-                             setup,
-                             source_code))
+                         parts.UnconditionallySuccessfulValidatorConstructor(),
+                         _ExecutorConstructor(setup))
+
+
+class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
+    def __init__(self, setup: SourceInterpreterSetup):
+        self._setup = setup
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_process_executor: AtcOsProcessExecutor,
+                  object_to_execute: pa.SourceInfo) -> parts.Executor:
+        return ExecutorForSourceInterpreterSetup(
+            os_process_executor,
+            self._setup,
+            object_to_execute)
 
 
 class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGenerator):
