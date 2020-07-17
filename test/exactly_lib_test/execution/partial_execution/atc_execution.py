@@ -25,7 +25,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
-from exactly_lib_test.execution.partial_execution.test_resources.act_phase_handling import \
+from exactly_lib_test.execution.partial_execution.test_resources.act_phase_utils import \
     actor_for_execution_of_python_source
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
