@@ -149,8 +149,8 @@ class EqualityStringMatcher(StringMatcherImplBase):
             return (
                 self._new_tb_with_expected()
                     .append_details(
-                    details.HeaderAndValue(
-                        'Diff:',
+                    custom_details.actual__custom(
+                        'Diff',
                         details.PreFormattedString(_DiffString(diff_description), True)
                     )
                 )
