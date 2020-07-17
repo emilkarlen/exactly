@@ -55,7 +55,10 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
                          source_info)
         self.script_language_setup = script_language_setup
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
-        script_file_path = self._source_file_path(script_output_dir_path)
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path,
+                            ) -> CommandSdv:
+        script_file_path = self._source_file_path(environment, script_output_dir_path)
         pgm_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
         return command_sdvs.for_system_program__from_pgm_and_args(pgm_and_args)

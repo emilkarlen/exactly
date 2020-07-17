@@ -77,8 +77,9 @@ class ExecutorBase(SubProcessExecutor, ABC):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        script_file_path = self._source_file_path(script_output_dir_path)
+                script_output_dir_path: pathlib.Path,
+                ) -> sh.SuccessOrHardError:
+        script_file_path = self._source_file_path(environment, script_output_dir_path)
         resolving_env = environment.path_resolving_environment_pre_or_post_sds
         source_code = self.source_code_sdv.resolve_value_of_any_dependency(resolving_env)
         try:
@@ -89,6 +90,7 @@ class ExecutorBase(SubProcessExecutor, ABC):
             return sh.new_sh_hard_error__str(str(ex))
 
     def _source_file_path(self,
+                          environment: InstructionEnvironmentForPostSdsStep,
                           script_output_dir_path: pathlib.Path) -> pathlib.Path:
         base_name = self.file_name_generator.base_name()
         return script_output_dir_path / base_name

@@ -6,7 +6,7 @@ from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser, \
-    PartsValidatorFromPreOrPostSdsValidator
+    ValidatorFromPreOrPostSdsValidator
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
     CommandResolverExecutor
 from exactly_lib.definitions.test_case.actors import command_line as texts
@@ -55,7 +55,7 @@ class CommandConfiguration(SymbolUser):
         def get_validator(symbols: SymbolTable) -> DdvValidator:
             return ddv_validators.all_of(self._command_sdv.resolve(symbols).validators)
 
-        return PartsValidatorFromPreOrPostSdsValidator(
+        return ValidatorFromPreOrPostSdsValidator(
             SdvValidatorFromDdvValidator(get_validator)
         )
 

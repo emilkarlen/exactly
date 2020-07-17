@@ -1,6 +1,6 @@
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic, Callable
+from typing import Sequence, TypeVar, Generic
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
@@ -15,42 +15,35 @@ from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErro
 from exactly_lib.util.file_utils.std import StdFiles
 
 
-class Validator:
+class Validator(ABC):
+    @abstractmethod
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep
                          ) -> svh.SuccessOrValidationErrorOrHardError:
-        raise NotImplementedError(str(type(self)))
+        pass
 
+    @abstractmethod
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
-        raise NotImplementedError(str(type(self)))
+        pass
 
 
-
-class Executor:
+class Executor(ABC):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
+    @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        raise NotImplementedError(str(type(self)))
+        pass
 
 
 EXECUTABLE_OBJECT = TypeVar('EXECUTABLE_OBJECT', bound=SymbolUser)
-
-ValidatorConstructorType = Callable[[InstructionEnvironmentForPreSdsStep,
-                                     EXECUTABLE_OBJECT],
-                                    Validator]
-
-ExecutorConstructorType = Callable[[AtcOsProcessExecutor,
-                                    InstructionEnvironmentForPreSdsStep,
-                                    EXECUTABLE_OBJECT],
-                                   Executor]
 
 
 class ValidatorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
@@ -93,7 +86,7 @@ class UnconditionallySuccessfulValidator(Validator):
         return svh.new_svh_success()
 
 
-class PartsValidatorFromPreOrPostSdsValidator(Validator):
+class ValidatorFromPreOrPostSdsValidator(Validator):
     def __init__(self, validator_that_must_validate_pre_sds: SdvValidator):
         self.validator = PreOrPostSdsSvhValidationErrorValidator(validator_that_must_validate_pre_sds)
 
@@ -109,7 +102,8 @@ class PartsValidatorFromPreOrPostSdsValidator(Validator):
         return self.validator.validate_post_sds_if_applicable(env)
 
 
-class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT]):
+class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT], ABC):
+    @abstractmethod
     def apply(self, instructions: Sequence[ActPhaseInstruction]) -> EXECUTABLE_OBJECT:
         """
         :raises ParseException
@@ -117,14 +111,15 @@ class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT]):
         :return: An object that can be given as argument to constructors of validator and executor designed
         to be used together with the parser.  The object also reports symbol usages known after parse.
         """
-        raise NotImplementedError(str(type(self)))
+        pass
 
 
 class ActorFromParts(Generic[EXECUTABLE_OBJECT], Actor):
     def __init__(self,
                  parser: ExecutableObjectParser[EXECUTABLE_OBJECT],
                  validator_constructor: ValidatorConstructor[EXECUTABLE_OBJECT],
-                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT]):
+                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT],
+                 ):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor

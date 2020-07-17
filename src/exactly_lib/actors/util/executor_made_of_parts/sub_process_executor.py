@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC, abstractmethod
 
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
@@ -8,15 +9,16 @@ from exactly_lib.util.file_utils.std import StdFiles
 from . import parts
 
 
-class SubProcessExecutor(parts.Executor):
+class SubProcessExecutor(parts.Executor, ABC):
     def __init__(self, os_process_executor: AtcOsProcessExecutor):
         self.os_process_executor = os_process_executor
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        command_sdv = self._command_to_execute(script_output_dir_path)
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
+        command_sdv = self._command_to_execute(environment, script_output_dir_path)
         command = (
             command_sdv
                 .resolve(environment.symbols)
@@ -26,11 +28,15 @@ class SubProcessExecutor(parts.Executor):
                                                 std_files,
                                                 environment.proc_exe_settings)
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
+    @abstractmethod
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path,
+                            ) -> CommandSdv:
         """
         Called after prepare, to get the command to execute
         """
-        raise NotImplementedError('abstract method')
+        pass
 
 
 class CommandResolverExecutor(SubProcessExecutor):
@@ -40,5 +46,8 @@ class CommandResolverExecutor(SubProcessExecutor):
         super().__init__(os_process_executor)
         self.command_sdv = command_sdv
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path,
+                            ) -> CommandSdv:
         return self.command_sdv

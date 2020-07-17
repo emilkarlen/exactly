@@ -35,18 +35,23 @@ class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
                         self._interpreter_shell_command,
                         object_to_execute)
 
+
 class Executor(pa.ExecutorBase):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
                  interpreter_shell_command: str,
-                 source_info: pa.SourceInfo):
+                 source_info: pa.SourceInfo,
+                 ):
         super().__init__(os_process_executor,
                          pa.ActSourceFileNameGeneratorForConstantFileName(ACT_PHASE_SOURCE_FILE_BASE_NAME),
                          source_info)
         self.interpreter_shell_command = interpreter_shell_command
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandSdv:
-        script_file_path = self._source_file_path(script_output_dir_path)
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path,
+                            ) -> CommandSdv:
+        script_file_path = self._source_file_path(environment, script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
 
         command_line_elements = string_sdvs.from_fragments([

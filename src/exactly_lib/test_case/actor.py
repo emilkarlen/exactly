@@ -1,4 +1,5 @@
 import pathlib
+from abc import ABC, abstractmethod
 from typing import Sequence
 
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -81,7 +82,7 @@ class ActionToCheck(SymbolUser):
         raise NotImplementedError()
 
 
-class Actor:
+class Actor(ABC):
     """
     Parses the contents of the act phase which is the source that is to be executed as the act phase.
     (after it has been extracted from the test case file).
@@ -90,8 +91,9 @@ class Actor:
     in terms of exceptions.
     """
 
+    @abstractmethod
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         """
         :raises ParseException
         """
-        raise NotImplementedError()
+        pass
