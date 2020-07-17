@@ -121,15 +121,15 @@ class StringTransformerSequenceSdv(StringTransformerSdv):
 
 
 _SEQUENCE_TRANSFORMER_SED_DESCRIPTION = """\
-Sequence of two or more {_TRANSFORMERS_}.
+Composition of {_TRANSFORMER_:s}.
 
-The result of the {_TRANSFORMER_} to the left is feed to the
-{_TRANSFORMER_} to the right.
+
+The output of the {_TRANSFORMER_} to the left is given as input to
+the {_TRANSFORMER_} to the right.
 """
 
 _TEXT_PARSER = TextParser({
-    '_TRANSFORMER_': types.STRING_TRANSFORMER_TYPE_INFO.name.singular,
-    '_TRANSFORMERS_': types.STRING_TRANSFORMER_TYPE_INFO.name.plural,
+    '_TRANSFORMER_': types.STRING_TRANSFORMER_TYPE_INFO.name,
 
 })
 

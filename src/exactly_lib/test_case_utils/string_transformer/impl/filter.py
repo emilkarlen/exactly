@@ -135,10 +135,10 @@ class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialS
 
 
 _TEXT_PARSER = TextParser({
-    '_LINE_MATCHER_': types.LINE_MATCHER_TYPE_INFO.name.singular,
+    '_LINE_MATCHER_': syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
 })
 
 _SELECT_TRANSFORMER_SED_DESCRIPTION = """\
-Keeps lines matched by the given {_LINE_MATCHER_},
+Keeps lines matched {_LINE_MATCHER_},
 and discards lines not matched.
 """
