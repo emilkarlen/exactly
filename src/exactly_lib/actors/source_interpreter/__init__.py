@@ -18,15 +18,15 @@ class _CommandTranslator(commands.CommandDriverVisitor):
         self.arguments = arguments
 
     def visit_shell(self, driver: commands.CommandDriverForShell) -> Actor:
-        return shell_cmd.Actor(driver.shell_command_line_with_args(self.arguments))
+        return shell_cmd.actor(driver.shell_command_line_with_args(self.arguments))
 
     def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> Actor:
-        return executable_file.Parser(SourceInterpreterSetup(
+        return executable_file.actor(SourceInterpreterSetup(
             self._source_file_manager(str(driver.executable_file)))
         )
 
     def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> Actor:
-        return executable_file.Parser(SourceInterpreterSetup(
+        return executable_file.actor(SourceInterpreterSetup(
             self._source_file_manager(driver.program))
         )
 

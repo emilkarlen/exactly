@@ -1,7 +1,7 @@
 import sys
 
+from exactly_lib.actors.source_interpreter import executable_file
 from exactly_lib.actors.source_interpreter import source_file_management
-from exactly_lib.actors.source_interpreter.executable_file import Parser
 from exactly_lib.actors.source_interpreter.source_file_management import StandardSourceFileManager
 from exactly_lib.test_case.actor import Actor
 
@@ -19,4 +19,4 @@ def _file_manager() -> source_file_management.SourceFileManager:
 
 
 def new_actor() -> Actor:
-    return Parser(source_interpreter_setup())
+    return executable_file.actor(source_interpreter_setup())

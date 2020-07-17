@@ -10,28 +10,11 @@ from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
 def actor(setup: SourceInterpreterSetup) -> Actor:
-    return Parser(setup)
-
-
-class Parser(parts.ActorFromParts):
-    def __init__(self, setup: SourceInterpreterSetup):
-        super().__init__(pa.Parser(),
-                         parts.UnconditionallySuccessfulValidatorConstructor(),
-                         _ExecutorConstructor(setup))
-
-
-class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
-    def __init__(self, setup: SourceInterpreterSetup):
-        self._setup = setup
-
-    def construct(self,
-                  environment: InstructionEnvironmentForPostSdsStep,
-                  os_process_executor: AtcOsProcessExecutor,
-                  object_to_execute: pa.SourceInfo) -> parts.Executor:
-        return ExecutorForSourceInterpreterSetup(
-            os_process_executor,
-            self._setup,
-            object_to_execute)
+    return parts.ActorFromParts(
+        pa.Parser(),
+        parts.UnconditionallySuccessfulValidatorConstructor(),
+        _ExecutorConstructor(setup),
+    )
 
 
 class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGenerator):
@@ -45,7 +28,21 @@ class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGe
         return self.setup.base_name_from_stem(self.FILE_NAME_STEM)
 
 
-class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
+class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
+    def __init__(self, setup: SourceInterpreterSetup):
+        self._setup = setup
+
+    def construct(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  os_process_executor: AtcOsProcessExecutor,
+                  object_to_execute: pa.SourceInfo) -> parts.Executor:
+        return _Executor(
+            os_process_executor,
+            self._setup,
+            object_to_execute)
+
+
+class _Executor(pa.ExecutorBase):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
                  script_language_setup: SourceInterpreterSetup,

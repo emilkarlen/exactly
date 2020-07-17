@@ -31,17 +31,14 @@ from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
 def actor() -> Actor:
-    return Parser()
+    return parts.ActorFromParts(
+        _Parser(),
+        _TheValidatorConstructor(),
+        _TheExecutorConstructor(),
+    )
 
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)
-
-
-class Parser(parts.ActorFromParts):
-    def __init__(self):
-        super().__init__(_Parser(),
-                         _TheValidatorConstructor(),
-                         _TheExecutorConstructor())
 
 
 class CommandConfiguration(SymbolUser):

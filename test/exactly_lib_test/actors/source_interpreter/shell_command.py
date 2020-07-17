@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from typing import List
 
 from exactly_lib.actors.source_interpreter import shell_command as sut
+from exactly_lib.actors.source_interpreter.shell_command import actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib_test.actors.source_interpreter import common_tests
@@ -18,14 +19,15 @@ from exactly_lib_test.util.test_resources import py_program
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
-        common_tests.suite_for(sut.Actor(shlex.quote(sys.executable)),
+        common_tests.suite_for(sut.actor(shlex.quote(sys.executable)),
                                is_shell=True)
     ])
 
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        self.setup = sut.actor_for_interpreter_command(file_name_of_interpreter())
+        command = file_name_of_interpreter()
+        self.setup = actor(command)
         super().__init__(self.setup)
 
     @contextmanager

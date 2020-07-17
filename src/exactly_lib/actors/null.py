@@ -13,18 +13,15 @@ from exactly_lib.util.file_utils.std import StdFiles
 
 
 def actor() -> Actor:
-    return Parser()
+    return parts.ActorFromParts(
+        _Parser(),
+        parts.UnconditionallySuccessfulValidatorConstructor(),
+        _ExecutorConstructor(),
+    )
 
 
 class _ObjectToExecute(SymbolUser):
     pass
-
-
-class Parser(parts.ActorFromParts):
-    def __init__(self):
-        super().__init__(_Parser(),
-                         parts.UnconditionallySuccessfulValidatorConstructor(),
-                         _ExecutorConstructor())
 
 
 class _Parser(ExecutableObjectParser):

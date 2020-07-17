@@ -141,7 +141,8 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def __init__(self,
                  object_to_execute: EXECUTABLE_OBJECT,
                  validator_constructor: ValidatorConstructor[EXECUTABLE_OBJECT],
-                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT]):
+                 executor_constructor: ExecutorConstructor[EXECUTABLE_OBJECT],
+                 ):
         self.object_to_execute = object_to_execute
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor

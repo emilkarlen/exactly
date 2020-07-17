@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.actors.util.executor_made_of_parts import parts
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
@@ -12,7 +12,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 
 
-def suite_for(parser_that_executes_python_program: parts.ActorFromParts,
+def suite_for(parser_that_executes_python_program: Actor,
               is_shell: bool) -> unittest.TestSuite:
     return unittest.TestSuite([
         TestThatSymbolReferencesAreReportedAndUsed(parser_that_executes_python_program, is_shell),
@@ -21,10 +21,12 @@ def suite_for(parser_that_executes_python_program: parts.ActorFromParts,
 
 
 class TestCaseBase(unittest.TestCase):
-    def __init__(self, parser_that_executes_python_program: parts.ActorFromParts,
-                 is_shell: bool):
+    def __init__(self,
+                 actor_that_executes_python_program: Actor,
+                 is_shell: bool,
+                 ):
         super().__init__()
-        self.parser_that_executes_python_program = parser_that_executes_python_program
+        self.actor_that_executes_python_program = actor_that_executes_python_program
         self.is_shell = is_shell
 
     def shortDescription(self):
@@ -38,7 +40,7 @@ class TestCaseBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation):
         check_execution(self,
-                        self.parser_that_executes_python_program,
+                        self.actor_that_executes_python_program,
                         [instr([source_line])],
                         arrangement,
                         expectation)

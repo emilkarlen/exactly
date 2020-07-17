@@ -53,7 +53,7 @@ class TestSuccessfulExecution(unittest.TestCase):
                         ])]
             ),
         ]
-        executor_parser = sut.Parser()
+        executor_parser = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
                 arrangement = Arrangement()
@@ -77,7 +77,7 @@ class TestNoSymbolsAreReferenced(unittest.TestCase):
                 [instr([symbol_reference_syntax_for_name('symbol_name')])]
             ),
         ]
-        executor_parser = sut.Parser()
+        executor_parser = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
                 arrangement = Arrangement()

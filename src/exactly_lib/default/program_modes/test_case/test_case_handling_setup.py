@@ -18,6 +18,6 @@ class TheActor(Actor):
     def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
         source_code_lines = all_source_code_lines(instructions)
         if not source_code_lines:
-            return null.Parser().parse(instructions)
+            return null.actor().parse(instructions)
         else:
-            return command_line.Parser().parse(instructions)
+            return command_line.actor().parse(instructions)

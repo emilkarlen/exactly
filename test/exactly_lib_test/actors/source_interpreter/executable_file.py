@@ -29,7 +29,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
         unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
 
-        common_tests.suite_for(sut.Parser(python3.source_interpreter_setup()),
+        common_tests.suite_for(sut.actor(python3.source_interpreter_setup()),
                                is_shell=False),
     ])
 

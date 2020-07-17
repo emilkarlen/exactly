@@ -42,7 +42,7 @@ def suite() -> unittest.TestSuite:
 class TestParsingAndValidation(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
-        self.constructor = sut.Parser()
+        self.constructor = sut.actor()
         self.hds = fake_hds()
         self.pre_sds_env = InstructionEnvironmentForPreSdsStep(
             self.hds,
@@ -94,7 +94,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         check_execution(
             self,
-            sut.Parser(),
+            sut.actor(),
             act_phase_instructions,
             Arrangement(
                 symbol_table=symbol.symbol_table
@@ -109,7 +109,7 @@ class TestSymbolReferences(unittest.TestCase):
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        super().__init__(sut.Parser())
+        super().__init__(sut.actor())
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:

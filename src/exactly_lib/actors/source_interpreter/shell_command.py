@@ -12,15 +12,12 @@ from exactly_lib.test_case_utils.program.command import command_sdvs
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
 
-def actor_for_interpreter_command(interpreter_shell_command: str) -> Actor:
-    return Actor(interpreter_shell_command)
-
-
-class Actor(parts.ActorFromParts):
-    def __init__(self, interpreter_shell_command: str):
-        super().__init__(pa.Parser(),
-                         parts.UnconditionallySuccessfulValidatorConstructor(),
-                         _ExecutorConstructor(interpreter_shell_command))
+def actor(interpreter_shell_command: str) -> Actor:
+    return parts.ActorFromParts(
+        pa.Parser(),
+        parts.UnconditionallySuccessfulValidatorConstructor(),
+        _ExecutorConstructor(interpreter_shell_command)
+    )
 
 
 class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
@@ -31,12 +28,12 @@ class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_process_executor: AtcOsProcessExecutor,
                   object_to_execute: pa.SourceInfo) -> parts.Executor:
-        return Executor(os_process_executor,
-                        self._interpreter_shell_command,
-                        object_to_execute)
+        return _Executor(os_process_executor,
+                         self._interpreter_shell_command,
+                         object_to_execute)
 
 
-class Executor(pa.ExecutorBase):
+class _Executor(pa.ExecutorBase):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
                  interpreter_shell_command: str,
