@@ -24,13 +24,12 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
 
@@ -66,17 +65,16 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        self.before_wrapped_prepare(environment, script_output_dir_path)
-        return self.__wrapped.prepare(environment, os_process_executor, script_output_dir_path)
+                ) -> sh.SuccessOrHardError:
+        self.before_wrapped_prepare(environment)
+        return self.__wrapped.prepare(environment, os_process_executor)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        self.before_wrapped_execute(environment, script_output_dir_path, std_files)
-        return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
+        self.before_wrapped_execute(environment, std_files)
+        return self.__wrapped.execute(environment, os_process_executor, std_files)
 
 
 class ActionToCheckThatRunsConstantActions(ActionToCheck):
@@ -118,14 +116,13 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
 
     def prepare(self, environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        self.__prepare_initial_action(environment, script_output_dir_path)
-        return self.__prepare_action(environment, script_output_dir_path)
+                ) -> sh.SuccessOrHardError:
+        self.__prepare_initial_action(environment)
+        return self.__prepare_action(environment)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        self.__execute_initial_action(environment, script_output_dir_path, std_files)
-        return self.__execute_action(environment, script_output_dir_path, std_files)
+        self.__execute_initial_action(environment, std_files)
+        return self.__execute_action(environment, std_files)

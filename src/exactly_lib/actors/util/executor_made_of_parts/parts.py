@@ -1,4 +1,3 @@
-import pathlib
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic
 
@@ -32,13 +31,12 @@ class Validator(ABC):
 class Executor(ABC):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         pass
 
@@ -169,17 +167,15 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         self._construct_executor(environment, os_process_executor)
-        return self._executor.prepare(environment,
-                                      script_output_dir_path)
+        return self._executor.prepare(environment)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        return self._executor.execute(environment, script_output_dir_path, std_files)
+        return self._executor.execute(environment, std_files)
 
     def _construct_validator(self,
                              environment: InstructionEnvironmentForPreSdsStep):

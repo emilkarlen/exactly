@@ -281,14 +281,13 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
         return new_eh_exit_code(0)
@@ -305,7 +304,6 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
                                     timeout=60,
@@ -322,7 +320,6 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)
 

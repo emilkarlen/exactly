@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
@@ -42,17 +41,16 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
-        return self.__wrapped.prepare(environment, os_process_executor, script_output_dir_path)
+        return self.__wrapped.prepare(environment, os_process_executor)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(environment, os_process_executor, script_output_dir_path, std_files)
+        return self.__wrapped.execute(environment, os_process_executor, std_files)
 
 
 class ActorThatRecordsSteps(Actor):

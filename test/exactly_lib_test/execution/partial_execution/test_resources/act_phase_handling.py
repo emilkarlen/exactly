@@ -21,7 +21,6 @@ class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME
         with python_file.open(mode='w') as f:

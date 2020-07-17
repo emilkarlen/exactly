@@ -1,5 +1,3 @@
-import pathlib
-
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.file_utils.std import StdFiles
@@ -28,6 +26,5 @@ class PrintStringOnStdout:
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 script_output_dir_path: pathlib.Path,
                  std_files: StdFiles):
         std_files.output.out.write(self.string_to_print)

@@ -1,4 +1,3 @@
-import pathlib
 from abc import ABC, abstractmethod
 from typing import Sequence
 
@@ -59,7 +58,7 @@ class ActionToCheck(SymbolUser):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         """
         Executed after validate.
 
@@ -72,7 +71,6 @@ class ActionToCheck(SymbolUser):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """
         Executed after prepare.

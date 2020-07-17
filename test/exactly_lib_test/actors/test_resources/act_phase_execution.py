@@ -1,5 +1,4 @@
 import os
-import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
@@ -120,10 +119,8 @@ def check_execution(put: unittest.TestCase,
                                                          sut.symbol_usages(),
                                                          'symbol-usages after ' +
                                                          phase_step.STEP__VALIDATE_POST_SETUP)
-            script_output_dir_path = path_resolving_env.sds.test_case_dir
             step_result = sut.prepare(instruction_environment,
-                                      arrangement.atc_process_executor,
-                                      script_output_dir_path)
+                                      arrangement.atc_process_executor)
             expectation.side_effects_on_files_after_prepare.apply(put, path_resolving_env.sds)
             expectation.result_of_prepare.apply(put,
                                                 step_result,
@@ -138,7 +135,6 @@ def check_execution(put: unittest.TestCase,
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                 instruction_environment,
                 arrangement.atc_process_executor,
-                script_output_dir_path,
                 sut)
             error_msg_extra_info = ''
             sub_process_result = None
@@ -183,11 +179,9 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
                  atc_process_executor: AtcOsProcessExecutor,
-                 script_output_path: pathlib.Path,
                  atc: ActionToCheck):
         self.environment = environment
         self.atc_process_executor = atc_process_executor
-        self.script_output_path = script_output_path
         self.atc = atc
 
     def execute(self, files: StdFiles) -> int:
@@ -196,7 +190,6 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
         """
         exit_code_or_hard_error = self.atc.execute(self.environment,
                                                    self.atc_process_executor,
-                                                   self.script_output_path,
                                                    files)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code

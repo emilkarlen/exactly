@@ -44,7 +44,6 @@ class ActionToCheckExecutor:
         self.os_process_executor = os_process_executor
         self.tcds = environment_for_other_steps.tcds
         self.stdin_configuration = stdin_configuration
-        self.script_output_dir_path = environment_for_other_steps.tcds.sds.test_case_dir
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
         self._action_to_check_outcome = None
@@ -71,8 +70,7 @@ class ActionToCheckExecutor:
     def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
         def action():
             res = self.atc.prepare(self.environment_for_other_steps,
-                                   self.os_process_executor,
-                                   self.script_output_dir_path)
+                                   self.os_process_executor)
             if not res.is_success:
                 raise PhaseStepFailureException(
                     failure_con(ExecutionFailureStatus.HARD_ERROR,
@@ -118,7 +116,6 @@ class ActionToCheckExecutor:
         exit_code_or_hard_error = self.atc.execute(
             self.environment_for_other_steps,
             self.os_process_executor,
-            self.script_output_dir_path,
             std_files)
         self._register_outcome(exit_code_or_hard_error)
         return exit_code_or_hard_error

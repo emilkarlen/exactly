@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 from typing import Sequence, Dict, Generic
 
@@ -215,7 +214,6 @@ class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorCo
 class UnconditionallySuccessfulExecutor(sut.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> eh.ExitCodeOrHardError:
         return eh.new_eh_exit_code(0)
 
@@ -243,11 +241,15 @@ class ExecutorThatRecordsSteps(sut.Executor):
         self.recorder = recorder
         self.act_phase_source = object_with_act_phase_source.source
 
-    def prepare(self, tcds: Tcds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                ) -> sh.SuccessOrHardError:
         self.recorder[phase_step.ACT__PREPARE] = self.act_phase_source
         return sh.new_sh_success()
 
-    def execute(self, tcds: Tcds, script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> eh.ExitCodeOrHardError:
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                std_files: StdFiles,
+                ) -> eh.ExitCodeOrHardError:
         self.recorder[phase_step.ACT__EXECUTE] = self.act_phase_source
         return eh.new_eh_exit_code(0)

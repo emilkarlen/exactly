@@ -1,4 +1,3 @@
-import pathlib
 import shlex
 from typing import Sequence, List, TypeVar, Callable
 
@@ -131,13 +130,12 @@ class _ActionToCheck(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+                ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_process_executor: AtcOsProcessExecutor,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles,
                 ) -> ExitCodeOrHardError:
         command = self._make_command(resolving_helper_for_instruction_env(environment))

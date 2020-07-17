@@ -1,4 +1,3 @@
-import pathlib
 import shlex
 
 from exactly_lib.actors.source_interpreter import parser_and_executor as pa
@@ -46,10 +45,8 @@ class _Executor(pa.ExecutorBase):
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path,
                             ) -> CommandSdv:
-        script_file_path = self._source_file_path(environment, script_output_dir_path)
-        script_file_argument = shlex.quote(str(script_file_path))
+        script_file_argument = shlex.quote(str(self.source_file_path))
 
         command_line_elements = string_sdvs.from_fragments([
             string_sdvs.str_fragment(self.interpreter_shell_command),

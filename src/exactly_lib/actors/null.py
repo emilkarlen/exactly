@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
@@ -32,7 +31,6 @@ class _Parser(ExecutableObjectParser):
 class _Executor(parts.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> eh.ExitCodeOrHardError:
         return eh.new_eh_exit_code(0)
 

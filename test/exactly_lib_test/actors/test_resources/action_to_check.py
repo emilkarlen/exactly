@@ -142,14 +142,12 @@ class TestExecuteBase(unittest.TestCase):
             self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                              step_result.status,
                              'Result of validation/post-setup')
-            script_output_path = path_resolving_env.sds.test_case_dir
-            step_result = sut.prepare(environment, DEFAULT_ATC_OS_PROCESS_EXECUTOR, script_output_path)
+            step_result = sut.prepare(environment, DEFAULT_ATC_OS_PROCESS_EXECUTOR)
             self.assertTrue(step_result.is_success,
                             'Expecting success from prepare (found hard error)')
             process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                 environment,
                 DEFAULT_ATC_OS_PROCESS_EXECUTOR,
-                script_output_path,
                 sut)
             return capture_process_executor_result(process_executor,
                                                    path_resolving_env.sds.result.root_dir,
@@ -255,16 +253,13 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                     self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                      step_result.status,
                                      'Result of validation/post-setup')
-                    script_output_dir_path = path_resolving_env.sds.test_case_dir
                     step_result = sut.prepare(environment,
-                                              DEFAULT_ATC_OS_PROCESS_EXECUTOR,
-                                              script_output_dir_path)
+                                              DEFAULT_ATC_OS_PROCESS_EXECUTOR)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
                     process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
                         environment,
                         DEFAULT_ATC_OS_PROCESS_EXECUTOR,
-                        script_output_dir_path,
                         sut)
                     process_result = capture_process_executor_result(process_executor,
                                                                      path_resolving_env.sds.result.root_dir)

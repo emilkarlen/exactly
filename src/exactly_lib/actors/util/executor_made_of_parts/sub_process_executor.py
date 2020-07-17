@@ -1,4 +1,3 @@
-import pathlib
 from abc import ABC, abstractmethod
 
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
@@ -15,10 +14,9 @@ class OsProcessExecutor(parts.Executor, ABC):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles,
                 ) -> ExitCodeOrHardError:
-        command_sdv = self._command_to_execute(environment, script_output_dir_path)
+        command_sdv = self._command_to_execute(environment)
         command = (
             command_sdv
                 .resolve(environment.symbols)
@@ -31,7 +29,6 @@ class OsProcessExecutor(parts.Executor, ABC):
     @abstractmethod
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path,
                             ) -> CommandSdv:
         """
         Called after prepare, to get the command to execute
@@ -49,6 +46,5 @@ class CommandResolverExecutor(OsProcessExecutor):
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path,
                             ) -> CommandSdv:
         return self.command_sdv

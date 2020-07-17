@@ -1,4 +1,3 @@
-import pathlib
 from abc import ABC
 from typing import Sequence, List
 
@@ -75,23 +74,21 @@ class ExecutorBase(OsProcessExecutor, ABC):
         super().__init__(os_process_executor)
         self.file_name_generator = file_name_generator
         self.source_code_sdv = source_info.source
+        self.source_file_path = None
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
                 ) -> sh.SuccessOrHardError:
-        script_file_path = self._source_file_path(environment, script_output_dir_path)
+        self._set_source_file_path(environment)
         resolving_env = environment.path_resolving_environment_pre_or_post_sds
         source_code = self.source_code_sdv.resolve_value_of_any_dependency(resolving_env)
         try:
-            with open(str(script_file_path), 'w') as f:
+            with open(str(self.source_file_path), 'w') as f:
                 f.write(source_code)
             return sh.new_sh_success()
         except OSError as ex:
             return sh.new_sh_hard_error__str(str(ex))
 
-    def _source_file_path(self,
-                          environment: InstructionEnvironmentForPostSdsStep,
-                          script_output_dir_path: pathlib.Path) -> pathlib.Path:
+    def _set_source_file_path(self, environment: InstructionEnvironmentForPostSdsStep):
         base_name = self.file_name_generator.base_name()
-        return script_output_dir_path / base_name
+        self.source_file_path = environment.sds.test_case_dir / base_name
