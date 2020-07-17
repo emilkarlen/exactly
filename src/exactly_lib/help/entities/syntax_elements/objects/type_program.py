@@ -377,9 +377,6 @@ _ARGUMENT__EXISTING_FILE_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
 
-It is an error - not {FAIL} - if the file does not exist,
-or it is not a regular file.
-
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
@@ -390,9 +387,6 @@ _ARGUMENT__EXISTING_DIR_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
 
-It is an error - not {FAIL} - if the file does not exist,
-or it is not a directory.
-
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
@@ -402,8 +396,6 @@ Values are rendered as absolute paths.
 _ARGUMENT__EXISTING_PATH_DESCRIPTION = """\
 A {path_se}, with additional check for existence.
 
-
-It is an error - not {FAIL} - if the path does not exist.
 
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
