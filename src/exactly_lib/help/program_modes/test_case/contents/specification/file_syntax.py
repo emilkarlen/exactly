@@ -62,7 +62,8 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
 def _text_parser() -> TextParser:
     return TextParser({
         'phase_declaration_for_NAME': section_header('NAME'),
-        'instruction': AnyInstructionNameDictionary(),
+        'instr': AnyInstructionNameDictionary(),
+        'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
         'default_phase': phase_names.PHASE_NAME_DICTIONARY[DEFAULT_PHASE.identifier].syntax,
         'phase': phase_names.PHASE_NAME_DICTIONARY,
         'actor': formatting.concept_(ACTOR_CONCEPT_INFO),
@@ -116,7 +117,7 @@ A phase can be declared more than once.
 
 Contents of multiple declarations are merged, and executed in the order it appears in the file.
 
-Here, {instruction[exit_code]} is executed before {instruction[stderr]}:
+Here, {instr[exit_code]} is executed before {instr[stderr]}:
 
 
 ```
@@ -135,7 +136,7 @@ stderr {CONTENTS_EMPTY_ARGUMENT}
 """
 
 PHASES_CONTENTS_DOC = """\
-All phases except the {phase[act]} phase consist of a sequence of "instructions" (see below).
+All phases except the {phase[act]} phase consist of a sequence of "{instruction:s}" (see below).
 
 
 The contents of the {phase[act]} phase depends on which {actor} is used.
@@ -144,17 +145,19 @@ By default, it is expected to contain a single command line.
 """
 
 INSTRUCTIONS_DOC = """\
-Instructions start at the beginning of the line with a space separated identifier that
-is the name of the instruction.
+{instruction:s/u} start at the beginning of the line with a space separated identifier that
+is the name of the {instruction}.
 
 
-The name may optionally be followed by arguments. Most instructions use a syntax for
-options, arguments and quoting that resembles the unix shell.
+The name may optionally be followed by arguments.
+Most {instruction:s} use a syntax for options, arguments and quoting
+that resembles the unix shell.
+The order of options is relevant, though (unlike many unix tools).
 
-The exact syntax depends on the particular instruction.
+The exact syntax depends on the particular {instruction}.
 
 
-An instruction may span several lines, as this form of {instruction[stdout]} does:
+{instruction:a/u} may span several lines, as this form of {instr[stdout]} does:
 
 
 ```
@@ -165,11 +168,11 @@ EOF
 """
 
 INSTRUCTIONS_DESCRIPTION_DOC = """\
-An instruction may optionally be preceded by a "description" -
+{instruction:a/u} may optionally be preceded by a "description" -
 a free text within quotes that is
-displayed together with the instruction source line in error messages.
+displayed together with the {instruction} source line in error messages.
 
-The purpose of a description is to describe the meaning of the instruction using
+The purpose of a description is to describe the meaning of the {instruction} using
 text that is easier to understand than the source line.
 
 A description is a quoted string using shell syntax.
@@ -193,15 +196,15 @@ A description may span several lines.
 OTHER_DOC = """\
 Lines beginning with "{line_comment_char}" are comments.
 
-Comments may only appear on lines between instructions and phase headers.
+Comments may only appear on lines between {instruction:s} and phase headers.
 
 
-Empty lines that are not part of an instruction are ignored.
+Empty lines that are not part of {instruction:a} are ignored.
 
 
-Empty lines, and lines with comment line syntax, may be part of instruction and
+Empty lines, and lines with comment line syntax, may be part of {instruction:s} and
 the {phase[act]} phase, though,
-as in the {instruction[stdout]} instruction here:
+as in the {instr[stdout]} {instruction} here:
 
 
 ```
