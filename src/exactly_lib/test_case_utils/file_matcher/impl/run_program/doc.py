@@ -58,7 +58,7 @@ class RunSyntaxDescription(documentation.SyntaxDescriptionBase):
                 'PATH_ARG_MARKER': formatting.syntax_element(file_matcher.PROGRAM_ARG_OPTION__MARKER.argument),
                 'program': types.PROGRAM_TYPE_INFO.name,
                 'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
-                'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+                'exit_code': misc_texts.EXIT_CODE,
             })
 
         return self.__tp

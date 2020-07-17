@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import formatting, misc_texts, matcher_model
+from exactly_lib.definitions import misc_texts, matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.matcher.impls.run_program import documentation
@@ -27,7 +27,7 @@ _TP = TextParser({
     'program': types.PROGRAM_TYPE_INFO.name,
     'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
     'MODEL': matcher_model.STRING_MATCHER_MODEL,
-    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'exit_code': misc_texts.EXIT_CODE,
     'stdin': misc_texts.STDIN,
 })
 

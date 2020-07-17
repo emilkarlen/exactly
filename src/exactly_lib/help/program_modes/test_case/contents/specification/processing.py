@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
-from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.definitions import formatting, misc_texts, processing
 from exactly_lib.definitions.entity import concepts, directives
 from exactly_lib.definitions.test_case import phase_infos, phase_names
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import \
@@ -23,8 +23,9 @@ class ContentsConstructor(SectionContentsConstructor):
         self._tp = TextParser({
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name.singular,
-            'instructions': concepts.INSTRUCTION_CONCEPT_INFO.name.plural,
+            'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
+            'exit_code': misc_texts.EXIT_CODE,
+            'exit_identifier': misc_texts.EXIT_IDENTIFIER,
             'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name,
             'act_phase': phase_infos.ACT.name,
             'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
@@ -32,6 +33,12 @@ class ContentsConstructor(SectionContentsConstructor):
             'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
             'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
             'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
+
+            'stdout': misc_texts.STDOUT,
+
+            'execution': processing.STEP_EXECUTION,
+            'validation': processing.STEP_VALIDATION,
+            'preprocessing': processing.STEP_PRE_PROCESSING,
         })
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
@@ -51,7 +58,7 @@ class ContentsConstructor(SectionContentsConstructor):
 
     def processing_step_list(self) -> docs.ParagraphItem:
         items = [
-            docs.list_item('Preprocessing',
+            docs.list_item(processing.STEP_PRE_PROCESSING.singular.capitalize(),
                            step_with_single_exit_value(
                                self._tp.fnap(PURPOSE_OF_PREPROCESSING),
                                self._tp.para(FAILURE_CONDITION_OF_PREPROCESSING),
@@ -66,13 +73,13 @@ class ContentsConstructor(SectionContentsConstructor):
                                    ('File inclusion error', exit_values.NO_EXECUTION__FILE_ACCESS_ERROR),
                                ])
                            ),
-            docs.list_item('Validation',
+            docs.list_item(processing.STEP_VALIDATION.singular.capitalize(),
                            step_with_single_exit_value(
                                self._tp.fnap(PURPOSE_OF_VALIDATION),
                                self._tp.para(FAILURE_CONDITION_OF_VALIDATION),
                                exit_values.EXECUTION__VALIDATION_ERROR)
                            ),
-            docs.list_item('Execution',
+            docs.list_item(processing.STEP_EXECUTION.singular.capitalize(),
                            self._tp.fnap(EXECUTION_DESCRIPTION)
                            ),
         ]
@@ -100,10 +107,10 @@ A test case file is processed in a number of steps,
 where the actual execution of the test is the last step.
 
 
-The outcome is reported by an exit code and an identifier printed as a single line on stdout.
+The outcome is reported by {exit_code:a} and {exit_identifier:a} printed as a single line on {stdout}.
 
 
-If a step before the execution fails, then the outcome is reported and the processing is halted.
+If a step before {execution} fails, then the outcome is reported and the processing is halted.
 """
 
 PURPOSE_OF_PREPROCESSING = """\
@@ -116,14 +123,14 @@ or set in a test suite.
 
 FAILURE_CONDITION_OF_PREPROCESSING = """\
 Fails if the preprocessor program cannot be executed, 
-or if it exits with a non-zero exit code.
+or if it exits with a non-zero {exit_code}.
 """
 
 PURPOSE_OF_SYNTAX_CHECKING = """\
 Checks the syntax of all elements in the test case file
 -
 phases,
-their {instructions},
+their {instruction:s},
 and the {ATC} of the {act_phase:syntax} phase.
 
 
@@ -136,7 +143,7 @@ or if a {directive} fails.
 """
 
 PURPOSE_OF_VALIDATION = """\
-Checks references to {symbol:s} and external resources (files etc).
+Checks references to {symbol:s} and external resources (files).
 """
 
 FAILURE_CONDITION_OF_VALIDATION = """\
@@ -153,11 +160,11 @@ Executes the actual test.
 Executes the phases in the predefined order.
 
 
-Executing a phase with {instructions} means executing all instructions
+Executing a phase with {instruction:s} means executing all {instruction:s}
 in the order they appear in the test case file.
 
 
-The execution halts if an {instruction} encounters an error,
-or, in the case of assertion instructions, if the
+{execution:/u} halts if an {instruction} encounters an error,
+or, in the case of assertion {instruction:s}, if the
 assertion fails. 
 """

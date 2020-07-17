@@ -15,7 +15,9 @@ OS_PROCESS_NAME = misc_name_with_formatting(
 EXIT_IDENTIFIER = misc_name_with_formatting(
     name.an_name(name.name_with_plural_s('exit identifier')))
 
-EXIT_CODE = name.an_name(name.name_with_plural_s('exit code'))
+EXIT_CODE = misc_name_with_formatting(
+    name.an_name(name.name_with_plural_s('exit code'))
+)
 EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
 
 STDOUT = 'stdout'

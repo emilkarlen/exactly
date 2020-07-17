@@ -1,6 +1,6 @@
 from exactly_lib.common.report_rendering.description_tree import rendering__node_wo_data
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import misc_texts, formatting
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import types
 from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -110,7 +110,7 @@ def non_zero_exit_code_msg(program: StructureRenderer,
 
 
 _STRING_FORMATTER = StringFormatter({
-    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'exit_code': misc_texts.EXIT_CODE,
     'program': types.PROGRAM_TYPE_INFO.name,
 })
 

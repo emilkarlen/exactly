@@ -40,7 +40,7 @@ PREAMBLE = ''
 
 TEXT_PARSER = TextParser({
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
-    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'exit_code': misc_texts.EXIT_CODE,
     'stdout': misc_texts.STDOUT,
     'an_exit_identifier': misc_texts.EXIT_IDENTIFIER.singular_determined,
 })

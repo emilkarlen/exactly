@@ -1,6 +1,6 @@
 from typing import List, Sequence
 
-from exactly_lib.definitions import doc_format, matcher_model, misc_texts, formatting
+from exactly_lib.definitions import doc_format, matcher_model, misc_texts
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -116,7 +116,7 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'program': types.PROGRAM_TYPE_INFO.name,
     'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
-    'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+    'exit_code': misc_texts.EXIT_CODE,
 }
 
 

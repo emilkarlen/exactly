@@ -3,14 +3,14 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, processing, misc_texts
 from exactly_lib.definitions import test_case_file_structure as tcds
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.doc_format import file_name_text, dir_name_text
 from exactly_lib.definitions.entity import concepts, types
-from exactly_lib.definitions.formatting import AnyInstructionNameDictionary, InstructionName
+from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
@@ -113,11 +113,14 @@ _TP = TextParser({
     'sds_concept': formatting.concept_(concepts.SDS_CONCEPT_INFO),
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
-    'instruction': AnyInstructionNameDictionary(),
+    'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
     'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
     'keep_sandbox_option': formatting.cli_option(command_line_options.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY),
     'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+    'validation': processing.STEP_VALIDATION,
+    'stdout': misc_texts.STDOUT,
+    'stderr': misc_texts.STDERR,
 })
 
 SANDBOX_CONCEPT = _SandboxConcept()
@@ -174,18 +177,24 @@ Each execution of a test case uses its own {sds_concept} (SDS).
 It is created in a platform dependent location for temporary files.
 
 
-The {SDS} is created just before the {phase[setup]} phase is executed,
+The {SDS} is created just before the {phase[setup]} phase is executed
+(after {validation})
 and deleted when test case execution ends
 (unless {keep_sandbox_option} is used).
+
+
+The {SDS} is used to store temporary files used by {instruction:s} (among other things).
+One such example is output from external processes - {stdout} and {stderr}.
+Thus, the {SDS} must have enough space to store the output from all such executed processes.
 """
 
 _ACT_DIR_DESCRIPTION = """\
 It will be the {cwd} for the {phase[act]} phase, and following phases,
-unless it is changed by the {cd_instruction} instruction.
+unless it is changed by the {cd_instruction} {instruction}.
 
 
 (Files and directories that {phase[setup]:syntax} creates
-are installed into the {cwd}, if no instruction options are used to change this.)
+are installed into the {cwd}, if no {instruction} options are used to change this.)
 """
 
 _RESULT_DIR_DESCRIPTION = """\

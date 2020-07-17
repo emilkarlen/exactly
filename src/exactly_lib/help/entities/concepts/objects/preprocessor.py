@@ -22,7 +22,7 @@ class _PreprocessorConcept(ConceptDocumentation):
             'the_concept': formatting.concept(self.name().singular),
             'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'is_a_shell_cmd': misc_texts.IS_A_SHELL_CMD,
-            'exit_code': formatting.misc_name_with_formatting(misc_texts.EXIT_CODE),
+            'exit_code': misc_texts.EXIT_CODE,
         })
         return from_simple_description(
             Description(self.single_line_description(),
