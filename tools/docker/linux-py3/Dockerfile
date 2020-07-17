@@ -8,8 +8,10 @@ RUN apk add --no-cache python3 && \
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
     rm -r /root/.cache
 
-RUN apk add --no-cache bash
-
-RUN adduser -D developer
-
 RUN mkdir /share
+
+# RUN apk add --no-cache bash
+
+COPY alias.sh /etc/profile.d/
+
+RUN adduser -D developer -s /bin/ash

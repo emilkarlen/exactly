@@ -3,8 +3,7 @@
 HERE=$(dirname $0)
 EXE_NAME=$(basename $0)
 
-function abs_path_of_repo_root
-(
+function abs_path_of_repo_root() (
   cd ${HERE}/../..
   pwd
 )
@@ -30,13 +29,16 @@ and a shared dir (${SHARE_DIR}) mounted (read-write) at
 
   ${SHARE_DIR_IN_CONTAINER}
 
-${SHARE_DIR} is created if it does not exist."
+${SHARE_DIR} is created if it does not exist.
+
+To work as non-root:
+
+  > su - developer"
 
 if [ "${1}" == '-h' ]; then
   echo "${HELP}"
   exit 0
 fi
-
 
 if [ -e ${SHARE_DIR} ]; then
   if [ ! -d ${SHARE_DIR} ]; then
@@ -48,6 +50,6 @@ else
 fi
 
 docker run --interactive --tty \
-           --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${REPO_ROOT_IN_CONTAINER} \
-           --mount type=bind,source=${SHARE_DIR},target=${SHARE_DIR_IN_CONTAINER} \
-           ${DOCKER_IMAGE}
+  --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${REPO_ROOT_IN_CONTAINER} \
+  --mount type=bind,source=${SHARE_DIR},target=${SHARE_DIR_IN_CONTAINER} \
+  ${DOCKER_IMAGE}
