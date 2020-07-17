@@ -31,10 +31,7 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
                                                          sds.result_dir)
 
             self._assert_is_existing_dir_with_given_number_of_files_in_it(root / 'internal',
-                                                                          3)
-
-            self._assert_is_existing_empty_dir_with_name(root / 'internal' / 'testcase',
-                                                         sds.test_case_dir)
+                                                                          2)
 
             self._assert_is_existing_empty_dir_with_name(root / 'internal' / 'tmp',
                                                          sds.internal_tmp_dir)

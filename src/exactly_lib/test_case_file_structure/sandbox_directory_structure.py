@@ -16,7 +16,6 @@ SUB_DIRECTORY__RESULT = 'result'
 SUB_DIRECTORY__INTERNAL = 'internal'
 
 SUB_DIRECTORY__TMP_INTERNAL = 'tmp'
-SUB_DIRECTORY__TEST_CASE = 'testcase'
 SUB_DIRECTORY__LOG = 'log'
 
 INSTRUCTION_SUB_DIR_FOR_VALIDATION = 'validate'
@@ -70,7 +69,6 @@ DIRECTORIES = (
             DirWithSubDirs(SUB_DIRECTORY__INTERNAL, [
                 empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
                 empty_dir(SUB_DIRECTORY__LOG),
-                empty_dir(SUB_DIRECTORY__TEST_CASE),
             ]),
         ]
 )
@@ -118,7 +116,6 @@ class Internal(DirWithRoot):
         super().__init__(root_dir)
         self.__tmp_dir = self.root_dir / SUB_DIRECTORY__TMP_INTERNAL
         self.__log_dir = self.root_dir / SUB_DIRECTORY__LOG
-        self.__test_case_dir = self.root_dir / SUB_DIRECTORY__TEST_CASE
 
     @property
     def tmp_dir(self) -> Path:
@@ -127,10 +124,6 @@ class Internal(DirWithRoot):
     @property
     def log_dir(self) -> Path:
         return self.__log_dir
-
-    @property
-    def test_case_dir(self) -> Path:
-        return self.__test_case_dir
 
 
 class SandboxDirectoryStructure(DirWithRoot):
@@ -169,10 +162,6 @@ class SandboxDirectoryStructure(DirWithRoot):
     def log_dir(self) -> Path:
         return self.__internal.log_dir
 
-    @property
-    def test_case_dir(self) -> Path:
-        return self.__internal.test_case_dir
-
     def relative_to_sds_root(self, file_in_sub_dir: pathlib.PurePath) -> pathlib.PurePath:
         return file_in_sub_dir.relative_to(self.root_dir)
 
@@ -181,7 +170,6 @@ class SandboxDirectoryStructure(DirWithRoot):
             self.act_dir,
             self.user_tmp_dir,
             self.internal_tmp_dir,
-            self.test_case_dir,
             self.log_dir,
         ]
 

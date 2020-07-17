@@ -27,13 +27,6 @@ def act_dir_contains_exactly(expected_contents: file_structure.DirContents
                               DirContainsExactly(expected_contents))
 
 
-def test_case_dir_contains_exactly(expected_contents: file_structure.DirContents
-                                   ) -> ValueAssertion[SandboxDirectoryStructure]:
-    return asrt.sub_component('act dir',
-                              SandboxDirectoryStructure.test_case_dir.fget,
-                              DirContainsExactly(expected_contents))
-
-
 def tmp_user_dir_contains_exactly(expected_contents: file_structure.DirContents
                                   ) -> ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('user tmp dir',
