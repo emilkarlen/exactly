@@ -662,6 +662,7 @@ More functionality is needed, smaller and larger.
 Including (but not limited to):
 
 * Improved string character escaping
+* Improved syntax and semantics of expressions, using precedences
 * More string transformers, matchers, etc
 * Possibility to use PROGRAM in ``[act]``
 * Type for REG-EX
