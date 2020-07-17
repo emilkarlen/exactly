@@ -26,7 +26,6 @@ from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
-from exactly_lib.util.file_utils.misc_utils import tmp_text_file_containing
 from exactly_lib.util.str_.str_constructor import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -162,11 +161,11 @@ class EqualityStringMatcher(StringMatcherImplBase):
         if self._expected_contents.is_path:
             return self._expected_contents.path_value.primitive
         else:
-            contents = self._expected_contents.string_value
-            return tmp_text_file_containing(contents,
-                                            prefix='contents-',
-                                            suffix='.txt',
-                                            directory=str(tmp_file_space.new_path_as_existing_dir()))
+            path = tmp_file_space.new_path('expected')
+            with path.open('w') as f:
+                f.write(self._expected_contents.string_value)
+
+            return path
 
     @staticmethod
     def _do_compare(expected_file_path: pathlib.Path,

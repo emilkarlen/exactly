@@ -1,6 +1,5 @@
 import os
 import pathlib
-import tempfile
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
 from typing import List, ContextManager, IO
@@ -55,20 +54,6 @@ def lines_of(file_path: pathlib.Path) -> List[str]:
 def contents_of(file_path: pathlib.Path) -> str:
     with file_path.open() as f:
         return f.read()
-
-
-def tmp_text_file_containing(contents: str,
-                             prefix: str = '',
-                             suffix: str = '',
-                             directory=None) -> pathlib.Path:
-    fd, absolute_file_path = tempfile.mkstemp(prefix=prefix,
-                                              suffix=suffix,
-                                              dir=directory,
-                                              text=True)
-    fo = os.fdopen(fd, 'w+')
-    fo.write(contents)
-    fo.close()
-    return pathlib.Path(absolute_file_path)
 
 
 @contextmanager
