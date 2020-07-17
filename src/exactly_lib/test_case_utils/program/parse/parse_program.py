@@ -23,7 +23,8 @@ def parse_program(parser: TokenParser,
                                     must_be_on_current_line)
 
     def parse_transformer(_parser: TokenParser) -> ProgramSdv:
-        transformer = parse_string_transformer.parse_string_transformer_from_token_parser(_parser)
+        transformer = parse_string_transformer.parse_string_transformer_from_token_parser(_parser,
+                                                                                          must_be_on_current_line=False)
         parser.require_is_at_eol('Unexpected arguments after ' + types.STRING_TRANSFORMER_TYPE_INFO.name.singular)
         parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return program.new_with_appended_transformations([transformer])
