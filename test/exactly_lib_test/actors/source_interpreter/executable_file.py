@@ -9,7 +9,6 @@ from exactly_lib.actors.source_interpreter.source_file_management import SourceF
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
-from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.source_interpreter import common_tests
 from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
@@ -17,16 +16,12 @@ from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    test_case_dir_contains_exactly
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.util.test_resources import py_program
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
-        unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
         unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
 
         common_tests.suite_for(sut.actor(python3.source_interpreter_setup()),
@@ -100,28 +95,6 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
                         Arrangement(),
                         Expectation(
                             result_of_execute=eh_assertions.is_hard_error))
-
-
-class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
-    def runTest(self):
-        language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        actor = sut.actor(language_setup)
-        source = [instr(['print(1)'])]
-        expected_file_name = language_setup.base_name_from_stem(
-            sut.ActSourceFileNameGeneratorForSourceInterpreterSetup.FILE_NAME_STEM)
-        exit_code_or_hard_error = check_execution(
-            self,
-            actor,
-            source,
-            Arrangement(),
-            Expectation(
-                result_of_execute=eh_assertions.is_hard_error,
-                side_effects_on_files_after_execute=test_case_dir_contains_exactly(DirContents([
-                    File(expected_file_name,
-                         lines_content(['print(1)']))
-                ]))))
-        self.assertTrue(exit_code_or_hard_error.is_hard_error,
-                        'Expecting a HARD ERROR')
 
 
 class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
