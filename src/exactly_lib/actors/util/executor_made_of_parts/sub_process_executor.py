@@ -9,7 +9,7 @@ from exactly_lib.util.file_utils.std import StdFiles
 from . import parts
 
 
-class SubProcessExecutor(parts.Executor, ABC):
+class OsProcessExecutor(parts.Executor, ABC):
     def __init__(self, os_process_executor: AtcOsProcessExecutor):
         self.os_process_executor = os_process_executor
 
@@ -39,10 +39,11 @@ class SubProcessExecutor(parts.Executor, ABC):
         pass
 
 
-class CommandResolverExecutor(SubProcessExecutor):
+class CommandResolverExecutor(OsProcessExecutor):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
-                 command_sdv: CommandSdv):
+                 command_sdv: CommandSdv,
+                 ):
         super().__init__(os_process_executor)
         self.command_sdv = command_sdv
 

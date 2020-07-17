@@ -4,7 +4,7 @@ from typing import Sequence, List
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
-    SubProcessExecutor
+    OsProcessExecutor
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
@@ -61,7 +61,7 @@ class ActSourceFileNameGeneratorForConstantFileName(ActSourceFileNameGenerator):
         return self._base_name
 
 
-class ExecutorBase(SubProcessExecutor, ABC):
+class ExecutorBase(OsProcessExecutor, ABC):
     """
     Base class for executors that executes source code by putting it in a file
     and then interpreting this file.
@@ -70,7 +70,8 @@ class ExecutorBase(SubProcessExecutor, ABC):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
                  file_name_generator: ActSourceFileNameGenerator,
-                 source_info: SourceInfo):
+                 source_info: SourceInfo,
+                 ):
         super().__init__(os_process_executor)
         self.file_name_generator = file_name_generator
         self.source_code_sdv = source_info.source
