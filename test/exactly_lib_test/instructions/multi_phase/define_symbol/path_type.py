@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.definitions.path import REL_ACT_OPTION
-from exactly_lib.instructions.multi_phase import define_symbol as sut
-from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFIGURATION
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
+from exactly_lib.instructions.multi_phase.define_symbol import type_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
@@ -104,9 +104,10 @@ class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
 
 class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
     def test(self):
-        expected_defined_symbol = ConstantSuffixPathDdvSymbolContext('name',
-                                                                     REL_OPTIONS_CONFIGURATION.default_option,
-                                                                     'component')
+        expected_defined_symbol = ConstantSuffixPathDdvSymbolContext(
+            'name',
+            type_parser.REL_OPTIONS_CONFIGURATION.default_option,
+            'component')
 
         instruction_argument = src2(ValueType.PATH,
                                     expected_defined_symbol.name,
@@ -134,7 +135,7 @@ class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
             expected_path_sdv = path_sdvs.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
                                 ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
-                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
+                                    type_parser.REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 path_part_sdvs.from_constant_str('component'))
             expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
             expected_symbol = PathSymbolContext('ASSIGNED_NAME', expected_symbol_value)

@@ -16,3 +16,7 @@ class TheConfiguration(BeforeAssertConfigurationBase):
 
 def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

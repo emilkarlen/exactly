@@ -1,7 +1,7 @@
 import unittest
 from pathlib import PurePosixPath
 
-from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.type_system.value_type import LogicValueType

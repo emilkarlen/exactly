@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo, SourceLocation, \
     SourceLocationPath
 from exactly_lib.symbol.sdv_structure import SymbolDefinition

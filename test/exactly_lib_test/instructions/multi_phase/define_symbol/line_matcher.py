@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher

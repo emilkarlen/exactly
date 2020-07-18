@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.definitions.primitives.file_matcher import NAME_MATCHER_NAME
-from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models

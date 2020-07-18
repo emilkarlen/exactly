@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.multi_phase import define_symbol as sut
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import remaining_source, \
