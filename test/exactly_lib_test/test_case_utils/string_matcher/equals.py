@@ -172,7 +172,7 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.source_is_at_end,
+                    source=asrt_source.is_at_end_of_line(3),
                 ),
                 ExecutionExpectation(
                     main_result=maybe_not.pass__if_positive__fail__if_negative,
@@ -222,7 +222,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 symbols=symbol.symbol_table),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.is_at_beginning_of_line(4),
+                    source=asrt_source.is_at_end_of_line(3),
                     symbol_references=asrt.matches_sequence([
                         symbol.reference_assertion__any_data_type
                     ]),
@@ -248,7 +248,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
                 ParseExpectation(
-                    source=asrt_source.is_at_beginning_of_line(4)
+                    source=asrt_source.is_at_end_of_line(3)
                 ),
                 ExecutionExpectation(
                     main_result=maybe_not.fail__if_positive__pass_if_negative,

@@ -151,14 +151,16 @@ def _source_variants_with_accepted_following_content_on_same_line(
 def _equivalent_source_variants_for_consume_until_end_of_last_line(
         num_expression_lines: int = 1
 ) -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+    source_expectation = asrt_source.is_at_end_of_line(num_expression_lines)
     return [
-        (Arguments('', []), asrt_source.source_is_at_end),
+        (Arguments('', []),
+         source_expectation),
 
         (Arguments('', ['non-empty following line']),
-         asrt_source.is_at_end_of_line(num_expression_lines)),
+         source_expectation),
 
         (Arguments('', ['     ']),
-         asrt_source.is_at_end_of_line(num_expression_lines)),
+         source_expectation),
     ]
 
 
@@ -167,7 +169,7 @@ def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
     space = '  '
     following_argument = 'argumentOfOthers'
     return [
-        (Arguments('', []), asrt_source.source_is_at_end),
+        (Arguments('', []), asrt_source.is_at_end_of_line(num_expression_lines)),
 
         (Arguments(space, ['following line']),
          asrt_source.assert_source(current_line_number=asrt.equals(num_expression_lines),
@@ -181,11 +183,11 @@ def _source_variants_with__for_expression_parser(num_expression_lines: int = 1
 
 def _source_variants_with__for_full_line_expression_parser(num_expression_lines: int = 1
                                                            ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
+    source_expectation = asrt_source.is_at_end_of_line(num_expression_lines)
     return [
-        ([], asrt_source.source_is_at_end),
-        (['  '], asrt_source.is_at_beginning_of_line(num_expression_lines + 1)),
-        (['following line'],
-         asrt_source.is_at_beginning_of_line(num_expression_lines + 1)),
+        ([], source_expectation),
+        (['  '], source_expectation),
+        (['following line'], source_expectation),
     ]
 
 

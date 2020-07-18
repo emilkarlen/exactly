@@ -106,7 +106,7 @@ def _check(
             ),
             arg_pos_option,
         ).as_arguments,
-        integration_check.constant_relative_file_name(model_file_path),
+        input_=integration_check.constant_relative_file_name(model_file_path),
         symbol_references=asrt.matches_sequence([
             is_reference_to_program(program_symbol_name),
             is_reference_to_data_type_symbol(command_line_arg_list_symbol_name),

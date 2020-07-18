@@ -170,19 +170,20 @@ class FullMatchDoNotAcceptPartialMatchSingleLineWoNewline(tc.TestWithNegationArg
 class FullMatchSingleLineWNewline(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         actual_contents = lines_content(['123'])
+        here_doc = here_document_as_elements(['1.3'])
         for transformer_option_arguments in TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS:
             with self.subTest(maybe_with_transformer_option=transformer_option_arguments):
                 argument_elements = ArgumentElements(transformer_option_arguments +
                                                      maybe_not.empty__if_positive__not_option__if_negative +
                                                      [matcher_options.MATCHES_ARGUMENT]
-                                                     ).followed_by(here_document_as_elements(['1.3']))
+                                                     ).followed_by(here_doc)
                 self._check(
                     argument_elements.as_remaining_source,
                     integration_check.model_of(actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
-                            source=asrt_source.source_is_at_end,
+                            source=asrt_source.is_at_end_of_line(1 + len(here_doc.following_lines)),
                         ),
                         ExecutionExpectation(
                             main_result=maybe_not.pass__if_positive__fail__if_negative
@@ -195,6 +196,7 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         actual_contents = lines_content(['123',
                                          '456'])
+        here_doc = here_document_as_elements(['1.3', '4.*6'])
         for transformer_option_arguments in TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS:
             for maybe_full_match in FULL_MATCH_OPTION_ALTERNATIVES_ELEMENTS:
                 with self.subTest(maybe_with_transformer_option=transformer_option_arguments,
@@ -203,15 +205,14 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
                                                          maybe_not.empty__if_positive__not_option__if_negative +
                                                          [matcher_options.MATCHES_ARGUMENT] +
                                                          maybe_full_match
-                                                         ).followed_by(here_document_as_elements(['1.3',
-                                                                                                  '4.*6']))
+                                                         ).followed_by(here_doc)
                     self._check(
                         argument_elements.as_remaining_source,
                         integration_check.model_of(actual_contents),
                         arrangement_w_tcds(),
                         Expectation(
                             ParseExpectation(
-                                source=asrt_source.source_is_at_end,
+                                source=asrt_source.is_at_end_of_line(1 + len(here_doc.following_lines)),
                             ),
                             ExecutionExpectation(
                                 main_result=maybe_not.pass__if_positive__fail__if_negative
@@ -224,6 +225,7 @@ class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegatio
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         regex_lines = ['1.3',
                        '4.*6']
+        here_doc = here_document_as_elements(regex_lines)
 
         actual_contents_cases = [
             lines_content(['123',
@@ -242,14 +244,14 @@ class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegatio
                     argument_elements = ArgumentElements(transformer_option_arguments +
                                                          maybe_not.empty__if_positive__not_option__if_negative +
                                                          [matcher_options.MATCHES_ARGUMENT]
-                                                         ).followed_by(here_document_as_elements(regex_lines))
+                                                         ).followed_by(here_doc)
                     self._check(
                         argument_elements.as_remaining_source,
                         integration_check.model_of(actual_contents),
                         arrangement_w_tcds(),
                         Expectation(
                             ParseExpectation(
-                                source=asrt_source.source_is_at_end,
+                                source=asrt_source.is_at_end_of_line(1 + len(here_doc.following_lines)),
                             ),
                             ExecutionExpectation(
                                 main_result=maybe_not.pass__if_positive__fail__if_negative
@@ -262,6 +264,7 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
         regex_lines = ['1.3',
                        '4.*6']
+        here_doc_of_reg_ex = here_document_as_elements(regex_lines)
         actual_contents = lines_content(['123',
                                          '456',
                                          '789'])
@@ -271,14 +274,14 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
                                                      maybe_not.empty__if_positive__not_option__if_negative +
                                                      [matcher_options.MATCHES_ARGUMENT,
                                                       FULL_MATCH_ARGUMENT]
-                                                     ).followed_by(here_document_as_elements(regex_lines))
+                                                     ).followed_by(here_doc_of_reg_ex)
                 self._check(
                     argument_elements.as_remaining_source,
                     integration_check.model_of(actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
-                            source=asrt_source.source_is_at_end
+                            source=asrt_source.is_at_end_of_line(1 + len(here_doc_of_reg_ex.following_lines))
                         ),
                         ExecutionExpectation(
                             main_result=maybe_not.fail__if_positive__pass_if_negative

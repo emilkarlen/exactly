@@ -6,7 +6,6 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
-from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util import functional
 
 
@@ -58,6 +57,8 @@ class _Parser(Parser[ProgramSdv]):
 
     @staticmethod
     def _parse_transformer(parser: TokenParser) -> StringTransformerSdv:
+        from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
+
         return parse_string_transformer.parse_string_transformer_from_token_parser(parser,
                                                                                    must_be_on_current_line=False)
 

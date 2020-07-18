@@ -49,11 +49,17 @@ def parser() -> parser_classes.Parser[FileMatcherSdv]:
 
 
 class _Parser(parser_classes.Parser[FileMatcherSdv]):
+    def __init__(self):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+
     def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
         return parse_sdv(parser, must_be_on_current_line=True)
 
 
 class ParserOfMatcherOnArbitraryLine(parser_classes.Parser[MatcherSdv[FileMatcherModel]]):
+    def __init__(self):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+
     def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdv:
         return parse_sdv(token_parser, must_be_on_current_line=False)
 

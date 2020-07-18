@@ -38,7 +38,7 @@ class TestHardError(unittest.TestCase):
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
-                            source=asrt_source.source_is_at_end,
+                            source=asrt_source.is_at_end_of_line(1),
                         ),
                         ExecutionExpectation(
                             is_hard_error=asrt_text_doc.is_any_text()
@@ -86,7 +86,7 @@ class TestHardError(unittest.TestCase):
                     ),
                     Expectation(
                         ParseExpectation(
-                            source=asrt_source.source_is_at_end,
+                            source=asrt_source.is_at_end_of_line(1),
                             symbol_references=program_symbol.references_assertion
                         ),
                         ExecutionExpectation(

@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
                 )
             ).as_arguments,
             ParseExpectation(
-                source=asrt_source.source_is_at_end,
+                source=asrt_source.is_at_end_of_line(1),
                 symbol_references=asrt.matches_sequence([
                     is_reference_to_program(program_symbol_name),
                     is_reference_to_data_type_symbol(exit_code_symbol_name),

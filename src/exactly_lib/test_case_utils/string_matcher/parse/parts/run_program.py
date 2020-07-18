@@ -11,7 +11,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse(token_parser: TokenParser) -> StringMatcherSdv:
-    program = parse_program.parse_program(token_parser, False)
+    program = _PROGRAM_PARSER.parse_from_token_parser(token_parser)
 
     from exactly_lib.test_case_utils.string_matcher.impl import run_program
     return run_program.sdv(program)
@@ -22,6 +22,11 @@ class SyntaxDescription(documentation.SyntaxDescriptionBase):
     def description_rest(self) -> Sequence[ParagraphItem]:
         return _TP.fnap(_RUN_MATCHER_SED_DESCRIPTION)
 
+
+_PROGRAM_PARSER = parse_program.program_parser(
+    must_be_on_current_line=False,
+    consume_last_line_if_is_at_eol_after_parse=False,
+)
 
 _TP = TextParser({
     'program': types.PROGRAM_TYPE_INFO.name,

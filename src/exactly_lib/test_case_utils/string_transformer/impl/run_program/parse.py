@@ -18,7 +18,7 @@ from . import sdv
 
 def parse(token_parser: TokenParser) -> StringTransformerSdv:
     is_ignore_exit_code = token_parser.consume_optional_option(names.RUN_WITH_IGNORED_EXIT_CODE_OPTION_NAME)
-    program = parse_program.parse_program(token_parser)
+    program = _PROGRAM_PARSER.parse_from_token_parser(token_parser)
     return sdv.sdv(is_ignore_exit_code, program)
 
 
@@ -48,6 +48,11 @@ class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialS
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
         return [syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target]
 
+
+_PROGRAM_PARSER = parse_program.program_parser(
+    must_be_on_current_line=False,
+    consume_last_line_if_is_at_eol_after_parse=False,
+)
 
 _DESCRIPTION_REST = """\
 Runs {program:a}, with input and output via {stdin} and {stdout}.

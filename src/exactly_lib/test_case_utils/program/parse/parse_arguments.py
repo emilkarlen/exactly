@@ -25,7 +25,7 @@ REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
 
 
 def parser(consume_last_line_if_is_at_eol_after_parse: bool = False) -> Parser[ArgumentsSdv]:
-    return _Parser(consume_last_line_if_is_at_eol_after_parse, True)
+    return _Parser(consume_last_line_if_is_at_eol_after_parse, False)
 
 
 def parse(source: ParseSource) -> ArgumentsSdv:

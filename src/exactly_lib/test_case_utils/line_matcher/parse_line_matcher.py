@@ -31,6 +31,9 @@ def parser() -> Parser[LineMatcherSdv]:
 
 
 class _Parser(Parser[LineMatcherSdv]):
+    def __init__(self):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+
     def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherSdv:
         return parse_line_matcher_from_token_parser(parser)
 

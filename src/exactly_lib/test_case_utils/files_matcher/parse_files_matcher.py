@@ -25,7 +25,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 
 def files_matcher_parser() -> Parser[FilesMatcherSdv]:
     return parser_classes.ParserFromTokenParserFunction(parse_files_matcher,
-                                                        consume_last_line_if_is_at_eol_after_parse=True)
+                                                        consume_last_line_if_is_at_eol_after_parse=False)
 
 
 def parse_files_matcher(parser: TokenParser,

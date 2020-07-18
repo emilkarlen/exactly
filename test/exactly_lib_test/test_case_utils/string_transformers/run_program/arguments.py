@@ -106,7 +106,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                         ignore_exit_code=with_ignored_exit_code,
                     ),
                     ParseExpectation(
-                        source=asrt_source.source_is_at_end,
+                        source=asrt_source.is_at_end_of_line(1),
                         symbol_references=asrt.matches_sequence([
                             program_symbol.reference_assertion,
                             is_reference_to_data_type_symbol(command_line_arg_list_symbol_name),

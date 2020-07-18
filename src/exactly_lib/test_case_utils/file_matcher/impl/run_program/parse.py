@@ -9,13 +9,19 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 
 def parse(token_parser: TokenParser) -> FileMatcherSdv:
     args_generator = _parse_arguments_generator(token_parser)
-    program = parse_program.parse_program(token_parser, False)
+    program = _PROGRAM_PARSER.parse_from_token_parser(token_parser)
 
     from exactly_lib.test_case_utils.matcher.impls.run_program import sdv
     from . import run_conf
 
     return sdv.sdv(run_conf.FileMatcherRunConfiguration(args_generator),
                    program)
+
+
+_PROGRAM_PARSER = parse_program.program_parser(
+    must_be_on_current_line=False,
+    consume_last_line_if_is_at_eol_after_parse=False,
+)
 
 
 def _parse_arguments_generator(token_parser: TokenParser) -> arguments_generator.ArgumentsGenerator:
