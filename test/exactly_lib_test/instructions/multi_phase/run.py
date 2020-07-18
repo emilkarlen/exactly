@@ -21,7 +21,7 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import In
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
@@ -63,7 +63,7 @@ class EmbryoTestCaseBase(unittest.TestCase):
             arrangement: ArrangementWithSds,
             expectation: instruction_embryo_check.Expectation[ExecutionResultAndStderr],
     ):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             self._check(source, arrangement, expectation)
 
     def _check(self,
@@ -80,7 +80,7 @@ class TestCaseBase(tcds_test.TestCaseBase):
                                                           instruction_argument: str,
                                                           arrangement: tcds_test.Arrangement,
                                                           expectation: tcds_test.Expectation):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             embryo_parser = sut.embryo_parser('instruction-name')
             instruction_embryo = embryo_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
             action = ExecuteAction(instruction_embryo)

@@ -11,7 +11,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.test_case.actor.test_resources.actors import actor_that_runs_constant_actions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -43,7 +43,7 @@ class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              expected: int,
              argument: str):
-        for source in equivalent_source_variants__with_source_check(self, argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, argument):
             self._check(sut.Parser(),
                         source,
                         Arrangement(

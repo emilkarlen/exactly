@@ -9,7 +9,7 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
@@ -34,7 +34,8 @@ class TestFailingParse(unittest.TestCase):
         parser = sut.Parser()
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
@@ -43,7 +44,8 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
     def _check(self,
                instruction_argument_source: str,
                expected_command_and_arguments: list):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument_source):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                       instruction_argument_source):
             # ARRANGE #
             instruction = sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
             assert isinstance(instruction, ConfigurationSectionInstruction)

@@ -10,7 +10,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import sds_populat
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
@@ -71,7 +71,7 @@ class TestCreationOfDirectory(TestCaseBase):
     def runTest(self):
         instruction_argument_template = '{relativity_option} first-component/second-component'
         instruction_argument = self._instruction_argument(instruction_argument_template)
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             self.conf.run_test(
                 self,
                 source,
@@ -93,7 +93,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
     def runTest(self):
         instruction_argument_template = '{relativity_option} file'
         instruction_argument = self._instruction_argument(instruction_argument_template)
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             self.conf.run_test(
                 self,
                 source,

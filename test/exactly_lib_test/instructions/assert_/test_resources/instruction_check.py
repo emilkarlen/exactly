@@ -20,7 +20,7 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import In
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir__post_act
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, \
     all_validations_passes__svh
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -181,7 +181,8 @@ class Checker:
             symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
             execution: Sequence[NExArr[ExecutionExpectation, ArrangementPostAct2]],
     ):
-        for parse_source in equivalent_source_variants__with_source_check(put, source.arguments.as_single_string):
+        for parse_source in equivalent_source_variants__with_source_check__consume_last_line(put,
+                                                                                             source.arguments.as_single_string):
             instruction = self._parse_checker.parse(
                 put,
                 source.fs_location_info,

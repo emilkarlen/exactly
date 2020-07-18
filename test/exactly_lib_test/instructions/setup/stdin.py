@@ -32,7 +32,7 @@ from exactly_lib_test.symbol.test_resources.string import StringSymbolValueConte
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -79,13 +79,15 @@ class TestParse(unittest.TestCase):
                 file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                 rel_option=option_string)
             with self.subTest(msg='Argument ' + instruction_argument):
-                for source in equivalent_source_variants__with_source_check(self,
-                                                                            assignment_str_of(instruction_argument)):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               assignment_str_of(
+                                                                                                   instruction_argument)):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_syntax_is_correct__string(self):
         parser = sut.Parser()
-        for source in equivalent_source_variants__with_source_check(self, assignment_str_of('string')):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                       assignment_str_of('string')):
             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_successful_single_last_line(self):
@@ -100,7 +102,8 @@ class TestParse(unittest.TestCase):
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
-            for source in equivalent_source_variants__with_source_check(self, assignment_str_of(instruction_argument)):
+            for source in equivalent_source_variants__with_source_check__consume_last_line(self, assignment_str_of(
+                    instruction_argument)):
                 parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_here_document(self):

@@ -24,7 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_populators imp
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     multiple, TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
@@ -65,7 +65,7 @@ class TestCaseBase(tcds_test.TestCaseBase):
                                                           instruction_argument: str,
                                                           arrangement: ArrangementWithSds,
                                                           expectation: embryo_check.Expectation):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             parser = sut.embryo_parser('instruction-name')
             embryo_check.check(self, parser, source, arrangement, expectation)
 

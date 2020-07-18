@@ -13,7 +13,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBa
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
     sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -44,7 +44,7 @@ class ConfigurationBase:
                                                                    instruction_argument: str,
                                                                    arrangement,
                                                                    expectation):
-        for source in equivalent_source_variants__with_source_check(put, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(put, instruction_argument):
             self.run_test(put, source, arrangement, expectation)
 
     def instruction_setup(self) -> SingleInstructionSetup:

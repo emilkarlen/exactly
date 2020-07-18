@@ -69,7 +69,10 @@ class _Parser(Parser[ArgumentsSdv]):
             following_arguments = self._parse_element(token_parser)
             arguments = arguments.new_accumulated(following_arguments)
 
-        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        if self._consume_last_line_if_is_at_eol_after_parse:
+            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        else:
+            token_parser.consume_remaining_part_of_current_line_as_string()
 
         return arguments
 

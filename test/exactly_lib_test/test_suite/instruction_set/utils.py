@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib.test_suite.instruction_set import utils as sut
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check, equivalent_source_variants
+    equivalent_source_variants__with_source_check__consume_last_line, equivalent_source_variants
 
 
 def suite() -> unittest.TestSuite:
@@ -36,7 +36,8 @@ class TestParse(unittest.TestCase):
         ]
         for instruction_argument, expected_file_name in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               instruction_argument):
                     actual = sut.parse_file_names_resolver(source)
                     self.assertIsInstance(actual, sut.FileNamesResolverForPlainFileName,
                                           'should be ' + str(sut.FileNamesResolverForPlainFileName))
@@ -52,7 +53,8 @@ class TestParse(unittest.TestCase):
         ]
         for instruction_argument, expected_pattern in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               instruction_argument):
                     actual = sut.parse_file_names_resolver(source)
                     self.assertIsInstance(actual, sut.FileNamesResolverForGlobPattern,
                                           'should be ' + str(sut.FileNamesResolverForGlobPattern))

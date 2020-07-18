@@ -18,7 +18,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
@@ -53,17 +53,17 @@ class TestParse(unittest.TestCase):
 
     def test_succeed_when_there_is_exactly_one_argument(self):
         instruction_argument = 'single-argument'
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_there_is_exactly_two_arguments(self):
         instruction_argument = 'argument1 argument2'
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_argument_shall_be_parsed_using_shell_syntax(self):
         instruction_argument = "'argument 1' 'argument 2'"
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
@@ -72,7 +72,7 @@ class TestCaseBaseForParser(TestCaseBase):
              instruction_argument,
              arrangement: Arrangement,
              expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check(self, str(instruction_argument)):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, str(instruction_argument)):
             self._check(sut.Parser(), source, arrangement, expectation)
 
 

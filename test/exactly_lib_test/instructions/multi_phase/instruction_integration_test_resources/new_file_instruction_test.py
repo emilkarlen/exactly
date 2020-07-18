@@ -27,7 +27,7 @@ from exactly_lib_test.symbol.test_resources.string_transformer import StringTran
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_arguments
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_hds, \
@@ -198,7 +198,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
 
         # ACT & ASSERT #
 
-        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):
             self.conf.run_test(
                 self,
                 source,
@@ -244,7 +244,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
             shell_contents_arguments=shell_contents_arguments.as_single_string,
         )
 
-        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):
             self.conf.run_test(
                 self,
                 source,
@@ -276,7 +276,7 @@ class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
             shell_command_with_non_zero_exit_code=shell_command_arguments.first_line,
         )
 
-        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):
             self.conf.run_test(
                 self,
                 source,
@@ -304,7 +304,7 @@ class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
             file_name=dst_file.file_name,
             contents_arguments=contents_argument.first_line,
         )
-        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):
             # ACT & ASSERT#
             self.conf.run_test(
                 self,

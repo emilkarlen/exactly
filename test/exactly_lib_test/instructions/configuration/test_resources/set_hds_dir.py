@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.configuration.test_resources.source_with_assi
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants, equivalent_source_variants__with_source_check
+    equivalent_source_variants, equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -79,7 +79,7 @@ class TestCaseForConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAn
                instruction_argument: str,
                arrangement: Arrangement,
                expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             Executor(self, arrangement, expectation).execute(self.conf.parser(), source)
 
     def conf_prop_equals(self, path_rel_root_path_2_expected: Callable[[Path], Path]

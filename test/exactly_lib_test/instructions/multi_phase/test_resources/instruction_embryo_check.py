@@ -20,7 +20,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -151,7 +151,7 @@ class Checker(Generic[T]):
                                  arrangement: ArrangementWithSds,
                                  expectation: Expectation,
                                  ):
-        for source in equivalent_source_variants__with_source_check(put, source):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(put, source):
             Executor(put, arrangement, expectation).execute(self.parser, source)
 
 

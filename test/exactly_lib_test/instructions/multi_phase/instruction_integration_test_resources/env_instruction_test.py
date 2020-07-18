@@ -4,7 +4,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -27,7 +27,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
 class TestSet(TestCaseBase):
     def runTest(self):
         instruction_argument = 'name = value'
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             environ = {}
             self.conf.run_test(
                 self,
@@ -41,7 +41,7 @@ class TestSet(TestCaseBase):
 class TestUnsetExistingVariable(TestCaseBase):
     def runTest(self):
         instruction_argument = 'unset a'
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             environ = {'a': 'A', 'b': 'B'}
             self.conf.run_test(
                 self,
@@ -55,7 +55,7 @@ class TestUnsetExistingVariable(TestCaseBase):
 class TestUnsetNonExistingVariable(TestCaseBase):
     def runTest(self):
         instruction_argument = 'unset non_existing_variable'
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             environ = {'a': 'A'}
             self.conf.run_test(
                 self,

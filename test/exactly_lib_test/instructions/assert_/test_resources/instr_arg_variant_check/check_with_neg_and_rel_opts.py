@@ -14,7 +14,7 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForPfh, pfh_expectation_type_config
@@ -112,7 +112,7 @@ class InstructionChecker:
             arrangement: ArrangementPostAct,
             expectation: Expectation):
 
-        for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self.put, instruction_arguments):
             instruction_check.check(
                 self.put,
                 self.parser,
@@ -139,7 +139,8 @@ class InstructionChecker:
                 etc = pfh_expectation_type_config(expectation_type_of_test_case)
                 instruction_arguments = make_instruction_arguments.apply(etc, rel_opt_config)
 
-                for source in equivalent_source_variants__with_source_check(self.put, instruction_arguments):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self.put,
+                                                                                               instruction_arguments):
                     self._check_(
                         source,
                         etc,

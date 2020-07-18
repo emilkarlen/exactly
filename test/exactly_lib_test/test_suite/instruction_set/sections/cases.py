@@ -5,7 +5,7 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.test_suite.instruction_set.sections import cases as sut
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check, equivalent_source_variants
+    equivalent_source_variants__with_source_check__consume_last_line, equivalent_source_variants
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents, \
     File, Dir
 from exactly_lib_test.test_suite.instruction_set.sections.test_resources.file_resolving_test_base import \
@@ -42,7 +42,8 @@ class TestParse(unittest.TestCase):
         parser = sut.new_parser()
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               instruction_argument):
                     actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                     self.assertIsInstance(actual,
                                           parsed_section_element.ParsedInstruction)

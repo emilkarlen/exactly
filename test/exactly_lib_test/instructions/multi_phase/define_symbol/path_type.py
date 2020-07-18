@@ -26,7 +26,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import 
     assert_symbol_usages_is_singleton_list
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
@@ -86,7 +86,8 @@ class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
                                             expected_defined_symbol.name,
                                             argument_case.value,
                                             suffix=expected_defined_symbol.path_suffix)
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self,
+                                                                                               instruction_argument):
                     INSTRUCTION_CHECKER.check(self,
                                               source,
                                               ArrangementWithSds(),
@@ -111,7 +112,7 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
                                     expected_defined_symbol.name,
                                     expected_defined_symbol.path_suffix)
 
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             INSTRUCTION_CHECKER.check(
                 self,
                 source,
@@ -129,7 +130,7 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
 class TestAssignmentRelativeSymbolDefinition(unittest.TestCase):
     def test(self):
         instruction_argument = src2(ValueType.PATH, 'ASSIGNED_NAME', '{rel_symbol} REFERENCED_SYMBOL component')
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
             expected_path_sdv = path_sdvs.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
                                 ReferenceRestrictionsOnDirectAndIndirect(PathRelativityRestriction(
@@ -157,7 +158,7 @@ class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
             fs_location_info = FileSystemLocationInfo(
                 FileLocationInfo(abs_path_of_dir_containing_last_file_base_name))
             instruction_argument = src2(ValueType.PATH, 'name', '{rel_source_file} component')
-            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
                 expected_path_sdv = path_sdvs.constant(
                     paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
                                        paths.constant_path_part('component')))

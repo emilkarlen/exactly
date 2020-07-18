@@ -23,7 +23,7 @@ from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants, equivalent_source_variants__with_source_check
+    equivalent_source_variants, equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -171,7 +171,7 @@ class TestConstantArguments(TestBase):
         for arrangement, instr_arg_template, operator, expectation in test_cases:
             instr_arg = instr_arg_template.format(op=operator.name)
             with self.subTest(msg=instr_arg):
-                for source in equivalent_source_variants__with_source_check(self, instr_arg):
+                for source in equivalent_source_variants__with_source_check__consume_last_line(self, instr_arg):
                     self._run(
                         source,
                         arrangement,
