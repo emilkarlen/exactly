@@ -54,52 +54,54 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                 ProcOutputFile.STDERR,
             ),
         ]
-        for exit_code_case in exit_code_cases:
-            for transformation_case in transformation_cases:
-                with self.subTest(exit_code=exit_code_case,
-                                  transformation=transformation_case.name):
-                    python_source = py_pgm_with_stdout_stderr_exit_code(stdout_contents,
-                                                                        stderr_contents,
-                                                                        exit_code_case)
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+            for exit_code_case in exit_code_cases:
+                for transformation_case in transformation_cases:
+                    with self.subTest(source_consumption=source_consumption_case.name,
+                                      exit_code=exit_code_case,
+                                      transformation=transformation_case.name):
+                        python_source = py_pgm_with_stdout_stderr_exit_code(stdout_contents,
+                                                                            stderr_contents,
+                                                                            exit_code_case)
 
-                    sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
+                        sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
 
-                    program_that_executes_py_source = ProgramSymbolContext.of_sdv(
-                        'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                        sdv_of_referred_program
-                    )
+                        program_that_executes_py_source = ProgramSymbolContext.of_sdv(
+                            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
+                            sdv_of_referred_program
+                        )
 
-                    source = parse_source_of(
-                        pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
-                            program_that_executes_py_source.name)))
+                        source = parse_source_of(
+                            pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
+                                program_that_executes_py_source.name)))
 
-                    symbols = program_that_executes_py_source.symbol_table
+                        symbols = program_that_executes_py_source.symbol_table
 
-                    # ACT & ASSERT #
+                        # ACT & ASSERT #
 
-                    integration_check.CHECKER.check(
-                        self,
-                        source,
-                        transformation_case.input_value,
-                        logic_integration_check.arrangement_w_tcds(
-                            symbols=symbols,
-                        ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
-                                symbol_references=asrt.matches_sequence([
-                                    program_that_executes_py_source.reference_assertion,
-                                ]),
+                        source_consumption_case.value.check(
+                            self,
+                            source,
+                            transformation_case.input_value,
+                            logic_integration_check.arrangement_w_tcds(
+                                symbols=symbols,
                             ),
-                            logic_integration_check.ExecutionExpectation(
-                                main_result=assert_process_result_data(
-                                    exitcode=asrt.equals(exit_code_case),
-                                    stdout_contents=asrt.equals(stdout_contents),
-                                    stderr_contents=asrt.equals(stderr_contents),
-                                    contents_after_transformation=asrt.equals(transformation_case.expected_value),
+                            logic_integration_check.Expectation(
+                                logic_integration_check.ParseExpectation(
+                                    symbol_references=asrt.matches_sequence([
+                                        program_that_executes_py_source.reference_assertion,
+                                    ]),
+                                ),
+                                logic_integration_check.ExecutionExpectation(
+                                    main_result=assert_process_result_data(
+                                        exitcode=asrt.equals(exit_code_case),
+                                        stdout_contents=asrt.equals(stdout_contents),
+                                        stderr_contents=asrt.equals(stderr_contents),
+                                        contents_after_transformation=asrt.equals(transformation_case.expected_value),
+                                    )
                                 )
                             )
                         )
-                    )
 
     def test_with_transformation(self):
         # ARRANGE #
@@ -123,55 +125,57 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                 ProcOutputFile.STDERR,
             ),
         ]
-        for exit_code_case in exit_code_cases:
-            for transformation_case in transformation_cases:
-                with self.subTest(exit_code=exit_code_case,
-                                  transformation=transformation_case.name):
-                    python_source = py_pgm_with_stdout_stderr_exit_code(stdout_contents,
-                                                                        stderr_contents,
-                                                                        exit_code_case)
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+            for exit_code_case in exit_code_cases:
+                for transformation_case in transformation_cases:
+                    with self.subTest(source_consumption=source_consumption_case.name,
+                                      exit_code=exit_code_case,
+                                      transformation=transformation_case.name):
+                        python_source = py_pgm_with_stdout_stderr_exit_code(stdout_contents,
+                                                                            stderr_contents,
+                                                                            exit_code_case)
 
-                    program_that_executes_py_source = ProgramSymbolContext.of_sdv(
-                        'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                        program_sdvs.for_py_source_on_command_line(python_source)
-                    )
+                        program_that_executes_py_source = ProgramSymbolContext.of_sdv(
+                            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
+                            program_sdvs.for_py_source_on_command_line(python_source)
+                        )
 
-                    source = pgm_args.symbol_ref_command_elements(
-                        program_that_executes_py_source.name,
-                        transformation=to_upper_transformer.name
-                    ).as_remaining_source
+                        source = pgm_args.symbol_ref_command_elements(
+                            program_that_executes_py_source.name,
+                            transformation=to_upper_transformer.name
+                        ).as_remaining_source
 
-                    symbols = SymbolContext.symbol_table_of_contexts([
-                        program_that_executes_py_source,
-                        to_upper_transformer
-                    ])
+                        symbols = SymbolContext.symbol_table_of_contexts([
+                            program_that_executes_py_source,
+                            to_upper_transformer
+                        ])
 
-                    # ACT & ASSERT #
+                        # ACT & ASSERT #
 
-                    integration_check.CHECKER.check(
-                        self,
-                        source,
-                        transformation_case.input_value,
-                        logic_integration_check.arrangement_w_tcds(
-                            symbols=symbols,
-                        ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
-                                symbol_references=asrt.matches_sequence([
-                                    program_that_executes_py_source.reference_assertion,
-                                    is_reference_to_string_transformer(to_upper_transformer.name),
-                                ]),
+                        source_consumption_case.value.check(
+                            self,
+                            source,
+                            transformation_case.input_value,
+                            logic_integration_check.arrangement_w_tcds(
+                                symbols=symbols,
                             ),
-                            logic_integration_check.ExecutionExpectation(
-                                main_result=assert_process_result_data(
-                                    exitcode=asrt.equals(exit_code_case),
-                                    stdout_contents=asrt.equals(stdout_contents),
-                                    stderr_contents=asrt.equals(stderr_contents),
-                                    contents_after_transformation=asrt.equals(transformation_case.expected_value),
+                            logic_integration_check.Expectation(
+                                logic_integration_check.ParseExpectation(
+                                    symbol_references=asrt.matches_sequence([
+                                        program_that_executes_py_source.reference_assertion,
+                                        is_reference_to_string_transformer(to_upper_transformer.name),
+                                    ]),
+                                ),
+                                logic_integration_check.ExecutionExpectation(
+                                    main_result=assert_process_result_data(
+                                        exitcode=asrt.equals(exit_code_case),
+                                        stdout_contents=asrt.equals(stdout_contents),
+                                        stderr_contents=asrt.equals(stderr_contents),
+                                        contents_after_transformation=asrt.equals(transformation_case.expected_value),
+                                    )
                                 )
                             )
                         )
-                    )
 
 
 class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestCase):
@@ -196,36 +200,38 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                          pgm_args.symbol_ref_command_elements(program_symbol.name, [])
                          ),
         ]
-        for pgm_and_args_case in pgm_and_args_cases:
-            for validation_case in failing_validation_cases():
-                arguments = pgm_and_args_case.value.followed_by_lines(
-                    [validation_case.value.transformer_arguments_elements]
-                )
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+            for pgm_and_args_case in pgm_and_args_cases:
+                for validation_case in failing_validation_cases():
+                    arguments = pgm_and_args_case.value.followed_by_lines(
+                        [validation_case.value.transformer_arguments_elements]
+                    )
 
-                symbols = SymbolContext.symbol_table_of_contexts([
-                    program_symbol,
-                    validation_case.value.symbol_context,
-                ])
+                    symbols = SymbolContext.symbol_table_of_contexts([
+                        program_symbol,
+                        validation_case.value.symbol_context,
+                    ])
 
-                with self.subTest(pgm_and_args_case=pgm_and_args_case.name,
-                                  validation_case=validation_case.name):
-                    # ACT & ASSERT #
-                    integration_check.CHECKER.check(
-                        self,
-                        arguments.as_remaining_source,
-                        ProcOutputFile.STDOUT,
-                        arrangement_w_tcds(
-                            symbols=symbols
-                        ),
-                        Expectation(
-                            ParseExpectation(
-                                symbol_references=asrt.anything_goes(),
+                    with self.subTest(source_consumption=source_consumption_case.name,
+                                      pgm_and_args_case=pgm_and_args_case.name,
+                                      validation_case=validation_case.name):
+                        # ACT & ASSERT #
+                        source_consumption_case.value.check(
+                            self,
+                            arguments.as_remaining_source,
+                            ProcOutputFile.STDOUT,
+                            arrangement_w_tcds(
+                                symbols=symbols
                             ),
-                            ExecutionExpectation(
-                                validation=validation_case.value.expectation,
+                            Expectation(
+                                ParseExpectation(
+                                    symbol_references=asrt.anything_goes(),
+                                ),
+                                ExecutionExpectation(
+                                    validation=validation_case.value.expectation,
+                                )
                             )
                         )
-                    )
 
 
 def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:

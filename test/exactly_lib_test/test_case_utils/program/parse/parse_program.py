@@ -24,13 +24,16 @@ class TestParseSystemProgram(unittest.TestCase):
                                                             expected_resolved_values=lambda tcds: ['the_argument'],
                                                             expected_symbol_references=[])
 
-        parser = sut.program_parser()
-        parse_system_program.check_parsing_of_program(self,
-                                                      parser,
-                                                      pgm_args.system_program_argument_elements,
-                                                      program_name_case,
-                                                      arguments_case,
-                                                      SymbolTable({}))
+        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
+            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
+            with self.subTest(consume_last_line_if_is_at_eol_after_parse=
+                              consume_last_line_if_is_at_eol_after_parse):
+                parse_system_program.check_parsing_of_program(self,
+                                                              parser,
+                                                              pgm_args.system_program_argument_elements,
+                                                              program_name_case,
+                                                              arguments_case,
+                                                              SymbolTable({}))
 
 
 if __name__ == '__main__':

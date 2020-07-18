@@ -263,7 +263,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                 []
                 ),
             NIE('empty following line',
-                asrt_source.is_at_beginning_of_line(4),
+                asrt_source.is_at_beginning_of_line(3),
                 ['',
                  '   following line with text']
                 ),
