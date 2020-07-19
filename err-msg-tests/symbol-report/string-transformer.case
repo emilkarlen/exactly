@@ -5,6 +5,10 @@ def string-transformer REPLACE  = replace abc ABC
 def string-transformer SELECT   = filter line-num == 3
 def string-transformer SEQUENCE = REPLACE | SELECT
 
-def string-transformer RUN = run % my-program arg1 "arg 2"
+def string-transformer RUN__INTERPRET_EXIT_CODE = run % my-program arg1 "arg 2"
+def string-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-program arg1 "arg 2"
+
+def string-transformer RUN__W_TRANSFORMER = run -ignore-exit-code % my-program arg1 "arg 2"
+                                            -transformed-by TO_UPPER_CASE
 
 def string-transformer BUILTIN  = REPLACE_TEST_CASE_DIRS
