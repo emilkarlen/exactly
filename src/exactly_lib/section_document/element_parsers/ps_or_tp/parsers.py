@@ -27,31 +27,6 @@ class ParserFromTokenParserBase(Generic[PARSE_RESULT], Parser[PARSE_RESULT], ABC
         pass
 
 
-class ParserWithCurrentLineVariants(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):
-    """
-    Parser that can expect parsed object on either current line or any following line.
-
-    Ugly sub class ing of :class:`Parser`. Want to "add current-line-variants"
-    to :class:`Parser`, but cannot do it in one step.  So introduces this class in the
-    mean time.
-    """
-
-    def parse(self,
-              source: ParseSource,
-              must_be_on_current_line: bool = False,
-              ) -> PARSE_RESULT:
-        with from_parse_source(source,
-                               self._consume_last_line_if_is_at_eol_after_parse,
-                               self._consume_last_line_if_is_at_eof_after_parse) as parser:
-            return self.parse_from_token_parser(parser, must_be_on_current_line)
-
-    def parse_from_token_parser(self,
-                                tokens: TokenParser,
-                                must_be_on_current_line: bool = False,
-                                ) -> PARSE_RESULT:
-        raise NotImplementedError('abstract method')
-
-
 class ParserFromTokenParserFunction(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):
     def __init__(self,
                  parser_function: Callable[[TokenParser], PARSE_RESULT],
@@ -69,11 +44,11 @@ class CurrentLineMustNotBeEmptyExceptForSpace(Generic[PARSE_RESULT], Parser[PARS
     """
 
     def __init__(self,
-                 error_message_if_current_line_empty: str,
                  with_non_empty_current_line: Parser[PARSE_RESULT],
+                 error_message_if_current_line_empty: str,
                  ):
-        self._error_message_if_current_line_empty = error_message_if_current_line_empty
         self._with_non_empty_current_line = with_non_empty_current_line
+        self._error_message_if_current_line_empty = error_message_if_current_line_empty
 
     def parse(self, source: ParseSource) -> PARSE_RESULT:
         if source.is_at_eol__except_for_space:

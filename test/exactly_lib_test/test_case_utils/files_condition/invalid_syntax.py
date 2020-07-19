@@ -27,8 +27,7 @@ class _TestCaseHelperBase(unittest.TestCase):
                                 must_be_on_current_line: bool,
                                 ):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parser().parse(remaining_source(source),
-                               must_be_on_current_line)
+            sut.parser(must_be_on_current_line).parse(remaining_source(source))
 
 
 class TestSyntaxErrorExceptionShouldBeRaisedWhenMissingBeginBrace(_TestCaseHelperBase):

@@ -3,7 +3,8 @@ from typing import Optional, Tuple, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
-from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserWithCurrentLineVariants
+from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
@@ -21,18 +22,21 @@ from . import documentation
 from ...util.str_ import str_constructor
 
 
-def parser() -> ParserWithCurrentLineVariants[FilesConditionSdv]:
-    return _PARSER
+def parser(must_be_on_current_line: bool = False) -> Parser[FilesConditionSdv]:
+    return (
+        _PARSER_FROM_CURRENT_LINE
+        if must_be_on_current_line
+        else
+        _PARSER_FROM_ARBITRARY_LINE
+    )
 
 
-class _Parser(ParserWithCurrentLineVariants[FilesConditionSdv]):
+class _ParserFromArbitraryLine(parsers.ParserFromTokenParserBase[FilesConditionSdv]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 
-    def parse_from_token_parser(self,
-                                tokens: TokenParser,
-                                must_be_on_current_line: bool = False) -> FilesConditionSdv:
-        return parse(tokens, must_be_on_current_line)
+    def parse_from_token_parser(self, parser: TokenParser) -> FilesConditionSdv:
+        return parse(parser, must_be_on_current_line=False)
 
 
 def parse(tokens: TokenParser,
@@ -88,7 +92,12 @@ def _token_is_matcher_separator(token: Token) -> bool:
     return token.is_plain and token.string == syntax.FILE_MATCHER_SEPARATOR
 
 
-_PARSER = _Parser()
+_PARSER_FROM_ARBITRARY_LINE = _ParserFromArbitraryLine()
+
+_PARSER_FROM_CURRENT_LINE = parsers.CurrentLineMustNotBeEmptyExceptForSpace(
+    _PARSER_FROM_ARBITRARY_LINE,
+    'Missing ' + syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
+)
 
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(

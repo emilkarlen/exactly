@@ -86,8 +86,7 @@ class TestSymbolReferenceReporting(unittest.TestCase):
                 with self.subTest(case=case.name,
                                   must_be_on_current_line=must_be_on_current_line):
                     # ACT #
-                    actual = sut.parser().parse(case.input_value.as_remaining_source,
-                                                must_be_on_current_line=must_be_on_current_line)
+                    actual = sut.parser(must_be_on_current_line).parse(case.input_value.as_remaining_source)
                     # ASSERT #
                     expectation = asrt.matches_sequence(case.expected_value)
                     expectation.apply_without_message(
