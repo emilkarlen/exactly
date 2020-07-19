@@ -8,6 +8,7 @@ from exactly_lib.util.process_execution.process_executor import ProcessExecutor,
     ExecutableExecutor
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 from . import store_result_in_files
+from ..process_output_files import ProcOutputFile
 from ...file_utils.text_reader import TextFromFileReader
 
 
@@ -26,9 +27,17 @@ class ResultWithFiles:
                  stderr: Optional[str],
                  files: DirWithResultFiles,
                  ):
-        self.exit_code = exit_code
+        self._exit_code = exit_code
         self.stderr = stderr
         self.files = files
+
+    @property
+    def exit_code(self) -> int:
+        return self._exit_code
+
+    @property
+    def stderr_file(self) -> pathlib.Path:
+        return self.files.path_of_std(ProcOutputFile.STDERR)
 
 
 class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[ResultWithFiles]):

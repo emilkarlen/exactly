@@ -1,20 +1,16 @@
 from pathlib import Path
-from typing import Callable
 
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     TransformedStringModelFromFileCreatedOnDemand
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib.util.file_utils.text_reader import TextFromFileReader
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
     ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
@@ -72,31 +68,21 @@ class _RunStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransf
         return TransformedStringModelFromFileCreatedOnDemand(
             _TransformedFileCreator(
                 self._environment,
-                self._exit_code_handler(),
+                self._ignore_exit_code,
                 self._program,
             ).create,
             model,
-        )
-
-    def _exit_code_handler(self) -> Callable[[int, Path], None]:
-        return (
-            _ignore_exit_code
-            if self._ignore_exit_code
-            else
-            _HardErrorOnNonZeroExitCode(self._program,
-                                        std_err_contents.STD_ERR_TEXT_READER,
-                                        ).apply
         )
 
 
 class _TransformedFileCreator:
     def __init__(self,
                  environment: ApplicationEnvironment,
-                 exit_code_handler: Callable[[int, Path], None],
+                 ignore_exit_code: bool,
                  transformer: Program,
                  ):
         self.environment = environment
-        self.exit_code_handler = exit_code_handler
+        self._ignore_exit_code = ignore_exit_code
         self.transformer = transformer
 
     def create(self, model: StringModel) -> Path:
@@ -107,15 +93,16 @@ class _TransformedFileCreator:
             self.transformer.command,
             self.transformer.structure(),
         )
-        self.exit_code_handler(result.exit_code,
-                               result.files.path_of_std(ProcOutputFile.STDERR))
 
         return result.files.path_of_std(ProcOutputFile.STDOUT)
 
     def _command_executor(self, model: StringModel) -> CommandExecutor[ResultWithFiles]:
-        return command_executors.executor_that_raises_hard_error(
+        return command_executors.executor_that_optionally_raises_hard_error_on_non_zero_exit_code(
+            self._ignore_exit_code,
             self.environment.os_services,
-            self._executor(model)
+            self._executor(model),
+            ResultWithFiles.exit_code.fget,
+            ResultWithFiles.stderr_file.fget,
         )
 
     def _executor(self, model: StringModel) -> ExecutableExecutor[ResultWithFiles]:
@@ -126,34 +113,3 @@ class _TransformedFileCreator:
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
             std_err_contents.STD_ERR_TEXT_READER,
         )
-
-
-def _ignore_exit_code(exit_code: int, stderr: Path):
-    pass
-
-
-class _HardErrorOnNonZeroExitCode:
-    def __init__(self,
-                 program: Program,
-                 err_msg_reader: TextFromFileReader,
-                 ):
-        self._program = program
-        self._err_msg_reader = err_msg_reader
-
-    def apply(self, exit_code: int, stderr: Path):
-        if exit_code == 0:
-            return
-
-        stderr_contents = self._stderr_part(stderr)
-        message_renderer = top_lvl_error_msg_rendering.non_zero_exit_code_msg(
-            self._program.structure(),
-            exit_code,
-            stderr_contents,
-        )
-        raise HardErrorException(
-            message_renderer
-        )
-
-    def _stderr_part(self, stderr: Path) -> str:
-        with stderr.open() as f:
-            return self._err_msg_reader.read(f)
