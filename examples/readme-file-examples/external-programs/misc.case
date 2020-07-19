@@ -2,7 +2,15 @@
 
 run my-setup-helper-program first "second arg"
 
-# run % mysql -uu -pp -hlocalhost -Dd --batch --execute "create table my_table(id int)"
+def list DB_ARGS = -uu -pp -hlocalhost -Dd
+
+run % mysql @[DB_ARGS]@ --batch --execute "create table my_table(id int)"
+
+def list MYSQL_BATCH = @[DB_ARGS]@ --batch --execute
+
+file interesting-records.txt =
+     -stdout-from
+     % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
 
 $ touch file
 
@@ -11,7 +19,7 @@ file root-files.txt = -stdout-from % ls /
 
 [act]
 
-$ echo ${PATH}
+$ echo ${PATH} > output.txt
 
 [assert]
 
@@ -19,13 +27,13 @@ run my-assert-helper-program
 
 $ test -f root-files.txt
 
-exists root-files.txt : (
-                        type file
-                        &&
-                        run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
-                        &&
-                        contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
-                        )
+exists output.txt : (
+       type file
+       &&
+       run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
+       &&
+       contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
+       )
 
 stdout -from
        $ echo 'Interesting output'
@@ -36,4 +44,4 @@ EOF
 
 [cleanup]
 
-# run % mysql -uu -pp -hlocalhost -Dd --batch --execute "drop table my_table"
+run % mysql @[MYSQL_BATCH]@ :> drop table my_table

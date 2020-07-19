@@ -276,7 +276,15 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     run my-setup-helper-program first "second arg"
 
-    run % mysql -uu -pp -hlocalhost -Dd --batch --execute "create table my_table(id int)"
+    def list DB_ARGS = -uu -pp -hlocalhost -Dd
+
+    run % mysql @[DB_ARGS]@ --batch --execute "create table my_table(id int)"
+
+    def list MYSQL_BATCH = @[DB_ARGS]@ --batch --execute
+
+    file interesting-records.txt =
+         -stdout-from
+         % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
 
     $ touch file
 
@@ -285,7 +293,7 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     [act]
 
-    $ echo ${PATH}
+    $ echo ${PATH} > output.txt
 
     [assert]
 
@@ -293,13 +301,13 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     $ test -f root-files.txt
 
-    exists root-files.txt : (
-                            type file
-                            &&
-                            run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
-                            &&
-                            contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
-                            )
+    exists output.txt : (
+           type file
+           &&
+           run -python @[EXACTLY_HOME]@/my-file-matcher.py arg1
+           &&
+           contents run -python @[EXACTLY_HOME]@/my-string-matcher.py arg1 "arg 2"
+           )
 
     stdout -from
            $ echo 'Interesting output'
@@ -310,7 +318,7 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     [cleanup]
 
-    run % mysql -uu -pp -hlocalhost -Dd --batch --execute "drop table my_table"
+    run % mysql @[MYSQL_BATCH]@ :> drop table my_table
 
 
 A program executed in ``[assert]`` becomes an assertion that depends on the exit code.
@@ -338,7 +346,7 @@ Program values can be defined for reuse using ``def`` and run using ``@``::
 
     [cleanup]
 
-    run @ EXECUTE_SQL "drop table my_table"
+    run @ EXECUTE_SQL :> drop table my_table
 
 
 Testing existing OS environment - tests without ``[act]``
