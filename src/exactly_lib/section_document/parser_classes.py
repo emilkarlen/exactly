@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, TokenParser
@@ -7,7 +8,17 @@ PARSE_RESULT = TypeVar('PARSE_RESULT')
 T = TypeVar('T')
 
 
-class Parser(Generic[PARSE_RESULT]):
+class Parser(Generic[PARSE_RESULT], ABC):
+    @abstractmethod
+    def parse(self, source: ParseSource) -> PARSE_RESULT:
+        pass
+
+    @abstractmethod
+    def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
+        pass
+
+
+class ParserFromTokenParserBase(Generic[PARSE_RESULT], Parser[PARSE_RESULT], ABC):
     def __init__(self,
                  consume_last_line_if_is_at_eol_after_parse: bool = True,
                  consume_last_line_if_is_at_eof_after_parse: bool = False):
@@ -20,11 +31,12 @@ class Parser(Generic[PARSE_RESULT]):
                                self._consume_last_line_if_is_at_eof_after_parse) as parser:
             return self.parse_from_token_parser(parser)
 
+    @abstractmethod
     def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
-        raise NotImplementedError('abstract method')
+        pass
 
 
-class ParserWithCurrentLineVariants(Generic[PARSE_RESULT], Parser[PARSE_RESULT]):
+class ParserWithCurrentLineVariants(Generic[PARSE_RESULT], ParserFromTokenParserBase[PARSE_RESULT]):
     """
     Parser that can expect parsed object on either current line or any following line.
 
@@ -49,7 +61,7 @@ class ParserWithCurrentLineVariants(Generic[PARSE_RESULT], Parser[PARSE_RESULT])
         raise NotImplementedError('abstract method')
 
 
-class ParserFromTokenParserFunction(Parser[PARSE_RESULT]):
+class ParserFromTokenParserFunction(ParserFromTokenParserBase[PARSE_RESULT]):
     def __init__(self,
                  parser_function: Callable[[TokenParser], PARSE_RESULT],
                  consume_last_line_if_is_at_eol_after_parse: bool = True):

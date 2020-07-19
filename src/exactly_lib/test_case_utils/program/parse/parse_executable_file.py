@@ -1,5 +1,5 @@
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.program.parse import parse_arguments
@@ -22,7 +22,7 @@ def parse_as_program(token_parser: TokenParser) -> ProgramSdv:
     return parser.parse_from_token_parser(token_parser)
 
 
-class _ParserOfCommand(Parser[CommandSdv]):
+class _ParserOfCommand(ParserFromTokenParserBase[CommandSdv]):
     def __init__(self,
                  consume_last_line_if_is_at_eol_after_parse: bool = True,
                  ):
@@ -36,7 +36,7 @@ class _ParserOfCommand(Parser[CommandSdv]):
         return command_sdv.new_with_additional_arguments(additional_arguments)
 
 
-class _ParserOfProgram(Parser[ProgramSdv]):
+class _ParserOfProgram(ParserFromTokenParserBase[ProgramSdv]):
     def __init__(self,
                  consume_last_line_if_is_at_eol_after_parse: bool = True,
                  ):

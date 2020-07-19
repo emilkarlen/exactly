@@ -3,7 +3,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -36,7 +36,7 @@ def parse_from_token_parser(token_parser: TokenParser) -> ArgumentsSdv:
     return parser().parse_from_token_parser(token_parser)
 
 
-class _Parser(Parser[ArgumentsSdv]):
+class _Parser(ParserFromTokenParserBase[ArgumentsSdv]):
     def __init__(self,
                  consume_last_line_if_is_at_eol_after_parse: bool = True,
                  consume_last_line_if_is_at_eof_after_parse: bool = False,

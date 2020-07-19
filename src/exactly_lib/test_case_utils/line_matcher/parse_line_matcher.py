@@ -6,7 +6,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
@@ -30,7 +30,7 @@ def parser() -> Parser[LineMatcherSdv]:
     return _PARSER
 
 
-class _Parser(Parser[LineMatcherSdv]):
+class _Parser(ParserFromTokenParserBase[LineMatcherSdv]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 
@@ -41,7 +41,7 @@ class _Parser(Parser[LineMatcherSdv]):
 _PARSER = _Parser()
 
 
-class ParserOfMatcherOnArbitraryLine(Parser[LineMatcherSdv]):
+class ParserOfMatcherOnArbitraryLine(ParserFromTokenParserBase[LineMatcherSdv]):
     def parse_from_token_parser(self, token_parser: TokenParser) -> LineMatcherSdv:
         return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False)
 

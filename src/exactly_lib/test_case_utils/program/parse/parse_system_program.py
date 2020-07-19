@@ -1,7 +1,7 @@
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -32,7 +32,7 @@ def program_parser(consume_last_line_if_is_at_eol_after_parse: bool = True) -> P
     return _ParseAsProgram(consume_last_line_if_is_at_eol_after_parse)
 
 
-class _ParseAsProgram(Parser[ProgramSdv]):
+class _ParseAsProgram(ParserFromTokenParserBase[ProgramSdv]):
     def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool):
         super().__init__(
             consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse
@@ -46,7 +46,7 @@ class _ParseAsProgram(Parser[ProgramSdv]):
         )
 
 
-class _ParseAsCommand(Parser[CommandSdv]):
+class _ParseAsCommand(ParserFromTokenParserBase[CommandSdv]):
     def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool):
         super().__init__(
             consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse

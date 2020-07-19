@@ -1,6 +1,6 @@
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.program import syntax_elements
@@ -17,7 +17,7 @@ def program_parser(must_be_on_current_line: bool = False,
     )
 
 
-class _Parser(Parser[ProgramSdv]):
+class _Parser(ParserFromTokenParserBase[ProgramSdv]):
     def __init__(self,
                  must_be_on_current_line: bool = False,
                  consume_last_line_if_is_at_eol_after_parse: bool = True,

@@ -10,7 +10,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -200,7 +200,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
         )
 
 
-class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
+class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(ParserFromTokenParserBase[ProgramSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramSdvForCommand(
@@ -208,7 +208,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
             accumulator.empty())
 
 
-class _SetupParserForExecutingPythonSourceFileRelAct(Parser[ProgramSdv]):
+class _SetupParserForExecutingPythonSourceFileRelAct(ParserFromTokenParserBase[ProgramSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramSdvForCommand(
@@ -219,7 +219,7 @@ class _SetupParserForExecutingPythonSourceFileRelAct(Parser[ProgramSdv]):
             accumulator.empty())
 
 
-class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramSdv]):
+class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(ParserFromTokenParserBase[ProgramSdv]):
     def __init__(self):
         super().__init__()
 

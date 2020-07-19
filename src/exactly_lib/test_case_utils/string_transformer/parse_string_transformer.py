@@ -5,7 +5,7 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.string_transformer import names
@@ -23,7 +23,7 @@ def parser() -> Parser[StringTransformerSdv]:
     return _PARSER
 
 
-class _Parser(Parser[StringTransformerSdv]):
+class _Parser(ParserFromTokenParserBase[StringTransformerSdv]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 
