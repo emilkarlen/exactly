@@ -35,6 +35,21 @@ def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]]) -> Val
     ])
 
 
+def model_string_matches(expected: ValueAssertion[str]) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'as_lines',
+            _str_from_as_lines,
+            expected,
+        ),
+        asrt.sub_component(
+            'as_file',
+            _str_from_as_file,
+            expected,
+        ),
+    ])
+
+
 def _line_list_from_as_lines(model: StringModel) -> List[str]:
     with model.as_lines as lines:
         return list(lines)
@@ -44,6 +59,11 @@ def _line_sequence_from_as_lines(model: StringModel) -> Sequence[str]:
     return _line_list_from_as_lines(model)
 
 
+def _str_from_as_lines(model: StringModel) -> str:
+    with model.as_lines as lines:
+        return ''.join(lines)
+
+
 def _line_list_from_as_file(model: StringModel) -> List[str]:
     with model.as_file.open() as f:
         return list(f.readlines())
@@ -51,3 +71,8 @@ def _line_list_from_as_file(model: StringModel) -> List[str]:
 
 def _line_sequence_from_as_file(model: StringModel) -> Sequence[str]:
     return _line_list_from_as_file(model)
+
+
+def _str_from_as_file(model: StringModel) -> str:
+    with model.as_file.open() as f:
+        return f.read()

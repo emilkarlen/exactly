@@ -35,6 +35,10 @@ class StdOutputFilesContents:
         self._stdout_file = stdout_file
         self._stderr_file = stderr_file
 
+    @staticmethod
+    def empty() -> 'StdOutputFilesContents':
+        return StdOutputFilesContents('', '')
+
     @property
     def out(self) -> str:
         return self._stdout_file
