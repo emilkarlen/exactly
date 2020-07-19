@@ -5,8 +5,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar

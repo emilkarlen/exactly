@@ -1,7 +1,7 @@
 from typing import Sequence, Generic
 
 from exactly_lib.definitions import logic
-from exactly_lib.section_document import parser_classes
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
@@ -16,7 +16,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 def parse_after_quantifier_token(
         quantifier: Quantifier,
-        element_predicate_parser: parser_classes.Parser[MatcherSdv[ELEMENT]],
+        element_predicate_parser: Parser[MatcherSdv[ELEMENT]],
         setup: quantifier_matchers.ElementSetup[MODEL, ELEMENT],
         token_parser: TokenParser,
 ) -> MatcherSdv[MODEL]:
@@ -35,7 +35,7 @@ def parse_after_quantifier_token(
 class GrammarSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  element_setup: quantifier_matchers.ElementSetup[MODEL, ELEMENT],
-                 element_predicate_parser: parser_classes.Parser[MatcherSdv[ELEMENT]],
+                 element_predicate_parser: Parser[MatcherSdv[ELEMENT]],
                  ):
         self._setup = element_setup
         self._element_predicate_parser = element_predicate_parser

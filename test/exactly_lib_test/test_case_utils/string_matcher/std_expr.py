@@ -1,7 +1,7 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher

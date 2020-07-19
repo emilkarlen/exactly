@@ -7,8 +7,8 @@ from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import Ma
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage

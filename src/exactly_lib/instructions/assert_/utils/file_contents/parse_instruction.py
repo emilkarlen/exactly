@@ -6,8 +6,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileConstructorAssertionPart, \
     IsExistingRegularFileAssertionPart
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionTokenParser
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import ParserFromTokenParserBase
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 
 

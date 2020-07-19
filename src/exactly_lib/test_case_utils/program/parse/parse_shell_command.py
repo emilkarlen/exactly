@@ -1,6 +1,6 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv

@@ -9,8 +9,9 @@ from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.processing import exit_values
-from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
@@ -44,11 +45,11 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-def parser() -> parser_classes.Parser[FileMatcherSdv]:
+def parser() -> Parser[FileMatcherSdv]:
     return _PARSER
 
 
-class _Parser(parser_classes.ParserFromTokenParserBase[FileMatcherSdv]):
+class _Parser(parsers.ParserFromTokenParserBase[FileMatcherSdv]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 
@@ -56,7 +57,7 @@ class _Parser(parser_classes.ParserFromTokenParserBase[FileMatcherSdv]):
         return parse_sdv(parser, must_be_on_current_line=True)
 
 
-class ParserOfMatcherOnArbitraryLine(parser_classes.ParserFromTokenParserBase[MatcherSdv[FileMatcherModel]]):
+class ParserOfMatcherOnArbitraryLine(parsers.ParserFromTokenParserBase[MatcherSdv[FileMatcherModel]]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 

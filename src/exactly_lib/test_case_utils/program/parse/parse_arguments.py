@@ -1,9 +1,9 @@
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType

@@ -2,9 +2,9 @@ from typing import Sequence
 
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
-from exactly_lib.section_document import parser_classes
+from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -24,8 +24,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 
 
 def files_matcher_parser() -> Parser[FilesMatcherSdv]:
-    return parser_classes.ParserFromTokenParserFunction(parse_files_matcher,
-                                                        consume_last_line_if_is_at_eol_after_parse=False)
+    return parsers.ParserFromTokenParserFunction(parse_files_matcher,
+                                                 consume_last_line_if_is_at_eol_after_parse=False)
 
 
 def parse_files_matcher(parser: TokenParser,

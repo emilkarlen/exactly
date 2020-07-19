@@ -3,9 +3,9 @@ import unittest
 from typing import List, Optional, Generic
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds

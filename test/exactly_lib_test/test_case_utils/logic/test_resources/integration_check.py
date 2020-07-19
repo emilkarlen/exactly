@@ -11,8 +11,8 @@ from contextlib import contextmanager
 from typing import Optional, Sequence, Generic, ContextManager
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference

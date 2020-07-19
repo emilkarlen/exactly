@@ -3,8 +3,8 @@ from typing import Optional, Tuple, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserWithCurrentLineVariants
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import ParserWithCurrentLineVariants
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.expression import grammar

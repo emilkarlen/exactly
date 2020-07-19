@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv

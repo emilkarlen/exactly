@@ -13,7 +13,7 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import \
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.program.parse import parse_program

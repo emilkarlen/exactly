@@ -7,10 +7,10 @@ from exactly_lib.instructions.multi_phase.utils import \
     instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
+from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser, ParserFromTokenParserBase
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv

@@ -1,21 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import PARSE_RESULT, Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 
-PARSE_RESULT = TypeVar('PARSE_RESULT')
 T = TypeVar('T')
-
-
-class Parser(Generic[PARSE_RESULT], ABC):
-    @abstractmethod
-    def parse(self, source: ParseSource) -> PARSE_RESULT:
-        pass
-
-    @abstractmethod
-    def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
-        pass
 
 
 class ParserFromTokenParserBase(Generic[PARSE_RESULT], Parser[PARSE_RESULT], ABC):

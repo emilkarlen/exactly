@@ -5,9 +5,9 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.section_document import parser_classes
+from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
@@ -66,7 +66,7 @@ def parse_regex2(parser: TokenParser,
     return source_type, _RegexSdv(is_ignore_case, regex_pattern)
 
 
-_PARSER = parser_classes.ParserFromTokenParserFunction(parse_regex)
+_PARSER = parsers.ParserFromTokenParserFunction(parse_regex)
 
 
 class _RegexSdv(RegexSdv):
