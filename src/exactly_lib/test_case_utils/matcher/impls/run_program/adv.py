@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
@@ -57,7 +58,7 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
 
     def _command_executor(self, model: MODEL) -> CommandExecutor[Result]:
         app_env = self._application_environment
-        return CommandExecutor(
+        return command_executors.executor_that_raises_hard_error(
             app_env.os_services,
             self._executor(ProcessExecutor(), model)
         )

@@ -17,6 +17,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -130,7 +131,7 @@ class FileMakerForContentsFromProgram(FileMaker):
     def _command_executor(os_services: OsServices,
                           executor: ExecutableExecutor[T],
                           ) -> CommandExecutor[T]:
-        return CommandExecutor(
+        return command_executors.executor_that_raises_hard_error(
             os_services,
             executor
         )

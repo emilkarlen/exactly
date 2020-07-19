@@ -4,6 +4,7 @@ from typing import Callable
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     TransformedStringModelFromFileCreatedOnDemand
@@ -112,7 +113,7 @@ class _TransformedFileCreator:
         return result.files.path_of_std(ProcOutputFile.STDOUT)
 
     def _command_executor(self, model: StringModel) -> CommandExecutor[ResultWithFiles]:
-        return CommandExecutor(
+        return command_executors.executor_that_raises_hard_error(
             self.environment.os_services,
             self._executor(model)
         )

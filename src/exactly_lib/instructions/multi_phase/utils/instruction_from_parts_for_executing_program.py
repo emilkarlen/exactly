@@ -17,6 +17,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
@@ -112,7 +113,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
     def _command_executor(os_services: OsServices,
                           executor: ExecutableExecutor[ResultWithFiles],
                           ) -> CommandExecutor[ResultWithFiles]:
-        return CommandExecutor(
+        return command_executors.executor_that_raises_hard_error(
             os_services,
             executor
         )
