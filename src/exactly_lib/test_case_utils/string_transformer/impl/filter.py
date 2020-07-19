@@ -139,6 +139,6 @@ _TEXT_PARSER = TextParser({
 })
 
 _SELECT_TRANSFORMER_SED_DESCRIPTION = """\
-Keeps lines matched {_LINE_MATCHER_},
+Keeps lines matched by {_LINE_MATCHER_},
 and discards lines not matched.
 """
