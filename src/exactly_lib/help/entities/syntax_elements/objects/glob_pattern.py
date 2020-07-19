@@ -31,7 +31,7 @@ _PATTERNS = docs.simple_list_with_space_between_elements_and_content([
                    docs.paras('Matches any number of any characters including none.')
                    ),
     docs.list_item(syntax_text('[CHARACTERS]'),
-                   docs.paras('Matches a single character that is listed in CHARACTERS.   ')
+                   docs.paras('Matches a single character that is listed in CHARACTERS.')
                    ),
     docs.list_item(syntax_text('[CHARACTER-CHARACTER]'),
                    docs.paras('Matches a single character in the given range.')
@@ -64,7 +64,7 @@ DOCUMENTATION = syntax_element_documentation(
     [],
     [
         SeeAlsoUrlInfo('Python file name matching',
-                       'file:///usr/local/share/doc/python3/library/fnmatch.html'
+                       'https://docs.python.org/3.5/library/fnmatch.html'
                        ),
         SeeAlsoUrlInfo('Glob patterns on Wikipedia',
                        'https://en.wikipedia.org/wiki/Glob_(programming)#Unix'
