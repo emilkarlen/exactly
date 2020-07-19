@@ -69,6 +69,10 @@ def interpret_py_source_file(py_file: WithToString) -> ArgumentElementsRenderer:
     ])
 
 
+def interpret_py_source_file_elements(py_file: WithToString) -> ArgumentElements:
+    return ArgumentElements([interpret_py_source_file(py_file)])
+
+
 def program(program_arg: WithToString,
             transformation=None) -> ArgumentElements:
     extra = []

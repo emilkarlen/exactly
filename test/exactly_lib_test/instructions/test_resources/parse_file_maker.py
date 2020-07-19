@@ -2,7 +2,7 @@ from typing import Set, List, Sequence
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives import string_transformer
-from exactly_lib.instructions.utils.parse import parse_file_maker
+from exactly_lib.instructions.utils.file_maker import defs
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType, RelSdsOptionType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -50,8 +50,15 @@ def string_contents(string: str) -> ArgumentElements:
 
 def output_from_program(program_output_channel: ProcOutputFile,
                         program: ArgumentElements,
+                        ignore_exit_code: bool = False,
                         with_new_line_after_source_type_option: bool = False) -> ArgumentElements:
-    program_output_option = [ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[program_output_channel])]
+    program_output_option = [
+        ab.option(defs.PROGRAM_OUTPUT_OPTIONS[program_output_channel])
+    ]
+    if ignore_exit_code:
+        program_output_option.append(
+            ab.option(defs.IGNORE_EXIT_CODE)
+        )
 
     if with_new_line_after_source_type_option:
         return ArgumentElements(program_output_option,
@@ -63,7 +70,7 @@ def output_from_program(program_output_channel: ProcOutputFile,
 def file_with_rel_opt_conf(file_name: str,
                            rel_option: RelativityOptionConfiguration = None,
                            with_new_line_after_source_type_option: bool = False) -> ArgumentElements:
-    first_line = [ab.option(parse_file_maker.FILE_OPTION)]
+    first_line = [ab.option(defs.FILE_OPTION)]
     following_line_args = []
 
     file_args = first_line

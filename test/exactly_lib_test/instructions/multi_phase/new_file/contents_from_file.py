@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence, Callable
 
 from exactly_lib.instructions.multi_phase import new_file as sut
-from exactly_lib.instructions.utils.parse import parse_file_maker
+from exactly_lib.instructions.utils.file_maker import defs
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -94,7 +94,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ACT & ASSERT #
 
         for phase_is_after_act in [False, True]:
-            src_file_rel_opt_arg_conf = parse_file_maker._src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+            src_file_rel_opt_arg_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
             src_file_symbol = ConstantSuffixPathDdvSymbolContext(
                 src_file_symbol__str.name,

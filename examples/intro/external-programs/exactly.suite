@@ -1,6 +1,1 @@
-[cases]
-
-run.case
-run-python.case
-
-shell.case
+*.case

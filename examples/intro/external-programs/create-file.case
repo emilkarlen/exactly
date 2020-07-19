@@ -1,0 +1,31 @@
+[setup]
+
+
+file a-file.txt = -stdout-from -ignore-exit-code -python @[EXACTLY_HOME]@/my-program.py "some arg"
+
+def program MY_PROGRAM = -python @[EXACTLY_HOME]@/my-program.py
+
+file b-file.txt = -stdout-from -ignore-exit-code @ MY_PROGRAM an-arg
+
+file c-file.txt = -stdout-from -python -c :> print('The output')
+
+file stat.txt   = -stdout-from % stat a-file.txt
+
+def program STAT = % stat
+
+file stat2.txt  = -stdout-from @ STAT a-file.txt
+
+
+[assert]
+
+exists a-file.txt : contents ! empty
+
+exists b-file.txt : contents ! empty
+
+exists c-file.txt : contents equals <<EOF
+The output
+EOF
+
+exists stat.txt : contents ! empty
+
+exists stat2.txt : contents equals -file @[EXACTLY_ACT]@/stat.txt

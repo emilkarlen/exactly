@@ -1,6 +1,7 @@
 import unittest
-from typing import Sequence, Iterable
+from typing import Sequence, Iterable, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
@@ -30,7 +31,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                source: ParseSource,
                arrangement: ArrangementWithSds,
-               expectation: Expectation,
+               expectation: Expectation[Optional[TextRenderer]],
                phase_is_after_act: bool = True,
                ):
         parser = sut.EmbryoParser(phase_is_after_act)

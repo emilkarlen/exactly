@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
@@ -12,8 +11,8 @@ from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution import file_ctx_managers
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
-    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.executors import store_result_in_files
+from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
@@ -96,20 +95,19 @@ class _TransformedFileCreator:
 
         return result.files.path_of_std(ProcOutputFile.STDOUT)
 
-    def _command_executor(self, model: StringModel) -> CommandExecutor[ResultWithFiles]:
+    def _command_executor(self, model: StringModel) -> CommandExecutor[ExitCodeAndFiles]:
         return command_executors.executor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
             self.environment.os_services,
             self._executor(model),
-            ResultWithFiles.exit_code.fget,
-            ResultWithFiles.stderr_file.fget,
+            ExitCodeAndFiles.exit_code.fget,
+            ExitCodeAndFiles.stderr_file.fget,
         )
 
-    def _executor(self, model: StringModel) -> ExecutableExecutor[ResultWithFiles]:
+    def _executor(self, model: StringModel) -> ExecutableExecutor[ExitCodeAndFiles]:
         path_of_file_with_model = model.as_file
-        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+        return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
             ProcessExecutor(),
             self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
-            std_err_contents.STD_ERR_TEXT_READER,
         )

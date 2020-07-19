@@ -82,7 +82,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
     def test_single_file_name_with_matcher(self):
         # ARRANGE #
         file_name = 'file-name'
-        fm_symbol = 'fm'
+        fm_symbol = 'file_maker'
         cases = [
             NameAndValue(
                 'single name entry',
@@ -140,7 +140,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
         file_name_w_matcher = 'file-name-with-matcher'
         file_name_wo_matcher = 'file-name-without-matcher'
 
-        fm_symbol = 'fm'
+        fm_symbol = 'file_maker'
 
         arguments = args.FilesCondition([
             args.FileCondition(file_name_wo_matcher),

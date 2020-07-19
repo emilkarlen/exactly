@@ -151,6 +151,10 @@ class DirContents:
                  file_system_element_contents: List[FileSystemElement]):
         self._file_system_element_contents = file_system_element_contents
 
+    @staticmethod
+    def empty() -> 'DirContents':
+        return DirContents([])
+
     def write_to(self,
                  dir_path: pathlib.Path):
         for file_element in self._file_system_element_contents:

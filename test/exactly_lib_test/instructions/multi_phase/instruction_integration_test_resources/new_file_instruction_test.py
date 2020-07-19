@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase import new_file
-from exactly_lib.instructions.utils.parse import parse_file_maker
+from exactly_lib.instructions.utils.file_maker import defs
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -29,13 +29,14 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_arguments
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_hds, \
     conf_rel_non_hds
 from exactly_lib_test.test_resources.files import file_structure as fs
-from exactly_lib_test.test_resources.files.file_structure import DirContents
-from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
-    command_that_exits_with_code
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.programs import py_programs
+from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -51,7 +52,8 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
         TestContentsFromOutputOfShellCommand_Successfully,
 
         TestValidationErrorPreSds_DueTo_NonExistingSourceFile,
-        TestHardError_DueTo_NonZeroExitCodeFromShellCommand,
+        TestHardError_DueTo_NonZeroExitCodeFromProgram,
+        TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode,
     ]
     suites = [tc(conf)
               for tc in common_test_cases
@@ -122,7 +124,7 @@ class TestSymbolUsages(TestCaseBase):
                 src_file_symbol.name,
                 equals_data_type_reference_restrictions(
                     path_or_string_reference_restrictions(
-                        parse_file_maker._src_rel_opt_arg_conf_for_phase(
+                        defs.src_rel_opt_arg_conf_for_phase(
                             self.conf.phase_is_after_act()).options.accepted_relativity_variants))
             ),
         ]
@@ -261,19 +263,82 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 ))
 
 
-class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
+class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(TestCaseBase):
     def runTest(self):
-        shell_contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
+        non_zero_exit_code = 1
+        text_printed_by_program = 'the output from the program'
+
+        py_file = File('exit-with-hard-coded-exit-code.py',
+                       py_programs.py_pgm_with_stdout_stderr_exit_code(
+                           stdout_output=text_printed_by_program,
+                           stderr_output='',
+                           exit_code=non_zero_exit_code,
+                       ),
+                       )
+
+        expected_file = fs.File(
+            'dst-file.txt',
+            text_printed_by_program.upper(),
+        )
+
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
+            'TO_UPPER_CASE',
+            to_uppercase(),
+        )
+        symbols = to_upper_transformer.symbol_table
+
+        py_src_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE)
+        py_src_path_conf = py_src_file_rel_opt_conf.named_file_conf(py_file.name)
+
+        dst_file_rel_opt_conf = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
+
+        contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
             parse_file_maker_tr.output_from_program(
                 ProcOutputFile.STDOUT,
-                pgm_arguments.shell_command(command_that_exits_with_code(1))
+                pgm_arguments.interpret_py_source_file_elements(py_src_path_conf.cl_argument),
+                ignore_exit_code=True,
+            )
+        ).with_transformation(to_upper_transformer.name).as_arguments
+
+        instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
+            rel_opt=dst_file_rel_opt_conf.option_argument,
+            file_name=expected_file.file_name,
+            contents_arguments=contents_arguments.as_single_string,
+        )
+
+        for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):
+            self.conf.run_test(
+                self,
+                source,
+                self.conf.arrangement(
+                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                    symbols=symbols,
+                    home_or_sds_contents=py_src_file_rel_opt_conf.populator_for_relativity_option_root(
+                        DirContents([py_file])
+                    )
+                ),
+                self.conf.expect_success(
+                    symbol_usages=asrt.matches_sequence([
+                        to_upper_transformer.reference_assertion,
+                    ]),
+                    main_side_effects_on_sds=non_hds_dir_contains_exactly(dst_file_rel_opt_conf.root_dir__non_hds,
+                                                                          fs.DirContents([expected_file])),
+                ))
+
+
+class TestHardError_DueTo_NonZeroExitCodeFromProgram(TestCaseBase):
+    def runTest(self):
+        contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
+            parse_file_maker_tr.output_from_program(
+                ProcOutputFile.STDOUT,
+                pgm_arguments.interpret_py_source_elements(py_programs.single_line_pgm_that_exists_with(1))
             )
         )
 
-        shell_command_arguments = shell_contents_arguments.without_transformation().as_arguments
-        instruction_arguments = '{file_name} {shell_command_with_non_zero_exit_code}'.format(
+        program_arguments = contents_arguments.without_transformation().as_arguments
+        instruction_arguments = '{file_name} {program_with_non_zero_exit_code}'.format(
             file_name='dst-file-name.txt',
-            shell_command_with_non_zero_exit_code=shell_command_arguments.first_line,
+            program_with_non_zero_exit_code=program_arguments.first_line,
         )
 
         for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_arguments):

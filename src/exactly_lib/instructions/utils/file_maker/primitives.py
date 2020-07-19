@@ -1,7 +1,6 @@
 import pathlib
 from typing import Sequence, Optional
 
-from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -16,14 +15,13 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
-from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
-    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
+from exactly_lib.util.process_execution.executors import store_result_in_files
+from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
 from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, T, ProcessExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
@@ -77,9 +75,12 @@ class FileMakerForConstantContents(FileMaker):
 class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
                  output_channel: ProcOutputFile,
-                 program: ProgramSdv):
+                 program: ProgramSdv,
+                 ignore_exit_code: bool,
+                 ):
         self._output_channel = output_channel
         self._program = program
+        self._ignore_exit_code = ignore_exit_code
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
@@ -113,11 +114,6 @@ class FileMakerForContentsFromProgram(FileMaker):
         except HardErrorException as ex:
             return ex.error
 
-        if result.exit_code != 0:
-            return top_lvl_error_msg_rendering.non_zero_exit_code_msg(program.structure(),
-                                                                      result.exit_code,
-                                                                      result.stderr)
-
         transformation_helper = FileTransformerHelper(
             os_services,
             environment.tmp_dir__path_access.paths_access,
@@ -127,22 +123,24 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                            dst_path,
                                                            program.transformation)
 
-    @staticmethod
-    def _command_executor(os_services: OsServices,
+    def _command_executor(self,
+                          os_services: OsServices,
                           executor: ExecutableExecutor[T],
                           ) -> CommandExecutor[T]:
-        return command_executors.executor_that_raises_hard_error(
+        return command_executors.executor_that_optionally_raises_hard_error_on_non_zero_exit_code(
+            self._ignore_exit_code,
             os_services,
-            executor
+            executor,
+            ExitCodeAndFiles.exit_code.fget,
+            ExitCodeAndFiles.stderr_file.fget,
         )
 
     @staticmethod
-    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ResultWithFiles]:
-        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ExitCodeAndFiles]:
+        return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
             ProcessExecutor(),
             storage_dir,
             file_ctx_managers.dev_null(),
-            std_err_contents.STD_ERR_TEXT_READER,
         )
 
 

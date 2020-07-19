@@ -1,6 +1,7 @@
 import unittest
-from typing import List, Callable, Dict
+from typing import List, Callable, Dict, Optional
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -25,7 +26,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext, NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -38,12 +39,13 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
-from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
@@ -55,9 +57,10 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources.string
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestUnableToExecute),
+        unittest.makeSuite(TestNonZeroExitCode),
         unittest.makeSuite(TestSuccessfulScenariosWithDifferentSourceVariants),
         unittest.makeSuite(TestSuccessfulScenariosWithProgramFromDifferentChannels),
-        unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSymbolUsages),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
         unittest.makeSuite(TestFailingValidation),
@@ -335,9 +338,9 @@ class TestFailingValidation(TestCaseBase):
                     embryo_check.expectation(validation=validation.post_sds_validation_fails__w_any_msg()))
 
 
-class TestFailingScenarios(TestCaseBase):
-    def _expect_failure(self, failing_program_as_single_line: WithToString):
-        failing_program = ArgumentElements([failing_program_as_single_line])
+class TestUnableToExecute(TestCaseBase):
+    def test_WHEN_program_is_non_non_existing_system_command_THEN_result_SHOULD_be_error_message(self):
+        failing_program = pgm_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM)
         transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER',
             to_uppercase(),
@@ -351,10 +354,12 @@ class TestFailingScenarios(TestCaseBase):
                          transformer.name),
         ]
         for case in cases:
-            source = instr_args.from_program('dst-file.txt',
-                                             ProcOutputFile.STDOUT,
-                                             failing_program,
-                                             transformation=case.value).as_remaining_source
+            source = instr_args.from_program(
+                'dst-file.txt',
+                ProcOutputFile.STDOUT,
+                failing_program,
+                transformation=case.value,
+            ).as_remaining_source
 
             with self.subTest(case.name):
                 self._check(
@@ -363,23 +368,116 @@ class TestFailingScenarios(TestCaseBase):
                         symbols=symbols,
                     ),
                     Expectation(
+                        source=asrt_source.source_is_at_end,
                         symbol_usages=asrt.anything_goes(),
                         main_result=IS_FAILURE,
                     ))
 
-    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
-        self._expect_failure(
-            pgm_args.shell_command_line(shell_commands.command_that_exits_with_code(1))
+
+class TestNonZeroExitCode(TestCaseBase):
+    def test_result_SHOULD_be_failure_WHEN_non_zero_exit_code_and_exit_code_is_not_ignored(self):
+        self._check_exit_codes(
+            exit_code_cases=[1, 69],
+            ignore_exit_code=False,
+            main_result=IS_FAILURE,
+            expected_output_dir_contents=self._dir_is_empty
         )
 
-    def test_WHEN_shell_command_is_non_executable_THEN_result_SHOULD_be_error_message(self):
-        non_executable_shell_command = '<'
-        self._expect_failure(
-            pgm_args.shell_command_line(non_executable_shell_command)
+    def test_result_SHOULD_be_success_WHEN_any_zero_exit_code_and_exit_code_is_ignored(self):
+        self._check_exit_codes(
+            exit_code_cases=[0, 1, 2, 69],
+            ignore_exit_code=True,
+            main_result=IS_SUCCESS,
+            expected_output_dir_contents=self._dir_contains_exactly_created_file,
         )
 
+    def _check_exit_codes(self,
+                          exit_code_cases: List[int],
+                          ignore_exit_code: bool,
+                          main_result: ValueAssertion[Optional[TextRenderer]],
+                          expected_output_dir_contents: Callable[[str, str], DirContents],
+                          ):
+        # ARRANGE #
+        destination_file_name = 'dst-file.txt'
 
-class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
+        program_output = {
+            ProcOutputFile.STDOUT: 'output on stdout',
+            ProcOutputFile.STDERR: 'output on stderr',
+        }
+        transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER',
+            to_uppercase(),
+        )
+
+        py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
+
+        transformer_cases = [
+            NameAndValue('without transformer',
+                         None),
+            NameAndValue('with transformer',
+                         transformer.name),
+        ]
+
+        for output_file in ProcOutputFile:
+            for exit_code in exit_code_cases:
+                py_file = File('exit-with-hard-coded-exit-code.py',
+                               py_programs.py_pgm_with_stdout_stderr_exit_code(
+                                   exit_code=exit_code,
+                                   stdout_output=program_output[ProcOutputFile.STDOUT],
+                                   stderr_output=program_output[ProcOutputFile.STDERR],
+                               ),
+                               )
+
+                py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
+
+                program_symbol = ProgramSymbolContext.of_sdv(
+                    'PROGRAM_SYMBOL_NAME',
+                    program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
+                )
+                symbol_contexts = [program_symbol, transformer]
+
+                for transformer_case in transformer_cases:
+                    with self.subTest(exit_code=exit_code):
+                        # ACT && ASSERT #
+
+                        self._check(
+                            source=instr_args.from_program(
+                                destination_file_name,
+                                output_file,
+                                program=pgm_args.symbol_ref_command_elements(program_symbol.name),
+                                ignore_exit_code=ignore_exit_code,
+                                transformation=transformer_case.value,
+                            ).as_remaining_source,
+                            arrangement=ArrangementWithSds(
+                                symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
+                                tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
+                                    DirContents([py_file])
+                                )
+                            ),
+                            expectation=
+                            Expectation(
+                                source=asrt_source.source_is_at_end,
+                                symbol_usages=program_symbol.references_assertion,
+                                main_result=main_result,
+                                main_side_effects_on_sds=dir_contains_exactly(
+                                    RelOptionType.REL_ACT,
+                                    expected_output_dir_contents(
+                                        destination_file_name, program_output[output_file])
+                                )
+                            ),
+                        )
+
+    @staticmethod
+    def _dir_is_empty(file_name: str, contents_on_output_channel: str) -> DirContents:
+        return DirContents.empty()
+
+    @staticmethod
+    def _dir_contains_exactly_created_file(file_name: str, contents_on_output_channel: str) -> DirContents:
+        return DirContents([File(file_name, contents_on_output_channel)])
+
+
+class TestCommonFailingScenariosDueToInvalidDestinationFile(
+    TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',

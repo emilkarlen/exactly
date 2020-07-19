@@ -17,11 +17,10 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.instructions.utils.file_maker import FileMaker
-from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIGNMENT_TOKEN, CONTENTS_ARGUMENT, \
-    InstructionConfig, parse_file_contents, \
-    FileContentsDocumentation, \
-    _src_rel_opt_arg_conf_for_phase
+from exactly_lib.instructions.utils.file_maker import defs
+from exactly_lib.instructions.utils.file_maker.doc import FileContentsDocumentation
+from exactly_lib.instructions.utils.file_maker.parse import InstructionConfig, parse_file_contents
+from exactly_lib.instructions.utils.file_maker.primitives import FileMaker
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -55,11 +54,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def __init__(self, name: str,
                  phase_is_after_act: bool):
         super().__init__(name, {})
-        self._src_rel_opt_arg_conf = _src_rel_opt_arg_conf_for_phase(phase_is_after_act)
-        self._file_contents_doc = FileContentsDocumentation(phase_is_after_act, CONTENTS_ARGUMENT)
+        self._src_rel_opt_arg_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+        self._file_contents_doc = FileContentsDocumentation(phase_is_after_act, defs.CONTENTS_ARGUMENT)
 
         self._tp = TextParser({
-            'CONTENTS': CONTENTS_ARGUMENT,
+            'CONTENTS': defs.CONTENTS_ARGUMENT,
         })
 
     def single_line_description(self) -> str:
@@ -70,9 +69,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             _DST_PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
         contents_arg = a.Single(a.Multiplicity.MANDATORY,
-                                a.Named(CONTENTS_ARGUMENT))
+                                a.Named(defs.CONTENTS_ARGUMENT))
         assignment_arg = a.Single(a.Multiplicity.MANDATORY,
-                                  a.Constant(CONTENTS_ASSIGNMENT_TOKEN))
+                                  a.Constant(defs.CONTENTS_ASSIGNMENT_TOKEN))
         return [
             invokation_variant_from_args(arguments,
                                          docs.paras('Creates an empty file.')),
@@ -135,8 +134,8 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Option
 
             path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, parser)
             instruction_config = InstructionConfig(
-                _src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
-                CONTENTS_ARGUMENT
+                defs.src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
+                defs.CONTENTS_ARGUMENT
             )
 
             file_maker = parse_file_contents(instruction_config, parser)

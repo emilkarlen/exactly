@@ -5,6 +5,7 @@ from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionFile, \
     ExecutableExecutor
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 
 
@@ -13,8 +14,16 @@ class ExitCodeAndFiles:
                  exit_code: int,
                  files: DirWithResultFiles,
                  ):
-        self.exit_code = exit_code
+        self._exit_code = exit_code
         self.files = files
+
+    @property
+    def exit_code(self) -> int:
+        return self._exit_code
+
+    @property
+    def stderr_file(self) -> pathlib.Path:
+        return self.files.path_of_std(ProcOutputFile.STDERR)
 
 
 class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles]):

@@ -66,6 +66,10 @@ sys.exit({exit_code})
            exit_code=exit_code)
 
 
+def single_line_pgm_that_exists_with(exit_code: int) -> str:
+    return _SINGLE_LINE_PGM_THAT_EXITS_WITH_CODE.format(exit_code)
+
+
 def single_line_pgm_that_prints_to_stdout(output: str) -> str:
     return single_line_pgm_that_prints_to(ProcOutputFile.STDOUT, output)
 
@@ -77,9 +81,6 @@ def single_line_pgm_that_prints_to_stderr(output: str) -> str:
 def single_line_pgm_that_prints_to(output_channel: ProcOutputFile, output: str) -> str:
     return _SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE.format(channel=_CHANNEL_NAMES[output_channel],
                                                                 str=output)
-
-
-_SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE = 'import sys; sys.{channel}.write("""{str}""")'
 
 
 def single_line_pgm_that_prints_to_stdout_with_new_line(output: str) -> str:
@@ -95,19 +96,22 @@ def single_line_pgm_that_prints_to_with_new_line(output_channel: ProcOutputFile,
                                                              str=output)
 
 
+def pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(expected: Dict[str, str]) -> str:
+    return _PGM_THAT_EXISTS_WITH_ZERO_EXIT_CODE_IFF_ENVIRONMENT_VARS_IS_NOT_INCLUDED.format(
+        expected_environment=repr(expected)
+    )
+
+
+_SINGLE_LINE_PGM_THAT_EXITS_WITH_CODE = 'import sys; sys.exit({})'
+
+_SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE = 'import sys; sys.{channel}.write("""{str}""")'
+
 _SINGLE_LINE_PGM_THAT_PRINTS_WITH_NEW_LINE = 'import sys; sys.{channel}.write("""{str}\\n""")'
 
 _CHANNEL_NAMES = {
     ProcOutputFile.STDOUT: 'stdout',
     ProcOutputFile.STDERR: 'stderr',
 }
-
-
-def pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(expected: Dict[str, str]) -> str:
-    return _PGM_THAT_EXISTS_WITH_ZERO_EXIT_CODE_IFF_ENVIRONMENT_VARS_IS_NOT_INCLUDED.format(
-        expected_environment=repr(expected)
-    )
-
 
 _PGM_THAT_EXISTS_WITH_ZERO_EXIT_CODE_IFF_ENVIRONMENT_VARS_IS_NOT_INCLUDED = """\
 import os;
