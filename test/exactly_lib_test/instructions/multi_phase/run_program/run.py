@@ -1,5 +1,6 @@
 import os
 import unittest
+from typing import Sequence
 
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.instructions.multi_phase.utils.instruction_from_parts_for_executing_program import \
@@ -12,6 +13,7 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.process_execution.execution_elements import with_environ
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -31,13 +33,18 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 
 
+def _get_description_rest() -> Sequence[ParagraphItem]:
+    return ()
+
+
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestExecuteProgramWithShellArgumentList),
         unittest.makeSuite(TestExecuteInterpret),
         unittest.makeSuite(TestSource),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
-                                                                            'single line description')),
+                                                                            'single line description',
+                                                                            _get_description_rest)),
     ])
 
 
@@ -187,7 +194,8 @@ class TestExecuteInterpret(TestCaseBase):
 class TestSource(TestCaseBase):
     def test_parse_should_fail_when_no_source_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.program_parser().parse(
+            sut.parts_parser('instruction-name').parse(
+                ARBITRARY_FS_LOCATION_INFO,
                 single_line_source('EXECUTABLE %s' % syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER))
 
     def test_check_zero_exit_code(self):

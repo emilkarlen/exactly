@@ -13,6 +13,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-matcher` - primitive `run`
  - Type `string-transformer` - primitive `run`
  - Instruction `file` - `-ignore-exit-code` option
+ - Instruction `run` - `-ignore-exit-code` option
 
 ### Fixed
 

@@ -3,6 +3,8 @@ from typing import Sequence, Optional
 
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo
+from exactly_lib.instructions.multi_phase.utils.instruction_embryo import \
+    InstructionEmbryoParserWoFileSystemLocationInfo
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import MainStepResultTranslator, \
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
@@ -136,7 +138,7 @@ class ResultTranslator(MainStepResultTranslator[ExecutionResultAndStderr]):
         return result_to_pfh(main_result)
 
 
-class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
+class InstructionEmbryoParser(InstructionEmbryoParserWoFileSystemLocationInfo[ExecutionResultAndStderr]):
     def __init__(self,
                  instruction_name: str,
                  program_parser: Parser[ProgramSdv]):

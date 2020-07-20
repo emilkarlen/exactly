@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithSplittedPartsForRestDocBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions import instruction_arguments, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
@@ -38,7 +38,9 @@ _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS = \
 
 SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = (
     "Executes a command using the current operating system's shell,"
-    " and PASS if, and only if, its exit code is 0")
+    " and PASS iff its {} is 0".format(
+        misc_texts.EXIT_CODE)
+)
 
 
 class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsForRestDocBase,

@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
@@ -15,6 +16,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.file_structure import python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -33,8 +35,9 @@ class Configuration(ConfigurationBase):
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     return suite_for_cases(conf,
                            [
-                               TestSuccessfulExecution,
-                               TestFailingExecution,
+                               TestZeroExitCode,
+                               TestNonZeroExitCode,
+                               TestNonZeroExitCodeAndIgnoredExitCode,
                                TestSuccessfulExecutionViaSymbolReference,
                                TestFailingValidationOfAbsolutePath,
                                TestFailingValidationOfRelHdsPath,
@@ -54,7 +57,7 @@ class TestCaseBase(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.conf))
 
 
-class TestSuccessfulExecution(TestCaseBase):
+class TestZeroExitCode(TestCaseBase):
     def runTest(self):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
@@ -99,13 +102,27 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
                            )
 
 
-class TestFailingExecution(TestCaseBase):
+class TestNonZeroExitCode(TestCaseBase):
     def runTest(self):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
                            self.conf.arrangement(),
                            self.conf.expect_failure_of_main(),
                            )
+
+
+class TestNonZeroExitCodeAndIgnoredExitCode(TestCaseBase):
+    def runTest(self):
+        argument_elements = (
+            ab.OptionArgument(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME).as_argument_elements
+                .followed_by(pgm_args.interpret_py_source_elements('exit(1)'))
+        )
+        self.conf.run_test(
+            self,
+            argument_elements.as_remaining_source,
+            self.conf.arrangement(),
+            self.conf.expect_success(),
+        )
 
 
 class TestFailingValidationOfAbsolutePath(TestCaseBase):

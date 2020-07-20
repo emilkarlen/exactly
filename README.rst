@@ -284,12 +284,17 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     file interesting-records.txt =
          -stdout-from
-         % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
+          % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
 
     $ touch file
 
-    file root-files.txt = -stdout-from % ls /
-                          -transformed-by run my-string-transformer-program
+    file root-files.txt =
+         -stdout-from
+          % ls /
+          -transformed-by
+              run my-string-transformer-program
+
+    run  -ignore-exit-code  % stat optional-file.txt
 
     [act]
 
