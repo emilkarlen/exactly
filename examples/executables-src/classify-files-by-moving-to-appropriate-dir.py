@@ -1,29 +1,43 @@
-import sys
-
 import os
 import pathlib
-
-if len(sys.argv) != 4:
-    sys.stderr.write('Invalid usage.\nSyntax: GOOD-TOKEN INPUT-DIR OUTPUT-DIR' + os.linesep)
-    sys.exit(1)
-
-good_token = sys.argv[1]
-
-input_dir = pathlib.Path(sys.argv[2])
-output_dir = pathlib.Path(sys.argv[3])
-
-output_good_dir = output_dir / 'good'
-output_bad_dir = output_dir / 'bad'
+import sys
 
 
-def is_good_file(a_file):
+def is_good_file(a_file: pathlib.Path):
     contents = a_file.read_text()
     return good_token in contents
 
 
-for input_file in input_dir.iterdir():
-    if is_good_file(input_file):
-        target_dir = output_good_dir
-    else:
-        target_dir = output_bad_dir
-    input_file.rename(target_dir / input_file.name)
+def check_dir(input_dir: pathlib.Path,
+              output_good: pathlib.Path,
+              output_bad: pathlib.Path,
+              ):
+    for input_path in input_dir.iterdir():
+        if input_path.is_dir():
+            check_dir(input_path,
+                      output_good / input_path.name,
+                      output_bad / input_path.name)
+            input_path.rmdir()
+
+        elif input_path.is_file():
+            if is_good_file(input_path):
+                target_dir = output_good
+            else:
+                target_dir = output_bad
+            target_dir.mkdir(exist_ok=True, parents=True)
+            input_path.rename(target_dir / input_path.name)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 4:
+        sys.stderr.write('Invalid usage.\nSyntax: GOOD-TOKEN INPUT-DIR OUTPUT-DIR' + os.linesep)
+        sys.exit(1)
+
+    good_token = sys.argv[1]
+
+    root_input_dir = pathlib.Path(sys.argv[2])
+    root_output_dir = pathlib.Path(sys.argv[3])
+
+    check_dir(root_input_dir,
+              root_output_dir / 'good',
+              root_output_dir / 'bad')

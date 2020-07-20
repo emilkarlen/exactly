@@ -115,8 +115,9 @@ appropriate directory::
 
     [setup]
 
-    file input/a.txt = 'GOOD contents'
-    file input/b.txt = 'bad contents'
+    file input/a.txt     = 'GOOD contents'
+    file input/b.txt     = 'bad contents'
+    file input/sub/c.txt = 'more bad contents'
 
     dir output/good
     dir output/bad
@@ -131,7 +132,14 @@ appropriate directory::
 
     dir-contents output/good  matches -full { a.txt : type file }
 
-    dir-contents output/bad   matches -full { b.txt : type file }
+    dir-contents output/bad   matches -full
+        {
+            b.txt : type file
+            sub   : type dir && dir-contents matches -full
+                    {
+                        c.txt : type file
+                    }
+        }
 
 
 ``file`` and ``dir`` makes files in the current directory (by default).
