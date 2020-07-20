@@ -74,7 +74,7 @@ class MainStepResultTranslatorForUnconditionalSuccess(MainStepResultTranslator):
         return pfh.new_pfh_pass()
 
 
-class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
+class MainStepExecutorFromMainStepExecutorEmbryo(MainStepExecutor):
     def __init__(self,
                  main_step_embryo: MainStepExecutorEmbryo[T],
                  result_translator: MainStepResultTranslator[T]):
@@ -104,8 +104,8 @@ class MainStepExecutorFromMainStepExecutorEmbryo(Generic[T], MainStepExecutor):
         return self.result_translator.translate_for_assertion(result)
 
 
-def instruction_parts_from_embryo(instruction: InstructionEmbryo,
-                                  result_translator: MainStepResultTranslator) -> InstructionParts:
+def instruction_parts_from_embryo(instruction: InstructionEmbryo[T],
+                                  result_translator: MainStepResultTranslator[T]) -> InstructionParts:
     return InstructionParts(instruction.validator,
                             MainStepExecutorFromMainStepExecutorEmbryo(instruction, result_translator),
                             tuple(instruction.symbol_usages))
@@ -113,8 +113,9 @@ def instruction_parts_from_embryo(instruction: InstructionEmbryo,
 
 class PartsParserFromEmbryoParser(InstructionPartsParser):
     def __init__(self,
-                 embryo_parser: InstructionEmbryoParser,
-                 main_step_result_translator: MainStepResultTranslator):
+                 embryo_parser: InstructionEmbryoParser[T],
+                 main_step_result_translator: MainStepResultTranslator[T],
+                 ):
         self.embryo_parser = embryo_parser
         self.main_step_result_translator = main_step_result_translator
 
