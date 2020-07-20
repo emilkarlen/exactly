@@ -9,21 +9,25 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 
 
-class ExitCodeAndFiles:
-    def __init__(self,
-                 exit_code: int,
-                 files: DirWithResultFiles,
-                 ):
-        self._exit_code = exit_code
-        self.files = files
+class ExitCodeAndFiles(tuple):
+    def __new__(cls,
+                exit_code: int,
+                files: DirWithResultFiles,
+                ):
+        return tuple.__new__(cls, (exit_code,
+                                   files))
 
     @property
     def exit_code(self) -> int:
-        return self._exit_code
+        return self[0]
+
+    @property
+    def files(self) -> DirWithResultFiles:
+        return self[1]
 
     @property
     def stderr_file(self) -> pathlib.Path:
-        return self.files.path_of_std(ProcOutputFile.STDERR)
+        return self[1].path_of_std(ProcOutputFile.STDERR)
 
 
 class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles]):

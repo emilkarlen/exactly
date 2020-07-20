@@ -12,32 +12,48 @@ from ..process_output_files import ProcOutputFile
 from ...file_utils.text_reader import TextFromFileReader
 
 
-class Result:
-    def __init__(self,
-                 exit_code: int,
-                 stderr: Optional[str],
-                 ):
-        self.exit_code = exit_code
-        self.stderr = stderr
-
-
-class ResultWithFiles:
-    def __init__(self,
-                 exit_code: int,
-                 stderr: Optional[str],
-                 files: DirWithResultFiles,
-                 ):
-        self._exit_code = exit_code
-        self.stderr = stderr
-        self.files = files
+class Result(tuple):
+    def __new__(cls,
+                exit_code: int,
+                stderr: Optional[str],
+                ):
+        return tuple.__new__(cls, (exit_code,
+                                   stderr))
 
     @property
     def exit_code(self) -> int:
-        return self._exit_code
+        return self[0]
+
+    @property
+    def stderr(self) -> Optional[str]:
+        return self[1]
+
+
+class ResultWithFiles(tuple):
+    def __new__(cls,
+                exit_code: int,
+                stderr: Optional[str],
+                files: DirWithResultFiles,
+                ):
+        return tuple.__new__(cls, (exit_code,
+                                   stderr,
+                                   files))
+
+    @property
+    def exit_code(self) -> int:
+        return self[0]
+
+    @property
+    def stderr(self) -> Optional[str]:
+        return self[1]
+
+    @property
+    def files(self) -> DirWithResultFiles:
+        return self[2]
 
     @property
     def stderr_file(self) -> pathlib.Path:
-        return self.files.path_of_std(ProcOutputFile.STDERR)
+        return self[2].path_of_std(ProcOutputFile.STDERR)
 
 
 class ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(ExecutableExecutor[ResultWithFiles]):
