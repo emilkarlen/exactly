@@ -26,6 +26,8 @@ Make sure the contact info at the end of the COPYRIGHT is correct.
 ** setup.py
 ** README
 * Set version number
+** Validate syntax
+python3 -m rstvalidator README.rst
 ** code
 src/exactly_lib/program_info.py
 ** CHANGELOG
@@ -41,6 +43,7 @@ Make release artifacts
  > make uninstall-venv
 ** run exactly tests
  > exactly suite test/exactly-cases
+** run on as many platforms as possible - on linux using docker
 * Make sure syntax of examples is correct
 * github pages - Add Ref Man for release
 ** exactly/version/Z-Y-Z/reference-manual.html
@@ -60,7 +63,24 @@ Make sure release year is included in COPYRIGHT
 Distribute source and wheel
 
 > make build
-* Upload
+* Upload to PyPi test
+** Upload
+Run:
+
+> python setup.py register -r pypitest
+
+This will attempt to register your package against PyPI's test server, just to
+make sure you've set up everything correctly.
+
+Then, run:
+
+> python setup.py sdist upload -r pypitest
+
+You should get no errors, and should also now be able to see your library in
+the test PyPI repository.
+** Check
+*** README: links to RefMan
+* Upload to PyPi prod
 > make upload
 * github pages: Make "latest" sym link point to latest release
 exactly/version/latest
@@ -78,22 +98,6 @@ so that the release on PyPi is verified.
 * Make release on github
 * Learning PyPi
 http://peterdowns.com/posts/first-time-with-pypi.html
-** Upload your package to PyPI Test
-
-Run:
-
-> python setup.py register -r pypitest
-
-This will attempt to register your package against PyPI's test server, just to
-make sure you've set up everything correctly.
-
-Then, run:
-
-> python setup.py sdist upload -r pypitest
-
-You should get no errors, and should also now be able to see your library in
-the test PyPI repository.
-
 ** Upload to PyPI Live
 
 Once you've successfully uploaded to PyPI Test, perform the same steps but
