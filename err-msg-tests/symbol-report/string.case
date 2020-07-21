@@ -1,0 +1,11 @@
+[setup]
+
+def string UNQUOTED    = unquoted
+def string QUOTED_SOFT = "soft quoted"
+def string QUOTED_HARD = 'hard quoted'
+
+def string HERE_DOC = <<-
+the
+here
+doc
+-

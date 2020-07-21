@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+here=$(dirname "$0")
+
+type='string'
+
+${here}/print-symbols-of-type ${type} "${here}/${type}.case"
