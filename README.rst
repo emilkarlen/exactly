@@ -11,7 +11,7 @@ Exactly has a `Wiki
 It also has a built in help system,
 which can, among other things,
 generate this `Reference manual
-<https://emilkarlen.github.io/exactly/version/0-12-1-1/reference-manual.html>`_.
+<https://emilkarlen.github.io/exactly/version/0-12-2/reference-manual.html>`_.
 
 
 .. contents::
