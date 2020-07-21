@@ -88,7 +88,7 @@ class FileContentsDocumentation:
                 [output_channel_token,
                  ignore_exit_code_token,
                  program_token],
-                self._tp.fnap(_PROGRAM_DESCRIPTION) + texts.run_with_ignored_exit_code_option()
+                self._tp.fnap(_PROGRAM_DESCRIPTION) + texts.run_with_ignored_exit_code_option__w_str_trans()
             ),
         ]
         return SyntaxElementDescription(self._contents_argument_sed,
