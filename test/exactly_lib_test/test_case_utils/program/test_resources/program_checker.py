@@ -1,4 +1,5 @@
 import unittest
+from typing import Generic
 
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -9,7 +10,7 @@ from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration, Applier
+    CommonPropertiesConfiguration, Applier, INPUT, OUTPUT
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import ResultWithTransformationData
@@ -17,12 +18,12 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
-class ProgramPropertiesConfiguration(
-    CommonPropertiesConfiguration[Program,
-                                  ProcOutputFile,
-                                  ResultWithTransformationData]):
-    def __init__(self):
-        self._applier = _Applier()
+class ProgramPropertiesConfiguration(Generic[INPUT, OUTPUT],
+                                     CommonPropertiesConfiguration[Program,
+                                                                   INPUT,
+                                                                   OUTPUT]):
+    def __init__(self, applier: Applier[Program, INPUT, OUTPUT]):
+        self._applier = applier
 
     def applier(self) -> Applier[Program, ProcOutputFile, ResultWithTransformationData]:
         return self._applier
@@ -34,7 +35,17 @@ class ProgramPropertiesConfiguration(
         return WithTreeStructureExecutionPropertiesChecker(ProgramDdv, Program)
 
 
-class _Applier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
+class NullApplier(Applier[Program, None, None]):
+    def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
+              primitive: Program,
+              resolving_environment: FullResolvingEnvironment,
+              input_: None) -> None:
+        pass
+
+
+class ExecutionApplier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
     def apply(self,
               put: unittest.TestCase,
               message_builder: MessageBuilder,
@@ -42,7 +53,7 @@ class _Applier(Applier[Program, ProcOutputFile, ResultWithTransformationData]):
               resolving_environment: FullResolvingEnvironment,
               input_: ProcOutputFile,
               ) -> ResultWithTransformationData:
-        process_execution_settings = execution_elements.with_no_timeout()
+        process_execution_settings = execution_elements.ProcessExecutionSettings(timeout_in_seconds=5)
 
         pgm_output_dir = resolving_environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,

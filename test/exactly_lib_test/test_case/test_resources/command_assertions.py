@@ -14,6 +14,7 @@ from exactly_lib_test.type_system.data.test_resources.described_path import new_
 
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
+
                                           ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForExecutableFile,
                                        [

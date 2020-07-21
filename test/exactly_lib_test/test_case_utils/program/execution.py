@@ -54,7 +54,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                 ProcOutputFile.STDERR,
             ),
         ]
-        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES__W_EXECUTION:
             for exit_code_case in exit_code_cases:
                 for transformation_case in transformation_cases:
                     with self.subTest(source_consumption=source_consumption_case.name,
@@ -125,7 +125,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                 ProcOutputFile.STDERR,
             ),
         ]
-        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES__W_EXECUTION:
             for exit_code_case in exit_code_cases:
                 for transformation_case in transformation_cases:
                     with self.subTest(source_consumption=source_consumption_case.name,
@@ -200,7 +200,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                          pgm_args.symbol_ref_command_elements(program_symbol.name, [])
                          ),
         ]
-        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES:
+        for source_consumption_case in integration_check.SOURCE_CONSUMPTION_CASES__W_EXECUTION:
             for pgm_and_args_case in pgm_and_args_cases:
                 for validation_case in failing_validation_cases():
                     arguments = pgm_and_args_case.value.followed_by_lines(

@@ -34,11 +34,11 @@ from exactly_lib_test.test_case_utils.logic.test_resources import integration_ch
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args, \
+    program_checker
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import assert_process_result_data, \
     ResultWithTransformationData
-from exactly_lib_test.test_case_utils.program.test_resources.program_checker import ProgramPropertiesConfiguration
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -492,7 +492,9 @@ def _integration_checker(
                         ResultWithTransformationData]:
     return IntegrationChecker(
         sut.program_parser(consume_last_line_if_is_at_eol_after_parse),
-        ProgramPropertiesConfiguration()
+        program_checker.ProgramPropertiesConfiguration(
+            program_checker.ExecutionApplier()
+        )
     )
 
 

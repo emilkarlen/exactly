@@ -42,6 +42,10 @@ def system_program_argument_elements(command_line: WithToString) -> ArgumentElem
     return ArgumentElements([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
 
 
+def executable_file_command_line(executable_file: WithToString) -> ArgumentElementsRenderer:
+    return ab.singleton(executable_file)
+
+
 def system_program_command_line(command_line: WithToString) -> ArgumentElementsRenderer:
     return ab.sequence([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
 

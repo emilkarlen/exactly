@@ -6,7 +6,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -48,10 +48,25 @@ def equivalent_source_variants_for_consume_until_end_of_last_line(
 ) -> List[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
     return [
         (
-            arguments.followed_by(extra_args).as_remaining_source,
+            arguments.followed_by_lines(extra_lines).as_remaining_source,
             assertion,
         )
-        for extra_args, assertion in _equivalent_source_variants_for_consume_until_end_of_last_line(arguments.num_lines)
+        for extra_lines, assertion in
+        _equivalent_source_variants_for_consume_until_end_of_last_line(arguments.num_lines)
+    ]
+
+
+def equivalent_source_variants_for_consume_until_end_of_last_line2(
+        arguments: Arguments
+) -> List[NIE[ParseSource, ValueAssertion[ParseSource]]]:
+    return [
+        NIE(
+            repr(extra_lines),
+            assertion,
+            arguments.followed_by_lines(extra_lines).as_remaining_source,
+        )
+        for extra_lines, assertion in
+        _equivalent_source_variants_for_consume_until_end_of_last_line(arguments.num_lines)
     ]
 
 
@@ -149,16 +164,18 @@ def _source_variants_with_accepted_following_content_on_same_line(
 
 def _equivalent_source_variants_for_consume_until_end_of_last_line(
         num_expression_lines: int = 1
-) -> List[Tuple[Arguments, ValueAssertion[ParseSource]]]:
+) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
     source_expectation = asrt_source.is_at_end_of_line(num_expression_lines)
     return [
-        (Arguments('', []),
+        ([],
          source_expectation),
 
-        (Arguments('', ['non-empty following line']),
+        (['non-empty following line'],
          source_expectation),
 
-        (Arguments('', ['     ']),
+        (['     '],
+         source_expectation),
+        (['     ', 'non-empty-line'],
          source_expectation),
     ]
 
