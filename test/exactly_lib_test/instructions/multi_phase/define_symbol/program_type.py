@@ -1,10 +1,15 @@
 import unittest
 
+from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
@@ -23,6 +28,7 @@ from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSuccessfulDefinition),
+        unittest.makeSuite(TestInvalidSyntax),
     ])
 
 
@@ -42,8 +48,22 @@ class TestSuccessfulDefinition(unittest.TestCase):
         program = pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
             referred_symbol.name))
 
-        argument_cases = [
-            NIE('value on same line',
+        program_value_location_cases = [
+            NIE('value on one and only line',
+                asrt_source.source_is_at_end,
+                multi_line_source('{program_type} {defined_symbol} = {program}',
+                                  [],
+                                  defined_symbol=name_of_defined_symbol,
+                                  program=program)
+                ),
+            NIE('value on same line / followed by empty line',
+                asrt_source.is_at_beginning_of_line(2),
+                multi_line_source('{program_type} {defined_symbol} = {program}',
+                                  [''],
+                                  defined_symbol=name_of_defined_symbol,
+                                  program=program)
+                ),
+            NIE('value on same line / followed by non-empty line',
                 asrt_source.is_at_beginning_of_line(2),
                 multi_line_source('{program_type} {defined_symbol} = {program}',
                                   ['following line'],
@@ -60,7 +80,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
                 ),
         ]
 
-        for argument_case in argument_cases:
+        for argument_case in program_value_location_cases:
             with self.subTest(argument_case.name):
                 expected_symbol_container = matches_container_of_logic_type(
                     LogicValueType.PROGRAM,
@@ -84,3 +104,33 @@ class TestSuccessfulDefinition(unittest.TestCase):
                     )
                 )
                 INSTRUCTION_CHECKER.check(self, argument_case.input_value, ArrangementWithSds(), expectation)
+
+
+class TestInvalidSyntax(unittest.TestCase):
+    def test_superfluous_arguments(self):
+        # ARRANGE #
+        program_w_superfluous_args = pgm_args.program_w_superfluous_args()
+
+        name_of_defined_symbol = 'the_symbol'
+
+        program_value_location_cases = [
+            NameAndValue('value on same line',
+                         multi_line_source('{program_type} {defined_symbol} = {program}',
+                                           ['following line'],
+                                           defined_symbol=name_of_defined_symbol,
+                                           program=program_w_superfluous_args)
+                         ),
+            NameAndValue('value on following line',
+                         multi_line_source('{program_type} {defined_symbol} =',
+                                           ['{program}',
+                                            'following line'],
+                                           defined_symbol=name_of_defined_symbol,
+                                           program=program_w_superfluous_args)
+                         ),
+        ]
+        parser = sut.EmbryoParser()
+        for argument_case in program_value_location_cases:
+            with self.subTest(argument_case.name):
+                # ACT & ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, argument_case.value)

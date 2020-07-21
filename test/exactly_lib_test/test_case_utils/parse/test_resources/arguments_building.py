@@ -49,8 +49,8 @@ class Arguments:
                          self.following_lines + arguments.following_lines)
 
     def last_line_followed_by(self,
-                              arguments,
-                              first_line_separator: str = ' '):
+                              arguments: 'Arguments',
+                              first_line_separator: str = ' ') -> 'Arguments':
         """
         Appends arguments to the last line
 
@@ -65,6 +65,12 @@ class Arguments:
                              arguments.following_lines)
         else:
             return self.followed_by(arguments, first_line_separator)
+
+    def followed_by__after_last_line(self, arguments: 'Arguments') -> 'Arguments':
+        return Arguments(self.first_line,
+                         tuple(self.following_lines) +
+                         tuple(arguments.lines)
+                         )
 
     def followed_by_lines(self,
                           following_lines: List[str]):
@@ -181,6 +187,15 @@ class ArgumentElements:
                                     self.following_lines[:-1] +
                                     [self.following_lines[-1] + argument_elements.first_line] +
                                     argument_elements.following_lines)
+
+    def followed_by__on_following_line(self,
+                                       on_following_line: 'ArgumentElements',
+                                       ) -> 'ArgumentElements':
+        return ArgumentElements(self.first_line,
+                                self.following_lines +
+                                [on_following_line.first_line] +
+                                on_following_line.following_lines
+                                )
 
     @property
     def num_lines(self) -> int:

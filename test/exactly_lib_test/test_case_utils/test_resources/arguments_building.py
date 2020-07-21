@@ -16,12 +16,20 @@ def empty() -> ArgumentElementsRenderer:
     return ab.EmptyArgument()
 
 
+def singleton(value: WithToString) -> ArgumentElementsRenderer:
+    return ab.Singleton(value)
+
+
 def sequence(arguments: Sequence[WithToString],
              separator: WithToString = None) -> ArgumentElementsRenderer:
     if separator is not None:
         return ab.SequenceOfElementsSeparatedByElement(separator, arguments)
     else:
         return ab.SequenceOfElements(arguments)
+
+
+def sequence__r(arguments: Sequence[ArgumentElementsRenderer]) -> ArgumentElementsRenderer:
+    return ab.SequenceOfArguments(arguments)
 
 
 def quoted_string(string_value: str,

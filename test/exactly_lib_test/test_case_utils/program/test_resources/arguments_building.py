@@ -1,11 +1,13 @@
 from typing import Sequence, Optional
 
 from exactly_lib.definitions.primitives import string_transformer
+from exactly_lib.definitions.primitives.string_transformer import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
     syntax_for_transformer_option
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_resources import arguments_building as primitive_ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.strings import WithToString
@@ -86,3 +88,26 @@ def program(program_arg: WithToString,
 
 def arbitrary_value_on_single_line() -> str:
     return shell_command('ls').as_arguments.lines[0]
+
+
+def program_followed_by_transformation(
+        program_wo_transformation: ArgumentElementsRenderer,
+        transformation: ArgumentElementsRenderer
+) -> ArgumentElementsRenderer:
+    return primitive_ab.SeparatedByNewLine(
+        program_wo_transformation,
+        primitive_ab.SequenceOfArguments([
+            ab.option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            transformation,
+        ])
+    )
+
+
+def program_w_superfluous_args() -> ArgumentElementsRenderer:
+    return program_followed_by_transformation(
+        system_program_command_line('system-program'),
+        ab.sequence__r([
+            ab.symbol_reference('TRANSFORMER_SYMBOL'),
+            ab.singleton('superfluous')
+        ])
+    )

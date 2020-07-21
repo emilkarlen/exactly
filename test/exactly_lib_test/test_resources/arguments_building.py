@@ -151,6 +151,31 @@ class SequenceOfElementsSeparatedByElement(SequenceOfElementsBase):
         return ret_val
 
 
+class SeparatedByNewLine(ArgumentElementsRenderer):
+    def __init__(self,
+                 first: ArgumentElementsRenderer,
+                 on_following_line: ArgumentElementsRenderer,
+                 ):
+        self.first = first
+        self.on_following_line = on_following_line
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return self.first.elements + ['\n'] + self.on_following_line.elements
+
+    @property
+    def as_arguments(self) -> Arguments:
+        return self.first.as_arguments.followed_by__after_last_line(
+            self.on_following_line.as_arguments
+        )
+
+    @property
+    def as_argument_elements(self) -> ArgumentElements:
+        return self.first.as_argument_elements.followed_by__on_following_line(
+            self.on_following_line.as_argument_elements
+        )
+
+
 class QuotedStringArgument(ArgumentElementsRenderer):
     def __init__(self,
                  string_value: str,
