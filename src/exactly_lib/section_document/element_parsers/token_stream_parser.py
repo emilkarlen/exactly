@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping
 
 from exactly_lib.definitions import logic
+from exactly_lib.section_document.element_parsers import misc_utils
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
@@ -125,7 +126,7 @@ class TokenParser:
     def report_superfluous_arguments_if_not_at_eol(self):
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:
-            self.error('Superfluous arguments: `{}`'.format(remaining))
+            raise misc_utils.raise_superfluous_arguments(remaining)
 
     @property
     def remaining_part_of_current_line(self) -> str:

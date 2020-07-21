@@ -15,29 +15,27 @@ from exactly_lib.util.str_ import str_constructor
 
 
 def parse_as_command(token_parser: TokenParser) -> CommandSdv:
-    parser = command_parser(consume_last_line_if_is_at_eol_after_parse=True)
+    parser = command_parser()
     return parser.parse_from_token_parser(token_parser)
 
 
 def parse_as_program(token_parser: TokenParser) -> ProgramSdv:
-    parser = program_parser(consume_last_line_if_is_at_eol_after_parse=True)
+    parser = program_parser()
     return parser.parse_from_token_parser(token_parser)
 
 
-def command_parser(consume_last_line_if_is_at_eol_after_parse: bool = True) -> Parser[CommandSdv]:
-    return _ParseAsCommand(consume_last_line_if_is_at_eol_after_parse)
+def command_parser() -> Parser[CommandSdv]:
+    return _ParseAsCommand()
 
 
-def program_parser(consume_last_line_if_is_at_eol_after_parse: bool = True) -> Parser[ProgramSdv]:
-    return _ParseAsProgram(consume_last_line_if_is_at_eol_after_parse)
+def program_parser() -> Parser[ProgramSdv]:
+    return _ParseAsProgram()
 
 
 class _ParseAsProgram(ParserFromTokenParserBase[ProgramSdv]):
-    def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool):
-        super().__init__(
-            consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse
-        )
-        self._command_parser = _ParseAsCommand(consume_last_line_if_is_at_eol_after_parse)
+    def __init__(self):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+        self._command_parser = _ParseAsCommand()
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         return ProgramSdvForCommand(
@@ -47,11 +45,9 @@ class _ParseAsProgram(ParserFromTokenParserBase[ProgramSdv]):
 
 
 class _ParseAsCommand(ParserFromTokenParserBase[CommandSdv]):
-    def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool):
-        super().__init__(
-            consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse
-        )
-        self._arguments_parser = parse_arguments.parser(consume_last_line_if_is_at_eol_after_parse)
+    def __init__(self):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+        self._arguments_parser = parse_arguments.parser()
 
     def parse_from_token_parser(self, parser: TokenParser) -> CommandSdv:
         program_name = parse_string.parse_string_from_token_parser(parser, _PARSE_NAME_CONF)

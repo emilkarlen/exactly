@@ -20,7 +20,6 @@ def parse(token_parser: TokenParser) -> FileMatcherSdv:
 
 _PROGRAM_PARSER = parse_program.program_parser(
     must_be_on_current_line=False,
-    consume_last_line_if_is_at_eol_after_parse=False,
 )
 
 

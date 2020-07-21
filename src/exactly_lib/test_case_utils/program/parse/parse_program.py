@@ -9,36 +9,24 @@ from exactly_lib.test_case_utils.program.parse import parse_executable_file, par
 from exactly_lib.util import functional
 
 
-def program_parser(must_be_on_current_line: bool = False,
-                   consume_last_line_if_is_at_eol_after_parse: bool = True) -> Parser[ProgramSdv]:
-    return _Parser(
-        must_be_on_current_line=must_be_on_current_line,
-        consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse,
-    )
+def program_parser(must_be_on_current_line: bool = False) -> Parser[ProgramSdv]:
+    return _Parser(must_be_on_current_line=must_be_on_current_line)
 
 
 class _Parser(ParserFromTokenParserBase[ProgramSdv]):
-    def __init__(self,
-                 must_be_on_current_line: bool = False,
-                 consume_last_line_if_is_at_eol_after_parse: bool = True,
-                 ):
-        super().__init__(consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse)
+    def __init__(self, must_be_on_current_line: bool = False):
+        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
         self._must_be_on_current_line = must_be_on_current_line
-        self._parser_of_executable_file = parse_executable_file.parser_of_program(
-            consume_last_line_if_is_at_eol_after_parse
-        )
+        self._parser_of_executable_file = parse_executable_file.parser_of_program()
         self._program_variant_setups = {
             syntax_elements.SHELL_COMMAND_TOKEN:
-                parse_shell_command.program_parser(consume_last_line_if_is_at_eol_after_parse
-                                                   ).parse_from_token_parser,
+                parse_shell_command.program_parser().parse_from_token_parser,
 
             syntax_elements.SYSTEM_PROGRAM_TOKEN:
-                parse_system_program.program_parser(consume_last_line_if_is_at_eol_after_parse
-                                                    ).parse_from_token_parser,
+                parse_system_program.program_parser().parse_from_token_parser,
 
             syntax_elements.SYMBOL_REF_PROGRAM_TOKEN:
-                parse_with_reference_to_program.program_parser(consume_last_line_if_is_at_eol_after_parse
-                                                               ).parse_from_token_parser,
+                parse_with_reference_to_program.program_parser().parse_from_token_parser,
         }
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
@@ -73,6 +61,5 @@ def parse_program(token_parser: TokenParser,
     """
     Consumes whole lines, so that the parser will be at the start of the following line, after the parse.
     """
-    parser = program_parser(must_be_on_current_line=must_be_on_current_line,
-                            consume_last_line_if_is_at_eol_after_parse=True)
+    parser = program_parser(must_be_on_current_line=must_be_on_current_line)
     return parser.parse_from_token_parser(token_parser)

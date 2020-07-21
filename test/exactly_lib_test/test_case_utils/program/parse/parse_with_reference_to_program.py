@@ -37,8 +37,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args, \
     program_checker
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
-from exactly_lib_test.test_case_utils.program.test_resources.assertions import assert_process_result_data, \
-    ResultWithTransformationData
+from exactly_lib_test.test_case_utils.program.test_resources.assertions import assert_process_result_data
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -86,16 +85,14 @@ class TestFailingParse(unittest.TestCase):
                                                        [QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument'])
                          ),
         ]
-        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
-            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
-            for case in cases:
-                source = parse_source_of(case.value)
-                with self.subTest(consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse,
-                                  case=case.name):
-                    # ASSERT #
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        # ACT #
-                        parser.parse(source)
+        parser = sut.program_parser()
+        for case in cases:
+            source = parse_source_of(case.value)
+            with self.subTest(case=case.name):
+                # ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    # ACT #
+                    parser.parse(source)
 
 
 class TestSymbolReferences(unittest.TestCase):
@@ -122,20 +119,18 @@ class TestSymbolReferences(unittest.TestCase):
                 sym_ref_args.sym_ref_cmd_line(program_symbol_name, [ab.symbol_reference(argument_symbol_name)]),
                 ),
         ]
-        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
-            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
-            for case in cases:
-                source = parse_source_of(case.input_value)
-                assertion = case.expected_value
-                assert isinstance(assertion, ValueAssertion)  # Type info for IDE
+        parser = sut.program_parser()
+        for case in cases:
+            source = parse_source_of(case.input_value)
+            assertion = case.expected_value
+            assert isinstance(assertion, ValueAssertion)  # Type info for IDE
 
-                with self.subTest(consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse,
-                                  case=case.name):
-                    # ACT #
-                    actual = parser.parse(source)
-                    # ASSERT #
-                    self.assertIsInstance(actual, ProgramSdv)
-                    assertion.apply_without_message(self, actual.references)
+            with self.subTest(case=case.name):
+                # ACT #
+                actual = parser.parse(source)
+                # ASSERT #
+                self.assertIsInstance(actual, ProgramSdv)
+                assertion.apply_without_message(self, actual.references)
 
 
 class ValidationPreSdsCase:
@@ -194,24 +189,22 @@ class TestValidation(unittest.TestCase):
                                  ),
         ]
 
-        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
-            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
-            for case in cases:
-                source = parse_source_of(case.source)
+        parser = sut.program_parser()
+        for case in cases:
+            source = parse_source_of(case.source)
 
-                with self.subTest(consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse,
-                                  case=case.name):
-                    # ACT #
-                    program_sdv = parser.parse(source)
-                    validator = program_sdv.resolve(symbols).validator
-                    # ASSERT #
-                    self.assertIsInstance(program_sdv, ProgramSdv)
-                    with tcds_with_act_as_curr_dir_2(hds_contents=case.home_contents) as tcds:
-                        validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
-                            tcds,
-                            expected_validation,
-                        )
-                        validation_assertion.apply_without_message(self, validator)
+            with self.subTest(case=case.name):
+                # ACT #
+                program_sdv = parser.parse(source)
+                validator = program_sdv.resolve(symbols).validator
+                # ASSERT #
+                self.assertIsInstance(program_sdv, ProgramSdv)
+                with tcds_with_act_as_curr_dir_2(hds_contents=case.home_contents) as tcds:
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
+                        tcds,
+                        expected_validation,
+                    )
+                    validation_assertion.apply_without_message(self, validator)
 
     def test_failing_validation_post_sds(self):
         expected_validation = validation.post_sds_validation_fails__w_any_msg()
@@ -246,42 +239,27 @@ class TestValidation(unittest.TestCase):
                                   ),
         ]
 
-        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
-            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
+        parser = sut.program_parser()
 
-            for case in cases:
-                source = parse_source_of(case.source)
+        for case in cases:
+            source = parse_source_of(case.source)
 
-                with self.subTest(consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse,
-                                  case=case.name):
-                    # ACT #
-                    program_sdv = parser.parse(source)
-                    validator = program_sdv.resolve(symbols).validator
-                    # ASSERT #
-                    self.assertIsInstance(program_sdv, ProgramSdv)
-                    with tcds_with_act_as_curr_dir_2(sds_contents=case.sds_contents) as tcds:
-                        validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
-                            tcds,
-                            expected_validation,
-                        )
-                        validation_assertion.apply_without_message(self, validator)
+            with self.subTest(case=case.name):
+                # ACT #
+                program_sdv = parser.parse(source)
+                validator = program_sdv.resolve(symbols).validator
+                # ASSERT #
+                self.assertIsInstance(program_sdv, ProgramSdv)
+                with tcds_with_act_as_curr_dir_2(sds_contents=case.sds_contents) as tcds:
+                    validation_assertion = pre_or_post_sds_validator.PreOrPostSdsDdvValidationAssertion(
+                        tcds,
+                        expected_validation,
+                    )
+                    validation_assertion.apply_without_message(self, validator)
 
 
 class TestExecution(unittest.TestCase):
-    def test__stay_at_end_of_last_consumed_line(self):
-        self._check(
-            _integration_checker(consume_last_line_if_is_at_eol_after_parse=False)
-        )
-
-    def test__consume_last_line_if_is_at_eol_after_parse(self):
-        self._check(
-            _integration_checker(consume_last_line_if_is_at_eol_after_parse=True)
-        )
-
-    def _check(self, integration_checker: IntegrationChecker[Program,
-                                                             ProcOutputFile,
-                                                             ResultWithTransformationData],
-               ):
+    def test(self):
         # ARRANGE #
 
         stdout_contents = 'output on stdout'
@@ -323,7 +301,7 @@ class TestExecution(unittest.TestCase):
                     symbols = program_that_executes_py_source.symbol_table
 
                     # ACT & ASSERT #
-                    integration_checker.check(
+                    _INTEGRATION_CHECKER.check(
                         self,
                         source,
                         transformation_case.input_value,
@@ -443,60 +421,53 @@ class TestResolving(unittest.TestCase):
             NameAndValue('executable file', self._executable_file_case),
             NameAndValue('executable program', self._executable_program_case),
         ]
-        for consume_last_line_if_is_at_eol_after_parse in [False, True]:
-            parser = sut.program_parser(consume_last_line_if_is_at_eol_after_parse)
-            for argument_case in argument_cases:
-                for program_case in program_cases:
-                    for resolving_case in program_case.value(argument_case.value):
-                        with self.subTest(program=program_case.name,
-                                          arguments=argument_case.name,
-                                          resolving_case=resolving_case.name):
-                            program_symbol = ProgramSymbolContext.of_sdv(
-                                'PROGRAM_SYMBOL',
-                                resolving_case.actual_sdv)
+        parser = sut.program_parser()
+        for argument_case in argument_cases:
+            for program_case in program_cases:
+                for resolving_case in program_case.value(argument_case.value):
+                    with self.subTest(program=program_case.name,
+                                      arguments=argument_case.name,
+                                      resolving_case=resolving_case.name):
+                        program_symbol = ProgramSymbolContext.of_sdv(
+                            'PROGRAM_SYMBOL',
+                            resolving_case.actual_sdv)
 
-                            source = parse_source_of(sym_ref_args.sym_ref_cmd_line(program_symbol.name))
+                        source = parse_source_of(sym_ref_args.sym_ref_cmd_line(program_symbol.name))
 
-                            symbols = program_symbol.symbol_table
+                        symbols = program_symbol.symbol_table
 
-                            expected_references_assertion = asrt.matches_sequence([
-                                program_symbol.reference_assertion,
-                            ])
+                        expected_references_assertion = asrt.matches_sequence([
+                            program_symbol.reference_assertion,
+                        ])
 
-                            # ACT #
+                        # ACT #
 
-                            actual = parser.parse(source)
+                        actual = parser.parse(source)
 
-                            # ASSERT #
+                        # ASSERT #
 
-                            actual_references = actual.references
+                        actual_references = actual.references
 
-                            expected_references_assertion.apply_with_message(self,
-                                                                             actual_references,
-                                                                             'references')
-                            actual_resolved_value = actual.resolve(symbols)
+                        expected_references_assertion.apply_with_message(self,
+                                                                         actual_references,
+                                                                         'references')
+                        actual_resolved_value = actual.resolve(symbols)
 
-                            resolving_case.expected.apply_with_message(self,
-                                                                       actual_resolved_value,
-                                                                       'resolved value')
+                        resolving_case.expected.apply_with_message(self,
+                                                                   actual_resolved_value,
+                                                                   'resolved value')
 
 
 def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
 
-def _integration_checker(
-        consume_last_line_if_is_at_eol_after_parse: bool
-) -> IntegrationChecker[Program,
-                        ProcOutputFile,
-                        ResultWithTransformationData]:
-    return IntegrationChecker(
-        sut.program_parser(consume_last_line_if_is_at_eol_after_parse),
-        program_checker.ProgramPropertiesConfiguration(
-            program_checker.ExecutionApplier()
-        )
+_INTEGRATION_CHECKER = IntegrationChecker(
+    sut.program_parser(),
+    program_checker.ProgramPropertiesConfiguration(
+        program_checker.ExecutionApplier()
     )
-
+)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

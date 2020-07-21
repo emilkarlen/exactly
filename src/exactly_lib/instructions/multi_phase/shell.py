@@ -29,7 +29,7 @@ def parts_parser(instruction_name: str) -> InstructionPartsParser:
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
     return spe_parts.InstructionEmbryoParser(
         instruction_name,
-        parse_shell_command.program_parser(consume_last_line_if_is_at_eol_after_parse=True)
+        parse_shell_command.program_parser()
     )
 
 

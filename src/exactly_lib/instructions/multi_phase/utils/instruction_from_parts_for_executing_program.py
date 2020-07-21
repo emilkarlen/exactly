@@ -9,6 +9,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import Ma
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
+from exactly_lib.section_document.element_parsers import misc_utils
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import sdv_validation
@@ -147,7 +148,17 @@ class InstructionEmbryoParser(InstructionEmbryoParserWoFileSystemLocationInfo[Ex
 
     def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
         program = self.program_parser.parse(source)
+
+        self._advance_source(source)
+
         return TheInstructionEmbryo(program)
+
+    @staticmethod
+    def _advance_source(source: ParseSource):
+        if source.has_current_line:
+            if not source.is_at_eol__except_for_space:
+                misc_utils.raise_superfluous_arguments(source.remaining_part_of_current_line.strip())
+            source.consume_current_line()
 
 
 def parts_parser(instruction_name: str,

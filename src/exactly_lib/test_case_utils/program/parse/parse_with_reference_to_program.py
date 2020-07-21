@@ -10,21 +10,22 @@ from exactly_lib.test_case_utils.program.sdvs import program_symbol_sdv
 from exactly_lib.test_case_utils.program.sdvs.program_symbol_sdv import ProgramSdvForSymbolReference
 
 
-def program_parser(consume_last_line_if_is_at_eol_after_parse: bool) -> Parser[ProgramSdv]:
-    return _ParseAsProgram(consume_last_line_if_is_at_eol_after_parse)
+def program_parser() -> Parser[ProgramSdv]:
+    return _ParseAsProgram()
 
 
 def parse_from_token_parser(token_parser: TokenParser) -> ProgramSdvForSymbolReference:
-    parser = _ParseAsProgram(consume_last_line_if_is_at_eol_after_parse=True)
+    parser = _ParseAsProgram()
     return parser.parse_from_token_parser(token_parser)
 
 
 class _ParseAsProgram(ParserFromTokenParserBase[ProgramSdvForSymbolReference]):
-    def __init__(self, consume_last_line_if_is_at_eol_after_parse: bool):
+    def __init__(self):
         super().__init__(
-            consume_last_line_if_is_at_eol_after_parse=consume_last_line_if_is_at_eol_after_parse
+            consume_last_line_if_is_at_eol_after_parse=False,
+            consume_last_line_if_is_at_eof_after_parse=False,
         )
-        self._arguments_parser = parse_arguments.parser(consume_last_line_if_is_at_eol_after_parse)
+        self._arguments_parser = parse_arguments.parser()
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdvForSymbolReference:
         symbol_string = self._symbol_string(parser)

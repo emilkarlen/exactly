@@ -151,12 +151,11 @@ class ParseSource:
             self._current_line_number += num_lines_consumed
             self._current_line_text = first_line_split[0]
 
-    def catch_up_with(self, parse_source_that_is_ahead):
+    def catch_up_with(self, parse_source_that_is_ahead: 'ParseSource'):
         """
         Consumes characters so that this source becomes identical to the given source.
         :param parse_source_that_is_ahead: Typically a source created as a copy of this source.
         """
-        assert isinstance(parse_source_that_is_ahead, ParseSource)
         self._column_index = parse_source_that_is_ahead._column_index
         self.source_string = parse_source_that_is_ahead.source_string
         self._current_line_number = parse_source_that_is_ahead._current_line_number

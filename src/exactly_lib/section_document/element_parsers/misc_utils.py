@@ -6,6 +6,12 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.util.parse.token import Token
 
 
+def raise_superfluous_arguments(superfluous_arguments: str):
+    raise SingleInstructionInvalidArgumentException(
+        'Superfluous arguments: `{}`'.format(superfluous_arguments)
+    )
+
+
 def new_token_stream(source: str) -> TokenStream:
     """
     Constructs a :class:`TokenStream`

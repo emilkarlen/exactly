@@ -122,7 +122,6 @@ class StringTransformerParser(TypeValueParser):
 class ProgramParser(TypeValueParser):
     _PARSER = parse_program.program_parser(
         must_be_on_current_line=False,
-        consume_last_line_if_is_at_eol_after_parse=False
     )
 
     def parse(self,

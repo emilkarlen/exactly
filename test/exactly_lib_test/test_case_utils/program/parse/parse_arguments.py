@@ -30,7 +30,6 @@ from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as ab_utils
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__consume_last_line, \
     equivalent_source_variants_for_consume_until_end_of_last_line
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
@@ -624,35 +623,7 @@ def _test_cases(put: unittest.TestCase, cases: Sequence[Case]):
 
 
 def _test_case(put: unittest.TestCase, case: Case):
-    with put.subTest('consume last line'):
-        _test_case__consume_line(put, case)
-    with put.subTest('stay at end of line'):
-        _test_case__stay_at_end_of_line(put, case)
-
-
-def _test_case__consume_line(put: unittest.TestCase, case: Case):
-    # ACT #
-    parser = sut.parser(consume_last_line_if_is_at_eol_after_parse=True)
-    for source in equivalent_source_variants__with_source_check__consume_last_line(put, case.source):
-        actual = parser.parse(source)
-
-        # ASSERT #
-        expectation = case.expectation
-        test_of_list.check_elements(put,
-                                    expectation.elements,
-                                    actual.arguments_list)
-
-        expectation.references.apply_with_message(put, actual.references,
-                                                  'symbol references')
-
-        actual_ddv = actual.resolve(case.arrangement.symbols)
-        expectation.validators.apply_with_message(put,
-                                                  actual_ddv.validators,
-                                                  'validators')
-
-
-def _test_case__stay_at_end_of_line(put: unittest.TestCase, case: Case):
-    parser = sut.parser(consume_last_line_if_is_at_eol_after_parse=False)
+    parser = sut.parser()
     # ACT #
 
     source_as_arguments = ab_utils.Arguments(case.source)

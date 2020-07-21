@@ -4,7 +4,6 @@ from typing import List, Tuple, Iterator, TypeVar
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -146,7 +145,7 @@ def equivalent_source_variants_with_assertion(put: unittest.TestCase,
 def _source_variant_test_cases__multi_line(num_source_lines: int
                                            ) -> List[Tuple[List[str], ValueAssertion[ParseSource]]]:
     return [
-        ([], every_line_is_consumed),
+        ([], asrt_source.source_is_at_end),
         (['following line'], asrt_source.is_at_beginning_of_line(num_source_lines + 1)),
         (['  '], asrt_source.is_at_beginning_of_line(num_source_lines + 1)),
     ]

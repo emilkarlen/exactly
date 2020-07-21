@@ -54,8 +54,18 @@ def suite() -> unittest.TestSuite:
 
 class TestInvalidSyntax(unittest.TestCase):
     def test_raise_invalid_instruction_argument_when_invalid_quoting(self):
+        # ARRANGE #
         parser = sut.embryo_parser('instruction-name')
         source = remaining_source('"abc xyz')
+        # ACT & ASSERT #
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
+    def test_superfluous_arguments(self):
+        # ARRANGE #
+        parser = sut.embryo_parser('instruction-name')
+        source = pgm_args.program_w_superfluous_args().as_remaining_source
+        # ACT & ASSERT #
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 

@@ -1,6 +1,8 @@
 import unittest
 
 from exactly_lib.definitions.primitives import program as program_primitives
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
@@ -8,6 +10,7 @@ from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
@@ -45,6 +48,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
                                TestSuccessfulValidation,
                                TestFailingValidationOfRelSymbol,
                                TestSuccessAndSymbolUsages,
+                               TestInvalidSyntaxSuperfluousArguments,
                            ])
 
 
@@ -208,6 +212,15 @@ class TestSuccessfulValidation(TestCaseBase):
                 DirContents([File.empty('existing-file.py')]))),
             self.conf.expect_success(),
         )
+
+
+class TestInvalidSyntaxSuperfluousArguments(TestCaseBase):
+    def runTest(self):
+        parser = self.conf.parser()
+        source = pgm_args.program_w_superfluous_args().as_remaining_source
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.parse(ARBITRARY_FS_LOCATION_INFO,
+                         source)
 
 
 def source_for_interpreting(relativity: RelOptionType,

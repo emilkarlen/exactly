@@ -32,8 +32,10 @@ def parts_parser(instruction_name: str) -> InstructionPartsParser:
 
 
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
-    return spe_parts.InstructionEmbryoParser(instruction_name,
-                                             parse_program.program_parser())
+    return spe_parts.InstructionEmbryoParser(
+        instruction_name,
+        parse_program.program_parser()
+    )
 
 
 NON_ASSERT_PHASE_DESCRIPTION_REST = texts.run_with_ignored_exit_code_option
