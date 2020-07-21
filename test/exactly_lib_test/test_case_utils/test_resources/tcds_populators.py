@@ -31,5 +31,5 @@ class _HdsOrSdsPopulatorForContentsThatDependOnHdsAndSds(TcdsPopulator):
         dir_contents = DirContents([
             File(self.file_name, file_contents)
         ])
-        home_or_sds_populator = self.dir_contents__2_hds_or_sds_populator(dir_contents)
-        home_or_sds_populator.populate_tcds(tcds)
+        tcds_populator = self.dir_contents__2_hds_or_sds_populator(dir_contents)
+        tcds_populator.populate_tcds(tcds)

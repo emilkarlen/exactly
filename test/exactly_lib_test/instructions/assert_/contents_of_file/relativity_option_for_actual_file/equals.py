@@ -157,7 +157,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
             DirContents([File('expected.txt', 'expected contents')]))
         populator_of_actual_files = self.rel_opt.populator_for_relativity_option_root(
             DirContents([File('actual.txt', 'expected contents')]))
-        home_or_sds_contents_arrangement = tcds_populators.multiple([
+        tcds_contents_arrangement = tcds_populators.multiple([
             populator_of_actual_files,
             populator_of_expected_files
         ])
@@ -169,7 +169,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
                  file_option=option_syntax(parse_here_doc_or_path.FILE_ARGUMENT_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),
             ArrangementPostAct(
-                tcds_contents=home_or_sds_contents_arrangement,
+                tcds_contents=tcds_contents_arrangement,
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols_in_arrangement,
             ),

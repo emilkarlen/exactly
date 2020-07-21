@@ -60,7 +60,7 @@ class ConfigurationBase:
                     pre_contents_population_action: TcdsAction = TcdsAction(),
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                    home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                    tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):

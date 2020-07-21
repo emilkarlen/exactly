@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds_pop
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
     pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -272,7 +272,7 @@ class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
         instruction_argument = self._arg('{executable}')
         utils.check(self,
                     instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Arrangement(tcds_pop.empty()),
                     utils.Expectation(path_ddv=self.configuration.path_ddv,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
@@ -286,7 +286,7 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
         instruction_argument = self._arg('{executable} arg1 -arg2')
         utils.check(self,
                     instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
+                    utils.Arrangement(tcds_pop.empty()),
                     utils.Expectation(path_ddv=self.configuration.path_ddv,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,

@@ -93,7 +93,7 @@ class TestSuccessfulExecutionViaSymbolReference(TestCaseBase):
         self.conf.run_test(self,
                            single_line_source(args.sequence(instruction_arguments).as_str),
                            self.conf.arrangement(
-                               home_or_sds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
+                               tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
                                    DirContents([py_file])
                                ),
                                symbols=symbols
@@ -192,7 +192,7 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
                 relativity_option=relativity_option.option_argument,
                 executable_file=executable_file_that_exits_with_code_0.file_name)),
             self.conf.arrangement(
-                home_or_sds_contents=relativity_option.populator_for_relativity_option_root(
+                tcds_contents=relativity_option.populator_for_relativity_option_root(
                     DirContents([executable_file_that_exits_with_code_0])
                 ),
                 symbols=relativity_option.symbols.in_arrangement()),

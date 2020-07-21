@@ -206,7 +206,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
                 source,
                 self.conf.arrangement(
                     pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                    home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                    tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
                         DirContents([src_file])),
                     symbols=symbols,
                 ),
@@ -313,7 +313,7 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
                 self.conf.arrangement(
                     pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     symbols=symbols,
-                    home_or_sds_contents=py_src_file_rel_opt_conf.populator_for_relativity_option_root(
+                    tcds_contents=py_src_file_rel_opt_conf.populator_for_relativity_option_root(
                         DirContents([py_file])
                     )
                 ),

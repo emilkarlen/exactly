@@ -3,7 +3,7 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -17,7 +17,7 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def arrangement_for_contents(self,
                                  actual_contents: str,
                                  post_sds_population_action: TcdsAction = TcdsAction(),
-                                 tcds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(

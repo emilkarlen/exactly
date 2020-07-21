@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds, \
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     TcdsPopulator
@@ -32,7 +32,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: TcdsAction = TcdsAction(),
-                                 tcds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
@@ -44,14 +44,14 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
-                                          home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                          tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         act_result_producer = _ActResultProducer(tcds_2_str, self.FILE_NAME_REL_ACT)
         return instruction_check.ArrangementPostAct(
             act_result_producer=act_result_producer,
-            tcds_contents=home_or_sds_contents,
+            tcds_contents=tcds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

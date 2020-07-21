@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configur
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromTcds2Str
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
@@ -41,13 +41,13 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
 
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
-                                          home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                          tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:
         return instruction_check.ArrangementPostAct(
             act_result_producer=ActResultProducerForStdout(tcds_2_str),
-            tcds_contents=home_or_sds_contents,
+            tcds_contents=tcds_contents,
             post_sds_population_action=post_sds_population_action,
             symbols=symbols,
         )

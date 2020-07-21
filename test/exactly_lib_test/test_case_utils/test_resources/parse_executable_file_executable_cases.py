@@ -60,9 +60,9 @@ def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
 
 class Arrangement:
     def __init__(self,
-                 home_or_sds_populator: TcdsPopulator,
+                 tcds_populator: TcdsPopulator,
                  symbols: SymbolTable = None):
-        self.home_or_sds_populator = home_or_sds_populator
+        self.tcds_populator = tcds_populator
         self.symbols = symbol_table_from_none_or_value(symbols)
 
 
@@ -152,7 +152,7 @@ def check(put: unittest.TestCase,
     check_exe_file(put, expectation.expectation_on_exe_file,
                    actual_exe_file)
     with tcds_with_act_as_curr_dir(
-            tcds_contents=arrangement.home_or_sds_populator) as environment:
+            tcds_contents=arrangement.tcds_populator) as environment:
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check_ddv(

@@ -9,7 +9,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as home_or_sds
+from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
@@ -28,7 +28,7 @@ class InstructionTestConfiguration:
     def arrangement_for_contents(self,
                                  actual_contents: str,
                                  post_sds_population_action: TcdsAction = TcdsAction(),
-                                 tcds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                 tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
         raise NotImplementedError()
@@ -46,7 +46,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
 
     def arrangement_for_contents_from_fun(self,
                                           tcds_2_str: Callable[[Tcds], str],
-                                          home_or_sds_contents: home_or_sds.TcdsPopulator = home_or_sds.empty(),
+                                          tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
                                           ) -> instruction_check.ArrangementPostAct:

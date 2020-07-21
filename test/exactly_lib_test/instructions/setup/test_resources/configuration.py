@@ -61,14 +61,14 @@ class SetupConfigurationBase(ConfigurationBase):
                     pre_contents_population_action: TcdsAction = TcdsAction(),
                     hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
-                    home_or_sds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
+                    tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                     environ: dict = None,
                     os_services: OsServices = new_default(),
                     symbols: SymbolTable = None):
         return ic.Arrangement(pre_contents_population_action=pre_contents_population_action,
                               hds_contents=hds_contents,
                               sds_contents_before_main=sds_contents_before_main,
-                              tcds_contents=home_or_sds_contents,
+                              tcds_contents=tcds_contents,
                               process_execution_settings=with_environ(environ),
                               os_services=os_services,
                               symbols=symbols)
