@@ -84,6 +84,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
 
 
 class Parser(ComparisonActualFileParser):
+    _PROGRAM_PARSER = parse_program.program_parser()
+
     def __init__(self, checked_file: process_output_files.ProcOutputFile):
         self._checked_file = checked_file
         self._checked_file_name = process_output_files.PROC_OUTPUT_FILE_NAMES[checked_file]
@@ -96,7 +98,7 @@ class Parser(ComparisonActualFileParser):
 
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         def _parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
-            program = parse_program.parse_program(_parser)
+            program = self._PROGRAM_PARSER.parse_from_token_parser(parser)
             return _ComparisonActualFileConstructorForProgram(self._checked_file, program)
 
         return parser.consume_and_handle_optional_option(self._default,

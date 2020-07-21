@@ -8,7 +8,10 @@ def parse(
         token_parser: TokenParser,
         run_conf: RunConfiguration[MODEL],
 ) -> MatcherSdv[MODEL]:
-    program = parse_program.parse_program(token_parser, False)
+    program = _PROGRAM_PARSER.parse_from_token_parser(token_parser)
 
     from . import sdv
     return sdv.sdv(run_conf, program)
+
+
+_PROGRAM_PARSER = parse_program.program_parser(must_be_on_current_line=False)

@@ -97,7 +97,7 @@ class TestInvalidSyntax(unittest.TestCase):
                               source=case.value):
                 source = remaining_source(case.value)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse(source)
+                    sut.parser().parse(source)
 
     def test_exception_SHOULD_be_raised_WHEN_invalid_syntax_of_second_element(self):
         for case in TOKENS_WITH_INVALID_SYNTAX:
@@ -105,7 +105,7 @@ class TestInvalidSyntax(unittest.TestCase):
             with self.subTest(name=case.name,
                               source=case.value):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse(source)
+                    sut.parser().parse(source)
 
 
 class TestNoElements(unittest.TestCase):

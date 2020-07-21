@@ -54,12 +54,3 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
         return parser.parse_default_or_optional_command(self._parser_of_executable_file.parse_from_token_parser,
                                                         self._program_variant_setups,
                                                         self._must_be_on_current_line)
-
-
-def parse_program(token_parser: TokenParser,
-                  must_be_on_current_line: bool = False) -> ProgramSdv:
-    """
-    Consumes whole lines, so that the parser will be at the start of the following line, after the parse.
-    """
-    parser = program_parser(must_be_on_current_line=must_be_on_current_line)
-    return parser.parse_from_token_parser(token_parser)

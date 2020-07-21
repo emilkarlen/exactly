@@ -3,7 +3,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -25,15 +24,7 @@ REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
 
 
 def parser() -> Parser[ArgumentsSdv]:
-    return _Parser()
-
-
-def parse(source: ParseSource) -> ArgumentsSdv:
-    return parser().parse(source)
-
-
-def parse_from_token_parser(token_parser: TokenParser) -> ArgumentsSdv:
-    return parser().parse_from_token_parser(token_parser)
+    return _PARSE
 
 
 class _Parser(ParserFromTokenParserBase[ArgumentsSdv]):
@@ -107,3 +98,6 @@ def _parse_plain_list_element(parser: TokenParser) -> ArgumentsSdv:
     token = parser.consume_mandatory_token('Invalid list element')
     element = parse_list.element_of(token)
     return arguments_sdvs.new_without_validation(list_sdvs.from_elements([element]))
+
+
+_PARSE = _Parser()
