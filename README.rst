@@ -2,8 +2,9 @@ Tests a command line program by executing it in a temporary sandbox directory an
 
 Or tests properties of existing files, directories etc.
 
-
 Supports individual test cases and test suites.
+
+Support for referencing predefined files and files created in the temporary sandbox.
 
 Exactly has a `Wiki
 <https://github.com/emilkarlen/exactly/wiki>`_.
@@ -58,7 +59,7 @@ If the file 'contacts.case' contains this test case, then Exactly can execute it
 
 
 If the actual email address of "Pablo Gauss" is not the expected one,
-then Exactly will report failure. For example::
+then Exactly will *report failure*. For example::
 
     > exactly contacts.case
     FAIL
@@ -79,7 +80,7 @@ then Exactly will report failure. For example::
           Expected
             STRING
               'pablo@gauss.org\n'
-          Diff:
+          Diff
     --- Expected
 
     +++ Actual
@@ -145,10 +146,10 @@ appropriate directory::
 ``file`` and ``dir`` makes files in the current directory (by default).
 
 
-Using predefined source files
+Referencing files
 ------------------------------------------------------------
 
-The *home directory structure* is directories containing
+The **home directory structure** is directories containing
 predefined files involved in a test case:
 
 *act-home*
@@ -163,12 +164,23 @@ that contains the test case file,
 but can be changed via ``[conf]``.
 
 
-There are options for making paths relative to them,
-and also to the temporary sandbox directories.
+The **sandbox directory structure** is temporary directories for
+files involved in a single execution of a test case:
+
+*act*
+ The current directory, when execution begins
+
+*result*
+  Stores the output from the tested program
+
+*tmp*
+  A directory for arbitrary temporary files
+
+
+There are options for making paths relative to all of these.
 
 ``-rel-home`` refers to the *home* directory,
-and ``-rel-act`` to the temporary directory
-that is the current directory at the start of the execution::
+and ``-rel-act`` to the *act* directory, for example::
 
 
     [conf]
@@ -270,12 +282,12 @@ it just applies the assertion to a transformed version of it.
 
 
 
-Using external helper programs
+Using external programs
 ------------------------------------------------------------
 
-External programs can help with setup and assertions etc.
+External programs can help with setup, assertions etc.
 
-Exactly can run executable files, shell commands  and programs in the OS PATH,
+Exactly can run executable files, shell commands and programs in the OS PATH,
 using ``run``, ``$``, ``%``.
 
 The following case shows some examples, but *doesn't make sense* tough::
@@ -689,7 +701,7 @@ Including (but not limited to):
 * Type for REG-EX
 * Separate sets of environment variables for "action to check" and other processes
 * Possibility to set stdin for processes other than the "action to check"
-* Support for non-terminating programs (e.g. as `string-transformer`s)
+* Support for non-terminating programs (e.g. as ``string-transformer``)
 * Symbol substitution in files
 * Dynamic symbol values - e.g. contents of dir, current date
 * Macros and functions
