@@ -57,12 +57,13 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources.string
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
+        unittest.makeSuite(TestFailDueInvalidSyntax),
         unittest.makeSuite(TestUnableToExecute),
         unittest.makeSuite(TestNonZeroExitCode),
         unittest.makeSuite(TestSuccessfulScenariosWithDifferentSourceVariants),
         unittest.makeSuite(TestSuccessfulScenariosWithProgramFromDifferentChannels),
         unittest.makeSuite(TestSymbolUsages),
-        unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
         unittest.makeSuite(TestFailingValidation),
     ])
 
@@ -439,7 +440,6 @@ class TestNonZeroExitCode(TestCaseBase):
                 for transformer_case in transformer_cases:
                     with self.subTest(exit_code=exit_code):
                         # ACT && ASSERT #
-
                         self._check(
                             source=instr_args.from_program(
                                 destination_file_name,
@@ -506,3 +506,24 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
         return InvalidDestinationFileTestCasesData(
             file_contents_cases,
             symbols)
+
+
+class TestFailDueInvalidSyntax(TestCaseBase):
+    def test_superfluous_arguments(self):
+        for phase_is_after_act in [False, True]:
+            for output_file in ProcOutputFile:
+                for ignore_exit_code in [False, True]:
+                    with self.subTest(output_file=output_file,
+                                      phase_is_after_act=phase_is_after_act,
+                                      ignore_exit_code=ignore_exit_code):
+                        source = instr_args.from_program(
+                            'dst.txt',
+                            output_file,
+                            pgm_args.program_w_superfluous_args().as_argument_elements,
+                            ignore_exit_code=ignore_exit_code,
+                        )
+                        parse_source = source.as_remaining_source
+                        self._check_invalid_syntax(
+                            parse_source,
+                            phase_is_after_act,
+                        )

@@ -129,18 +129,21 @@ class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Option
 
     def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
         with from_parse_source(source,
-                               consume_last_line_if_is_at_eol_after_parse=True) as parser:
-            assert isinstance(parser, TokenParser)  # Type info for IDE
+                               consume_last_line_if_is_at_eol_after_parse=True) as tokens:
+            return self._parse_from_tokens(tokens)
 
-            path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, parser)
-            instruction_config = InstructionConfig(
-                defs.src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
-                defs.CONTENTS_ARGUMENT
-            )
+    def _parse_from_tokens(self, tokens: TokenParser) -> TheInstructionEmbryo:
+        path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, tokens)
+        instruction_config = InstructionConfig(
+            defs.src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
+            defs.CONTENTS_ARGUMENT
+        )
 
-            file_maker = parse_file_contents(instruction_config, parser)
+        file_maker = parse_file_contents(instruction_config, tokens)
 
-            return TheInstructionEmbryo(path_to_create, file_maker)
+        tokens.report_superfluous_arguments_if_not_at_eol()
+
+        return TheInstructionEmbryo(path_to_create, file_maker)
 
 
 class _DstFileNameSdvValidator(SdvValidator):

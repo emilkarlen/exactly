@@ -47,7 +47,9 @@ def parse_file_maker(instruction_config: InstructionConfig,
                                                      parser)
     else:
         if head_source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-            contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+            contents = parse_here_document.parse_as_last_argument_from_token_parser(True,
+                                                                                    parser,
+                                                                                    False)
             return FileMakerForConstantContents(contents)
         else:
             contents = parse_string_from_token_parser(parser)
@@ -76,7 +78,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
 
     def _parse_program(output: ProcOutputFile, my_parser: TokenParser) -> FileMaker:
         is_ignore_exit_code = my_parser.consume_optional_option(defs.IGNORE_EXIT_CODE)
-        program = parse_program.parse_program(my_parser)
+        program = _PROGRAM_PARSER.parse_from_token_parser(my_parser)
         return FileMakerForContentsFromProgram(output,
                                                program,
                                                is_ignore_exit_code)
@@ -86,3 +88,9 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
         defs.PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDERR]: _parse_program_from_stderr,
         defs.FILE_OPTION: _parse_file,
     })
+
+
+_PROGRAM_PARSER = parse_program.program_parser(
+    must_be_on_current_line=False,
+    consume_last_line_if_is_at_eol_after_parse=False
+)

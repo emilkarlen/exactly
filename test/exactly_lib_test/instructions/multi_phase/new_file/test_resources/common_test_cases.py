@@ -3,6 +3,8 @@ from typing import Sequence, Iterable, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase import new_file as sut
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
@@ -12,6 +14,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -36,6 +39,14 @@ class TestCaseBase(unittest.TestCase):
                ):
         parser = sut.EmbryoParser(phase_is_after_act)
         embryo_check.check(self, parser, source, arrangement, expectation)
+
+    def _check_invalid_syntax(self,
+                              source: ParseSource,
+                              phase_is_after_act: bool = True,
+                              ):
+        parser = sut.EmbryoParser(phase_is_after_act)
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class InvalidDestinationFileTestCasesData:
