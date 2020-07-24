@@ -21,14 +21,17 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes, surrounded_by_soft_quotes
 
 COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(
     paths.absolute_file_name(sys.executable).value_when_no_dir_dependencies__d(),
@@ -91,23 +94,33 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        act_phase_instructions = [instr(["""'quoted file name.src'"""]),
+        # ARRANGE #
+        expected_file_name = 'quoted file name.src'
+        act_phase_instructions = [instr([str(surrounded_by_hard_quotes(expected_file_name))]),
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                File.empty('quoted file name.src')])),
+                File.empty(expected_file_name)])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
+        # ACT #
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,
                                             act_phase_instructions,
                                             arrangement, expectation)
-        self.assertFalse(executor_that_records_arguments.command.shell,
-                         'Should not be executed as a shell command')
-        self.assertEqual(2,
-                         len(executor_that_records_arguments.command.args),
-                         'Number of command-and-arguments, including interpreter')
+        # ASSERT #
+        expected_command = asrt_command.matches_command2(
+            driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
+            arguments=asrt.matches_sequence([
+                asrt_path.str_as_path(asrt_path.name_equals(expected_file_name))
+            ])
+        )
+        expected_command.apply_with_message(
+            self,
+            executor_that_records_arguments.command,
+            'command',
+        )
 
 
 class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
@@ -119,25 +132,46 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double quoted" """]),
-                                  instr([''])]
+        # ARRANGE #
+        atc_file_name = 'existing-file.src'
+        arg_1 = 'un-quoted'
+        arg_2 = 'single quoted'
+        arg_3 = 'double quoted'
+        act_line_1 = '{} {} {} {}'.format(
+            atc_file_name,
+            arg_1,
+            surrounded_by_hard_quotes(arg_2),
+            surrounded_by_soft_quotes(arg_3),
+        )
+        atc_line_2 = ''
+        act_phase_instructions = [instr([act_line_1]),
+                                  instr([atc_line_2])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                File.empty('existing-file.src')])),
+                File.empty(atc_file_name)])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
+        # ACT #
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,
                                             act_phase_instructions,
                                             arrangement, expectation)
-        self.assertFalse(executor_that_records_arguments.command.shell,
-                         'Should not be executed as a shell command')
-        self.assertEqual(5,
-                         len(executor_that_records_arguments.command.args),
-                         'Number of command-and-arguments, including interpreter')
-        self.assertListEqual(['un-quoted', 'single quoted', 'double quoted'],
-                             executor_that_records_arguments.command.args[2:])
+        # ASSERT #
+        expected_command = asrt_command.matches_command2(
+            driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
+            arguments=asrt.matches_sequence([
+                asrt_path.str_as_path(asrt_path.name_equals(atc_file_name)),
+                asrt.equals(arg_1),
+                asrt.equals(arg_2),
+                asrt.equals(arg_3),
+            ])
+        )
+        expected_command.apply_with_message(
+            self,
+            executor_that_records_arguments.command,
+            'command',
+        )
 
 
 class TestSymbolUsages(unittest.TestCase):

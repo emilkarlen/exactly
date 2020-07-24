@@ -367,14 +367,20 @@ class _LenEquals(ValueAssertionBase[Sized]):
 class OnTransformed(ValueAssertionBase[T]):
     def __init__(self,
                  transformer: Callable[[T], U],
-                 assertion: ValueAssertion[U]):
+                 assertion: ValueAssertion[U],
+                 transformer_name: Optional[str] = None,
+                 ):
         self.transformer = transformer
         self.assertion = assertion
+        self.transformer_name = transformer_name
 
     def _apply(self,
                put: unittest.TestCase,
                value: T,
                message_builder: MessageBuilder):
+        if self.transformer_name is not None:
+            message_builder = message_builder.for_sub_component(self.transformer_name)
+
         self.assertion.apply(put,
                              self.transformer(value),
                              message_builder)
@@ -678,6 +684,19 @@ class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
                                                element_message_builder)
 
 
+class _MatchesList(ValueAssertionBase[List[T]]):
+    def __init__(self, elements: Sequence[ValueAssertion[T]]):
+        self.elements = _MatchesSequence(elements)
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: List[T],
+               message_builder: MessageBuilder):
+        put.assertIsInstance(value, list,
+                             message_builder.apply('type'))
+        self.elements.apply(put, value, message_builder)
+
+
 class _IsSequenceWithElementAtPos(ValueAssertionBase[Sequence[T]]):
     def __init__(self,
                  index: int,
@@ -761,6 +780,15 @@ equals = Equals
 len_equals = _LenEquals
 on_transformed = OnTransformed
 
+
+def on_transformed2(transformer: Callable[[T], U],
+                    assertion: ValueAssertion[U],
+                    transformer_name: str) -> ValueAssertion[T]:
+    return OnTransformed(transformer,
+                         assertion,
+                         transformer_name)
+
+
 is_false = Equals(False)
 is_true = Equals(True)
 
@@ -787,6 +815,10 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
     in the list of actual values.
     """
     return _MatchesSequence(element_assertions)
+
+
+def matches_list(elements: Sequence[ValueAssertion[T]]) -> ValueAssertion[List[T]]:
+    return _MatchesList(elements)
 
 
 def matches_singleton_sequence(element: ValueAssertion[T]) -> ValueAssertion[Sequence[T]]:

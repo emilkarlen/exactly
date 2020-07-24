@@ -1,17 +1,22 @@
 import sys
 import unittest
+from typing import List
 
 from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_hds_act_dir
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
+from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions.sequence_assertions import matches_elements_except_last
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -36,9 +41,10 @@ class _NonShellExecutionCheckHelper:
             self,
             put: unittest.TestCase,
             first_source_line_instruction_argument_source_template: str,
-            act_phase_source_lines: list,
-            expected_cmd_and_args: ValueAssertion,
-            hds_contents: hds_populators.HdsPopulator = hds_populators.empty()):
+            act_phase_source_lines: List[str],
+            expected_cmd_and_args: ValueAssertion[Command],
+            hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
+    ):
         instruction_argument_source = first_source_line_instruction_argument_source_template.format_map(
             self.format_map_for_template_string)
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
@@ -52,14 +58,9 @@ class _NonShellExecutionCheckHelper:
             # ACT #
             check(put, arrangement, expectation)
             # ASSERT #
-            put.assertFalse(os_process_executor.command.shell,
-                            'Command should not indicate shell execution')
-            actual_cmd_and_args = os_process_executor.command.args
-            put.assertIsInstance(actual_cmd_and_args, list,
-                                 'Arguments of command to execute should be a list of arguments')
-            put.assertTrue(len(actual_cmd_and_args) > 0,
-                           'List of arguments is expected to contain at least the file|interpreter argument')
-            expected_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'actual_cmd_and_args')
+            expected_cmd_and_args.apply_with_message(put,
+                                                     os_process_executor.command,
+                                                     'command')
 
 
 def equals_with_last_element_removed(expected: list) -> ValueAssertion:
@@ -73,28 +74,39 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExec
 
     def _check_both_single_and_multiple_line_source(self,
                                                     instruction_argument_source_template: str,
-                                                    expected_command_and_arguments_except_final_file_name_arg: list):
+                                                    expected_executable: str,
+                                                    expected_arguments_except_final_file_name_arg: List[str],
+                                                    ):
         self.helper.check_both_single_and_multiple_line_source(
             self,
             instruction_argument_source_template,
             act_phase_source_lines=['this is act phase source code that is not used in the test'],
-            expected_cmd_and_args=equals_with_last_element_removed(
-                expected_command_and_arguments_except_final_file_name_arg),
+            expected_cmd_and_args=asrt_command.matches_command2(
+                asrt_command.matches_system_program_command_driver(
+                    asrt.equals(expected_executable)
+                ),
+                matches_elements_except_last(asrt.equals(expected_arguments_except_final_file_name_arg))
+            ),
         )
 
     def test_single_command(self):
         self._check_both_single_and_multiple_line_source(
-            ' = {actor_option} executable', ['executable'])
+            ' = {actor_option} executable',
+            'executable',
+            [],
+        )
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
             '=  {actor_option} executable arg1 -arg2',
-            ['executable', 'arg1', '-arg2'])
+            'executable',
+            ['arg1', '-arg2'])
 
     def test_quoting(self):
         self._check_both_single_and_multiple_line_source(
             "= {actor_option} 'executable with space' arg2 \"arg 3\"",
-            ['executable with space', 'arg2', 'arg 3'])
+            'executable with space',
+            ['arg2', 'arg 3'])
 
 
 class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecutableFile(unittest.TestCase):
@@ -103,8 +115,8 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
     def _check_both_single_and_multiple_line_source(
             self,
             instruction_argument_source_template: str,
-            act_phase_source_lines: list,
-            cmd_and_args: ValueAssertion,
+            act_phase_source_lines: List[str],
+            cmd_and_args: ValueAssertion[Command],
             hds_contents: hds_populators.HdsPopulator = hds_populators.empty()):
         self.helper.check_both_single_and_multiple_line_source(
             self,
@@ -147,20 +159,14 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
 def is_interpreter_with_source_file_and_arguments(interpreter: str,
                                                   source_file_relative_hds_name: str,
-                                                  arguments: list) -> ValueAssertion:
-    class RetClass(ValueAssertionBase):
-        def _apply(self,
-                   put: unittest.TestCase,
-                   cmd_and_args: list,
-                   message_builder: asrt.MessageBuilder):
-            msg = 'Expecting cmd-and-args to be [interpreter, argument..., source-file]. Found: ' + str(
-                cmd_and_args)
-            put.assertEqual(1 + 1 + len(arguments), len(cmd_and_args),
-                            msg)
-            put.assertEqual(interpreter, cmd_and_args[0], 'First element should be the interpreter')
-            put.assertEqual(arguments, cmd_and_args[1:-1], 'Interpreter arguments')
-
-    return RetClass()
+                                                  arguments: List[str],
+                                                  ) -> ValueAssertion[Command]:
+    return asrt_command.matches_command2(
+        asrt_command.matches_system_program_command_driver(
+            asrt.equals(interpreter)
+        ),
+        matches_elements_except_last(asrt.equals(arguments))
+    )
 
 
 class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutableFile(unittest.TestCase):
@@ -175,10 +181,14 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
         # ACT #
         check(self, arrangement, expectation)
         # ASSERT #
-        self.assertFalse(os_process_executor.command.shell,
-                         'Command should indicate executable file execution')
-        actual_cmd_and_args = os_process_executor.command.args
-        self.assertIsInstance(actual_cmd_and_args, list,
-                              'Arguments of command to execute should be a list')
-        self.assertListEqual([executable_file],
-                             actual_cmd_and_args)
+        expected_command = asrt_command.matches_command2(
+            driver=asrt_command.matches_executable_file_command_driver(
+                asrt_path.path_as_str(asrt.equals(executable_file)),
+            ),
+            arguments=asrt.is_empty_sequence
+        )
+        expected_command.apply_with_message(
+            self,
+            os_process_executor.command,
+            'command'
+        )

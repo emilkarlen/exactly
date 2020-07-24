@@ -1,18 +1,24 @@
 import unittest
+from typing import List
 
 from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_hds_act_dir, shell_command_syntax_for
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_resources.programs import shell_commands
+from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
+from exactly_lib_test.test_resources.value_assertions import shlex_assertions as asrt_shlex
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 def suite() -> unittest.TestSuite:
@@ -31,8 +37,8 @@ class _ShellExecutionCheckerHelper:
     def apply(self,
               put: unittest.TestCase,
               instruction_argument_source_template: str,
-              act_phase_source_lines: list,
-              expectation_of_cmd_and_args: ValueAssertion,
+              act_phase_source_lines: List[str],
+              expected_command: ValueAssertion[Command],
               hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
               ):
         instruction_argument_source = instruction_argument_source_template.format(
@@ -50,59 +56,52 @@ class _ShellExecutionCheckerHelper:
             # ACT #
             check(put, arrangement, expectation)
             # ASSERT #
-            put.assertTrue(os_process_executor.command.shell,
-                           'Command should indicate shell execution')
-            actual_cmd_and_args = os_process_executor.command.args
-            put.assertIsInstance(actual_cmd_and_args, str,
-                                 'Arguments of command to execute should be a string')
-            expectation_of_cmd_and_args.apply_with_message(put, actual_cmd_and_args, 'cmd_and_args')
+            expected_command.apply_with_message(
+                put,
+                os_process_executor.command,
+                'command',
+            )
 
 
 def initial_part_of_command_without_file_argument_is(
-        expected_command_except_final_file_name_part: str) -> ValueAssertion:
-    class RetClass(ValueAssertionBase):
-        def _apply(self,
-                   put: unittest.TestCase,
-                   actual_cmd_and_args: str,
-                   message_builder: asrt.MessageBuilder):
-            put.assertTrue(len(actual_cmd_and_args) > len(expected_command_except_final_file_name_part),
-                           'Command line string is expected to contain at least the argument of the instruction')
-            command_head = actual_cmd_and_args[:len(expected_command_except_final_file_name_part)]
-            put.assertEqual(command_head,
-                            expected_command_except_final_file_name_part)
-
-    return RetClass()
+        expected_command_except_final_file_name_part: str) -> ValueAssertion[Command]:
+    return asrt_command.matches_command2(
+        driver=asrt_command.matches_shell_command_driver(
+            asrt_str.begins_with(expected_command_except_final_file_name_part)
+        ),
+        arguments=asrt.is_empty_sequence
+    )
 
 
-def is_interpreter_file_and_args(interpreter: str,
-                                 file_name_base: str,
-                                 args: str) -> ValueAssertion:
-    class RetClass(ValueAssertionBase):
-        def _apply(self,
-                   put: unittest.TestCase,
-                   actual_cmd_and_args: str,
-                   message_builder: asrt.MessageBuilder):
-            put.assertEqual(interpreter + ' ',
-                            actual_cmd_and_args[:len(interpreter) + 1],
-                            'First part of string should be equal to the interpreter')
-            put.assertEqual(' ' + args,
-                            actual_cmd_and_args[-(len(args) + 1):],
-                            'Last part of string should be equal to the arguments')
-            path_part = actual_cmd_and_args[len(interpreter):-(len(args) + 1)]
-            put.assertTrue(file_name_base in path_part,
-                           'File ref base name should appear in the file reference')
-            # This may be a dangerous test, since string quoting may obfuscate the
-            # file name.
-            # Remove/replace if it causes problems!
-
-    return RetClass()
+def shell_command_is(
+        expected_command: str,
+        src_file_nam: str,
+        additional_arguments: List[str],
+) -> ValueAssertion[Command]:
+    arguments = [
+        asrt_shlex.matches_single_quotes_str(
+            asrt_path.str_as_path(asrt_path.name_equals(src_file_nam))
+        )
+    ]
+    arguments += [
+        asrt.equals(arg_string)
+        for arg_string in additional_arguments
+    ]
+    return asrt_command.matches_command2(
+        driver=asrt_command.matches_shell_command_driver(
+            asrt.equals(expected_command)
+        ),
+        arguments=asrt.matches_sequence(arguments)
+    )
 
 
 class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShellCommand(unittest.TestCase):
     helper = _ShellExecutionCheckerHelper(actor_utils.SOURCE_INTERPRETER_OPTION)
 
-    def _check(self, instruction_argument_source_template: str,
-               expected_command_except_final_file_name_part: ValueAssertion):
+    def _check(self,
+               instruction_argument_source_template: str,
+               expected_command_except_final_file_name_part: ValueAssertion[Command],
+               ):
         self.helper.apply(self, instruction_argument_source_template,
                           ['this is act phase source code that is not used in the test'],
                           expected_command_except_final_file_name_part)
@@ -123,8 +122,9 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
 class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellCommand(unittest.TestCase):
     helper = _ShellExecutionCheckerHelper(actor_utils.FILE_INTERPRETER_OPTION)
 
-    def _check(self, instruction_argument_source_template: str,
-               act_phase_source_lines: list,
+    def _check(self,
+               instruction_argument_source_template: str,
+               act_phase_source_lines: List[str],
                expected_command_except_final_file_name_part: ValueAssertion,
                hds_contents: hds_populators.HdsPopulator,
                ):
@@ -137,19 +137,25 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
     def test_single_command(self):
         self._check('= {actor_option} {shell_option} interpreter',
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is('interpreter'),
+                    shell_command_is('interpreter',
+                                     'file.src',
+                                     ['']),
                     hds_contents=file_in_hds_act_dir('file.src'))
 
     def test_command_with_arguments(self):
         self._check(' = {actor_option} {shell_option} interpreter with -arg2',
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is('interpreter with -arg2'),
+                    shell_command_is('interpreter with -arg2',
+                                     'file.src',
+                                     ['']),
                     hds_contents=file_in_hds_act_dir('file.src'))
 
     def test_quoting(self):
         self._check(" = {actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is("'interpreter with quoting' arg2 \"arg 3\""),
+                    shell_command_is("'interpreter with quoting' arg2 \"arg 3\"",
+                                     'file.src',
+                                     ['']),
                     hds_contents=file_in_hds_act_dir('file.src'))
 
 
@@ -157,21 +163,27 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
     def runTest(self):
         # ARRANGE #
         os_process_executor = AtcOsProcessExecutorThatRecordsArguments()
+        act_phase_source = 'act phase source'
+
         arrangement = Arrangement(
             source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
-            act_phase_source_lines=[shell_command_syntax_for('act phase source')],
+            act_phase_source_lines=[shell_command_syntax_for(act_phase_source)],
             atc_os_process_executor=os_process_executor)
         expectation = Expectation()
         # ACT #
         check(self, arrangement, expectation)
         # ASSERT #
-        self.assertTrue(os_process_executor.command.shell,
-                        'Command should indicate shell execution')
-        actual_cmd_and_args = os_process_executor.command.args
-        self.assertIsInstance(actual_cmd_and_args, str,
-                              'Arguments of command to execute should be a string')
-        self.assertEqual(actual_cmd_and_args,
-                         'act phase source')
+        expected_command = asrt_command.matches_command2(
+            driver=asrt_command.matches_shell_command_driver(
+                asrt.equals(act_phase_source)
+            ),
+            arguments=asrt.is_empty_sequence
+        )
+        expected_command.apply_with_message(
+            self,
+            os_process_executor.command,
+            'command',
+        )
 
 
 class TestShellHandlingViaExecution(unittest.TestCase):

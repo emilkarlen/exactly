@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
@@ -11,10 +12,15 @@ from exactly_lib_test.actors.test_resources import \
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, suite_for_execution
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
+from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
+from exactly_lib_test.test_resources.value_assertions import shlex_assertions as asrt_shlex
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes_str
 
 COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = shell_command(abs_path_to_interpreter_quoted_for_exactly())
 
@@ -50,10 +56,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite(tests)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 # TODO Not sure if this case should be supported.
 # class TestDoNotFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
 #     def runTest(self):
@@ -75,24 +77,36 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        act_phase_instructions = [instr(["""'quoted file name.src'"""]),
+        file_name = 'quoted file name.src'
+        act_phase_instructions = [instr([surrounded_by_soft_quotes_str(file_name)]),
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                File.empty('quoted file name.src')])),
+                File.empty(file_name)])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,
                                             act_phase_instructions,
                                             arrangement, expectation)
-        actual_command = executor_that_records_arguments.command
-        self.assertTrue(actual_command.shell,
-                        'Should be executed as a shell command')
-        self.assertIsInstance(actual_command.args,
-                              str,
-                              'Argument is expected to be a str for shell commands')
+        expected_command = asrt_command.matches_command2(
+            asrt_command.matches_shell_command_driver(
+                asrt_shlex.matches_single_quotes_str(asrt.equals(sys.executable))
+                # TODO maybe derive this assertion more intelligently
+            ),
+            asrt.matches_sequence([
+                asrt_shlex.matches_single_quotes_str(
+                    asrt_path.str_as_path(asrt_path.name_equals(file_name))
+                ),
+                asrt.anything_goes(),  # TODO empty string that should not be here
+            ])
+        )
+        expected_command.apply_with_message(
+            self,
+            executor_that_records_arguments.command,
+            'command',
+        )
 
 
 class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
@@ -104,23 +118,41 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
+        # ARRANGE #
+        src_file = 'existing-file.src'
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """])]
         should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
-                File.empty('existing-file.src')])),
+                File.empty(src_file)])),
             atc_process_executor=executor_that_records_arguments)
         expectation = act_phase_execution.Expectation()
+        # ACT #
         act_phase_execution.check_execution(self,
                                             self.configuration.sut,
                                             act_phase_instructions,
                                             arrangement,
                                             expectation)
-        self.assertTrue(executor_that_records_arguments.command.shell,
-                        'Should be executed as a shell command')
-        self.assertIsInstance(executor_that_records_arguments.command.args,
-                              str,
-                              'Argument should be a single string when for shell command')
-        self.assertEqual(should_be_last_part_of_command_line,
-                         executor_that_records_arguments.command.args[-(len(should_be_last_part_of_command_line)):])
+        # ASSERT #
+        expected_command = asrt_command.matches_command2(
+            driver=asrt_command.matches_shell_command_driver(
+                asrt_shlex.matches_single_quotes_str(asrt.equals(sys.executable))
+                # TODO maybe derive this assertion more intelligently
+            ),
+            arguments=asrt.matches_sequence([
+                asrt_shlex.matches_single_quotes_str(
+                    asrt_path.str_as_path(asrt_path.name_equals(src_file)),
+                ),
+                asrt.equals(should_be_last_part_of_command_line)
+            ])
+        )
+        expected_command.apply_with_message(
+            self,
+            executor_that_records_arguments.command,
+            'command',
+        )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

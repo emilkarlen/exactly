@@ -5,6 +5,7 @@ from typing import List, Union
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.logic.program.process_execution import commands as sut
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
+from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
@@ -78,7 +79,9 @@ class TestCommandDriverArgumentTypePseudoVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _CommandDriverArgumentTypePseudoVisitorThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(sut.CommandDriverForExecutableFile(pathlib.Path.cwd()))
+        ret_val = visitor.visit(sut.CommandDriverForExecutableFile(
+            described_path.new_primitive(pathlib.Path.cwd()))
+        )
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')

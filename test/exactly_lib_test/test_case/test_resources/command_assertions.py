@@ -1,6 +1,6 @@
 import pathlib
 import sys
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
@@ -14,7 +14,6 @@ from exactly_lib_test.type_system.data.test_resources.described_path import new_
 
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
-
                                           ) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForExecutableFile,
                                        [
@@ -27,6 +26,17 @@ def equals_executable_file_command_driver(expected: CommandDriverForExecutableFi
                                                               asrt.equals(False)
                                                               ),
                                        ])
+
+
+def matches_executable_file_command_driver(executable: ValueAssertion[pathlib.Path],
+                                           ) -> ValueAssertion[CommandDriver]:
+    return asrt.is_instance_with(
+        CommandDriverForExecutableFile,
+        asrt.sub_component('executable_file',
+                           CommandDriverForExecutableFile.executable_file.fget,
+                           asrt.is_instance_with(pathlib.Path, executable)
+                           ),
+    )
 
 
 def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
@@ -44,6 +54,17 @@ def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
                                        ])
 
 
+def matches_system_program_command_driver(program: ValueAssertion[str],
+                                          ) -> ValueAssertion[CommandDriver]:
+    return asrt.is_instance_with(
+        CommandDriverForSystemProgram,
+        asrt.sub_component('program',
+                           CommandDriverForSystemProgram.program.fget,
+                           program
+                           ),
+    )
+
+
 def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAssertion[CommandDriver]:
     return asrt.is_instance_with__many(CommandDriverForShell,
                                        [
@@ -58,6 +79,16 @@ def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAsserti
                                        ])
 
 
+def matches_shell_command_driver(shell_command_line: ValueAssertion[str]) -> ValueAssertion[CommandDriver]:
+    return asrt.is_instance_with(
+        CommandDriverForShell,
+        asrt.sub_component(
+            'shell_command_line',
+            CommandDriverForShell.shell_command_line.fget,
+            shell_command_line
+        ))
+
+
 def matches_command(driver: ValueAssertion[CommandDriver],
                     arguments: List[str]) -> ValueAssertion[Command]:
     return asrt.is_instance_with__many(
@@ -70,6 +101,22 @@ def matches_command(driver: ValueAssertion[CommandDriver],
             asrt.sub_component('arguments',
                                Command.arguments.fget,
                                asrt.equals(arguments)
+                               ),
+        ])
+
+
+def matches_command2(driver: ValueAssertion[CommandDriver],
+                     arguments: ValueAssertion[Sequence[str]]) -> ValueAssertion[Command]:
+    return asrt.is_instance_with__many(
+        Command,
+        [
+            asrt.sub_component('driver',
+                               Command.driver.fget,
+                               driver
+                               ),
+            asrt.sub_component('arguments',
+                               Command.arguments.fget,
+                               arguments
                                ),
         ])
 
