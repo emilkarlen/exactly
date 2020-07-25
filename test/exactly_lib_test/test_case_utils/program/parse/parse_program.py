@@ -1,10 +1,10 @@
-import pathlib
-import sys
 import unittest
-from typing import Sequence, List
+from typing import Sequence, List, Callable
 
 from exactly_lib.symbol.data import string_sdvs
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.program.parse import parse_program as sut
+from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
-    Expectation, prim_asrt__constant
+    Expectation, Arrangement, AssertionResolvingEnvironment, prim_asrt__constant, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2, \
     equivalent_source_variants__with_source_check__for_expression_parser_2
@@ -21,10 +21,12 @@ from exactly_lib_test.test_case_utils.program.parse import parse_system_program
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, program_sdvs
 from exactly_lib_test.test_case_utils.program.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_str_trans, string_transformers
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
@@ -64,13 +66,16 @@ class Case:
     def __init__(self,
                  name: str,
                  command_renderer: ArgumentElementsRenderer,
-                 expected_command: ValueAssertion[Command],
-                 symbols: Sequence[SymbolContext] = ()
+                 expected_command: Callable[[AssertionResolvingEnvironment], ValueAssertion[Command]],
+                 symbols: Sequence[SymbolContext] = (),
+                 mk_arrangement: Callable[[SymbolTable], Arrangement] =
+                 lambda sym_tbl: arrangement_wo_tcds(symbols=sym_tbl),
                  ):
         self.name = name
         self.command_renderer = command_renderer
         self.symbols = symbols
         self.expected_command = expected_command
+        self.mk_arrangement = mk_arrangement
 
 
 class TestParse(unittest.TestCase):
@@ -87,17 +92,15 @@ class TestParse(unittest.TestCase):
                         self,
                         source_case.input_value,
                         None,
-                        arrangement_wo_tcds(
-                            symbols=SymbolContext.symbol_table_of_contexts(command_case.symbols)
-                        ),
+                        command_case.mk_arrangement(SymbolContext.symbol_table_of_contexts(command_case.symbols)),
                         Expectation(
                             ParseExpectation(
                                 source=source_case.expected_value,
                                 symbol_references=SymbolContext.references_assertion_of_contexts(command_case.symbols),
                             ),
-                            primitive=prim_asrt__constant(
+                            primitive=lambda env: (
                                 asrt_pgm_val.matches_program(
-                                    command_case.expected_command,
+                                    command_case.expected_command(env),
                                     stdin=asrt_pgm_val.no_stdin(),
                                     transformer=asrt_str_trans.is_identity_transformer(True),
                                 )
@@ -132,17 +135,15 @@ class TestParse(unittest.TestCase):
                         self,
                         source_case.actual,
                         None,
-                        arrangement_wo_tcds(
-                            symbols=SymbolContext.symbol_table_of_contexts(symbols)
-                        ),
+                        command_case.mk_arrangement(SymbolContext.symbol_table_of_contexts(symbols)),
                         Expectation(
                             ParseExpectation(
                                 source=source_case.expected,
                                 symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
                             ),
-                            primitive=prim_asrt__constant(
+                            primitive=lambda env: (
                                 asrt_pgm_val.matches_program(
-                                    command_case.expected_command,
+                                    command_case.expected_command(env),
                                     stdin=asrt_pgm_val.no_stdin(),
                                     transformer=asrt.is_(transformer.primitive),
                                 )
@@ -154,33 +155,56 @@ class TestParse(unittest.TestCase):
 def _single_line_command_cases() -> List[Case]:
     shell_command_line = 'the shell command line'
     system_program = 'the-system-program'
-    executable_file = sys.executable
+
+    executable_file = fs.executable_file('executable-file', '')
+    exe_file_relativity = rel_opt.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
+    executable_file_ddv = paths.of_rel_option(exe_file_relativity.relativity,
+                                              paths.constant_path_part(executable_file.name)
+                                              )
+
     program_sdv = program_sdvs.system_program(string_sdvs.str_constant(system_program))
+
     program_symbol = ProgramSymbolContext.of_sdv('PROGRAM_SYMBOL', program_sdv)
+
     return [
         Case(
             'executable file',
-            command_renderer=pgm_args.executable_file_command_line(executable_file),
-            expected_command=asrt_command.equals_executable_file_command(
-                described_path.new_primitive(pathlib.Path(executable_file)),
-                []
+            command_renderer=pgm_args.executable_file_command_line(
+                exe_file_relativity.named_file_conf(executable_file.name).cl_argument.as_str
             ),
+            expected_command=lambda env: (
+                asrt_command.equals_executable_file_command(
+                    executable_file_ddv.value_of_any_dependency__d(env.tcds),
+                    []
+                )),
+            mk_arrangement=lambda sym_tbl: arrangement_w_tcds(
+                symbols=sym_tbl,
+                hds_contents=exe_file_relativity.populator_for_relativity_option_root__hds(
+                    DirContents([executable_file])
+                )
+            )
         ),
         Case(
             'system program',
             command_renderer=pgm_args.system_program_command_line(system_program),
-            expected_command=asrt_command.equals_system_program_command(system_program, [])
+            expected_command=prim_asrt__constant(
+                asrt_command.equals_system_program_command(system_program, [])
+            )
         ),
         Case(
             'reference',
             command_renderer=pgm_args.symbol_ref_command_line(program_symbol.name),
             symbols=[program_symbol],
-            expected_command=asrt_command.equals_system_program_command(system_program, []),
+            expected_command=prim_asrt__constant(
+                asrt_command.equals_system_program_command(system_program, [])
+            ),
         ),
         Case(
             'shell',
             command_renderer=pgm_args.shell_command_line(shell_command_line),
-            expected_command=asrt_command.equals_shell_command(shell_command_line, [])
+            expected_command=prim_asrt__constant(
+                asrt_command.equals_shell_command(shell_command_line, [])
+            )
         ),
     ]
 
