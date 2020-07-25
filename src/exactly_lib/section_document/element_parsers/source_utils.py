@@ -1,11 +1,13 @@
 from contextlib import contextmanager
+from typing import ContextManager
 
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
 
 
 @contextmanager
-def token_stream_from_parse_source(parse_source: ParseSource):
+def token_stream_from_parse_source(parse_source: ParseSource) -> ContextManager[TokenStream]:
     """
     Gives a :class:`TokenStream` backed by the given :class:`ParseSource`.
 
@@ -17,7 +19,8 @@ def token_stream_from_parse_source(parse_source: ParseSource):
 
 
 @contextmanager
-def token_stream_from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource):
+def token_stream_from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource
+                                                                     ) -> ContextManager[TokenStream]:
     """
     Gives a :class:`TokenStream` backed by the given :class:`ParseSource`.
 
