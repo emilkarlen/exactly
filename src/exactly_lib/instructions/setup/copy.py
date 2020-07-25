@@ -12,9 +12,10 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.instructions.utils.documentation import src_dst
-from exactly_lib.section_document.element_parsers.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import exception_detection
@@ -26,8 +27,7 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import rel_opts_configuration
-from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
+from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -99,19 +99,23 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._doc_elements.see_also_targets()
 
 
-class Parser(InstructionParserThatConsumesCurrentLine):
-    def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
-        parser = TokenParserExtra(TokenStream(rest_of_line))
-        src_path = parser.consume_path(REL_OPTION_ARG_CONF_FOR_SOURCE)
-        if parser.is_at_eol:
-            return _InstallSourceWithoutExplicitDestinationInstruction(src_path)
-        dst_path = parser.consume_path(REL_OPTION_ARG_CONF_FOR_DESTINATION)
-        parser.report_superfluous_arguments_if_not_at_eol()
-        return _InstallSourceWithExplicitDestinationInstruction(src_path,
-                                                                dst_path)
+class Parser(InstructionParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource,
+              ) -> SetupPhaseInstruction:
+        with token_stream_parser.from_parse_source(source,
+                                                   consume_last_line_if_is_at_eol_after_parse=True) as token_lexer:
+            src_path = parse_path.parse_path_from_token_parser(REL_OPTION_ARG_CONF_FOR_SOURCE, token_lexer)
+            if token_lexer.is_at_eol:
+                return _CopySourceWithoutExplicitDestinationInstruction(src_path)
+            dst_path = parse_path.parse_path_from_token_parser(REL_OPTION_ARG_CONF_FOR_DESTINATION, token_lexer)
+            token_lexer.report_superfluous_arguments_if_not_at_eol()
+
+        return _CopySourceWithExplicitDestinationInstruction(src_path, dst_path)
 
 
-class _InstallInstructionBase(SetupPhaseInstruction):
+class _CopyInstructionBase(SetupPhaseInstruction):
     def __init__(self,
                  source_path: PathSdv):
         self.source_path = source_path
@@ -134,7 +138,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
         return self.source_path.resolve(environment.symbols).value_pre_sds(environment.hds)
 
 
-class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBase):
+class _CopySourceWithoutExplicitDestinationInstruction(_CopyInstructionBase):
     def __init__(self, source_path: PathSdv):
         super().__init__(source_path)
 
@@ -154,7 +158,7 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
                                                                 destination_container)
 
 
-class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
+class _CopySourceWithExplicitDestinationInstruction(_CopyInstructionBase):
     def __init__(self,
                  source_path: PathSdv,
                  destination_path: PathSdv):
@@ -248,6 +252,9 @@ _MAIN_DESCRIPTION_REST = """\
   
     it must be a directory, and {SOURCE} is copied into that directory,
     as a file/directory with the basename of {SOURCE}.
+
+
+If given, {DESTINATION} must appear on the same line as {SOURCE}.
 
 
 As many attributes as possible of the copied files are preserved
