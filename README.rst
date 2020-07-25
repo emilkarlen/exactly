@@ -6,9 +6,7 @@ Supports individual test cases and test suites.
 
 Support for referencing predefined files and files created in the temporary sandbox.
 
-Exactly has a `Wiki
-<https://github.com/emilkarlen/exactly/wiki>`_.
-It also has a built in help system,
+Exactly has a  built in help system,
 which can, among other things,
 generate this `Reference manual
 <https://emilkarlen.github.io/exactly/version/0-12-2/reference-manual.html>`_.
