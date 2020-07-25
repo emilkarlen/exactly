@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser

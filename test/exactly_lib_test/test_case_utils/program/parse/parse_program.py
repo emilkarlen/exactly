@@ -12,8 +12,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
-    arrangement_wo_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
+    Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2, \
     equivalent_source_variants__with_source_check__for_expression_parser_2

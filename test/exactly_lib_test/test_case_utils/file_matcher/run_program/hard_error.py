@@ -5,8 +5,8 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.test_resources.program import NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ParseExpectation, Expectation, \
-    ExecutionExpectation, arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 
 

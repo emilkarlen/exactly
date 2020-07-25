@@ -16,9 +16,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     FilesMatcherArgumentsConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructorFromRelOptConf, \
     ModelConstructor
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation, \
-    ParseExpectation
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser

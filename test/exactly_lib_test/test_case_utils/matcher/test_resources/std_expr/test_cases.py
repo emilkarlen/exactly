@@ -12,8 +12,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.expression.test_resources.syntax_cases import TestCaseGeneratorForParenthesis
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
-    ExecutionExpectation, Expectation, ParseExpectation, arrangement_wo_tcds, PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
+    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.logic.test_resources.symbol_ref_syntax import symbol_ref_syntax_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import _utils

@@ -10,8 +10,8 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, Expectation, \
-    ExecutionExpectation, ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

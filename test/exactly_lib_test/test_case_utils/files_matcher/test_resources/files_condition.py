@@ -14,8 +14,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import ModelConstructor
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, Arrangement, \
-    Expectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ExecutionExpectation, \
+    PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

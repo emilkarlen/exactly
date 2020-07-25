@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
@@ -36,7 +36,7 @@ def check(put: unittest.TestCase,
     CHECKER.check(put,
                   source,
                   model_constructor,
-                  integration_check.arrangement_wo_tcds(arrangement),
+                  arrangement_wo_tcds(arrangement),
                   expectation,
                   )
 
@@ -49,6 +49,6 @@ def check_with_source_variants(put: unittest.TestCase,
     CHECKER.check__w_source_variants(put,
                                      arguments,
                                      model_constructor,
-                                     integration_check.arrangement_wo_tcds(arrangement),
+                                     arrangement_wo_tcds(arrangement),
                                      expectation,
                                      )

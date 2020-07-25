@@ -9,8 +9,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
-    ParseExpectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check

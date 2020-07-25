@@ -31,9 +31,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
-    ParseExpectation, ExecutionExpectation
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
+    ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import test_transformers_setup
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf

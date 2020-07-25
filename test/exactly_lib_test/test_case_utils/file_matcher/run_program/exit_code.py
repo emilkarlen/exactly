@@ -6,7 +6,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.program import is_reference_to_program
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import test_cases
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

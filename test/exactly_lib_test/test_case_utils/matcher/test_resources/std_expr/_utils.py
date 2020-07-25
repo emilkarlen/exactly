@@ -17,8 +17,7 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext, \
     SymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
-    PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments

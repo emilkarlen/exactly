@@ -12,8 +12,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_conditi
     NON_MATCHING_EXECUTION_EXPECTATION, exe_w_added_header_matcher, prim_and_exe_w_header_matcher, \
     is_regular_file_matcher, is_dir_file_matcher
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_constructor__non_recursive
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, \
-    Expectation, ParseExpectation, PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
 from exactly_lib_test.test_resources.files.file_structure import File, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr

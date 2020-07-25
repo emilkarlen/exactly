@@ -30,7 +30,7 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr

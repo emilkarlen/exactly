@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources import prim
 from exactly_lib_test.test_case_utils.files_condition.test_resources.complex_matcher_checking import \
     ApplicationSequenceFrom1Builder, matches_w_application_order
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, \
-    arrangement_wo_tcds, Expectation, ParseExpectation, ExecutionExpectation, Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
+    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

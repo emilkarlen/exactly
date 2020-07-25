@@ -4,8 +4,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import sds_populat
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ModelConstructor
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, arrangement_w_tcds, \
-    Expectation, ParseExpectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
+    ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir

@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_value_validator

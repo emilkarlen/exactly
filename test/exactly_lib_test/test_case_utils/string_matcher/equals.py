@@ -10,9 +10,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
-    ExecutionExpectation, ParseExpectation
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args

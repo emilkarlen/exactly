@@ -14,8 +14,8 @@ from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
-from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
     model_construction
@@ -255,11 +255,11 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
                     arrangement_w_tcds(
                         symbols=line_matcher_symbol_context.symbol_table
                     ),
-                    logic_integration_check.Expectation(
-                        logic_integration_check.ParseExpectation(
+                    Expectation(
+                        ParseExpectation(
                             symbol_references=line_matcher_symbol_context.references_assertion
                         ),
-                        logic_integration_check.ExecutionExpectation(
+                        ExecutionExpectation(
                             validation=case.value.expectation,
                         )
                     )

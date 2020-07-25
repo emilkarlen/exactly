@@ -8,8 +8,8 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     SingleCaseGenerator, ExecutionResult, FullExecutionResult, ValidationFailure, MultipleExecutionCasesGenerator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ParseExpectation, \
-    ExecutionExpectation, Arrangement, PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.test_utils import NExArr

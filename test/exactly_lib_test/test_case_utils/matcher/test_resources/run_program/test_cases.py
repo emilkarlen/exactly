@@ -9,8 +9,8 @@ from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, Arrangement, \
-    arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
+    PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import py_programs as py_run_programs, \
     assertions as asrt_run
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs

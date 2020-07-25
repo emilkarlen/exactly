@@ -14,8 +14,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, Expectation, \
-    ExecutionExpectation, ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, elements
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args as sm_args, \

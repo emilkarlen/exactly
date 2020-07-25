@@ -30,8 +30,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.application_enviro
     application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
-from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
+    arrangement_w_tcds, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args, \
@@ -305,16 +306,16 @@ class TestExecution(unittest.TestCase):
                         self,
                         source,
                         transformation_case.input_value,
-                        logic_integration_check.arrangement_w_tcds(
+                        arrangement_w_tcds(
                             symbols=symbols,
                         ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
+                        Expectation(
+                            ParseExpectation(
                                 symbol_references=asrt.matches_sequence([
                                     program_that_executes_py_source.reference_assertion,
                                 ]),
                             ),
-                            logic_integration_check.ExecutionExpectation(
+                            ExecutionExpectation(
                                 main_result=assert_process_result_data(
                                     exitcode=asrt.equals(exit_code_case),
                                     stdout_contents=asrt.equals(stdout_contents),

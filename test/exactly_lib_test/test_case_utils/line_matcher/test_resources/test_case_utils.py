@@ -8,7 +8,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ModelConstructor
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 

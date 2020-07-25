@@ -7,9 +7,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, Expectation, \
-    ParseExpectation, arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
@@ -81,16 +80,16 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                         self,
                         source,
                         transformation_case.input_value,
-                        logic_integration_check.arrangement_w_tcds(
+                        arrangement_w_tcds(
                             symbols=symbols,
                         ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
+                        Expectation(
+                            ParseExpectation(
                                 symbol_references=asrt.matches_sequence([
                                     program_that_executes_py_source.reference_assertion,
                                 ]),
                             ),
-                            logic_integration_check.ExecutionExpectation(
+                            ExecutionExpectation(
                                 main_result=assert_process_result_data(
                                     exitcode=asrt.equals(exit_code_case),
                                     stdout_contents=asrt.equals(stdout_contents),
@@ -152,17 +151,17 @@ class TestSymbolReferenceProgram(unittest.TestCase):
                         self,
                         source,
                         transformation_case.input_value,
-                        logic_integration_check.arrangement_w_tcds(
+                        arrangement_w_tcds(
                             symbols=symbols,
                         ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
+                        Expectation(
+                            ParseExpectation(
                                 symbol_references=asrt.matches_sequence([
                                     program_that_executes_py_source.reference_assertion,
                                     is_reference_to_string_transformer(to_upper_transformer.name),
                                 ]),
                             ),
-                            logic_integration_check.ExecutionExpectation(
+                            ExecutionExpectation(
                                 main_result=assert_process_result_data(
                                     exitcode=asrt.equals(exit_code_case),
                                     stdout_contents=asrt.equals(stdout_contents),

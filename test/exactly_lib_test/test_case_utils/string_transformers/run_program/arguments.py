@@ -10,8 +10,8 @@ from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ParseExpectation, \
-    PrimAndExeExpectation, Arrangement, arrangement_w_tcds, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
+    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args, program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions

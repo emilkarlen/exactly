@@ -6,8 +6,8 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherS
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
-    PrimAndExeExpectation, Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
+    PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation

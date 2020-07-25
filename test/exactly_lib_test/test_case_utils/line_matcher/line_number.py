@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.condition.integer.test_resources.validatio
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ExecutionExpectation, \
-    ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
+    Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertions import main_result_is_success, \
     main_result_is_failure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -72,7 +72,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                     arrangement=
                     case.symbol_table,
                     expectation=
-                    integration_check.Expectation(
+                    Expectation(
                         ParseExpectation(
                             symbol_references=case.symbol_references_expectation,
                         ),
@@ -103,7 +103,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
             arrangement=
             int_string_symbol.symbol_table,
             expectation=
-            integration_check.Expectation(
+            Expectation(
                 ParseExpectation(
                     symbol_references=asrt.matches_sequence([
                         is_reference_to_symbol_in_expression(int_string_symbol.name)
@@ -182,7 +182,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                     remaining_source(str(arguments)),
                     integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
                     SymbolContext.symbol_table_of_contexts(case.symbols),
-                    integration_check.Expectation(
+                    Expectation(
                         ParseExpectation(
                             symbol_references=expected_symbol_references,
                         ),

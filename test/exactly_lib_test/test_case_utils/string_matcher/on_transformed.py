@@ -6,9 +6,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Arrangement, Expectation, \
-    ExecutionExpectation, ParseExpectation, PrimAndExeExpectation
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
+    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
     arguments_building2 as args2
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import string_matchers

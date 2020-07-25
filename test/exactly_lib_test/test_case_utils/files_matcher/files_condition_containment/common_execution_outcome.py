@@ -11,8 +11,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_conditi
     IS_REGULAR_AND_IS_DIR_MATCHER_SYMBOLS
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_constructor__non_recursive, \
     model_constructor__recursive
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import PrimAndExeExpectation, Arrangement, \
-    Expectation, ParseExpectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
 from exactly_lib_test.test_resources.files.file_structure import Dir, File

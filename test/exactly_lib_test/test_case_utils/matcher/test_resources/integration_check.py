@@ -3,7 +3,7 @@ from typing import Callable, TypeVar
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ExecutionExpectation, Expectation
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 MODEL = TypeVar('MODEL')

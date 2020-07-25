@@ -8,9 +8,8 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from contextlib import contextmanager
-from typing import Optional, Sequence, Generic, ContextManager
+from typing import Sequence, Generic, ContextManager
 
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
@@ -20,177 +19,21 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv, ApplicationEnvironmentDependentValue
-from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
-from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
-    tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
-    tcds_with_act_as_curr_dir_3
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser, \
     equivalent_source_variants__with_source_check__for_expression_parser_2, \
     equivalent_source_variants__with_source_check__for_full_line_expression_parser
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
-
-
-class Arrangement:
-    def __init__(self,
-                 symbols: Optional[SymbolTable] = None,
-                 tcds: Optional[TcdsArrangement] = None,
-                 process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement()
-                 ):
-        """
-        :param tcds: Not None iff TCDS is used (and must thus be created)
-        """
-        self.symbols = symbol_table_from_none_or_value(symbols)
-        self.tcds = tcds
-        self.process_execution = process_execution
-
-
-def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                       hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                       non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
-                       act_result: Optional[ActResultProducer] = None,
-                       pre_population_action: PlainTcdsAction = PlainTcdsAction(),
-                       post_population_action: PlainTcdsAction = PlainTcdsAction(),
-                       symbols: Optional[SymbolTable] = None,
-                       process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
-                       ) -> Arrangement:
-    """
-    :return: An Arrangement with will create a TCDS
-    """
-    tcds = TcdsArrangement(
-        hds_contents=hds_contents,
-        non_hds_contents=non_hds_contents,
-        tcds_contents=tcds_contents,
-        act_result=act_result,
-        pre_population_action=pre_population_action,
-        post_population_action=post_population_action,
-    )
-    return Arrangement(symbols,
-                       tcds,
-                       process_execution)
-
-
-def arrangement_wo_tcds(symbols: Optional[SymbolTable] = None,
-                        process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
-                        ) -> Arrangement:
-    """
-    :return: An Arrangement with will NOT create a TCDS
-    """
-    return Arrangement(symbols,
-                       None,
-                       process_execution)
-
-
-class ParseExpectation:
-    """Expected properties after parse."""
-
-    def __init__(
-            self,
-            source: ValueAssertion[ParseSource] = asrt.anything_goes(),
-            symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-    ):
-        self.source = source
-        self.symbol_references = symbol_references
-
-
-class ExecutionExpectation(Generic[OUTPUT]):
-    def __init__(
-            self,
-            validation: ValidationAssertions = all_validations_passes(),
-            main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
-            is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
-    ):
-        self.validation = validation
-        self.main_result = main_result
-        self.is_hard_error = is_hard_error
-
-
-class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
-    def __init__(
-            self,
-            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
-            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
-    ):
-        self.execution = execution
-        self.primitive = primitive
-
-    @staticmethod
-    def of_exe(
-            validation: ValidationAssertions = all_validations_passes(),
-            main_result: ValueAssertion[OUTPUT] = asrt.anything_goes(),
-            is_hard_error: Optional[ValueAssertion[TextRenderer]] = None,
-    ) -> 'PrimAndExeExpectation[PRIMITIVE, OUTPUT]':
-        return PrimAndExeExpectation(
-            ExecutionExpectation(
-                validation=validation,
-                main_result=main_result,
-                is_hard_error=is_hard_error,
-            ),
-            asrt.anything_goes()
-        )
-
-    @staticmethod
-    def of_prim(
-            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
-    ) -> 'PrimAndExeExpectation[PRIMITIVE, OUTPUT]':
-        return PrimAndExeExpectation(
-            ExecutionExpectation(),
-            primitive
-        )
-
-
-class Expectation(Generic[PRIMITIVE, OUTPUT]):
-    def __init__(
-            self,
-            parse: ParseExpectation = ParseExpectation(),
-            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
-            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
-    ):
-        """
-        :param primitive: Expectation of custom properties of the primitive object,
-        i.e. properties other than the standard execution properties.
-        """
-        self.parse = parse
-        self.execution = execution
-        self.primitive = primitive
-
-    @property
-    def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
-        return PrimAndExeExpectation(
-            self.execution,
-            self.primitive
-        )
-
-
-class MultiSourceExpectation(Generic[PRIMITIVE, OUTPUT]):
-    def __init__(
-            self,
-            symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
-            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
-    ):
-        self.symbol_references = symbol_references
-        self.execution = execution
-        self.primitive = primitive
-
-    @property
-    def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
-        return PrimAndExeExpectation(
-            self.execution,
-            self.primitive
-        )
 
 
 class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):

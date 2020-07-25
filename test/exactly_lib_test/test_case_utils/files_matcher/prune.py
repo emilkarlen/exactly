@@ -23,8 +23,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     SymbolReference
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check_helper import \
     IntegrationCheckHelper
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, \
-    ParseExpectation, Arrangement, PrimAndExeExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
+    PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import EXECUTION_IS_PASS
 from exactly_lib_test.test_resources import matcher_argument

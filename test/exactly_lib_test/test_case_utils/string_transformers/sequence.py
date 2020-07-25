@@ -8,8 +8,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
+    ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
@@ -135,11 +135,11 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
                         arrangement_w_tcds(
                             symbols=symbols
                         ),
-                        logic_integration_check.Expectation(
-                            logic_integration_check.ParseExpectation(
+                        Expectation(
+                            ParseExpectation(
                                 symbol_references=expected_symbol_references
                             ),
-                            logic_integration_check.ExecutionExpectation(
+                            ExecutionExpectation(
                                 validation=case.value.expectation,
                             ),
                             is_identity_transformer(False),

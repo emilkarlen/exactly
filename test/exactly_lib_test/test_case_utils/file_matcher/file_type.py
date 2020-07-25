@@ -5,8 +5,9 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_w_tcds, Expectation, \
-    ExecutionExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
+    ExecutionExpectation, \
+    Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.test_utils import NEA

@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources import prim
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.test_case_utils.files_condition.test_resources.validation_cases import \
     failing_validation_cases__multi_exe
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, Expectation, \
-    ExecutionExpectation, ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

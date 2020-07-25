@@ -3,8 +3,8 @@ import unittest
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.program import NON_EXISTING_SYSTEM_PROGRAM
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import ParseExpectation, Expectation, \
-    ExecutionExpectation, arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check

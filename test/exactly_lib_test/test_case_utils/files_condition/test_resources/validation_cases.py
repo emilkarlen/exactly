@@ -8,8 +8,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import validation_cases as fm_validation_cases
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import arrangement_wo_tcds, \
-    PrimAndExeExpectation, Arrangement
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
+    PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
 

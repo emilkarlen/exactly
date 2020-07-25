@@ -37,8 +37,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import tcds_conten
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as sut
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import Expectation, ExecutionExpectation, \
-    ParseExpectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
+    Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import \
@@ -77,8 +77,9 @@ EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
 UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
 
 _EMPTY_ARRANGEMENT_W_WO_TCDS = [
-    NameAndValue('without tcds', sut.Arrangement()),
-    NameAndValue('with tcds', sut.Arrangement(tcds=sut.TcdsArrangement()))
+    NameAndValue('without tcds', Arrangement()),
+    NameAndValue('with tcds', Arrangement(
+        tcds=TcdsArrangement()))
 ]
 
 
@@ -90,8 +91,8 @@ class TestCaseBase(unittest.TestCase):
                                  source: ParseSource,
                                  model: int,
                                  parser: Parser[MatcherSdv[int]],
-                                 arrangement: sut.Arrangement,
-                                 expectation: sut.Expectation):
+                                 arrangement: Arrangement,
+                                 expectation: Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check(self.tc,
                       source,
@@ -102,8 +103,8 @@ class TestCaseBase(unittest.TestCase):
                                         arguments: Arguments,
                                         model: int,
                                         parser: Parser[MatcherSdv[int]],
-                                        arrangement: sut.Arrangement,
-                                        expectation: sut.Expectation):
+                                        arrangement: Arrangement,
+                                        expectation: Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
@@ -119,8 +120,8 @@ class TestCaseBase(unittest.TestCase):
                                                    arguments: Arguments,
                                                    model: int,
                                                    parser: Parser[MatcherSdv[int]],
-                                                   arrangement: sut.Arrangement,
-                                                   expectation: sut.Expectation):
+                                                   arrangement: Arrangement,
+                                                   expectation: Expectation):
         checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
         with self.subTest('single execution'):
             checker.check(self.tc,
@@ -140,7 +141,7 @@ class TestCaseBase(unittest.TestCase):
 
     def _check_raises_test_error__single_and_multi(self,
                                                    parser: Parser[MatcherSdv[int]],
-                                                   expectation: sut.Expectation,
+                                                   expectation: Expectation,
                                                    ):
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
             with self.subTest(arrangement.name,
@@ -175,7 +176,7 @@ class TestSymbolReferences(TestCaseBase):
             _constant_line_matcher_type_parser_of_matcher_sdv(
                 matchers.sdv_from_primitive_value(references=symbol_usages_of_matcher)
             ),
-            sut.Expectation(
+            Expectation(
                 ParseExpectation(
                     symbol_references=sym_asrt.equals_data_type_symbol_references(symbol_usages_of_expectation)
                 ),
@@ -192,10 +193,12 @@ class TestSymbolReferences(TestCaseBase):
 
         cases = [
             NameAndValue('arrangement without tcds',
-                         sut.arrangement_wo_tcds(symbol_table_of_arrangement)
+                         arrangement_wo_tcds(
+                             symbol_table_of_arrangement)
                          ),
             NameAndValue('arrangement with tcds',
-                         sut.arrangement_w_tcds(symbols=symbol_table_of_arrangement)
+                         arrangement_w_tcds(
+                             symbols=symbol_table_of_arrangement)
                          ),
         ]
         for arrangement in cases:
@@ -205,7 +208,7 @@ class TestSymbolReferences(TestCaseBase):
                     ARBITRARY_MODEL,
                     _constant_line_matcher_type_parser_of_matcher_sdv(sdv_that_checks_symbols),
                     arrangement.value,
-                    sut.Expectation(),
+                    Expectation(),
                 )
 
 
@@ -221,7 +224,7 @@ class TestHardError(TestCaseBase):
                     ARBITRARY_MODEL,
                     parser_that_gives_value_that_causes_hard_error,
                     arrangement.value,
-                    sut.Expectation(
+                    Expectation(
                         execution=ExecutionExpectation(
                             is_hard_error=matcher_assertions.is_hard_error(),
                         ),
@@ -231,7 +234,7 @@ class TestHardError(TestCaseBase):
     def test_missing_hard_error_is_detected(self):
         self._check_raises_test_error__single_and_multi(
             PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
-            sut.Expectation(
+            Expectation(
                 execution=ExecutionExpectation(
                     is_hard_error=matcher_assertions.is_hard_error(),
                 ),
@@ -313,7 +316,7 @@ class TestDefault(TestCaseBase):
                 self,
                 all_tcds_dirs_are_empty,
             ),
-            sut.arrangement_w_tcds(),
+            arrangement_w_tcds(),
             is_expectation_of_execution_result_of(True))
 
 
@@ -372,8 +375,8 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                     ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(self),
                 )
             ),
-            sut.arrangement_wo_tcds(),
-            sut.Expectation(),
+            arrangement_wo_tcds(),
+            Expectation(),
         )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
@@ -389,8 +392,8 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                     ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(self),
                 )
             ),
-            sut.arrangement_w_tcds(),
-            sut.Expectation())
+            arrangement_w_tcds(),
+            Expectation())
 
     def test_populate_hds(self):
         populated_dir_contents = DirContents([File.empty('hds-file.txt')])
@@ -405,11 +408,11 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                                                             populated_dir_contents)
                 )
             ),
-            sut.arrangement_w_tcds(
+            arrangement_w_tcds(
                 hds_contents=hds_populators.contents_in(
                     the_hds_dir,
                     populated_dir_contents)),
-            sut.Expectation(),
+            Expectation(),
         )
 
     def test_populate_non_hds(self):
@@ -423,11 +426,11 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                     tmp_user_dir_contains_exactly(populated_dir_contents)
                 )
             ),
-            sut.arrangement_w_tcds(
+            arrangement_w_tcds(
                 non_hds_contents=non_hds_populator.rel_option(
                     non_hds_populator.RelNonHdsOptionType.REL_TMP,
                     populated_dir_contents)),
-            sut.Expectation(),
+            Expectation(),
         )
 
     def test_populate_result_dir_with_act_result(self):
@@ -462,10 +465,10 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
                 ]
                 )
             ),
-            sut.arrangement_w_tcds(
+            arrangement_w_tcds(
                 act_result=ActResultProducerFromActResult(act_result)
             ),
-            sut.Expectation(),
+            Expectation(),
         )
 
 

@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import \
-    Expectation, ParseExpectation, ExecutionExpectation, arrangement_w_tcds
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
+    ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_assertions as asrt_model
