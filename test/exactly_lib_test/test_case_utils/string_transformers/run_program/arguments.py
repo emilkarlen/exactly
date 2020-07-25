@@ -11,7 +11,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
-    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation
+    ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args, program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions
@@ -82,7 +82,9 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                             expected_lines_on_stdout
                         )
                     ),
-                    asrt_string_transformer.is_identity_transformer(False),
+                    prim_asrt__constant(
+                        asrt_string_transformer.is_identity_transformer(False)
+                    ),
                 ),
                 arrangement_w_tcds(
                     symbols=SymbolContext.symbol_table_of_contexts(symbols),

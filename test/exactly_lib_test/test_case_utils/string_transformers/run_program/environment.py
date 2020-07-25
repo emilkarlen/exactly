@@ -7,7 +7,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
-    ExecutionExpectation, PrimAndExeExpectation
+    ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
@@ -77,7 +77,9 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                                         _AssertLinesRepresentSubSetOfDict(environment)
                                     )
                                 ),
-                                asrt_string_transformer.is_identity_transformer(False),
+                                prim_asrt__constant(
+                                    asrt_string_transformer.is_identity_transformer(False)
+                                ),
                             ),
                             arrangement_w_tcds(
                                 tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(

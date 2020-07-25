@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources.integration
 from exactly_lib_test.test_case_utils.files_condition.test_resources.validation_cases import \
     failing_validation_cases__multi_exe
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
-    ExecutionExpectation, Expectation
+    ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -71,7 +71,7 @@ class TestParenthesisSyntax(unittest.TestCase):
                     symbol_references=symbol.references_assertion
                 ),
                 ExecutionExpectation(),
-                expected
+                prim_asrt__constant(expected)
             )
         )
 

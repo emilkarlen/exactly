@@ -6,7 +6,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
-    ExecutionExpectation
+    ExecutionExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.model_assertions import \
     model_lines_lists_matches
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.transformer_checker import \
@@ -34,5 +34,7 @@ def expectation_of_successful_execution(output_lines: List[str],
         ExecutionExpectation(
             main_result=model_lines_lists_matches(asrt.equals(output_lines))
         ),
-        asrt_string_transformer.is_identity_transformer(is_identity_transformer),
+        prim_asrt__constant(
+            asrt_string_transformer.is_identity_transformer(is_identity_transformer)
+        )
     )

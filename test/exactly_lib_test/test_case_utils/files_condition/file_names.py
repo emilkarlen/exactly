@@ -11,7 +11,7 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources import argu
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
-    ExecutionExpectation, Expectation
+    ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -148,7 +148,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
                         ExecutionExpectation(
                             main_result=asrt.is_none,
                         ),
-                        primitive=asrt_primitive.files_matches(expected_file_names)
+                        primitive=prim_asrt__constant(asrt_primitive.files_matches(expected_file_names))
                     )
                 )
 
@@ -171,7 +171,7 @@ class TestFileNamesShouldUsePosixSyntax(unittest.TestCase):
             Expectation(
                 ParseExpectation(),
                 ExecutionExpectation(),
-                primitive=asrt_primitive.files_matches(expected_file_names)
+                primitive=prim_asrt__constant(asrt_primitive.files_matches(expected_file_names))
             )
         )
 
@@ -258,7 +258,7 @@ class TestEachUniqueFileNameShouldHaveAnEntryInFilesMapping(unittest.TestCase):
                             symbol_references=case.symbols.expected_references_assertion
                         ),
                         ExecutionExpectation(),
-                        asrt_primitive.files_matches(case.expected)
+                        prim_asrt__constant(asrt_primitive.files_matches(case.expected))
                     )
                 )
 

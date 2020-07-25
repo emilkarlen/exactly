@@ -8,7 +8,7 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from contextlib import contextmanager
-from typing import Sequence, Generic, ContextManager
+from typing import Sequence, Generic, ContextManager, Callable
 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -24,7 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
-    ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation
+    ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation, AssertionResolvingEnvironment
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser, \
@@ -305,7 +305,7 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  put: unittest.TestCase,
                  model_constructor: INPUT,
                  arrangement: Arrangement,
-                 primitive: ValueAssertion[PRIMITIVE],
+                 primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
                  execution: ExecutionExpectation[OUTPUT],
                  applier: Applier[PRIMITIVE, INPUT, OUTPUT],
                  common_properties:
@@ -438,8 +438,9 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                primitive,
                                                message_builder,
                                                )
-
-        self.primitive.apply(self.put, primitive, message_builder)
+        assertion_on_primitive = self.primitive(AssertionResolvingEnvironment(resolving_env.tcds,
+                                                                              resolving_env.application_environment))
+        assertion_on_primitive.apply(self.put, primitive, message_builder)
 
         try:
             result = self.applier.apply(self.put, message_builder, primitive, resolving_env, self.model_constructor)

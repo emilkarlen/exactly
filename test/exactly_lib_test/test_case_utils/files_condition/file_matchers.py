@@ -119,7 +119,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                     [
                         NExArr(
                             'FileMatcher should give {}'.format(expected_result),
-                            PrimAndExeExpectation.of_prim(
+                            PrimAndExeExpectation.of_prim__const(
                                 asrt_primitive.files_matches({
                                     PurePosixPath(file_name):
                                         asrt_primitive.is_matcher_that_gives(expected_result)
@@ -157,7 +157,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
             [
                 NExArr(
                     'FileMatcher should give {}'.format(expected_result),
-                    PrimAndExeExpectation.of_prim(
+                    PrimAndExeExpectation.of_prim__const(
                         asrt_primitive.files_matches({
                             PurePosixPath(file_name_wo_matcher):
                                 asrt.is_none,
@@ -199,7 +199,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
             [
                 NExArr(
                     'FileMatcher with variations should give {}'.format(expected_result_of_matcher_w_variations),
-                    PrimAndExeExpectation.of_prim(
+                    PrimAndExeExpectation.of_prim__const(
                         asrt_primitive.files_matches({
 
                             PurePosixPath(file_name__constant):
@@ -414,7 +414,7 @@ def result_is_single_file_name_w_lazy_conjunction_w_1st_is_applied_before_2nd(
 
     return NExArr(
         'combination of {} && {}'.format(fm1.value, fm2.value),
-        PrimAndExeExpectation.of_prim(
+        PrimAndExeExpectation.of_prim__const(
             matches_w_application_order(
                 entries,
                 sequence_builder.expected_application_sequence()

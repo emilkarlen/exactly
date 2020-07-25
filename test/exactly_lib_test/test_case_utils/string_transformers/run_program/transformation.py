@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransforme
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \
-    MultiSourceExpectation
+    MultiSourceExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
@@ -73,7 +73,9 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
                                 asrt.equals(expected_output_model_lines)
                             )
                         ),
-                        primitive=asrt_string_transformer.is_identity_transformer(False),
+                        primitive=prim_asrt__constant(
+                            asrt_string_transformer.is_identity_transformer(False)
+                        ),
                     ),
                 )
 
@@ -132,7 +134,9 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
                                 asrt.equals(expected_output_model_lines)
                             )
                         ),
-                        asrt_string_transformer.is_identity_transformer(False),
+                        prim_asrt__constant(
+                            asrt_string_transformer.is_identity_transformer(False)
+                        ),
                     ),
                 )
 

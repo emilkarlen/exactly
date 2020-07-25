@@ -38,7 +38,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
-    Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds
+    Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import \
@@ -59,13 +59,13 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestDefault))
-    ret_val.addTest(unittest.makeSuite(TestFailingExpectations))
-    ret_val.addTest(unittest.makeSuite(TestSymbolReferences))
-    ret_val.addTest(unittest.makeSuite(TestHardError))
-    ret_val.addTest(unittest.makeSuite(TestPopulateDirectoriesAndCwd))
-    return ret_val
+    return unittest.TestSuite([
+        unittest.makeSuite(TestDefault),
+        unittest.makeSuite(TestFailingExpectations),
+        unittest.makeSuite(TestSymbolReferences),
+        unittest.makeSuite(TestHardError),
+        unittest.makeSuite(TestPopulateDirectoriesAndCwd),
+    ])
 
 
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
@@ -346,7 +346,7 @@ class TestFailingExpectations(TestCaseBase):
             ConstantParser(_MATCHER_THAT_MATCHES),
             Expectation(
                 execution=ExecutionExpectation(),
-                primitive=asrt.fail('primitive')
+                primitive=prim_asrt__constant(asrt.fail('primitive'))
             ),
         )
 
