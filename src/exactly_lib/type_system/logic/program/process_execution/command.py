@@ -4,7 +4,7 @@ OS independent representation of something that is executable in process.
 Supports the different variants of executable things used by Exactly.
 """
 from abc import ABC, abstractmethod
-from typing import List, Union, Sequence
+from typing import List, Sequence
 
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 
@@ -18,26 +18,9 @@ class ProgramAndArguments:
 
 
 class CommandDriver(ABC):
-    # Some func is needed here because Command has not been completely
-    # refactored - it still has some functionality that should probably
-    # be removed.
-
     @abstractmethod
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         """:returns A new object on each invokation."""
-        pass
-
-    @abstractmethod
-    def arg_list_or_str_for(self, arguments: List[str]) -> Union[str, List[str]]:
-        pass
-
-    @property
-    @abstractmethod
-    def is_shell(self) -> bool:
-        """
-        Tells whether args should be executed as a shell command.
-        """
-        # Maybe remove (low priority for the moment)
         pass
 
 
@@ -72,16 +55,3 @@ class Command:
     @property
     def arguments(self) -> List[str]:
         return self._arguments
-
-    @property
-    def args(self) -> Union[str, List[str]]:
-        # Maybe remove (low priority for the moment)
-        return self.driver.arg_list_or_str_for(self.arguments)
-
-    @property
-    def shell(self) -> bool:
-        """
-        Tells whether args should be executed as a shell command.
-        """
-        # Maybe remove (low priority for the moment)
-        return self._driver.is_shell

@@ -148,7 +148,3 @@ class _UnknownCommandDriver(CommandDriver):
 
     def arg_list_or_str_for(self, arguments: List[str]) -> Union[str, List[str]]:
         raise NotImplementedError('not used')
-
-    @property
-    def is_shell(self) -> bool:
-        raise NotImplementedError('not used')

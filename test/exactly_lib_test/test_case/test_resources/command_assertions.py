@@ -15,17 +15,13 @@ from exactly_lib_test.type_system.data.test_resources.described_path import new_
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
                                           ) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with__many(CommandDriverForExecutableFile,
-                                       [
-                                           asrt.sub_component('executable_file',
-                                                              CommandDriverForExecutableFile.executable_file.fget,
-                                                              asrt.equals(expected.executable_file)
-                                                              ),
-                                           asrt.sub_component('shell',
-                                                              _get_is_shell,
-                                                              asrt.equals(False)
-                                                              ),
-                                       ])
+    return asrt.is_instance_with(
+        CommandDriverForExecutableFile,
+        asrt.sub_component('executable_file',
+                           CommandDriverForExecutableFile.executable_file.fget,
+                           asrt.equals(expected.executable_file)
+                           )
+    )
 
 
 def matches_executable_file_command_driver(executable: ValueAssertion[pathlib.Path],
@@ -41,17 +37,13 @@ def matches_executable_file_command_driver(executable: ValueAssertion[pathlib.Pa
 
 def equals_system_program_command_driver(expected: CommandDriverForSystemProgram
                                          ) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with__many(CommandDriverForSystemProgram,
-                                       [
-                                           asrt.sub_component('executable_file',
-                                                              CommandDriverForSystemProgram.program.fget,
-                                                              asrt.equals(expected.program)
-                                                              ),
-                                           asrt.sub_component('shell',
-                                                              _get_is_shell,
-                                                              asrt.equals(False)
-                                                              ),
-                                       ])
+    return asrt.is_instance_with(
+        CommandDriverForSystemProgram,
+        asrt.sub_component('executable_file',
+                           CommandDriverForSystemProgram.program.fget,
+                           asrt.equals(expected.program)
+                           )
+    )
 
 
 def matches_system_program_command_driver(program: ValueAssertion[str],
@@ -66,17 +58,13 @@ def matches_system_program_command_driver(program: ValueAssertion[str],
 
 
 def equals_shell_command_driver(expected: CommandDriverForShell) -> ValueAssertion[CommandDriver]:
-    return asrt.is_instance_with__many(CommandDriverForShell,
-                                       [
-                                           asrt.sub_component('shell_command_line',
-                                                              CommandDriverForShell.shell_command_line.fget,
-                                                              asrt.equals(expected.shell_command_line)
-                                                              ),
-                                           asrt.sub_component('shell',
-                                                              _get_is_shell,
-                                                              asrt.equals(True)
-                                                              ),
-                                       ])
+    return asrt.is_instance_with(
+        CommandDriverForShell,
+        asrt.sub_component('shell_command_line',
+                           CommandDriverForShell.shell_command_line.fget,
+                           asrt.equals(expected.shell_command_line)
+                           )
+    )
 
 
 def matches_shell_command_driver(shell_command_line: ValueAssertion[str]) -> ValueAssertion[CommandDriver]:
@@ -144,7 +132,3 @@ def equals_execute_py_source_command(source: str) -> ValueAssertion[Command]:
         new_primitive(pathlib.Path(sys.executable)),
         [python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE, source]
     )
-
-
-def _get_is_shell(command_driver: CommandDriver) -> bool:
-    return command_driver.is_shell

@@ -31,13 +31,6 @@ class CommandDriverForShell(CommandDriver):
         return self.new_structure_builder_for(self._command_line, arguments)
 
     @property
-    def is_shell(self) -> bool:
-        return True
-
-    def arg_list_or_str_for(self, arguments: List[str]) -> str:
-        return self.shell_command_line_with_args(arguments)
-
-    @property
     def shell_command_line(self) -> str:
         return self._command_line
 
@@ -50,8 +43,7 @@ class CommandDriverForShell(CommandDriver):
 
 
 class CommandDriverWithArgumentList(CommandDriver, ABC):
-    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
-        pass
+    pass
 
 
 class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
@@ -71,13 +63,6 @@ class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
 
     def structure_for(self, arguments: List[str]) -> StructureBuilder:
         return self.new_structure_builder_for(self._program, arguments)
-
-    @property
-    def is_shell(self) -> bool:
-        return False
-
-    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
-        return [self._program] + arguments
 
     @property
     def program(self) -> str:
@@ -111,13 +96,6 @@ class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
             custom_details.path_primitive_details_renderer(self._executable_file.describer),
             arguments,
         )
-
-    @property
-    def is_shell(self) -> bool:
-        return False
-
-    def arg_list_or_str_for(self, arguments: List[str]) -> List[str]:
-        return [str(self._executable_file.primitive)] + arguments
 
     @property
     def executable_file(self) -> pathlib.Path:
