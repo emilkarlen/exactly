@@ -1,3 +1,4 @@
+import sys
 import unittest
 from typing import Sequence, List, Callable
 
@@ -155,6 +156,7 @@ class TestParse(unittest.TestCase):
 def _single_line_command_cases() -> List[Case]:
     shell_command_line = 'the shell command line'
     system_program = 'the-system-program'
+    py_executable_ddv = paths.absolute_file_name(sys.executable)
 
     executable_file = fs.executable_file('executable-file', '')
     exe_file_relativity = rel_opt.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
@@ -183,6 +185,15 @@ def _single_line_command_cases() -> List[Case]:
                     DirContents([executable_file])
                 )
             )
+        ),
+        Case(
+            '-python',
+            command_renderer=pgm_args.py_interpreter_command_line(),
+            expected_command=lambda env: (
+                asrt_command.equals_executable_file_command(
+                    py_executable_ddv.value_of_any_dependency__d(env.tcds),
+                    []
+                )),
         ),
         Case(
             'system program',

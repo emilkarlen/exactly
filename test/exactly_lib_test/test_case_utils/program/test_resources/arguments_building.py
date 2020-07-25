@@ -54,6 +54,10 @@ def interpret_py_source(python_source: WithToString) -> Arguments:
     return interpret_py_source_elements(python_source).as_arguments
 
 
+def py_interpreter_command_line() -> ArgumentElementsRenderer:
+    return ab.option(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME)
+
+
 def interpret_py_source_elements(python_source: WithToString) -> ArgumentElements:
     return ArgumentElements([interpret_py_source_line(python_source)])
 
