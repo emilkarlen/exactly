@@ -1,16 +1,12 @@
 import os
 import unittest
-from contextlib import contextmanager
-from typing import List
 
 from exactly_lib.actors import command_line as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.command_line.test_resources import shell_command_source_line_for
@@ -19,7 +15,7 @@ from exactly_lib_test.actors.test_resources import \
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import \
-    check_execution, Arrangement, Expectation
+    check_execution, Arrangement, Expectation, PostSdsExpectation
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
@@ -101,8 +97,10 @@ class TestSymbolReferences(unittest.TestCase):
             ),
             Expectation(
                 symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
-                sub_process_result_from_execute=
-                pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))
+                post_sds=PostSdsExpectation.constant(
+                    sub_process_result_from_execute=
+                    pr.stdout(asrt.equals(expected_output_template.format(symbol=symbol.str_value)))
+                )
             ),
         )
 
@@ -111,48 +109,40 @@ class TheConfiguration(Configuration):
     def __init__(self):
         super().__init__(sut.actor())
 
-    @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
-        yield self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
+    def program_that_copes_stdin_to_stdout(self) -> TestCaseSourceSetup:
+        return self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
 
-    @contextmanager
-    def program_that_prints_to_stderr(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> List[ActPhaseInstruction]:
-        yield self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
-
-    @contextmanager
     def program_that_prints_to_stdout(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> List[ActPhaseInstruction]:
-        yield self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
+                                      string_to_print: str) -> TestCaseSourceSetup:
+        return self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
 
-    @contextmanager
-    def program_that_exits_with_code(self,
-                                     hds: HomeDirectoryStructure,
-                                     exit_code: int) -> List[ActPhaseInstruction]:
-        yield self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
+    def program_that_prints_to_stderr(self,
+                                      string_to_print: str) -> TestCaseSourceSetup:
+        return self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
 
-    @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self, hds: HomeDirectoryStructure) -> List[
-        ActPhaseInstruction]:
-        yield self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
-
-    @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self,
-                                                                    hds: HomeDirectoryStructure,
-                                                                    var_name: str) -> List[ActPhaseInstruction]:
-        yield self._instruction_for(
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> TestCaseSourceSetup:
+        return self._instruction_for(
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
-    @contextmanager
+    def program_that_prints_cwd_to_stdout(self) -> TestCaseSourceSetup:
+        return self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
+
+    def program_that_exits_with_code(self,
+                                     exit_code: int) -> TestCaseSourceSetup:
+        return self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
+
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
-        yield TestCaseSourceSetup(act_phase_instructions=self._instruction_for(
-            shell_commands.program_that_sleeps_at_least(number_of_seconds)))
+        return self._instruction_for(
+            shell_commands.program_that_sleeps_at_least(number_of_seconds)
+        )
 
     @staticmethod
-    def _instruction_for(command: str) -> List[ActPhaseInstruction]:
-        return [SourceCodeInstruction(LineSequence(1, (shell_command_source_line_for(command),)))]
+    def _instruction_for(command: str) -> TestCaseSourceSetup:
+        return TestCaseSourceSetup(
+            act_phase_instructions=[
+                SourceCodeInstruction(LineSequence(1, [shell_command_source_line_for(command)]))
+            ]
+        )
 
 
 if __name__ == '__main__':

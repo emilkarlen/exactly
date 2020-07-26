@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution
+    check_execution, PostSdsExpectation
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -67,8 +67,10 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
                 symbol_usages=asrt.matches_sequence([
                     symbol.reference_assertion__any_data_type,
                 ]),
-                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                      'program output')),
+                post_sds=PostSdsExpectation.constant(
+                    sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                          'program output'))
+                ),
             ))
 
 
@@ -92,5 +94,7 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
             ),
             Expectation(
                 symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
-                sub_process_result_from_execute=pr.stdout(str_asrt.contains(symbol.path_suffix)),
+                post_sds=PostSdsExpectation.constant(
+                    sub_process_result_from_execute=pr.stdout(str_asrt.contains(symbol.path_suffix))
+                ),
             ))

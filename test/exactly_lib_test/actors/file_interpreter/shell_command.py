@@ -87,7 +87,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
             atc_process_executor=executor_that_records_arguments)
         expectation = integration_check.Expectation()
         integration_check.check_execution(self,
-                                          self.configuration.sut,
+                                          self.configuration.actor,
                                           act_phase_instructions,
                                           arrangement, expectation)
         expected_command = asrt_command.matches_command2(
@@ -130,7 +130,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,
-                                          self.configuration.sut,
+                                          self.configuration.actor,
                                           act_phase_instructions,
                                           arrangement,
                                           expectation)

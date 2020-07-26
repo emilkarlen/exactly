@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionTyp
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution
+    check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
@@ -112,13 +112,15 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
 
         expectation = Expectation(
-            execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
                 symbol_for_source_file.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
                 argument_symbol.reference_assertion__any_data_type,
             ]),
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         self._check(command_line,
                     arrangement,
@@ -161,13 +163,15 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
         )
 
         expectation = Expectation(
-            execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
                 dir_symbol.reference_assertion__path_or_string,
                 source_file_name_symbol.reference_assertion__path_component,
             ]),
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         self._check(command_line,
                     arrangement,

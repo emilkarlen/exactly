@@ -1,13 +1,11 @@
-from contextlib import contextmanager
 from typing import List
 
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.util.test_resources import py_program
 
 
@@ -15,63 +13,40 @@ class TheConfigurationBase(Configuration):
     def __init__(self, actor: Actor):
         super().__init__(actor)
 
-    @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.copy_stdin_to_stdout())
+    def program_that_copes_stdin_to_stdout(self) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.copy_stdin_to_stdout())
 
-    @contextmanager
-    def program_that_prints_to_stderr(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str,
-                                      ) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.write_string_to_stderr(string_to_print))
-
-    @contextmanager
     def program_that_prints_to_stdout(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str,
-                                      ) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.write_string_to_stdout(string_to_print))
+                                      string_to_print: str) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.write_string_to_stdout(string_to_print))
 
-    @contextmanager
+    def program_that_prints_to_stderr(self,
+                                      string_to_print: str) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.write_string_to_stderr(string_to_print))
+
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.write_value_of_environment_variable_to_stdout(
+            var_name))
+
+    def program_that_prints_cwd_to_stdout(self) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.write_cwd_to_stdout())
+
     def program_that_exits_with_code(self,
-                                     hds: HomeDirectoryStructure,
-                                     exit_code: int,
-                                     ) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.exit_with_code(exit_code))
+                                     exit_code: int) -> TestCaseSourceSetup:
+        return _instructions_for_file_in_hds_act_dir(py_program.exit_with_code(exit_code))
 
-    @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self,
-                                                           hds: HomeDirectoryStructure,
-                                                           ) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.write_cwd_to_stdout())
-
-    @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self,
-                                                                    hds: HomeDirectoryStructure,
-                                                                    var_name: str,
-                                                                    ) -> List[ActPhaseInstruction]:
-        yield _instructions_for_file_in_hds_act_dir(hds,
-                                                    py_program.write_value_of_environment_variable_to_stdout(
-                                                        var_name))
-
-    @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
-        program_lines = py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
-        yield TestCaseSourceSetup(
-            act_phase_instructions=[instr(['sut.py'])],
-            home_act_dir_contents=DirContents([File('sut.py',
-                                                    lines_content(program_lines))]))
+        return _instructions_for_file_in_hds_act_dir(
+            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
+        )
 
 
-def _instructions_for_file_in_hds_act_dir(hds: HomeDirectoryStructure,
-                                          statements: List[str]) -> List[ActPhaseInstruction]:
-    sut_path = hds.act_dir / 'sut.py'
-    with sut_path.open('w') as f:
-        f.write(lines_content(statements))
-    return [instr(['sut.py'])]
+def _instructions_for_file_in_hds_act_dir(py_src: List[str]) -> TestCaseSourceSetup:
+    file_name_rel_hds_act = 'the-program'
+    return TestCaseSourceSetup(
+        act_phase_instructions=[instr([file_name_rel_hds_act])],
+        home_act_dir_contents=DirContents([
+            fs.python_executable_file(file_name_rel_hds_act,
+                                      lines_content(py_src))
+        ])
+    )

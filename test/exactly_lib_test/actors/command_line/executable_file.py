@@ -1,11 +1,8 @@
 import pathlib
 import unittest
-from contextlib import contextmanager
 from typing import List
 
 from exactly_lib.actors import command_line as sut
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources import \
@@ -13,7 +10,7 @@ from exactly_lib_test.actors.test_resources import \
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
-    check_execution
+    check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
@@ -24,8 +21,7 @@ from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
-from exactly_lib_test.test_resources.files.file_structure import File
-from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing_lines
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -51,50 +47,42 @@ class TheConfiguration(Configuration):
     def __init__(self):
         super().__init__(sut.actor())
 
-    @contextmanager
-    def program_that_copes_stdin_to_stdout(self, hds: HomeDirectoryStructure) -> List[ActPhaseInstruction]:
+    def program_that_copes_stdin_to_stdout(self) -> TestCaseSourceSetup:
         return self._instructions_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
-    @contextmanager
+    def program_that_prints_to_stdout(self, string_to_print: str) -> TestCaseSourceSetup:
+        return self._instructions_for_executing_source_from_py_file(
+            py_program.write_string_to_stdout(string_to_print))
+
     def program_that_prints_to_stderr(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> List[ActPhaseInstruction]:
-        return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
+                                      string_to_print: str) -> TestCaseSourceSetup:
+        return self._instructions_for_executing_source_from_py_file(
+            py_program.write_string_to_stderr(string_to_print))
 
-    @contextmanager
-    def program_that_prints_to_stdout(self,
-                                      hds: HomeDirectoryStructure,
-                                      string_to_print: str) -> List[ActPhaseInstruction]:
-        return self._instructions_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
-
-    @contextmanager
-    def program_that_exits_with_code(self,
-                                     hds: HomeDirectoryStructure,
-                                     exit_code: int) -> List[ActPhaseInstruction]:
-        return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
-
-    @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self,
-                                                           hds: HomeDirectoryStructure,
-                                                           ) -> List[ActPhaseInstruction]:
-        return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
-
-    @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, hds: HomeDirectoryStructure,
-                                                                    var_name: str,
-                                                                    ) -> List[ActPhaseInstruction]:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> TestCaseSourceSetup:
         return self._instructions_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
 
-    @contextmanager
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
-        statements = py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
-        with tmp_file_containing_lines(statements) as src_path:
-            yield TestCaseSourceSetup(act_phase_instructions=_instructions_for_executing_py_file(src_path))
+    def program_that_prints_cwd_to_stdout(self) -> TestCaseSourceSetup:
+        return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
-    def _instructions_for_executing_source_from_py_file(self, statements: list) -> list:
-        with tmp_file_containing_lines(statements) as src_path:
-            yield _instructions_for_executing_py_file(src_path)
+    def program_that_exits_with_code(self, exit_code: int) -> TestCaseSourceSetup:
+        return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
+
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
+        return self._instructions_for_executing_source_from_py_file(
+            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
+        )
+
+    def _instructions_for_executing_source_from_py_file(self, py_src: List[str]) -> TestCaseSourceSetup:
+        file_name_rel_hds_act = 'the-program'
+        return TestCaseSourceSetup(
+            act_phase_instructions=[instr([file_name_rel_hds_act])],
+            home_act_dir_contents=DirContents([
+                fs.python_executable_file(file_name_rel_hds_act,
+                                          lines_content(py_src))
+            ])
+        )
 
 
 def _instructions_for_executing_py_file(src_path: pathlib.Path) -> list:
@@ -150,9 +138,12 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
             ])))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
-        expectation = Expectation(execute=eh_assertions.is_exit_code(0),
-                                  sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                                        'CLI arguments, one per line')))
+        expectation = Expectation(
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line')))
+        )
         check_execution(self,
                         executor_constructor,
                         act_phase_instructions,
@@ -187,10 +178,12 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
+            symbol_usages=asrt.matches_singleton_sequence(list_symbol.reference_assertion),
             execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
-            symbol_usages=asrt.matches_singleton_sequence(list_symbol.reference_assertion)
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         check_execution(self,
                         sut.actor(),
@@ -222,8 +215,10 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file)),
-            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type)
+            symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file))
+            ),
         )
 
         check_execution(self,
@@ -255,12 +250,14 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
                 symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
             ]
-            )
+            ),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         check_execution(self,
                         sut.actor(),
@@ -294,12 +291,14 @@ class TestSymbolUsages(unittest.TestCase):
 
         expectation = Expectation(
             execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
                 symbol_for_executable.reference_assertion__path_or_string(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN),
                 argument_symbol.reference_assertion__any_data_type,
             ]),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         check_execution(self,
                         sut.actor(),
@@ -342,13 +341,15 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
                 dir_symbol.reference_assertion__path_or_string,
                 executable_file_name_symbol.reference_assertion__string_made_up_of_just_strings,
             ]),
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         check_execution(self,
                         sut.actor(),
@@ -378,12 +379,14 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence(
                 [symbol.reference_assertion__any_data_type]
-            )
+            ),
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         check_execution(self,
                         sut.actor(),

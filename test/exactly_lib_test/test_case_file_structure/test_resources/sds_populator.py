@@ -88,14 +88,6 @@ class SdsPopulatorForSubDir(SdsPopulator):
         self.dir_contents.write_to(sub_dir_path)
 
 
-def contents_in_sub_dir_of(relativity: RelSdsOptionType,
-                           sub_dir: str,
-                           dir_contents: DirContents) -> SdsPopulatorForSubDir:
-    return SdsPopulatorForSubDir(SdsSubDirResolverWithRelSdsRoot(relativity,
-                                                                 sub_dir),
-                                 dir_contents)
-
-
 def contents_in_resolved_dir(dir_resolver: SdsSubDirResolver,
                              dir_contents: DirContents) -> SdsPopulatorForSubDir:
     return SdsPopulatorForSubDir(dir_resolver,

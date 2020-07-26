@@ -10,6 +10,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.test_case_file_structure.relativity_root import REL_SDS_RESOLVERS
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
@@ -264,6 +265,28 @@ class CwdAssertion(ValueAssertionBase[Tcds]):
                 .value_of_any_dependency__d(value)
                 .primitive
         )
+        actual = pathlib.Path().cwd()
+
+        put.assertEqual(expected,
+                        actual,
+                        message_builder.apply('current directory'))
+
+
+class CwdSdsAssertion(ValueAssertionBase[SandboxDirectoryStructure]):
+    def __init__(self,
+                 expected_location: RelSdsOptionType,
+                 expected_base_name: str,
+                 ):
+        self.expected_location = expected_location
+        self.expected_base_name = expected_base_name
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: SandboxDirectoryStructure,
+               message_builder: MessageBuilder):
+        sds_root = REL_SDS_RESOLVERS[self.expected_location].from_sds(value)
+        expected = sds_root / self.expected_base_name
+
         actual = pathlib.Path().cwd()
 
         put.assertEqual(expected,

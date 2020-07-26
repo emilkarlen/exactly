@@ -1,7 +1,7 @@
 import os
 import unittest
 from contextlib import contextmanager
-from typing import List, Optional, Sequence, ContextManager
+from typing import List, Optional, Sequence, ContextManager, Callable
 
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -22,6 +22,7 @@ from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, SubProcessResult, ProcessExecutor
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
@@ -46,16 +47,48 @@ class Arrangement:
                      process_execution_settings=ProcessExecutionSettings.with_no_timeout_no_environ()
                  ),
                  stdin_contents: str = '',
+                 post_sds_action: PlainTcdsAction = PlainTcdsAction(),
                  ):
         self.symbol_table = symbol_table_from_none_or_value(symbol_table)
         self.hds_contents = hds_contents
         self.atc_process_executor = atc_process_executor
         self.process_execution = process_execution
         self.stdin_contents = stdin_contents
+        self.post_sds_action = post_sds_action
 
     @property
     def proc_exe_settings(self) -> ProcessExecutionSettings:
         return self.process_execution.process_execution_settings
+
+
+class PostSdsExpectation:
+    def __init__(self,
+                 side_effects_on_files_after_prepare: ValueAssertion[SandboxDirectoryStructure]
+                 = asrt.anything_goes(),
+                 side_effects_on_files_after_execute: ValueAssertion[SandboxDirectoryStructure]
+                 = asrt.anything_goes(),
+                 sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+                 ):
+        self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
+        self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
+        self.sub_process_result_from_execute = sub_process_result_from_execute
+
+    @staticmethod
+    def constant(
+            side_effects_on_files_after_prepare: ValueAssertion[SandboxDirectoryStructure]
+            = asrt.anything_goes(),
+            side_effects_on_files_after_execute: ValueAssertion[SandboxDirectoryStructure]
+            = asrt.anything_goes(),
+            sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+    ) -> Callable[[SandboxDirectoryStructure], 'PostSdsExpectation']:
+        def ret_val(sds: SandboxDirectoryStructure) -> 'PostSdsExpectation':
+            return PostSdsExpectation(
+                side_effects_on_files_after_prepare,
+                side_effects_on_files_after_execute,
+                sub_process_result_from_execute,
+            )
+
+        return ret_val
 
 
 class Expectation:
@@ -66,20 +99,15 @@ class Expectation:
                  = sh_assertions.is_success(),
                  execute: ValueAssertion[ExitCodeOrHardError]
                  = eh_assertions.is_any_exit_code,
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] =
-                 asrt.is_empty_sequence,
-                 side_effects_on_files_after_execute: ValueAssertion[SandboxDirectoryStructure]
-                 = asrt.anything_goes(),
-                 side_effects_on_files_after_prepare: ValueAssertion[SandboxDirectoryStructure] =
-                 asrt.anything_goes(),
-                 sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes()):
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
+                 = asrt.is_empty_sequence,
+                 post_sds: Callable[[SandboxDirectoryStructure], PostSdsExpectation] = lambda sds: PostSdsExpectation()
+                 ):
         self.symbol_usages = symbol_usages
         self.validate_pre_sds = validate_pre_sds
         self.prepare = prepare
         self.execute = execute
-        self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
-        self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
-        self.sub_process_result_from_execute = sub_process_result_from_execute
+        self.post_sds = post_sds
 
 
 def simple_success() -> Expectation:
@@ -138,6 +166,7 @@ class _Checker:
 
         self.hds = None
         self.tcds = None
+        self._expectation_post_sds = None
 
     def check(self) -> Optional[ExitCodeOrHardError]:
         try:
@@ -170,9 +199,8 @@ class _Checker:
                 symbols=self._arrangement.symbol_table)
             yield instruction_environment
 
-    @staticmethod
     @contextmanager
-    def _post_sds_env(env_pre_sds: InstructionEnvironmentForPreSdsStep,
+    def _post_sds_env(self, env_pre_sds: InstructionEnvironmentForPreSdsStep,
                       ) -> ContextManager[InstructionEnvironmentForPostSdsStep]:
         with sds_with_act_as_curr_dir(symbols=env_pre_sds.symbols
                                       ) as path_resolving_env:
@@ -180,7 +208,10 @@ class _Checker:
                 env_pre_sds,
                 path_resolving_env.sds,
             )
-            yield environment_builder.build_post_sds()
+            env_post_sds = environment_builder.build_post_sds()
+            self._arrangement.post_sds_action.apply(env_post_sds.tcds)
+            self._expectation_post_sds = self._expectation.post_sds(env_post_sds.sds)
+            yield env_post_sds
 
     def _validate_pre_sds(self,
                           atc: ActionToCheck,
@@ -212,7 +243,7 @@ class _Checker:
                  env: InstructionEnvironmentForPostSdsStep,
                  ):
         step_result = atc.prepare(env, self._arrangement.atc_process_executor)
-        self._expectation.side_effects_on_files_after_prepare.apply(self._put, env.sds)
+        self._expectation_post_sds.side_effects_on_files_after_prepare.apply(self._put, env.sds)
         self._expectation.prepare.apply(self._put,
                                         step_result,
                                         MessageBuilder('Result of prepare'))
@@ -244,8 +275,8 @@ class _Checker:
                                         MessageBuilder('Result of execute' + error_msg_extra_info))
         if sub_process_result:
             msg_builder = MessageBuilder('Sub process output from execute ' + error_msg_extra_info)
-            self._expectation.sub_process_result_from_execute.apply(self._put, sub_process_result, msg_builder)
-        self._expectation.side_effects_on_files_after_execute.apply(self._put, env.sds)
+            self._expectation_post_sds.sub_process_result_from_execute.apply(self._put, sub_process_result, msg_builder)
+        self._expectation_post_sds.side_effects_on_files_after_execute.apply(self._put, env.sds)
 
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
 

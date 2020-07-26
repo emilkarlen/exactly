@@ -15,6 +15,7 @@ from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution
+from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
@@ -106,7 +107,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,
-                                          self.configuration.sut,
+                                          self.configuration.actor,
                                           act_phase_instructions,
                                           arrangement, expectation)
         # ASSERT #
@@ -154,7 +155,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,
-                                          self.configuration.sut,
+                                          self.configuration.actor,
                                           act_phase_instructions,
                                           arrangement, expectation)
         # ASSERT #
@@ -197,12 +198,14 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = integration_check.Expectation(
-            execute=eh_assertions.is_exit_code(0),
-            sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                  'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence(
                 [symbol.reference_assertion__any_data_type]
-            )
+            ),
+            execute=eh_assertions.is_exit_code(0),
+            post_sds=PostSdsExpectation.constant(
+                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
+                                                                      'CLI arguments, one per line'))
+            ),
         )
         integration_check.check_execution(self,
                                           sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),

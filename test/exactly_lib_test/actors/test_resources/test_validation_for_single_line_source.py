@@ -29,7 +29,7 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
     def __init__(self, configuration: Configuration):
         super().__init__()
         self.conf = configuration
-        self.actor = configuration.sut
+        self.actor = configuration.actor
         assert isinstance(self.actor, Actor)
         self.home_dir_as_current_dir = pathlib.Path()
 

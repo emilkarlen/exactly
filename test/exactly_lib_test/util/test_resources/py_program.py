@@ -1,45 +1,47 @@
+from typing import List
+
 from exactly_lib_test.test_resources.process import SubProcessResult
 
 
-def write_string_to_stdout(string_to_print) -> list:
+def write_string_to_stdout(string_to_print: str) -> List[str]:
     return ['import sys',
             "sys.stdout.write('{}\\n')".format(string_to_print)]
 
 
-def write_string_to_stderr(string_to_print) -> list:
+def write_string_to_stderr(string_to_print: str) -> List[str]:
     return ['import sys',
             "sys.stderr.write('{}\\n')".format(string_to_print)]
 
 
-def exit_with_code(exit_code: int) -> list:
+def exit_with_code(exit_code: int) -> List[str]:
     return [
         'import sys',
         "sys.exit({})".format(exit_code)
     ]
 
 
-def copy_stdin_to_stdout() -> list:
+def copy_stdin_to_stdout() -> List[str]:
     return [
         'import sys',
         "sys.stdout.write(sys.stdin.read())"
     ]
 
 
-def write_value_of_environment_variable_to_stdout(var_name: str) -> list:
+def write_value_of_environment_variable_to_stdout(var_name: str) -> List[str]:
     return [
         'import os',
         "print(os.environ['{}'])".format(var_name),
     ]
 
 
-def write_cwd_to_stdout() -> list:
+def write_cwd_to_stdout() -> List[str]:
     return [
         'import os',
         "print(os.getcwd())"
     ]
 
 
-def program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds: int) -> list:
+def program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds: int) -> List[str]:
     return [
         'import time',
         'time.sleep({})'.format(number_of_seconds),

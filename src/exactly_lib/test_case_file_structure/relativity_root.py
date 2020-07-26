@@ -159,6 +159,11 @@ resolver_for_result = RelSdsRootResolver(RelSdsOptionType.REL_RESULT,
 
 resolver_for_tmp_user = RelSdsRootResolver(RelSdsOptionType.REL_TMP,
                                            SandboxDirectoryStructure.user_tmp_dir.fget)
+REL_SDS_RESOLVERS = {
+    RelSdsOptionType.REL_ACT: resolver_for_act,
+    RelSdsOptionType.REL_RESULT: resolver_for_result,
+    RelSdsOptionType.REL_TMP: resolver_for_tmp_user,
+}
 
 resolver_for_cwd = RelNonHdsRootResolverForCwd()
 
