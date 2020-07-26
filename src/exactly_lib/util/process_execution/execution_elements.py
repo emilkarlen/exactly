@@ -8,6 +8,11 @@ class ProcessExecutionSettings(tuple):
         return tuple.__new__(cls, (timeout_in_seconds, environ))
 
     @staticmethod
+    def with_no_timeout_no_environ() -> 'ProcessExecutionSettings':
+        return ProcessExecutionSettings(environ=None,
+                                        timeout_in_seconds=None)
+
+    @staticmethod
     def with_environ(environ: Dict[str, str]) -> 'ProcessExecutionSettings':
         return ProcessExecutionSettings(environ=environ)
 

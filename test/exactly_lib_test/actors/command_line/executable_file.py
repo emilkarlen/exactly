@@ -10,10 +10,10 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
-from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
-    check_execution
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
+    check_execution
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
@@ -109,7 +109,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         ]
         arrangement = Arrangement()
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_assertions.is_validation_error()
+            validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self,
                         sut.actor(),
@@ -127,7 +127,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
                                      fs.DirContents([File.empty(executable_file_name)]))
         )
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_assertions.is_validation_error()
+            validate_pre_sds=svh_assertions.is_validation_error()
         )
         check_execution(self,
                         sut.actor(),
@@ -150,7 +150,7 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
             ])))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
-        expectation = Expectation(result_of_execute=eh_assertions.is_exit_code(0),
+        expectation = Expectation(execute=eh_assertions.is_exit_code(0),
                                   sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                                         'CLI arguments, one per line')))
         check_execution(self,
@@ -187,7 +187,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_singleton_sequence(list_symbol.reference_assertion)
@@ -221,7 +221,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(str_asrt.contains(file_name_of_referenced_file)),
             symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion__any_data_type)
         )
@@ -254,7 +254,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
@@ -293,7 +293,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
@@ -342,7 +342,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
@@ -378,7 +378,7 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence(

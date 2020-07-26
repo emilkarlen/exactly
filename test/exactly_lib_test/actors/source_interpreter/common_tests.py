@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext

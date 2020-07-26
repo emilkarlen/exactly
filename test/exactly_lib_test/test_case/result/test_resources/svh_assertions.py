@@ -9,7 +9,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.util.simple_textstruct.test_resources import render_to_str
 
 
-def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> ValueAssertion:
+def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum,
+              ) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return asrt.sub_component('status',
                               svh.SuccessOrValidationErrorOrHardError.status.fget,
                               asrt.Equals(expected_status)

@@ -8,7 +8,7 @@ from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib_test.actors.test_resources import act_phase_execution
+from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesImplementationException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -52,15 +52,15 @@ def check(put: unittest.TestCase,
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
-    act_phase_execution.check_execution(put,
-                                        configuration_builder.actor,
-                                        act_phase_instructions,
-                                        act_phase_execution.Arrangement(
-                                            hds_contents=arrangement.hds_contents,
-                                            atc_process_executor=arrangement.atc_os_process_executor),
-                                        act_phase_execution.Expectation(
-                                            sub_process_result_from_execute=expectation.sub_process_result_from_execute)
-                                        )
+    integration_check.check_execution(put,
+                                      configuration_builder.actor,
+                                      act_phase_instructions,
+                                      integration_check.Arrangement(
+                                          hds_contents=arrangement.hds_contents,
+                                          atc_process_executor=arrangement.atc_os_process_executor),
+                                      integration_check.Expectation(
+                                          sub_process_result_from_execute=expectation.sub_process_result_from_execute)
+                                      )
     expectation.source_after_parse.apply_with_message(put, arrangement.source, 'source after parse')
 
 

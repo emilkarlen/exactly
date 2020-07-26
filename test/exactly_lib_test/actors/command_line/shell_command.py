@@ -16,10 +16,10 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib_test.actors.command_line.test_resources import shell_command_source_line_for
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
-from exactly_lib_test.actors.test_resources.act_phase_execution import \
-    check_execution, Arrangement, Expectation
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
     suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.actors.test_resources.integration_check import \
+    check_execution, Arrangement, Expectation
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds

@@ -10,7 +10,7 @@ from exactly_lib.type_system.logic.program.process_execution.commands import exe
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
-from exactly_lib_test.actors.test_resources import act_phase_execution
+from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
@@ -99,16 +99,16 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         act_phase_instructions = [instr([str(surrounded_by_hard_quotes(expected_file_name))]),
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(
+        arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(expected_file_name)])),
             atc_process_executor=executor_that_records_arguments)
-        expectation = act_phase_execution.Expectation()
+        expectation = integration_check.Expectation()
         # ACT #
-        act_phase_execution.check_execution(self,
-                                            self.configuration.sut,
-                                            act_phase_instructions,
-                                            arrangement, expectation)
+        integration_check.check_execution(self,
+                                          self.configuration.sut,
+                                          act_phase_instructions,
+                                          arrangement, expectation)
         # ASSERT #
         expected_command = asrt_command.matches_command2(
             driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
@@ -147,16 +147,16 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         act_phase_instructions = [instr([act_line_1]),
                                   instr([atc_line_2])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(
+        arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(atc_file_name)])),
             atc_process_executor=executor_that_records_arguments)
-        expectation = act_phase_execution.Expectation()
+        expectation = integration_check.Expectation()
         # ACT #
-        act_phase_execution.check_execution(self,
-                                            self.configuration.sut,
-                                            act_phase_instructions,
-                                            arrangement, expectation)
+        integration_check.check_execution(self,
+                                          self.configuration.sut,
+                                          act_phase_instructions,
+                                          arrangement, expectation)
         # ASSERT #
         expected_command = asrt_command.matches_command2(
             driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
@@ -187,7 +187,7 @@ class TestSymbolUsages(unittest.TestCase):
             symbol=symbol.name__sym_ref_syntax,
         )
 
-        arrangement = act_phase_execution.Arrangement(
+        arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
                 fs.File(
                     source_file,
@@ -196,19 +196,19 @@ class TestSymbolUsages(unittest.TestCase):
             symbol_table=symbol.symbol_table
         )
 
-        expectation = act_phase_execution.Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+        expectation = integration_check.Expectation(
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence(
                 [symbol.reference_assertion__any_data_type]
             )
         )
-        act_phase_execution.check_execution(self,
-                                            sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
-                                            [instr([command_line])],
-                                            arrangement,
-                                            expectation)
+        integration_check.check_execution(self,
+                                          sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
+                                          [instr([command_line])],
+                                          arrangement,
+                                          expectation)
 
 
 def _instructions_for_file_in_hds_dir(home_dir_path: pathlib.Path, statements: list) -> list:

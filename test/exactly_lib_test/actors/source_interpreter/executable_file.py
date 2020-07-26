@@ -10,10 +10,10 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
 from exactly_lib_test.actors.source_interpreter import common_tests
-from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
-    check_execution
 from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
+    check_execution
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.util.test_resources import py_program
@@ -94,7 +94,7 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
                         empty_source,
                         Arrangement(),
                         Expectation(
-                            result_of_execute=eh_assertions.is_hard_error))
+                            execute=eh_assertions.is_hard_error))
 
 
 class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):

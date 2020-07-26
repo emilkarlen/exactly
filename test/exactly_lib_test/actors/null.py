@@ -6,7 +6,7 @@ from exactly_lib.actors import null as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe

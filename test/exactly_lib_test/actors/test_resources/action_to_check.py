@@ -13,10 +13,12 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.simple_textstruct.file_printer_output import to_string
-from exactly_lib_test.actors.test_resources import act_phase_execution
-from exactly_lib_test.actors.test_resources.act_phase_execution import \
-    assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
+from exactly_lib_test.actors.test_resources import integration_check
+from exactly_lib_test.actors.test_resources.integration_check import \
+    ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
+from exactly_lib_test.actors.test_resources.misc import assert_is_list_of_act_phase_instructions
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
@@ -25,6 +27,9 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, em
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class TestCaseSourceSetup:
@@ -112,9 +117,28 @@ class TestExecuteBase(unittest.TestCase):
         super().__init__()
         self.actor = actor
 
+    def _execute__w_spr_check(self,
+                              hds: HomeDirectoryStructure,
+                              instructions: List[ActPhaseInstruction],
+                              stdin_contents: str = '',
+                              environ: dict = None,
+                              execute_output: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+                              ):
+        result_from_execute = self._execute(
+            hds,
+            instructions,
+            stdin_contents,
+            environ
+        )
+        execute_output.apply_with_message(
+            self,
+            result_from_execute,
+            'result from execute'
+        )
+
     def _execute(self,
                  hds: HomeDirectoryStructure,
-                 act_phase_instructions: list,
+                 act_phase_instructions: List[ActPhaseInstruction],
                  stdin_contents: str = '',
                  environ: dict = None) -> SubProcessResult:
         environ = {} if environ is None else environ
@@ -166,12 +190,16 @@ class TestBase(TestExecuteBase):
 class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):
         with home_directory_structure() as hds:
-            with self.test_setup.program_that_prints_to_stdout(hds,
-                                                               'expected output on stdout') as program:
-                process_result = self._execute(hds, program)
-                self.assertEqual('expected output on stdout\n',
-                                 process_result.stdout,
-                                 'Contents of stdout')
+            with self.test_setup.program_that_prints_to_stdout(
+                    hds,
+                    'expected output on stdout') as program:
+                self._execute__w_spr_check(
+                    hds,
+                    program,
+                    execute_output=asrt_proc_result.matches_proc_result(
+                        stdout=asrt.equals('expected output on stdout\n')
+                    )
+                )
 
 
 class TestStderrIsConnectedToProgram(TestBase):
@@ -179,32 +207,41 @@ class TestStderrIsConnectedToProgram(TestBase):
         with home_directory_structure() as hds:
             with self.test_setup.program_that_prints_to_stderr(hds,
                                                                'expected output on stderr') as program:
-                process_result = self._execute(hds, program)
-                self.assertEqual('expected output on stderr\n',
-                                 process_result.stderr,
-                                 'Contents of stderr')
+                self._execute__w_spr_check(
+                    hds,
+                    program,
+                    execute_output=asrt_proc_result.matches_proc_result(
+                        stderr=asrt.equals('expected output on stderr\n')
+                    )
+                )
 
 
 class TestStdinAndStdoutAreConnectedToProgram(TestBase):
     def runTest(self):
         with home_directory_structure() as hds:
             with self.test_setup.program_that_copes_stdin_to_stdout(hds) as program:
-                process_result = self._execute(hds,
-                                               program,
-                                               stdin_contents='contents of stdin')
-                self.assertEqual('contents of stdin',
-                                 process_result.stdout,
-                                 'Contents of stdout is expected to be equal to stdin')
+                self._execute__w_spr_check(
+                    hds,
+                    program,
+                    stdin_contents='contents of stdin',
+                    execute_output=asrt_proc_result.matches_proc_result(
+                        stdout=asrt.equals('contents of stdin')
+                    )
+                )
 
 
 class TestExitCodeIsReturned(TestBase):
     def runTest(self):
         with home_directory_structure() as hds:
             with self.test_setup.program_that_exits_with_code(hds, 87) as program:
-                process_result = self._execute(hds, program)
-                self.assertEqual(87,
-                                 process_result.exitcode,
-                                 'Exit Code')
+                self._execute__w_spr_check(
+                    hds,
+                    program,
+                    stdin_contents='contents of stdin',
+                    execute_output=asrt_proc_result.matches_proc_result(
+                        exit_code=asrt.equals(87)
+                    )
+                )
 
 
 class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
@@ -217,10 +254,14 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
             with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(
                     hds,
                     var_name) as program:
-                process_result = self._execute(hds, program, environ=environ)
-                self.assertEqual(var_value + '\n',
-                                 process_result.stdout,
-                                 'Contents of stdout should be value of environment variable')
+                self._execute__w_spr_check(
+                    hds,
+                    program,
+                    environ=environ,
+                    execute_output=asrt_proc_result.matches_proc_result(
+                        stdout=asrt.equals(var_value + '\n')
+                    )
+                )
 
 
 class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
@@ -282,13 +323,17 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
 
     def runTest(self):
         with self.configuration.program_that_sleeps_at_least(5) as test_case_setup:
-            arrangement = act_phase_execution.Arrangement(
+            arrangement = integration_check.Arrangement(
                 hds_contents=hds_populators.contents_in(RelHdsOptionType.REL_HDS_ACT,
                                                         test_case_setup.home_act_dir_contents),
-                timeout_in_seconds=1)
-            expectation = act_phase_execution.Expectation(result_of_execute=eh_assertions.is_hard_error)
-            act_phase_execution.check_execution(self,
-                                                self.configuration.sut,
-                                                test_case_setup.act_phase_instructions,
-                                                arrangement,
-                                                expectation)
+                process_execution=ProcessExecutionArrangement(
+                    process_execution_settings=ProcessExecutionSettings(
+                        timeout_in_seconds=1
+                    )
+                ))
+            expectation = integration_check.Expectation(execute=eh_assertions.is_hard_error)
+            integration_check.check_execution(self,
+                                              self.configuration.sut,
+                                              test_case_setup.act_phase_instructions,
+                                              arrangement,
+                                              expectation)

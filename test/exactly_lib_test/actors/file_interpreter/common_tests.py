@@ -4,7 +4,7 @@ from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.str_.misc_formatting import lines_content
-from exactly_lib_test.actors.test_resources.act_phase_execution import Arrangement, Expectation, \
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
@@ -62,7 +62,7 @@ class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
         arrangement = Arrangement()
 
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_assertions.is_validation_error()
+            validate_pre_sds=svh_assertions.is_validation_error()
         )
         self._check(command_line,
                     arrangement,
@@ -78,7 +78,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
                 Dir.empty(source_file)]))
         )
         expectation = Expectation(
-            result_of_validate_pre_sds=svh_assertions.is_validation_error()
+            validate_pre_sds=svh_assertions.is_validation_error()
         )
         self._check(command_line,
                     arrangement,
@@ -112,7 +112,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([
@@ -161,7 +161,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
         )
 
         expectation = Expectation(
-            result_of_execute=eh_assertions.is_exit_code(0),
+            execute=eh_assertions.is_exit_code(0),
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=asrt.matches_sequence([

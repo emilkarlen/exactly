@@ -11,6 +11,33 @@ def is_result_for_exit_value(expected: ExitValue) -> ValueAssertion[SubProcessRe
     return SubProcessExitValueAssertion(expected)
 
 
+def matches_proc_result(
+        exit_code: ValueAssertion[int] = asrt.anything_goes(),
+        stdout: ValueAssertion[str] = asrt.anything_goes(),
+        stderr: ValueAssertion[str] = asrt.anything_goes(),
+) -> ValueAssertion[SubProcessResult]:
+    return asrt.is_instance_with__many(
+        SubProcessResult,
+        [
+            asrt.sub_component(
+                'exit_code',
+                SubProcessResult.exitcode.fget,
+                exit_code,
+            ),
+            asrt.sub_component(
+                'stdout',
+                SubProcessResult.stdout.fget,
+                stdout,
+            ),
+            asrt.sub_component(
+                'stderr',
+                SubProcessResult.stderr.fget,
+                stderr,
+            ),
+        ]
+    )
+
+
 def is_result_for_exit_value_on_stderr_and_empty_stdout(expected: ExitValue,
                                                         contents_after_exit_value_allowed: bool = False
                                                         ) -> ValueAssertion[SubProcessResult]:

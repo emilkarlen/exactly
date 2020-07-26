@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionTyp
 from exactly_lib.type_system.logic.program.process_execution.commands import shell_command
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
-from exactly_lib_test.actors.test_resources import act_phase_execution
+from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, suite_for_execution
@@ -81,15 +81,15 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         act_phase_instructions = [instr([surrounded_by_soft_quotes_str(file_name)]),
                                   instr([''])]
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(
+        arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(file_name)])),
             atc_process_executor=executor_that_records_arguments)
-        expectation = act_phase_execution.Expectation()
-        act_phase_execution.check_execution(self,
-                                            self.configuration.sut,
-                                            act_phase_instructions,
-                                            arrangement, expectation)
+        expectation = integration_check.Expectation()
+        integration_check.check_execution(self,
+                                          self.configuration.sut,
+                                          act_phase_instructions,
+                                          arrangement, expectation)
         expected_command = asrt_command.matches_command2(
             asrt_command.matches_shell_command_driver(
                 asrt_shlex.matches_single_quotes_str(asrt.equals(sys.executable))
@@ -123,17 +123,17 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """])]
         should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
         executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
-        arrangement = act_phase_execution.Arrangement(
+        arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(src_file)])),
             atc_process_executor=executor_that_records_arguments)
-        expectation = act_phase_execution.Expectation()
+        expectation = integration_check.Expectation()
         # ACT #
-        act_phase_execution.check_execution(self,
-                                            self.configuration.sut,
-                                            act_phase_instructions,
-                                            arrangement,
-                                            expectation)
+        integration_check.check_execution(self,
+                                          self.configuration.sut,
+                                          act_phase_instructions,
+                                          arrangement,
+                                          expectation)
         # ASSERT #
         expected_command = asrt_command.matches_command2(
             driver=asrt_command.matches_shell_command_driver(
