@@ -119,9 +119,9 @@ def check_execution(put: unittest.TestCase,
                     act_phase_instructions: List[ActPhaseInstruction],
                     arrangement: Arrangement,
                     expectation: Expectation,
-                    ) -> ExitCodeOrHardError:
+                    ):
     checker = _Checker(put, actor, act_phase_instructions, arrangement, expectation)
-    return checker.check()
+    checker.check()
 
 
 class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessExecutor):
@@ -168,13 +168,13 @@ class _Checker:
         self.tcds = None
         self._expectation_post_sds = None
 
-    def check(self) -> Optional[ExitCodeOrHardError]:
+    def check(self):
         try:
             self._check()
         except _CheckIsDoneException:
             return None
 
-    def _check(self) -> Optional[ExitCodeOrHardError]:
+    def _check(self):
         atc = self._parse()
         with self._pre_sds_env() as env_pre_sds:
             self._validate_pre_sds(atc, env_pre_sds)
@@ -182,7 +182,7 @@ class _Checker:
             with self._post_sds_env(env_pre_sds) as env_post_sds:
                 self._validate_post_sds(atc, env_post_sds)
                 self._prepare(atc, env_post_sds)
-                return self._execute(atc, env_post_sds)
+                self._execute(atc, env_post_sds)
 
     def _parse(self) -> ActionToCheck:
         atc = self._actor.parse(self._instructions)
@@ -254,7 +254,7 @@ class _Checker:
     def _execute(self,
                  atc: ActionToCheck,
                  env: InstructionEnvironmentForPostSdsStep,
-                 ) -> Optional[ExitCodeOrHardError]:
+                 ):
         process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
             env,
             self._arrangement.atc_process_executor,
@@ -279,8 +279,6 @@ class _Checker:
         self._expectation_post_sds.side_effects_on_files_after_execute.apply(self._put, env.sds)
 
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
-
-        return step_result
 
     def _check_symbols_after(self, atc: ActionToCheck, step: str):
         self._expectation.symbol_usages.apply_with_message(

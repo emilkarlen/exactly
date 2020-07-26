@@ -56,7 +56,7 @@ class TestConstructor(unittest.TestCase):
         act_phase_instructions = [instr(['act phase source'])]
         arrangement = Arrangement()
         expectation = simple_success()
-        # ACT (and assert that all methods indicate success) #
+        # ACT #
         check_execution(self,
                         parser,
                         act_phase_instructions,
