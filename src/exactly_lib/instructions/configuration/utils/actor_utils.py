@@ -1,8 +1,9 @@
 import shlex
 from typing import List
 
-from exactly_lib.actors import command_line, file_interpreter
+from exactly_lib.actors import file_interpreter
 from exactly_lib.actors import source_interpreter as source_interpreter
+from exactly_lib.actors.program import actor
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -154,7 +155,7 @@ def parse(instruction_argument: str) -> Actor:
     if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
         if len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])
-        return command_line.actor()
+        return actor.actor()
     if len(args) == 1:
         raise SingleInstructionInvalidArgumentException('Missing file argument for ' + args[0])
     if matches(SOURCE_INTERPRETER_OPTION_NAME, args[0]):

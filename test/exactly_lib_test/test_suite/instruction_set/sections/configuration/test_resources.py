@@ -1,4 +1,4 @@
-from exactly_lib.actors import command_line
+from exactly_lib.actors.program import actor
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -15,7 +15,7 @@ def configuration_section_environment() -> ConfigurationSectionEnvironment:
         pass
 
     return ConfigurationSectionEnvironment(PreprocessorThat(f),
-                                           ActPhaseSetup(command_line.actor()))
+                                           ActPhaseSetup(actor.actor()))
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

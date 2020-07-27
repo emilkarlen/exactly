@@ -13,6 +13,7 @@ def relativity_configuration_of_action_to_check(argument_syntax_name: str) -> Re
                                     RelOptionType.REL_HDS_ACT,
                                     RelOptionType.REL_ACT,
                                     RelOptionType.REL_TMP,
+                                    RelOptionType.REL_CWD,
                                     },
                                    absolute=True),
             default_option=RelOptionType.REL_HDS_ACT),

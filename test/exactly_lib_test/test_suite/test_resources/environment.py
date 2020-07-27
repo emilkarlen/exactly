@@ -1,4 +1,4 @@
-from exactly_lib.actors import command_line
+from exactly_lib.actors.program import actor
 from exactly_lib.default.program_modes import test_suite
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -14,7 +14,7 @@ def default_environment() -> Environment:
                        TestCaseParsingSetup(white_space_name_and_argument_splitter,
                                             instruction_set_with_no_instructions(),
                                             ActPhaseParser()),
-                       TestCaseHandlingSetup(ActPhaseSetup(command_line.actor()),
+                       TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
                                              IDENTITY_PREPROCESSOR))
 
 

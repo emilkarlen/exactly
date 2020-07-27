@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.actors import command_line as sut
+from exactly_lib.actors.program import actor as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources import \

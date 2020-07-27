@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import Program
 
 def parser_of_program(
         exe_file_relativity: RelOptionArgumentConfiguration = syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
-        ) -> Parser[ProgramSdv]:
+) -> Parser[ProgramSdv]:
     return _ParserOfProgram(exe_file_relativity)
 
 
@@ -36,7 +36,9 @@ class _ParserOfCommand(ParserFromTokenParserBase[CommandSdv]):
         self._additional_commands_parser = parse_arguments.parser()
 
     def parse_from_token_parser(self, parser: TokenParser) -> CommandSdv:
-        command_sdv = parse_executable_file_executable.parse_from_token_parser(parser).as_command
+        program = parse_executable_file_executable.parse_from_token_parser(parser,
+                                                                           self._relativity_of_exe_file)
+        command_sdv = program.as_command
         additional_arguments = self._additional_commands_parser.parse_from_token_parser(parser)
         return command_sdv.new_with_additional_arguments(additional_arguments)
 

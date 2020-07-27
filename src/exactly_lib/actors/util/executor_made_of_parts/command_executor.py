@@ -39,18 +39,3 @@ class OsProcessExecutor(parts.Executor, ABC):
         Called after prepare, to get the command to execute
         """
         pass
-
-
-class CommandExecutor(OsProcessExecutor):
-    def __init__(self,
-                 os_services: OsServices,
-                 os_process_executor: AtcOsProcessExecutor,
-                 command_sdv: CommandSdv,
-                 ):
-        super().__init__(os_services, os_process_executor)
-        self.command_sdv = command_sdv
-
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            ) -> CommandSdv:
-        return self.command_sdv

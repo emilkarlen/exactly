@@ -1,6 +1,6 @@
 from typing import Sequence, Tuple
 
-from exactly_lib.actors import command_line
+from exactly_lib.actors.program import actor
 from exactly_lib.common import instruction_name_and_argument_splitter
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -17,7 +17,7 @@ from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_
 
 
 def test_case_handling_setup() -> TestCaseHandlingSetup:
-    return TestCaseHandlingSetup(ActPhaseSetup(command_line.actor()),
+    return TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
                                  IdentityPreprocessor())
 
 

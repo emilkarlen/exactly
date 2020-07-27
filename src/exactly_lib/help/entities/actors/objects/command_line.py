@@ -1,7 +1,8 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.actors import command_line as actor
+from exactly_lib.actors import common
+from exactly_lib.actors.program import actor as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
@@ -79,7 +80,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
         shell_command_argument = a.Single(a.Multiplicity.MANDATORY,
-                                          a.Constant(actor.SHELL_COMMAND_MARKER))
+                                          a.Constant(common.SHELL_COMMAND_MARKER))
         command_argument = a.Single(a.Multiplicity.MANDATORY, self.command)
         return [
             InvokationVariant(self._cl_syntax_for_args([executable_arg,

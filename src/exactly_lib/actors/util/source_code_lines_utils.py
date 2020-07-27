@@ -8,10 +8,17 @@ def all_source_code_lines(instructions: Sequence[ActPhaseInstruction]) -> List[s
     ret_val = []
     for instruction in instructions:
         for line in instruction.source_code().lines:
-            if _is_source_code_line(line):
+            if is_source_code_line(line):
                 ret_val.append(line)
     return ret_val
 
 
-def _is_source_code_line(line: str) -> bool:
+def all_lines_str(instructions: Sequence[ActPhaseInstruction]) -> str:
+    lines = []
+    for instruction in instructions:
+        lines += instruction.source_code().lines
+    return '\n'.join(lines)
+
+
+def is_source_code_line(line: str) -> bool:
     return not (is_empty_line(line) or is_comment_line(line))

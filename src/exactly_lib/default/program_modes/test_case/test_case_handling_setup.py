@@ -1,6 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.actors import null, command_line
+from exactly_lib.actors import null
+from exactly_lib.actors.program import actor
 from exactly_lib.actors.util.source_code_lines_utils import all_source_code_lines
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
@@ -20,4 +21,4 @@ class TheActor(Actor):
         if not source_code_lines:
             return null.actor().parse(instructions)
         else:
-            return command_line.actor().parse(instructions)
+            return actor.actor().parse(instructions)

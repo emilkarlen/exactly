@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.actors import command_line
+from exactly_lib.actors.program import actor
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.instructions.configuration.utils.actor_utils import SOURCE_INTERPRETER_OPTION
 from exactly_lib.processing import test_case_processing
@@ -39,7 +39,7 @@ class TestActorIsNotPropagatedToSubSuites(unittest.TestCase):
 
 class SetupForSuccessfulExecution(Setup):
     def test_case_handling_setup(self) -> TestCaseHandlingSetup:
-        return TestCaseHandlingSetup(ActPhaseSetup(command_line.actor()),
+        return TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
                                      IDENTITY_PREPROCESSOR)
 
     def assertions(self,

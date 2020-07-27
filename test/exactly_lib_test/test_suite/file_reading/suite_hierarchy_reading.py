@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from pathlib import Path
 
-from exactly_lib.actors import command_line
+from exactly_lib.actors.program import actor
 from exactly_lib.definitions.entity.directives import INCLUDING_DIRECTIVE_INFO
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
@@ -37,7 +37,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-T_C_H_S = TestCaseHandlingSetup(ActPhaseSetup(command_line.actor()),
+T_C_H_S = TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
                                 IDENTITY_PREPROCESSOR)
 
 
