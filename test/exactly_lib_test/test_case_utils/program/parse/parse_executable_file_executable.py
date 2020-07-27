@@ -185,7 +185,7 @@ class TestParseWithSymbols(unittest.TestCase):
         reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
-                syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
                                                                             ReferenceRestrictionsOnDirectAndIndirect(
@@ -379,7 +379,7 @@ def path_of(rel_option: RelOptionType,
 
 
 def path_of_default_relativity(path_suffix: str) -> PathDdv:
-    return paths.of_rel_option(syntax_elements.REL_OPTION_ARG_CONF.options.default_option,
+    return paths.of_rel_option(syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.default_option,
                                paths.constant_path_part(path_suffix))
 
 

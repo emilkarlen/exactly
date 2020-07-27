@@ -273,7 +273,7 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
 
 
 PATH_OF_EXISTING_FILE_OPT_CONFIG = arg_config_with_name('PATH-OF-EXISTING',
-                                                        pgm_syntax_elements.REL_OPTION_ARG_CONF)
+                                                        pgm_syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF)
 
 EXECUTABLE_ARG = a.Named('EXECUTABLE')
 

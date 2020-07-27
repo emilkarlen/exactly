@@ -141,7 +141,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
                 python_interpreter_symbol.usage_assertion__path_or_string(
-                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                    syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
                 execute_program_option_symbol.usage_assertion__any_data_type,
                 exit_code_symbol.usage_assertion__any_data_type,
@@ -272,7 +272,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
                 python_interpreter_symbol.usage_assertion__path_or_string(
-                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                    syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
                 file_to_interpret_symbol.usage_assertion__path_or_string(
                     path_relativities.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
@@ -412,7 +412,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                                  column_index=asrt.equals(0)),
             symbol_usages=asrt.matches_sequence([
                 python_interpreter_symbol.usage_assertion__path_or_string(
-                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                    syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
                 execute_program_option_symbol.usage_assertion__any_data_type,
                 exit_code_symbol.usage_assertion__any_data_type,
@@ -484,10 +484,10 @@ def relativity_options(symbol_name: str) -> List[RelativityOptionConfigurationFo
 
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                     symbol_name,
-                                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
+                                    syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_HDS_CASE,
                                     symbol_name,
-                                    syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
+                                    syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
     ]
 
 
