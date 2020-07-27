@@ -8,7 +8,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsSdv
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -112,7 +112,7 @@ class Expectation:
 
 def check_exe_file(put: unittest.TestCase,
                    expectation: ExpectationOnExeFile,
-                   actual: ExecutableFileWithArgsResolver):
+                   actual: ExecutableFileWithArgsSdv):
     path_sdv_assertion = matches_path_sdv(
         expectation.path_ddv,
         expected_symbol_references=equals_data_type_symbol_references(expectation.expected_symbol_references_of_file),
@@ -168,12 +168,12 @@ class CheckBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
-    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFileWithArgsResolver, symbols: SymbolTable):
+    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFileWithArgsSdv, symbols: SymbolTable):
         self.assertEqual(self.configuration.exists_pre_sds,
                          actual.executable_file.resolve(symbols).exists_pre_sds(),
                          'Existence pre SDS')
 
-    def _check_file_path(self, file_name: str, actual: ExecutableFileWithArgsResolver,
+    def _check_file_path(self, file_name: str, actual: ExecutableFileWithArgsSdv,
                          environment: PathResolvingEnvironmentPreOrPostSds):
         self.assertEqual(self.configuration.installation_dir(environment.tcds) / file_name,
                          actual.executable_file.resolve_value_of_any_dependency(environment),
@@ -183,14 +183,14 @@ class CheckBase(unittest.TestCase):
         contents = self.configuration.file_installation(file)
         return tcds_with_act_as_curr_dir(tcds_contents=contents)
 
-    def _assert_passes_validation(self, actual: ExecutableFileWithArgsResolver,
+    def _assert_passes_validation(self, actual: ExecutableFileWithArgsSdv,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
         validator_util.check_ddv(self,
                                  ddv_validators.all_of(actual.as_command.resolve(environment.symbols).validators),
                                  environment.tcds,
                                  validation.expect_passes_all_validations())
 
-    def _assert_does_not_pass_validation(self, actual: ExecutableFileWithArgsResolver,
+    def _assert_does_not_pass_validation(self, actual: ExecutableFileWithArgsSdv,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds

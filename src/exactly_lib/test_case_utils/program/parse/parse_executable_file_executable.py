@@ -8,21 +8,21 @@ from exactly_lib.symbol.data import list_sdvs, path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsSdv
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.cli_syntax import option_parsing
 
 
-def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsResolver:
+def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsSdv:
     with token_stream_parser.from_parse_source(source) as token_parser:
         return parse_from_token_parser(token_parser)
 
 
-def parse_from_token_parser(token_parser: TokenParser) -> ExecutableFileWithArgsResolver:
+def parse_from_token_parser(token_parser: TokenParser) -> ExecutableFileWithArgsSdv:
     return _parse(token_parser.token_stream)
 
 
-def _parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
+def _parse(tokens: TokenStream) -> ExecutableFileWithArgsSdv:
     """
     :param tokens: instruction argument
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
@@ -30,8 +30,8 @@ def _parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
     if tokens.is_null:
         parse_path.parse_path(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)  # will raise exception
     the_path = _parse_exe_path(tokens)
-    return ExecutableFileWithArgsResolver(the_path,
-                                          list_sdvs.empty())
+    return ExecutableFileWithArgsSdv(the_path,
+                                     list_sdvs.empty())
 
 
 def _parse_exe_path(tokens: TokenStream) -> PathSdv:

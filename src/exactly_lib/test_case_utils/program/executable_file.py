@@ -4,7 +4,7 @@ from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case_utils.program.command import command_sdvs
 
 
-class ExecutableFileWithArgsResolver:
+class ExecutableFileWithArgsSdv:
     def __init__(self,
                  executable_file: PathSdv,
                  arguments: ListSdv):
