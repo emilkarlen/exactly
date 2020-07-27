@@ -64,7 +64,7 @@ class CommandConfiguration(SymbolUser):
                                        self._command_sdv)
 
 
-class _Parser(ExecutableObjectParser):
+class _Parser(ExecutableObjectParser[CommandConfiguration]):
     def apply(self, instructions: Sequence[ActPhaseInstruction]) -> CommandConfiguration:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(instructions)
@@ -109,8 +109,8 @@ class _TheValidatorConstructor(parts.ValidatorConstructor[CommandConfiguration])
 
 class _TheExecutorConstructor(parts.ExecutorConstructor[CommandConfiguration]):
     def construct(self,
-                  os_process_executor: AtcOsProcessExecutor,
                   environment: InstructionEnvironmentForPostSdsStep,
+                  os_process_executor: AtcOsProcessExecutor,
                   command_configuration: CommandConfiguration,
                   ) -> parts.Executor:
-        return command_configuration.executor(os_process_executor, environment)
+        return command_configuration.executor(environment, os_process_executor)
