@@ -36,7 +36,7 @@ class OsProcessExecutor(parts.Executor, ABC):
         pass
 
 
-class CommandResolverExecutor(OsProcessExecutor):
+class CommandExecutor(OsProcessExecutor):
     def __init__(self,
                  os_process_executor: AtcOsProcessExecutor,
                  command_sdv: CommandSdv,

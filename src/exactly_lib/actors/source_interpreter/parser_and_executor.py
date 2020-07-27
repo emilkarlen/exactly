@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Sequence, List
 
 from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
+from exactly_lib.actors.util.executor_made_of_parts.command_executor import \
     OsProcessExecutor
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage

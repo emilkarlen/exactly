@@ -3,12 +3,12 @@ from typing import Sequence
 
 from exactly_lib.actors.common import relativity_configuration_of_action_to_check, SHELL_COMMAND_MARKER
 from exactly_lib.actors.util.executor_made_of_parts import parts
+from exactly_lib.actors.util.executor_made_of_parts.command_executor import \
+    CommandExecutor
 from exactly_lib.actors.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser, \
     ValidatorFromPreOrPostSdsValidator
-from exactly_lib.actors.util.executor_made_of_parts.sub_process_executor import \
-    CommandResolverExecutor
 from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -60,8 +60,8 @@ class CommandConfiguration(SymbolUser):
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_process_executor: AtcOsProcessExecutor,
                  ) -> parts.Executor:
-        return CommandResolverExecutor(os_process_executor,
-                                       self._command_sdv)
+        return CommandExecutor(os_process_executor,
+                               self._command_sdv)
 
 
 class _Parser(ExecutableObjectParser[CommandConfiguration]):
