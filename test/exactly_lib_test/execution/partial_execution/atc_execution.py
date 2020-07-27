@@ -30,7 +30,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.act_phase_utils
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
+from exactly_lib_test.execution.test_resources.execution_recording.action_to_check import \
     ActionToCheckWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \

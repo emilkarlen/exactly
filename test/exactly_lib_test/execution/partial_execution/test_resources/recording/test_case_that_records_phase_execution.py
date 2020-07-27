@@ -8,8 +8,7 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.execution_recording import \
-    act_program_executor as step_recording_executors
+from exactly_lib_test.execution.test_resources.execution_recording import actor as recording_actor
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
@@ -141,7 +140,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
     )
-    actor = step_recording_executors.actor_of_constant(
+    actor = recording_actor.actor_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_act,
         parse_action=arrangement.act_executor_parse,

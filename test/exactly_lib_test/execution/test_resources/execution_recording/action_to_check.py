@@ -2,17 +2,13 @@ from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
-from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
-    ActorForConstantAtc
-from exactly_lib_test.test_resources import actions
 
 
 class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
@@ -51,32 +47,3 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
         return self.__wrapped.execute(environment, os_process_executor, std_files)
-
-
-class ActorThatRecordsSteps(Actor):
-    def __init__(self,
-                 recorder: ListRecorder,
-                 wrapped: Actor,
-                 parse_action=actions.do_nothing,
-                 ):
-        self.__recorder = recorder
-        self.__wrapped = wrapped
-        self.__parse_action = parse_action
-
-    def parse(self, instructions: Sequence[ActPhaseInstruction]) -> ActionToCheck:
-        self.__recorder.recording_of(phase_step.ACT__PARSE).record()
-        self.__parse_action(instructions)
-
-        return ActionToCheckWrapperThatRecordsSteps(self.__recorder,
-                                                    self.__wrapped.parse(instructions))
-
-
-def actor_of_constant(recorder: ListRecorder,
-                      wrapped: ActionToCheck,
-                      parse_action=actions.do_nothing,
-                      ) -> Actor:
-    return ActorThatRecordsSteps(
-        recorder,
-        ActorForConstantAtc(wrapped),
-        parse_action=parse_action,
-    )

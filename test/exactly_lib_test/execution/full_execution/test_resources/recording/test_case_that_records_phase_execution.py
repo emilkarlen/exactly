@@ -8,8 +8,7 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.execution_recording import \
-    act_program_executor as step_recording_executors
+from exactly_lib_test.execution.test_resources.execution_recording import actor
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
@@ -144,7 +143,7 @@ class TestCaseBase(unittest.TestCase):
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
             validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
-        return step_recording_executors.actor_of_constant(
+        return actor.actor_of_constant(
             arrangement.test_case_generator.recorder,
             constant_actions_atc,
             parse_action=arrangement.parse)

@@ -24,7 +24,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test, sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import ActorThatRecordsSteps
+from exactly_lib_test.execution.test_resources.execution_recording.actor import ActorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
