@@ -3,6 +3,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
@@ -23,12 +24,14 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
@@ -64,17 +67,19 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.before_wrapped_prepare(environment)
-        return self.__wrapped.prepare(environment, os_process_executor)
+        return self.__wrapped.prepare(environment, os_services, os_process_executor)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.before_wrapped_execute(environment, std_files)
-        return self.__wrapped.execute(environment, os_process_executor, std_files)
+        return self.__wrapped.execute(environment, os_services, os_process_executor, std_files)
 
 
 class ActionToCheckThatRunsConstantActions(ActionToCheck):
@@ -114,7 +119,9 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
         self.__validate_post_setup_initial_action(environment)
         return self.__validate_post_setup_action(environment)
 
-    def prepare(self, environment: InstructionEnvironmentForPostSdsStep,
+    def prepare(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.__prepare_initial_action(environment)
@@ -122,6 +129,7 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__execute_initial_action(environment, std_files)

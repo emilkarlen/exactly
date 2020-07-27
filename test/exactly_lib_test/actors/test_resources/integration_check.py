@@ -7,6 +7,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -131,9 +132,11 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
 
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
+                 os_services: OsServices,
                  atc_process_executor: AtcOsProcessExecutor,
                  atc: ActionToCheck):
         self.environment = environment
+        self.os_services = os_services
         self.atc_process_executor = atc_process_executor
         self.atc = atc
 
@@ -142,6 +145,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
         exit_code_or_hard_error = self.atc.execute(self.environment,
+                                                   self.os_services,
                                                    self.atc_process_executor,
                                                    files)
         if exit_code_or_hard_error.is_exit_code:
@@ -242,7 +246,9 @@ class _Checker:
                  atc: ActionToCheck,
                  env: InstructionEnvironmentForPostSdsStep,
                  ):
-        step_result = atc.prepare(env, self._arrangement.atc_process_executor)
+        step_result = atc.prepare(env,
+                                  self._arrangement.process_execution.os_services,
+                                  self._arrangement.atc_process_executor)
         self._expectation_post_sds.side_effects_on_files_after_prepare.apply(self._put, env.sds)
         self._expectation.prepare.apply(self._put,
                                         step_result,
@@ -257,6 +263,7 @@ class _Checker:
                  ):
         process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
             env,
+            self._arrangement.process_execution.os_services,
             self._arrangement.atc_process_executor,
             atc)
         error_msg_extra_info = ''

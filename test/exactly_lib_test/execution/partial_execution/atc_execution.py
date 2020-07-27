@@ -15,6 +15,7 @@ from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -280,6 +281,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__PREPARE)
@@ -287,6 +289,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
@@ -303,6 +306,7 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
@@ -319,6 +323,7 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)

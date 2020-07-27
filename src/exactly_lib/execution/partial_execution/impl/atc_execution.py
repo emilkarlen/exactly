@@ -7,6 +7,7 @@ from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureEx
 from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure, \
     PhaseStepFailureException
 from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
@@ -35,12 +36,14 @@ class ActionToCheckExecutor:
                  atc: ActionToCheck,
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
+                 os_services: OsServices,
                  os_process_executor: AtcOsProcessExecutor,
                  stdin_configuration: StdinConfiguration,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.atc = atc
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
+        self.os_services = os_services
         self.os_process_executor = os_process_executor
         self.tcds = environment_for_other_steps.tcds
         self.stdin_configuration = stdin_configuration
@@ -70,6 +73,7 @@ class ActionToCheckExecutor:
     def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
         def action():
             res = self.atc.prepare(self.environment_for_other_steps,
+                                   self.os_services,
                                    self.os_process_executor)
             if not res.is_success:
                 raise PhaseStepFailureException(
@@ -115,6 +119,7 @@ class ActionToCheckExecutor:
                                         std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code_or_hard_error = self.atc.execute(
             self.environment_for_other_steps,
+            self.os_services,
             self.os_process_executor,
             std_files)
         self._register_outcome(exit_code_or_hard_error)

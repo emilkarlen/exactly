@@ -4,6 +4,7 @@ from typing import Sequence, TypeVar, Generic
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -147,7 +148,6 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
 
         self.__validator = None
         self.__executor = None
-        self.__script_storage_dir = None
 
         self.__symbol_usages = self.object_to_execute.symbol_usages()
 
@@ -166,6 +166,7 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self._construct_executor(environment, os_process_executor)
@@ -173,6 +174,7 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
+                os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return self._executor.execute(environment, std_files)
