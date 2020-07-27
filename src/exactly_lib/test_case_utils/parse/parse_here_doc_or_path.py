@@ -15,7 +15,7 @@ from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
-CONFIGURATION = path_relativities.ALL_REL_OPTIONS_CONFIG
+CONFIGURATION = path_relativities.ALL_REL_OPTIONS_ARG_CONFIG
 
 FILE_ARGUMENT_OPTION = a.OptionName(long_name='file')
 

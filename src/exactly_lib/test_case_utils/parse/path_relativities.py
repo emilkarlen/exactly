@@ -17,19 +17,14 @@ ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativity
     ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
     True)
 
-REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS,
-                                                                           True),
-                                                    RelOptionType.REL_HDS_CASE)
+
+def all_rel_options_config(default: RelOptionType) -> RelOptionsConfiguration:
+    return RelOptionsConfiguration(PathRelativityVariants(ALL_REL_OPTIONS,
+                                                          True),
+                                   default)
 
 
-def all_rel_options_config(argument_syntax_name: str,
-                           path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
-                                          argument_syntax_name,
-                                          path_suffix_is_required)
-
-
-ALL_REL_OPTIONS_CONFIG = all_rel_options_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
+REL_OPTIONS_CONFIGURATION = all_rel_options_config(RelOptionType.REL_HDS_CASE)
 
 STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
     ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
@@ -37,6 +32,17 @@ STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
 
 STANDARD_NON_HDS_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HDS_RELATIVITY_VARIANTS,
                                                    RelOptionType.REL_CWD)
+
+
+def all_rel_options_arg_config(argument_syntax_name: str,
+                               path_suffix_is_required: bool = True,
+                               default: RelOptionType = RelOptionType.REL_HDS_CASE) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(all_rel_options_config(default),
+                                          argument_syntax_name,
+                                          path_suffix_is_required)
+
+
+ALL_REL_OPTIONS_ARG_CONFIG = all_rel_options_arg_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
 
 
 def non_hds_config(argument_syntax_name: str,

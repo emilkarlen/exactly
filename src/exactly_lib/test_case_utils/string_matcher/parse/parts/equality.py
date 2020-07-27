@@ -37,7 +37,7 @@ class Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxT
         self._string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
             _EXPECTED_PATH_NAME,
             _RELATIVITY_OF_EXPECTED_PATH_NAME,
-            path_relativities.all_rel_options_config(_EXPECTED_PATH_NAME),
+            path_relativities.all_rel_options_arg_config(_EXPECTED_PATH_NAME),
             the_path_of('the file that contains the expected contents.')
         )
 

@@ -479,7 +479,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 self._check(
                     Arrangement(source,
-                                path_relativities.all_rel_options_config('ARG-SYNTAX-NAME', path_suffix_is_required)),
+                                path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                             path_suffix_is_required)),
                     Expectation(expected_path_value,
                                 assert_token_stream(head_token=assert_token_string_is('SYMBOL_NAME')))
                 )
@@ -490,14 +491,14 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         token_stream = TokenStream(source)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_path(token_stream,
-                           path_relativities.all_rel_options_config('ARG-SYNTAX-NAME', True))
+                           path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
 
     def test_WHEN_no_file_name_argument_is_given_and_path_suffix_is_not_required_THEN_parse_SHOULD_succeed(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '{rel_symbol_option} SYMBOL_NAME'.format(rel_symbol_option=rel_symbol_option)
         token_stream = TokenStream(source)
         sut.parse_path(token_stream,
-                       path_relativities.all_rel_options_config('ARG-SYNTAX-NAME', False))
+                       path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', False))
 
     def test_reference_restrictions_on_symbol_references_in_path_suffix_SHOULD_be_string_restrictions(self):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
@@ -1342,19 +1343,19 @@ class TestParseFromParseSource(unittest.TestCase):
     def test_raise_exception_for_invalid_argument_syntax_when_invalid_quoting_of_first_token(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_path_from_parse_source(remaining_source('"abc'),
-                                             path_relativities.all_rel_options_config('ARG-SYNTAX-NAME', True))
+                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
 
     def test_fail_when_no_arguments_and_path_suffix_is_required(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_path_from_parse_source(remaining_source(''),
-                                             path_relativities.all_rel_options_config('ARG-SYNTAX-NAME', True))
+                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME', True))
 
     def test_parse_without_option(self):
         for path_suffix_is_required in [False, True]:
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 path = sut.parse_path_from_parse_source(remaining_source('FILENAME arg2'),
-                                                        path_relativities.all_rel_options_config('ARG-SYNTAX-NAME',
-                                                                                                 path_suffix_is_required))
+                                                        path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                                                     path_suffix_is_required))
                 symbols = empty_symbol_table()
                 actual_path_suffix = path.resolve(symbols).path_suffix()
                 equals_path_part_string('FILENAME').apply_with_message(self,
@@ -1367,8 +1368,8 @@ class TestParseFromParseSource(unittest.TestCase):
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 path = sut.parse_path_from_parse_source(
                     remaining_source(REL_CWD_OPTION + ' FILENAME arg3 arg4'),
-                    path_relativities.all_rel_options_config('ARG-SYNTAX-NAME',
-                                                             path_suffix_is_required))
+                    path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                 path_suffix_is_required))
                 symbols = empty_symbol_table()
                 actual_path_suffix = path.resolve(symbols).path_suffix()
                 equals_path_part_string('FILENAME').apply_with_message(self,
@@ -1381,8 +1382,8 @@ class TestParseFromParseSource(unittest.TestCase):
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 path = sut.parse_path_from_parse_source(
                     remaining_source('   FILENAME'),
-                    path_relativities.all_rel_options_config('ARG-SYNTAX-NAME',
-                                                             path_suffix_is_required))
+                    path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                 path_suffix_is_required))
                 symbols = empty_symbol_table()
                 actual_path_suffix = path.resolve(symbols).path_suffix()
                 equals_path_part_string('FILENAME').apply_with_message(self,
@@ -1393,8 +1394,8 @@ class TestParseFromParseSource(unittest.TestCase):
     def test_fail_when_option_is_only_argument_and_path_suffix_is_required(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_path_from_parse_source(remaining_source(REL_CWD_OPTION),
-                                             path_relativities.all_rel_options_config('ARG-SYNTAX-NAME',
-                                                                                      True))
+                                             path_relativities.all_rel_options_arg_config('ARG-SYNTAX-NAME',
+                                                                                          True))
 
 
 class TestParsesCorrectValueFromParseSource(TestParsesBase):

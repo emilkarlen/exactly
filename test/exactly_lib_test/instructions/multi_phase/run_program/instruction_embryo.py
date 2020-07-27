@@ -258,7 +258,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         arrangement = ArrangementWithSds(
             tcds_contents=TcdsPopulatorForRelOptionType(
-                path_relativities.ALL_REL_OPTIONS_CONFIG.options.default_option,
+                path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.default_option,
                 fs.DirContents([file_to_interpret])),
             symbols=SymbolContext.symbol_table_of_contexts([
                 python_interpreter_symbol,
@@ -275,7 +275,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                     syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                 ),
                 file_to_interpret_symbol.usage_assertion__path_or_string(
-                    path_relativities.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
+                    path_relativities.ALL_REL_OPTIONS_ARG_CONFIG.options.accepted_relativity_variants
                 ),
                 exit_code_symbol.usage_assertion__any_data_type,
             ]),
