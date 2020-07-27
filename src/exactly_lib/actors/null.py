@@ -3,6 +3,7 @@ from typing import Sequence
 from exactly_lib.actors.util.executor_made_of_parts import parts
 from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -38,6 +39,7 @@ class _Executor(parts.Executor):
 class _ExecutorConstructor(parts.ExecutorConstructor[_ObjectToExecute]):
     def construct(self,
                   environment: InstructionEnvironmentForPreSdsStep,
+                  os_services: OsServices,
                   os_process_executor: AtcOsProcessExecutor,
                   object_to_execute: _ObjectToExecute) -> parts.Executor:
         return _Executor()

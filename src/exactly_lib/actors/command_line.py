@@ -17,6 +17,7 @@ from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -58,9 +59,11 @@ class CommandConfiguration(SymbolUser):
 
     def executor(self,
                  environment: InstructionEnvironmentForPostSdsStep,
+                 os_services: OsServices,
                  os_process_executor: AtcOsProcessExecutor,
                  ) -> parts.Executor:
-        return CommandExecutor(os_process_executor,
+        return CommandExecutor(os_services,
+                               os_process_executor,
                                self._command_sdv)
 
 
@@ -110,7 +113,8 @@ class _TheValidatorConstructor(parts.ValidatorConstructor[CommandConfiguration])
 class _TheExecutorConstructor(parts.ExecutorConstructor[CommandConfiguration]):
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices,
                   os_process_executor: AtcOsProcessExecutor,
                   command_configuration: CommandConfiguration,
                   ) -> parts.Executor:
-        return command_configuration.executor(environment, os_process_executor)
+        return command_configuration.executor(environment, os_services, os_process_executor)

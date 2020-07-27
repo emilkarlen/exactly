@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.file_utils.std import StdFiles
@@ -9,7 +10,11 @@ from . import parts
 
 
 class OsProcessExecutor(parts.Executor, ABC):
-    def __init__(self, os_process_executor: AtcOsProcessExecutor):
+    def __init__(self,
+                 os_services: OsServices,
+                 os_process_executor: AtcOsProcessExecutor,
+                 ):
+        self.os_services = os_services
         self.os_process_executor = os_process_executor
 
     def execute(self,
@@ -38,10 +43,11 @@ class OsProcessExecutor(parts.Executor, ABC):
 
 class CommandExecutor(OsProcessExecutor):
     def __init__(self,
+                 os_services: OsServices,
                  os_process_executor: AtcOsProcessExecutor,
                  command_sdv: CommandSdv,
                  ):
-        super().__init__(os_process_executor)
+        super().__init__(os_services, os_process_executor)
         self.command_sdv = command_sdv
 
     def _command_to_execute(self,
