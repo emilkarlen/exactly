@@ -3,7 +3,6 @@ from typing import Generic, Callable
 
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.text_reader import TextFromFileReader
@@ -26,15 +25,15 @@ class Executor(Generic[T], CommandExecutor[T]):
     def execute(self,
                 settings: ProcessExecutionSettings,
                 command: Command,
-                program_for_err_msg: StructureRenderer,
                 ) -> T:
-        result = self.handled.execute(settings, command, program_for_err_msg)
-        self._handle_result(result, program_for_err_msg)
+        result = self.handled.execute(settings, command)
+        self._handle_result(result, command)
         return result
 
     def _handle_result(self,
                        result: T,
-                       program_for_err_msg: StructureRenderer):
+                       command: Command,
+                       ):
         exit_code = self.get_exit_code(result)
 
         if exit_code == 0:
@@ -42,7 +41,7 @@ class Executor(Generic[T], CommandExecutor[T]):
 
         raise HardErrorException(
             top_lvl_error_msg_rendering.non_zero_exit_code_msg(
-                program_for_err_msg,
+                command.structure().build(),
                 exit_code,
                 self._stderr_part(result),
             )

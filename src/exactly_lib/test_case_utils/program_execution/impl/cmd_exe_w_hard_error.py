@@ -6,7 +6,6 @@ from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor, T
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -25,7 +24,6 @@ class Executor(Generic[T], CommandExecutor[T]):
     def execute(self,
                 settings: ProcessExecutionSettings,
                 command: Command,
-                program_for_err_msg: StructureRenderer,
                 ) -> T:
         try:
             executable = self.os_services.executable_factory__detect_ex().make(command)
@@ -33,13 +31,13 @@ class Executor(Generic[T], CommandExecutor[T]):
         except DetectedException as ex:
             raise HardErrorException(
                 top_lvl_error_msg_rendering.unable_to_execute_msg(
-                    program_for_err_msg,
+                    command.structure().build(),
                     FailureDetailsRenderer(ex.failure_details))
             )
         except ProcessExecutionException as ex:
             raise HardErrorException(
                 top_lvl_error_msg_rendering.unable_to_execute_msg(
-                    program_for_err_msg,
+                    command.structure().build(),
                     _string_major_blocks(str(ex.cause)))
             )
 

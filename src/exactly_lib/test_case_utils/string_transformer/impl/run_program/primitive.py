@@ -90,7 +90,6 @@ class _TransformedFileCreator:
         result = command_executor.execute(
             app_env.process_execution_settings,
             self.transformer.command,
-            self.transformer.structure(),
         )
 
         return result.files.path_of_std(ProcOutputFile.STDOUT)

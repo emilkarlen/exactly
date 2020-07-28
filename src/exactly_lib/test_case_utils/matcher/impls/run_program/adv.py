@@ -39,12 +39,10 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         program_for_model = self._run_conf.program_for_model(self._matcher_program, model)
         command_executor = self._command_executor(model)
-        program_structure = program_for_model.structure()
 
         result = command_executor.execute(
             self._application_environment.process_execution_settings,
             program_for_model.command,
-            program_structure,
         )
 
         return MatchingResult(

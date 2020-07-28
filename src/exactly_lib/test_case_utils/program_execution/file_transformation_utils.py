@@ -64,8 +64,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
 
     try:
         result = cmd_exe.execute(process_execution_settings,
-                                 program.command,
-                                 program.structure())
+                                 program.command)
     except HardErrorException as ex:
         raise pfh_exception.PfhHardErrorException(ex.error)
 

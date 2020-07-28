@@ -109,7 +109,6 @@ class FileMakerForContentsFromProgram(FileMaker):
             result = command_executor.execute(
                 environment.proc_exe_settings,
                 program.command,
-                program.structure(),
             )
         except HardErrorException as ex:
             return ex.error

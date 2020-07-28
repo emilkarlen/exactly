@@ -102,7 +102,6 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         result = command_executor.execute(
             environment.proc_exe_settings,
             program.command,
-            program.structure(),
         )
 
         return ExecutionResultAndStderr(
