@@ -4,11 +4,11 @@ from typing import Optional, ContextManager
 
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
-from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ProcessExecutionFile, \
-    ExecutableExecutor
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 from . import store_result_in_files
 from ..process_output_files import ProcOutputFile
+from ...file_utils.std import ProcessExecutionFile
 from ...file_utils.text_reader import TextFromFileReader
 
 

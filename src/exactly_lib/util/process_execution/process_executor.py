@@ -1,7 +1,8 @@
 import subprocess
 from abc import ABC, abstractmethod
-from typing import IO, Union, TypeVar, Generic
+from typing import TypeVar, Generic
 
+from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib.util.process_execution.execution_elements import Executable, ProcessExecutionSettings
 
 
@@ -12,9 +13,6 @@ class ProcessExecutionException(Exception):
     @property
     def cause(self) -> Exception:
         return self._cause
-
-
-ProcessExecutionFile = Union[None, int, IO]
 
 
 class ProcessExecutor:

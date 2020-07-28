@@ -7,8 +7,8 @@ from exactly_lib.test_case_utils.string_transformer.impl.identity import Identit
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib.util.process_execution import file_ctx_managers
-from exactly_lib.util.process_execution.process_executor import ProcessExecutionFile
 
 
 def sdv(program: ProgramSdv) -> StringMatcherSdv:

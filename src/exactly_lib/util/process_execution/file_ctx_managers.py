@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager
 
-from exactly_lib.util.process_execution.process_executor import ProcessExecutionFile
+from exactly_lib.util.file_utils.std import ProcessExecutionFile
 
 
 @contextmanager

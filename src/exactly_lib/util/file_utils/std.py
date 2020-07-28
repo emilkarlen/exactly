@@ -1,39 +1,41 @@
 import subprocess
 import sys
+from typing import Union, IO
 
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
+ProcessExecutionFile = Union[None, int, IO]
 
-class StdOutputFiles:
-    def __init__(self,
-                 stdout_file=sys.stdout,
-                 stderr_file=sys.stderr):
-        self._stdout_file = stdout_file
-        self._stderr_file = stderr_file
 
-    @property
-    def out(self):
-        return self._stdout_file
+class StdOutputFiles(tuple):
+
+    def __new__(cls,
+                stdout_file: ProcessExecutionFile = sys.stdout,
+                stderr_file: ProcessExecutionFile = sys.stderr):
+        return tuple.__new__(cls, (stdout_file, stderr_file))
 
     @property
-    def err(self):
-        return self._stderr_file
+    def out(self) -> ProcessExecutionFile:
+        return self[0]
 
-    def get(self, file: ProcOutputFile):
+    @property
+    def err(self) -> ProcessExecutionFile:
+        return self[1]
+
+    def get(self, file: ProcOutputFile) -> ProcessExecutionFile:
         return (
-            self.out
+            self[0]
             if file is ProcOutputFile.STDOUT
             else
-            self.err
+            self[1]
         )
 
 
-class StdOutputFilesContents:
-    def __init__(self,
-                 stdout_file: str,
-                 stderr_file: str):
-        self._stdout_file = stdout_file
-        self._stderr_file = stderr_file
+class StdOutputFilesContents(tuple):
+    def __new__(cls,
+                out: str,
+                err: str):
+        return tuple.__new__(cls, (out, err))
 
     @staticmethod
     def empty() -> 'StdOutputFilesContents':
@@ -41,11 +43,11 @@ class StdOutputFilesContents:
 
     @property
     def out(self) -> str:
-        return self._stdout_file
+        return self[0]
 
     @property
     def err(self) -> str:
-        return self._stderr_file
+        return self[1]
 
 
 def new_std_output_files_dev_null() -> StdOutputFiles:
@@ -53,20 +55,19 @@ def new_std_output_files_dev_null() -> StdOutputFiles:
                           subprocess.DEVNULL)
 
 
-class StdFiles:
-    def __init__(self,
-                 stdin_file=sys.stdin,
-                 output_files: StdOutputFiles = StdOutputFiles()):
-        self._stdin_file = stdin_file
-        self._output_files = output_files
+class StdFiles(tuple):
+    def __new__(cls,
+                stdin_file: ProcessExecutionFile = sys.stdin,
+                output_files: StdOutputFiles = StdOutputFiles()):
+        return tuple.__new__(cls, (stdin_file, output_files))
 
     @property
-    def stdin(self):
-        return self._stdin_file
+    def stdin(self) -> ProcessExecutionFile:
+        return self[0]
 
     @property
     def output(self) -> StdOutputFiles:
-        return self._output_files
+        return self[1]
 
 
 def std_files_dev_null() -> StdFiles:
