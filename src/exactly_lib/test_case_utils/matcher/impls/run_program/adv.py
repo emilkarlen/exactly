@@ -58,7 +58,8 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
         app_env = self._application_environment
         return command_processors.processor_that_raises_hard_error(
             app_env.os_services,
-            self._executor(ProcessExecutor(), model)
+            self._executor(self._application_environment.os_services.process_executor(),
+                           model)
         )
 
     def _executor(self,

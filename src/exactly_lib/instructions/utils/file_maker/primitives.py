@@ -22,7 +22,7 @@ from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, T, ProcessExecutor
+from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, T
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -104,7 +104,7 @@ class FileMakerForContentsFromProgram(FileMaker):
         try:
             command_processor = self._command_processor(
                 os_services,
-                self._executor(storage_dir)
+                self._executor(os_services, storage_dir)
             )
             result = command_processor.process(
                 environment.proc_exe_settings,
@@ -135,9 +135,11 @@ class FileMakerForContentsFromProgram(FileMaker):
         )
 
     @staticmethod
-    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ExitCodeAndFiles]:
+    def _executor(os_services: OsServices,
+                  storage_dir: pathlib.Path,
+                  ) -> ExecutableExecutor[ExitCodeAndFiles]:
         return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
-            ProcessExecutor(),
+            os_services.process_executor(),
             storage_dir,
             file_ctx_managers.dev_null(),
         )

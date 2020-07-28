@@ -1,17 +1,25 @@
 import pathlib
+from abc import ABC, abstractmethod
 
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.result import sh
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 
 
-class OsServices:
+class OsServices(ABC):
     """
     Interface to some Operation System Services.
 
-    These are services that should not be implemented as part of instructions, and
-    that may vary depending on operating system.
+    These are services may vary depending on operating system.
     """
+
+    @abstractmethod
+    def process_executor(self) -> ProcessExecutor:
+        """
+        :raises DetectedException
+        """
+        pass
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         """

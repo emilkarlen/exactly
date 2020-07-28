@@ -26,7 +26,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
     ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
-from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, ProcessExecutor
+from exactly_lib.util.process_execution.process_executor import ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import FileNames
 
 
@@ -96,7 +96,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
 
         command_processor = self._command_processor(
             os_services,
-            self._executor(storage_dir)
+            self._executor(os_services, storage_dir)
         )
 
         result = command_processor.process(
@@ -121,9 +121,11 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         )
 
     @staticmethod
-    def _executor(storage_dir: pathlib.Path) -> ExecutableExecutor[ResultWithFiles]:
+    def _executor(os_services: OsServices,
+                  storage_dir: pathlib.Path,
+                  ) -> ExecutableExecutor[ResultWithFiles]:
         return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
-            ProcessExecutor(),
+            os_services.process_executor(),
             storage_dir,
             file_ctx_managers.dev_null(),
             std_err_contents.STD_ERR_TEXT_READER,

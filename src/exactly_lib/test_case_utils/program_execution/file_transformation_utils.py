@@ -12,7 +12,6 @@ from exactly_lib.util.process_execution import process_output_files, file_ctx_ma
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 
 
 class ResultWithTransformation:
@@ -57,7 +56,8 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     command_processor = command_processors.processor_that_raises_hard_error(
         os_services,
         store_result_in_files.ExecutorThatStoresResultInFilesInDir(
-            ProcessExecutor(), pgm_output_dir,
+            os_services.process_executor(),
+            pgm_output_dir,
             file_ctx_managers.dev_null(),
         )
     )

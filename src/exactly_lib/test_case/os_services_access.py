@@ -7,6 +7,7 @@ from exactly_lib.test_case import executable_factories, exception_detection
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 from exactly_lib.util.str_ import str_constructor
 
 
@@ -25,6 +26,9 @@ class _Default(OsServices):
             self._platform_system_not_supported = None
         except KeyError:
             self._platform_system_not_supported = 'System not supported: ' + os.name
+
+    def process_executor(self) -> ProcessExecutor:
+        return ProcessExecutor()
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:

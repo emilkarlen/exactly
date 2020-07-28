@@ -13,7 +13,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
+from exactly_lib.util.process_execution.process_executor import ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -106,7 +106,7 @@ class _TransformedFileCreator:
     def _executor(self, model: StringModel) -> ExecutableExecutor[ExitCodeAndFiles]:
         path_of_file_with_model = model.as_file
         return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
-            ProcessExecutor(),
+            self.environment.os_services.process_executor(),
             self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
         )
