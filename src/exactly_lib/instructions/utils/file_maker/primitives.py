@@ -15,8 +15,8 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
-from exactly_lib.test_case_utils.program_execution import command_executors
-from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
@@ -102,11 +102,11 @@ class FileMakerForContentsFromProgram(FileMaker):
         storage_dir = environment.tmp_dir__path_access.root_dir__existing
 
         try:
-            command_executor = self._command_executor(
+            command_processor = self._command_processor(
                 os_services,
                 self._executor(storage_dir)
             )
-            result = command_executor.execute(
+            result = command_processor.process(
                 environment.proc_exe_settings,
                 program.command,
             )
@@ -122,11 +122,11 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                            dst_path,
                                                            program.transformation)
 
-    def _command_executor(self,
-                          os_services: OsServices,
-                          executor: ExecutableExecutor[T],
-                          ) -> CommandExecutor[T]:
-        return command_executors.executor_that_optionally_raises_hard_error_on_non_zero_exit_code(
+    def _command_processor(self,
+                           os_services: OsServices,
+                           executor: ExecutableExecutor[T],
+                           ) -> CommandProcessor[T]:
+        return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
             os_services,
             executor,

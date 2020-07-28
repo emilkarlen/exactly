@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
-from exactly_lib.test_case_utils.program_execution import command_executors
-from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherAdv
@@ -38,9 +38,9 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
 
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         program_for_model = self._run_conf.program_for_model(self._matcher_program, model)
-        command_executor = self._command_executor(model)
+        command_processor = self._command_processor(model)
 
-        result = command_executor.execute(
+        result = command_processor.process(
             self._application_environment.process_execution_settings,
             program_for_model.command,
         )
@@ -54,9 +54,9 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
     def _structure(self) -> StructureRenderer:
         return trace.TheStructureRenderer(self._matcher_program.structure())
 
-    def _command_executor(self, model: MODEL) -> CommandExecutor[Result]:
+    def _command_processor(self, model: MODEL) -> CommandProcessor[Result]:
         app_env = self._application_environment
-        return command_executors.executor_that_raises_hard_error(
+        return command_processors.processor_that_raises_hard_error(
             app_env.os_services,
             self._executor(ProcessExecutor(), model)
         )

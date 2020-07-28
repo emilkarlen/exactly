@@ -20,8 +20,8 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution import command_executors
-from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
@@ -94,12 +94,12 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         program = resolver.resolve_program(self._program)
         storage_dir = environment.tmp_dir__path_access.root_dir__existing
 
-        command_executor = self._command_executor(
+        command_processor = self._command_processor(
             os_services,
             self._executor(storage_dir)
         )
 
-        result = command_executor.execute(
+        result = command_processor.process(
             environment.proc_exe_settings,
             program.command,
         )
@@ -112,10 +112,10 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
         )
 
     @staticmethod
-    def _command_executor(os_services: OsServices,
-                          executor: ExecutableExecutor[ResultWithFiles],
-                          ) -> CommandExecutor[ResultWithFiles]:
-        return command_executors.executor_that_raises_hard_error(
+    def _command_processor(os_services: OsServices,
+                           executor: ExecutableExecutor[ResultWithFiles],
+                           ) -> CommandProcessor[ResultWithFiles]:
+        return command_processors.processor_that_raises_hard_error(
             os_services,
             executor
         )

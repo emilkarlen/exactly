@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.program_execution import command_executors
-from exactly_lib.test_case_utils.program_execution.command_executor import CommandExecutor
+from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     TransformedStringModelFromFileCreatedOnDemand
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -85,17 +85,17 @@ class _TransformedFileCreator:
         self.transformer = transformer
 
     def create(self, model: StringModel) -> Path:
-        command_executor = self._command_executor(model)
+        command_processor = self._command_processor(model)
         app_env = self.environment
-        result = command_executor.execute(
+        result = command_processor.process(
             app_env.process_execution_settings,
             self.transformer.command,
         )
 
         return result.files.path_of_std(ProcOutputFile.STDOUT)
 
-    def _command_executor(self, model: StringModel) -> CommandExecutor[ExitCodeAndFiles]:
-        return command_executors.executor_that_optionally_raises_hard_error_on_non_zero_exit_code(
+    def _command_processor(self, model: StringModel) -> CommandProcessor[ExitCodeAndFiles]:
+        return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
             self.environment.os_services,
             self._executor(model),

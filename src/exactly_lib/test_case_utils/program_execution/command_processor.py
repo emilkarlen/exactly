@@ -6,11 +6,11 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.process_execution.process_executor import T
 
 
-class CommandExecutor(Generic[T], ABC):
-    """Executes a Command"""
+class CommandProcessor(Generic[T], ABC):
+    """Executes a :class:`Command`, with custom processing of the result."""
 
     @abstractmethod
-    def execute(self,
+    def process(self,
                 settings: ProcessExecutionSettings,
                 command: Command,
                 ) -> T:
