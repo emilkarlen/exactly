@@ -2,7 +2,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
-from exactly_lib.util.file_utils.std import ProcessExecutionFile
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import Executable, ProcessExecutionSettings
 
 
@@ -19,9 +19,7 @@ class ProcessExecutor:
     def execute(self,
                 executable: Executable,
                 settings: ProcessExecutionSettings,
-                stdin: ProcessExecutionFile,
-                stdout: ProcessExecutionFile,
-                stderr: ProcessExecutionFile,
+                files: StdFiles,
                 ) -> int:
         """
         :return: Exit code from successful execution
@@ -30,9 +28,9 @@ class ProcessExecutor:
         try:
             return subprocess.call(
                 executable.arg_list_or_str,
-                stdin=stdin,
-                stdout=stdout,
-                stderr=stderr,
+                stdin=files.stdin,
+                stdout=files.output.out,
+                stderr=files.output.err,
                 env=settings.environ,
                 timeout=settings.timeout_in_seconds,
                 shell=executable.is_shell,

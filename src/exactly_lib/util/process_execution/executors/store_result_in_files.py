@@ -2,7 +2,7 @@ import pathlib
 from typing import ContextManager
 
 from exactly_lib.util.file_utils import ensure_file_existence
-from exactly_lib.util.file_utils.std import ProcessExecutionFile
+from exactly_lib.util.file_utils.std import ProcessExecutionFile, StdFiles, StdOutputFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -71,9 +71,13 @@ class ExecutorThatStoresResultInFilesInDir(ExecutableExecutor[ExitCodeAndFiles])
                     exit_code = self._executor.execute(
                         executable,
                         settings,
-                        stdin=f_stdin,
-                        stdout=f_stdout,
-                        stderr=f_stderr,
+                        StdFiles(
+                            f_stdin,
+                            StdOutputFiles(
+                                f_stdout,
+                                f_stderr,
+                            ),
+                        ),
                     )
         with exit_code_path.open('w') as exit_code_f:
             exit_code_f.write(str(exit_code))

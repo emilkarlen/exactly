@@ -8,7 +8,7 @@ from exactly_lib.util.process_execution.process_executor import ProcessExecutor,
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles
 from . import store_result_in_files
 from ..process_output_files import ProcOutputFile
-from ...file_utils.std import ProcessExecutionFile
+from ...file_utils.std import ProcessExecutionFile, StdFiles, StdOutputFiles
 from ...file_utils.text_reader import TextFromFileReader
 
 
@@ -124,9 +124,11 @@ class ExecutorThatReadsStderrOnNonZeroExitCode(ExecutableExecutor[Result]):
                 exit_code = self._executor.execute(
                     executable,
                     settings,
-                    stdin=stdin_f,
-                    stdout=subprocess.DEVNULL,
-                    stderr=stderr_f,
+                    StdFiles(
+                        stdin_f,
+                        StdOutputFiles(subprocess.DEVNULL,
+                                       stderr_f)
+                    ),
                 )
 
         return Result(
