@@ -8,8 +8,10 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -147,9 +149,12 @@ class Arrangement:
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,
-                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
+                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None,
+                 os_services: OsServices = os_services_access.new_for_current_os(),
+                 ):
         self.actor = actor
         self.act_phase_os_process_executor = atc_os_process_executor
+        self.os_services = os_services
         self.hds = hds
         self.environ = environ
         self.timeout_in_seconds = timeout_in_seconds
@@ -203,6 +208,7 @@ def _execute(test_case: TestCase,
         test_case,
         ExecutionConfiguration(environ,
                                arrangement.act_phase_os_process_executor,
+                               arrangement.os_services,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.predefined_symbols_or_none,
                                exe_atc_and_skip_assertions=arrangement.exe_atc_and_skip_assertions),

@@ -21,37 +21,10 @@ class ProcessResultReporterWithInitialExitValueOutput(ProcessResultReporter):
         self._output_rest = output_rest
 
     def report(self, environment: Environment) -> int:
-        self._print_exit_value(environment)
+        _output_exit_value(environment.std_file_printers.get(self._exit_value_printer),
+                           self._exit_value)
         self._output_rest(environment)
         return self._exit_value.exit_code
-
-    def _print_exit_value(self, environment: Environment):
-        exit_value_printer = environment.std_file_printers.get(self._exit_value_printer)
-
-        exit_value_printer.write_colored_line(self._exit_value.exit_identifier,
-                                              self._exit_value.color)
-        exit_value_printer.flush()
-
-
-class ProcessResultReporterWithInitialExitValueOutputBase(ProcessResultReporter, ABC):
-    def __init__(self,
-                 exit_value_printer: ProcOutputFile,
-                 ):
-        self._exit_value_printer = exit_value_printer
-
-    def report(self, environment: Environment) -> int:
-        exit_value = self._exit_value()
-        _output_exit_value(environment.std_file_printers.get(self._exit_value_printer), exit_value)
-        self._output_rest(environment)
-        return exit_value.exit_code
-
-    @abstractmethod
-    def _exit_value(self) -> ExitValue:
-        pass
-
-    @abstractmethod
-    def _output_rest(self, environment: Environment):
-        pass
 
 
 class ProcessResultReporterOfMajorBlocksBase(ProcessResultReporter, ABC):

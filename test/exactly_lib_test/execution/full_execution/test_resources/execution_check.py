@@ -4,9 +4,10 @@ import unittest
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
-from exactly_lib.test_case import atc_os_proc_executors
+from exactly_lib.test_case import atc_os_proc_executors, os_services_access
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
@@ -21,7 +22,9 @@ class Arrangement:
                  initial_settings_builder: SetupSettingsBuilder = None,
                  predefined_properties: PredefinedProperties = PredefinedProperties({}),
                  atc_os_process_executor: AtcOsProcessExecutor =
-                 atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR
+                 atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                 os_services: OsServices = os_services_access.new_for_current_os(),
+
                  ):
         self.test_case = test_case
         self.predefined_properties = predefined_properties
@@ -30,6 +33,7 @@ class Arrangement:
             initial_settings_builder = SetupSettingsBuilder()
         self.initial_settings_builder = initial_settings_builder
         self.atc_os_process_executor = atc_os_process_executor
+        self.os_services = os_services
 
 
 class Expectation:
@@ -44,6 +48,7 @@ def check(put: unittest.TestCase,
           is_keep_sandbox: bool = False):
     exe_conf = ExecutionConfiguration(dict(os.environ),
                                       arrangement.atc_os_process_executor,
+                                      arrangement.os_services,
                                       sandbox_root_name_resolver.for_test(),
                                       arrangement.predefined_properties.predefined_symbols)
     result = execution.execute(

@@ -12,32 +12,34 @@ from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 from exactly_lib.util.str_ import str_constructor
 
 
+class OsServicesError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+
 def new_for_current_os() -> OsServices:
     """
-    :raises :class:`DetectedException`: The current operating system is not supported
+    :raises :class:`OsServicesError`: The current operating system is not supported
     """
     return new_for_os(os.name)
 
 
 def new_for_current_os__with_environ() -> OsServices:
     """
-    :raises :class:`DetectedException`: The current operating system is not supported
+    :raises :class:`OsServicesError`: The current operating system is not supported
     """
     return new_for_current_os()
 
 
 def new_for_os(os_name: str) -> OsServices:
     """
-    :raises :class:`DetectedException`: The given operating system is not supported
+    :raises :class:`OsServicesError`: The given operating system is not supported
     """
     try:
         executable_factory = executable_factories.get_factory_for_operating_system(os_name)
     except KeyError:
-        raise DetectedException(
-            FailureDetails.new_message(
-                text_docs.single_line(
-                    'Unsupported Operating System: {}'.format(os_name)),
-            )
+        raise OsServicesError(
+            'Unsupported Operating System: {}'.format(os_name)
         )
     return _Default(executable_factory)
 
@@ -47,9 +49,10 @@ class _Default(OsServices):
                  executable_factory: ExecutableFactory,
                  ):
         self._executable_factory = executable_factory
+        self._process_executor = ProcessExecutor()
 
     def process_executor(self) -> ProcessExecutor:
-        return ProcessExecutor()
+        return self._process_executor
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:

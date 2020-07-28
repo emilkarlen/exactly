@@ -13,6 +13,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import new_empty_section_contents
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.os_services import OsServices
@@ -352,6 +353,7 @@ def _execute(actor: Actor,
                 test_case,
                 ExecutionConfiguration(dict(os.environ),
                                        DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                                       os_services_access.new_for_current_os(),
                                        sandbox_root_name_resolver.for_test()),
                 ConfPhaseValues(actor,
                                 hds),

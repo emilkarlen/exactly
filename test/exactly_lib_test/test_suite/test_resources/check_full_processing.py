@@ -17,7 +17,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case import atc_os_proc_executors
+from exactly_lib.test_case import atc_os_proc_executors, os_services_access
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor
@@ -90,6 +90,7 @@ def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup)
     return case_processing.Configuration(_DEFAULT_TEST_CASE_DEFINITION,
                                          test_case_handling_setup,
                                          atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                                         os_services_access.new_for_current_os(),
                                          False)
 
 

@@ -11,6 +11,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing.test_case_processing import Preprocessor
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
@@ -88,6 +89,7 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
         ])
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
+                                  os_services_access.new_for_current_os(),
                                   suite_conf_parser)
 
         suite_file = File(

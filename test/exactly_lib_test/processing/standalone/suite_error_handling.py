@@ -9,6 +9,7 @@ from exactly_lib.definitions.test_suite import file_names, section_names
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
+from exactly_lib.test_case import os_services_access
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
 from exactly_lib_test.processing.test_resources.test_case_setup import \
@@ -62,6 +63,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
+                                  os_services_access.new_for_current_os(),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
@@ -119,6 +121,7 @@ class TestFileInclusionErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
+                                  os_services_access.new_for_current_os(),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
@@ -173,6 +176,7 @@ class TestReferenceToNonExistingTestCaseFileInSuiteShouldBeIgnored(unittest.Test
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
+                                  os_services_access.new_for_current_os(),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:

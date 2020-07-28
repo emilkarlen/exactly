@@ -6,11 +6,13 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
+from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
+from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
@@ -18,11 +20,14 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolContainer, \
     SymbolDependentValue
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.document import SectionContents
 
@@ -133,7 +138,7 @@ class MainProgram:
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
-                os.environ,
+                dict(os.environ),
                 predefined_symbols,
             )
         )
@@ -156,19 +161,24 @@ class MainProgram:
 
     def _get_reporter(self,
                       command_line_arguments: List[str]) -> ProcessResultReporter:
-        if len(command_line_arguments) > 0:
-            if command_line_arguments[0] in self._commands:
-                return _parse_and_exit_on_error(self._commands[command_line_arguments[0]],
-                                                command_line_arguments[1:])
-        return _parse_and_exit_on_error(self._parse_and_execute_test_case,
-                                        command_line_arguments)
+        try:
+            if len(command_line_arguments) > 0:
+                if command_line_arguments[0] in self._commands:
+                    return _parse_and_exit_on_error(self._commands[command_line_arguments[0]],
+                                                    command_line_arguments[1:])
+            return _parse_and_exit_on_error(self._parse_and_execute_test_case,
+                                            command_line_arguments)
+        except _StartupError as ex:
+            return ex.result
 
     def execute_test_case(self,
                           settings: TestCaseExecutionSettings,
                           ) -> ProcessResultReporter:
         from exactly_lib.processing.standalone import processor
+
         the_processor = processor.Processor(self._test_case_definition,
                                             self._atc_os_process_executor,
+                                            _resolve_os_services(),
                                             self._test_suite_definition.configuration_section_parser)
         return processor.ProcessorExecutionReporter(the_processor, settings)
 
@@ -179,9 +189,11 @@ class MainProgram:
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
         from exactly_lib.test_suite import processing
+
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,
                                                          self._atc_os_process_executor,
+                                                         _resolve_os_services(),
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_sdv)
         processor = processing.Processor(default_configuration,
@@ -257,13 +269,34 @@ class MainProgram:
         return handle_help_request_rr(application_help, help_request)
 
 
+class _StartupError(Exception):
+    def __init__(self, result: ProcessResultReporter):
+        self.result = result
+
+
 def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str]], ProcessResultReporter],
                              arguments: List[str],
                              ) -> ProcessResultReporter:
     try:
         return parse_arguments_and_execute_callable(arguments)
     except argument_parsing_utils.ArgumentParsingError as ex:
-        return _InvalidUsageReporter(ex.error_message)
+        raise _StartupError(_InvalidUsageReporter(ex.error_message))
+
+
+def _resolve_os_services() -> OsServices:
+    try:
+        return os_services_access.new_for_current_os()
+    except os_services_access.OsServicesError as ex:
+        def print_ex_msg(environment: Environment):
+            printer = environment.std_file_printers.get(ProcOutputFile.STDERR)
+            printer.write_line(ex.msg)
+
+        raise _StartupError(
+            ProcessResultReporterWithInitialExitValueOutput(
+                exit_values.EXECUTION__IMPLEMENTATION_ERROR,
+                ProcOutputFile.STDOUT,
+                print_ex_msg)
+        )
 
 
 class _InvalidUsageReporter(ProcessResultReporter):

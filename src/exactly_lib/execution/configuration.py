@@ -2,6 +2,7 @@ from typing import Optional, Dict
 
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 
@@ -38,6 +39,7 @@ class ExecutionConfiguration(tuple):
     def __new__(cls,
                 environ: Dict[str, str],
                 act_phase_os_process_executor: AtcOsProcessExecutor,
+                os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
                 predefined_symbols: Optional[SymbolTable] = None,
                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
@@ -45,7 +47,8 @@ class ExecutionConfiguration(tuple):
                                    act_phase_os_process_executor,
                                    sandbox_root_dir_resolver,
                                    symbol_table_from_none_or_value(predefined_symbols),
-                                   exe_atc_and_skip_assertions))
+                                   exe_atc_and_skip_assertions,
+                                   os_services))
 
     @property
     def environ(self) -> Dict[str, str]:
@@ -58,6 +61,10 @@ class ExecutionConfiguration(tuple):
     @property
     def atc_os_process_executor(self) -> AtcOsProcessExecutor:
         return self[1]
+
+    @property
+    def os_services(self) -> OsServices:
+        return self[5]
 
     @property
     def sds_root_dir_resolver(self) -> SandboxRootDirNameResolver:

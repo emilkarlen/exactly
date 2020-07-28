@@ -10,6 +10,7 @@ from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 
 
@@ -17,9 +18,11 @@ class Processor:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  atc_os_process_executor: AtcOsProcessExecutor,
+                 os_services: OsServices,
                  suite_configuration_section_parser: SectionElementParser):
         self._test_case_definition = test_case_definition
         self._atc_os_process_executor = atc_os_process_executor
+        self._os_services = os_services
         self._suite_configuration_section_parser = suite_configuration_section_parser
 
     def process(self,
@@ -75,6 +78,7 @@ class Processor:
         exe_conf = ExecutionConfiguration(
             self._test_case_definition.predefined_properties.environ,
             self._atc_os_process_executor,
+            self._os_services,
             sandbox_root_dir_resolver,
             self._test_case_definition.predefined_properties.predefined_symbols,
             result_reporter.execute_atc_and_skip_assertions()
