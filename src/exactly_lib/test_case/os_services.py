@@ -21,6 +21,10 @@ class OsServices(ABC):
         """
         pass
 
+    @abstractmethod
+    def executable_factory(self) -> ExecutableFactory:
+        pass
+
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         """
         :raises DetectedException
@@ -56,9 +60,3 @@ class OsServices(ABC):
         return exception_detection.return_success_or_hard_error(
             self.copy_tree_preserve_as_much_as_possible__detect_ex,
             src, dst)
-
-    def executable_factory__detect_ex(self) -> ExecutableFactory:
-        """
-        :raises DetectedException
-        """
-        raise NotImplementedError('abstract method')

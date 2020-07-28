@@ -26,7 +26,7 @@ class Processor(Generic[T], CommandProcessor[T]):
                 command: Command,
                 ) -> T:
         try:
-            executable = self.os_services.executable_factory__detect_ex().make(command)
+            executable = self.os_services.executable_factory().make(command)
             return self.exe_of_executable.execute(settings, executable)
         except DetectedException as ex:
             raise HardErrorException(

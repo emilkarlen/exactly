@@ -28,5 +28,5 @@ class OsServicesThatRaises(OsServices):
     def copy_tree_preserve_as_much_as_possible(self, src: str, dst: str) -> sh.SuccessOrHardError:
         raise NotImplementedError('Should never be used')
 
-    def executable_factory__detect_ex(self) -> ExecutableFactory:
+    def executable_factory(self) -> ExecutableFactory:
         raise NotImplementedError('Should never be used')
