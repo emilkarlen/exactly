@@ -5,7 +5,7 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case import os_services as oss
+from exactly_lib.test_case import os_services_access as oss
 from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
@@ -22,7 +22,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestIsExistingRegularFileAssertionPart(unittest.TestCase):
-    the_os_services = oss.new_default()
+    the_os_services = oss.new_for_current_os()
     environment = fake_post_sds_environment()
 
     def test_model_is_returned_WHEN_file_is_existing_regular_file(self):

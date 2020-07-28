@@ -4,7 +4,8 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -35,7 +36,7 @@ def arrangement(pre_contents_population_action: TcdsAction = TcdsAction(),
                 non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                 tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                 act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
-                os_services: OsServices = new_default(),
+                os_services: OsServices = new_for_current_os(),
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                 symbols: SymbolTable = None,
                 ) -> ArrangementPostAct:

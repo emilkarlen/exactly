@@ -18,7 +18,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure, PhaseStepFailureException
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import ActionToCheck, Actor
-from exactly_lib.test_case.os_services import new_default
+from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -209,7 +209,7 @@ class _PartialExecutor:
 
     def _setup_post_sds_environment(self):
         self._construct_and_set_sds()
-        self._os_services = new_default()
+        self._os_services = new_for_current_os()
         self._set_cwd_to_act_dir()
         self.__post_sds_symbol_table = self.exe_conf.predefined_symbols.copy()
         self._phase_tmp_space_factory = phase_file_space.PhaseTmpFileSpaceFactory(

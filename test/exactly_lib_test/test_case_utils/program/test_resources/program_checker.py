@@ -3,7 +3,7 @@ from typing import Generic
 
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case import os_services
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case_utils.program_execution import file_transformation_utils as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util.file_utils import misc_utils
@@ -58,7 +58,7 @@ class ExecutionApplier(Applier[Program, ProcOutputFile, ResultWithTransformation
         pgm_output_dir = resolving_environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            process_execution_settings,
-                                                                           os_services.new_default(),
+                                                                           os_services_access.new_for_current_os(),
                                                                            resolving_environment.application_environment.tmp_files_space,
                                                                            input_,
                                                                            primitive)

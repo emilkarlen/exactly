@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.symbol.logic.resolving_helper import LogicTypeResolvingHelper
-from exactly_lib.test_case import os_services
+from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -17,7 +17,7 @@ def resolving_helper(
         symbols: Optional[SymbolTable] = None,
         tcds: Tcds = fake_tcds(),
         file_space: DirFileSpace = DirFileSpaceThatMustNoBeUsed(),
-        os_services_: OsServices = os_services.new_default(),
+        os_services_: OsServices = os_services_access.new_for_current_os(),
         process_execution_settings: ProcessExecutionSettings = execution_elements.with_no_timeout(),
 ) -> LogicTypeResolvingHelper:
     return LogicTypeResolvingHelper(

@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import ConstantSuccessSdvValidator
-from exactly_lib.test_case import os_services as oss
+from exactly_lib.test_case import os_services_access as oss
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
@@ -30,7 +30,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestAssertionPart(unittest.TestCase):
-    the_os_services = oss.new_default()
+    the_os_services = oss.new_for_current_os()
     environment = fake_post_sds_environment()
 
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
@@ -60,7 +60,7 @@ class TestAssertionPart(unittest.TestCase):
 
 
 class TestSequence(unittest.TestCase):
-    the_os_services = oss.new_default()
+    the_os_services = oss.new_for_current_os()
     environment = fake_post_sds_environment()
 
     def test_WHEN_list_of_assertion_parts_is_empty_THEN_no_exception_SHOULD_be_raised(self):
@@ -201,7 +201,7 @@ class TestSequence(unittest.TestCase):
 
 
 class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
-    the_os_services = oss.new_default()
+    the_os_services = oss.new_for_current_os()
 
     def test_argument_getter_SHOULD_be_given_environment_as_argument(self):
         # ARRANGE #

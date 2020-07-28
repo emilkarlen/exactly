@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
-from exactly_lib.test_case.os_services import new_default
+from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
@@ -48,7 +48,7 @@ class TestCaseBase(unittest.TestCase):
             matcher_cases: Sequence[Case]):
 
         environment = fake_post_sds_environment()
-        os_services = new_default()
+        os_services = new_for_current_os()
 
         with string_model_factory() as model_factory:
             # This test is expected to not create files using the above object,
@@ -76,7 +76,7 @@ class TestCaseBase(unittest.TestCase):
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
-        os_services = new_default()
+        os_services = new_for_current_os()
 
         matchers = [
             ('unconditionally true', MatcherWithConstantResult(True)),

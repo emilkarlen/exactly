@@ -7,7 +7,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -51,7 +52,7 @@ class Arrangement(ArrangementWithSds):
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 os_services: OsServices = new_default(),
+                 os_services: OsServices = new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  symbols: SymbolTable = None,

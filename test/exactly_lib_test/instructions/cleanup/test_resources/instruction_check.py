@@ -5,7 +5,8 @@ from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -36,7 +37,7 @@ class Arrangement(ArrangementWithSds):
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents_before_main: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 os_services: OsServices = new_default(),
+                 os_services: OsServices = new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  symbols: SymbolTable = None,
