@@ -4,6 +4,7 @@ from typing import Sequence, TypeVar, Generic
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.actor import ActionToCheck, Actor, AtcOsProcessExecutor
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
@@ -13,7 +14,6 @@ from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils.std import StdFiles
 
 

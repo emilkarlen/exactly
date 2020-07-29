@@ -11,6 +11,7 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator, \
     ValidationStep
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
@@ -18,7 +19,6 @@ from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program_execution import command_processors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor, RET
 from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles

@@ -9,6 +9,7 @@ from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -22,7 +23,6 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
     MatcherWTrace

@@ -4,12 +4,12 @@ from exactly_lib.common.report_rendering.description_tree import rendering__node
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case.result import svh
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct.structure import MajorBlock

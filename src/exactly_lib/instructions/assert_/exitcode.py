@@ -15,6 +15,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -27,7 +28,6 @@ from exactly_lib.test_case_utils.matcher.impls.property_getters import PropertyG
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter, PropertyGetterAdv
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.str_ import str_constructor

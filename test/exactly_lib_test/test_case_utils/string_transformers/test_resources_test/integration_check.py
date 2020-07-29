@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.util import symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
     application_environment_for_test

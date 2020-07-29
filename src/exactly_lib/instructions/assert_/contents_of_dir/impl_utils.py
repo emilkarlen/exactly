@@ -7,6 +7,7 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure import ddv_validators
@@ -21,7 +22,6 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable

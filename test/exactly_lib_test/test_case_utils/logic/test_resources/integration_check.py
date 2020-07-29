@@ -15,9 +15,9 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv, ApplicationEnvironmentDependentValue
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds

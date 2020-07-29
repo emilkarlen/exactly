@@ -96,7 +96,7 @@ class ExecutorBase(OsProcessExecutor, ABC):
 
     @staticmethod
     def _hard_error(ex: Exception):
-        from exactly_lib.type_system.logic.hard_error import HardErrorException
+        from exactly_lib.test_case.hard_error import HardErrorException
         from exactly_lib.common.report_rendering.parts.failure_details import FailureDetailsRenderer
         from exactly_lib.test_case.result.failure_details import FailureDetails
         from exactly_lib.execution.phase_step import ACT__PREPARE

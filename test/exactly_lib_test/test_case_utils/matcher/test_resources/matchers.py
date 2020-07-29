@@ -5,6 +5,7 @@ from typing import TypeVar, Sequence, List
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
@@ -12,7 +13,6 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
     MatcherWTrace

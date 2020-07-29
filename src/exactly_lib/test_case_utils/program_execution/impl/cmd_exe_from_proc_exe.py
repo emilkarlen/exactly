@@ -33,7 +33,7 @@ class CommandExecutorFromProcessExecutor(CommandExecutor):
 
 
 def _raise_hard_error(command: Command, ex: process_executor.ProcessExecutionException):
-    from exactly_lib.type_system.logic.hard_error import HardErrorException
+    from exactly_lib.test_case.hard_error import HardErrorException
     from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
     from exactly_lib.util.simple_textstruct.rendering import blocks
     from exactly_lib.util.simple_textstruct.rendering import line_objects

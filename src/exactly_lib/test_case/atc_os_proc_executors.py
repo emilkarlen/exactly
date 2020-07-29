@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import executable_factories
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.executable_factory import ExecutableFactory
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

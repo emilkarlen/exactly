@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator

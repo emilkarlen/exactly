@@ -4,12 +4,12 @@ from abc import ABC, abstractmethod
 from typing import Iterator, Optional, List
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers, constant
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel, FileTypeAccess
 from exactly_lib.type_system.logic.files_matcher import FileModel, FilesMatcherModel
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 
 
 class _FilesGenerator(ABC):

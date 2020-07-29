@@ -5,9 +5,9 @@ from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.actor import ParseException
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, simple_success, \

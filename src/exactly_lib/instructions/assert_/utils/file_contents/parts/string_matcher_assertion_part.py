@@ -5,10 +5,10 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv, StringMatcher
 from exactly_lib.type_system.logic.string_model import StringModel

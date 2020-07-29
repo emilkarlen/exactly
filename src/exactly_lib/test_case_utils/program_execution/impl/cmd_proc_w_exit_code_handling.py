@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import Generic, Callable
 
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor, RET
-from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.text_reader import TextFromFileReader
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
