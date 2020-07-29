@@ -25,8 +25,8 @@ def processor_that_raises_hard_error_on_non_zero_exit_code(
         get_exit_code: Callable[[T], int],
         get_stderr: Callable[[T], Path],
 ) -> CommandProcessor[T]:
-    from .impl import cmd_executor_w_exit_code_handling
-    return cmd_executor_w_exit_code_handling.Processor(
+    from .impl import cmd_proc_w_exit_code_handling
+    return cmd_proc_w_exit_code_handling.Processor(
         std_err_contents.STD_ERR_TEXT_READER,
         get_exit_code,
         get_stderr,
