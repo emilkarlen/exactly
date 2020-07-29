@@ -9,8 +9,9 @@ from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.processors import TestCaseDefinition, Configuration
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case import atc_os_proc_executors, os_services_access
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util import symbol_table
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_does_nothing

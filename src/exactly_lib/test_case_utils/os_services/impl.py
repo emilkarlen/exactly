@@ -1,9 +1,7 @@
-import os
 import pathlib
 import shutil
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.test_case import executable_factories
 from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices
@@ -12,39 +10,7 @@ from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 from exactly_lib.util.str_ import str_constructor
 
 
-class OsServicesError(Exception):
-    def __init__(self, msg: str):
-        self.msg = msg
-
-
-def new_for_current_os() -> OsServices:
-    """
-    :raises :class:`OsServicesError`: The current operating system is not supported
-    """
-    return new_for_os(os.name)
-
-
-def new_for_current_os__with_environ() -> OsServices:
-    """
-    :raises :class:`OsServicesError`: The current operating system is not supported
-    """
-    return new_for_current_os()
-
-
-def new_for_os(os_name: str) -> OsServices:
-    """
-    :raises :class:`OsServicesError`: The given operating system is not supported
-    """
-    try:
-        executable_factory = executable_factories.get_factory_for_operating_system(os_name)
-    except KeyError:
-        raise OsServicesError(
-            'Unsupported Operating System: {}'.format(os_name)
-        )
-    return _Default(executable_factory)
-
-
-class _Default(OsServices):
+class OsServicesForAnyOs(OsServices):
     def __init__(self,
                  executable_factory: ExecutableFactory,
                  ):

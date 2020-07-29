@@ -17,7 +17,8 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case import atc_os_proc_executors, os_services_access
+from exactly_lib.test_case import atc_os_proc_executors
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor

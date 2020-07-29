@@ -8,12 +8,13 @@ from exactly_lib.actors.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
-from exactly_lib.test_case import atc_os_proc_executors, os_services_access
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 

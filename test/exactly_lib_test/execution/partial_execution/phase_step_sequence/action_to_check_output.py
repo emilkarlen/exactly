@@ -9,12 +9,12 @@ from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus
-from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result

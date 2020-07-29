@@ -2,7 +2,7 @@ from typing import Optional
 
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.os_services_access import new_for_current_os
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -30,7 +30,7 @@ class ArrangementWithSds(ArrangementBase):
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 os_services: OsServices = new_for_current_os(),
+                 os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings=with_no_timeout(),
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
@@ -51,7 +51,7 @@ class ArrangementWithSds(ArrangementBase):
 
 class ProcessExecutionArrangement:
     def __init__(self,
-                 os_services: OsServices = new_for_current_os(),
+                 os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  ):
         self.os_services = os_services
@@ -78,7 +78,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  act_result_producer: ActResultProducer = ActResultProducerFromActResult(),
-                 os_services: OsServices = new_for_current_os(),
+                 os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,

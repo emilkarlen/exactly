@@ -16,8 +16,9 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case import atc_os_proc_executors, os_services_access
+from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError

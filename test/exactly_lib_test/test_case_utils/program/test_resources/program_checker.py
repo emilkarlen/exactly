@@ -3,7 +3,7 @@ from typing import Generic
 
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case import os_services_access
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program_execution import file_transformation_utils as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util.file_utils import misc_utils

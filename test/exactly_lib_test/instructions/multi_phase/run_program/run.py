@@ -9,8 +9,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.process_execution.execution_elements import with_environ
 from exactly_lib.util.textformat.structure.core import ParagraphItem

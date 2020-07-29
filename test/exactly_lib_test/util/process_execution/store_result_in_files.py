@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case.os_services_access import new_for_current_os
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util import exception
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.util.process_execution.test_resources import executables
 from exactly_lib_test.util.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 
-PROCESS_EXECUTOR = new_for_current_os().process_executor()
+PROCESS_EXECUTOR = os_services_access.new_for_current_os().process_executor()
 
 
 def suite() -> unittest.TestSuite:

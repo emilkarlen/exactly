@@ -5,10 +5,10 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.string_matcher_assertion_part import \
     StringMatcherAssertionPart
-from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.result import pfh
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
+from exactly_lib.test_case_utils.os_services.os_services_access import new_for_current_os
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv

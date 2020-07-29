@@ -9,7 +9,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
-from exactly_lib.test_case import os_services_access
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite import structure
 from exactly_lib_test.execution.full_execution.test_resources.result_values import DUMMY_SDS, \
     full_result_with_failure_info

@@ -8,12 +8,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.os_services_access import new_for_current_os
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
@@ -52,7 +52,7 @@ class Arrangement(ArrangementWithSds):
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
-                 os_services: OsServices = new_for_current_os(),
+                 os_services: OsServices = os_services_access.new_for_current_os(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
                  symbols: SymbolTable = None,

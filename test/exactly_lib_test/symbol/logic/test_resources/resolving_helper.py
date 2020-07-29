@@ -1,9 +1,9 @@
 from typing import Optional
 
 from exactly_lib.symbol.logic.resolving_helper import LogicTypeResolvingHelper
-from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed

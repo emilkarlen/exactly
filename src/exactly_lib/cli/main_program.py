@@ -20,9 +20,9 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolContainer, \
     SymbolDependentValue
-from exactly_lib.test_case import os_services_access
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import argument_parsing_utils
