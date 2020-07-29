@@ -22,11 +22,13 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import svh, sh
+from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_string, parse_path, parse_list
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution import commands
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
@@ -141,8 +143,11 @@ class _ActionToCheck(ActionToCheck):
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles,
                 ) -> ExitCodeOrHardError:
-        command = self._make_command(resolving_helper_for_instruction_env(environment))
-        return os_process_executor.execute(command, std_files, environment.proc_exe_settings)
+        try:
+            command = self._make_command(resolving_helper_for_instruction_env(environment))
+            return os_process_executor.execute(command, std_files, environment.proc_exe_settings)
+        except HardErrorException as ex:
+            return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))
 
 
 T = TypeVar('T')
