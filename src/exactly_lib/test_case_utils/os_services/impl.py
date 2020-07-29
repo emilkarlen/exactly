@@ -21,12 +21,9 @@ class OsServicesForAnyOs(OsServices):
     def command_executor(self) -> CommandExecutor:
         from ..program_execution.impl import cmd_exe_from_proc_exe
         return cmd_exe_from_proc_exe.CommandExecutorFromProcessExecutor(
-            self.process_executor(),
-            self.executable_factory(),
+            self._process_executor,
+            self._executable_factory,
         )
-
-    def process_executor(self) -> ProcessExecutor:
-        return self._process_executor
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:
@@ -86,10 +83,8 @@ class OsServicesForAnyOs(OsServices):
                         )
                     ),
                     ex
-                ))
-
-    def executable_factory(self) -> ExecutableFactory:
-        return self._executable_factory
+                )
+            )
 
 
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
