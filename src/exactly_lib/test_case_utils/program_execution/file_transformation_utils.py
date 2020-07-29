@@ -4,7 +4,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
-from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -54,7 +53,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     :raises PfhHardErrorException: IO error.
     """
     command_processor = store_result_in_files.ProcessorThatStoresResultInFilesInDir(
-        command_executors.command_executor(os_services),
+        os_services.command_executor(),
         pgm_output_dir,
         file_ctx_managers.dev_null(),
     )

@@ -5,7 +5,6 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
-from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
@@ -56,7 +55,7 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
     def _command_processor(self, model: MODEL) -> CommandProcessor[Result]:
         app_env = self._application_environment
         return read_stderr_on_error.ProcessorThatReadsStderrOnNonZeroExitCode(
-            command_executors.command_executor(app_env.os_services),
+            app_env.os_services.command_executor(),
             app_env.tmp_files_space,
             self._run_conf.stdin(model),
             std_err_contents.STD_ERR_TEXT_READER,

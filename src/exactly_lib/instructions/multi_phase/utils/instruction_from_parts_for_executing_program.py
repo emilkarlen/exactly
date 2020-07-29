@@ -20,7 +20,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
@@ -115,7 +114,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
                            storage_dir: pathlib.Path,
                            ) -> CommandProcessor[ResultWithFiles]:
         return read_stderr_on_error.ProcessorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
-            command_executors.command_executor(os_services),
+            os_services.command_executor(),
             storage_dir,
             file_ctx_managers.dev_null(),
             std_err_contents.STD_ERR_TEXT_READER,

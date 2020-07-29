@@ -13,13 +13,9 @@ def processor__raw(
         os_services: OsServices,
         files: StdFiles,
 ) -> CommandProcessor[int]:
-    from .impl import cmd_exe_from_proc_exe
     from exactly_lib.util.process_execution.executors.executor import ProcessorFromExecutor
     return ProcessorFromExecutor(
-        cmd_exe_from_proc_exe.CommandExecutorFromProcessExecutor(
-            os_services.process_executor(),
-            os_services.executable_factory(),
-        ),
+        os_services.command_executor(),
         files
     )
 

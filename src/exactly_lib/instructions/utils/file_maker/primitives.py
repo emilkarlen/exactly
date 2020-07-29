@@ -15,7 +15,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
-from exactly_lib.test_case_utils.program_execution import command_processors, command_executors
+from exactly_lib.test_case_utils.program_execution import command_processors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
@@ -136,7 +136,7 @@ class FileMakerForContentsFromProgram(FileMaker):
                                       storage_dir: pathlib.Path,
                                       ) -> CommandProcessor[ExitCodeAndFiles]:
         return store_result_in_files.ProcessorThatStoresResultInFilesInDir(
-            command_executors.command_executor(os_services),
+            os_services.command_executor(),
             storage_dir,
             file_ctx_managers.dev_null(),
         )
