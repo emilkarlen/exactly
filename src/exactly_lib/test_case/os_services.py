@@ -2,6 +2,7 @@ import pathlib
 from abc import ABC, abstractmethod
 
 from exactly_lib.test_case import exception_detection
+from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.result import sh
 from exactly_lib.util.process_execution.process_executor import ProcessExecutor
@@ -23,6 +24,10 @@ class OsServices(ABC):
 
     @abstractmethod
     def executable_factory(self) -> ExecutableFactory:
+        pass
+
+    @abstractmethod
+    def command_executor(self) -> CommandExecutor:
         pass
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):

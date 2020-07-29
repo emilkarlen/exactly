@@ -2,6 +2,7 @@ import pathlib
 import shutil
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices
@@ -16,6 +17,13 @@ class OsServicesForAnyOs(OsServices):
                  ):
         self._executable_factory = executable_factory
         self._process_executor = ProcessExecutor()
+
+    def command_executor(self) -> CommandExecutor:
+        from ..program_execution.impl import cmd_exe_from_proc_exe
+        return cmd_exe_from_proc_exe.CommandExecutorFromProcessExecutor(
+            self.process_executor(),
+            self.executable_factory(),
+        )
 
     def process_executor(self) -> ProcessExecutor:
         return self._process_executor

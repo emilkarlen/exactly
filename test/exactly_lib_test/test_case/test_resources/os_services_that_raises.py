@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.result import sh
@@ -7,6 +8,9 @@ from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 
 
 class OsServicesThatRaises(OsServices):
+    def command_executor(self) -> CommandExecutor:
+        raise NotImplementedError('Should never be used')
+
     def process_executor(self) -> ProcessExecutor:
         raise NotImplementedError('Should never be used')
 
