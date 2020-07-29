@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution import command_processors, command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
     TransformedStringModelFromFileCreatedOnDemand
@@ -13,7 +13,6 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ExecutableExecutor
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -97,16 +96,15 @@ class _TransformedFileCreator:
     def _command_processor(self, model: StringModel) -> CommandProcessor[ExitCodeAndFiles]:
         return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
-            self.environment.os_services,
-            self._executor(model),
+            self._exit_code_agnostic_processor(model),
             ExitCodeAndFiles.exit_code.fget,
             ExitCodeAndFiles.stderr_file.fget,
         )
 
-    def _executor(self, model: StringModel) -> ExecutableExecutor[ExitCodeAndFiles]:
+    def _exit_code_agnostic_processor(self, model: StringModel) -> CommandProcessor[ExitCodeAndFiles]:
         path_of_file_with_model = model.as_file
-        return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
-            self.environment.os_services.process_executor(),
+        return store_result_in_files.ProcessorThatStoresResultInFilesInDir(
+            command_executors.command_executor(self.environment.os_services),
             self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
         )

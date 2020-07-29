@@ -5,16 +5,15 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
-from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherAdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result, \
-    ExecutorThatReadsStderrOnNonZeroExitCode
-from exactly_lib.util.process_execution.process_executor import ProcessExecutor, ExecutableExecutor
+from exactly_lib.util.process_execution.executors import read_stderr_on_error
+from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result
 from . import trace
 
 
@@ -56,19 +55,8 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
 
     def _command_processor(self, model: MODEL) -> CommandProcessor[Result]:
         app_env = self._application_environment
-        return command_processors.processor_that_raises_hard_error(
-            app_env.os_services,
-            self._executor(self._application_environment.os_services.process_executor(),
-                           model)
-        )
-
-    def _executor(self,
-                  process_executor: ProcessExecutor,
-                  model: MODEL,
-                  ) -> ExecutableExecutor[Result]:
-        app_env = self._application_environment
-        return ExecutorThatReadsStderrOnNonZeroExitCode(
-            process_executor,
+        return read_stderr_on_error.ProcessorThatReadsStderrOnNonZeroExitCode(
+            command_executors.command_executor(app_env.os_services),
             app_env.tmp_files_space,
             self._run_conf.stdin(model),
             std_err_contents.STD_ERR_TEXT_READER,

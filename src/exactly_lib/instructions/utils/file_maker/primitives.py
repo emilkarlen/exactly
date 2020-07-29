@@ -15,14 +15,14 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
-from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution import command_processors, command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ExecutableExecutor, T
+from exactly_lib.util.process_execution.process_executor import T
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -103,8 +103,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
         try:
             command_processor = self._command_processor(
-                os_services,
-                self._executor(os_services, storage_dir)
+                self._exit_code_agnostic_processor(os_services, storage_dir)
             )
             result = command_processor.process(
                 environment.proc_exe_settings,
@@ -123,23 +122,21 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                            program.transformation)
 
     def _command_processor(self,
-                           os_services: OsServices,
-                           executor: ExecutableExecutor[T],
+                           exit_code_agnostic_processor: CommandProcessor[T],
                            ) -> CommandProcessor[T]:
         return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
-            os_services,
-            executor,
+            exit_code_agnostic_processor,
             ExitCodeAndFiles.exit_code.fget,
             ExitCodeAndFiles.stderr_file.fget,
         )
 
     @staticmethod
-    def _executor(os_services: OsServices,
-                  storage_dir: pathlib.Path,
-                  ) -> ExecutableExecutor[ExitCodeAndFiles]:
-        return store_result_in_files.ExecutorThatStoresResultInFilesInDir(
-            os_services.process_executor(),
+    def _exit_code_agnostic_processor(os_services: OsServices,
+                                      storage_dir: pathlib.Path,
+                                      ) -> CommandProcessor[ExitCodeAndFiles]:
+        return store_result_in_files.ProcessorThatStoresResultInFilesInDir(
+            command_executors.command_executor(os_services),
             storage_dir,
             file_ctx_managers.dev_null(),
         )

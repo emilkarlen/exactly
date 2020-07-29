@@ -20,13 +20,12 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
-from exactly_lib.test_case_utils.program_execution import command_processors
+from exactly_lib.test_case_utils.program_execution import command_executors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
-from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles, \
-    ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode
-from exactly_lib.util.process_execution.process_executor import ExecutableExecutor
+from exactly_lib.util.process_execution.executors import read_stderr_on_error
+from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles
 from exactly_lib.util.process_execution.process_output_files import FileNames
 
 
@@ -96,7 +95,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
 
         command_processor = self._command_processor(
             os_services,
-            self._executor(os_services, storage_dir)
+            storage_dir,
         )
 
         result = command_processor.process(
@@ -113,19 +112,10 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
 
     @staticmethod
     def _command_processor(os_services: OsServices,
-                           executor: ExecutableExecutor[ResultWithFiles],
+                           storage_dir: pathlib.Path,
                            ) -> CommandProcessor[ResultWithFiles]:
-        return command_processors.processor_that_raises_hard_error(
-            os_services,
-            executor
-        )
-
-    @staticmethod
-    def _executor(os_services: OsServices,
-                  storage_dir: pathlib.Path,
-                  ) -> ExecutableExecutor[ResultWithFiles]:
-        return ExecutorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
-            os_services.process_executor(),
+        return read_stderr_on_error.ProcessorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
+            command_executors.command_executor(os_services),
             storage_dir,
             file_ctx_managers.dev_null(),
             std_err_contents.STD_ERR_TEXT_READER,
