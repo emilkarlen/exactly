@@ -7,11 +7,13 @@ from exactly_lib.util.process_execution.process_executor import T
 
 
 class CommandProcessor(Generic[T], ABC):
-    """Executes a :class:`Command`, with custom processing of the result."""
+    """Executes a :class:`Command`, with custom std-files and custom processing of the result."""
 
     @abstractmethod
     def process(self,
                 settings: ProcessExecutionSettings,
                 command: Command,
                 ) -> T:
-        pass
+        """
+        :raises :class:`HardErrorException`: Unable to execute :class:`Command`
+        """
