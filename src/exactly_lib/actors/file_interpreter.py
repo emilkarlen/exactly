@@ -145,7 +145,8 @@ class _ActionToCheck(ActionToCheck):
                 ) -> ExitCodeOrHardError:
         try:
             command = self._make_command(resolving_helper_for_instruction_env(environment))
-            return os_process_executor.execute(command, std_files, environment.proc_exe_settings)
+            exit_code = os_process_executor.execute(command, std_files, environment.proc_exe_settings)
+            return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))
 

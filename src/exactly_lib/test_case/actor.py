@@ -21,7 +21,12 @@ class AtcOsProcessExecutor:
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+                process_execution_settings: ProcessExecutionSettings,
+                ) -> int:
+        """
+        :return: Exit code from process execution
+        :raises :class:`HardErrorException`: Failure to execute process
+        """
         raise NotImplementedError()
 
 

@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import executable_factories
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.executable_factory import ExecutableFactory
-from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -19,17 +19,16 @@ class AtcSubProcessExecutor(AtcOsProcessExecutor):
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+                process_execution_settings: ProcessExecutionSettings) -> int:
         executable = self._executable_factory.make(command)
         try:
-            exit_code = subprocess.call(executable.arg_list_or_str,
-                                        timeout=process_execution_settings.timeout_in_seconds,
-                                        env=process_execution_settings.environ,
-                                        shell=executable.is_shell,
-                                        stdin=std_files.stdin,
-                                        stdout=std_files.output.out,
-                                        stderr=std_files.output.err)
-            return new_eh_exit_code(exit_code)
+            return subprocess.call(executable.arg_list_or_str,
+                                   timeout=process_execution_settings.timeout_in_seconds,
+                                   env=process_execution_settings.environ,
+                                   shell=executable.is_shell,
+                                   stdin=std_files.stdin,
+                                   stdout=std_files.output.out,
+                                   stderr=std_files.output.err)
         except ValueError as ex:
             return self._exception(ex)
         except OSError as ex:
@@ -38,16 +37,21 @@ class AtcSubProcessExecutor(AtcOsProcessExecutor):
             return self._exception(ex)
 
     @staticmethod
-    def _exception(ex: Exception) -> ExitCodeOrHardError:
-        msg = 'Error executing {atc} in sub process.'.format(atc=concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name)
-        return new_eh_hard_error(FailureDetails.new_exception(ex, message=msg))
+    def _exception(ex: Exception) -> int:
+        from exactly_lib.common.report_rendering.parts.failure_details import FailureDetailsRenderer
+        msg = 'Error executing {atc} in sub process.'.format(
+            atc=concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name
+        )
+        raise HardErrorException(
+            FailureDetailsRenderer(FailureDetails.new_exception(ex, message=msg))
+        )
 
 
 class _AtcSubProcessExecutorForUnsupportedOperatingSystem(AtcOsProcessExecutor):
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+                process_execution_settings: ProcessExecutionSettings) -> int:
         raise ValueError('System not supported: ' + os.name)
 
 

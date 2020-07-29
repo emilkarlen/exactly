@@ -1,6 +1,6 @@
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
-from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
+from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
@@ -15,20 +15,20 @@ class AtcOsProcessExecutorThatRecordsArguments(AtcOsProcessExecutor):
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+                process_execution_settings: ProcessExecutionSettings) -> int:
         self.command = command
         self.process_execution_settings = process_execution_settings
-        return new_eh_exit_code(0)
+        return 0
 
 
 class AtcOsProcessExecutorThatJustReturnsConstant(AtcOsProcessExecutor):
-    def __init__(self, constant_return_value: ExitCodeOrHardError = new_eh_exit_code(0)):
+    def __init__(self, constant_return_value: int = 0):
         self.constant_return_value = constant_return_value
 
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+                process_execution_settings: ProcessExecutionSettings) -> int:
         return self.constant_return_value
 
 
