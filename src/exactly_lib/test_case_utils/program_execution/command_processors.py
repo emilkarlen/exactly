@@ -4,6 +4,7 @@ from typing import TypeVar, Callable
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
+from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.process_executor import ExecutableExecutor
 
 T = TypeVar('T')
@@ -17,6 +18,21 @@ def processor_that_raises_hard_error(
     return cmd_exe_w_hard_error.Processor(
         os_services,
         exe_of_executable,
+    )
+
+
+def processor_that_raises_hard_error__command(
+        os_services: OsServices,
+        files: StdFiles,
+) -> CommandProcessor[int]:
+    from .impl import cmd_exe_from_proc_exe
+    from exactly_lib.util.process_execution.executors.executor import ProcessorFromExecutor
+    return ProcessorFromExecutor(
+        cmd_exe_from_proc_exe.CommandExecutorFromProcessExecutor(
+            os_services.process_executor(),
+            os_services.executable_factory(),
+        ),
+        files
     )
 
 
