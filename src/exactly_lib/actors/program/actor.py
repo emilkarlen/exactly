@@ -1,7 +1,7 @@
 from exactly_lib.actors.common import relativity_configuration_of_action_to_check
 from exactly_lib.actors.program.executable_object import ProgramToExecute
 from exactly_lib.actors.program.parse import Parser
-from exactly_lib.actors.util.executor_made_of_parts import parts
+from exactly_lib.actors.util.actor_from_parts import parts
 from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
@@ -12,7 +12,7 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.util.symbol_table import SymbolTable
 from . import execution
-from ..util.executor_made_of_parts.parts import ValidatorFromPreOrPostSdsValidator
+from ..util.actor_from_parts.parts import ValidatorFromPreOrPostSdsValidator
 
 
 def actor() -> Actor:

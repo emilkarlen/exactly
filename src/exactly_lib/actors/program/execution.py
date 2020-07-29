@@ -4,7 +4,7 @@ from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.file_utils.std import StdFiles
-from ..util.executor_made_of_parts import parts
+from ..util.actor_from_parts import parts
 from ...symbol.logic.program.program_sdv import ProgramSdv
 from ...test_case.os_services import OsServices
 from ...type_system.logic.application_environment import ApplicationEnvironment

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.actors.util.executor_made_of_parts import main
+from exactly_lib_test.actors.util.actor_from_parts import main
 
 
 def suite() -> unittest.TestSuite:

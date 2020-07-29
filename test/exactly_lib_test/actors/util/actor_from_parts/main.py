@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.actors.util.executor_made_of_parts import parts as sut
+from exactly_lib.actors.util.actor_from_parts import parts as sut
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -12,7 +12,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, simple_success, \
     check_execution, Expectation
-from exactly_lib_test.actors.util.executor_made_of_parts.test_resources import ParserThatRaisesException, \
+from exactly_lib_test.actors.util.actor_from_parts.test_resources import ParserThatRaisesException, \
     ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction, \
     SymbolUserWithConstantSymbolReferences, ParserWithConstantResult, ValidatorConstructorThatRaises, \
     ExecutorConstructorThatRaises, ValidatorConstructorThatRecordsStep, ExecutorConstructorThatRecordsStep, \

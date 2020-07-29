@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.actors.program.executable_object import ProgramToExecute
 from exactly_lib.actors.util import source_code_lines_utils
-from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser
+from exactly_lib.actors.util.actor_from_parts.parts import ExecutableObjectParser
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document import parse_source
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \

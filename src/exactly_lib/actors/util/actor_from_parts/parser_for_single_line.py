@@ -1,7 +1,7 @@
 import shlex
 from typing import Sequence
 
-from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser
+from exactly_lib.actors.util.actor_from_parts.parts import ExecutableObjectParser
 from exactly_lib.actors.util.source_code_lines_utils import all_source_code_lines
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

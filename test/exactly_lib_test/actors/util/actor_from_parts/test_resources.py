@@ -1,7 +1,7 @@
 from typing import Sequence, Dict, Generic, Callable
 
-from exactly_lib.actors.util.executor_made_of_parts import parts as sut
-from exactly_lib.actors.util.executor_made_of_parts.parts import EXECUTABLE_OBJECT, Validator, Executor
+from exactly_lib.actors.util.actor_from_parts import parts as sut
+from exactly_lib.actors.util.actor_from_parts.parts import EXECUTABLE_OBJECT, Validator, Executor
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ParseException, AtcOsProcessExecutor

@@ -2,7 +2,7 @@ import shlex
 from typing import Sequence, List, TypeVar, Callable
 
 from exactly_lib.actors.common import relativity_configuration_of_action_to_check
-from exactly_lib.actors.util.executor_made_of_parts.parser_for_single_line import \
+from exactly_lib.actors.util.actor_from_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.definitions.test_case.actors import file_interpreter as texts
 from exactly_lib.instructions.utils.data_type_resolving_helper import resolving_helper_for_instruction_env

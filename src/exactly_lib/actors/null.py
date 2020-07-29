@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.actors.util.executor_made_of_parts import parts
-from exactly_lib.actors.util.executor_made_of_parts.parts import ExecutableObjectParser
+from exactly_lib.actors.util.actor_from_parts import parts
+from exactly_lib.actors.util.actor_from_parts.parts import ExecutableObjectParser
 from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
