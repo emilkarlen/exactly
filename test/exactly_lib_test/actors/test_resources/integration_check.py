@@ -3,6 +3,7 @@ import unittest
 from contextlib import contextmanager
 from typing import List, Optional, Sequence, ContextManager, Callable
 
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
@@ -18,7 +19,11 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
+from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details, \
+    sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
@@ -109,6 +114,29 @@ class Expectation:
         self.prepare = prepare
         self.execute = execute
         self.post_sds = post_sds
+
+    @staticmethod
+    def hard_error_from_prepare(
+            error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+    ) -> 'Expectation':
+        return Expectation(
+            symbol_usages=symbol_usages,
+            prepare=asrt_sh.is_hard_error(error_message)
+        )
+
+    @staticmethod
+    def hard_error_from_execute(
+            error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
+            symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
+    ) -> 'Expectation':
+        return Expectation(
+            symbol_usages=symbol_usages,
+            execute=asrt_eh.matches_hard_error(asrt_failure_details.is_failure_message_matching__td(
+                error_message
+            )
+            )
+        )
 
 
 def simple_success() -> Expectation:

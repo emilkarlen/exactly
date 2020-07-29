@@ -9,9 +9,11 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
+from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_utils.validators import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.file_utils.std import StdFiles
 
 
@@ -170,15 +172,21 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
                 os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
-        self._construct_executor(environment, os_services, os_process_executor)
-        return self._executor.prepare(environment)
+        try:
+            self._construct_executor(environment, os_services, os_process_executor)
+            return self._executor.prepare(environment)
+        except HardErrorException as ex:
+            return sh.new_sh_hard_error(ex.error)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        return self._executor.execute(environment, std_files)
+        try:
+            return self._executor.execute(environment, std_files)
+        except HardErrorException as ex:
+            return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))
 
     def _construct_validator(self,
                              environment: InstructionEnvironmentForPreSdsStep):
