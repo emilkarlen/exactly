@@ -1,6 +1,4 @@
 import subprocess
-from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
 
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import Executable, ProcessExecutionSettings
@@ -41,18 +39,3 @@ class ProcessExecutor:
             raise ProcessExecutionException(ex)
         except subprocess.TimeoutExpired as ex:
             raise ProcessExecutionException(ex)
-
-
-T = TypeVar('T')
-
-
-class ExecutableExecutor(Generic[T], ABC):
-    @abstractmethod
-    def execute(self,
-                settings: ProcessExecutionSettings,
-                executable: Executable,
-                ) -> T:
-        """
-        :raises ProcessExecutionException: Unable to execute the program.
-        """
-        pass

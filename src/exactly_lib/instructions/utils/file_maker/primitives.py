@@ -16,13 +16,12 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper
 from exactly_lib.test_case_utils.program_execution import command_processors
-from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
+from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor, RET
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.hard_error import HardErrorException
 from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import T
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
@@ -122,8 +121,8 @@ class FileMakerForContentsFromProgram(FileMaker):
                                                            program.transformation)
 
     def _command_processor(self,
-                           exit_code_agnostic_processor: CommandProcessor[T],
-                           ) -> CommandProcessor[T]:
+                           exit_code_agnostic_processor: CommandProcessor[RET],
+                           ) -> CommandProcessor[RET]:
         return command_processors.processor_that_optionally_raises_hard_error_on_non_zero_exit_code(
             self._ignore_exit_code,
             exit_code_agnostic_processor,
