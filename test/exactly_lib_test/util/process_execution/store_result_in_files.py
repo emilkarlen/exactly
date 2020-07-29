@@ -2,30 +2,33 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib.type_system.logic.hard_error import HardErrorException
+from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForExecutableFile
 from exactly_lib.util import exception
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
 from exactly_lib.util.process_execution.executors import store_result_in_files as sut
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndFiles
-from exactly_lib.util.process_execution.process_executor import ProcessExecutionException
 from exactly_lib.util.process_execution.process_output_files import FileNames
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe, py_programs
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.process_execution.test_resources import executables
+from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.util.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 
-PROCESS_EXECUTOR = os_services_access.new_for_current_os().process_executor()
+COMMAND_EXECUTOR = os_services_access.new_for_current_os().command_executor()
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestExecutorThatStoresResultInFilesInDir)
+    return unittest.makeSuite(TestProcessorThatStoresResultInFilesInDir)
 
 
-class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
+class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
 
     def test_exit_code(self):
         # ARRANGE #
@@ -38,13 +41,13 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
         with tmp_dir.tmp_dir(DirContents([
             program_file
         ])) as tmp_dir_path:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(PROCESS_EXECUTOR,
-                                                                tmp_dir_path,
-                                                                file_ctx_managers.dev_null(),
-                                                                )
+            executor = sut.ProcessorThatStoresResultInFilesInDir(COMMAND_EXECUTOR,
+                                                                 tmp_dir_path,
+                                                                 file_ctx_managers.dev_null(),
+                                                                 )
             # ACT #
-            result = executor.execute(with_no_timeout(),
-                                      py_exe.args_for_interpreting3(tmp_dir_path / program_file.name))
+            result = executor.process(with_no_timeout(),
+                                      py_exe.command_for_interpreting(tmp_dir_path / program_file.name))
             # ASSERT #
             self.assertEqual(exit_code,
                              result.exit_code,
@@ -67,14 +70,14 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
         ])
         with tmp_dir.tmp_dir_as_cwd(dir_contents):
             output_dir = pathlib.Path('output')
-            executor = sut.ExecutorThatStoresResultInFilesInDir(
-                PROCESS_EXECUTOR,
+            executor = sut.ProcessorThatStoresResultInFilesInDir(
+                COMMAND_EXECUTOR,
                 output_dir,
                 file_ctx_managers.open_file(stdin_file.name_as_path, 'r'),
             )
             # ACT #
-            result = executor.execute(with_no_timeout(),
-                                      py_exe.args_for_interpreting3(program_file.name))
+            result = executor.process(with_no_timeout(),
+                                      py_exe.command_for_interpreting(program_file.name))
             # ASSERT #
             assert_is_success_and_output_dir_contains_at_exactly_result_files(
                 self,
@@ -87,21 +90,26 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
                 result,
             )
 
-    def test_invalid_executable_SHOULD_raise_process_execution_exception(self):
+    def test_invalid_executable_SHOULD_raise_hard_error(self):
         # ARRANGE #
         with tmp_dir.tmp_dir() as tmp_dir_path:
-            with self.assertRaises(ProcessExecutionException) as ctx:
-                executor = sut.ExecutorThatStoresResultInFilesInDir(PROCESS_EXECUTOR,
-                                                                    tmp_dir_path,
-                                                                    file_ctx_managers.dev_null(),
-                                                                    )
+            with self.assertRaises(HardErrorException) as ctx:
+                executor = sut.ProcessorThatStoresResultInFilesInDir(COMMAND_EXECUTOR,
+                                                                     tmp_dir_path,
+                                                                     file_ctx_managers.dev_null(),
+                                                                     )
+
                 # ACT & ASSERT #
-                executor.execute(
+                executor.process(
                     with_no_timeout(),
-                    executables.for_executable_file(tmp_dir_path / 'non-existing-program'),
+                    command_for_exe_file(tmp_dir_path / 'non-existing-program'),
                 )
-        assert isinstance(ctx.exception, ProcessExecutionException)
-        self.assertIsInstance(ctx.exception.cause, Exception, 'exception info')
+        assert isinstance(ctx.exception, HardErrorException)
+        asrt_text_doc.is_any_text().apply_with_message(
+            self,
+            ctx.exception.error,
+            'exception error message'
+        )
 
     def test_storage_of_result_in_files__existing_dir(self):
         # ARRANGE #
@@ -111,13 +119,13 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
         )
         with tmp_dir.tmp_dir(DirContents([py_pgm_file])) as pgm_dir_path:
             with tmp_dir.tmp_dir() as output_dir_path:
-                executor = sut.ExecutorThatStoresResultInFilesInDir(PROCESS_EXECUTOR,
-                                                                    output_dir_path,
-                                                                    file_ctx_managers.dev_null(),
-                                                                    )
+                executor = sut.ProcessorThatStoresResultInFilesInDir(COMMAND_EXECUTOR,
+                                                                     output_dir_path,
+                                                                     file_ctx_managers.dev_null(),
+                                                                     )
                 # ACT #
-                result = executor.execute(with_no_timeout(),
-                                          py_exe.args_for_interpreting3(pgm_dir_path / py_pgm_file.name)
+                result = executor.process(with_no_timeout(),
+                                          py_exe.command_for_interpreting(pgm_dir_path / py_pgm_file.name)
                                           )
                 # ASSERT #
                 assert_is_success_and_output_dir_contains_at_exactly_result_files(
@@ -136,13 +144,13 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
         with tmp_dir.tmp_dir(DirContents([py_pgm_file])) as pgm_dir_path:
             with tmp_dir.tmp_dir() as output_dir_path:
                 non_existing_output_sub_dir_path = output_dir_path / 'non-existing'
-                executor = sut.ExecutorThatStoresResultInFilesInDir(PROCESS_EXECUTOR,
-                                                                    non_existing_output_sub_dir_path,
-                                                                    file_ctx_managers.dev_null(),
-                                                                    )
+                executor = sut.ProcessorThatStoresResultInFilesInDir(COMMAND_EXECUTOR,
+                                                                     non_existing_output_sub_dir_path,
+                                                                     file_ctx_managers.dev_null(),
+                                                                     )
                 # ACT #
-                result = executor.execute(with_no_timeout(),
-                                          py_exe.args_for_interpreting3(pgm_dir_path / py_pgm_file.name)
+                result = executor.process(with_no_timeout(),
+                                          py_exe.command_for_interpreting(pgm_dir_path / py_pgm_file.name)
                                           )
                 # ASSERT #
                 assert_is_success_and_output_dir_contains_at_exactly_result_files(
@@ -163,16 +171,16 @@ class TestExecutorThatStoresResultInFilesInDir(unittest.TestCase):
 
         with tmp_dir.tmp_dir(dir_contents) as tmp_dir_path:
             path_of_existing_regular_file = tmp_dir_path / existing_file.name
-            executor = sut.ExecutorThatStoresResultInFilesInDir(
-                PROCESS_EXECUTOR,
+            executor = sut.ProcessorThatStoresResultInFilesInDir(
+                COMMAND_EXECUTOR,
                 path_of_existing_regular_file,
                 file_ctx_managers.dev_null(),
             )
             with self.assertRaises(exception.ImplementationError) as ctx:
                 # ACT & ASSERT #
-                executor.execute(
+                executor.process(
                     with_no_timeout(),
-                    executables.for_executable_file(tmp_dir_path / successful_py_program.name),
+                    command_for_exe_file(tmp_dir_path / successful_py_program.name),
                 )
         assert isinstance(ctx.exception, exception.ImplementationError)
         self.assertIsInstance(ctx.exception.message, str, 'exception info')
@@ -209,6 +217,13 @@ def assert_dir_contains_exactly_result_files(expected: SubProcessResult,
         File(file_names.stderr,
              expected.stderr),
     ]))
+
+
+def command_for_exe_file(exe_file: pathlib.Path) -> Command:
+    return Command(
+        CommandDriverForExecutableFile(described_path.new_primitive(exe_file)),
+        [],
+    )
 
 
 if __name__ == '__main__':

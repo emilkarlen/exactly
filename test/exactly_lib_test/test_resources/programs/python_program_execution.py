@@ -4,10 +4,12 @@ import sys
 import unittest
 from typing import List, Sequence
 
-from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
+from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments, Command
+from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForExecutableFile
 from exactly_lib.util.process_execution.execution_elements import Executable
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
+from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.util.process_execution.test_resources import executables
 
 PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE = '-c'
@@ -71,6 +73,14 @@ def args_for_interpreting3(python_source_file_path_or_name,
     return executables.for_executable_file(sys.executable,
                                            [str(python_source_file_path_or_name)] + _str_elements(arguments)
                                            )
+
+
+def command_for_interpreting(python_source_file_path_or_name,
+                             arguments: Sequence[str] = ()) -> Command:
+    return Command(
+        CommandDriverForExecutableFile(described_path.new_primitive(pathlib.Path(sys.executable))),
+        [str(python_source_file_path_or_name)] + _str_elements(arguments)
+    )
 
 
 def non_shell_args_for_that_executes_source_on_command_line(python_source: str) -> list:
