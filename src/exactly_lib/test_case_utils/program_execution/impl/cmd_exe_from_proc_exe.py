@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.type_system.logic.program.process_execution.command import Command
@@ -19,7 +17,6 @@ class CommandExecutorFromProcessExecutor(CommandExecutor):
         self._process_executor = process_executor
         self._translator = translator
 
-    @abstractmethod
     def execute(self,
                 command: Command,
                 settings: ProcessExecutionSettings,
@@ -40,7 +37,7 @@ def _raise_hard_error(command: Command, ex: process_executor.ProcessExecutionExc
     from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
     from exactly_lib.util.simple_textstruct.rendering import blocks
     from exactly_lib.util.simple_textstruct.rendering import line_objects
-    HardErrorException(
+    raise HardErrorException(
         top_lvl_error_msg_rendering.unable_to_execute_msg(
             command.structure().build(),
             blocks.MajorBlocksOfSingleLineObject(
