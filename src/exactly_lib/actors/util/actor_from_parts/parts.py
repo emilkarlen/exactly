@@ -34,13 +34,22 @@ class Validator(ABC):
 class Executor(ABC):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                ) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
+                ):
+        """
+        :raises: :class:`HardErrorException`
+        :return: Exit code from process execution.
+        """
+        pass
 
     @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> int:
+        """
+        :raises: :class:`HardErrorException`
+        :return: Exit code from process execution.
+        """
         pass
 
 
@@ -174,9 +183,10 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
                 ) -> sh.SuccessOrHardError:
         try:
             self._construct_executor(environment, os_services, os_process_executor)
-            return self._executor.prepare(environment)
+            self._executor.prepare(environment)
         except HardErrorException as ex:
             return sh.new_sh_hard_error(ex.error)
+        return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -184,7 +194,8 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
                 os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         try:
-            return self._executor.execute(environment, std_files)
+            exit_code = self._executor.execute(environment, std_files)
+            return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))
 

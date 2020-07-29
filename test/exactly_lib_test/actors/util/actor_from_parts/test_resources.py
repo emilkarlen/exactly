@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import svh, eh, sh
+from exactly_lib.test_case.result import svh, eh
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
@@ -124,27 +124,24 @@ class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorCo
 class UnconditionallySuccessfulExecutor(sut.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles) -> eh.ExitCodeOrHardError:
-        return eh.new_eh_exit_code(0)
+                std_files: StdFiles) -> int:
+        return 0
 
 
 class ExecutorThat(sut.Executor):
     def __init__(self,
-                 prepare_initial_action: Callable = do_nothing,
-                 prepare: Callable = do_return(sh.new_sh_success()),
+                 prepare: Callable = do_nothing,
                  execute_initial_action: Callable = do_nothing,
-                 execute: Callable = do_return(eh.new_eh_exit_code(0)),
+                 execute: Callable = do_return(0),
                  ):
-        self._prepare_initial_action = prepare_initial_action
         self._prepare = prepare
         self._execute_initial_action = execute_initial_action
         self._execute = execute
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                ) -> sh.SuccessOrHardError:
-        self._prepare_initial_action(environment)
-        return self._prepare(environment)
+                ):
+        self._prepare(environment)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -178,13 +175,12 @@ class ExecutorThatRecordsSteps(sut.Executor):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                ) -> sh.SuccessOrHardError:
+                ):
         self.recorder[phase_step.ACT__PREPARE] = self.act_phase_source
-        return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 std_files: StdFiles,
-                ) -> eh.ExitCodeOrHardError:
+                ) -> int:
         self.recorder[phase_step.ACT__EXECUTE] = self.act_phase_source
-        return eh.new_eh_exit_code(0)
+        return 0

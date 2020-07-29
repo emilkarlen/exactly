@@ -2,12 +2,10 @@ from abc import ABC
 
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.file_utils.std import StdFiles
 from ..util.actor_from_parts import parts
 from ...symbol.logic.program.program_sdv import ProgramSdv
 from ...test_case.os_services import OsServices
-from ...test_case.result import eh
 from ...type_system.logic.application_environment import ApplicationEnvironment
 from ...type_system.logic.program.process_execution.command import Command
 
@@ -25,12 +23,11 @@ class Executor(parts.Executor, ABC):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 std_files: StdFiles,
-                ) -> ExitCodeOrHardError:
-        exit_code = self._os_process_executor.execute(
+                ) -> int:
+        return self._os_process_executor.execute(
             self._command_to_execute(environment), std_files,
             environment.proc_exe_settings,
         )
-        return eh.new_eh_exit_code(exit_code)
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,

@@ -116,7 +116,7 @@ class TestConstructor(unittest.TestCase):
             sut.UnconditionallySuccessfulValidatorConstructor(),
             _ExecutorConstructorForConstant(
                 ExecutorThat(
-                    prepare_initial_action=
+                    prepare=
                     do_raise(HardErrorException(
                         asrt_text_doc.new_single_string_text_for_test(hard_error_message)
                     ))

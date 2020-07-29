@@ -11,7 +11,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils.parse import parse_string
 
 
@@ -80,18 +79,29 @@ class ExecutorBase(OsProcessExecutor, ABC):
 
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                ) -> sh.SuccessOrHardError:
+                ):
         self._set_source_file_path(environment)
         resolving_env = environment.path_resolving_environment_pre_or_post_sds
         source_code = self.source_code_sdv.resolve_value_of_any_dependency(resolving_env)
         try:
             with self.source_file_path.open('w') as f:
                 f.write(source_code)
-            return sh.new_sh_success()
         except OSError as ex:
-            return sh.new_sh_hard_error__str(str(ex))
+            self._hard_error(ex)
 
     def _set_source_file_path(self, environment: InstructionEnvironmentForPostSdsStep):
         root_dir = environment.tmp_dir__path_access.paths_access.new_path_as_existing_dir()
         base_name = self.file_name_generator.base_name()
         self.source_file_path = root_dir / base_name
+
+    @staticmethod
+    def _hard_error(ex: Exception):
+        from exactly_lib.type_system.logic.hard_error import HardErrorException
+        from exactly_lib.common.report_rendering.parts.failure_details import FailureDetailsRenderer
+        from exactly_lib.test_case.result.failure_details import FailureDetails
+        from exactly_lib.execution.phase_step import ACT__PREPARE
+
+        msg = 'Error in {}'.format(ACT__PREPARE.step)
+        raise HardErrorException(
+            FailureDetailsRenderer(FailureDetails.new_exception(ex, message=msg))
+        )
