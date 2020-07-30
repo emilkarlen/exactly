@@ -2,7 +2,7 @@ import pathlib
 import subprocess
 import sys
 
-from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
@@ -22,8 +22,8 @@ class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME
         with python_file.open(mode='w') as f:
             f.write(self.python_program_source)

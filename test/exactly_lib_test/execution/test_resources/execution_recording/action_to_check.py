@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -45,7 +45,7 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(environment, os_services, os_process_executor, std_files)
+        return self.__wrapped.execute(environment, os_services, std_files)

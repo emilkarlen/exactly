@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import ActionToCheck, AtcOsProcessExecutor
+from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -31,8 +31,8 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
 
 
@@ -74,10 +74,10 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         self.before_wrapped_execute(environment, std_files)
-        return self.__wrapped.execute(environment, os_services, os_process_executor, std_files)
+        return self.__wrapped.execute(environment, os_services, std_files)
 
 
 class ActionToCheckThatRunsConstantActions(ActionToCheck):
@@ -127,7 +127,7 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         self.__execute_initial_action(environment, std_files)
         return self.__execute_action(environment, std_files)

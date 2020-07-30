@@ -20,7 +20,6 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolContainer, \
     SymbolDependentValue
-from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
@@ -123,7 +122,6 @@ class MainProgram:
     def __init__(self,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
                  default_case_sandbox_root_dir_name_sdv: SandboxRootDirNameResolver,
-                 atc_os_process_executor: AtcOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  ):
@@ -142,7 +140,6 @@ class MainProgram:
                 predefined_symbols,
             )
         )
-        self._atc_os_process_executor = atc_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
         self._default_case_sandbox_root_dir_name_sdv = default_case_sandbox_root_dir_name_sdv
@@ -177,7 +174,6 @@ class MainProgram:
         from exactly_lib.processing.standalone import processor
 
         the_processor = processor.Processor(self._test_case_definition,
-                                            self._atc_os_process_executor,
                                             _resolve_os_services(),
                                             self._test_suite_definition.configuration_section_parser)
         return processor.ProcessorExecutionReporter(the_processor, settings)
@@ -192,7 +188,6 @@ class MainProgram:
 
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,
-                                                         self._atc_os_process_executor,
                                                          _resolve_os_services(),
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_sdv)

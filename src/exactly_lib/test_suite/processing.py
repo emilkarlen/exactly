@@ -126,7 +126,6 @@ class SuitesExecutor:
         return case_processing.Configuration(
             self._default_case_configuration.test_case_definition,
             suite.test_case_handling_setup,
-            self._default_case_configuration.atc_os_process_executor,
             self._default_case_configuration.os_services,
             self._default_case_configuration.is_keep_sandbox,
             self._default_case_configuration.sandbox_root_dir_resolver)

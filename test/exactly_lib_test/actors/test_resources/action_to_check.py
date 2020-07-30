@@ -16,8 +16,6 @@ from exactly_lib_test.actors.test_resources.integration_check import \
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.multi_phase.change_dir import CwdSdsAssertion
-from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    AtcOsProcessExecutorThatRaisesHardError
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
@@ -275,9 +273,6 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
             setup.act_phase_instructions,
             Arrangement(
                 hds_contents=_hds_pop_of(setup),
-                atc_process_executor=AtcOsProcessExecutorThatRaisesHardError(
-                    asrt_text_doc.new_single_string_text_for_test(hard_error_message)
-                ),
                 process_execution=ProcessExecutionArrangement(
                     os_services=os_services_access.new_for_cmd_exe(
                         CommandExecutorThatRaisesHardError(

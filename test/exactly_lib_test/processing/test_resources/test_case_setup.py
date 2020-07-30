@@ -9,7 +9,6 @@ from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.processors import TestCaseDefinition, Configuration
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case import atc_os_proc_executors
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util import symbol_table
@@ -52,7 +51,6 @@ def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseD
 def configuration_with_no_instructions_and_no_preprocessor() -> Configuration:
     return Configuration(test_case_definition_with_no_instructions_and_no_preprocessor(),
                          test_case_handling_setup(),
-                         atc_os_proc_executors.DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                          os_services_access.new_for_current_os(),
                          is_keep_sandbox=False)
 

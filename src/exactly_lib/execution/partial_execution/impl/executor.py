@@ -315,7 +315,6 @@ class _PartialExecutor:
                 self.__post_sds_symbol_table,
             ),
             self._os_services,
-            self.exe_conf.atc_os_process_executor,
             self._stdin_conf_from_setup,
             self.exe_conf.exe_atc_and_skip_assertions,
         )

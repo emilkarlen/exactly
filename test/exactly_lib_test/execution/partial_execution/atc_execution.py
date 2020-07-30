@@ -13,8 +13,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import new_empty_section_contents
-from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException, AtcOsProcessExecutor
-from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -290,8 +289,8 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
         return new_eh_exit_code(0)
 
@@ -307,8 +306,8 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
                                     timeout=60,
                                     stdin=std_files.stdin,
@@ -324,8 +323,8 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+                std_files: StdFiles,
+                ) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)
 
 
@@ -351,7 +350,6 @@ def _execute(actor: Actor,
             return sut.execute(
                 test_case,
                 ExecutionConfiguration(dict(os.environ),
-                                       DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                                        os_services_access.new_for_current_os(),
                                        sandbox_root_name_resolver.for_test()),
                 ConfPhaseValues(actor,

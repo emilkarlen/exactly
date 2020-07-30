@@ -8,8 +8,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
-from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
-from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
@@ -143,7 +142,6 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 class Arrangement:
     def __init__(self,
                  actor: Actor = dummy_actor(),
-                 atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
                  environ: dict = None,
@@ -153,7 +151,6 @@ class Arrangement:
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  ):
         self.actor = actor
-        self.act_phase_os_process_executor = atc_os_process_executor
         self.os_services = os_services
         self.hds = hds
         self.environ = environ
@@ -207,7 +204,6 @@ def _execute(test_case: TestCase,
     partial_result = sut.execute(
         test_case,
         ExecutionConfiguration(environ,
-                               arrangement.act_phase_os_process_executor,
                                arrangement.os_services,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.predefined_symbols_or_none,

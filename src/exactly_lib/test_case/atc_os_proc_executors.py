@@ -61,6 +61,3 @@ def _atc_os_process_executor_for_current_system() -> AtcOsProcessExecutor:
         return AtcSubProcessExecutor(executable_factory)
     except KeyError:
         return _AtcSubProcessExecutorForUnsupportedOperatingSystem()
-
-
-DEFAULT_ATC_OS_PROCESS_EXECUTOR = _atc_os_process_executor_for_current_system()

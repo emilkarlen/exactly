@@ -17,7 +17,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.resolving_helper import DataTypeResolvingHelper
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import AtcOsProcessExecutor, ParseException, Actor, ActionToCheck
+from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -139,7 +139,6 @@ class _ActionToCheck(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 std_files: StdFiles,
                 ) -> ExitCodeOrHardError:
         try:

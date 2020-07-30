@@ -6,8 +6,7 @@ from typing import List, Optional, Sequence, ContextManager, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import Actor, ActionToCheck, AtcOsProcessExecutor
-from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -47,7 +46,6 @@ class HardErrorResultError(Exception):
 class Arrangement:
     def __init__(self,
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 atc_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,
                  symbol_table: Optional[SymbolTable] = None,
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
                      process_execution_settings=ProcessExecutionSettings.with_no_timeout_no_environ()
@@ -57,7 +55,6 @@ class Arrangement:
                  ):
         self.symbol_table = symbol_table_from_none_or_value(symbol_table)
         self.hds_contents = hds_contents
-        self.atc_process_executor = atc_process_executor
         self.process_execution = process_execution
         self.stdin_contents = stdin_contents
         self.post_sds_action = post_sds_action
@@ -161,21 +158,16 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
     def __init__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
-                 atc_process_executor: AtcOsProcessExecutor,
                  atc: ActionToCheck):
         self.environment = environment
         self.os_services = os_services
-        self.atc_process_executor = atc_process_executor
         self.atc = atc
 
     def execute(self, files: StdFiles) -> int:
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.atc.execute(self.environment,
-                                                   self.os_services,
-                                                   self.atc_process_executor,
-                                                   files)
+        exit_code_or_hard_error = self.atc.execute(self.environment, self.os_services, files)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code
         raise HardErrorResultError(exit_code_or_hard_error,
@@ -291,7 +283,6 @@ class _Checker:
         process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
             env,
             self._arrangement.process_execution.os_services,
-            self._arrangement.atc_process_executor,
             atc)
         error_msg_extra_info = ''
         sub_process_result = None

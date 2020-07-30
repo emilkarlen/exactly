@@ -1,7 +1,6 @@
 from typing import Optional, Dict
 
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
-from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -38,13 +37,11 @@ class ExecutionConfiguration(tuple):
 
     def __new__(cls,
                 environ: Dict[str, str],
-                act_phase_os_process_executor: AtcOsProcessExecutor,
                 os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
                 predefined_symbols: Optional[SymbolTable] = None,
                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         return tuple.__new__(cls, (environ,
-                                   act_phase_os_process_executor,
                                    sandbox_root_dir_resolver,
                                    symbol_table_from_none_or_value(predefined_symbols),
                                    exe_atc_and_skip_assertions,
@@ -59,16 +56,12 @@ class ExecutionConfiguration(tuple):
         return self[0]
 
     @property
-    def atc_os_process_executor(self) -> AtcOsProcessExecutor:
-        return self[1]
-
-    @property
     def os_services(self) -> OsServices:
-        return self[5]
+        return self[4]
 
     @property
     def sds_root_dir_resolver(self) -> SandboxRootDirNameResolver:
-        return self[2]
+        return self[1]
 
     @property
     def predefined_symbols(self) -> SymbolTable:
@@ -77,7 +70,7 @@ class ExecutionConfiguration(tuple):
 
         Should probably not be updated.
         """
-        return self[3]
+        return self[2]
 
     @property
     def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
@@ -86,4 +79,4 @@ class ExecutionConfiguration(tuple):
         be executed with output directed to the given files,
         and assertions should be skipped.
         """
-        return self[4]
+        return self[3]
