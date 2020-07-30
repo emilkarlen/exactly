@@ -3,7 +3,7 @@ __pycache__
 venv/
 .idea/workspace.xml
 .idea/shelf/
-test/exactly_lib_test/tmp/
+test/exactly_lib_test/z_package_suite__tmp_for_develop.py
 tmp/
 # Used by setuptools
 build/
