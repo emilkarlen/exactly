@@ -70,7 +70,6 @@ class ExecutorConstructor(Generic[EXECUTABLE_OBJECT], ABC):
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  process_executor: AtcOsProcessExecutor,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> Executor:
         pass
@@ -179,10 +178,9 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         try:
-            self._construct_executor(environment, os_services, os_process_executor)
+            self._construct_executor(environment, os_services)
             self._executor.prepare(environment)
         except HardErrorException as ex:
             return sh.new_sh_hard_error(ex.error)
@@ -209,11 +207,9 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def _construct_executor(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             os_services: OsServices,
-                            os_process_executor: AtcOsProcessExecutor,
                             ):
         self.__executor = self.executor_constructor.construct(environment,
                                                               os_services,
-                                                              os_process_executor,
                                                               self.object_to_execute)
         assert isinstance(self.__executor, Executor), \
             'Constructed executor must be instance of ' + str(Executor)

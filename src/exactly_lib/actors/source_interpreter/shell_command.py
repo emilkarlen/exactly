@@ -4,7 +4,7 @@ from exactly_lib.actors.source_interpreter import parser_and_executor as pa
 from exactly_lib.actors.util.actor_from_parts import parts
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.program.command import command_sdvs
@@ -27,10 +27,8 @@ class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  os_process_executor: AtcOsProcessExecutor,
                   object_to_execute: pa.SourceInfo) -> parts.Executor:
         return _Executor(os_services,
-                         os_process_executor,
                          self._interpreter_shell_command,
                          object_to_execute)
 
@@ -38,12 +36,10 @@ class _ExecutorConstructor(parts.ExecutorConstructor[pa.SourceInfo]):
 class _Executor(pa.ExecutorBase):
     def __init__(self,
                  os_services: OsServices,
-                 os_process_executor: AtcOsProcessExecutor,
                  interpreter_shell_command: str,
                  source_info: pa.SourceInfo,
                  ):
         super().__init__(os_services,
-                         os_process_executor,
                          pa.ActSourceFileNameGeneratorForConstantFileName(ACT_PHASE_SOURCE_FILE_BASE_NAME),
                          source_info)
         self.interpreter_shell_command = interpreter_shell_command

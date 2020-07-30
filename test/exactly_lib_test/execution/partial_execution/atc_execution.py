@@ -283,7 +283,6 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()

@@ -4,7 +4,7 @@ from exactly_lib.actors.program.parse import Parser
 from exactly_lib.actors.util.actor_from_parts import parts
 from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
-from exactly_lib.test_case.actor import AtcOsProcessExecutor, Actor
+from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -43,9 +43,6 @@ class _TheExecutorConstructor(parts.ExecutorConstructor[ProgramToExecute]):
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  os_process_executor: AtcOsProcessExecutor,
                   executable_object: ProgramToExecute,
                   ) -> parts.Executor:
-        return execution.Executor(os_services,
-                                  os_process_executor,
-                                  executable_object.program)
+        return execution.Executor(os_services, executable_object.program)

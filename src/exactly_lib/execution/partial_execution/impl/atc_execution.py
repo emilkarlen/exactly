@@ -73,8 +73,7 @@ class ActionToCheckExecutor:
     def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
         def action():
             res = self.atc.prepare(self.environment_for_other_steps,
-                                   self.os_services,
-                                   self.os_process_executor)
+                                   self.os_services)
             if not res.is_success:
                 raise PhaseStepFailureException(
                     failure_con(ExecutionFailureStatus.HARD_ERROR,

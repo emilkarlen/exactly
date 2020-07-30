@@ -1,6 +1,5 @@
 from abc import ABC
 
-from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.file_utils.std import StdFiles
 from ..util.actor_from_parts import parts
@@ -13,11 +12,9 @@ from ...type_system.logic.program.process_execution.command import Command
 class Executor(parts.Executor, ABC):
     def __init__(self,
                  os_services: OsServices,
-                 os_process_executor: AtcOsProcessExecutor,
                  program: ProgramSdv,
                  ):
         self._os_services = os_services
-        self._os_process_executor = os_process_executor
         self._program = program
 
     def execute(self,

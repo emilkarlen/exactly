@@ -275,8 +275,7 @@ class _Checker:
                  env: InstructionEnvironmentForPostSdsStep,
                  ):
         step_result = atc.prepare(env,
-                                  self._arrangement.process_execution.os_services,
-                                  self._arrangement.atc_process_executor)
+                                  self._arrangement.process_execution.os_services)
         self._expectation_post_sds.side_effects_on_files_after_prepare.apply(self._put, env.sds)
         self._expectation.prepare.apply(self._put,
                                         step_result,

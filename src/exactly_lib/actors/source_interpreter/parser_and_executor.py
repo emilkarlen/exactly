@@ -6,7 +6,6 @@ from exactly_lib.actors.util.actor_from_parts.command_executor import \
     OsProcessExecutor
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
@@ -68,11 +67,10 @@ class ExecutorBase(OsProcessExecutor, ABC):
 
     def __init__(self,
                  os_services: OsServices,
-                 os_process_executor: AtcOsProcessExecutor,
                  file_name_generator: ActSourceFileNameGenerator,
                  source_info: SourceInfo,
                  ):
-        super().__init__(os_services, os_process_executor)
+        super().__init__(os_services)
         self.file_name_generator = file_name_generator
         self.source_code_sdv = source_info.source
         self.source_file_path = None

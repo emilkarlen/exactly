@@ -64,7 +64,6 @@ class ActionToCheck(SymbolUser):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         """
         Executed after validate.

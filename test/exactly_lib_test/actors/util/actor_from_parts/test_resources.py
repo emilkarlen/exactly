@@ -4,7 +4,7 @@ from exactly_lib.actors.util.actor_from_parts import parts as sut
 from exactly_lib.actors.util.actor_from_parts.parts import EXECUTABLE_OBJECT, Validator, Executor
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.actor import ParseException, AtcOsProcessExecutor
+from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
@@ -76,7 +76,6 @@ class ExecutorConstructorThatRaises(Generic[EXECUTABLE_OBJECT], sut.ExecutorCons
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  process_executor: AtcOsProcessExecutor,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> Executor:
         raise ValueError('validator_constructor_that_raises')
@@ -102,7 +101,6 @@ class ExecutorConstructorThatRecordsStep(Generic[EXECUTABLE_OBJECT],
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  process_executor: AtcOsProcessExecutor,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> Executor:
         return ExecutorThatRecordsSteps(self._step_recorder, executable_object)
@@ -115,7 +113,6 @@ class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorCo
     def construct(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   os_services: OsServices,
-                  process_executor: AtcOsProcessExecutor,
                   executable_object: EXECUTABLE_OBJECT,
                   ) -> sut.Executor:
         return self._constant

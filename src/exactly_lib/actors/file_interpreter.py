@@ -133,7 +133,6 @@ class _ActionToCheck(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 

@@ -25,7 +25,6 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
@@ -68,10 +67,9 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.before_wrapped_prepare(environment)
-        return self.__wrapped.prepare(environment, os_services, os_process_executor)
+        return self.__wrapped.prepare(environment, os_services)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
@@ -122,7 +120,6 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.__prepare_initial_action(environment)
         return self.__prepare_action(environment)

@@ -38,10 +38,9 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                os_process_executor: AtcOsProcessExecutor,
                 ) -> sh.SuccessOrHardError:
         self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
-        return self.__wrapped.prepare(environment, os_services, os_process_executor)
+        return self.__wrapped.prepare(environment, os_services)
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
