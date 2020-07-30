@@ -6,20 +6,6 @@ from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 
 
-class AtcOsProcessExecutorThatRecordsArguments(AtcOsProcessExecutor):
-    def __init__(self):
-        self.command = None
-        self.process_execution_settings = None
-
-    def execute(self,
-                command: Command,
-                std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings) -> int:
-        self.command = command
-        self.process_execution_settings = process_execution_settings
-        return 0
-
-
 class AtcOsProcessExecutorThatJustReturnsConstant(AtcOsProcessExecutor):
     def __init__(self, constant_return_value: int = 0):
         self.constant_return_value = constant_return_value

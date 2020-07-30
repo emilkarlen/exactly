@@ -18,6 +18,7 @@ from exactly_lib_test.processing.test_resources.test_case_setup import \
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatJustReturnsConstant
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:
@@ -56,7 +57,7 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
     DUMMY_TEST_CASE_DEFINITION,
     test_case_handling_setup_with_identity_preprocessor(),
     AtcOsProcessExecutorThatJustReturnsConstant(),
-    os_services_access.new_for_current_os(),
+    os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
     False,
 )
 

@@ -13,6 +13,7 @@ from exactly_lib_test.processing.standalone.test_resources import instructions_i
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatJustReturnsConstant
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.process import SubProcessResult
 
 
@@ -26,7 +27,9 @@ class TestCaseRunner(base.TestCaseRunner):
         processor = sut.Processor(TestCaseDefinition(parsing_setup,
                                                      PredefinedProperties.new_empty()),
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
-                                  os_services_access.new_for_current_os(),
+                                  os_services_access.new_for_cmd_exe(
+                                      CommandExecutorThatJustReturnsConstant()
+                                  ),
                                   test_suite_definition.configuration_section_parser)
 
         execution_settings = TestCaseExecutionSettings(case_file,

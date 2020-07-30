@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -20,10 +21,10 @@ from exactly_lib_test.actors.test_resources.test_validation_for_single_line_sour
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
@@ -99,11 +100,14 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         expected_file_name = 'quoted file name.src'
         act_phase_instructions = [instr([str(surrounded_by_hard_quotes(expected_file_name))]),
                                   instr([''])]
-        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
         arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(expected_file_name)])),
-            atc_process_executor=executor_that_records_arguments)
+            process_execution=ProcessExecutionArrangement(
+                os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+            )
+        )
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,
@@ -147,11 +151,14 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         atc_line_2 = ''
         act_phase_instructions = [instr([act_line_1]),
                                   instr([atc_line_2])]
-        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
         arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(atc_file_name)])),
-            atc_process_executor=executor_that_records_arguments)
+            process_execution=ProcessExecutionArrangement(
+                os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+            )
+        )
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,

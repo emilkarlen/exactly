@@ -2,13 +2,13 @@ import unittest
 from typing import List
 
 from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_hds_act_dir, shell_command_syntax_for
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
@@ -47,18 +47,20 @@ class _ShellExecutionCheckerHelper:
         )
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
-            os_process_executor = AtcOsProcessExecutorThatRecordsArguments()
-            arrangement = Arrangement(source=source,
-                                      act_phase_source_lines=act_phase_source_lines,
-                                      atc_os_process_executor=os_process_executor,
-                                      hds_contents=hds_contents)
+            command_executor = CommandExecutorThatRecordsArguments()
+            arrangement = Arrangement(
+                source=source,
+                act_phase_source_lines=act_phase_source_lines,
+                hds_contents=hds_contents,
+                os_services=os_services_access.new_for_cmd_exe(command_executor),
+            )
             expectation = Expectation(source_after_parse=source_assertion)
             # ACT #
             check(put, arrangement, expectation)
             # ASSERT #
             expected_command.apply_with_message(
                 put,
-                os_process_executor.command,
+                command_executor.command,
                 'command',
             )
 
@@ -162,13 +164,14 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
 class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellCommand(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        os_process_executor = AtcOsProcessExecutorThatRecordsArguments()
+        command_executor = CommandExecutorThatRecordsArguments()
         act_phase_source = 'act phase source'
 
         arrangement = Arrangement(
             source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
             act_phase_source_lines=[shell_command_syntax_for(act_phase_source)],
-            atc_os_process_executor=os_process_executor)
+            os_services=os_services_access.new_for_cmd_exe(command_executor),
+        )
         expectation = Expectation()
         # ACT #
         check(self, arrangement, expectation)
@@ -181,7 +184,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
         )
         expected_command.apply_with_message(
             self,
-            os_process_executor.command,
+            command_executor.command,
             'command',
         )
 

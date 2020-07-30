@@ -16,6 +16,7 @@ from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatJustReturnsConstant
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value
@@ -63,7 +64,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
-                                  os_services_access.new_for_current_os(),
+                                  os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
@@ -121,7 +122,7 @@ class TestFileInclusionErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
-                                  os_services_access.new_for_current_os(),
+                                  os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
@@ -176,7 +177,7 @@ class TestReferenceToNonExistingTestCaseFileInSuiteShouldBeIgnored(unittest.Test
 
         processor = sut.Processor(test_case_definition,
                                   AtcOsProcessExecutorThatJustReturnsConstant(),
-                                  os_services_access.new_for_current_os(),
+                                  os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
                                   conf_parser_with_no_instructions)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:

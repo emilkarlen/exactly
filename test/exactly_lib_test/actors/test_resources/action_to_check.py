@@ -8,6 +8,7 @@ from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import \
@@ -18,6 +19,7 @@ from exactly_lib_test.instructions.multi_phase.change_dir import CwdSdsAssertion
 from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
     AtcOsProcessExecutorThatRaisesHardError
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
@@ -275,6 +277,13 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
                 hds_contents=_hds_pop_of(setup),
                 atc_process_executor=AtcOsProcessExecutorThatRaisesHardError(
                     asrt_text_doc.new_single_string_text_for_test(hard_error_message)
+                ),
+                process_execution=ProcessExecutionArrangement(
+                    os_services=os_services_access.new_for_cmd_exe(
+                        CommandExecutorThatRaisesHardError(
+                            asrt_text_doc.new_single_string_text_for_test(hard_error_message)
+                        )
+                    )
                 )
             ),
             expectation=Expectation.hard_error_from_execute(

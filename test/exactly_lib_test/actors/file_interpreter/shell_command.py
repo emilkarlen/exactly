@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.logic.program.process_execution.commands import shell_command
 from exactly_lib_test.actors.file_interpreter import common_tests
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
@@ -10,10 +11,10 @@ from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, suite_for_execution
-from exactly_lib_test.test_case.actor.test_resources.act_phase_os_process_executor import \
-    AtcOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
@@ -80,11 +81,14 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         file_name = 'quoted file name.src'
         act_phase_instructions = [instr([surrounded_by_soft_quotes_str(file_name)]),
                                   instr([''])]
-        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
         arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(file_name)])),
-            atc_process_executor=executor_that_records_arguments)
+            process_execution=ProcessExecutionArrangement(
+                os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+            )
+        )
         expectation = integration_check.Expectation()
         integration_check.check_execution(self,
                                           self.configuration.actor,
@@ -122,11 +126,14 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         src_file = 'existing-file.src'
         act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """])]
         should_be_last_part_of_command_line = """un-quoted 'single quoted' "double-quoted\""""
-        executor_that_records_arguments = AtcOsProcessExecutorThatRecordsArguments()
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
         arrangement = integration_check.Arrangement(
             hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, DirContents([
                 File.empty(src_file)])),
-            atc_process_executor=executor_that_records_arguments)
+            process_execution=ProcessExecutionArrangement(
+                os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+            )
+        )
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,

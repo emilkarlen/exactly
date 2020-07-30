@@ -26,7 +26,11 @@ class OsProcessExecutor(parts.Executor, ABC):
                 .resolve(environment.symbols)
                 .value_of_any_dependency(environment.tcds)
         )
-        return self.os_process_executor.execute(command, std_files, environment.proc_exe_settings)
+        return self.os_services.command_executor.execute(
+            command,
+            environment.proc_exe_settings,
+            std_files,
+        )
 
     @abstractmethod
     def _command_to_execute(self,

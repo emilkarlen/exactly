@@ -24,9 +24,10 @@ class Executor(parts.Executor, ABC):
                 environment: InstructionEnvironmentForPostSdsStep,
                 std_files: StdFiles,
                 ) -> int:
-        return self._os_process_executor.execute(
-            self._command_to_execute(environment), std_files,
+        return self._os_services.command_executor.execute(
+            self._command_to_execute(environment),
             environment.proc_exe_settings,
+            std_files,
         )
 
     def _command_to_execute(self,

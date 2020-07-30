@@ -10,7 +10,6 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -67,7 +66,6 @@ def check(put: unittest.TestCase,
             hds_contents=arrangement.hds_contents,
             atc_process_executor=arrangement.atc_os_process_executor,
             process_execution=ProcessExecutionArrangement(
-                process_execution_settings=ProcessExecutionSettings.with_no_timeout_no_environ(),
                 os_services=arrangement.os_services,
 
             )),
