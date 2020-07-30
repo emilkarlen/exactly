@@ -4,26 +4,19 @@ import shutil
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.exception_detection import DetectedException
-from exactly_lib.test_case.executable_factory import ExecutableFactory
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util.process_execution.process_executor import ProcessExecutor
 from exactly_lib.util.str_ import str_constructor
 
 
 class OsServicesForAnyOs(OsServices):
     def __init__(self,
-                 executable_factory: ExecutableFactory,
+                 command_executor: CommandExecutor,
                  ):
-        self._executable_factory = executable_factory
-        self._process_executor = ProcessExecutor()
+        self._command_executor = command_executor
 
     def command_executor(self) -> CommandExecutor:
-        from ..program_execution.impl import cmd_exe_from_proc_exe
-        return cmd_exe_from_proc_exe.CommandExecutorFromProcessExecutor(
-            self._process_executor,
-            self._executable_factory,
-        )
+        return self._command_executor
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:
