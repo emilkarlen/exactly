@@ -8,26 +8,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-
-
-class AtcOsProcessExecutor:
-    """
-    Executes a command in a sub process
-    """
-
-    def execute(self,
-                command: Command,
-                std_files: StdFiles,
-                process_execution_settings: ProcessExecutionSettings,
-                ) -> int:
-        """
-        :return: Exit code from process execution
-        :raises :class:`HardErrorException`: Failure to execute process
-        """
-        raise NotImplementedError()
 
 
 class ParseException(Exception):
