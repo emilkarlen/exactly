@@ -7,7 +7,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -21,6 +20,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes, \
     Surrounded
 
@@ -94,7 +94,7 @@ class TestSet(unittest.TestCase):
             syntax_for_set__nav(var),
             embryo_check.ArrangementWithSds(
                 process_execution_settings=
-                ProcessExecutionSettings(
+                proc_exe_env_for_test(
                     environ={}
                 )
             ),
@@ -117,7 +117,7 @@ class TestSet(unittest.TestCase):
             syntax_for_set__nav(var),
             embryo_check.ArrangementWithSds(
                 process_execution_settings=
-                ProcessExecutionSettings(
+                proc_exe_env_for_test(
                     environ={}
                 )
             ),
@@ -172,7 +172,7 @@ class TestSet(unittest.TestCase):
                     case.value,
                     embryo_check.ArrangementWithSds(
                         process_execution_settings=
-                        ProcessExecutionSettings(
+                        proc_exe_env_for_test(
                             environ=environ__before
                         )
                     ),
@@ -206,7 +206,7 @@ class TestSet(unittest.TestCase):
                     syntax_for_set(var.name, case.value),
                     embryo_check.ArrangementWithSds(
                         process_execution_settings=
-                        ProcessExecutionSettings(
+                        proc_exe_env_for_test(
                             environ=environ__before
                         )
                     ),
@@ -236,7 +236,7 @@ class TestSet(unittest.TestCase):
             syntax_for_set(var_name, value_after),
             embryo_check.ArrangementWithSds(
                 process_execution_settings=
-                ProcessExecutionSettings(
+                proc_exe_env_for_test(
                     environ=environ__before
                 )
             ),
@@ -434,7 +434,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
             source,
             embryo_check.ArrangementWithSds(
                 process_execution_settings=
-                ProcessExecutionSettings(
+                proc_exe_env_for_test(
                     environ={
                         existing_var.name: existing_var.value
                     }
@@ -529,7 +529,7 @@ class TestUnset(unittest.TestCase):
                     case.value,
                     embryo_check.ArrangementWithSds(
                         process_execution_settings=
-                        ProcessExecutionSettings(
+                        proc_exe_env_for_test(
                             environ=environ__before
                         )
                     ),

@@ -7,7 +7,6 @@ from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program_execution import file_transformation_utils as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program, ProgramDdv
 from exactly_lib.util.file_utils import misc_utils
-from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier, INPUT, OUTPUT
@@ -16,6 +15,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker im
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
 class ProgramPropertiesConfiguration(Generic[INPUT, OUTPUT],
@@ -53,7 +53,7 @@ class ExecutionApplier(Applier[Program, ProcOutputFile, ResultWithTransformation
               resolving_environment: FullResolvingEnvironment,
               input_: ProcOutputFile,
               ) -> ResultWithTransformationData:
-        process_execution_settings = execution_elements.ProcessExecutionSettings(timeout_in_seconds=5)
+        process_execution_settings = proc_exe_env_for_test(timeout_in_seconds=5)
 
         pgm_output_dir = resolving_environment.application_environment.tmp_files_space.new_path_as_existing_dir()
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,

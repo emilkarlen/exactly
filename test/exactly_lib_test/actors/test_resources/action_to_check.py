@@ -9,7 +9,6 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import \
     Expectation, Arrangement, PostSdsExpectation
@@ -25,6 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
 class TestCaseSourceSetup:
@@ -195,7 +195,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
             Arrangement(
                 hds_contents=_hds_pop_of(setup),
                 process_execution=ProcessExecutionArrangement(
-                    process_execution_settings=ProcessExecutionSettings(
+                    process_execution_settings=proc_exe_env_for_test(
                         environ=environ
                     )
                 )
@@ -253,7 +253,7 @@ class TestTimeoutValueIsUsed(TestBase):
             Arrangement(
                 hds_contents=_hds_pop_of(setup),
                 process_execution=ProcessExecutionArrangement(
-                    process_execution_settings=ProcessExecutionSettings(
+                    process_execution_settings=proc_exe_env_for_test(
                         timeout_in_seconds=1
                     )
                 )

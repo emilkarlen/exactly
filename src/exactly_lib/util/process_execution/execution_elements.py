@@ -4,7 +4,8 @@ from typing import Dict, Optional, Union, Sequence
 class ProcessExecutionSettings(tuple):
     def __new__(cls,
                 timeout_in_seconds: Optional[int] = None,
-                environ: Optional[Dict[str, str]] = None):
+                environ: Optional[Dict[str, str]] = None,
+                ):
         return tuple.__new__(cls, (timeout_in_seconds, environ))
 
     @staticmethod
