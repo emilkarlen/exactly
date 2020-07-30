@@ -6,13 +6,17 @@ from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import AtcOsProcessExecutor
 from exactly_lib.test_case.atc_os_proc_executors import DEFAULT_ATC_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesImplementationException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File
@@ -29,12 +33,14 @@ class Arrangement:
                  source: ParseSource,
                  act_phase_source_lines: list,
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
-                 atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR
+                 atc_os_process_executor: AtcOsProcessExecutor = DEFAULT_ATC_OS_PROCESS_EXECUTOR,
+                 os_services: OsServices = os_services_access.new_for_current_os(),
                  ):
         self.hds_contents = hds_contents
         self.source = source
         self.act_phase_source_lines = act_phase_source_lines
         self.atc_os_process_executor = atc_os_process_executor
+        self.os_services = os_services
 
 
 class Expectation:
@@ -59,7 +65,12 @@ def check(put: unittest.TestCase,
         act_phase_instructions,
         integration_check.Arrangement(
             hds_contents=arrangement.hds_contents,
-            atc_process_executor=arrangement.atc_os_process_executor),
+            atc_process_executor=arrangement.atc_os_process_executor,
+            process_execution=ProcessExecutionArrangement(
+                process_execution_settings=ProcessExecutionSettings.with_no_timeout_no_environ(),
+                os_services=arrangement.os_services,
+
+            )),
         integration_check.Expectation(
             post_sds=PostSdsExpectation.constant(
                 sub_process_result_from_execute=expectation.sub_process_result_from_execute
