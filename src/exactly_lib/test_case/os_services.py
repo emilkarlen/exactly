@@ -13,6 +13,7 @@ class OsServices(ABC):
     These are services may vary depending on operating system.
     """
 
+    @property
     @abstractmethod
     def command_executor(self) -> CommandExecutor:
         pass

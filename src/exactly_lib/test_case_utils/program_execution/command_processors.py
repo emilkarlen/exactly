@@ -15,7 +15,7 @@ def processor__raw(
 ) -> CommandProcessor[int]:
     from exactly_lib.util.process_execution.executors.executor import ProcessorFromExecutor
     return ProcessorFromExecutor(
-        os_services.command_executor(),
+        os_services.command_executor,
         files
     )
 

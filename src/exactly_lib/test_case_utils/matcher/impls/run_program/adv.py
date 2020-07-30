@@ -55,7 +55,7 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
     def _command_processor(self, model: MODEL) -> CommandProcessor[Result]:
         app_env = self._application_environment
         return read_stderr_on_error.ProcessorThatReadsStderrOnNonZeroExitCode(
-            app_env.os_services.command_executor(),
+            app_env.os_services.command_executor,
             app_env.tmp_files_space,
             self._run_conf.stdin(model),
             std_err_contents.STD_ERR_TEXT_READER,

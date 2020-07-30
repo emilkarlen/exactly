@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.util.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 
-COMMAND_EXECUTOR = os_services_access.new_for_current_os().command_executor()
+COMMAND_EXECUTOR = os_services_access.new_for_current_os().command_executor
 
 
 def suite() -> unittest.TestSuite:

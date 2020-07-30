@@ -6,6 +6,7 @@ from exactly_lib.test_case.result import sh
 
 
 class OsServicesThatRaises(OsServices):
+    @property
     def command_executor(self) -> CommandExecutor:
         raise NotImplementedError('Should never be used')
 

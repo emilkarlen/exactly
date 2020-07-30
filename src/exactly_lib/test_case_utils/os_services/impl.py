@@ -15,6 +15,7 @@ class OsServicesForAnyOs(OsServices):
                  ):
         self._command_executor = command_executor
 
+    @property
     def command_executor(self) -> CommandExecutor:
         return self._command_executor
 

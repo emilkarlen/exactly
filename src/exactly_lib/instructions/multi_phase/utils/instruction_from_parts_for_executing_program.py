@@ -114,7 +114,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo[ExecutionResultA
                            storage_dir: pathlib.Path,
                            ) -> CommandProcessor[ResultWithFiles]:
         return read_stderr_on_error.ProcessorThatStoresResultInFilesInDirAndReadsStderrOnNonZeroExitCode(
-            os_services.command_executor(),
+            os_services.command_executor,
             storage_dir,
             file_ctx_managers.dev_null(),
             std_err_contents.STD_ERR_TEXT_READER,

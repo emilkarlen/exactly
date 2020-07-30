@@ -135,7 +135,7 @@ class FileMakerForContentsFromProgram(FileMaker):
                                       storage_dir: pathlib.Path,
                                       ) -> CommandProcessor[ExitCodeAndFiles]:
         return store_result_in_files.ProcessorThatStoresResultInFilesInDir(
-            os_services.command_executor(),
+            os_services.command_executor,
             storage_dir,
             file_ctx_managers.dev_null(),
         )

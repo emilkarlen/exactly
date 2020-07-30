@@ -104,7 +104,7 @@ class _TransformedFileCreator:
     def _exit_code_agnostic_processor(self, model: StringModel) -> CommandProcessor[ExitCodeAndFiles]:
         path_of_file_with_model = model.as_file
         return store_result_in_files.ProcessorThatStoresResultInFilesInDir(
-            self.environment.os_services.command_executor(),
+            self.environment.os_services.command_executor,
             self.environment.tmp_files_space.new_path_as_existing_dir('str-trans-run'),
             file_ctx_managers.open_file(path_of_file_with_model, 'r'),
         )

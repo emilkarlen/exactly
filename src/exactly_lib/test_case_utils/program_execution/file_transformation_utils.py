@@ -53,7 +53,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     :raises PfhHardErrorException: IO error.
     """
     command_processor = store_result_in_files.ProcessorThatStoresResultInFilesInDir(
-        os_services.command_executor(),
+        os_services.command_executor,
         pgm_output_dir,
         file_ctx_managers.dev_null(),
     )
