@@ -77,7 +77,7 @@ class TestWithoutExecution(unittest.TestCase):
                             ),
                             primitive=lambda env: (
                                 asrt_pgm_val.matches_program(
-                                    asrt_command.matches_command2(
+                                    asrt_command.matches_command(
                                         driver=command_case.expected_command(env),
                                         arguments=asrt.is_empty_sequence
                                     ),
@@ -135,7 +135,7 @@ class TestWithoutExecution(unittest.TestCase):
                                 ),
                                 primitive=lambda env: (
                                     asrt_pgm_val.matches_program(
-                                        asrt_command.matches_command2(
+                                        asrt_command.matches_command(
                                             driver=command_case.expected_command(env),
                                             arguments=expected_arguments
                                         ),
@@ -181,7 +181,7 @@ class TestWithoutExecution(unittest.TestCase):
                             ),
                             primitive=lambda env: (
                                 asrt_pgm_val.matches_program(
-                                    asrt_command.matches_command2(
+                                    asrt_command.matches_command(
                                         driver=command_case.expected_command(env),
                                         arguments=asrt.is_empty_sequence
                                     ),

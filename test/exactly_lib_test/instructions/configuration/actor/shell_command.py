@@ -67,7 +67,7 @@ class _ShellExecutionCheckerHelper:
 
 def initial_part_of_command_without_file_argument_is(
         expected_command_except_final_file_name_part: str) -> ValueAssertion[Command]:
-    return asrt_command.matches_command2(
+    return asrt_command.matches_command(
         driver=asrt_command.matches_shell_command_driver(
             asrt_str.begins_with(expected_command_except_final_file_name_part)
         ),
@@ -89,7 +89,7 @@ def shell_command_is(
         asrt.equals(arg_string)
         for arg_string in additional_arguments
     ]
-    return asrt_command.matches_command2(
+    return asrt_command.matches_command(
         driver=asrt_command.matches_shell_command_driver(
             asrt.equals(expected_command)
         ),
@@ -176,7 +176,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
         # ACT #
         check(self, arrangement, expectation)
         # ASSERT #
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_shell_command_driver(
                 asrt.equals(act_phase_source)
             ),

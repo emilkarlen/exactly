@@ -83,7 +83,7 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExec
             self,
             instruction_argument_source_template,
             act_phase_source_lines=['this is act phase source code that is not used in the test'],
-            expected_cmd_and_args=asrt_command.matches_command2(
+            expected_cmd_and_args=asrt_command.matches_command(
                 asrt_command.matches_system_program_command_driver(
                     asrt.equals(expected_executable)
                 ),
@@ -163,7 +163,7 @@ def is_interpreter_with_source_file_and_arguments(interpreter: str,
                                                   source_file_relative_hds_name: str,
                                                   arguments: List[str],
                                                   ) -> ValueAssertion[Command]:
-    return asrt_command.matches_command2(
+    return asrt_command.matches_command(
         asrt_command.matches_system_program_command_driver(
             asrt.equals(interpreter)
         ),
@@ -185,7 +185,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
         # ACT #
         check(self, arrangement, expectation)
         # ASSERT #
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_executable_file_command_driver(
                 asrt_path.path_as_str(asrt.equals(executable_file)),
             ),

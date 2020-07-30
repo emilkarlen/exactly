@@ -94,7 +94,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                           self.configuration.actor,
                                           act_phase_instructions,
                                           arrangement, expectation)
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             asrt_command.matches_shell_command_driver(
                 asrt_shlex.matches_single_quotes_str(asrt.equals(sys.executable))
                 # TODO maybe derive this assertion more intelligently
@@ -142,7 +142,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                                           arrangement,
                                           expectation)
         # ASSERT #
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_shell_command_driver(
                 asrt_shlex.matches_single_quotes_str(asrt.equals(sys.executable))
                 # TODO maybe derive this assertion more intelligently

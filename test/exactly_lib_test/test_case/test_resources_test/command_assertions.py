@@ -8,6 +8,7 @@ from exactly_lib.type_system.logic.program.process_execution.commands import Com
 from exactly_lib_test.test_case.test_resources import command_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
 
 
@@ -139,14 +140,14 @@ class TestCommand(unittest.TestCase):
             NEA('shell',
                 expected=
                 sut.matches_command(sut.equals_shell_command_driver(CommandDriverForShell('command line')),
-                                    ['arg']),
+                                    asrt.equals(['arg'])),
                 actual=
                 Command(CommandDriverForShell('command line'), ['arg']),
                 ),
             NEA('without arguments',
                 expected=
                 sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('program')),
-                                    []),
+                                    asrt.equals([])),
                 actual=
                 Command(CommandDriverForSystemProgram('program'),
                         []),
@@ -161,21 +162,22 @@ class TestCommand(unittest.TestCase):
             NEA('unexpected driver type',
                 expected=
                 sut.matches_command(sut.equals_shell_command_driver(CommandDriverForShell('command')),
-                                    ['arg']),
+                                    asrt.equals(['arg'])),
                 actual=
                 Command(CommandDriverForSystemProgram('command'), ['arg']),
                 ),
             NEA('unexpected driver data',
                 expected=
-                sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('expected')),
-                                    []),
+                sut.matches_command(
+                    sut.equals_system_program_command_driver(CommandDriverForSystemProgram('expected')),
+                    asrt.equals([])),
                 actual=
                 Command(CommandDriverForSystemProgram('unexpected'), []),
                 ),
             NEA('unexpected argument',
                 expected=
                 sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('command')),
-                                    ['expected']),
+                                    asrt.equals(['expected'])),
                 actual=
                 Command(CommandDriverForSystemProgram('command'), ['expected', 'unexpected']),
                 ),

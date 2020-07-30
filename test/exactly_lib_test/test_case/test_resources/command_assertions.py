@@ -78,23 +78,7 @@ def matches_shell_command_driver(shell_command_line: ValueAssertion[str]) -> Val
 
 
 def matches_command(driver: ValueAssertion[CommandDriver],
-                    arguments: List[str]) -> ValueAssertion[Command]:
-    return asrt.is_instance_with__many(
-        Command,
-        [
-            asrt.sub_component('driver',
-                               Command.driver.fget,
-                               driver
-                               ),
-            asrt.sub_component('arguments',
-                               Command.arguments.fget,
-                               asrt.equals(arguments)
-                               ),
-        ])
-
-
-def matches_command2(driver: ValueAssertion[CommandDriver],
-                     arguments: ValueAssertion[Sequence[str]]) -> ValueAssertion[Command]:
+                    arguments: ValueAssertion[Sequence[str]]) -> ValueAssertion[Command]:
     return asrt.is_instance_with__many(
         Command,
         [
@@ -111,20 +95,26 @@ def matches_command2(driver: ValueAssertion[CommandDriver],
 
 def equals_executable_file_command(executable_file: DescribedPath,
                                    arguments: List[str]) -> ValueAssertion[Command]:
-    return matches_command(equals_executable_file_command_driver(CommandDriverForExecutableFile(executable_file)),
-                           arguments)
+    return matches_command(
+        equals_executable_file_command_driver(CommandDriverForExecutableFile(executable_file)),
+        asrt.equals(arguments),
+    )
 
 
 def equals_system_program_command(program: str,
                                   arguments: List[str]) -> ValueAssertion[Command]:
-    return matches_command(equals_system_program_command_driver(CommandDriverForSystemProgram(program)),
-                           arguments)
+    return matches_command(
+        equals_system_program_command_driver(CommandDriverForSystemProgram(program)),
+        asrt.equals(arguments),
+    )
 
 
 def equals_shell_command(command_line: str,
                          arguments: List[str]) -> ValueAssertion[Command]:
-    return matches_command(equals_shell_command_driver(CommandDriverForShell(command_line)),
-                           arguments)
+    return matches_command(
+        equals_shell_command_driver(CommandDriverForShell(command_line)),
+        asrt.equals(arguments),
+    )
 
 
 def equals_execute_py_source_command(source: str) -> ValueAssertion[Command]:

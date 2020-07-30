@@ -115,7 +115,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
                                           act_phase_instructions,
                                           arrangement, expectation)
         # ASSERT #
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
             arguments=asrt.matches_sequence([
                 asrt_path.str_as_path(asrt_path.name_equals(expected_file_name))
@@ -166,7 +166,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                                           act_phase_instructions,
                                           arrangement, expectation)
         # ASSERT #
-        expected_command = asrt_command.matches_command2(
+        expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
             arguments=asrt.matches_sequence([
                 asrt_path.str_as_path(asrt_path.name_equals(atc_file_name)),
