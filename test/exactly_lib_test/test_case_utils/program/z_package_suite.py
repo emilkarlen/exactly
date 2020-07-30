@@ -1,13 +1,16 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.program import execution
-from exactly_lib_test.test_case_utils.program.parse import z_package_suite as parse
+from exactly_lib_test.test_case_utils.program import parse_arguments, parse_executable_file_executable, parse_program, \
+    parse_system_program, parse_with_reference_to_program
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        parse.suite(),
-        execution.suite(),
+        parse_arguments.suite(),
+        parse_executable_file_executable.suite(),
+        parse_system_program.suite(),
+        parse_with_reference_to_program.suite(),
+        parse_program.suite(),
     ])
 
 

@@ -12,9 +12,10 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
-from exactly_lib_test.test_case_utils.program.test_resources import integration_check
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.program.test_resources.assertions import assert_process_result_data
+from exactly_lib_test.test_case_utils.program_execution.test_resources.integration_check_w_trans import \
+    CHECKER_W_TRANSFORMATION
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import test_transformers_setup
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
@@ -76,7 +77,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 
                     # ACT & ASSERT #
 
-                    integration_check.CHECKER_W_EXECUTION.check(
+                    CHECKER_W_TRANSFORMATION.check(
                         self,
                         source,
                         transformation_case.input_value,
@@ -147,7 +148,7 @@ class TestSymbolReferenceProgram(unittest.TestCase):
 
                     # ACT & ASSERT #
 
-                    integration_check.CHECKER_W_EXECUTION.check(
+                    CHECKER_W_TRANSFORMATION.check(
                         self,
                         source,
                         transformation_case.input_value,
@@ -209,7 +210,7 @@ class TestValidationOfProgramShouldIncludeValidationOfTransformer(unittest.TestC
                 with self.subTest(pgm_and_args_case=pgm_and_args_case.name,
                                   validation_case=validation_case.name):
                     # ACT & ASSERT #
-                    integration_check.CHECKER_W_EXECUTION.check(
+                    CHECKER_W_TRANSFORMATION.check(
                         self,
                         arguments.as_remaining_source,
                         ProcOutputFile.STDOUT,

@@ -4,6 +4,7 @@ from typing import Sequence, List, Callable
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
 from exactly_lib.util.symbol_table import SymbolTable
@@ -12,14 +13,16 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
+from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     Expectation, Arrangement, AssertionResolvingEnvironment, prim_asrt__constant, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2, \
     equivalent_source_variants__with_source_check__for_expression_parser_2
-from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, program_sdvs
-from exactly_lib_test.test_case_utils.program.test_resources import integration_check
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, program_sdvs, \
+    integration_check_config
+from exactly_lib_test.test_case_utils.program.test_resources import integration_check_applier
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
@@ -65,7 +68,7 @@ class TestWithoutExecution(unittest.TestCase):
                 with self.subTest(command=command_case.name,
                                   following_source_variant=source_case.name):
                     # ACT & ASSERT #
-                    integration_check.CHECKER_WO_EXECUTION.check(
+                    CHECKER_WO_EXECUTION.check(
                         self,
                         source_case.input_value,
                         None,
@@ -122,7 +125,7 @@ class TestWithoutExecution(unittest.TestCase):
                                       arguments=arguments_case.name,
                                       following_source_variant=source_case.name):
                         # ACT & ASSERT #
-                        integration_check.CHECKER_WO_EXECUTION.check(
+                        CHECKER_WO_EXECUTION.check(
                             self,
                             source_case.input_value,
                             None,
@@ -169,7 +172,7 @@ class TestWithoutExecution(unittest.TestCase):
                 with self.subTest(command=command_case.name,
                                   following_source_variant=source_case.name):
                     # ACT & ASSERT #
-                    integration_check.CHECKER_WO_EXECUTION.check(
+                    CHECKER_WO_EXECUTION.check(
                         self,
                         source_case.actual,
                         None,
@@ -266,6 +269,13 @@ def _single_line_command_cases__wo_argument_list() -> List[Case]:
 def _single_line_command_cases() -> List[Case]:
     return _single_line_command_cases__w_argument_list() + _single_line_command_cases__wo_argument_list()
 
+
+CHECKER_WO_EXECUTION = IntegrationChecker(
+    parse_program.program_parser(),
+    integration_check_config.ProgramPropertiesConfiguration(
+        integration_check_applier.NullApplier()
+    )
+)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

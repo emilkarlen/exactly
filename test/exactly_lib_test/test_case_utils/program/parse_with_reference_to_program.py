@@ -17,7 +17,6 @@ from exactly_lib.type_system.data.paths import simple_of_rel_option
 from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
@@ -30,20 +29,14 @@ from exactly_lib_test.test_case_file_structure.test_resources.application_enviro
     application_environment_for_test
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
-from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
-from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
-    arrangement_w_tcds, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args, \
-    program_checker
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
-from exactly_lib_test.test_case_utils.program.test_resources.assertions import assert_process_result_data
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.programs.py_programs import py_pgm_with_stdout_stderr_exit_code
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -58,7 +51,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestValidation),
         unittest.makeSuite(TestResolving),
-        unittest.makeSuite(TestExecution),
     ])
 
 
@@ -259,74 +251,6 @@ class TestValidation(unittest.TestCase):
                     validation_assertion.apply_without_message(self, validator)
 
 
-class TestExecution(unittest.TestCase):
-    def test(self):
-        # ARRANGE #
-
-        stdout_contents = 'output on stdout'
-        stderr_contents = 'output on stderr'
-
-        exit_code_cases = [0, 72]
-
-        transformation_cases = [
-            NIE(
-                'stdout',
-                stdout_contents,
-                ProcOutputFile.STDOUT,
-            ),
-            NIE(
-                'stderr',
-                stderr_contents,
-                ProcOutputFile.STDERR,
-            ),
-        ]
-        for exit_code_case in exit_code_cases:
-            for transformation_case in transformation_cases:
-                with self.subTest(
-                        exit_code=exit_code_case,
-                        transformation=transformation_case.name):
-                    python_source = py_pgm_with_stdout_stderr_exit_code(stdout_contents,
-                                                                        stderr_contents,
-                                                                        exit_code_case)
-
-                    sdv_of_referred_program = program_sdvs.for_py_source_on_command_line(python_source)
-
-                    program_that_executes_py_source = ProgramSymbolContext.of_sdv(
-                        'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-                        sdv_of_referred_program
-                    )
-
-                    source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
-                        program_that_executes_py_source.name))
-
-                    symbols = program_that_executes_py_source.symbol_table
-
-                    # ACT & ASSERT #
-                    _INTEGRATION_CHECKER.check(
-                        self,
-                        source,
-                        transformation_case.input_value,
-                        arrangement_w_tcds(
-                            symbols=symbols,
-                        ),
-                        Expectation(
-                            ParseExpectation(
-                                symbol_references=asrt.matches_sequence([
-                                    program_that_executes_py_source.reference_assertion,
-                                ]),
-                            ),
-                            ExecutionExpectation(
-                                main_result=assert_process_result_data(
-                                    exitcode=asrt.equals(exit_code_case),
-                                    stdout_contents=asrt.equals(stdout_contents),
-                                    stderr_contents=asrt.equals(stderr_contents),
-                                    contents_after_transformation=asrt.equals(transformation_case.expected_value),
-                                )
-                            )
-                        )
-                    )
-
-
 class ResolvingCase:
     def __init__(self,
                  name: str,
@@ -462,13 +386,6 @@ class TestResolving(unittest.TestCase):
 def parse_source_of(single_line: ArgumentElementsRenderer) -> ParseSource:
     return ArgumentElements([single_line]).as_remaining_source
 
-
-_INTEGRATION_CHECKER = IntegrationChecker(
-    sut.program_parser(),
-    program_checker.ProgramPropertiesConfiguration(
-        program_checker.ExecutionApplier()
-    )
-)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
