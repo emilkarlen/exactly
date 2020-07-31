@@ -1,10 +1,14 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.string_models import model_from_lines
+from exactly_lib_test.test_case_utils.string_models import model_from_lines_base, model_of_file
 
 
 def suite() -> unittest.TestSuite:
-    return model_from_lines.suite()
+    return unittest.TestSuite([
+        model_from_lines_base.suite(),
+        model_of_file.suite(),
+    ])
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

@@ -3,7 +3,7 @@ from typing import Callable
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib_test.type_system.logic.test_resources.string_models import of_string
+from exactly_lib_test.type_system.logic.string_model.test_resources.string_models import of_string
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 ModelConstructor = Callable[[Tcds], StringModel]

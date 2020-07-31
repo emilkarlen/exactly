@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ContextManager, Iterator
+from typing import ContextManager, Iterator, IO
 
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
@@ -35,7 +35,7 @@ class StringModel(ABC):
 
         The path may be read-only.
 
-        :raises HardErrorException: Failure to generate the file
+        :raises HardErrorException: Detected error
         """
         pass
 
@@ -50,6 +50,13 @@ class StringModel(ABC):
         it might be better to store the result in a file,
         using transformed_file_path.
 
-        :raises HardErrorException: Failure to generate the strings
+        :raises HardErrorException: Detected error
         """
         pass
+
+    def write_to(self, output: IO):
+        """
+        :raises HardErrorException: Detected error
+        """
+        with self.as_lines as lines:
+            output.writelines(lines)

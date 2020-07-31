@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
-from exactly_lib_test.type_system.logic.test_resources import string_models
 
 
 def suite() -> unittest.TestSuite:

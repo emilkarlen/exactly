@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, Sequence, List
+from typing import ContextManager, Iterator, Sequence, List, IO
 
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
@@ -23,6 +23,9 @@ class StringModelThatMustNotBeUsed(StringModel):
     def as_lines(self) -> ContextManager[Iterator[str]]:
         raise ValueError('unsupported')
 
+    def write_to(self, output: IO):
+        raise ValueError('unsupported')
+
 
 class StringModelThatRaisesHardErrorException(StringModel):
     def __init__(self, err_msg='hard error message'):
@@ -39,6 +42,9 @@ class StringModelThatRaisesHardErrorException(StringModel):
     @property
     def as_lines(self) -> ContextManager[Iterator[str]]:
         return self._raise_hard_error()
+
+    def write_to(self, output: IO):
+        self._raise_hard_error()
 
     def _raise_hard_error(self):
         raise HardErrorException(

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.string_transformer.impl import identity as sut
-from exactly_lib_test.type_system.logic.test_resources import string_models
+from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
 
 
 def suite() -> unittest.TestSuite:
@@ -9,7 +9,6 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(unittest.TestCase):
-
     def test_SHOULD_be_identity_transformer(self):
         transformer = sut.IdentityStringTransformer()
         self.assertTrue(transformer.is_identity_transformer)

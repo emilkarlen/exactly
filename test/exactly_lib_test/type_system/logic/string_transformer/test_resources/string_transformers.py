@@ -8,7 +8,7 @@ from exactly_lib.type_system.logic.impls.transformed_string_models import String
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.type_system.logic.test_resources import string_models
+from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
 
 
 class StringTransformerFromLinesTransformation(StringTransformer):

@@ -17,7 +17,7 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.test_case_utils.string_transformer.impl.transformed_string_models import \
+from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
