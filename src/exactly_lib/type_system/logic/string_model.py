@@ -5,17 +5,6 @@ from typing import ContextManager, Iterator, IO
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
-class TmpFilePathGenerator(ABC):
-    """Generates any number of unused paths."""
-
-    @abstractmethod
-    def new_path(self) -> Path:
-        """
-        :return: A path that is safe to create. A new path is given on each invokation.
-        """
-        pass
-
-
 class StringModel(ABC):
     """Model for string transformers and string-matchers."""
 
