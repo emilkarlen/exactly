@@ -3,7 +3,7 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils, model_constructor_sdv
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
-from exactly_lib.test_case_utils.string_models.factory import StringModelFactory
+from exactly_lib.test_case_utils.string_models.factory import RootStringModelFactory
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
@@ -16,7 +16,7 @@ NAMES = file_contents_utils.NamesSetup(
 
 
 class _ModelConstructor(ModelConstructor[StringModel]):
-    def __init__(self, factory: StringModelFactory):
+    def __init__(self, factory: RootStringModelFactory):
         self._factory = factory
 
     def make_model(self, model: FileMatcherModel) -> StringModel:

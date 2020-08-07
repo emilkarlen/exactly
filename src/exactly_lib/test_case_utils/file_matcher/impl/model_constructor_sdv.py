@@ -9,13 +9,13 @@ from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmen
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
 from ... import described_dep_val
-from ...string_models.factory import StringModelFactory
+from ...string_models.factory import RootStringModelFactory
 
 
-def with_string_model_construction(make_constructor: Callable[[StringModelFactory], ModelConstructor[MODEL]],
+def with_string_model_construction(make_constructor: Callable[[RootStringModelFactory], ModelConstructor[MODEL]],
                                    ) -> LogicWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
     def make_primitive(environment: ApplicationEnvironment) -> ModelConstructor[MODEL]:
-        factory = StringModelFactory(
+        factory = RootStringModelFactory(
             tmp_dir_file_spaces.std_tmp_dir_file_space(environment.tmp_files_space.new_path())
         )
         return make_constructor(factory)
