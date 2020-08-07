@@ -1,5 +1,7 @@
 import os
 import unittest
+from contextlib import contextmanager
+from typing import ContextManager
 
 from exactly_lib.actors.program import actor as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
@@ -109,36 +111,39 @@ class TheConfiguration(Configuration):
     def __init__(self):
         super().__init__(sut.actor())
 
-    def program_that_copes_stdin_to_stdout(self) -> TestCaseSourceSetup:
+    def program_that_copes_stdin_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
 
     def program_that_prints_to_stdout(self,
-                                      string_to_print: str) -> TestCaseSourceSetup:
+                                      string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
 
     def program_that_prints_to_stderr(self,
-                                      string_to_print: str) -> TestCaseSourceSetup:
+                                      string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
 
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> TestCaseSourceSetup:
+    def program_that_prints_value_of_environment_variable_to_stdout(
+            self, var_name: str
+    ) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
-    def program_that_prints_cwd_to_stdout(self) -> TestCaseSourceSetup:
+    def program_that_prints_cwd_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(shell_commands.command_that_prints_cwd_line_to_stdout())
 
     def program_that_exits_with_code(self,
-                                     exit_code: int) -> TestCaseSourceSetup:
+                                     exit_code: int) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
 
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> ContextManager[TestCaseSourceSetup]:
         return self._instruction_for(
             shell_commands.program_that_sleeps_at_least(number_of_seconds)
         )
 
     @staticmethod
-    def _instruction_for(command: str) -> TestCaseSourceSetup:
-        return TestCaseSourceSetup(
+    @contextmanager
+    def _instruction_for(command: str) -> ContextManager[TestCaseSourceSetup]:
+        yield TestCaseSourceSetup(
             act_phase_instructions=[
                 SourceCodeInstruction(LineSequence(1, [shell_command_source_line_for(command)]))
             ]

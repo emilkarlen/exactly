@@ -2,7 +2,7 @@ import os
 import random
 import unittest
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, ContextManager, Mapping, Optional
 
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -31,9 +31,11 @@ class TestCaseSourceSetup:
     def __init__(self,
                  act_phase_instructions: List[ActPhaseInstruction],
                  home_act_dir_contents: DirContents = empty_dir_contents(),
+                 environ: Optional[Mapping[str, str]] = None,
                  ):
         self.home_act_dir_contents = home_act_dir_contents
         self.act_phase_instructions = act_phase_instructions
+        self.environ = environ
 
 
 class Configuration(ABC):
@@ -42,33 +44,34 @@ class Configuration(ABC):
 
     @abstractmethod
     def program_that_exits_with_code(self,
-                                     exit_code: int) -> TestCaseSourceSetup:
+                                     exit_code: int) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
-    def program_that_copes_stdin_to_stdout(self) -> TestCaseSourceSetup:
+    def program_that_copes_stdin_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
     def program_that_prints_to_stdout(self,
-                                      string_to_print: str) -> TestCaseSourceSetup:
+                                      string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
     def program_that_prints_to_stderr(self,
-                                      string_to_print: str) -> TestCaseSourceSetup:
+                                      string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> TestCaseSourceSetup:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str
+                                                                    ) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
-    def program_that_prints_cwd_to_stdout(self) -> TestCaseSourceSetup:
+    def program_that_prints_cwd_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
         pass
 
     @abstractmethod
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> TestCaseSourceSetup:
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> ContextManager[TestCaseSourceSetup]:
         pass
 
 
@@ -114,100 +117,104 @@ class TestBase(TestExecuteBase):
 class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):
         stdout_output = 'output on stdout'
-        setup = self.config.program_that_prints_to_stdout(stdout_output)
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-            ),
-            Expectation(
-                post_sds=PostSdsExpectation.constant(
-                    sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
-                        stdout=asrt.equals(stdout_output + '\n')
+        with self.config.program_that_prints_to_stdout(stdout_output) as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                ),
+                Expectation(
+                    post_sds=PostSdsExpectation.constant(
+                        sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
+                            stdout=asrt.equals(stdout_output + '\n')
+                        )
                     )
-                )
-            ),
-        )
+                ),
+            )
 
 
 class TestStderrIsConnectedToProgram(TestBase):
     def runTest(self):
         stderr_output = 'output on stderr'
-        setup = self.config.program_that_prints_to_stderr(stderr_output)
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-            ),
-            Expectation(
-                post_sds=PostSdsExpectation.constant(
-                    sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
-                        stderr=asrt.equals(stderr_output + '\n')
+        with self.config.program_that_prints_to_stderr(stderr_output) as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                ),
+                Expectation(
+                    post_sds=PostSdsExpectation.constant(
+                        sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
+                            stderr=asrt.equals(stderr_output + '\n')
+                        )
                     )
-                )
-            ),
-        )
+                ),
+            )
 
 
 class TestStdinAndStdoutAreConnectedToProgram(TestBase):
     def runTest(self):
         stdin_contents = 'contents of stdin'
-        setup = self.config.program_that_copes_stdin_to_stdout()
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-                stdin_contents=stdin_contents
-            ),
-            Expectation(
-                post_sds=PostSdsExpectation.constant(
-                    sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
-                        stdout=asrt.equals(stdin_contents)
+        with self.config.program_that_copes_stdin_to_stdout() as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    stdin_contents=stdin_contents,
+                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                ),
+                Expectation(
+                    post_sds=PostSdsExpectation.constant(
+                        sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
+                            stdout=asrt.equals(stdin_contents)
+                        )
                     )
-                )
-            ),
-        )
+                ),
+            )
 
 
 class TestExitCodeIsReturned(TestBase):
     def runTest(self):
-        setup = self.config.program_that_exits_with_code(87)
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-            ),
-            Expectation(
-                execute=eh_assertions.is_exit_code(87)
+        with self.config.program_that_exits_with_code(87) as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                ),
+                Expectation(
+                    execute=eh_assertions.is_exit_code(87)
+                )
             )
-        )
 
 
 class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
     def runTest(self):
         var_name = 'THIS_IS_A_TEST_VAR_23026509234'
         var_value = str(random.getrandbits(32))
-        environ = dict(os.environ)
-        environ[var_name] = var_value
-        setup = self.config.program_that_prints_value_of_environment_variable_to_stdout(var_name)
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-                process_execution=ProcessExecutionArrangement(
-                    process_execution_settings=proc_exe_env_for_test(
-                        environ=environ
+        with self.config.program_that_prints_value_of_environment_variable_to_stdout(var_name) as setup:
+            environ = dict(os.environ) if setup.environ is None else setup.environ
+            environ[var_name] = var_value
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=ProcessExecutionArrangement(
+                        process_execution_settings=proc_exe_env_for_test(
+                            environ=environ
+                        )
                     )
-                )
-            ),
-            Expectation(
-                post_sds=PostSdsExpectation.constant(
-                    sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
-                        stdout=asrt.equals(var_value + '\n')
+                ),
+                Expectation(
+                    post_sds=PostSdsExpectation.constant(
+                        sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
+                            stdout=asrt.equals(var_value + '\n')
+                        )
                     )
-                )
-            ),
-        )
+                ),
+            )
 
 
 class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
@@ -227,19 +234,20 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
                 )
             )
 
-        setup = self.config.program_that_prints_cwd_to_stdout()
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-                post_sds_action=MkSubDirAndMakeItCurrentDirectory(
-                    SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT, cwd_sub_dir_of_act)
+        with self.config.program_that_prints_cwd_to_stdout() as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    post_sds_action=MkSubDirAndMakeItCurrentDirectory(
+                        SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT, cwd_sub_dir_of_act)
+                    ),
+                    process_execution=_proc_exe_arr_w_environ(setup.environ),
+                ),
+                Expectation(
+                    post_sds=check_that_stdout_is_expected_cwd
                 )
-            ),
-            Expectation(
-                post_sds=check_that_stdout_is_expected_cwd
             )
-        )
 
 
 class TestTimeoutValueIsUsed(TestBase):
@@ -247,19 +255,20 @@ class TestTimeoutValueIsUsed(TestBase):
         super().__init__(configuration)
 
     def runTest(self):
-        setup = self.config.program_that_sleeps_at_least(5)
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-                process_execution=ProcessExecutionArrangement(
-                    process_execution_settings=proc_exe_env_for_test(
-                        timeout_in_seconds=1
+        with self.config.program_that_sleeps_at_least(5) as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=ProcessExecutionArrangement(
+                        process_execution_settings=proc_exe_env_for_test(
+                            timeout_in_seconds=1,
+                            environ=setup.environ,
+                        )
                     )
-                )
-            ),
-            Expectation(execute=eh_assertions.is_hard_error),
-        )
+                ),
+                Expectation(execute=eh_assertions.is_hard_error),
+            )
 
 
 class TestHardErrorFromExecutorIsDetected(TestBase):
@@ -267,24 +276,35 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
         super().__init__(configuration)
 
     def runTest(self):
-        setup = self.config.program_that_exits_with_code(0)
         hard_error_message = 'the err msg'
-        self._check(
-            setup.act_phase_instructions,
-            Arrangement(
-                hds_contents=_hds_pop_of(setup),
-                process_execution=ProcessExecutionArrangement(
-                    os_services=os_services_access.new_for_cmd_exe(
-                        CommandExecutorThatRaisesHardError(
-                            asrt_text_doc.new_single_string_text_for_test(hard_error_message)
-                        )
+        with self.config.program_that_exits_with_code(0) as setup:
+            self._check(
+                setup.act_phase_instructions,
+                Arrangement(
+                    hds_contents=_hds_pop_of(setup),
+                    process_execution=ProcessExecutionArrangement(
+                        os_services=os_services_access.new_for_cmd_exe(
+                            CommandExecutorThatRaisesHardError(
+                                asrt_text_doc.new_single_string_text_for_test(hard_error_message)
+                            )
+                        ),
+                        process_execution_settings=proc_exe_env_for_test(
+                            environ=setup.environ
+                        ),
                     )
+                ),
+                expectation=Expectation.hard_error_from_execute(
+                    error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message)
                 )
-            ),
-            expectation=Expectation.hard_error_from_execute(
-                error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message)
             )
+
+
+def _proc_exe_arr_w_environ(environ: Optional[Mapping[str, str]]) -> ProcessExecutionArrangement:
+    return ProcessExecutionArrangement(
+        process_execution_settings=proc_exe_env_for_test(
+            environ=environ
         )
+    )
 
 
 def _hds_pop_of(setup: TestCaseSourceSetup) -> HdsPopulator:
