@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib_test.actors.command_line.test_resources import shell_command_source_line_for
+from exactly_lib_test.actors.program.test_resources import shell_command_source_line_for
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \

@@ -161,9 +161,19 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
         return self.value.reference_assertion(self._name)
 
     @property
+    def usage_assertion(self) -> ValueAssertion[SymbolUsage]:
+        return self.value.reference_assertion(self._name)
+
+    @property
     def references_assertion(self) -> ValueAssertion[Sequence[SymbolReference]]:
         return asrt.matches_sequence([
             self.reference_assertion,
+        ])
+
+    @property
+    def usages_assertion(self) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence([
+            self.usage_assertion,
         ])
 
     @staticmethod

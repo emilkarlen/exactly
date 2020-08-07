@@ -84,7 +84,8 @@ def interpret_py_source_file_elements(py_file: WithToString) -> ArgumentElements
 
 
 def program(program_arg: WithToString,
-            transformation=None) -> ArgumentElements:
+            transformation: Optional[WithToString] = None,
+            ) -> ArgumentElements:
     extra = []
     if transformation:
         extra.append([ab.option(

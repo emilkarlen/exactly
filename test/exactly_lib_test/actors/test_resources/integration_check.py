@@ -19,16 +19,17 @@ from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details, \
     sh_assertions as asrt_sh
-from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, \
+    all_validations_passes__svh
 from exactly_lib_test.test_resources.process import capture_process_executor_result, SubProcessResult, ProcessExecutor
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -96,18 +97,18 @@ class PostSdsExpectation:
 
 class Expectation:
     def __init__(self,
-                 validate_pre_sds: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
-                 = svh_assertions.is_success(),
+                 validation: ValidationExpectationSvh
+                 = all_validations_passes__svh(),
                  prepare: ValueAssertion[sh.SuccessOrHardError]
                  = sh_assertions.is_success(),
                  execute: ValueAssertion[ExitCodeOrHardError]
-                 = eh_assertions.is_any_exit_code,
+                 = asrt_eh.is_any_exit_code,
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
                  post_sds: Callable[[SandboxDirectoryStructure], PostSdsExpectation] = lambda sds: PostSdsExpectation()
                  ):
         self.symbol_usages = symbol_usages
-        self.validate_pre_sds = validate_pre_sds
+        self.validation = validation
         self.prepare = prepare
         self.execute = execute
         self.post_sds = post_sds
@@ -242,7 +243,7 @@ class _Checker:
                           env: InstructionEnvironmentForPreSdsStep,
                           ):
         step_result = atc.validate_pre_sds(env)
-        self._expectation.validate_pre_sds.apply_with_message(
+        self._expectation.validation.pre_sds.apply_with_message(
             self._put,
             step_result,
             phase_step.STEP__VALIDATE_PRE_SDS,
@@ -257,10 +258,15 @@ class _Checker:
                            env: InstructionEnvironmentForPostSdsStep,
                            ):
         step_result = atc.validate_post_setup(env)
-        self._put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                              step_result.status,
-                              'Result of validation/post-setup')
+        self._expectation.validation.post_sds.apply_with_message(
+            self._put,
+            step_result,
+            phase_step.STEP__VALIDATE_POST_SETUP,
+        )
         self._check_symbols_after(atc, phase_step.STEP__VALIDATE_POST_SETUP)
+
+        if step_result.status is not svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
+            raise _CheckIsDoneException()
 
     def _prepare(self,
                  atc: ActionToCheck,

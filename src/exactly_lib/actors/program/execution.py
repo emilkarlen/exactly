@@ -1,10 +1,12 @@
+import pathlib
 from abc import ABC, abstractmethod
 
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from ..util.actor_from_parts import parts
 from ...symbol.logic.program.program_sdv import ProgramSdv
 from ...test_case.os_services import OsServices
+from ...test_case_utils.string_models.factory import RootStringModelFactory
 from ...type_system.logic.application_environment import ApplicationEnvironment
 from ...type_system.logic.program.process_execution.command import Command
 from ...type_system.logic.program.program import Program
@@ -70,17 +72,17 @@ class _ExecutorWithoutTransformation(_ProgramExecutor):
     def __init__(self,
                  app_env: ApplicationEnvironment,
                  command: Command,
-                 files: StdFiles,
+                 atc_files: StdFiles,
                  ):
         self._app_env = app_env
         self._command = command
-        self._files = files
+        self._atc_files = atc_files
 
     def execute(self) -> int:
         return self._app_env.os_services.command_executor.execute(
             self._command,
             self._app_env.process_execution_settings,
-            self._files,
+            self._atc_files,
         )
 
 
@@ -88,15 +90,36 @@ class _ExecutorWithTransformation(_ProgramExecutor):
     def __init__(self,
                  app_env: ApplicationEnvironment,
                  program_w_trans: Program,
-                 files: StdFiles,
+                 atc_files: StdFiles,
                  ):
         self._app_env = app_env
         self._program_w_trans = program_w_trans
-        self._files = files
+        self._atc_files = atc_files
+        self._string_model_factory = RootStringModelFactory(app_env.tmp_files_space)
 
     def execute(self) -> int:
-        return self._app_env.os_services.command_executor.execute(
-            self._program_w_trans.command,
-            self._app_env.process_execution_settings,
-            self._files,
-        )
+        untransformed_stdout_path = self._app_env.tmp_files_space.new_path('un-trans-out')
+
+        exit_code_from_command = self._execute_command_w_stdout_to_file(untransformed_stdout_path)
+
+        transformer_input = self._string_model_factory.of_file(untransformed_stdout_path)
+        transformer_output = self._program_w_trans.transformation.transform(transformer_input)
+
+        transformer_output.write_to(self._atc_files.output.out)
+
+        return exit_code_from_command
+
+    def _execute_command_w_stdout_to_file(self, stdout_path: pathlib.Path) -> int:
+        with stdout_path.open('w') as stdout_file:
+            command_files = StdFiles(
+                self._atc_files.stdin,
+                StdOutputFiles(
+                    stdout_file=stdout_file,
+                    stderr_file=self._atc_files.output.err,
+                )
+            )
+            return self._app_env.os_services.command_executor.execute(
+                self._program_w_trans.command,
+                self._app_env.process_execution_settings,
+                command_files,
+            )

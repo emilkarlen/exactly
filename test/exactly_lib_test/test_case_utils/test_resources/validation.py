@@ -160,6 +160,13 @@ class ValidationExpectationSvh:
         self._pre_sds = pre_sds
         self._post_sds = post_sds
 
+    @staticmethod
+    def of_plain(plain: Expectation) -> 'ValidationExpectationSvh':
+        return ValidationExpectationSvh(
+            pre_sds=svh_from_bool(plain.passes_pre_sds),
+            post_sds=svh_from_bool(plain.passes_post_sds),
+        )
+
     @property
     def pre_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
         return self._pre_sds
@@ -167,6 +174,15 @@ class ValidationExpectationSvh:
     @property
     def post_sds(self) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
         return self._post_sds
+
+
+def svh_from_bool(passes_validation: bool) -> ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return (
+        asrt_svh.is_success()
+        if passes_validation
+        else
+        asrt_svh.is_validation_error()
+    )
 
 
 def failing_validation_cases__svh() -> Sequence[NEA[ValidationExpectationSvh, ValidationActual]]:

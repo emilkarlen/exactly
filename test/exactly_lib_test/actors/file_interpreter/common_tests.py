@@ -11,9 +11,9 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import Dir
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -62,7 +62,7 @@ class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
         arrangement = Arrangement()
 
         expectation = Expectation(
-            validate_pre_sds=svh_assertions.is_validation_error()
+            validation=pre_sds_validation_fails__svh()
         )
         self._check(command_line,
                     arrangement,
@@ -78,7 +78,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
                 Dir.empty(source_file)]))
         )
         expectation = Expectation(
-            validate_pre_sds=svh_assertions.is_validation_error()
+            validation=pre_sds_validation_fails__svh()
         )
         self._check(command_line,
                     arrangement,

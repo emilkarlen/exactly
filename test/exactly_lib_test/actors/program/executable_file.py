@@ -5,10 +5,10 @@ from typing import List, ContextManager
 from exactly_lib.actors.program import actor as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.actors.program.test_resources import ConfigurationWithPythonProgramBase
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
-from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
-    suite_for_execution, TestCaseSourceSetup
+from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
@@ -17,15 +17,14 @@ from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbol
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
-from exactly_lib_test.util.test_resources import py_program
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
@@ -42,47 +41,15 @@ def suite() -> unittest.TestSuite:
     return ret_val
 
 
-class TheConfiguration(Configuration):
-    def __init__(self):
-        super().__init__(sut.actor())
-
-    def program_that_copes_stdin_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
-
-    def program_that_prints_to_stdout(self, string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(
-            py_program.write_string_to_stdout(string_to_print))
-
-    def program_that_prints_to_stderr(self,
-                                      string_to_print: str) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(
-            py_program.write_string_to_stderr(string_to_print))
-
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str
-                                                                    ) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(
-            py_program.write_value_of_environment_variable_to_stdout(var_name))
-
-    def program_that_prints_cwd_to_stdout(self) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
-
-    def program_that_exits_with_code(self, exit_code: int) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
-
-    def program_that_sleeps_at_least(self, number_of_seconds: int) -> ContextManager[TestCaseSourceSetup]:
-        return self._instructions_for_executing_source_from_py_file(
-            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds)
-        )
-
+class TheConfiguration(ConfigurationWithPythonProgramBase):
     @contextmanager
-    def _instructions_for_executing_source_from_py_file(self, py_src: List[str]) -> ContextManager[TestCaseSourceSetup]:
-        file_name_rel_hds_act = 'the-program'
+    def _instructions_for_executing_py_source(self, py_src: List[str]) -> ContextManager[TestCaseSourceSetup]:
+        exe_file = fs.python_executable_file('the-program',
+                                             lines_content(py_src))
+
         yield TestCaseSourceSetup(
-            act_phase_instructions=[instr([file_name_rel_hds_act])],
-            home_act_dir_contents=DirContents([
-                fs.python_executable_file(file_name_rel_hds_act,
-                                          lines_content(py_src))
-            ])
+            act_phase_instructions=[instr([exe_file.name])],
+            home_act_dir_contents=DirContents([exe_file])
         )
 
 
@@ -93,7 +60,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
         ]
         arrangement = Arrangement()
         expectation = Expectation(
-            validate_pre_sds=svh_assertions.is_validation_error()
+            validation=pre_sds_validation_fails__svh()
         )
         check_execution(self,
                         sut.actor(),
@@ -111,7 +78,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
                                      fs.DirContents([File.empty(executable_file_name)]))
         )
         expectation = Expectation(
-            validate_pre_sds=svh_assertions.is_validation_error()
+            validation=pre_sds_validation_fails__svh()
         )
         check_execution(self,
                         sut.actor(),

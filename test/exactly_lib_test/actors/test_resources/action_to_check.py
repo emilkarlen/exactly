@@ -2,13 +2,15 @@ import os
 import random
 import unittest
 from abc import ABC, abstractmethod
-from typing import List, ContextManager, Mapping, Optional
+from typing import List, ContextManager, Mapping, Optional, Sequence
 
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import \
     Expectation, Arrangement, PostSdsExpectation
@@ -24,6 +26,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -32,10 +35,14 @@ class TestCaseSourceSetup:
                  act_phase_instructions: List[ActPhaseInstruction],
                  home_act_dir_contents: DirContents = empty_dir_contents(),
                  environ: Optional[Mapping[str, str]] = None,
+                 symbols: Optional[SymbolTable] = None,
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  ):
+        self.symbols = symbol_table_from_none_or_value(symbols)
         self.home_act_dir_contents = home_act_dir_contents
         self.act_phase_instructions = act_phase_instructions
         self.environ = environ
+        self.symbol_usages = symbol_usages
 
 
 class Configuration(ABC):
@@ -121,10 +128,12 @@ class TestStdoutIsConnectedToProgram(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
                 ),
                 Expectation(
+                    symbol_usages=setup.symbol_usages,
                     post_sds=PostSdsExpectation.constant(
                         sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
                             stdout=asrt.equals(stdout_output + '\n')
@@ -141,10 +150,12 @@ class TestStderrIsConnectedToProgram(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
                 ),
                 Expectation(
+                    symbol_usages=setup.symbol_usages,
                     post_sds=PostSdsExpectation.constant(
                         sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
                             stderr=asrt.equals(stderr_output + '\n')
@@ -161,11 +172,13 @@ class TestStdinAndStdoutAreConnectedToProgram(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     stdin_contents=stdin_contents,
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
                 ),
                 Expectation(
+                    symbol_usages=setup.symbol_usages,
                     post_sds=PostSdsExpectation.constant(
                         sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
                             stdout=asrt.equals(stdin_contents)
@@ -181,11 +194,13 @@ class TestExitCodeIsReturned(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
                 ),
                 Expectation(
-                    execute=eh_assertions.is_exit_code(87)
+                    symbol_usages=setup.symbol_usages,
+                    execute=eh_assertions.is_exit_code(87),
                 )
             )
 
@@ -200,6 +215,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
                         process_execution_settings=proc_exe_env_for_test(
@@ -208,6 +224,7 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
                     )
                 ),
                 Expectation(
+                    symbol_usages=setup.symbol_usages,
                     post_sds=PostSdsExpectation.constant(
                         sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
                             stdout=asrt.equals(var_value + '\n')
@@ -238,6 +255,7 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     post_sds_action=MkSubDirAndMakeItCurrentDirectory(
                         SdsSubDirResolverWithRelSdsRoot(RelSdsOptionType.REL_ACT, cwd_sub_dir_of_act)
@@ -245,7 +263,8 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
                     process_execution=_proc_exe_arr_w_environ(setup.environ),
                 ),
                 Expectation(
-                    post_sds=check_that_stdout_is_expected_cwd
+                    symbol_usages=setup.symbol_usages,
+                    post_sds=check_that_stdout_is_expected_cwd,
                 )
             )
 
@@ -259,6 +278,7 @@ class TestTimeoutValueIsUsed(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
                         process_execution_settings=proc_exe_env_for_test(
@@ -267,7 +287,10 @@ class TestTimeoutValueIsUsed(TestBase):
                         )
                     )
                 ),
-                Expectation(execute=eh_assertions.is_hard_error),
+                Expectation(
+                    symbol_usages=setup.symbol_usages,
+                    execute=eh_assertions.is_hard_error,
+                ),
             )
 
 
@@ -281,6 +304,7 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
             self._check(
                 setup.act_phase_instructions,
                 Arrangement(
+                    symbol_table=setup.symbols,
                     hds_contents=_hds_pop_of(setup),
                     process_execution=ProcessExecutionArrangement(
                         os_services=os_services_access.new_for_cmd_exe(
@@ -294,7 +318,8 @@ class TestHardErrorFromExecutorIsDetected(TestBase):
                     )
                 ),
                 expectation=Expectation.hard_error_from_execute(
-                    error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message)
+                    symbol_usages=setup.symbol_usages,
+                    error_message=asrt_text_doc.is_single_pre_formatted_text_that_equals(hard_error_message),
                 )
             )
 

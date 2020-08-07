@@ -7,7 +7,8 @@ from exactly_lib_test.symbol.test_resources.string_transformer import string_tra
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_validator import constant_validator
-from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationActual
+from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationActual, \
+    Expectation
 
 
 class ValidationCase:
@@ -21,7 +22,12 @@ class ValidationCase:
             symbol_name,
             string_transformer_from_primitive_value(
                 validator=constant_validator(actual)
-            ))
+            )
+        )
+        self._expectation__bool = Expectation(
+            passes_pre_sds=actual.pre_sds is None,
+            passes_post_sds=actual.post_sds is None,
+        )
 
     @property
     def transformer_arguments_string(self) -> str:
@@ -42,6 +48,10 @@ class ValidationCase:
     @property
     def expectation(self) -> ValidationAssertions:
         return self._expectation
+
+    @property
+    def expectation__bool(self) -> Expectation:
+        return self._expectation__bool
 
 
 def failing_validation_cases(symbol_name: str = 'string_transformer_symbol') -> Sequence[NameAndValue[ValidationCase]]:

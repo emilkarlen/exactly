@@ -8,7 +8,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import validation_c
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    validation_cases as str_trans_validation_cases, model_construction
+    model_construction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -21,7 +21,6 @@ class TestValidation(unittest.TestCase):
         # ARRANGE #
 
         program_symbol_name = 'PROGRAM_SYMBOL'
-        transformer_symbol_name = 'TRANSFORMER_SYMBOL'
 
         # ACT && ASSERT #
 
@@ -39,11 +38,9 @@ class TestValidation(unittest.TestCase):
             ),
             model_construction.arbitrary_model_constructor(),
             [
-                validation_cases.validation_exe_case(
-                    validation_case,
-                    program_symbol_name,
-                )
-                for validation_case in str_trans_validation_cases.failing_validation_cases(transformer_symbol_name)
+                validation_cases.validation_exe_case(validation_case)
+                for validation_case in validation_cases.failing_validation_cases(program_symbol_name,
+                                                                                 'TRANSFORMER_SYMBOL')
             ],
         )
 
@@ -51,7 +48,6 @@ class TestValidation(unittest.TestCase):
         # ARRANGE #
 
         program_symbol_name = 'PROGRAM_SYMBOL'
-        transformer_symbol_name = 'TRANSFORMER_SYMBOL'
 
         # ACT && ASSERT #
 
@@ -69,10 +65,8 @@ class TestValidation(unittest.TestCase):
             ),
             model_construction.arbitrary_model_constructor(),
             [
-                validation_cases.validation_exe_case(
-                    validation_case,
-                    program_symbol_name,
-                )
-                for validation_case in str_trans_validation_cases.failing_validation_cases(transformer_symbol_name)
+                validation_cases.validation_exe_case(validation_case)
+                for validation_case in validation_cases.failing_validation_cases(program_symbol_name,
+                                                                                 'TRANSFORMER_SYMBOL')
             ],
         )
