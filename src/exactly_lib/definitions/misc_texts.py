@@ -2,6 +2,7 @@ from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.formatting import misc_name_with_formatting
 from exactly_lib.util.str_ import name
 
+NOTES_SECTION_HEADER = 'Notes'
 NOTE_LINE_HEADER = 'Note:'
 
 SYNTAX_ERROR_NAME = name.a_name(name.name_with_plural_s('syntax error'))

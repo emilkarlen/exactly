@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -10,8 +12,8 @@ def description_section(contents: doc.SectionContents) -> doc.Section:
     return doc.Section(docs.text('DESCRIPTION'), contents)
 
 
-def description_section_if_non_empty(contents: doc.SectionContents) -> list:
+def description_section_if_non_empty(contents: doc.SectionContents) -> List[doc.Section]:
     if contents.is_empty:
         return []
     else:
-        return [doc.Section(docs.text('DESCRIPTION'), contents)]
+        return [description_section(contents)]

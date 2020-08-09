@@ -1,4 +1,7 @@
+from typing import List
+
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.elements.argument import ArgumentUsage
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -9,7 +12,7 @@ class ActPhaseDocumentationSyntaxBase:
     def __init__(self, text_parser: TextParser):
         self._parser = text_parser
 
-    def _cl_syntax_for_args(self, argument_usages: list) -> str:
+    def _cl_syntax_for_args(self, argument_usages: List[ArgumentUsage]) -> str:
         cl = a.CommandLine(argument_usages)
         return self.CL_SYNTAX_RENDERER.as_str(cl)
 

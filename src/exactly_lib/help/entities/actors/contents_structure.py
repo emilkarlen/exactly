@@ -24,6 +24,9 @@ class ActorDocumentation(EntityDocumentation):
     def act_phase_contents_syntax(self) -> SectionContents:
         raise NotImplementedError()
 
+    def notes(self) -> SectionContents:
+        return SectionContents.empty()
+
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
         :returns: A new list, which may contain duplicate elements.

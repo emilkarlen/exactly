@@ -2,7 +2,6 @@ from exactly_lib.actors.common import relativity_configuration_of_action_to_chec
 from exactly_lib.actors.program.executable_object import ProgramToExecute
 from exactly_lib.actors.program.parse import Parser
 from exactly_lib.actors.util.actor_from_parts import parts
-from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
@@ -13,6 +12,7 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.util.symbol_table import SymbolTable
 from . import execution
 from ..util.actor_from_parts.parts import ValidatorFromPreOrPostSdsValidator
+from ...definitions.test_case import actor as help_texts
 
 
 def actor() -> Actor:
@@ -23,7 +23,7 @@ def actor() -> Actor:
     )
 
 
-RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.EXECUTABLE)
+RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(help_texts.EXECUTABLE)
 
 
 class _TheValidatorConstructor(parts.ValidatorConstructor[ProgramToExecute]):

@@ -35,6 +35,10 @@ class SectionContents(tuple):
         return tuple.__new__(cls, (initial_paragraphs,
                                    [] if sections is None else sections))
 
+    @staticmethod
+    def empty() -> 'SectionContents':
+        return SectionContents([], None)
+
     @property
     def initial_paragraphs(self) -> List[core.ParagraphItem]:
         return self[0]

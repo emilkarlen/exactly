@@ -7,7 +7,7 @@ from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTr
 from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import concepts, syntax_elements
+from exactly_lib.definitions.entity import concepts, syntax_elements, actors
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.definitions.test_case.instructions import define_symbol
@@ -154,6 +154,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
             rel_path_doc.path_element_relativity_paragraphs(
                 path_relativities.REL_OPTIONS_CONFIGURATION,
                 _TEXT_PARSER.paras(the_path_of('{executable_file:a}.')),
+                _TEXT_PARSER.fnap(_DIFFERENT_RELATIVITIES_FOR_PROGRAM_ACTOR),
             )
         )
 
@@ -301,6 +302,10 @@ _TEXT_PARSER = TextParser({
     'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
     'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    'relativity': formatting.misc_name_with_formatting(misc_texts.RELATIVITY),
+    'Note': misc_texts.NOTE_LINE_HEADER,
+    'program_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR),
+    'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
 })
 
 DOCUMENTATION = _Documentation()
@@ -413,4 +418,8 @@ Depending on the context, either stdout or stderr is transformed.
 Must appear on a separate line.
 
 If not, it will be interpreted as an {ARGUMENT}.
+"""
+
+_DIFFERENT_RELATIVITIES_FOR_PROGRAM_ACTOR = """\
+{Note} The {relativity:s} are different for the {program_actor} {actor_concept}.
 """

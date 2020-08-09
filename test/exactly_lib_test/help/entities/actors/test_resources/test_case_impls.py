@@ -18,6 +18,7 @@ def suite_for_actor_documentation(documentation: ActorDocumentation) -> unittest
         TestNameAndSingleLineDescription,
         TestActPhaseContents,
         TestActPhaseContentsSyntax,
+        TestActPhaseNotes,
         TestSeeAlso,
         TestCrossReferenceTarget,
     ])
@@ -69,6 +70,12 @@ class TestActPhaseContentsSyntax(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.act_phase_contents_syntax()
         struct_check.is_section_contents.apply_with_message(self, actual, 'act_phase_contents_syntax')
+
+
+class TestActPhaseNotes(WithActorDocumentationBase):
+    def runTest(self):
+        actual = self.documentation.notes()
+        struct_check.is_section_contents.apply_with_message(self, actual, 'notes')
 
 
 class TestSeeAlso(WithActorDocumentationBase):

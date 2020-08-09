@@ -3,7 +3,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossRef
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.test_case import phase_names
-
+from . import syntax_elements
 
 def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_NAMES,
@@ -19,7 +19,7 @@ def name_and_ref_target(name: str,
 
 COMMAND_LINE_ACTOR = name_and_ref_target(
     'command line',
-    'Executes a command line - either an executable file or a shell command'
+    'Executes a command line, in terms of a {}'.format(syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name)
 )
 
 SOURCE_INTERPRETER_ACTOR = name_and_ref_target(

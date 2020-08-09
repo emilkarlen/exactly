@@ -1,20 +1,18 @@
 import shlex
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.actors import file_interpreter
 from exactly_lib.actors import source_interpreter as source_interpreter
 from exactly_lib.actors.program import actor
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
-    invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts, actors
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
+from exactly_lib.definitions.test_case import phase_names, actor as help_texts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -38,17 +36,18 @@ SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.lo
 FILE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='file')
 FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
 
+EXECUTABLE_ARGUMENT = a.Named(help_texts.EXECUTABLE)
+PROGRAM_ARGUMENT_ARGUMENT = a.Named(help_texts.ARGUMENT)
+COMMAND_ARGUMENT = a.Constant(help_texts.COMMAND)
+
 
 class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str,
                  single_line_description_un_formatted: str,
                  main_description_rest_un_formatted: str = None):
-        self.command_line_syntax = command_line_actor_help.ActPhaseDocumentationSyntax()
         self.single_line_description_un_formatted = single_line_description_un_formatted
         self.main_description_rest_un_formatted = main_description_rest_un_formatted
         super().__init__(name, {
-            'EXECUTABLE': self.command_line_syntax.executable.name,
-            'ARGUMENT': self.command_line_syntax.argument.name,
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': phase_names.ACT.emphasis,
             'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR)
@@ -57,7 +56,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def single_line_description(self) -> str:
         return self._tp.format(self.single_line_description_un_formatted)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
         source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
@@ -66,9 +65,6 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                                             file_interpreter_arg) +
                 self._interpreter_actor_invokation_variants(SOURCE_INTERPRETER_ACTOR,
                                                             source_interpreter_arg))
-
-    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        return self.command_line_syntax.syntax_element_descriptions_for_executable_as_system_command()
 
     def main_description_rest(self) -> List[ParagraphItem]:
         if self.main_description_rest_un_formatted:
@@ -97,9 +93,9 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                                cli_option: a.Single) -> List[InvokationVariant]:
         shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                               a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
-        command_argument = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.command)
-        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
-        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
+        command_argument = a.Single(a.Multiplicity.MANDATORY, COMMAND_ARGUMENT)
+        executable_arg = a.Single(a.Multiplicity.MANDATORY, EXECUTABLE_ARGUMENT)
+        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, PROGRAM_ARGUMENT_ARGUMENT)
         return [
             invokation_variant_from_args([MANDATORY_EQ_ARG,
                                           cli_option,

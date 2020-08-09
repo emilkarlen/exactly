@@ -6,7 +6,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_case.actors import file_interpreter as help_texts
+from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase

@@ -1,4 +1,4 @@
-from typing import List, Union, Optional, Iterable, TypeVar
+from typing import List, Union, Optional, Iterable, TypeVar, Sequence
 
 from exactly_lib.util.textformat.structure import document
 from exactly_lib.util.textformat.structure import lists
@@ -29,9 +29,9 @@ def section(header_str_or_text: StrOrText,
                                    _empty_list_if_none(sub_sections)))
 
 
-def section_contents(initial_paragraphs: List[ParagraphItem],
+def section_contents(initial_paragraphs: Sequence[ParagraphItem] = (),
                      sub_sections: Optional[List[SectionItem]] = None) -> SectionContents:
-    return SectionContents(initial_paragraphs,
+    return SectionContents(list(initial_paragraphs),
                            _empty_list_if_none(sub_sections))
 
 
