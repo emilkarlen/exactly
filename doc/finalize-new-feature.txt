@@ -1,15 +1,34 @@
 -*- org -*-
 
-* Reference Manual
+* finalize F
+** Reference Manual
 Make sure documentation is correct.
-* err-msg-tests
-** types
-** symbol-report
-** instructions
-* CHANGELOG
-* README
+** err-msg-tests
+*** types
+*** symbol-report
+*** instructions
 ** examples
-** future development
-* Increase program version (if needed)
+** CHANGELOG
+** README/features
+*** examples
+*** future development
+** Increase program version (if needed)
 Needed if current program version cannot include the new feature.
-* Wiki - update examples in branch for next-release
+
+Version for unreleased features: "next".
+
+program_info.py
+** Sync with emilkarlen.github.io
+*** emilkarlen.github.io
+**** exactly/version/next/reference-manual.html
+**** index.html / Reference Manuals
+-------------------------------------------------------------------------------
+<li>
+   <a href="exactly/version/next/reference-manual.html">unreleased</a>
+</li>
+-------------------------------------------------------------------------------
+*** README
+-------------------------------------------------------------------------------
+<https://emilkarlen.github.io/exactly/version/next/reference-manual.html>
+-------------------------------------------------------------------------------
+** Wiki - update examples in branch for next-release
