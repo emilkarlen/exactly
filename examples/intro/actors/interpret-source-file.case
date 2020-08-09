@@ -4,7 +4,7 @@ actor = -file python
 
 [act]
 
-my-source-file.py
+src/my-source-file.py
 
 [assert]
 

@@ -1,0 +1,14 @@
+[setup]
+
+def program SUT = bin/hello-world
+
+[act]
+
+@ SUT -o out.txt
+
+[assert]
+
+exists out.txt : contents equals
+<<-
+Hello, World!
+-

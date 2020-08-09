@@ -1,0 +1,14 @@
+[conf]
+
+act-home = bin
+
+[act]
+
+hello-world
+
+[assert]
+
+stdout equals
+<<-
+Hello, World!
+-

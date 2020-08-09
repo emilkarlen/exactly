@@ -8,9 +8,9 @@ from make import *
 
 DO_NOTHING = 'do-nothing'
 
-HELLO_WORLD = 'hello-world'
+HELLO_WORLD__WRITE_TO_FILE_ARG = 'hello-world'
 
-HELLO_WORLD_WITHOUT_DASH = 'helloworld'
+HELLO_WORLD = 'helloworld'
 
 PRINT_NUMBER_OF_ARGUMENTS = 'print-number-of-arguments'
 
@@ -55,7 +55,7 @@ PROGRAM_THAT_WRITES_LOG_FILE = 'program-that-writes-log-file'
 intro_sub_dir = 'intro'
 wiki_sub_dir = 'wiki'
 
-wiki_hello_world_dir = Path(HELLO_WORLD)
+wiki_hello_world_dir = Path(HELLO_WORLD__WRITE_TO_FILE_ARG)
 
 src_base_dir = Path('executables-src')
 first_step_dir = Path('first-step')
@@ -106,7 +106,7 @@ README_FILES = itertools.chain.from_iterable([
         [CLASSIFY_FILES,
          ]),
     sts(readme_sandbox_dir,
-        [HELLO_WORLD,
+        [HELLO_WORLD__WRITE_TO_FILE_ARG,
          ]),
     sts(Path('bin'),
         [FILTER_LINES,
@@ -127,18 +127,22 @@ README_FILES = itertools.chain.from_iterable([
 ])
 
 BUILTIN_HELP_FILES = [
-    st(Path('.'), HELLO_WORLD_WITHOUT_DASH),
+    st(Path('.'), HELLO_WORLD),
 ]
 
 INTRO_FILES = itertools.chain.from_iterable(
     [
         sts(first_step_dir,
-            [HELLO_WORLD,
+            [HELLO_WORLD__WRITE_TO_FILE_ARG,
              FILTER_LINES,
              ]),
 
+        sts(Path('actors') / 'bin',
+            [HELLO_WORLD__WRITE_TO_FILE_ARG,
+             ]),
+
         sts(sandbox_dir,
-            [HELLO_WORLD,
+            [HELLO_WORLD__WRITE_TO_FILE_ARG,
              CLASSIFY_FILES,
              REMOVE_ALL_FILES_IN_THE_CURRENT_DIRECTORY,
              ]),
@@ -181,7 +185,7 @@ INTRO_FILES = itertools.chain.from_iterable(
 WIKI_FILES = itertools.chain.from_iterable(
     [
         sts(wiki_hello_world_dir,
-            [HELLO_WORLD,
+            [HELLO_WORLD__WRITE_TO_FILE_ARG,
              ]),
 
     ])

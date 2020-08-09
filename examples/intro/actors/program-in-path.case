@@ -1,0 +1,9 @@
+[act]
+
+% ls -t /
+
+[assert]
+
+stdout ! empty
+
+stderr empty

@@ -1,0 +1,10 @@
+[act]
+
+$ echo "Hello, World!" > out.txt
+
+[assert]
+
+exists out.txt : contents equals
+<<-
+Hello, World!
+-
