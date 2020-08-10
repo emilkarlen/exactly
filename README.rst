@@ -390,21 +390,23 @@ and must contain a 'Makefile' with a target 'all'::
 
     [setup]
 
-    def path   MY_PROJECTS_ROOT_DIR = -rel-act-home 'my-projects'
-    def string MY_PROJECT_DIR_NAME  = 'project'
+    def path   MY_PROJECTS_ROOT_DIR = -rel-act-home my-projects
+    def string MY_PROJECT_DIR_NAME  = project
 
     def file-matcher IS_VALID_MAKEFILE =
 
         type file &&
         contents
-          any line : matches '^all:$'
+          -transformed-by
+            filter matches '^all:'
+            num-lines == 1
 
 
     def file-matcher IS_VALID_PROJECT_DIR =
 
         type dir &&
         dir-contents
-          matches { Makefile : @[IS_VALID_MAKEFILE]@ }
+           matches { Makefile : @[IS_VALID_MAKEFILE]@ }
 
 
     def file-matcher ALL_PROJECT_DIRS_ARE_VALID =
@@ -553,18 +555,6 @@ to commit messages::
     <<-
     @[ISSUE_ID]@ : @[MESSAGE_WO_ISSUE_ID]@
     -
-
-
-Note: Since a test is executed in a sandbox directory, it is ok
-to create the git repo in CWD.
-
-Note: Since the test is rather long, it would increase readability
-to put part of it in external files, and including them using `including`.
-E.g.::
-
-    [setup]
-    ...
-    including repo-in-cwd-with-installed-commit-hook.setup
 
 
 ORGANIZING TESTS
@@ -732,8 +722,10 @@ has greatly helped the development of this software.
 Thanks for the great
 
 * Python language
-* Linux
-* Emacs
+* GNU/Linux
+* GNU Emacs
+* git
+* Docker
 * Rembrandt Harmenszoon van Rijn's "De Staalmeesters"
 
 

@@ -1,21 +1,19 @@
-[conf]
-
-status = FAIL
-
 [assert]
 
 exists @[MY_PROJECTS_ROOT_DIR]@ : type dir && @[ALL_PROJECT_DIRS_ARE_VALID]@
 
 [setup]
 
-def path   MY_PROJECTS_ROOT_DIR = -rel-act-home 'my-projects'
-def string MY_PROJECT_DIR_NAME  = 'project'
+def path   MY_PROJECTS_ROOT_DIR = -rel-act-home my-projects
+def string MY_PROJECT_DIR_NAME  = project
 
 def file-matcher IS_VALID_MAKEFILE =
 
     type file &&
     contents
-      any line : matches '^all:$'
+      -transformed-by
+        filter matches '^all:'
+        num-lines == 1
 
 
 def file-matcher IS_VALID_PROJECT_DIR =
