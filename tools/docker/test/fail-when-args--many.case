@@ -1,0 +1,10 @@
+[act]
+
+copy-repo src dst extra
+
+[assert]
+
+exit-code != 0
+
+stdout empty
+stderr ! empty

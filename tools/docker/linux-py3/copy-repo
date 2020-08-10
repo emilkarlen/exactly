@@ -1,0 +1,57 @@
+#!/bin/sh
+
+HELP="Usage:
+  $(basename $0) SRC DST
+
+Copies a repo in dir SRC to dir DST
+
+Copies directories
+  src/
+  test/
+  examples/
+
+Excludes
+  __pycache__
+  .git
+
+DST
+  Created if it does not exist.
+"
+
+if [ "_$1" == '_-h' ]; then
+  echo -n "$HELP"
+  exit 0
+fi
+
+if [ $# -ne 2 ]; then
+  echo 'Usage: SRC DST' >&2
+  exit 1
+fi
+
+SRC=$1
+DST=$2
+
+if [ ! -d $SRC ]; then
+  echo "Not an existing dir: $SRC" >&2
+  exit 1
+fi
+
+if [ -e $DST -a ! -d $DST ]; then
+  echo "Must not exist, or be a directory: $DST" >&2
+  exit 1
+fi
+
+if [ ! -e $DST ]; then
+  mkdir -p $DST
+fi
+
+EXCLUSIONS_FILE=$(mktemp -tu 'tar-exclusions-XXXXXX')
+cat >$EXCLUSIONS_FILE <<EOF
+*~
+__pycache__
+.git
+EOF
+
+tar -c -C $SRC -X "$EXCLUSIONS_FILE" src test examples | tar -x -C $DST
+
+rm "$EXCLUSIONS_FILE"

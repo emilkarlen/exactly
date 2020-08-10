@@ -1,0 +1,11 @@
+[setup]
+
+dir dst
+
+[act]
+
+copy-repo repo dst
+
+[assert]
+
+including dst-dir-is-copy.xly

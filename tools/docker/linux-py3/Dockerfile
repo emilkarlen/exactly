@@ -13,5 +13,6 @@ RUN mkdir /share
 # RUN apk add --no-cache bash
 
 COPY alias.sh /etc/profile.d/
+COPY copy-repo /usr/local/bin
 
 RUN adduser -D developer -s /bin/ash

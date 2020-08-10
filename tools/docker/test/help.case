@@ -1,0 +1,8 @@
+copy-repo -h
+
+[assert]
+
+exit-code == 0
+
+stdout ! empty
+stderr empty

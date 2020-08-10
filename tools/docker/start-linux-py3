@@ -31,6 +31,10 @@ and a shared dir (${SHARE_DIR}) mounted (read-write) at
 
 ${SHARE_DIR} is created if it does not exist.
 
+Use program
+  copy-repo
+to copy an Exactly repository.
+
 To work as non-root:
 
   > su - developer"

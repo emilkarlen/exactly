@@ -1,0 +1,14 @@
+[setup]
+
+file a-file
+
+[act]
+
+copy-repo repo a-file
+
+[assert]
+
+exit-code != 0
+
+exists a-file : type file
+
