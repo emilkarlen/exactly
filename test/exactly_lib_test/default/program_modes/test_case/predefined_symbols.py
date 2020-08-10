@@ -3,18 +3,17 @@ import unittest
 from typing import List
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, string_transformers
-from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.str_.misc_formatting import lines_content
-from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
 from exactly_lib_test.default.test_resources.actors import SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
@@ -32,39 +31,21 @@ def suite_that_requires_main_program_runner_with_default_setup(main_program_runn
 
 
 class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
-    name_of_source_file_to_interpret = 'system-under-test.py'
-
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
-    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
-        return [
-            file_structure.File(self.name_of_source_file_to_interpret,
-                                PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0)
-        ]
-
     def test_case(self) -> str:
         one_line_per_predefined_symbol__that_defines_one_symbol_in_terms_of_it = [
-            '{def_instruction} {path_type} {name_to_define} = {reference_to_predefined_symbol}'.format(
-                def_instruction=instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
-                path_type=PATH_TYPE_INFO.identifier,
-                name_to_define='COPY_OF_' + builtin_symbol.name,
-                reference_to_predefined_symbol=symbol_reference_syntax_for_name(builtin_symbol.name))
+            args.symbol_def_instruction(builtin_symbol.container.value_type,
+                                        'COPY_OF_' + builtin_symbol.name,
+                                        symbol_reference_syntax_for_name(builtin_symbol.name)).as_str
             for builtin_symbol in test_case_dir_symbols.ALL
         ]
 
         return lines_content(
-            [phase_header_line(phase_identifier.CONFIGURATION)] +
-
-            [SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER] +
-
             [phase_header_line(phase_identifier.SETUP)] +
 
-            one_line_per_predefined_symbol__that_defines_one_symbol_in_terms_of_it +
-
-            [phase_header_line(phase_identifier.ACT)] +
-
-            [self.name_of_source_file_to_interpret],
+            one_line_per_predefined_symbol__that_defines_one_symbol_in_terms_of_it
         )
 
 
