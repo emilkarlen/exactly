@@ -1,0 +1,7 @@
+[suites]
+
+common.suite
+
+readme-file-examples/suite-w-simple-deps.suite
+
+real-world/suite-w-simple-deps.suite

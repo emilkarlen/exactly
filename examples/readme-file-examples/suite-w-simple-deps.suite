@@ -1,0 +1,14 @@
+contacts/contacts.case
+transform/test.case
+output-from-tested-program.case
+testing-source-code-files/test.case
+testing-source-code.case
+
+[suites]
+
+classify
+sandbox
+tcds
+external-programs
+organizing-tests
+checking-os-env
