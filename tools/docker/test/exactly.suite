@@ -4,6 +4,13 @@ act-home = ../linux-py3
 
 [setup]
 
+file repo/CHANGELOG.md
+file repo/COPYRIGHT
+file repo/LICENSE
+file repo/MANIFEST.in
+file repo/Makefile
+file repo/README.rst
+file repo/setup.py
 file repo/src/a.py = 'some text'
 file repo/src/b.py
 file repo/src/b.py~

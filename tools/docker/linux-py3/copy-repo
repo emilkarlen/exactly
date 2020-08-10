@@ -1,14 +1,14 @@
 #!/bin/sh
 
+readonly ROOT_FILES_TO_COPY='src test examples CHANGELOG.md COPYRIGHT LICENSE MANIFEST.in Makefile README.rst setup.py'
+
 HELP="Usage:
   $(basename $0) SRC DST
 
 Copies a repo in dir SRC to dir DST
 
-Copies directories
-  src/
-  test/
-  examples/
+Copies the following files in the repo root:
+  ${ROOT_FILES_TO_COPY}
 
 Excludes
   __pycache__
@@ -52,6 +52,6 @@ __pycache__
 .git
 EOF
 
-tar -c -C $SRC -X "$EXCLUSIONS_FILE" src test examples | tar -x -C $DST
+tar -c -C $SRC -X "$EXCLUSIONS_FILE" ${ROOT_FILES_TO_COPY} | tar -x -C $DST
 
 rm "$EXCLUSIONS_FILE"
