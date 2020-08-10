@@ -4,7 +4,4 @@ $ echo "Hello, World!" > out.txt
 
 [assert]
 
-exists out.txt : contents equals
-<<-
-Hello, World!
--
+exists out.txt : contents equals "Hello, World!@[LINE_SEP]@"

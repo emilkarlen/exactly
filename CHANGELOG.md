@@ -7,6 +7,11 @@ with exception of a "0." prefix until version 1 is released.
 
 ## [next-release] - YYYY-MM-DD
 
+### Added
+
+ - Builtin symbol - string `LINE_SEP`
+ - Builtin symbol - string `TAB`
+
 ### Changed
 
  - Actor `command-line` - Executes a `PROGRAM`

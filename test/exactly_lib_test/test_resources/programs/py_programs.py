@@ -35,6 +35,24 @@ sys.exit({exit_code})
            exit_code=exit_code)
 
 
+def py_pgm_that_writes_os_linesep_to_stdout() -> str:
+    return """\
+import sys
+import os
+
+sys.stdout.write(os.linesep)
+"""
+
+
+def py_pgm_that_writes_tab_character_to_stdout() -> str:
+    return """\
+import sys
+import os
+
+sys.stdout.write('\t')
+"""
+
+
 def py_pgm_with_stdout_stderr_and_sleep_in_between(stdout_output_before_sleep: str,
                                                    stderr_output_before_sleep: str,
                                                    stdout_output_after_sleep: str,
