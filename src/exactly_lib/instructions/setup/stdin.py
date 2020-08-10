@@ -6,7 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import invokation_variant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
@@ -53,10 +53,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'FILE': RELATIVITY_OPTIONS_CONFIGURATION.argument_syntax_name,
+            'atc': formatting.concept(concepts.ACTION_TO_CHECK_NAME.singular),
         })
 
     def single_line_description(self) -> str:
-        return 'Sets the contents of stdin for the act phase program'
+        return self._tp.format('Sets the contents of stdin for the {atc}')
 
     def invokation_variants(self) -> list:
         args = [a.Single(a.Multiplicity.MANDATORY, a.Constant(instruction_arguments.ASSIGNMENT_OPERATOR)),
