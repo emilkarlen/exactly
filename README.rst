@@ -692,17 +692,17 @@ Future development
 More functionality is needed, smaller and larger.
 Including (but not limited to):
 
+* Possibility to set stdin for processes other than the "action to check"
+* Separate sets of environment variables for "action to check" and other processes
 * Improved string character escaping
 * Improved syntax and semantics of expressions, using precedences
-* More string transformers, matchers, etc
-* Possibility to use PROGRAM in ``[act]``
-* Type for REG-EX
-* Separate sets of environment variables for "action to check" and other processes
-* Possibility to set stdin for processes other than the "action to check"
+* Type `REG-EX`
+* Type `INTEGER-MATCHER`
 * Support for non-terminating programs (e.g. as ``string-transformer``)
 * Symbol substitution in files
 * Dynamic symbol values - e.g. contents of dir, current date
 * Macros and functions
+* More string transformers, matchers, etc
 * Ability to embed Python code in test cases
 * Python library for running cases and suites from within Python as a DSEL
 
