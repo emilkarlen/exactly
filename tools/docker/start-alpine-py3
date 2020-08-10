@@ -3,6 +3,8 @@
 HERE=$(dirname $0)
 EXE_NAME=$(basename $0)
 
+DOCKER_IMAGE_PREFIX='alpine-py'
+
 function abs_path_of_repo_root() (
   cd ${HERE}/../..
   pwd
@@ -10,16 +12,16 @@ function abs_path_of_repo_root() (
 
 REPO_ROOT_DIR=$(abs_path_of_repo_root)
 
-DOCKER_IMAGE='linux-py3:latest'
-
 SHARE_DIR=/tmp/exactly-docker-share
 
 REPO_ROOT_IN_CONTAINER=/app/exactly
 SHARE_DIR_IN_CONTAINER=/share
 
-HELP="${EXE_NAME} [-h]
+HELP="${EXE_NAME} (-h|PY-VERSION)
 
-Starts the docker container (${DOCKER_IMAGE})
+PY-VERSION is one of: 35 36 37 38 39
+
+Starts the docker container ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
 
 with the Exactly repo (that contains this file) mounted inside the container (read-only) at
 
@@ -32,7 +34,7 @@ and a shared dir (${SHARE_DIR}) mounted (read-write) at
 ${SHARE_DIR} is created if it does not exist.
 
 Use program
-  copy-repo
+  copy-repo ${REPO_ROOT_IN_CONTAINER} DST-DIR
 to copy an Exactly repository.
 
 To work as non-root:
@@ -43,6 +45,20 @@ if [ "${1}" == '-h' ]; then
   echo "${HELP}"
   exit 0
 fi
+
+if [ "${#}" != '1' ]; then
+  echo "${HELP}"
+  exit 0
+fi
+
+PY_V=${1}
+
+if [ "${PY_V}" != '35' -a "${PY_V}" != '36' -a "${PY_V}" != '37' -a "${PY_V}" != '38' -a "${PY_V}" != '39' ]; then
+  echo "Unknown Python version: ${PY_V}" >&2
+  exit 1
+fi
+
+DOCKER_IMAGE="${DOCKER_IMAGE_PREFIX}${PY_V}:latest"
 
 if [ -e ${SHARE_DIR} ]; then
   if [ ! -d ${SHARE_DIR} ]; then

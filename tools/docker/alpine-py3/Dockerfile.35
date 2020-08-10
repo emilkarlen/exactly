@@ -1,0 +1,12 @@
+FROM python:3.5.9-alpine
+
+RUN mkdir /share
+
+RUN apk add --no-cache make
+
+COPY alias.sh /etc/profile.d/
+COPY copy-repo /usr/local/bin
+
+RUN adduser -D developer -s /bin/ash
+
+CMD ["/bin/sh"]
