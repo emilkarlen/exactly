@@ -5,7 +5,6 @@ from contextlib import contextmanager
 from typing import List, ContextManager
 
 from exactly_lib.actors.source_interpreter import shell_command as sut
-from exactly_lib.actors.source_interpreter.shell_command import actor
 from exactly_lib_test.actors.source_interpreter import common_tests
 from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
@@ -25,7 +24,7 @@ def suite() -> unittest.TestSuite:
 class TheConfiguration(Configuration):
     def __init__(self):
         command = file_name_of_interpreter()
-        self.setup = actor(command)
+        self.setup = sut.actor(command)
         super().__init__(self.setup)
 
     def program_that_exits_with_code(self,

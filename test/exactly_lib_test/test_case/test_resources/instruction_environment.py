@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Callable
+from typing import Dict, Callable, Optional
 
 from exactly_lib.common import tmp_dir_file_spaces as std_file_spaces
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
@@ -39,7 +39,7 @@ class InstructionEnvironmentPostSdsBuilder:
     def __init__(self,
                  hds: HomeDirectoryStructure = fake_hds(),
                  sds: SandboxDirectoryStructure = fake_sds(),
-                 environ: Dict[str, str] = None,
+                 environ: Optional[Dict[str, str]] = None,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
                  get_paths_access_for_dir:
@@ -47,7 +47,7 @@ class InstructionEnvironmentPostSdsBuilder:
                  ):
         self._hds = hds
         self._sds = sds
-        self._environ = (dict() if environ is None else environ)
+        self._environ = environ
         self._timeout_in_seconds = timeout_in_seconds
         self._symbols = symbol_table_from_none_or_value(symbols)
         self._get_paths_access_for_dir = get_paths_access_for_dir

@@ -34,6 +34,7 @@ from exactly_lib_test.test_resources.process import capture_process_executor_res
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
 class HardErrorResultError(Exception):
@@ -49,7 +50,7 @@ class Arrangement:
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  symbol_table: Optional[SymbolTable] = None,
                  process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(
-                     process_execution_settings=ProcessExecutionSettings.with_no_timeout_no_environ()
+                     process_execution_settings=proc_exe_env_for_test()
                  ),
                  stdin_contents: str = '',
                  post_sds_action: PlainTcdsAction = PlainTcdsAction(),
