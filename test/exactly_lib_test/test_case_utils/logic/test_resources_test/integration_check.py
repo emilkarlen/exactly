@@ -71,7 +71,7 @@ def suite() -> unittest.TestSuite:
 EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
 UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
 
-PROPERTIES_CHECKER_FACTORY = MatcherPropertiesConfiguration()
+CONFIGURATION = MatcherPropertiesConfiguration()
 
 EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
 UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
@@ -87,25 +87,25 @@ class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
-    def _check_line_matcher_type(self,
-                                 source: ParseSource,
-                                 model: int,
-                                 parser: Parser[MatcherSdv[int]],
-                                 arrangement: Arrangement,
-                                 expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
+    def _check(self,
+               source: ParseSource,
+               model: int,
+               parser: Parser[MatcherSdv[int]],
+               arrangement: Arrangement,
+               expectation: Expectation):
+        checker = sut.IntegrationChecker(parser, CONFIGURATION)
         checker.check(self.tc,
                       source,
                       constant_model(model),
                       arrangement, expectation)
 
-    def _check_line_matcher_type__multi(self,
-                                        arguments: Arguments,
-                                        model: int,
-                                        parser: Parser[MatcherSdv[int]],
-                                        arrangement: Arrangement,
-                                        expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
+    def _check___multi(self,
+                       arguments: Arguments,
+                       model: int,
+                       parser: Parser[MatcherSdv[int]],
+                       arrangement: Arrangement,
+                       expectation: Expectation):
+        checker = sut.IntegrationChecker(parser, CONFIGURATION)
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
             arguments,
@@ -116,13 +116,13 @@ class TestCaseBase(unittest.TestCase):
                    arrangement),
         )
 
-    def _check_line_matcher_type__single_and_multi(self,
-                                                   arguments: Arguments,
-                                                   model: int,
-                                                   parser: Parser[MatcherSdv[int]],
-                                                   arrangement: Arrangement,
-                                                   expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, PROPERTIES_CHECKER_FACTORY)
+    def _check___single_and_multi(self,
+                                  arguments: Arguments,
+                                  model: int,
+                                  parser: Parser[MatcherSdv[int]],
+                                  arrangement: Arrangement,
+                                  expectation: Expectation):
+        checker = sut.IntegrationChecker(parser, CONFIGURATION)
         with self.subTest('single execution'):
             checker.check(self.tc,
                           arguments.as_remaining_source,
@@ -147,7 +147,7 @@ class TestCaseBase(unittest.TestCase):
             with self.subTest(arrangement.name,
                               execution_variant='single execution'):
                 with self.assertRaises(utils.TestError):
-                    self._check_line_matcher_type(
+                    self._check(
                         utils.single_line_source(),
                         ARBITRARY_MODEL,
                         parser,
@@ -158,7 +158,7 @@ class TestCaseBase(unittest.TestCase):
             with self.subTest(arrangement.name,
                               execution_variant='multiple execution'):
                 with self.assertRaises(utils.TestError):
-                    self._check_line_matcher_type__multi(
+                    self._check___multi(
                         utils.single_line_arguments(),
                         ARBITRARY_MODEL,
                         parser,
@@ -203,7 +203,7 @@ class TestSymbolReferences(TestCaseBase):
         ]
         for arrangement in cases:
             with self.subTest(arrangement.name):
-                self._check_line_matcher_type__single_and_multi(
+                self._check___single_and_multi(
                     utils.single_line_arguments(),
                     ARBITRARY_MODEL,
                     _constant_line_matcher_type_parser_of_matcher_sdv(sdv_that_checks_symbols),
@@ -219,7 +219,7 @@ class TestHardError(TestCaseBase):
         )
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
             with self.subTest(arrangement.name):
-                self._check_line_matcher_type__single_and_multi(
+                self._check___single_and_multi(
                     utils.single_line_arguments(),
                     ARBITRARY_MODEL,
                     parser_that_gives_value_that_causes_hard_error,
@@ -295,7 +295,7 @@ class TestDefault(TestCaseBase):
     def test_successful_flow(self):
         for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
             with self.subTest(arrangement.name):
-                self._check_line_matcher_type__single_and_multi(
+                self._check___single_and_multi(
                     utils.single_line_arguments(),
                     ARBITRARY_MODEL,
                     PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION,
@@ -309,7 +309,7 @@ class TestDefault(TestCaseBase):
             for tcds_dir in RelOptionType
         ])
 
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             parser_of_matcher_that_is_an_assertion_on_tcds(
@@ -366,7 +366,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
             return matchers.MatcherWithConstantResult(True)
 
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             _constant_line_matcher_type_parser_of_matcher_ddv(
@@ -383,7 +383,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
             return MatcherThatAssertsThatCwdIsIsActDir(self, tcds)
 
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             _constant_line_matcher_type_parser_of_matcher_ddv(
@@ -398,7 +398,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
     def test_populate_hds(self):
         populated_dir_contents = DirContents([File.empty('hds-file.txt')])
         the_hds_dir = RelHdsOptionType.REL_HDS_CASE
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             parser_of_matcher_that_is_an_assertion_on_tcds(
@@ -417,7 +417,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
 
     def test_populate_non_hds(self):
         populated_dir_contents = DirContents([File.empty('non-home-file.txt')])
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             parser_of_matcher_that_is_an_assertion_on_tcds(
@@ -454,7 +454,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
             for tcds_dir in RelOptionType if tcds_dir is not RelOptionType.REL_RESULT
         ])
 
-        self._check_line_matcher_type__single_and_multi(
+        self._check___single_and_multi(
             utils.single_line_arguments(),
             ARBITRARY_MODEL,
             parser_of_matcher_that_is_an_assertion_on_tcds(

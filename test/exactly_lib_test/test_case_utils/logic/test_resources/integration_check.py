@@ -91,14 +91,14 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                       arrangement: Arrangement,
                                                       expectation: MultiSourceExpectation[PRIMITIVE, OUTPUT]
                                                       ):
-        checker = _IntegrationExecutionChecker(put,
-                                               input_,
-                                               arrangement,
-                                               expectation.primitive,
-                                               expectation.execution,
-                                               self._configuration.applier(),
-                                               self._configuration.new_execution_checker(),
-                                               )
+        checker = _ExecutionChecker(put,
+                                    input_,
+                                    arrangement,
+                                    expectation.primitive,
+                                    expectation.execution,
+                                    self._configuration.applier(),
+                                    self._configuration.new_execution_checker(),
+                                    )
         for case in equivalent_source_variants__with_source_check__for_full_line_expression_parser(arguments):
             with put.subTest(case.name):
                 source = case.actual
@@ -125,14 +125,14 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
         for case in execution:
             with put.subTest(case.name):
-                checker = _IntegrationExecutionChecker(put,
-                                                       input_,
-                                                       case.arrangement,
-                                                       case.expected.primitive,
-                                                       case.expected.execution,
-                                                       self._configuration.applier(),
-                                                       self._configuration.new_execution_checker(),
-                                                       )
+                checker = _ExecutionChecker(put,
+                                            input_,
+                                            case.arrangement,
+                                            case.expected.primitive,
+                                            case.expected.execution,
+                                            self._configuration.applier(),
+                                            self._configuration.new_execution_checker(),
+                                            )
                 checker.check(actual)
 
     def check_multi__w_source_variants(self,
@@ -182,14 +182,14 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
         self._check_sdv(put, actual, parse_expectation.symbol_references)
 
-        checker = _IntegrationExecutionChecker(put,
-                                               model_constructor,
-                                               execution.arrangement,
-                                               execution.expected.primitive,
-                                               execution.expected.execution,
-                                               self._configuration.applier(),
-                                               self._configuration.new_execution_checker(),
-                                               )
+        checker = _ExecutionChecker(put,
+                                    model_constructor,
+                                    execution.arrangement,
+                                    execution.expected.primitive,
+                                    execution.expected.execution,
+                                    self._configuration.applier(),
+                                    self._configuration.new_execution_checker(),
+                                    )
         checker.check(actual)
 
     def _check_multi__w_source_variants(
@@ -211,14 +211,14 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                 for case in execution:
                     with put.subTest(source_case=source_case.name,
                                      execution_case=case.name):
-                        checker = _IntegrationExecutionChecker(put,
-                                                               input_,
-                                                               case.arrangement,
-                                                               case.expected.primitive,
-                                                               case.expected.execution,
-                                                               self._configuration.applier(),
-                                                               self._configuration.new_execution_checker(),
-                                                               )
+                        checker = _ExecutionChecker(put,
+                                                    input_,
+                                                    case.arrangement,
+                                                    case.expected.primitive,
+                                                    case.expected.execution,
+                                                    self._configuration.applier(),
+                                                    self._configuration.new_execution_checker(),
+                                                    )
                         checker.check(actual)
 
     def _check_sdv(self,
@@ -261,14 +261,14 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.configuration = configuration
         self.expectation = expectation
         self.source_expectation = expectation.parse.source
-        self._execution_checker = _IntegrationExecutionChecker(put,
-                                                               model_constructor,
-                                                               arrangement,
-                                                               expectation.primitive,
-                                                               expectation.execution,
-                                                               configuration.applier(),
-                                                               configuration.new_execution_checker(),
-                                                               )
+        self._execution_checker = _ExecutionChecker(put,
+                                                    model_constructor,
+                                                    arrangement,
+                                                    expectation.primitive,
+                                                    expectation.execution,
+                                                    configuration.applier(),
+                                                    configuration.new_execution_checker(),
+                                                    )
 
     def check(self, source: ParseSource):
         matcher_sdv = self._parse(source)
@@ -298,7 +298,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         return sdv
 
 
-class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
+class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     FAKE_TCDS = fake_tcds()
 
     def __init__(self,
@@ -462,4 +462,3 @@ class _IntegrationExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             self.execution.is_hard_error.apply(self.put,
                                                result.error,
                                                message_builder.for_sub_component('hard error'))
-            raise _CheckIsDoneException()
