@@ -1,12 +1,13 @@
 import pathlib
 import unittest
-from typing import List, Optional, Generic
+from typing import List, Optional, Generic, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator, DdvValidator
@@ -82,30 +83,51 @@ _EMPTY_ARRANGEMENT_W_WO_TCDS = [
         tcds=TcdsArrangement()))
 ]
 
+IntegrationCheckerForTest = sut.IntegrationChecker[
+    MatcherWTrace[int],
+    Callable[[FullResolvingEnvironment], int],
+    MatchingResult
+]
+
+
+def _application_result_check_cases(parser: Parser[MatcherSdv[int]],
+                                    ) -> List[NameAndValue[IntegrationCheckerForTest]]:
+    return [
+        NameAndValue(
+            'check_application_result_with_tcds:False',
+            sut.IntegrationChecker(parser, CONFIGURATION, False),
+        ),
+        NameAndValue(
+            'check_application_result_with_tcds:True',
+            sut.IntegrationChecker(parser, CONFIGURATION, True),
+        ),
+    ]
+
 
 class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
-    def _check(self,
-               source: ParseSource,
-               model: int,
-               parser: Parser[MatcherSdv[int]],
-               arrangement: Arrangement,
-               expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, CONFIGURATION)
+    def __check(self,
+                source: ParseSource,
+                model: int,
+                checker: IntegrationCheckerForTest,
+                arrangement: Arrangement,
+                expectation: Expectation,
+                ):
         checker.check(self.tc,
                       source,
                       constant_model(model),
-                      arrangement, expectation)
+                      arrangement,
+                      expectation,
+                      )
 
-    def _check___multi(self,
-                       arguments: Arguments,
-                       model: int,
-                       parser: Parser[MatcherSdv[int]],
-                       arrangement: Arrangement,
-                       expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, CONFIGURATION)
+    def __check___multi(self,
+                        arguments: Arguments,
+                        model: int,
+                        checker: IntegrationCheckerForTest,
+                        arrangement: Arrangement,
+                        expectation: Expectation):
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
             arguments,
@@ -122,49 +144,56 @@ class TestCaseBase(unittest.TestCase):
                                   parser: Parser[MatcherSdv[int]],
                                   arrangement: Arrangement,
                                   expectation: Expectation):
-        checker = sut.IntegrationChecker(parser, CONFIGURATION)
-        with self.subTest('single execution'):
-            checker.check(self.tc,
-                          arguments.as_remaining_source,
-                          constant_model(model),
-                          arrangement, expectation)
-        with self.subTest('multiple executions'):
-            checker.check_single_multi_execution_setup__for_test_of_test_resources(
-                self.tc,
-                arguments,
-                expectation.parse,
-                constant_model(model),
-                NExArr('the one and only execution',
-                       expectation.prim_and_exe,
-                       arrangement),
-            )
+        for case in _application_result_check_cases(parser):
+            with self.subTest(case.name):
+                with self.subTest('single execution'):
+                    case.value.check(
+                        self.tc,
+                        arguments.as_remaining_source,
+                        constant_model(model),
+                        arrangement, expectation,
+                    )
+                with self.subTest('multiple executions'):
+                    case.value.check_single_multi_execution_setup__for_test_of_test_resources(
+                        self.tc,
+                        arguments,
+                        expectation.parse,
+                        constant_model(model),
+                        NExArr('the one and only execution',
+                               expectation.prim_and_exe,
+                               arrangement),
+                    )
 
     def _check_raises_test_error__single_and_multi(self,
                                                    parser: Parser[MatcherSdv[int]],
                                                    expectation: Expectation,
                                                    ):
-        for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
-            with self.subTest(arrangement.name,
-                              execution_variant='single execution'):
-                with self.assertRaises(utils.TestError):
-                    self._check(
-                        utils.single_line_source(),
-                        ARBITRARY_MODEL,
-                        parser,
-                        arrangement.value,
-                        expectation,
-                    )
+        for check_application_result_with_tcds in [False, True]:
+            checker = sut.IntegrationChecker(parser, CONFIGURATION, check_application_result_with_tcds)
+            for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+                with self.subTest(arrangement.name,
+                                  check_application_result_with_tcds=check_application_result_with_tcds,
+                                  execution_variant='single execution'):
+                    with self.assertRaises(utils.TestError):
+                        self.__check(
+                            utils.single_line_source(),
+                            ARBITRARY_MODEL,
+                            checker,
+                            arrangement.value,
+                            expectation,
+                        )
 
-            with self.subTest(arrangement.name,
-                              execution_variant='multiple execution'):
-                with self.assertRaises(utils.TestError):
-                    self._check___multi(
-                        utils.single_line_arguments(),
-                        ARBITRARY_MODEL,
-                        parser,
-                        arrangement.value,
-                        expectation,
-                    )
+                with self.subTest(arrangement.name,
+                                  check_application_result_with_tcds=check_application_result_with_tcds,
+                                  execution_variant='multiple execution'):
+                    with self.assertRaises(utils.TestError):
+                        self.__check___multi(
+                            utils.single_line_arguments(),
+                            ARBITRARY_MODEL,
+                            checker,
+                            arrangement.value,
+                            expectation,
+                        )
 
 
 class TestSymbolReferences(TestCaseBase):

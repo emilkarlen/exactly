@@ -30,6 +30,7 @@ def arbitrary_model() -> ModelConstructor:
 CHECKER = integration_check.IntegrationChecker(
     parse_string_matcher.string_matcher_parser(),
     MatcherPropertiesConfiguration(),
+    False,
 )
 
 MODEL_THAT_MUST_NOT_BE_USED = string_models.StringModelThatMustNotBeUsed()

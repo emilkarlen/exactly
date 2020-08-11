@@ -49,5 +49,6 @@ CHECKER_W_TRANSFORMATION = IntegrationChecker(
     parse_program.program_parser(),
     integration_check_config.ProgramPropertiesConfiguration(
         _ExecutionAndTransformationApplier()
-    )
+    ),
+    True,
 )

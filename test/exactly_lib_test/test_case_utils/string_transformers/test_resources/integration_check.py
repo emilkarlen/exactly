@@ -20,7 +20,8 @@ StExpectation = Expectation[StringTransformer, StringModel]
 
 CHECKER = logic_integration_check.IntegrationChecker(
     parse_string_transformer.parser(),
-    StringTransformerPropertiesConfiguration()
+    StringTransformerPropertiesConfiguration(),
+    True,
 )
 
 

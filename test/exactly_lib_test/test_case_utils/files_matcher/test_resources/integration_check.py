@@ -6,4 +6,5 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker imp
 CHECKER = integration_check.IntegrationChecker(
     parse_files_matcher.files_matcher_parser(),
     MatcherPropertiesConfiguration(),
+    False,
 )

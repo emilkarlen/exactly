@@ -8,7 +8,7 @@ Tools for integration testing of logic values the use the XDV-structure:
 """
 import unittest
 from contextlib import contextmanager
-from typing import Sequence, Generic, ContextManager, Callable
+from typing import Sequence, Generic, ContextManager, Callable, TypeVar
 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -46,6 +46,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def __init__(self,
                  parser: Parser[LogicSdv[PRIMITIVE]],
                  configuration: CommonPropertiesConfiguration[PRIMITIVE, INPUT, OUTPUT],
+                 check_application_result_with_tcds: bool,
                  ):
         """
         :param parser: Parser of objects of the tested type.
@@ -53,6 +54,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         """
         self._parser = parser
         self._configuration = configuration
+        self._check_application_result_with_tcds = check_application_result_with_tcds
 
     @property
     def parser(self) -> Parser[LogicSdv[PRIMITIVE]]:
@@ -70,6 +72,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                             self._parser,
                                             arrangement,
                                             self._configuration,
+                                            self._check_application_result_with_tcds,
                                             expectation)
         checker.check(source)
 
@@ -98,6 +101,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                     expectation.execution,
                                     self._configuration.applier(),
                                     self._configuration.new_execution_checker(),
+                                    self._check_application_result_with_tcds,
                                     )
         for case in equivalent_source_variants__with_source_check__for_full_line_expression_parser(arguments):
             with put.subTest(case.name):
@@ -132,6 +136,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                             case.expected.execution,
                                             self._configuration.applier(),
                                             self._configuration.new_execution_checker(),
+                                            self._check_application_result_with_tcds,
                                             )
                 checker.check(actual)
 
@@ -189,6 +194,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                     execution.expected.execution,
                                     self._configuration.applier(),
                                     self._configuration.new_execution_checker(),
+                                    self._check_application_result_with_tcds,
                                     )
         checker.check(actual)
 
@@ -218,6 +224,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                     case.expected.execution,
                                                     self._configuration.applier(),
                                                     self._configuration.new_execution_checker(),
+                                                    self._check_application_result_with_tcds,
                                                     )
                         checker.check(actual)
 
@@ -254,6 +261,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  parser: Parser[LogicSdv[PRIMITIVE]],
                  arrangement: Arrangement,
                  configuration: CommonPropertiesConfiguration[PRIMITIVE, INPUT, OUTPUT],
+                 check_application_result_with_tcds: bool,
                  expectation: Expectation[PRIMITIVE, OUTPUT],
                  ):
         self.put = put
@@ -268,6 +276,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                                     expectation.execution,
                                                     configuration.applier(),
                                                     configuration.new_execution_checker(),
+                                                    check_application_result_with_tcds,
                                                     )
 
     def check(self, source: ParseSource):
@@ -298,6 +307,23 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         return sdv
 
 
+T = TypeVar('T')
+
+
+class _ValueAssertionApplier:
+    def __init__(self,
+                 assertion: ValueAssertion[T],
+                 value: T,
+                 message_builder: asrt.MessageBuilder,
+                 ):
+        self.assertion = assertion
+        self.value = value
+        self.message_builder = message_builder
+
+    def apply(self, put: unittest.TestCase):
+        self.assertion.apply(put, self.value, self.message_builder)
+
+
 class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     FAKE_TCDS = fake_tcds()
 
@@ -310,6 +336,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  applier: Applier[PRIMITIVE, INPUT, OUTPUT],
                  common_properties:
                  CommonExecutionPropertiesChecker[PRIMITIVE],
+                 check_application_result_with_tcds: bool,
                  ):
         self.put = put
         self.model_constructor = model_constructor
@@ -318,6 +345,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.primitive = primitive
         self.execution = execution
         self.common_properties = common_properties
+        self.check_application_result_with_tcds = check_application_result_with_tcds
 
         self.hds = None
         self.tcds = None
@@ -345,7 +373,13 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
             self.tcds = tcds
 
-            self._check_with_sds(matcher_ddv)
+            application_result_assertion = self._check_with_sds(matcher_ddv)
+
+            if self.check_application_result_with_tcds:
+                application_result_assertion.apply(self.put)
+
+        if not self.check_application_result_with_tcds:
+            application_result_assertion.apply(self.put)
 
     def _tcds_with_act_as_curr_dir(self) -> ContextManager[Tcds]:
         tcds_arrangement = self.arrangement.tcds
@@ -363,7 +397,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def _check_with_hds(self, ddv: LogicDdv[PRIMITIVE]):
         self._check_validation_pre_sds(ddv)
 
-    def _check_with_sds(self, ddv: LogicDdv[PRIMITIVE]):
+    def _check_with_sds(self, ddv: LogicDdv[PRIMITIVE]) -> _ValueAssertionApplier:
         self._check_validation_post_sds(ddv)
 
         full_resolving_env = FullResolvingEnvironment(
@@ -379,7 +413,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
         primitive = self._resolve_primitive_value(ddv, full_resolving_env.application_environment)
 
-        self._check_primitive(primitive, full_resolving_env)
+        return self._check_primitive(primitive, full_resolving_env)
 
     def _resolve_ddv(self,
                      sdv: LogicSdv[PRIMITIVE],
@@ -431,7 +465,8 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
     def _check_primitive(self,
                          primitive: PRIMITIVE,
-                         resolving_env: FullResolvingEnvironment):
+                         resolving_env: FullResolvingEnvironment,
+                         ) -> _ValueAssertionApplier:
         message_builder = asrt.MessageBuilder('primitive')
 
         self.common_properties.check_primitive(self.put,
@@ -448,17 +483,23 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             if self.execution.is_hard_error is not None:
                 self.put.fail(message_builder.apply('HARD_ERROR not reported (raised)'))
 
-            self.execution.main_result.apply(self.put, result, message_builder.for_sub_component('output'))
+            return _ValueAssertionApplier(
+                self.execution.main_result,
+                result,
+                message_builder.for_sub_component('output'),
+            )
         except HardErrorException as ex:
-            self._check_hard_error(ex, message_builder)
+            return self._check_hard_error(ex, message_builder)
 
     def _check_hard_error(self,
                           result: HardErrorException,
                           message_builder: asrt.MessageBuilder,
-                          ):
+                          ) -> _ValueAssertionApplier:
         if self.execution.is_hard_error is None:
             self.put.fail(message_builder.apply('Unexpected HARD_ERROR'))
         else:
-            self.execution.is_hard_error.apply(self.put,
-                                               result.error,
-                                               message_builder.for_sub_component('hard error'))
+            return _ValueAssertionApplier(
+                self.execution.is_hard_error,
+                result.error,
+                message_builder.for_sub_component('hard error'),
+            )

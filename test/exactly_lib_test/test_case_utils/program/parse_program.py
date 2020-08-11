@@ -273,8 +273,9 @@ def _single_line_command_cases() -> List[Case]:
 CHECKER_WO_EXECUTION = IntegrationChecker(
     parse_program.program_parser(),
     integration_check_config.ProgramPropertiesConfiguration(
-        integration_check_applier.NullApplier()
-    )
+        integration_check_applier.NullApplier(),
+    ),
+    True,
 )
 
 if __name__ == '__main__':

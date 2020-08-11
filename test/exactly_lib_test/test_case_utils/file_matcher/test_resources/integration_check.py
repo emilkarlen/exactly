@@ -49,5 +49,6 @@ ARBITRARY_MODEL = constant_relative_file_name('arbitrary-file.txt')
 
 CHECKER = integration_check.IntegrationChecker(
     parse_file_matcher.parser(),
-    MatcherPropertiesConfiguration()
+    MatcherPropertiesConfiguration(),
+    False,
 )

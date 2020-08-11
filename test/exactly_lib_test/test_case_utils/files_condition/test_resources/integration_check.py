@@ -6,4 +6,5 @@ from exactly_lib_test.test_case_utils.logic.test_resources import integration_ch
 CHECKER = integration_check.IntegrationChecker(
     parse.parser(),
     FilesConditionPropertiesConfiguration(),
+    False,
 )

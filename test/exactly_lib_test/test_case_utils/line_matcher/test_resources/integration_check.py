@@ -24,7 +24,8 @@ def constant_model(model: LineMatcherLine) -> ModelConstructor:
 
 CHECKER = integration_check.IntegrationChecker(
     parse_line_matcher.parser(),
-    MatcherPropertiesConfiguration()
+    MatcherPropertiesConfiguration(),
+    False,
 )
 
 
