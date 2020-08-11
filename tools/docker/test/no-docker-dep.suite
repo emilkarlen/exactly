@@ -1,0 +1,4 @@
+[suites]
+
+copy-repo
+make-docker-files

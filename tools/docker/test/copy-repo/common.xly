@@ -1,6 +1,6 @@
 [conf]
 
-act-home = ../alpine-py
+act-home = ../../images
 
 [setup]
 

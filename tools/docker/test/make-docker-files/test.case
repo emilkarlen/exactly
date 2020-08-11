@@ -1,0 +1,18 @@
+[conf]
+
+actor = -source /bin/sh
+
+[act]
+
+make -C @[EXACTLY_ACT_HOME]@ clean
+make -C @[EXACTLY_ACT_HOME]@ all
+
+[assert]
+
+exit-code == 0
+
+exists @[EXACTLY_ACT_HOME]@/Dockerfile.35 : type file
+exists @[EXACTLY_ACT_HOME]@/Dockerfile.36 : type file
+exists @[EXACTLY_ACT_HOME]@/Dockerfile.37 : type file
+exists @[EXACTLY_ACT_HOME]@/Dockerfile.38 : type file
+exists @[EXACTLY_ACT_HOME]@/Dockerfile.39 : type file

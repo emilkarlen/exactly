@@ -1,4 +1,5 @@
 [suites]
 
-failure
-success
+no-docker-dep.suite
+
+make-docker-images

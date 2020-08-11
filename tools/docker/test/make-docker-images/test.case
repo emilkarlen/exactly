@@ -1,0 +1,11 @@
+% make -C @[EXACTLY_ACT_HOME]@ all
+
+[assert]
+
+exit-code == 0
+
+run % docker image inspect alpine-py35
+run % docker image inspect alpine-py36
+run % docker image inspect alpine-py37
+run % docker image inspect alpine-py38
+run % docker image inspect alpine-py39
