@@ -1,0 +1,13 @@
+copy-repo repo dst
+
+[setup]
+
+including repo.setup
+
+dir dst
+
+[assert]
+
+including is-successful-copy-output.assert
+
+including dst-dir-is-copy.assert

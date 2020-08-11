@@ -1,0 +1,17 @@
+file repo/CHANGELOG.md
+file repo/COPYRIGHT
+file repo/LICENSE
+file repo/MANIFEST.in
+file repo/Makefile
+file repo/README.rst
+file repo/setup.py
+file repo/src/a.py = 'some text'
+file repo/src/b.py
+file repo/src/b.py~
+file repo/src/__pycache__/in-cache.py
+file repo/src/__pycache__/in-cache.pyc
+file repo/test/sub/x.py
+file repo/test/sub/x.py~
+file repo/examples/example.case
+file repo/tools/a-tool.sh
+file repo/.git/git-adm-file

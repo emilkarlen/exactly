@@ -8,6 +8,6 @@ copy-repo a-file dst
 
 [assert]
 
-exit-code != 0
+including is-failure-output.assert
 
 exists ! dst

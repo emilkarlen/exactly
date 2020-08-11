@@ -1,0 +1,7 @@
+[conf]
+
+act-home = ../alpine-py
+
+[setup]
+
+def string EXIT_INVALID_ARGS = 10

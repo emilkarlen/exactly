@@ -1,0 +1,4 @@
+exit-code == @[EXIT_INVALID_ARGS]@
+
+stdout empty
+stderr ! empty

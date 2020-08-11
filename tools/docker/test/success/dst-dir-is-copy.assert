@@ -1,0 +1,34 @@
+exists dst :
+
+    type dir &&
+    dir-contents -recursive (
+      (
+        -selection ( type file )
+        matches -full {
+          src/a.py : contents equals -file -rel-act repo/src/a.py
+          src/b.py
+
+          test/sub/x.py
+
+  	      examples/example.case
+
+          CHANGELOG.md
+          COPYRIGHT
+          LICENSE
+          MANIFEST.in
+          Makefile
+          README.rst
+          setup.py
+          }
+      )
+      &&
+      (
+        -selection ( type dir )
+        matches -full {
+          src
+          test
+          test/sub
+          examples
+          }
+      )
+    )

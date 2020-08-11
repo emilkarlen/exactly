@@ -1,0 +1,85 @@
+#!/bin/bash
+
+HERE=$(dirname $0)
+MY_NAME=$(basename $0)
+
+DOCKER_IMAGE_PREFIX='alpine-py'
+PY_VERSIONS='35 36 37 38 39'
+
+function abs_path_of_repo_root() (
+  cd ${HERE}/../..
+  pwd
+)
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 1
+}
+
+REPO_ROOT_DIR=$(abs_path_of_repo_root)
+
+SHARE_DIR=/tmp/exactly-docker-share
+
+REPO_ROOT_IN_CONTAINER=/app/exactly
+SHARE_DIR_IN_CONTAINER=/share
+
+HELP="${MY_NAME} (-h|PY-VERSION)
+
+PY-VERSION is one of: ${PY_VERSIONS}
+
+Starts the docker container ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
+
+ENVIRONMENT
+
+  ${REPO_ROOT_IN_CONTAINER}/
+    Read-only mount of the current Exactly repo.
+
+  ${SHARE_DIR_IN_CONTAINER}/
+    Read-write mount of dir ${SHARE_DIR} (for file sharing)
+    ${SHARE_DIR} is created if it does not exist.
+
+  copy-repo
+    Program that copies an Exactly repository.
+
+SETUP VIRTUAL ENVIRONMENT
+
+  > python -m venv VENV-DIR
+
+WORK AS NON-ROOT
+
+  > su - developer
+
+RUN TESTS TOWARDS COPY OF REPO
+
+  > su - developer
+  > copy-repo ${REPO_ROOT_IN_CONTAINER} exactly
+  > python exactly/test/run-test-suite.py"
+
+if [ "${1}" == '-h' ]; then
+  echo "${HELP}"
+  exit 0
+fi
+
+if [ "${#}" != '1' ]; then
+  echo "${HELP}"
+  exit 0
+fi
+
+PY_V=${1}
+
+if ! [[ ${PY_V} =~ ^[[:digit:]][[:digit:]]$ && ${PY_VERSIONS} =~ ${PY_V} ]]; then
+  exit_error "Unknown Python version (${PY_VERSIONS}): [${PY_V}]"
+fi
+
+DOCKER_IMAGE="${DOCKER_IMAGE_PREFIX}${PY_V}:latest"
+
+if [ -e ${SHARE_DIR} ]; then
+  [ -d ${SHARE_DIR} ] || exit_error "Not a directory: ${SHARE_DIR}"
+else
+  mkdir ${SHARE_DIR}
+fi
+
+docker run --interactive --tty \
+  --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${REPO_ROOT_IN_CONTAINER} \
+  --mount type=bind,source=${SHARE_DIR},target=${SHARE_DIR_IN_CONTAINER} \
+  ${DOCKER_IMAGE}

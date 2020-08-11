@@ -1,5 +1,6 @@
 [setup]
 
+dir  repo
 file a-file
 
 [act]
@@ -8,7 +9,7 @@ copy-repo repo a-file
 
 [assert]
 
-exit-code != 0
+including is-failure-output.assert
 
 exists a-file : type file
 

@@ -1,0 +1,64 @@
+#!/bin/sh
+
+readonly ROOT_FILES_TO_COPY='src test examples CHANGELOG.md COPYRIGHT LICENSE MANIFEST.in Makefile README.rst setup.py'
+
+readonly EXCLUSIONS='
+*~
+__pycache__
+.git
+'
+
+readonly MY_NAME=$(basename $0)
+readonly INVOKATION_SYNTAX="${MY_NAME} [-h] SRC DST"
+
+HELP="Usage:
+  ${INVOKATION_SYNTAX}
+
+Copies an Exactly git repo in dir SRC to dir DST.
+
+  SRC
+    An existing dir.
+
+  DST
+    A dir. Created if it does not exist.
+
+
+ROOT FILES AND DIRS THAT ARE COPIED
+
+  ${ROOT_FILES_TO_COPY}
+
+FILE EXCLUSIONS
+${EXCLUSIONS}"
+
+if [ "_$1" == '_-h' ]; then
+  echo -n "${HELP}"
+  exit 0
+fi
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 10
+}
+
+[ $# -eq 2 ] || exit_error "Usage: ${INVOKATION_SYNTAX}"
+
+SRC=${1}
+DST=${2}
+
+[ -d ${SRC} ] || exit_error "Not an existing dir: ${SRC}"
+
+[ -e ${DST} -a ! -d ${DST} ] && exit_error "DST must not exist, or be a directory: ${DST}"
+
+if [ ! -e ${DST} ]; then
+  mkdir -p ${DST}
+fi
+
+EXCLUSIONS_FILE=$(mktemp -tu 'tar-exclusions-XXXXXX')
+echo "${EXCLUSIONS}" >${EXCLUSIONS_FILE}
+
+tar -c -C ${SRC} -X "${EXCLUSIONS_FILE}" ${ROOT_FILES_TO_COPY} | tar -x -C ${DST}
+exit_code=$?
+
+rm "${EXCLUSIONS_FILE}"
+
+exit ${exit_code}
