@@ -84,4 +84,5 @@ fi
 docker run --interactive --tty \
   --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${REPO_ROOT_IN_CONTAINER} \
   --mount type=bind,source=${SHARE_DIR},target=${SHARE_DIR_IN_CONTAINER} \
+  --rm \
   ${DOCKER_IMAGE}
