@@ -1,22 +1,25 @@
 IMAGES = alpine-py35 alpine-py36 alpine-py37 alpine-py38 alpine-py39
-.PHONY: $(IMAGES)
+.PHONY: $(IMAGES) dockerfiles
 
 all: $(IMAGES)
 
 clean:
 	docker image rm -f $(IMAGES)
 
-alpine-py35:
-	docker build -f alpine-py/Dockerfile.35 -t alpine-py35 alpine-py
+dockerfiles:
+	$(MAKE) -C images
 
-alpine-py36:
-	docker build -f alpine-py/Dockerfile.36 -t alpine-py36 alpine-py
+alpine-py35: dockerfiles
+	docker build -f images/Dockerfile.35 -t alpine-py35 images
 
-alpine-py37:
-	docker build -f alpine-py/Dockerfile.37 -t alpine-py37 alpine-py
+alpine-py36: dockerfiles
+	docker build -f images/Dockerfile.36 -t alpine-py36 images
 
-alpine-py38:
-	docker build -f alpine-py/Dockerfile.38 -t alpine-py38 alpine-py
+alpine-py37: dockerfiles
+	docker build -f images/Dockerfile.37 -t alpine-py37 images
 
-alpine-py39:
-	docker build -f alpine-py/Dockerfile.39 -t alpine-py39 alpine-py
+alpine-py38: dockerfiles
+	docker build -f images/Dockerfile.38 -t alpine-py38 images
+
+alpine-py39: dockerfiles
+	docker build -f images/Dockerfile.39 -t alpine-py39 images
