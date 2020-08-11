@@ -1,0 +1,82 @@
+#!/bin/sh
+
+set -e
+
+readonly MY_NAME=$(basename $0)
+readonly INVOKATION_SYNTAX="${MY_NAME} [-h] [--venv]"
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 10
+}
+
+HELP="Usage:
+  ${INVOKATION_SYNTAX}
+
+Copies an Exactly git repo in dir ${XLY_REPO_MOUNT_DIR} to dir ${XLY_REPO_COPY_DIR}.
+
+OPTIONS
+   --venv
+     Build and install into virtual environment at ${XLY_VENV_DIR}.
+
+
+${XLY_REPO_COPY_DIR}/
+  If it exists, it is removed.
+"
+
+install_in_venv() (
+  cd ${XLY_REPO_COPY_DIR}
+  make build
+  . ${XLY_VENV_DIR}/bin/activate
+  make install
+)
+
+if [ "_$1" == '_-h' ]; then
+  echo -n "${HELP}"
+  exit 0
+fi
+
+########################################
+# Parse arguments
+
+if [ $# -ge 1 -a "_${1}" = '_--venv' ]; then
+  INSTALL_IN_VENV='yes'
+  shift
+fi
+
+########################################
+# Check prerequisites
+
+[ $# -eq 0 ] || exit_error "Usage: ${INVOKATION_SYNTAX}"
+
+[ -d ${XLY_REPO_MOUNT_DIR} ] || exit_error "Not an existing repo mount point: ${REPO_MOUNT_POINT}"
+
+[ -d ${XLY_REPO_MOUNT_DIR}/examples ] || exit_error "Not a valid repo mount point (missing examples/, e.g.): ${REPO_MOUNT_POINT}"
+
+if [ -e ${XLY_REPO_COPY_DIR} ]; then
+  if [ -d ${XLY_REPO_COPY_DIR} ]; then
+    rm -r ${XLY_REPO_COPY_DIR}
+  else
+    exit_error "Not a dir: ${XLY_REPO_COPY_DIR}"
+  fi
+fi
+
+########################################
+# Do it
+
+# Copy repo
+
+echo "Copying repo at ${XLY_REPO_MOUNT_DIR} to ${XLY_REPO_COPY_DIR}" >&2
+
+copy-repo ${XLY_REPO_MOUNT_DIR} ${XLY_REPO_COPY_DIR}
+
+# Make executables used by examples
+
+echo "Making executables used by examples in ${XLY_REPO_COPY_DIR}/examples" >&2
+
+make -C ${XLY_REPO_COPY_DIR}/examples rebuild
+
+if [ ${INSTALL_IN_VENV} ]; then
+  echo "Building and installing in virtual environment at ${XLY_VENV_DIR}" >&2
+  install_in_venv
+fi

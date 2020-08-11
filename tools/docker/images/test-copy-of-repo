@@ -1,0 +1,116 @@
+#!/bin/sh
+
+set -e
+
+readonly MY_NAME=$(basename $0)
+readonly INVOKATION_SYNTAX="${MY_NAME} [-h] CHECK..."
+
+readonly XLY_PY_MAIN=src/default-main-program-runner.py
+
+readonly EXACTLY_SUITE__TEST=test/exactly-cases/exactly.suite
+readonly EXACTLY_SUITE__EXAMPLE=examples/suite-w-simple-deps.suite
+readonly UNIT_TESTS_RUNNER=test/run-test-suite.py
+readonly INSTALLATION_RUNNER=test/run-test-suite-towards-installed-program.py
+
+readonly ABS__EXACTLY_SUITE__TEST=${XLY_REPO_COPY_DIR}/${EXACTLY_SUITE__TEST}
+readonly ABS__EXACTLY_SUITE__EXAMPLE=${XLY_REPO_COPY_DIR}/${EXACTLY_SUITE__EXAMPLE}
+readonly ABS__UNIT_TESTS_RUNNER=${XLY_REPO_COPY_DIR}/${UNIT_TESTS_RUNNER}
+readonly ABS__INSTALLATION_RUNNER=${XLY_REPO_COPY_DIR}/${INSTALLATION_RUNNER}
+
+readonly CHECK__XLY_EXAMPLES='XLY_EXAMPLE'
+readonly CHECK__XLY_TEST='XLY_TEST'
+readonly CHECK__UNITTEST='UNITTEST'
+readonly CHECK__INSTALLATION='INSTALLATION'
+
+readonly DEFAULT_CHECKS="${CHECK__XLY_TEST} ${CHECK__XLY_EXAMPLES} ${CHECK__UNITTEST}"
+
+HELP="Usage:
+  ${INVOKATION_SYNTAX}
+
+Tests a copy of an Exactly git repo in dir ${XLY_REPO_COPY_DIR}.
+
+A sequence of CHECK is run
+  ${CHECK__XLY_TEST} : Exactly suite : ${EXACTLY_SUITE__TEST}
+  ${CHECK__XLY_EXAMPLES} : Exactly suite : ${EXACTLY_SUITE__EXAMPLE}
+  ${CHECK__UNITTEST} : Unit-tests : ${UNIT_TESTS_RUNNER}
+  ${CHECK__INSTALLATION} : Unit-tests : ${UNIT_TESTS_RUNNER}
+
+The default is to run all but the last checks above, in the sequence above.
+"
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 10
+}
+
+check_start() { # CHECK
+  echo "************************************************************
+* ${1}
+************************************************************"
+}
+run_check() { # CHECK
+  case ${1} in
+  ${CHECK__UNITTEST})
+    check_start "${ABS__UNIT_TESTS_RUNNER}"
+    python ${ABS__UNIT_TESTS_RUNNER}
+    ;;
+
+  ${CHECK__INSTALLATION})
+    check_start "${ABS__INSTALLATION_RUNNER}"
+    (
+      . ${XLY_VENV_DIR}/bin/activate
+      python ${ABS__INSTALLATION_RUNNER}
+    )
+    ;;
+
+  ${CHECK__XLY_TEST})
+    check_start "${ABS__EXACTLY_SUITE__TEST}"
+    python ${XLY_PY_MAIN_IN_REPO_COPY} suite ${ABS__EXACTLY_SUITE__TEST}
+    ;;
+
+  ${CHECK__XLY_EXAMPLES})
+    check_start "${ABS__EXACTLY_SUITE__EXAMPLE}"
+    python ${XLY_PY_MAIN_IN_REPO_COPY} suite ${ABS__EXACTLY_SUITE__EXAMPLE}
+    ;;
+
+  *)
+    exit_error "Unknown CHECK: [${1}]"
+    ;;
+  esac
+}
+
+########################################
+# main
+########################################
+
+if [ "_$1" == '_-h' ]; then
+  echo -n "${HELP}"
+  exit 0
+fi
+
+########################################
+# Check prerequisites
+
+[ -d ${XLY_REPO_COPY_DIR} ] || exit_error "Repo copy dir does not exist: ${XLY_REPO_COPY_DIR}"
+
+for test_file in \
+  ${ABS__EXACTLY_SUITE__TEST} \
+  ${ABS__EXACTLY_SUITE__EXAMPLE} \
+  ${ABS__UNIT_TESTS_RUNNER} \
+  ${ABS__INSTALLATION_RUNNER}; do
+  [ -f ${test_file} ] || exit_error "Test file does not exist: ${test_file}"
+done
+
+readonly XLY_PY_MAIN_IN_REPO_COPY=${XLY_REPO_COPY_DIR}/${XLY_PY_MAIN}
+[ -f ${XLY_PY_MAIN_IN_REPO_COPY} ] || exit_error "Exactly main file does not exist: ${XLY_PY_MAIN_IN_REPO_COPY}"
+
+########################################
+# Do it
+
+if [ ${#} -eq 0 ]; then
+  set ${DEFAULT_CHECKS}
+fi
+
+for check; do
+  run_check "${check}"
+done

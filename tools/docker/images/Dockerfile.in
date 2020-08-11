@@ -1,23 +1,42 @@
 FROM python:__IMAGE_TAG__
 
+RUN apk add --no-cache make
+
 RUN mkdir /share
 
-RUN apk add --no-cache make
+RUN mkdir     /workdir
+RUN chmod 777 /workdir
 
 # Setup of global shell
 
 COPY alias.sh /etc/profile.d/
 
-# Setup of user "developer"
+# Setup of non-rot user
 
-RUN adduser -D developer -s /bin/ash
+RUN adduser -D tester -s /bin/ash
 
-COPY user-profile.sh /home/developer/.profile
+# COPY user-profile.sh /home/tester/.profile
 
-RUN mkdir /home/developer/bin
+# Exactly env
 
-COPY copy-repo /home/developer/bin
+RUN mkdir     /exactly
+RUN chmod 777 /exactly
 
-# Container entry
+COPY copy-repo          /usr/local/bin
+COPY copy-and-init-repo /usr/local/bin
+COPY test-copy-of-repo  /usr/local/bin
+COPY copy-and-test-repo /usr/local/bin
 
-CMD ["/bin/sh", "-"]
+USER tester
+
+RUN python -m venv /workdir/venv
+
+ENV XLY_REPO_MOUNT_DIR=/exactly/mounted-repo
+ENV XLY_REPO_COPY_DIR=/workdir/repo-copy
+ENV XLY_VENV_DIR=/workdir/venv
+
+# Container default command
+
+USER root
+
+CMD ["/bin/sh", "-l"]

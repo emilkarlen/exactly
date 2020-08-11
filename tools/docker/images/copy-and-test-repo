@@ -1,0 +1,49 @@
+#!/bin/sh
+
+set -e
+
+readonly MY_NAME=$(basename $0)
+readonly INVOKATION_SYNTAX="${MY_NAME} [-h] [--venv]"
+
+CHECKS='XLY_TEST XLY_EXAMPLE UNITTEST'
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 10
+}
+
+HELP="Usage:
+  ${INVOKATION_SYNTAX}
+
+Copies a mounted repo, then initializes it and tests it:
+
+  copy-and-init-repo
+  test-copy-of-repo
+
+OPTIONS
+  --venv
+    Installs into venv and runs check towards that installation
+    (in addition to all other checks).
+"
+
+if [ "_$1" == '_-h' ]; then
+  echo -n "${HELP}"
+  exit 0
+fi
+
+########################################
+# Parse arguments
+
+if [ $# -ge 1 -a "_${1}" = '_--venv' ]; then
+  CHECKS="${CHECKS} INSTALLATION"
+  INIT_VENV_ARG='--venv'
+  shift
+fi
+
+[ $# -eq 0 ] || exit_error "Usage: ${INVOKATION_SYNTAX}"
+
+########################################
+# Do it
+
+copy-and-init-repo ${INIT_VENV_ARG}
+test-copy-of-repo ${CHECKS}
