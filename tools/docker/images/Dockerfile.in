@@ -4,9 +4,20 @@ RUN mkdir /share
 
 RUN apk add --no-cache make
 
+# Setup of global shell
+
 COPY alias.sh /etc/profile.d/
-COPY copy-repo /usr/local/bin
+
+# Setup of user "developer"
 
 RUN adduser -D developer -s /bin/ash
+
+COPY user-profile.sh /home/developer/.profile
+
+RUN mkdir /home/developer/bin
+
+COPY copy-repo /home/developer/bin
+
+# Container entry
 
 CMD ["/bin/sh", "-"]

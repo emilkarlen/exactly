@@ -29,7 +29,7 @@ PY-VERSION is one of: ${PY_VERSIONS}
 
 Starts the docker container ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
 
-ENVIRONMENT
+ENVIRONMENT of files and dirs
 
   ${REPO_ROOT_IN_CONTAINER}/
     Read-only mount of the current Exactly repo.
@@ -38,8 +38,10 @@ ENVIRONMENT
     Read-write mount of dir ${SHARE_DIR} (for file sharing)
     ${SHARE_DIR} is created if it does not exist.
 
-  copy-repo
-    Program that copies an Exactly repository.
+ENVIRONMENT of user 'developer'
+
+  ~/bin
+    Utilities in the PATH.
 
 SETUP VIRTUAL ENVIRONMENT
 
