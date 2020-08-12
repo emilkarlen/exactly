@@ -1,0 +1,54 @@
+#!/bin/sh
+
+readonly HERE=$(dirname $0)
+readonly MY_NAME=$(basename $0)
+
+readonly SYNTAX="${MY_NAME} [-h] FILE"
+
+readonly HELP="${SYNTAX}
+
+Runs Python 3 file
+  FILE
+with
+  src/
+  test/
+in PYTHONPATH"
+
+function abs_path_of_repo_root() (
+  cd ${HERE}/..
+  pwd -P
+)
+
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 1
+}
+
+########################################
+# Parse arguments
+
+if [ "${1}" == '-h' ]; then
+  echo "${HELP}"
+  exit 0
+fi
+
+[ ${#} -eq 1 ] || exit_error "${SYNTAX}"
+
+PY_FILE=$1
+
+[ -f "${PY_FILE}" ] || exit_error "Not a file: ${PY_FILE}"
+
+########################################
+# Do it
+
+REPO_ROOT_DIR=$(abs_path_of_repo_root)
+
+ADDITIONAL_PY_PATHS="${REPO_ROOT_DIR}/src:${REPO_ROOT_DIR}/test"
+
+if [ ${PYTHONPATH} ]; then
+  export PYTHONPATH=${ADDITIONAL_PY_PATHS}:${PYTHONPATH}
+else
+  export PYTHONPATH=${ADDITIONAL_PY_PATHS}
+fi
+
+python3 "${PY_FILE}"
