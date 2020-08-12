@@ -315,10 +315,12 @@ class ExecutionChecker:
             if not validate_result.is_success:
                 return
 
-            self._execute_main(environment, instruction)
+            main_result = self._execute_main(environment, instruction)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
+
+        self.expectation.main_result.apply(self.put, main_result)
 
     def _execute_validate_pre_sds(self,
                                   environment: InstructionEnvironmentForPreSdsStep,
@@ -346,5 +348,4 @@ class ExecutionChecker:
         main_result = instruction.main(environment, self.arrangement.process_execution.os_services)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
-        self.expectation.main_result.apply(self.put, main_result)
         return main_result

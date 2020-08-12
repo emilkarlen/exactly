@@ -212,7 +212,7 @@ class Executor(Generic[T]):
             if validate_result is not None:
                 return
 
-            self._execute_main(environment, instruction)
+            result_of_main = self._execute_main(environment, instruction)
 
             self.expectation.main_side_effects_on_sds.apply_with_message(self.put, tcds.sds,
                                                                          'side_effects_on_files')
@@ -240,6 +240,8 @@ class Executor(Generic[T]):
             self.expectation.instruction_application_environment.apply_with_message(self.put,
                                                                                     application_environment,
                                                                                     'assertion_on_environment')
+            self.expectation.main_result.apply_with_message(self.put, result_of_main,
+                                                            'result of main (wo access to TCDS)')
 
     def _execute_validate_pre_sds(
             self,
@@ -261,7 +263,7 @@ class Executor(Generic[T]):
 
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
-                      instruction: InstructionEmbryo[T]):
+                      instruction: InstructionEmbryo[T]) -> T:
         try:
             result = instruction.main(environment,
                                       self.arrangement.os_services)
@@ -275,8 +277,7 @@ class Executor(Generic[T]):
         if self.expectation.main_raises_hard_error:
             self.put.fail('main does not raise ' + str(HardErrorException))
 
-        self.expectation.main_result.apply_with_message(self.put, result,
-                                                        'result from main')
+        return result
 
 
 def _initial_environment_variables_dict(arrangement: ArrangementWithSds) -> Dict[str, str]:

@@ -205,6 +205,8 @@ class Executor:
                                               instruction_environment),
                 'settings builder'
             )
+        self.expectation.main_result.apply_with_message(self.put, main_result,
+                                                        'main-result (wo access to TCDS)')
 
     def _execute_pre_validate(self,
                               environment: InstructionEnvironmentForPreSdsStep,
@@ -230,7 +232,6 @@ class Executor:
                                   'main must return a ' + str(sh.SuccessOrHardError))
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
-        self.expectation.main_result.apply(self.put, main_result)
         return main_result
 
     def _execute_post_validate(self,

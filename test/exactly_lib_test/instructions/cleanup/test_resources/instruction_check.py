@@ -143,14 +143,18 @@ class Executor(InstructionExecutionBase):
 
             environment = environment_builder.build_post_sds()
 
-            self._execute_main(environment, instruction)
+            result_of_main = self._execute_main(environment, instruction)
 
             self.expectation.main_side_effects_on_sds.apply(self.put, environment.sds)
             self.expectation.main_side_effects_on_tcds.apply(self.put, tcds)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__MAIN)
+
+        self.expectation.main_result.apply_with_message(self.put, result_of_main,
+                                                        'result of main (without access to TCDS)')
+
+        self.expectation.symbol_usages.apply_with_message(self.put,
+                                                          instruction.symbol_usages(),
+                                                          'symbol-usages after ' +
+                                                          phase_step.STEP__MAIN)
 
     def _execute_pre_validate(self,
                               environment: InstructionEnvironmentForPreSdsStep,
@@ -167,5 +171,4 @@ class Executor(InstructionExecutionBase):
                                   self.arrangement.os_services,
                                   self.arrangement.previous_phase)
         self._check_result_of_main__sh(result)
-        self.expectation.main_result.apply(self.put, result)
         return result

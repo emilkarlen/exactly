@@ -160,7 +160,7 @@ class Executor(InstructionExecutionBase):
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(tcds))
             write_act_result(tcds.sds, act_result)
 
-            self._execute_main(environment, instruction)
+            result_from_main = self._execute_main(environment, instruction)
 
             self._check_main_side_effects_on_sds(tcds)
             self._check_side_effects_on_tcds(tcds)
@@ -168,6 +168,9 @@ class Executor(InstructionExecutionBase):
                                                               instruction.symbol_usages(),
                                                               'symbol-usages after ' +
                                                               phase_step.STEP__MAIN)
+        self._check('result from main (without access to TCDS)',
+                    self.expectation.main_result,
+                    result_from_main)
 
     def _execute_validate_pre_sds(
             self,
@@ -190,8 +193,4 @@ class Executor(InstructionExecutionBase):
     def _execute_main(self,
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: BeforeAssertPhaseInstruction) -> sh.SuccessOrHardError:
-        result = instruction.main(environment, self.arrangement.os_services)
-        self._check('result from main',
-                    self.expectation.main_result,
-                    result)
-        return result
+        return instruction.main(environment, self.arrangement.os_services)
