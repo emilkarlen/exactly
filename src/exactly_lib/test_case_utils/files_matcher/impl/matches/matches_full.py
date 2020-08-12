@@ -152,7 +152,12 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
     def _too_few_files(self) -> Tuple[str, DetailsRenderer]:
         return (
             common.NUM_FILES_LESS,
-            custom_details.string_list(self._consumed_file_names())
+            (
+                custom_details.string_list(self._consumed_file_names())
+                if self._fetch_of_expected_plus_1
+                else
+                details.String(common.NO_FILES__ACTUAL)
+            )
         )
 
     def _too_many_files(self) -> Tuple[str, DetailsRenderer]:

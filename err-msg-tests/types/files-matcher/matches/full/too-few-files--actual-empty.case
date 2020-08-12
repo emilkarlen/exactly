@@ -1,0 +1,7 @@
+[setup]
+
+[assert]
+
+dir-contents . matches -full {
+ a
+}

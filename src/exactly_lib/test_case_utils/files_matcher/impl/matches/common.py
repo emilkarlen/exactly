@@ -26,9 +26,11 @@ from exactly_lib.util.description_tree.tree import Node
 from exactly_lib.util.symbol_table import SymbolTable
 
 NUM_FILES_LESS = 'Too few files'
+NO_FILES__ACTUAL = '0 files'
 NUM_FILES_MORE = 'Too many files'
 UNEXPECTED_NAME = 'File with unexpected name'
-NON_MATCHING_MATCHER = 'File that does not match corresponding ' + syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name
+NON_MATCHING_MATCHER = ('File that does not match corresponding ' +
+                        syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name)
 
 FILES_FOUND = 'Found files'
 FILES_NOT_FOUND = 'Not found files'
