@@ -1,6 +1,6 @@
 [conf]
 
-act-home = ../../images
+act-home = ../../images/bin
 
 [setup]
 

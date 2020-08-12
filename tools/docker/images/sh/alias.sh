@@ -1,6 +1,4 @@
-alias xly='python /app/exactly/src/default-main-program-runner.py'
-
-alias cde='cd /app/exactly'
+alias cdw="cd ${XLY_WORKDIR}"
 
 alias ..='cd ..'
 

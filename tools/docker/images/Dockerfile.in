@@ -9,7 +9,8 @@ RUN chmod 777 /workdir
 
 # Setup of global shell
 
-COPY alias.sh /etc/profile.d/
+COPY sh/alias.sh   /etc/profile.d/
+COPY sh/exactly.sh /etc/profile.d/
 
 # Setup of non-rot user
 
@@ -22,16 +23,17 @@ RUN adduser -D tester -s /bin/ash
 RUN mkdir     /exactly
 RUN chmod 777 /exactly
 
-COPY copy-repo          /usr/local/bin
-COPY copy-and-init-repo /usr/local/bin
-COPY test-copy-of-repo  /usr/local/bin
-COPY copy-and-test-repo /usr/local/bin
+COPY bin/copy-repo          /usr/local/bin
+COPY bin/copy-and-init-repo /usr/local/bin
+COPY bin/test-copy-of-repo  /usr/local/bin
+COPY bin/copy-and-test-repo /usr/local/bin
 
 USER tester
 
 RUN python -m venv /workdir/venv
 
 ENV XLY_REPO_MOUNT_DIR=/exactly/mounted-repo
+ENV XLY_WORKDIR=/workdir
 ENV XLY_REPO_COPY_DIR=/workdir/repo-copy
 ENV XLY_VENV_DIR=/workdir/venv
 
