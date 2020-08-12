@@ -65,14 +65,14 @@ class ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
     """
 
     def contents_before_replacement(self, tcds: Tcds) -> str:
-        env_vars_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
+        symbols_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
 
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
 
         ret_val = '\n'.join([
-            env_vars_dict[self.name_of_parent_dir__rel_hds_symbol],
+            symbols_dict[self.name_of_parent_dir__rel_hds_symbol],
             just_some_stuff_that_should_not_be_replaced,
-            env_vars_dict[self.name_of_sub_dir__rel_hds_symbol], ])
+            symbols_dict[self.name_of_sub_dir__rel_hds_symbol], ])
         return ret_val
 
     def expected_contents_after_replacement(self, tcds: Tcds) -> str:
@@ -89,10 +89,10 @@ class ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
         """
         :return: Gives a variation of the expected result, that is not equal to the expected result.
         """
-        env_vars_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
+        symbols_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
 
-        value_of_parent_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_symbol]
-        value_of_sub_dir = env_vars_dict[self.name_of_parent_dir__rel_hds_symbol]
+        value_of_parent_dir = symbols_dict[self.name_of_parent_dir__rel_hds_symbol]
+        value_of_sub_dir = symbols_dict[self.name_of_parent_dir__rel_hds_symbol]
         sub_dir_suffix_relative_the_parent_dir = value_of_sub_dir[len(value_of_parent_dir):]
 
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
