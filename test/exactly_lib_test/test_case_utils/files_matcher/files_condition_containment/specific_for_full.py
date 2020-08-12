@@ -11,7 +11,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import integr
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import \
     NON_MATCHING_EXECUTION_EXPECTATION, exe_w_added_header_matcher, prim_and_exe_w_header_matcher, \
     is_regular_file_matcher, is_dir_file_matcher
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_constructor__non_recursive
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import model_constructor__non_recursive, \
+    model_constructor__recursive
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirArgumentHelper
@@ -242,6 +243,37 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             ]),
             input_=model_constructor__non_recursive(checked_dir.path_sdv),
             execution=execution_cases
+        )
+
+    def test_access_of_sub_dir_for_failure_message_rendering(self):
+        # ARRANGE #
+        root_1__file = File.empty('f-1')
+        root_2__dir = Dir('d-2', [])
+
+        arguments = args.matches_full(
+            fc_args.FilesCondition([fc_args.FileCondition(root_1__file.name)])
+        )
+
+        checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'checked-dir')
+
+        # ACT & ASSERT #
+        integration_check.CHECKER.check__w_source_variants(
+            self,
+            arguments.as_arguments,
+            input_=model_constructor__recursive(checked_dir.path_sdv),
+            arrangement=Arrangement(
+                tcds=checked_dir.tcds_arrangement_dir_with_contents([
+                    root_1__file,
+                    root_2__dir,
+                ])
+            ),
+            expectation=Expectation(
+                parse=ParseExpectation(
+                    symbol_references=asrt.is_empty_sequence,
+                ),
+                execution=PRIM_AND_EXE_EXPECTATION__NON_MATCH.execution,
+                primitive=PRIM_AND_EXE_EXPECTATION__NON_MATCH.primitive,
+            ),
         )
 
 

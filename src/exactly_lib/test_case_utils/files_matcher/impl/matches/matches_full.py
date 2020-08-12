@@ -45,8 +45,14 @@ class _Applier(common.Applier):
         actual_files = self._try_get_num_files(expected_num_files + 1)
 
         if len(actual_files) != expected_num_files:
-            return MatchingResult(False,
-                                  _RendererOfUnexpectedNumFiles(actual_files, self))
+            return MatchingResult(
+                False,
+                _RendererOfUnexpectedNumFiles(
+                    self.name,
+                    self.files_condition,
+                    actual_files,
+                    self._model_has_more_files()),
+            )
 
         return self._continue_w_file_name_check(actual_files)
 
@@ -97,6 +103,11 @@ class _Applier(common.Applier):
 
         return ret_val
 
+    def _model_has_more_files(self) -> bool:
+        for _ in self.model_files_iter:
+            return True
+        return False
+
 
 _CONFIG = common.Conf(common.MATCHES_FULL__STRUCTURE_NAME,
                       _Applier)
@@ -104,16 +115,20 @@ _CONFIG = common.Conf(common.MATCHES_FULL__STRUCTURE_NAME,
 
 class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
     def __init__(self,
+                 name: str,
+                 files_condition: FilesCondition,
                  fetch_of_expected_plus_1: List[FileModel],
-                 applier: _Applier,
+                 has_more_files: bool,
                  ):
+        self._name = name
+        self._files_condition = files_condition
         self._fetch_of_expected_plus_1 = fetch_of_expected_plus_1
-        self._applier = applier
+        self._has_more_files = has_more_files
 
     def render(self) -> Node[bool]:
         get_explanation_and_actual = (
             self._too_few_files
-            if len(self._fetch_of_expected_plus_1) < len(self._applier.files_condition.files.keys())
+            if len(self._fetch_of_expected_plus_1) < len(self._files_condition.files.keys())
             else
             self._too_many_files
         )
@@ -125,14 +140,14 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
             details.String(explanation),
         )
 
-        return Node(self._applier.name,
+        return Node(self._name,
                     False,
                     expected_and_actual.render(),
                     (),
                     )
 
     def _expected(self) -> DetailsRenderer:
-        return _expected_file_names_renderer(self._applier.files_condition)
+        return _expected_file_names_renderer(self._files_condition)
 
     def _too_few_files(self) -> Tuple[str, DetailsRenderer]:
         return (
@@ -142,7 +157,7 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
 
     def _too_many_files(self) -> Tuple[str, DetailsRenderer]:
         file_list_elements = list(self._consumed_file_names())
-        if self._model_has_more_files():
+        if self._has_more_files:
             file_list_elements.append(custom_details.HAS_MORE_DATA_MARKER)
 
         return (
@@ -152,11 +167,6 @@ class _RendererOfUnexpectedNumFiles(NodeRenderer[bool]):
 
     def _consumed_file_names(self) -> Iterable[str]:
         return _files_in_model_list(self._fetch_of_expected_plus_1)
-
-    def _model_has_more_files(self) -> bool:
-        for _ in self._applier.model_files_iter:
-            return True
-        return False
 
 
 class _RendererOfFileWithUnexpectedName(NodeRenderer[bool]):

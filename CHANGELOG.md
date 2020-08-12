@@ -16,6 +16,10 @@ with exception of a "0." prefix until version 1 is released.
 
  - Actor `command-line` - Executes a `PROGRAM`
 
+### Fixed
+
+ - Type `files-matcher` / `matches -full` - Crash rendering err msg for recursive model w too few files.
+
 ### Added
 
 ## [0.12.2] - 2020-07-21
