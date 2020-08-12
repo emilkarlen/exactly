@@ -121,9 +121,7 @@ _FILE_NAME_OR_SET_END = 'FILE-NAME or ' + syntax.END_BRACE__FOR_FORMAT_STRINGS
 _HEADER = """\
 Reading {FILES_CONDITION}"""
 
-_MULTIPLE_FILES_ON_SINGLE_LINE = """\
-There can only be one file per line.
-"""
+_MULTIPLE_FILES_ON_SINGLE_LINE = 'There can only be one file per line.'
 
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(

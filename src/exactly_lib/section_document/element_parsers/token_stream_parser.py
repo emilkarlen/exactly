@@ -67,6 +67,7 @@ class TokenParser:
 
     def require_head_is_unquoted_and_equals(self, expected: str, error_message: ErrorMessageGenerator):
         if not self.head_is_unquoted_and_equals(expected):
+            self.consume_head__if_exists_and_is_valid_token()
             raise SingleInstructionInvalidArgumentException(error_message.message())
 
     def has_valid_head_token(self) -> bool:
@@ -134,6 +135,10 @@ class TokenParser:
 
     def consume_head(self) -> Token:
         return self.token_stream.consume()
+
+    def consume_head__if_exists_and_is_valid_token(self):
+        if self.has_valid_head_token():
+            self.consume_head()
 
     def consume_remaining_part_of_current_line_as_string(self) -> str:
         return self.token_stream.consume_remaining_part_of_current_line_as_string()
@@ -672,14 +677,17 @@ def from_parse_source(source: ParseSource,
                       consume_last_line_if_is_at_eol_after_parse: bool = False,
                       consume_last_line_if_is_at_eof_after_parse: bool = False) -> ContextManager[TokenParser]:
     """
-    Gives a :class:`TokenParserPrime` backed by the given :class:`ParseSource`.
+    Gives a :class:`TokenParser` backed by the given :class:`ParseSource`.
 
-    The source of the :class:`TokenParserPrime` is the remaining sources of the :class:`ParseSource`
+    The source of the :class:`TokenParser` is the remaining sources of the :class:`ParseSource`
     """
     tp = new_token_parser(source.remaining_source,
                           first_line_number=source.current_line_number)
-    yield tp
-    source.consume(tp.token_stream.position)
+    try:
+        yield tp
+    finally:
+        source.consume(tp.token_stream.position)
+
     if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol:
         source.consume_current_line()
     elif consume_last_line_if_is_at_eof_after_parse and source.is_at_eof:
@@ -689,11 +697,13 @@ def from_parse_source(source: ParseSource,
 @contextmanager
 def from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSource):
     """
-    Gives a :class:`TokenParserPrime` backed by the given :class:`ParseSource`.
+    Gives a :class:`TokenParser` backed by the given :class:`ParseSource`.
 
-    The source of the :class:`TokenParserPrime` is the remaining part of the current line of the :class:`ParseSource`
+    The source of the :class:`TokenParser` is the remaining part of the current line of the :class:`ParseSource`
     """
     tp = new_token_parser(parse_source.remaining_part_of_current_line,
                           first_line_number=parse_source.current_line_number)
-    yield tp
-    parse_source.consume(tp.token_stream.position)
+    try:
+        yield tp
+    finally:
+        parse_source.consume(tp.token_stream.position)

@@ -3,6 +3,7 @@
 string-matcher
 line-matcher
 file-matcher
+files-condition
 files-matcher
 string-transformer
 program

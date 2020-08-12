@@ -8,9 +8,25 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import line_sequence_from_line
+from exactly_lib.util.line_source import line_sequence_from_line, LineSequence
 
 InstructionNameExtractor = Callable[[str], str]
+
+
+class _ErrMsgSourceConstructor:
+    def __init__(self, before_parse: ParseSource):
+        self._first_line = before_parse.current_line
+        self._remaining_source__before = before_parse.remaining_source
+
+    def ending_at(self, after_parse: ParseSource) -> LineSequence:
+        remaining_source__after = after_parse.remaining_source
+        num_chars__consumed = len(self._remaining_source__before) - len(remaining_source__after)
+
+        if num_chars__consumed < len(self._first_line.text):
+            return line_sequence_from_line(self._first_line)
+
+        source__consumed = self._remaining_source__before[:num_chars__consumed]
+        return LineSequence(self._first_line.line_number, source__consumed.split('\n'))
 
 
 class InstructionParserForDictionaryOfInstructions(InstructionParser):
@@ -30,12 +46,11 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
-        first_line = source.current_line
         name = self._extract_name(source)
-        parser = self._lookup_parser(first_line, name)
+        parser = self._lookup_parser(source.current_line, name)
         source.consume_part_of_current_line(len(name))
         source.consume_initial_space_on_current_line()
-        return self._parse(fs_location_info, source, parser, name)
+        return self._parse(fs_location_info, source, parser, name, _ErrMsgSourceConstructor(source))
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
@@ -61,19 +76,21 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def _parse(fs_location_info: FileSystemLocationInfo,
                source: ParseSource,
                parser: InstructionParser,
-               name: str) -> model.Instruction:
+               name: str,
+               err_msg_src_constructor: _ErrMsgSourceConstructor,
+               ) -> model.Instruction:
         """
         :raises: InvalidInstructionException
         """
-        first_line = source.current_line
         try:
             return parser.parse(fs_location_info, source)
         except SingleInstructionInvalidArgumentException as ex:
-            raise InvalidInstructionArgumentException(line_sequence_from_line(first_line),
+
+            raise InvalidInstructionArgumentException(err_msg_src_constructor.ending_at(source),
                                                       name,
                                                       ex.error_message)
         except Exception as ex:
-            raise ArgumentParsingImplementationException(line_sequence_from_line(first_line),
+            raise ArgumentParsingImplementationException(err_msg_src_constructor.ending_at(source),
                                                          name,
                                                          parser,
                                                          str(ex))

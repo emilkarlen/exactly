@@ -1,0 +1,10 @@
+[setup]
+
+def files-condition FC =
+{
+ a
+ b
+ c
+ d
+ f superfluous
+}
