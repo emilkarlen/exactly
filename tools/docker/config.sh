@@ -1,4 +1,4 @@
-readonly DOCKER_IMAGE_PREFIX='alpine-py'
+readonly DOCKER_IMAGE_PREFIX='exactly-alpine-py'
 
 ############################################################
 # Must be in sync with docker container

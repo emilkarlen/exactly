@@ -5,7 +5,7 @@ actor = -source /bin/sh
 [act]
 
 make -C @[EXACTLY_ACT_HOME]@ clean
-make -C @[EXACTLY_ACT_HOME]@ all
+make -C @[EXACTLY_ACT_HOME]@ dockerfiles
 
 [assert]
 

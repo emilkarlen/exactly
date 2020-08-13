@@ -132,6 +132,8 @@ readonly XLY_PY_MAIN_IN_REPO_COPY=${XLY_REPO_COPY_DIR}/${XLY_PY_MAIN}
 
 echo "Running checks: ${CHECKS}" >&2
 
+cd /
+
 for check in ${CHECKS}; do
   run_check "${check}"
 done

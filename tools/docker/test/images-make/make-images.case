@@ -1,0 +1,22 @@
+make -C @[EXACTLY_ACT_HOME]@ clean
+make -C @[EXACTLY_ACT_HOME]@ all
+
+[assert]
+
+exit-code == 0
+
+run @ IMAGE_EXISTS exactly-alpine-py35
+run @ IMAGE_EXISTS exactly-alpine-py36
+run @ IMAGE_EXISTS exactly-alpine-py37
+run @ IMAGE_EXISTS exactly-alpine-py38
+run @ IMAGE_EXISTS exactly-alpine-py39
+
+[conf]
+
+actor = -source /bin/sh
+
+timeout = 120
+
+[setup]
+
+def program IMAGE_EXISTS = % docker image inspect

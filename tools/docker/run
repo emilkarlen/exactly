@@ -4,6 +4,7 @@ HERE=$(dirname $0)
 MY_NAME=$(basename $0)
 
 readonly PY_VERSIONS='35 36 37 38 39'
+readonly DEFAULT_PY_V='35'
 
 function abs_path_of_repo_root() (
   cd ${HERE}/../..
@@ -23,32 +24,37 @@ readonly SHARE_DIR=/tmp/exactly-docker-share
 readonly ACTION__TEST='test'
 readonly ACTION__TEST_W_INSTALL='test-w-install'
 
-readonly HELP="${MY_NAME} (-h|PY-VERSION) [ACTION]
+readonly INVOKATION_SYNTAX="Usage: ${MY_NAME} [-h] [-u USER] [-v PY-VERSION] [ACTION]"
 
-PY-VERSION is one of: ${PY_VERSIONS}
+readonly HELP="${INVOKATION_SYNTAX}
+
+Runs the docker container
+  ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
+
+Enter with a login shell,
+or runs an action and exists, if ACTION is given.
+
+OPTIONS
+  -h         Display this help and exit
+  -u USER    Enter container as user USER
+  -v VERSION Use docker image for Python v VERSION
+             VERSION is one of: ${PY_VERSIONS}
 
 ACTION
   ${ACTION__TEST}
-    Run tests towards copy of mounted repo,
-    and exit.
+    Run tests towards copy of mounted repo.
 
   ${ACTION__TEST_W_INSTALL}
     Run tests towards copy of mounted repo,
-    including test against installation,
-    and exit.
+    including test against installation.
 
-Starts the docker container
-  ${DOCKER_IMAGE_PREFIX}<PY-VERSION>
-as user
-  ${NON_ROOT_USER}
+ENVIRONMENT
 
-ENVIRONMENT of files and dirs
+  ${CONTAINER__WORK_DIR}
+    Current directory.
 
   ${CONTAINER__REPO_ROOT}/
     Read-only mount of the current Exactly repo.
-
-  ${CONTAINER__WORK_DIR}/
-    Current directory.
 
   ${CONTAINER__VENV_DIR}/
     A Python virtual environment.
@@ -61,29 +67,33 @@ ENVIRONMENT of files and dirs
 ########################################
 # Parse arguments
 
-if [ "${1}" == '-h' ]; then
-  echo "${HELP}"
-  exit 0
-fi
+PY_V=${DEFAULT_PY_V}
+USER=${NON_ROOT_USER}
 
-if [ ${#} -gt 2 ]; then
-  echo -n "${HELP}"
-  exit 0
-fi
+while [ $# -gt 0 -a "_${1:0:1}" = '_-' ]; do
+  case $1 in
+  -h)
+    echo "${HELP}"
+    exit 0
+    ;;
+  -u)
+    [ $# -ge 2 ] || exit_error "-u: Missing USER argument"
+    USER=$2
+    shift
+    ;;
+  -v)
+    [ $# -ge 2 ] || exit_error "-v: Missing VERSION argument"
+    PY_V=$2
+    shift
+    ;;
+  *)
+    exit_error "Unknown option: [${1}]"
+    ;;
+  esac
+  shift
+done
 
-PY_V=${1}
-shift
-
-if ! [[ ${PY_V} =~ ^[[:digit:]][[:digit:]]$ && ${PY_VERSIONS} =~ ${PY_V} ]]; then
-  exit_error "Unknown Python version (${PY_VERSIONS}): [${PY_V}]"
-fi
-
-DOCKER_IMAGE="${DOCKER_IMAGE_PREFIX}${PY_V}:latest"
-
-docker image inspect ${DOCKER_IMAGE} >/dev/null ||
-  exit_error "No docker image corresponding to Python version [${PY_V}]: [${DOCKER_IMAGE}]"
-
-if [ ${#} -eq 1 ]; then
+if [ ${#} -gt 0 ]; then
   case ${1} in
   ${ACTION__TEST})
     COMMAND=${ACTION__TEST__COMMAND}
@@ -95,15 +105,27 @@ if [ ${#} -eq 1 ]; then
     exit_error "Unknown ACTION: [${1}]"
     ;;
   esac
+  shift
 fi
+
+[ ${#} -eq 0 ] || exit_error "${INVOKATION_SYNTAX}"
 
 ########################################
 # Check prerequisites
 
+if ! [[ ${PY_V} =~ ^[[:digit:]][[:digit:]]$ && ${PY_VERSIONS} =~ ${PY_V} ]]; then
+  exit_error "Unknown Python version (${PY_VERSIONS}): [${PY_V}]"
+fi
+
+DOCKER_IMAGE="${DOCKER_IMAGE_PREFIX}${PY_V}:latest"
+
+docker image inspect ${DOCKER_IMAGE} >/dev/null ||
+  exit_error "No docker image corresponding to Python version [${PY_V}]: [${DOCKER_IMAGE}]"
+
 if [ -e ${SHARE_DIR} ]; then
   [ -d ${SHARE_DIR} ] || exit_error "Not a directory: ${SHARE_DIR}"
 else
-  mkdir ${SHARE_DIR}
+  mkdir -p ${SHARE_DIR}
 fi
 
 ########################################
@@ -112,7 +134,7 @@ fi
 docker run --interactive --tty \
   --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${CONTAINER__REPO_ROOT} \
   --mount type=bind,source=${SHARE_DIR},target=${CONTAINER__SHARE_DIR} \
-  --user ${NON_ROOT_USER} \
+  --user ${USER} \
   --workdir ${CONTAINER__WORK_DIR} \
   --rm \
   ${DOCKER_IMAGE} ${COMMAND}

@@ -1,4 +1,4 @@
 [suites]
 
 copy-repo
-make-docker-files
+images-make/no-docker-dep.suite

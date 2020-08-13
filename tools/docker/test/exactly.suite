@@ -2,4 +2,4 @@
 
 no-docker-dep.suite
 
-make-docker-images
+images-make

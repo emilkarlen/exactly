@@ -1,21 +1,48 @@
 DOCKER_FILES = Dockerfile.35 Dockerfile.36 Dockerfile.37 Dockerfile.38 Dockerfile.39
+IMAGES = 35 36 37 38 39
+IMAGE_PFX = exactly-alpine-py
+IMAGES__FULL_NAME = $(foreach img,$(IMAGES),"$(IMAGE_PFX)$(img)")
 
-all: $(DOCKER_FILES)
+.PHONY: $(IMAGES) dockerfiles all clean help
+
+help:
+	@echo help all clean $(IMAGES) dockerfiles $(DOCKER_FILES)
+
+all: $(IMAGES)
 
 clean:
 	rm -f $(DOCKER_FILES)
+	docker image rm -f $(IMAGES__FULL_NAME)
+
+dockerfiles: $(DOCKER_FILES)
 
 Dockerfile.35: Dockerfile.in
 	sed 's/__IMAGE_TAG__/3.5.9-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.36: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.6-alpine3.11/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.6-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.37: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.7-alpine3.12/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.7-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.38: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.8-alpine3.11/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.8-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.39: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.9-rc-alpine3.11/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.9-rc-alpine/g' < Dockerfile.in > $@
+
+
+35: Dockerfile.35
+	docker build -f Dockerfile.35 -t $(IMAGE_PFX)35 .
+
+36: Dockerfile.36
+	docker build -f Dockerfile.36 -t $(IMAGE_PFX)36 .
+
+37: Dockerfile.37
+	docker build -f Dockerfile.37 -t $(IMAGE_PFX)37 .
+
+38: Dockerfile.38
+	docker build -f Dockerfile.38 -t $(IMAGE_PFX)38 .
+
+39: Dockerfile.39
+	docker build -f Dockerfile.39 -t $(IMAGE_PFX)39 .

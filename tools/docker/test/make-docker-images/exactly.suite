@@ -1,7 +1,0 @@
-[cases]
-
-*.case
-
-[conf]
-
-act-home = ../..
