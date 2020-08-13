@@ -7,13 +7,7 @@ readonly INVOKATION_SYNTAX="${MY_NAME} [-h] [--venv]"
 
 CHECKS='XLY_TEST XLY_EXAMPLE UNITTEST'
 
-function exit_error() { # MSG...
-  echo ${MY_NAME}': '$* >&2
-  exit 10
-}
-
-HELP="Usage:
-  ${INVOKATION_SYNTAX}
+HELP="Usage: ${INVOKATION_SYNTAX}
 
 Copies a mounted repo, then initializes it and tests it:
 
@@ -26,16 +20,25 @@ OPTIONS
     (in addition to all other checks).
 "
 
+function exit_error() { # MSG...
+  echo ${MY_NAME}': '$* >&2
+  exit 10
+}
+
+########################################
+# main
+########################################
+
+########################################
+# Parse arguments
+
 if [ "_$1" == '_-h' ]; then
   echo -n "${HELP}"
   exit 0
 fi
 
-########################################
-# Parse arguments
-
 if [ $# -ge 1 -a "_${1}" = '_--venv' ]; then
-  CHECKS="${CHECKS} INSTALLATION"
+  CHECKS='--all'
   INIT_VENV_ARG='--venv'
   shift
 fi

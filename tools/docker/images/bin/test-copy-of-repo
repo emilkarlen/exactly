@@ -2,9 +2,6 @@
 
 set -e
 
-readonly MY_NAME=$(basename $0)
-readonly INVOKATION_SYNTAX="${MY_NAME} [-h] CHECK..."
-
 readonly XLY_PY_MAIN=src/default-main-program-runner.py
 
 readonly EXACTLY_SUITE__TEST=test/exactly-cases/exactly.suite
@@ -23,9 +20,12 @@ readonly CHECK__UNITTEST='UNITTEST'
 readonly CHECK__INSTALLATION='INSTALLATION'
 
 readonly DEFAULT_CHECKS="${CHECK__XLY_TEST} ${CHECK__XLY_EXAMPLES} ${CHECK__UNITTEST}"
+readonly ALL_CHECKS="${CHECK__XLY_TEST} ${CHECK__XLY_EXAMPLES} ${CHECK__UNITTEST} ${CHECK__INSTALLATION}"
 
-HELP="Usage:
-  ${INVOKATION_SYNTAX}
+readonly MY_NAME=$(basename $0)
+readonly INVOKATION_SYNTAX="${MY_NAME} [-h] [--all] CHECK..."
+
+HELP="Usage: ${INVOKATION_SYNTAX}
 
 Tests a copy of an Exactly git repo in dir ${XLY_REPO_COPY_DIR}.
 
@@ -35,28 +35,33 @@ A sequence of CHECK is run
   ${CHECK__UNITTEST} : Unit-tests : ${UNIT_TESTS_RUNNER}
   ${CHECK__INSTALLATION} : Unit-tests : ${UNIT_TESTS_RUNNER}
 
-The default is to run all but the last checks above, in the sequence above.
-"
+The default CHECK sequence is
+  ${DEFAULT_CHECKS}
+
+OPTIONS
+  -h    Display this help and exit
+  --all Run all tests"
 
 function exit_error() { # MSG...
   echo ${MY_NAME}': '$* >&2
   exit 10
 }
 
-check_start() { # CHECK
+header() { # CHECK
   echo "************************************************************
 * ${1}
 ************************************************************"
 }
+
 run_check() { # CHECK
   case ${1} in
   ${CHECK__UNITTEST})
-    check_start "${ABS__UNIT_TESTS_RUNNER}"
+    header "${ABS__UNIT_TESTS_RUNNER}"
     python ${ABS__UNIT_TESTS_RUNNER}
     ;;
 
   ${CHECK__INSTALLATION})
-    check_start "${ABS__INSTALLATION_RUNNER}"
+    header "${ABS__INSTALLATION_RUNNER}"
     (
       . ${XLY_VENV_DIR}/bin/activate
       python ${ABS__INSTALLATION_RUNNER}
@@ -64,12 +69,12 @@ run_check() { # CHECK
     ;;
 
   ${CHECK__XLY_TEST})
-    check_start "${ABS__EXACTLY_SUITE__TEST}"
+    header "${ABS__EXACTLY_SUITE__TEST}"
     python ${XLY_PY_MAIN_IN_REPO_COPY} suite ${ABS__EXACTLY_SUITE__TEST}
     ;;
 
   ${CHECK__XLY_EXAMPLES})
-    check_start "${ABS__EXACTLY_SUITE__EXAMPLE}"
+    header "${ABS__EXACTLY_SUITE__EXAMPLE}"
     python ${XLY_PY_MAIN_IN_REPO_COPY} suite ${ABS__EXACTLY_SUITE__EXAMPLE}
     ;;
 
@@ -83,10 +88,28 @@ run_check() { # CHECK
 # main
 ########################################
 
-if [ "_$1" == '_-h' ]; then
-  echo -n "${HELP}"
-  exit 0
-fi
+CHECKS=${DEFAULT_CHECKS}
+
+########################################
+# Parse arguments
+
+while [ $# -gt 0 -a "_${1:0:1}" = '_-' ]; do
+  case $1 in
+  -h)
+    echo "${HELP}"
+    exit 0
+    ;;
+  --all)
+    CHECKS=${ALL_CHECKS}
+    ;;
+  *)
+    exit_error "Unknown option: [${1}]"
+    ;;
+  esac
+  shift
+done
+
+[ $# -gt 0 ] && CHECKS=$*
 
 ########################################
 # Check prerequisites
@@ -107,10 +130,8 @@ readonly XLY_PY_MAIN_IN_REPO_COPY=${XLY_REPO_COPY_DIR}/${XLY_PY_MAIN}
 ########################################
 # Do it
 
-if [ ${#} -eq 0 ]; then
-  set ${DEFAULT_CHECKS}
-fi
+echo "Running checks: ${CHECKS}" >&2
 
-for check; do
+for check in ${CHECKS}; do
   run_check "${check}"
 done
