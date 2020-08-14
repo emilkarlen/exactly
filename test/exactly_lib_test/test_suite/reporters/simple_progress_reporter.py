@@ -236,36 +236,15 @@ class TestFinalResultFormatting(unittest.TestCase):
                              actual_lines[4:],
                              'Lines after "Ran ..."')
 
-    def test_with_error_of_path_below_relativity_root(self):
+    def test_with_error_of_path_above_relativity_root__parent_is_non_root_dir(self):
         # ARRANGE #
-        elapsed_time = datetime.timedelta(seconds=1)
-        num_test_cases = 6
-        rel_root = Path.cwd().resolve()
-        the_exit_identifier = 'exit_identifier_4'
-        errors = {
-            the_exit_identifier:
-                [
-                    test_case_reference_of_source_file(rel_root.parent / Path('fip-1') / 'case-1'),
-                ],
-        }
-        # ACT #
-        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
-                                                               rel_root,
-                                                               errors)
-        # ASSERT #
-        self._assert_at_least_one_line_was_generated(actual_lines)
-        self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
-        self.assertEqual(
-            ['',
-             _NUMBER_OF_ERRORS.of(1),
-             ''],
-            actual_lines[1:4],
-            'Reporting of number of unsuccessful tests (including separating lines)')
-        self.assertListEqual([the_exit_identifier,
-                              '  ' + str(rel_root.parent / Path('fip-1') / Path('case-1')),
-                              ],
-                             actual_lines[4:],
-                             'Lines after "Num unsuccessful ..."')
+        rel_root_path = Path(Path.cwd().anchor) / 'root-sub-dir' / 'the-rel-root'
+        self._test_with_error_of_path_above_relativity_root(rel_root_path)
+
+    def test_with_error_of_path_above_relativity_root__parent_is_root_dir(self):
+        # ARRANGE #
+        rel_root_path = Path(Path.cwd().anchor) / 'the-rel-root'
+        self._test_with_error_of_path_above_relativity_root(rel_root_path)
 
     def test_with_error_of_path_below_relativity_root__file_names_from_applied_hierarchy_reader(self):
         # ARRANGE #
@@ -309,6 +288,36 @@ class TestFinalResultFormatting(unittest.TestCase):
                              actual_lines[4:],
                              'Lines after "Num unsuccessful ..."')
 
+    def _test_with_error_of_path_above_relativity_root(self, rel_root_path: Path):
+        # ARRANGE #
+        elapsed_time = datetime.timedelta(seconds=1)
+        num_test_cases = 6
+        the_exit_identifier = 'exit_identifier_4'
+        errors = {
+            the_exit_identifier:
+                [
+                    test_case_reference_of_source_file(rel_root_path.parent / Path('fip-1') / 'case-1'),
+                ],
+        }
+        # ACT #
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
+                                                               rel_root_path,
+                                                               errors)
+        # ASSERT #
+        self._assert_at_least_one_line_was_generated(actual_lines)
+        self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
+        self.assertEqual(
+            ['',
+             _NUMBER_OF_ERRORS.of(1),
+             ''],
+            actual_lines[1:4],
+            'Reporting of number of unsuccessful tests (including separating lines)')
+        self.assertListEqual([the_exit_identifier,
+                              '  ' + str(rel_root_path.parent / Path('fip-1') / Path('case-1')),
+                              ],
+                             actual_lines[4:],
+                             'Lines after "Num unsuccessful ..."')
+
     def _assert_at_least_one_line_was_generated(self, actual_lines):
         if not actual_lines:
             self.fail('No lines at all was generated')
@@ -344,3 +353,6 @@ def _replace_seconds_with_const(string_with_seconds_in_decimal_notation: str) ->
 
 _TIME_ATTRIBUTE_RE = re.compile(r'[0-9]+(\.[0-9]+)?')
 TIME_VALUE_REPLACEMENT = '__TIME__'
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
