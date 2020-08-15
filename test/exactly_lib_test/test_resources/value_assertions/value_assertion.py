@@ -623,6 +623,10 @@ def sub_component_builder(component_name: str,
     return MessageBuilder(sub_component_header(component_name, super_message_builder, component_separator))
 
 
+def _component_index(i: int) -> str:
+    return ''.join(('[', str(i), ']'))
+
+
 class SubComponent(ValueAssertionBase[T]):
     def __init__(self,
                  message_head_constructor: SubComponentMessageHeadConstructor,
@@ -657,7 +661,7 @@ class EveryElement(ValueAssertionBase[Sequence[T]]):
         head = self.message_head_constructor.apply(message_builder)
         element_index = 0
         for element in value:
-            element_message_builder = MessageBuilder(head + '[' + str(element_index) + ']')
+            element_message_builder = MessageBuilder(head + _component_index(element_index))
             self.element_assertion.apply(put,
                                          element,
                                          element_message_builder)
@@ -666,8 +670,11 @@ class EveryElement(ValueAssertionBase[Sequence[T]]):
 
 class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
     def __init__(self,
-                 element_assertions: Sequence[ValueAssertion[T]]):
+                 element_assertions: Sequence[ValueAssertion[T]],
+                 get_name: Callable[[int], str] = _component_index,
+                 ):
         self.element_assertions = element_assertions
+        self._get_name = get_name
 
     def _apply(self,
                put: unittest.TestCase,
@@ -677,7 +684,7 @@ class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
                         len(self.element_assertions),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
-            element_message_builder = sub_component_builder('[' + str(idx) + ']',
+            element_message_builder = sub_component_builder(self._get_name(idx),
                                                             message_builder,
                                                             component_separator='')
             self.element_assertions[idx].apply(put, element,
@@ -712,7 +719,7 @@ class _IsSequenceWithElementAtPos(ValueAssertionBase[Sequence[T]]):
                           self.index,
                           message_builder.apply('number of elements'))
         idx = self.index
-        element_message_builder = sub_component_builder('[' + str(idx) + ']',
+        element_message_builder = sub_component_builder(_component_index(idx),
                                                         message_builder,
                                                         component_separator='')
         self.element_assertion.apply(put,
@@ -735,7 +742,7 @@ class _EqualsSequence(ValueAssertionBase[Sequence[T]]):
                         len(self.expected),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
-            element_message_builder = sub_component_builder('[' + str(idx) + ']',
+            element_message_builder = sub_component_builder(_component_index(idx),
                                                             message_builder,
                                                             component_separator='')
             element_assertion = self.new_value_assertion_for_expected(self.expected[idx])
@@ -815,6 +822,24 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
     in the list of actual values.
     """
     return _MatchesSequence(element_assertions)
+
+
+def matches_sequence__named(element_assertions: Sequence[NameAndValue[ValueAssertion[T]]],
+                            ) -> ValueAssertion[Sequence[T]]:
+    """
+    :param element_assertions: The element at index i is an assertion on element at index i
+    in the list of actual values.
+    """
+
+    def get_name(idx: int) -> str:
+        return ''.join(('[', str(idx), ':', element_assertions[idx].name, ']'))
+
+    return _MatchesSequence([
+        e.value
+        for e in element_assertions
+    ],
+        get_name
+    )
 
 
 def matches_list(elements: Sequence[ValueAssertion[T]]) -> ValueAssertion[List[T]]:
