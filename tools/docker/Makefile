@@ -1,0 +1,19 @@
+VERSIONS = 35 36 37 38 39
+
+.PHONY: help test-all $(VERSIONS)
+
+help:
+	@echo help  $(VERSIONS) all
+
+all: $(VERSIONS)
+
+35:
+	$(CURDIR)/run -v 35 test-w-install
+36:
+	$(CURDIR)/run -v 36 test-w-install
+37:
+	$(CURDIR)/run -v 37 test-w-install
+38:
+	$(CURDIR)/run -v 38 test-w-install
+39:
+	$(CURDIR)/run -v 39 test-w-install
