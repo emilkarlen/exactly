@@ -1,5 +1,5 @@
 import enum
-import types
+from typing import Callable
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib.util.textformat.rendering.html.cross_ref import TargetRenderer
@@ -32,7 +32,7 @@ class ContentSetter(core.TextVisitor):
     def __init__(self,
                  target_renderer: TargetRenderer,
                  content_root: Element,
-                 str_setter: types.FunctionType):
+                 str_setter: Callable[[str], None]):
         self.target_renderer = target_renderer
         self.content_root = content_root
         self.str_setter = str_setter

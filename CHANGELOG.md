@@ -20,6 +20,7 @@ with exception of a "0." prefix until version 1 is released.
 
  - Type `files-matcher` / `matches -full` - Crash rendering err msg for recursive model w too few files.
  - Test - tests not working for CWD=/ or CWD=/sub
+ - Test - tests not working for Python >= 3.8 (comparison of XML-strings generated from objects with dicts)
 
 ### Added
 
