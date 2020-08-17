@@ -1,6 +1,6 @@
 import unittest
 from copy import copy
-from typing import Dict, Optional, List, Sequence, Callable
+from typing import List, Sequence, Callable
 from xml.etree import ElementTree as ET
 
 from exactly_lib.util.name_and_value import NameAndValue
@@ -8,6 +8,7 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import xml_etree as sut
+from exactly_lib_test.test_resources.xml_etree import element
 
 
 def suite() -> unittest.TestSuite:
@@ -50,15 +51,15 @@ class TestEqualsElementWithoutChildren(unittest.TestCase):
     def test_text__none_and_empty_str_are_equivalent(self):
         for case in self.EQUIVALENT_STR_CASES:
             with self.subTest(case.name):
-                expected = _elem('tag', text=case.expected)
-                actual = _elem(expected.tag, text=case.actual)
+                expected = element('tag', text=case.expected)
+                actual = element(expected.tag, text=case.actual)
                 sut.equals(expected).apply_without_message(self, actual)
 
     def test_tail__none_and_empty_str_are_equivalent(self):
         for case in self.EQUIVALENT_STR_CASES:
             with self.subTest(case.name):
-                expected = _elem('tag', tail=case.expected)
-                actual = _elem(expected.tag, tail=case.actual)
+                expected = element('tag', tail=case.expected)
+                actual = element(expected.tag, tail=case.actual)
                 sut.equals(expected).apply_without_message(self, actual)
 
 
@@ -94,15 +95,15 @@ class TestEqualsElementWithChildren(unittest.TestCase):
         cases__pos_dir = [
             NEA('expected: 0',
                 [],
-                [_elem(child_name)],
+                [element(child_name)],
                 ),
             NEA('expected: 1',
-                [_elem(child_name)],
-                [_elem(child_name), _elem(child_name)],
+                [element(child_name)],
+                [element(child_name), element(child_name)],
                 ),
             NEA('expected: 2',
-                [_elem(child_name), _elem(child_name)],
-                [_elem(child_name), _elem(child_name), _elem(child_name), _elem(child_name)],
+                [element(child_name), element(child_name)],
+                [element(child_name), element(child_name), element(child_name), element(child_name)],
                 ),
         ]
 
@@ -148,7 +149,7 @@ def equal_element_cases() -> List[NameAndValue[ET.Element]]:
                 tail=repr('tail'),
                 attrs=attributes,
             ),
-            _elem(tag, text=text, tail=tail, attributes=attributes)
+            element(tag, text=text, tail=tail, attributes=attributes)
         )
         for text in [None, 'some text']
         for tail in [None, 'some tail']
@@ -164,7 +165,7 @@ def equal_element_cases__wo_tail() -> List[NameAndValue[ET.Element]]:
                 text=repr(text),
                 attrs=attributes,
             ),
-            _elem(tag, text=text, attributes=attributes)
+            element(tag, text=text, attributes=attributes)
         )
         for text in [None, 'some text']
         for attributes in [{}, {'key': 'value'}]
@@ -187,8 +188,8 @@ def unequal_tag_cases() -> List[NEA[ET.Element, ET.Element]]:
     tag = 'the-tag'
     return [
         NEA('unequal-tag',
-            _elem(tag, text='a'),
-            _elem(tag, text='ab'),
+            element(tag, text='a'),
+            element(tag, text='ab'),
             )
     ]
 
@@ -196,8 +197,8 @@ def unequal_tag_cases() -> List[NEA[ET.Element, ET.Element]]:
 def unequal_text_cases() -> List[NEA[ET.Element, ET.Element]]:
     return [
         NEA('unequal-text',
-            _elem('expected'),
-            _elem('actual'),
+            element('expected'),
+            element('actual'),
             )
     ]
 
@@ -206,8 +207,8 @@ def unequal_tail_cases() -> List[NEA[ET.Element, ET.Element]]:
     tag = 'the-tag'
     return [
         NEA('unequal-tail',
-            _elem(tag, tail='a'),
-            _elem(tag, tail='ab'),
+            element(tag, tail='a'),
+            element(tag, tail='ab'),
             )
     ]
 
@@ -238,8 +239,8 @@ def unequal_attributes_cases() -> List[NEA[ET.Element, ET.Element]]:
     tag = 'attr-test'
     return _with_positive_and_negative_direction([
         NEA(c.name,
-            _elem(tag, c.expected),
-            _elem(tag, c.actual),
+            element(tag, c.expected),
+            element(tag, c.actual),
             )
         for c in cases_positive_direction
     ])
@@ -265,21 +266,21 @@ def _equivalent_child_sequence_variants() -> List[NameAndValue[Callable[[ET.Elem
         ),
         NameAndValue(
             'preceded by single element',
-            lambda child: [_elem('preceding'), child],
+            lambda child: [element('preceding'), child],
         ),
         NameAndValue(
             'followed by single element',
-            lambda child: [child, _elem('following')],
+            lambda child: [child, element('following')],
         ),
     ]
 
 
 def _mk_children_at_lvl_1(children: Sequence[ET.Element]) -> ET.Element:
-    return _elem('root', children=children)
+    return element('root', children=children)
 
 
 def _mk_children_at_lvl_2(children: Sequence[ET.Element]) -> ET.Element:
-    return _elem('root', children=[_elem('level-1', children=children)])
+    return element('root', children=[element('level-1', children=children)])
 
 
 CHILDREN_LEVEL_CASES = [
@@ -292,22 +293,3 @@ CHILDREN_LEVEL_CASES = [
         _mk_children_at_lvl_2,
     ),
 ]
-
-
-def _elem(tag: str,
-          attributes: Optional[Dict[str, str]] = None,
-          text: Optional[str] = None,
-          tail: Optional[str] = None,
-          children: Sequence[ET.Element] = (),
-          ) -> ET.Element:
-    ret_val = ET.Element(tag)
-
-    if attributes is not None:
-        ret_val.attrib.update(attributes)
-
-    ret_val.text = text
-    ret_val.tail = tail
-
-    ret_val.extend(children)
-
-    return ret_val

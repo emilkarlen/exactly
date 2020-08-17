@@ -8,12 +8,14 @@ from exactly_lib.definitions.entity import suite_reporters
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
+from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite, main_program_check_base
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, expected_output_from, \
-    replace_xml_variables
+from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.value_assertions import xml_etree as asrt_xml
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, replace_xml_variables
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -24,7 +26,14 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     return ret_val
 
 
-class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteWithSingleEmptyTestCase(main_program_check_base.SetupWithoutPreprocessor,
+                                   main_program_check_for_test_suite.SetupBase):
+    def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return self.root_suite_file_based_at(root_path)
+
+    def arguments_for_interpreter(self) -> List[str]:
+        return main_program_check_for_test_suite.ARGUMENTS_FOR_TEST_INTERPRETER
+
     def first_arguments(self, root_path: pathlib.Path) -> List[str]:
         return [opt.SUITE_COMMAND,
                 short_and_long_option_syntax.long_syntax(command_line_options.OPTION_FOR_REPORTER__LONG),
@@ -39,23 +48,26 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
             File('the.case', ''),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
-        return []
-
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
-        expected_xml = suite_xml(attributes={
-            'name': 'main.suite',
-            'tests': '1',
-            'errors': '0',
-            'failures': '0',
-        },
+    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+        expected_xml = suite_xml(
+            attributes={
+                'name': 'main.suite',
+                'tests': '1',
+                'errors': '0',
+                'failures': '0',
+            },
             test_case_elements=[successful_test_case_xml('the.case')]
         )
-        expected_output = expected_output_from(expected_xml)
-        return expected_output.splitlines()
+        return asrt_xml.str_as_xml_equals(expected_xml)
 
     def expected_exit_code(self) -> int:
         return 0
+
+    def check(self,
+              put: unittest.TestCase,
+              root_path: pathlib.Path,
+              actual_result: SubProcessResult):
+        self._check_base(put, root_path, actual_result)
 
     def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
         return replace_xml_variables(output_on_stdout)

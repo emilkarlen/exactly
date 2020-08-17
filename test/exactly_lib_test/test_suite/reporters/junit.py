@@ -4,6 +4,7 @@ import platform
 import re
 import unittest
 from pathlib import Path
+from typing import List, Dict
 from xml.etree import ElementTree as ET
 
 from exactly_lib.common.exit_value import ExitValue
@@ -19,6 +20,7 @@ from exactly_lib_test.execution.full_execution.test_resources.result_values impo
     FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.value_assertions import xml_etree as asrt_etree
 from exactly_lib_test.test_suite.test_resources.processing_utils import FULL_RESULT_PASS, test_suite, test_case, \
     FULL_RESULT_FAIL, FULL_RESULT_SKIP, TestCaseProcessorThatGivesConstantPerCase
 from exactly_lib_test.test_suite.test_resources.processing_utils import TestCaseProcessorThatGivesConstant, \
@@ -42,7 +44,7 @@ class TestInvalidSuite(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         # ACT #
         reporter.report_invalid_suite(ExitValue(1, 'IDENTIFIER', ForegroundColor.BLACK),
-                                      str_std_out_files.stdout_files)
+                                      str_std_out_files.reporting_environment)
         # ASSERT #
         str_std_out_files.finish()
         self.assertEqual('',
@@ -56,14 +58,17 @@ class TestInvalidSuite(unittest.TestCase):
 class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
     def test_empty_suite(self):
         # ARRANGE #
-        expected_xml = suite_xml(attributes={
-            'name': 'root file name',
-            'tests': '0',
-            'errors': '0',
-            'failures': '0',
-        },
-            test_case_elements=[])
-        expected_output = expected_output_from(expected_xml)
+        expected_xml = suite_xml(
+            attributes={
+                'name': 'root file name',
+                'tests': '0',
+                'errors': '0',
+                'failures': '0',
+            },
+            test_case_elements=[],
+        )
+        expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
+
         root_suite = test_suite('root file name', [], [])
         test_suites = [root_suite]
         # ACT #
@@ -73,7 +78,10 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                                                    test_suites)
         # ASSERT #
         self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+
+        expected__assertion.apply_with_message(self,
+                                               replace_xml_variables(actual.stdout),
+                                               'suite xml on stdout')
 
     def test_single_case_that_passes(self):
         cases = [
@@ -92,7 +100,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 },
                     test_case_elements=[successful_test_case_xml('test case file name')]
                 )
-                expected_output = expected_output_from(expected_xml)
+                expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
                 root_suite = test_suite('suite that passes', [], [test_case('test case file name')])
                 test_suites = [root_suite]
                 # ACT #
@@ -104,7 +112,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+                expected__assertion.apply_with_message(self,
+                                                       replace_xml_variables(actual.stdout),
+                                                       'suite xml on stdout')
 
     def test_single_case_with_error(self):
         cases = [
@@ -124,7 +134,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                         erroneous_test_case_xml('test case file name',
                                                 error_type=case_result.status.name,
                                                 failure_message=error_message_for_full_result(case_result))])
-                expected_output = expected_output_from(expected_xml)
+                expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
                 # ACT #
@@ -136,7 +146,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+                expected__assertion.apply_with_message(self,
+                                                       replace_xml_variables(actual.stdout),
+                                                       'suite xml on stdout')
 
     def test_single_case_with_error_due_to_failure_to_execute(self):
         cases = [
@@ -159,7 +171,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                                 error_type=error_type,
                                                 failure_message=error_message_for_error_info(case_result.error_info))
                     ])
-                expected_output = expected_output_from(expected_xml)
+                expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
                 # ACT #
@@ -171,7 +183,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+                expected__assertion.apply_with_message(self,
+                                                       replace_xml_variables(actual.stdout),
+                                                       'suite xml on stdout')
 
     def test_single_case_with_failure(self):
         cases = [
@@ -191,7 +205,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                               failure_type=case_result.status.name,
                                               failure_message=error_message_for_full_result(case_result))
                     ])
-                expected_output = expected_output_from(expected_xml)
+                expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
                 root_suite = test_suite('suite with failure', [], [test_case('test case file name')])
                 test_suites = [root_suite]
                 # ACT #
@@ -202,7 +216,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     test_suites)
                 # ASSERT #
                 self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+                expected__assertion.apply_with_message(self,
+                                                       replace_xml_variables(actual.stdout),
+                                                       'suite xml on stdout')
 
 
 class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
@@ -244,9 +260,11 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
                                         failure_message=error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
             ]
         )
-        expected_output = expected_output_from(expected_xml)
+        expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
         self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+        expected__assertion.apply_with_message(self,
+                                               replace_xml_variables(actual.stdout),
+                                               'suite xml on stdout')
 
 
 class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
@@ -280,9 +298,11 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 test_case_elements=[successful_test_case_xml('the test case')]
             ),
         ])
-        expected_output = expected_output_from(expected_xml)
+        expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
         self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+        expected__assertion.apply_with_message(self,
+                                               replace_xml_variables(actual.stdout),
+                                               'suite xml on stdout')
 
     def test_suite_with_sub_suites_with_successful_and_non_successful_cases(self):
         # ARRANGE #
@@ -342,9 +362,10 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 ]
             ),
         ])
-        expected_output = expected_output_from(expected_xml)
+        expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
         self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+        expected__assertion.apply_with_message(self, replace_xml_variables(actual.stdout),
+                                               'suite xml on stdout')
 
 
 class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
@@ -388,9 +409,11 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
         ])
-        expected_output = expected_output_from(expected_xml)
+        expected__assertion = asrt_etree.str_as_xml_equals(expected_xml)
         self.assertEqual(sut.UNCONDITIONAL_EXIT_CODE, actual.exit_code)
-        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
+        expected__assertion.apply_with_message(self,
+                                               replace_xml_variables(actual.stdout),
+                                               'suite xml on stdout')
 
 
 class ExitCodeAndStdOut(tuple):
@@ -445,13 +468,13 @@ def expected_output_from(root: ET.Element) -> str:
     return stream.getvalue() + os.linesep
 
 
-def _suites_xml(test_suite_elements: list) -> ET.Element:
+def _suites_xml(test_suite_elements: List[ET.Element]) -> ET.Element:
     ret_val = ET.Element('testsuites')
     ret_val.extend(test_suite_elements)
     return ret_val
 
 
-def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
+def suite_xml(attributes: Dict[str, str], test_case_elements: List[ET.Element]) -> ET.Element:
     attributes.update({
         'time': TIME_VALUE_REPLACEMENT,
         'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
@@ -517,3 +540,6 @@ _TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
 _TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"')
 TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
 _TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

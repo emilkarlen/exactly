@@ -1,29 +1,26 @@
 import pathlib
 import unittest
+from abc import ABC, abstractmethod
 from typing import List
 
 import exactly_lib.cli.definitions.common_cli_options as opt
+from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import ARGUMENTS_FOR_TEST_INTERPRETER
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-class SetupBase:
+class SetupBase(ABC):
+    @abstractmethod
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def expected_exit_code(self) -> int:
-        raise NotImplementedError()
-
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> List[str]:
-        return self.expected_stdout_run_lines(root_path) + self.expected_stdout_reporting_lines(root_path)
-
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
-        raise NotImplementedError()
-
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
-        raise NotImplementedError()
+        pass
 
     def _check_base(self,
                     put: unittest.TestCase,
@@ -43,28 +40,38 @@ class SetupBase:
                       put: unittest.TestCase,
                       root_path: pathlib.Path,
                       actual_result: SubProcessResult):
-        expected_lines = self.expected_stdout_lines(root_path)
-        if expected_lines is not None:
-            actual_lines = self._translate_actual_stdout_before_assertion(actual_result.stdout).splitlines()
-            line_number = 0
-            for expected_line, actual_line in zip(expected_lines, actual_lines):
-                if isinstance(expected_line, str):
-                    put.assertEqual(expected_line, actual_line,
-                                    'Output of line ' + str(line_number))
-                else:
-                    match = expected_line.fullmatch(actual_line)
-                    if match is None:
-                        put.fail('Expecting match of "%s" (actual: "%s")' % (str(expected_line), actual_line))
-            put.assertEqual(len(expected_lines),
-                            len(actual_lines),
-                            'Expecting ' + str(len(expected_lines)) + ' lines')
+        expectation = self.stdout_expectation(root_path)
+        actual = self._translate_actual_stdout_before_assertion(actual_result.stdout)
+        expectation.apply_with_message(put, actual, 'stdout')
+
+    @abstractmethod
+    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+        pass
 
     def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
         return output_on_stdout
 
 
+class SetupWStdoutLinesCheckBase(SetupBase, ABC):
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> List[str]:
+        return self.expected_stdout_run_lines(root_path) + self.expected_stdout_reporting_lines(root_path)
+
+    @abstractmethod
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
+        pass
+
+    @abstractmethod
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
+        pass
+
+    def stdout_expectation(self, root_path: pathlib.Path) -> ValueAssertion[str]:
+        expected_lines = self.expected_stdout_lines(root_path)
+        expected_str = lines_content(expected_lines)
+        return asrt.equals(expected_str)
+
+
 class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
-                            SetupBase):
+                            SetupWStdoutLinesCheckBase):
     """
     Setup that executes a suite that may use a preprocessor
     written in python.
@@ -105,7 +112,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
 
 
 class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
-                               SetupBase):
+                               SetupWStdoutLinesCheckBase):
     """
     Setup that executes a suite that does not use a preprocessor.
     """
@@ -137,7 +144,7 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
         raise NotImplementedError()
 
 
-class SetupWithoutPreprocessorWithTestActor(SetupWithoutPreprocessor):
+class SetupWithoutPreprocessorWithTestActor(SetupWithoutPreprocessor, ABC):
     """
     Setup that executes a suite that does not use a preprocessor,
     and uses the test actor as default for test cases.
@@ -147,7 +154,7 @@ class SetupWithoutPreprocessorWithTestActor(SetupWithoutPreprocessor):
         return ARGUMENTS_FOR_TEST_INTERPRETER
 
 
-class SetupWithoutPreprocessorWithDefaultActor(SetupWithoutPreprocessor):
+class SetupWithoutPreprocessorWithDefaultActor(SetupWithoutPreprocessor, ABC):
     """
     Setup that executes a suite that does not use a preprocessor.
     """
