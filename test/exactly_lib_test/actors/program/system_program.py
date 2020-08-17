@@ -10,9 +10,9 @@ from exactly_lib_test.actors.program.test_resources import ConfigurationWithPyth
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as args
@@ -59,7 +59,7 @@ class TestInvalidSyntax(unittest.TestCase):
                 with self.assertRaises(ParseException) as ctx:
                     sut.actor().parse(case.value)
 
-                asrt_svh.is_validation_error().apply_with_message(
+                asrt_text_doc.is_any_text().apply_with_message(
                     self,
                     ctx.exception.cause,
                     'error info'

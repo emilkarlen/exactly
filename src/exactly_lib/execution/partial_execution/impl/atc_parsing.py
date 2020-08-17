@@ -36,6 +36,6 @@ class ActionToCheckParser:
                 return actor.parse(instructions)
             except ParseException as ex:
                 raise PhaseStepFailureException(failure_con.apply(ExecutionFailureStatus.VALIDATION_ERROR,
-                                                                  FailureDetails.new_message(ex.cause.failure_message)))
+                                                                  FailureDetails.new_message(ex.cause)))
 
         return phase_step_execution.execute_action_and_catch_implementation_exception(parse_action, failure_con)

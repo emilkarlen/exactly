@@ -71,14 +71,14 @@ class CwdRegisterer:
 class TestExecutionSequence(unittest.TestCase):
     def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
         # ARRANGE #
-        expected_cause = svh.new_svh_validation_error__str('failure message')
+        expected_cause = 'failure message'
         atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
                                                              atc_that_does_nothing)
         actor = ActorForConstantAtc(
             recording_atc,
-            parse_atc=do_raise(ParseException(expected_cause))
+            parse_atc=do_raise(ParseException.of_str(expected_cause))
         )
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)

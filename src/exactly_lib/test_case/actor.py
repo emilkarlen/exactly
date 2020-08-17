@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
+from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
@@ -12,10 +14,12 @@ from exactly_lib.util.file_utils.std import StdFiles
 
 
 class ParseException(Exception):
-    def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
+    def __init__(self, cause: TextRenderer):
         self.cause = cause
-        if cause.is_success:
-            raise ValueError('A {} cannot represent SUCCESS'.format(str(type(self))))
+
+    @staticmethod
+    def of_str(cause: str) -> 'ParseException':
+        return ParseException(text_docs.single_pre_formatted_line_object(cause))
 
 
 class ActionToCheck(SymbolUser):

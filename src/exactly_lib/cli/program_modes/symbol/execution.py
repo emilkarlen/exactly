@@ -140,7 +140,7 @@ class _ActPhaseErrorReporter(ProcessResultReporterOfExitCodeAndMajorBlocksBase):
         return exit_values.EXECUTION__VALIDATION_ERROR
 
     def _blocks(self) -> SequenceRenderer[MajorBlock]:
-        return self._ex.cause.failure_message
+        return self._ex.cause
 
 
 class _PhaseStepErrorReporter(ProcessResultReporterOfExitCodeAndMajorBlocksBase):

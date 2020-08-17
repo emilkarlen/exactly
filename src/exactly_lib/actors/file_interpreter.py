@@ -171,10 +171,11 @@ class _Parsing:
         try:
             return parser()
         except TokenSyntaxError as ex:
-            raise ParseException(
-                svh.new_svh_validation_error__str(std_error_message_text_for_token_syntax_error_from_exception(ex)))
+            raise ParseException.of_str(
+                std_error_message_text_for_token_syntax_error_from_exception(ex)
+            )
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
+            raise ParseException.of_str(ex.error_message)
 
     def _parse_path(self) -> PathSdv:
         return parse_path.parse_path_from_parse_source(self._source,

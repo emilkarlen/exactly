@@ -10,7 +10,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.program.parse import parse_program
 from ..common import relativity_configuration_of_action_to_check
 from ...definitions import instruction_arguments
@@ -37,9 +36,7 @@ class Parser(ExecutableObjectParser[ProgramToExecute]):
         try:
             return self._program_parser.parse(source)
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(
-                svh.new_svh_validation_error__str(ex.error_message)
-            )
+            raise ParseException.of_str(ex.error_message)
 
 
 def _syntax_error_if_not_at_eof(source: parse_source.ParseSource):
@@ -49,10 +46,9 @@ def _syntax_error_if_not_at_eof(source: parse_source.ParseSource):
         source.consume_current_line()
         _syntax_error_if_not_at_eof(source)
     else:
-        raise ParseException(svh.new_svh_validation_error__str(
+        raise ParseException.of_str(
             'Superfluous arguments of {PROGRAM}: {src}'.format(
                 PROGRAM=syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
                 src=source.remaining_part_of_current_line
             )
-        )
         )

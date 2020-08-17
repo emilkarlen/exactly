@@ -66,4 +66,4 @@ class ActorThatRaisesImplementationException(Actor):
 
 class ActorThatRaisesParseException(Actor):
     def parse(self, instructions: Sequence[ActPhaseInstruction]):
-        raise ParseException(svh.new_svh_validation_error__str('unconditional parse failure'))
+        raise ParseException.of_str('unconditional parse failure')

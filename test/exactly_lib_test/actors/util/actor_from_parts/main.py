@@ -1,13 +1,13 @@
 import unittest
 
 from exactly_lib.actors.util.actor_from_parts import parts as sut
+from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.result import svh
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, simple_success, \
@@ -35,7 +35,7 @@ def suite() -> unittest.TestSuite:
 class TestConstructor(unittest.TestCase):
     def test_WHEN_parser_raises_exception_THEN_parse_SHOULD_raise_this_exception(self):
         # ARRANGE #
-        parser_error = svh.new_svh_validation_error__str('msg')
+        parser_error = text_docs.single_pre_formatted_line_object('msg')
         actor = sut.ActorFromParts(ParserThatRaisesException(parser_error),
                                    ValidatorConstructorThatRaises(),
                                    ExecutorConstructorThatRaises())

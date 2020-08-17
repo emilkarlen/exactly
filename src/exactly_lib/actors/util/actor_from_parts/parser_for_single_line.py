@@ -5,7 +5,6 @@ from exactly_lib.actors.util.actor_from_parts.parts import ExecutableObjectParse
 from exactly_lib.actors.util.source_code_lines import all_source_code_lines
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.result import svh
 
 
 class ParserForSingleLineUsingStandardSyntax(ExecutableObjectParser):
@@ -36,7 +35,11 @@ class ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(Executab
 def _parse_single_line(instructions: Sequence[ActPhaseInstruction]) -> str:
     non_empty_lines = all_source_code_lines(instructions)
     if not non_empty_lines:
-        raise ParseException(svh.new_svh_validation_error__str('No lines with source code found'))
+        raise ParseException.of_str(_NO_SOURCE_LINES)
     if len(non_empty_lines) > 1:
-        raise ParseException(svh.new_svh_validation_error__str('More than one line with source code found'))
+        raise ParseException.of_str(_TOO_MANY_SOURCE_LINES)
     return non_empty_lines[0]
+
+
+_NO_SOURCE_LINES = 'No lines with source code found'
+_TOO_MANY_SOURCE_LINES = 'More than one line with source code found'

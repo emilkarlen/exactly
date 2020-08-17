@@ -2,6 +2,7 @@ from typing import Sequence, Dict, Generic, Callable
 
 from exactly_lib.actors.util.actor_from_parts import parts as sut
 from exactly_lib.actors.util.actor_from_parts.parts import EXECUTABLE_OBJECT, Validator, Executor
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ParseException
@@ -17,7 +18,7 @@ from exactly_lib_test.test_resources.actions import do_nothing, do_return
 
 
 class ParserThatRaisesException(sut.ExecutableObjectParser):
-    def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
+    def __init__(self, cause: TextRenderer):
         self.cause = cause
 
     def apply(self, instructions: Sequence[ActPhaseInstruction]):

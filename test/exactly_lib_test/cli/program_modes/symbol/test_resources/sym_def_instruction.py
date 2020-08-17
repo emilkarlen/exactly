@@ -21,7 +21,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.result import svh, sh
+from exactly_lib.test_case.result import sh
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure import document
@@ -200,7 +200,7 @@ class _ActorThatParsesReferences(Actor):
                 symbol_usages_action=do_return(references)
             )
         except SingleInstructionInvalidArgumentException as ex:
-            raise ParseException(svh.new_svh_validation_error__str(ex.error_message))
+            raise ParseException.of_str(ex.error_message)
 
     def _get_reference_instruction_arguments(self, lines: Sequence[str]) -> List[str]:
         ret_val = []
@@ -217,7 +217,7 @@ class _ActorThatParsesReferences(Actor):
                         line,
                         self._reference_instruction_name)
                 )
-                raise ParseException(svh.new_svh_validation_error(err_msg))
+                raise ParseException.of_str(err_msg)
 
         return ret_val
 

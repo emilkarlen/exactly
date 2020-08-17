@@ -1,0 +1,10 @@
+[conf]
+
+actor = -command
+
+[act]
+
+to
+many
+source
+lines
