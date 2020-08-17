@@ -1,5 +1,6 @@
 [suites]
 
+stdin
 exit-code
 change-dir
 create-file

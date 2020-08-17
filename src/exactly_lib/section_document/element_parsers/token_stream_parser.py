@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping, Any
 
 from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers import misc_utils
@@ -15,7 +15,8 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
-from exactly_lib.util.str_.str_constructor import ToStringObject
+from exactly_lib.util.str_ import str_constructor
+from exactly_lib.util.str_.str_constructor import ToStringObject, StringConstructor
 
 T = TypeVar('T')
 
@@ -94,10 +95,6 @@ class TokenParser:
     def has_current_line(self) -> bool:
         return not self.token_stream.is_at_end
 
-    def require_is_at_eol(self, error_message_format_string: str):
-        if not self.is_at_eol:
-            self.error(error_message_format_string)
-
     def require_is_not_at_eol(self, error_message_format_string: str,
                               extra_format_map: dict = None):
         if self.is_at_eol:
@@ -108,25 +105,37 @@ class TokenParser:
                                    error_message_conf.extra_format_map)
 
     def require_head_token_has_valid_syntax(self, error_message_format_string: str = ''):
-        if self._lookahead_token_has_invalid_syntax():
-            err_msg_separator = ': ' if error_message_format_string else ''
-            self.error(
-                error_message_format_string + err_msg_separator +
-                'Invalid syntax: ' +
-                self.token_stream.head_syntax_error_description)
+        err_msg_header = (
+            ''
+            if error_message_format_string == ''
+            else
+            self._str_constructor_w_format_map(error_message_format_string + ':')
+        )
+        self._require_head_token_has_valid_syntax(err_msg_header)
 
     def require_has_valid_head_token(self, syntax_element: str):
-        if self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR:
-            self.error('Invalid syntax of {}: {}'.format(
-                syntax_element,
-                self.token_stream.head_syntax_error_description)
-            )
         if self.token_stream.look_ahead_state is LookAheadState.NULL:
-            self.error('Missing ' + syntax_element)
+            self.error_plain('Missing ' + syntax_element)
+        self._require_head_token_has_valid_syntax(
+            str_constructor.FormatPositional('Invalid syntax of {}:\n', syntax_element)
+        )
+
+    def _require_head_token_has_valid_syntax(self, err_msg_header: StringConstructor):
+        if self._lookahead_token_has_invalid_syntax():
+            self.error_plain(
+                ''.join((
+                    str(err_msg_header),
+                    self.token_stream.head_syntax_error_description,
+                    ':\n',
+                    self.token_stream.remaining_source,
+                )
+                )
+            )
 
     def report_superfluous_arguments_if_not_at_eol(self):
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:
+            self.consume_remaining_part_of_current_line_as_string()
             raise misc_utils.raise_superfluous_arguments(remaining)
 
     @property
@@ -607,13 +616,24 @@ class TokenParser:
 
     def error(self,
               error_message_format_string: str,
-              extra_format_map: dict = None) -> T:
+              extra_format_map: Dict[str, Any] = None,
+              tail: str = '') -> T:
 
         format_map = self.error_message_format_map
         if extra_format_map:
             format_map = dict(list(self.error_message_format_map.items()) + list(extra_format_map.items()))
 
-        return self.error_plain(error_message_format_string.format_map(format_map))
+        return self.error_plain(error_message_format_string.format_map(format_map) + tail)
+
+    def _str_constructor_w_format_map(self,
+                                      template: str,
+                                      extra_format_map: Dict[str, Any] = None,
+                                      ) -> StringConstructor:
+        format_map = self.error_message_format_map
+        if extra_format_map:
+            format_map = dict(list(self.error_message_format_map.items()) + list(extra_format_map.items()))
+
+        return str_constructor.FormatMap(template, format_map)
 
     def error_from(self,
                    header: Optional[str],

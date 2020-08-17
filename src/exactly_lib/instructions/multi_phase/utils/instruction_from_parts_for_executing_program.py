@@ -147,6 +147,7 @@ class InstructionEmbryoParser(InstructionEmbryoParserWoFileSystemLocationInfo[Ex
     def _advance_source(source: ParseSource):
         if source.has_current_line:
             if not source.is_at_eol__except_for_space:
+                source.consume(len(source.remaining_part_of_current_line))
                 misc_utils.raise_superfluous_arguments(source.remaining_part_of_current_line.strip())
             source.consume_current_line()
 

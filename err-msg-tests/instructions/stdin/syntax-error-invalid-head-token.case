@@ -1,0 +1,5 @@
+[setup]
+
+stdin =
+  "unclosed string
+  {unknown_format_map_key}
