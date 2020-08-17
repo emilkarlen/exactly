@@ -11,6 +11,7 @@ RUN chmod 777 /workdir
 
 COPY sh/alias.sh   /etc/profile.d/
 COPY sh/exactly.sh /etc/profile.d/
+COPY sh/misc.sh    /etc/profile.d/
 
 # Setup of non-rot user
 
