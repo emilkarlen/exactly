@@ -1,6 +1,6 @@
 PROGRAM_NAME = 'exactly'
 
-VERSION = 'next'
+VERSION = '0.12.3'
 
 PYTHON_VERSION__MIN = '3.5.4'
 
