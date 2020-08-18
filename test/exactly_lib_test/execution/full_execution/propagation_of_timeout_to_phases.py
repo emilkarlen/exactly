@@ -8,6 +8,7 @@ from exactly_lib.execution.phase_step_simple import \
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import sh
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
     result_assertions as asrt_full_result
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
@@ -39,7 +40,7 @@ class Test(unittest.TestCase):
         default_hds_dir = _current_dir()
         configuration_builder_with_default_timeout = ConfigurationBuilder(default_hds_dir,
                                                                           default_hds_dir,
-                                                                          actor,
+                                                                          NameAndValue('the actor', actor),
                                                                           default_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)
@@ -73,7 +74,7 @@ class Test(unittest.TestCase):
         default_hds_dir = _current_dir()
         configuration_builder_with_default_timeout = ConfigurationBuilder(default_hds_dir,
                                                                           default_hds_dir,
-                                                                          actor,
+                                                                          NameAndValue('the actor', actor),
                                                                           expected_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)

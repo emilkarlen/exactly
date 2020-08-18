@@ -53,7 +53,7 @@ class TestSuccessfulExecution(unittest.TestCase):
                         ])]
             ),
         ]
-        executor_parser = sut.actor()
+        actor = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
                 arrangement = Arrangement()
@@ -63,7 +63,7 @@ class TestSuccessfulExecution(unittest.TestCase):
                     )
                 )
                 check_execution(self,
-                                executor_parser,
+                                actor,
                                 act_phase_instructions,
                                 arrangement,
                                 expectation)
@@ -81,13 +81,13 @@ class TestNoSymbolsAreReferenced(unittest.TestCase):
                 [instr([symbol_reference_syntax_for_name('symbol_name')])]
             ),
         ]
-        executor_parser = sut.actor()
+        actor = sut.actor()
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
                 arrangement = Arrangement()
                 expectation = Expectation(symbol_usages=asrt.is_empty_sequence)
                 check_execution(self,
-                                executor_parser,
+                                actor,
                                 act_phase_instructions,
                                 arrangement,
                                 expectation)

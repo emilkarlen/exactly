@@ -8,10 +8,11 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def parse_atc_and_validate_symbols(actor: Actor,
+def parse_atc_and_validate_symbols(actor: NameAndValue[Actor],
                                    predefined_symbols: SymbolTable,
                                    test_case: TestCase,
                                    ) -> Tuple[ActionToCheck, SymbolTable]:

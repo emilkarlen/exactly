@@ -322,14 +322,14 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         test_case_source = ''
 
         for step, exit_value_2_constructor in cases.items():
-            for exit_value, constructor in exit_value_2_constructor.items():
+            for exit_value, actor in exit_value_2_constructor.items():
                 expectation = Expectation(exit_value, output_is_sds_which_should_be_preserved)
                 with self.subTest(step=step,
                                   exit_value=exit_value.exit_identifier):
                     # ACT & ASSERT #
                     _check(self,
                            test_case_definition,
-                           constructor,
+                           actor,
                            test_case_source,
                            self.sandbox_dir_resolver_of_given_dir,
                            expectation)
@@ -466,7 +466,7 @@ def _check(put: unittest.TestCase,
     case_file = File('the-test.case', test_case_source)
     source_files_dir_contents = DirContents([case_file])
 
-    tc_handling_setup = TestCaseHandlingSetup(ActPhaseSetup(actor),
+    tc_handling_setup = TestCaseHandlingSetup(ActPhaseSetup('the actor', actor),
                                               IDENTITY_PREPROCESSOR)
 
     test_suite_definition = test_suite_definition_without_instructions()

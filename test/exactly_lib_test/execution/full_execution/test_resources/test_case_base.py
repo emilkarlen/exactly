@@ -14,6 +14,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 
@@ -51,7 +52,8 @@ class FullExecutionTestCaseBase:
                                           SymbolTable())
         configuration_builder = ConfigurationBuilder(initial_hds_dir_path,
                                                      initial_hds_dir_path,
-                                                     self._actor())
+                                                     NameAndValue('the actor',
+                                                                  self._actor()))
         full_result = execution.execute(
             exe_conf,
             configuration_builder,

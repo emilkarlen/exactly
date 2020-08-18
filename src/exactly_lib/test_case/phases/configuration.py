@@ -7,13 +7,14 @@ from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.util.name_and_value import NameAndValue
 
 
 class ConfigurationBuilder:
     def __init__(self,
                  home_case_dir_path: pathlib.Path,
                  home_act_dir_path: pathlib.Path,
-                 actor: Actor,
+                 actor: NameAndValue[Actor],
                  timeout_in_seconds: Optional[int] = None,
                  test_case_status: TestCaseStatus = TestCaseStatus.PASS):
         self.__actor = actor
@@ -43,10 +44,10 @@ class ConfigurationBuilder:
                                       act_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_ACT])
 
     @property
-    def actor(self) -> Actor:
+    def actor(self) -> NameAndValue[Actor]:
         return self.__actor
 
-    def set_actor(self, x: Actor):
+    def set_actor(self, x: NameAndValue[Actor]):
         self.__actor = x
 
     @property

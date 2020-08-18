@@ -1,3 +1,5 @@
+from exactly_lib.actors.program import actor as command_line_actor
+from exactly_lib.definitions.entity import actors
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.file_utils.std import StdFiles
@@ -8,16 +10,25 @@ from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
 
 
 def act_setup_that_prints_single_string_on_stdout(string_to_print: str) -> ActPhaseSetup:
-    return ActPhaseSetup(ActorForConstantAtc(
-        ActionToCheckThatRunsConstantActions(
-            execute_initial_action=PrintStringOnStdout(string_to_print)))
+    return ActPhaseSetup(
+        'actor for constant ATC',
+        ActorForConstantAtc(
+            ActionToCheckThatRunsConstantActions(
+                execute_initial_action=PrintStringOnStdout(string_to_print)))
     )
 
 
 def act_setup_that_does_nothing() -> ActPhaseSetup:
-    return ActPhaseSetup(ActorForConstantAtc(
-        ActionToCheckThatRunsConstantActions())
+    return ActPhaseSetup(
+        'actor that does nothing',
+        ActorForConstantAtc(
+            ActionToCheckThatRunsConstantActions())
     )
+
+
+def command_line_actor_setup() -> ActPhaseSetup:
+    return ActPhaseSetup(actors.COMMAND_LINE_ACTOR.singular_name,
+                         command_line_actor.actor())
 
 
 class PrintStringOnStdout:

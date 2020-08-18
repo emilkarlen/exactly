@@ -23,6 +23,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure import document
 from exactly_lib_test.cli.program_modes.test_resources import main_program_execution
@@ -129,7 +130,8 @@ class _ParserOfConfPhaseInstructionThatCausesHardError(InstructionParserThatCons
 
 class _InstructionThatSetsInterpreterActor(ConfigurationPhaseInstruction):
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        configuration_builder.set_actor(_ActorThatParsesReferences(REF_INSTRUCTION_NAME))
+        configuration_builder.set_actor(NameAndValue('actor that parses reference',
+                                                     _ActorThatParsesReferences(REF_INSTRUCTION_NAME)))
         return sh.new_sh_success()
 
 
@@ -175,14 +177,12 @@ def main_program_config(actor: Optional[Actor] = None,
         actor = _ActorThatParsesReferences(REF_INSTRUCTION_NAME)
     return main_program_execution.main_program_config(
         test_case_definition_for(INSTRUCTION_SETUP, builtin_symbols),
-        act_phase_setup=ActPhaseSetup(
-            actor
-        )
+        act_phase_setup=ActPhaseSetup('the actor', actor)
     )
 
 
 def act_phase_setup_for_reference_instruction() -> ActPhaseSetup:
-    return ActPhaseSetup(ActorThatRunsConstantActions())
+    return ActPhaseSetup('actor that runs constant actions', ActorThatRunsConstantActions())
 
 
 class _ActorThatParsesReferences(Actor):

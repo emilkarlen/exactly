@@ -74,7 +74,8 @@ def _settings_from_namespace(default: TestCaseHandlingSetup,
                                                  namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
                                        namespace.preprocessor)
-    actual_handling_setup = TestCaseHandlingSetup(ActPhaseSetup(actor), preprocessor)
+    actual_handling_setup = TestCaseHandlingSetup(ActPhaseSetup.of_nav(actor),
+                                                  preprocessor)
     test_case_file_path = pathlib.Path(namespace.file)
 
     suite_file = None

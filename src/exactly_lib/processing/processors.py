@@ -24,6 +24,7 @@ from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.simple_textstruct.rendering import line_objects, line_elements
 
 
@@ -46,14 +47,14 @@ class TestCaseDefinition:
 
 
 def default_conf_phase_configuration__of_hds_dir(initial_hds_dir_path: pathlib.Path,
-                                                 actor: Actor) -> ConfigurationBuilder:
+                                                 actor: NameAndValue[Actor]) -> ConfigurationBuilder:
     return ConfigurationBuilder(initial_hds_dir_path,
                                 initial_hds_dir_path,
                                 actor)
 
 
 def default_conf_phase_configuration__of_file(test_case_file_path: pathlib.Path,
-                                              actor: Actor) -> ConfigurationBuilder:
+                                              actor: NameAndValue[Actor]) -> ConfigurationBuilder:
     return default_conf_phase_configuration__of_hds_dir(test_case_file_path.parent.resolve(),
                                                         actor)
 
@@ -158,10 +159,6 @@ class _Parser(processing_utils.Parser):
             _ParseErrorHandler().visit(ex)
 
 
-def actor_for_setup(setup: ActPhaseSetup) -> Actor:
-    return setup.actor
-
-
 class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):
     def visit_file_source_error(self, ex: exceptions.FileSourceError) -> None:
         error_info = ErrorInfo(
@@ -199,7 +196,7 @@ class _Executor(processing_utils.Executor):
               test_case: test_case_doc.TestCase) -> FullExeResult:
         return execution.execute(self._exe_conf_that_may_be_updated(),
                                  default_conf_phase_configuration__of_file(test_case_file_path,
-                                                                           self.default_act_phase_setup.actor),
+                                                                           self.default_act_phase_setup.actor_nav),
                                  self._is_keep_sandbox,
                                  test_case)
 

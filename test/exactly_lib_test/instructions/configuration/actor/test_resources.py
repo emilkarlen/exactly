@@ -8,6 +8,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -56,7 +57,7 @@ def check(put: unittest.TestCase,
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     integration_check.check_execution(
         put,
-        configuration_builder.actor,
+        configuration_builder.actor.value,
         act_phase_instructions,
         integration_check.Arrangement(
             hds_contents=arrangement.hds_contents,
@@ -77,7 +78,8 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
     initial_hds_dir = pathlib.Path()
     return ConfigurationBuilder(initial_hds_dir,
                                 initial_hds_dir,
-                                ActorThatRaisesImplementationException())
+                                NameAndValue('the actor', ActorThatRaisesImplementationException())
+                                )
 
 
 def file_in_hds_act_dir(file_name: str) -> hds_populators.HdsPopulator:

@@ -373,7 +373,7 @@ class TestBase(unittest.TestCase):
         default_case_configuration = processors.Configuration(
             test_case_definition,
             TestCaseHandlingSetup(
-                ActPhaseSetup(self._phase_config().actor(recording_media)),
+                ActPhaseSetup('recording actor', self._phase_config().actor(recording_media)),
                 IDENTITY_PREPROCESSOR),
             os_services_access.new_for_current_os(),
             False,

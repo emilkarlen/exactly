@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
+from exactly_lib.util.name_and_value import NameAndValue
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -29,7 +30,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class Instruction(ConfigurationPhaseInstruction):
-    def __init__(self, actor: Actor):
+    def __init__(self, actor: NameAndValue[Actor]):
         self.actor = actor
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:

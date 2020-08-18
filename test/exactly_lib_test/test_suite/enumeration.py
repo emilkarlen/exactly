@@ -1,20 +1,19 @@
 import pathlib
 import unittest
 
-from exactly_lib.actors.program import actor
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
+from exactly_lib_test.processing.test_resources.act_phase import command_line_actor_setup
 
 
 def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestDepthFirstEnumerator)
 
 
-T_C_H_S = TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
+T_C_H_S = TestCaseHandlingSetup(command_line_actor_setup(),
                                 IDENTITY_PREPROCESSOR)
 
 

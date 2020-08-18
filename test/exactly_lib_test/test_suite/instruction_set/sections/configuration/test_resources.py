@@ -1,4 +1,3 @@
-from exactly_lib.actors.program import actor
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -6,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import Ins
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionEnvironment, ConfigurationSectionInstruction
 from exactly_lib_test.processing.processing_utils import PreprocessorThat
+from exactly_lib_test.processing.test_resources.act_phase import command_line_actor_setup
 
 INSTRUCTION_NAME__ACTOR = 'actor'
 
@@ -15,7 +15,7 @@ def configuration_section_environment() -> ConfigurationSectionEnvironment:
         pass
 
     return ConfigurationSectionEnvironment(PreprocessorThat(f),
-                                           ActPhaseSetup(actor.actor()))
+                                           command_line_actor_setup())
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -37,7 +37,7 @@ not in sub suites.
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
         actor = actor_utils.parse(rest_of_line)
-        return Instruction(ActPhaseSetup(actor))
+        return Instruction(ActPhaseSetup.of_nav(actor))
 
 
 class Instruction(ConfigurationSectionInstruction):

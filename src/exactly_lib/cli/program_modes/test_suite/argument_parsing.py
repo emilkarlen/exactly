@@ -70,7 +70,7 @@ class _Parser:
                                                      namespace.actor)
         suite_file_path = self._resolve_file_path(namespace.file)
         return TestSuiteExecutionSettings(self._resolve_reporter(vars(namespace)),
-                                          TestCaseHandlingSetup(ActPhaseSetup(actor),
+                                          TestCaseHandlingSetup(ActPhaseSetup.of_nav(actor),
                                                                 self.default.preprocessor),
                                           suite_file_path,
                                           )

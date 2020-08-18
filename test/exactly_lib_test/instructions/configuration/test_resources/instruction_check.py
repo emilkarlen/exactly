@@ -9,6 +9,7 @@ from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
@@ -87,7 +88,7 @@ class Executor:
             with home_directory_structure(contents=self.arrangement.hds_contents) as hds:
                 configuration_builder = ConfigurationBuilder(hds.case_dir,
                                                              hds.act_dir,
-                                                             self.arrangement.actor,
+                                                             NameAndValue('the actor', self.arrangement.actor),
                                                              timeout_in_seconds=self.arrangement.timeout_in_seconds,
                                                              test_case_status=self.arrangement.test_case_status)
 

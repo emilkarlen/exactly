@@ -18,6 +18,7 @@ from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.functional import Composition
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -208,7 +209,7 @@ def _execute(test_case: TestCase,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.predefined_symbols_or_none,
                                exe_atc_and_skip_assertions=arrangement.exe_atc_and_skip_assertions),
-        ConfPhaseValues(arrangement.actor,
+        ConfPhaseValues(NameAndValue('the actor', arrangement.actor),
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),
         setup.default_settings(),

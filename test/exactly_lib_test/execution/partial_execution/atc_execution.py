@@ -25,6 +25,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.act_phase_utils import \
     actor_for_execution_of_python_source
@@ -352,7 +353,7 @@ def _execute(actor: Actor,
                 ExecutionConfiguration(dict(os.environ),
                                        os_services_access.new_for_current_os(),
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(actor,
+                ConfPhaseValues(NameAndValue('the actor', actor),
                                 hds),
                 setup_settings,
                 is_keep_sandbox)

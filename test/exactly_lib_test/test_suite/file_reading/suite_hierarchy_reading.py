@@ -2,11 +2,9 @@ import pathlib
 import unittest
 from pathlib import Path
 
-from exactly_lib.actors.program import actor
 from exactly_lib.definitions.entity.directives import INCLUDING_DIRECTIVE_INFO
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
@@ -17,6 +15,7 @@ from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceErro
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.processing.test_resources.act_phase import command_line_actor_setup
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -37,7 +36,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-T_C_H_S = TestCaseHandlingSetup(ActPhaseSetup(actor.actor()),
+T_C_H_S = TestCaseHandlingSetup(command_line_actor_setup(),
                                 IDENTITY_PREPROCESSOR)
 
 

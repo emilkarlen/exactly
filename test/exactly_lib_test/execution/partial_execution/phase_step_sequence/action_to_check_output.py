@@ -16,6 +16,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -92,7 +93,7 @@ def check(put: unittest.TestCase,
                                           sandbox_root_name_resolver.for_test(),
                                           exe_atc_and_skip_assertions=std_files)
         with home_directory_structure() as hds:
-            conf_phase_values = ConfPhaseValues(actor,
+            conf_phase_values = ConfPhaseValues(NameAndValue('the actor', actor),
                                                 hds,
                                                 timeout_in_seconds=arrangement.timeout_in_seconds)
             return sut.execute(arrangement.test_case_generator.test_case,

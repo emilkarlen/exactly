@@ -35,7 +35,8 @@ class MainProgramConfig:
 def main_program_config(
         tc_definition: TestCaseDefinitionForMainProgram,
         test_suite_definition: TestSuiteDefinition = test_suite_definition_without_instructions(),
-        act_phase_setup: ActPhaseSetup = ActPhaseSetup(ActorThatRunsConstantActions()),
+        act_phase_setup: ActPhaseSetup = ActPhaseSetup('actor that runs constant actions',
+                                                       ActorThatRunsConstantActions()),
 ) -> MainProgramConfig:
     return MainProgramConfig(TestCaseHandlingSetup(
         act_phase_setup,

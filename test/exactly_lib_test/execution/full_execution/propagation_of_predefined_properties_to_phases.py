@@ -8,6 +8,7 @@ from exactly_lib.execution.phase_step_simple import \
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.functional import Composition
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
     result_assertions as asrt_full_result
@@ -55,7 +56,7 @@ class TestPredefinedSymbols(unittest.TestCase):
         default_hds_dir = pathlib.Path.cwd()
         configuration_builder = ConfigurationBuilder(default_hds_dir,
                                                      default_hds_dir,
-                                                     actor)
+                                                     NameAndValue('the actor', actor))
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder,
                                                   predefined_properties=predefined_properties)

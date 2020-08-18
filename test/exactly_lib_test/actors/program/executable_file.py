@@ -89,7 +89,7 @@ class TestValidationErrorPreSds(unittest.TestCase):
 
 class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest.TestCase):
     def runTest(self):
-        executor_constructor = sut.actor()
+        actor = sut.actor()
         act_phase_instructions = [
             instr(['system-under-test first-argument "quoted argument"'])
         ]
@@ -108,7 +108,7 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
                                                                       'CLI arguments, one per line')))
         )
         check_execution(self,
-                        executor_constructor,
+                        actor,
                         act_phase_instructions,
                         arrangement,
                         expectation)

@@ -1,0 +1,9 @@
+[conf]
+
+actor = -file python
+
+[act]
+
+sut.py
+#
+superfluous lines

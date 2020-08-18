@@ -2,6 +2,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.test_case_doc import TestCase
+from exactly_lib.util.name_and_value import NameAndValue
 
 
 class TestCaseTransformer:
@@ -36,8 +37,8 @@ class TestCaseHandlingSetup(tuple):
         return self[0]
 
     @property
-    def actor(self) -> Actor:
-        return self.act_phase_setup.actor
+    def actor(self) -> NameAndValue[Actor]:
+        return self.act_phase_setup.actor_nav
 
     @property
     def preprocessor(self) -> Preprocessor:

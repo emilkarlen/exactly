@@ -78,7 +78,7 @@ class ResolverForTestSuite(Resolver):
             suite_doc.case_phases,
             processors.default_conf_phase_configuration__of_file(
                 self.execution_settings.suite_root_file_path,
-                conf_env.act_phase_setup.actor,
+                conf_env.act_phase_setup.actor_nav,
             )
         )
 
@@ -102,7 +102,7 @@ class ResolverForTestCase(Resolver):
             test_case,
             processors.default_conf_phase_configuration__of_hds_dir(
                 self.execution_settings.initial_hds_dir_path,
-                act_phase_setup.actor,
+                act_phase_setup.actor_nav,
             )
         )
 

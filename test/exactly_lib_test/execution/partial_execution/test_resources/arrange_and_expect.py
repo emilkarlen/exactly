@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -50,7 +51,7 @@ def execute_and_check(put: unittest.TestCase,
                 ExecutionConfiguration(dict(os.environ),
                                        arrangement.os_services,
                                        sandbox_root_name_resolver.for_test()),
-                ConfPhaseValues(arrangement.actor,
+                ConfPhaseValues(NameAndValue('the actor', arrangement.actor),
                                 hds),
                 arrangement.initial_setup_settings,
                 is_keep_sandbox=True)

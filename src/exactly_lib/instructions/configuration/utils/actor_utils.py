@@ -23,6 +23,7 @@ from exactly_lib.type_system.logic.program.process_execution.command import Comm
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
@@ -130,7 +131,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.fnap(_DESCRIPTION_OF_SHELL)
 
 
-def parse(instruction_argument: str) -> Actor:
+def parse(instruction_argument: str) -> NameAndValue[Actor]:
     """
     :raises SingleInstructionInvalidArgumentException In case of invalid syntax
     """
@@ -151,13 +152,16 @@ def parse(instruction_argument: str) -> Actor:
     if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
         if len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])
-        return actor.actor()
+        return NameAndValue(actors.COMMAND_LINE_ACTOR.singular_name,
+                            actor.actor())
     if len(args) == 1:
         raise SingleInstructionInvalidArgumentException('Missing file argument for ' + args[0])
     if matches(SOURCE_INTERPRETER_OPTION_NAME, args[0]):
-        return _parse_source_interpreter(args[1])
+        return NameAndValue(actors.SOURCE_INTERPRETER_ACTOR.singular_name,
+                            _parse_source_interpreter(args[1]))
     if matches(FILE_INTERPRETER_OPTION_NAME, args[0]):
-        return _parse_file_interpreter(args[1])
+        return NameAndValue(actors.FILE_INTERPRETER_ACTOR.singular_name,
+                            _parse_file_interpreter(args[1]))
     raise SingleInstructionInvalidArgumentException('Invalid option: "{}"'.format(args[0]))
 
 

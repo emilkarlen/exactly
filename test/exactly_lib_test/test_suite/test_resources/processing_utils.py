@@ -20,7 +20,8 @@ from exactly_lib_test.test_case.test_resources.command_executors import CommandE
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:
-    return TestCaseHandlingSetup(ActPhaseSetup(ActorThatRunsConstantActions()),
+    return TestCaseHandlingSetup(ActPhaseSetup('actor that does nothing',
+                                               ActorThatRunsConstantActions()),
                                  IDENTITY_PREPROCESSOR)
 
 

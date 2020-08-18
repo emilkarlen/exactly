@@ -25,6 +25,7 @@ from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -59,7 +60,7 @@ def execute(exe_conf: Configuration,
     return executor.execute()
 
 
-def parse_atc_and_validate_symbols(actor: Actor,
+def parse_atc_and_validate_symbols(actor: NameAndValue[Actor],
                                    predefined_symbols: SymbolTable,
                                    test_case: TestCase,
                                    ) -> Tuple[ActionToCheck, SymbolTable]:
@@ -233,7 +234,8 @@ class _PartialExecutor:
         self._act_phase_executor = self._construct_act_phase_executor()
 
     def _act__parse_atc_executor(self):
-        self._action_to_check = ActionToCheckParser(self.conf_values.actor).parse(self._test_case.act_phase)
+        parser = ActionToCheckParser(self.conf_values.actor)
+        self._action_to_check = parser.parse(self._test_case.act_phase)
 
     def _act__validate_pre_sds(self):
         failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
