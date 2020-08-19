@@ -46,26 +46,31 @@ and is able to find the email of a person::
     stderr empty
 
 
-If the file 'contacts.case' contains this test case, then Exactly can execute it::
+If the file 'contacts.case' contains this test case, then Exactly can execute it:
 
+.. parsed-literal::
+   :class: terminal
 
     > exactly contacts.case
-    PASS
+    **PASS**
 
 
 "PASS" means that all assertions were satisfied.
 
 
 If the actual email address of "Pablo Gauss" is not the expected one,
-then Exactly will *report failure*. For example::
+then Exactly will *report failure*. For example:
+
+.. parsed-literal::
+   :class: terminal
 
     > exactly contacts.case
-    FAIL
+    **FAIL**
     In [assert]
     contacts.case, line 13
 
       stdout equals <<EOF
-      pablo@gauss.org
+      pablo\@gauss.org
       EOF
 
 
@@ -74,20 +79,20 @@ then Exactly will *report failure*. For example::
       @[EXACTLY_RESULT]@/stdout
 
 
-    (F) equals
-          Expected
+    **(F) equals**
+          *Expected*
             STRING
-              'pablo@gauss.org\n'
-          Diff
+              'pablo\@gauss.org\\n'
+          *Diff*
     --- Expected
 
     +++ Actual
 
     @@ -1 +1 @@
 
-    -pablo@gauss.org
+    -pablo\@gauss.org
 
-    +pablo.gauss@masters.org
+    +pablo.gauss\@masters.org
 
 
 This test assumes that
@@ -486,7 +491,9 @@ stdout, stderr and exit code
 
     stdout num-lines == 314
 
-::
+
+.. parsed-literal::
+   :class: terminal
 
     > exactly --act my-test.case
     a-dir
@@ -601,11 +608,14 @@ or::
 
 
 
-If the file ``my-suite.suite`` contains this text, then Exactly can run it::
+If the file ``my-suite.suite`` contains this text, then Exactly can run it:
+
+.. parsed-literal::
+   :class: terminal
 
     > exactly suite my-suite.suite
     ...
-    OK
+    **OK**
 
 
 The result of a suite can be reported as
@@ -652,11 +662,17 @@ Exactly is written in Python and does not require any external libraries.
 
 Exactly requires Python >= 3.5.4.
 
-Use ``pip`` or ``pip3`` to install::
+Use ``pip`` or ``pip3`` to install:
+
+.. parsed-literal::
+   :class: terminal
 
     > pip3 install exactly
 
-The program can also be run from a source distribution::
+The program can also be run from a source distribution:
+
+.. parsed-literal::
+   :class: terminal
 
     > python3 src/default-main-program-runner.py
 
