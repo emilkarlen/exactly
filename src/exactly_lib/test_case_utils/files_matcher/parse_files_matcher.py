@@ -28,9 +28,10 @@ def files_matcher_parser() -> Parser[FilesMatcherSdv]:
                                                  consume_last_line_if_is_at_eol_after_parse=False)
 
 
-def parse_files_matcher(parser: TokenParser,
+def parse_files_matcher(token_parser: TokenParser,
                         must_be_on_current_line: bool = True) -> FilesMatcherSdv:
-    return ep.parse(GRAMMAR, parser, must_be_on_current_line)
+    expr_parser = ep.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 def _file_quantified_assertion(quantifier: Quantifier,

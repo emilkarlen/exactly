@@ -46,10 +46,10 @@ class ParserOfMatcherOnArbitraryLine(ParserFromTokenParserBase[LineMatcherSdv]):
         return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False)
 
 
-def parse_line_matcher_from_token_parser(parser: TokenParser,
+def parse_line_matcher_from_token_parser(token_parser: TokenParser,
                                          must_be_on_current_line: bool = True) -> LineMatcherSdv:
-    return parse_expression.parse(GRAMMAR, parser,
-                                  must_be_on_current_line=must_be_on_current_line)
+    expr_parser = parse_expression.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {

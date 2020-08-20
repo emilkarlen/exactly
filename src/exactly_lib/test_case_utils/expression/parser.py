@@ -1,26 +1,48 @@
 from typing import Generic, Optional, Callable
 
-from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from .grammar import Grammar, EXPR
+from ...section_document.element_parsers.ps_or_tp import parsers
 from ...util.cli_syntax import option_syntax
 
 
-def parse_from_parse_source(grammar: Grammar[EXPR],
-                            source: ParseSource,
-                            must_be_on_current_line: bool = True) -> EXPR:
-    with token_stream_parser.from_parse_source(source) as tp:
-        return parse(grammar, tp, must_be_on_current_line)
+def parser(grammar: Grammar[EXPR],
+           must_be_on_current_line: bool = True,
+           ) -> Parser[EXPR]:
+    """A parser that parses a mandatory full expr on any following line"""
+    return _parser_for_must_be_on_current_line(
+        grammar,
+        _ExprOnAnyLineParser(grammar),
+        must_be_on_current_line,
+    )
 
 
-def parse(grammar: Grammar[EXPR],
-          parser: TokenParser,
-          must_be_on_current_line: bool = True) -> EXPR:
-    return _Parser(grammar, parser).parse(None if must_be_on_current_line else _NEXT_EXPR_ON_ANY_LINE)
+def _parser_for_must_be_on_current_line(grammar: Grammar[EXPR],
+                                        any_line_parser: Parser[EXPR],
+                                        must_be_on_current_line: bool = True,
+                                        ) -> Parser[EXPR]:
+    return (
+        parsers.CurrentLineMustNotBeEmptyExceptForSpace(
+            any_line_parser,
+            'Missing ' + grammar.concept.syntax_element.name
+        )
+        if must_be_on_current_line
+        else
+        any_line_parser
+    )
+
+
+class _ExprOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
+    def __init__(self, grammar: Grammar[EXPR]):
+        super().__init__(False, False)
+        self._grammar = grammar
+
+    def parse_from_token_parser(self, parser: TokenParser) -> EXPR:
+        return _Parser(self._grammar, parser).parse(_NEXT_EXPR_ON_ANY_LINE)
 
 
 _IS_INSIDE_PARENTHESIS = 1

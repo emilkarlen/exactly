@@ -65,9 +65,10 @@ def parse_optional_transformer_sdv_preceding_mandatory_element(parser: TokenPars
     return parse_optional_transformer_sdv2(parser)
 
 
-def parse_string_transformer_from_token_parser(parser: TokenParser,
+def parse_string_transformer_from_token_parser(token_parser: TokenParser,
                                                must_be_on_current_line: bool = True) -> StringTransformerSdv:
-    return parse_expression.parse(GRAMMAR, parser, must_be_on_current_line)
+    expr_parser = parse_expression.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 _CONCEPT = grammar.Concept(

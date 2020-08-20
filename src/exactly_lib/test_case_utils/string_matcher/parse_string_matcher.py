@@ -32,9 +32,10 @@ def string_matcher_parser() -> Parser[StringMatcherSdv]:
                                                  consume_last_line_if_is_at_eol_after_parse=False)
 
 
-def parse_string_matcher(parser: TokenParser,
+def parse_string_matcher(token_parser: TokenParser,
                          must_be_on_current_line: bool = False) -> StringMatcherSdv:
-    return ep.parse(GRAMMAR, parser, must_be_on_current_line)
+    expr_parser = ep.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:

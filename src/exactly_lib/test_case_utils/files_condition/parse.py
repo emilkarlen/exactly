@@ -39,9 +39,10 @@ class _ParserFromArbitraryLine(parsers.ParserFromTokenParserBase[FilesConditionS
         return parse(parser, must_be_on_current_line=False)
 
 
-def parse(tokens: TokenParser,
+def parse(token_parser: TokenParser,
           must_be_on_current_line: bool = True) -> FilesConditionSdv:
-    return grammar_parser.parse(GRAMMAR, tokens, must_be_on_current_line)
+    expr_parser = grammar_parser.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 def _parse_constant(tokens: TokenParser) -> FilesConditionSdv:

@@ -107,10 +107,10 @@ def parse_primitive_sans_arg(parser: TokenParser) -> PrimitiveSansArg:
     return PrimitiveSansArg()
 
 
-def parse_recursive_primitive_of_grammar_w_all_components(parser: TokenParser) -> PrimitiveRecursive:
-    argument = expression_parser.parse(GRAMMAR_WITH_ALL_COMPONENTS,
-                                       parser,
-                                       must_be_on_current_line=False)
+def parse_recursive_primitive_of_grammar_w_all_components(token_parser: TokenParser) -> PrimitiveRecursive:
+    expr_parser = expression_parser.parser(GRAMMAR_WITH_ALL_COMPONENTS,
+                                           must_be_on_current_line=False)
+    argument = expr_parser.parse_from_token_parser(token_parser)
     return PrimitiveRecursive(argument)
 
 

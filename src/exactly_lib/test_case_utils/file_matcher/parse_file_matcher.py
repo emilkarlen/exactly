@@ -53,8 +53,8 @@ class _Parser(parsers.ParserFromTokenParserBase[FileMatcherSdv]):
     def __init__(self):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
 
-    def parse_from_token_parser(self, parser: TokenParser) -> FileMatcherSdv:
-        return parse_sdv(parser, must_be_on_current_line=True)
+    def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdv:
+        return parse_sdv(token_parser, must_be_on_current_line=True)
 
 
 class ParserOfMatcherOnArbitraryLine(parsers.ParserFromTokenParserBase[MatcherSdv[FileMatcherModel]]):
@@ -68,12 +68,13 @@ class ParserOfMatcherOnArbitraryLine(parsers.ParserFromTokenParserBase[MatcherSd
 _PARSER = _Parser()
 
 
-def parse_sdv(parser: TokenParser,
+def parse_sdv(token_parser: TokenParser,
               must_be_on_current_line: bool) -> FileMatcherSdv:
-    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
-        parser,
+    token_parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
+        token_parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    return ep.parse(GRAMMAR, parser, must_be_on_current_line)
+    expr_parser = ep.parser(GRAMMAR, must_be_on_current_line)
+    return expr_parser.parse_from_token_parser(token_parser)
 
 
 def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:

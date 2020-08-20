@@ -94,8 +94,7 @@ class TestFailuresCommonToAllGrammars(TestCaseBase):
                 with self.subTest(grammar=grammar.name,
                                   case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_from_parse_source(grammar.value,
-                                                    case.value)
+                        sut.parser(grammar.value, case.value).parse(case.value)
 
 
 class SourceExpectation:
@@ -305,20 +304,18 @@ class TestSinglePrimitiveExpression(TestCaseBase):
                                       must_be_on_current_line=must_be_on_current_line):
                         # ACT & ASSERT #
                         parse_source = remaining_source_string(case.value)
+                        parser = sut.parser(grammar, must_be_on_current_line=must_be_on_current_line)
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            sut.parse_from_parse_source(grammar,
-                                                        parse_source,
-                                                        must_be_on_current_line=must_be_on_current_line)
+                            parser.parse(parse_source)
                 # Source is not on first line
                 with self.subTest(grammar=grammar_description,
                                   case_name=case.name,
                                   source='is not on first line',
                                   must_be_on_current_line=must_be_on_current_line):
                     parse_source = remaining_source_string('\n' + case.value)
+                    parser = sut.parser(grammar, must_be_on_current_line=must_be_on_current_line)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_from_parse_source(grammar,
-                                                    parse_source,
-                                                    must_be_on_current_line=False)
+                        parser.parse(parse_source)
 
     def test_fail__must_be_on_current_line(self):
         for grammar_description, grammar in GRAMMARS:
@@ -351,9 +348,8 @@ class TestSinglePrimitiveExpression(TestCaseBase):
                 with self.subTest(grammar=grammar_description,
                                   case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_from_parse_source(grammar,
-                                                    case.value,
-                                                    must_be_on_current_line=True)
+                        parser = sut.parser(grammar, must_be_on_current_line=True)
+                        parser.parse(case.value)
 
 
 class TestSinglePrefixOpExpression(TestCaseBase):
@@ -499,9 +495,9 @@ class TestSinglePrefixOpExpression(TestCaseBase):
                     with self.subTest(grammar=grammar_description,
                                       prefix_operator=prefix_operator,
                                       case_name=case.name):
+                        parser = sut.parser(grammar, must_be_on_current_line=True)
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            sut.parse_from_parse_source(grammar,
-                                                        case.value)
+                            parser.parse(case.value)
 
 
 class TestSingleRefExpression(TestCaseBase):
@@ -604,9 +600,9 @@ class TestSingleRefExpression(TestCaseBase):
             for case in cases:
                 with self.subTest(grammar=grammar_description,
                                   case_name=case.name):
+                    parser = sut.parser(grammar, must_be_on_current_line=True)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parse_from_parse_source(grammar,
-                                                    case.value)
+                        parser.parse(case.value)
 
 
 class TestInfixOpExpression(unittest.TestCase):
@@ -937,10 +933,11 @@ class TestInfixOpExpression(unittest.TestCase):
                                           source='appears on first line',
                                           must_be_on_current_line=must_be_on_current_line):
                             # ACT & ASSERT #
+                            parser = sut.parser(ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                                must_be_on_current_line=must_be_on_current_line)
                             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                                sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                            remaining_source_string(case.value),
-                                                            must_be_on_current_line=must_be_on_current_line)
+                                parser.parse(remaining_source_string(case.value))
+
                 # With source not on first line
                 for case in cases:
                     with self.subTest(case_name=case.name,
@@ -949,11 +946,11 @@ class TestInfixOpExpression(unittest.TestCase):
                                       source='appears not on first line',
                                       must_be_on_current_line=must_be_on_current_line):
                         parse_source = remaining_source_string('\n' + case.value)
+                        parser = sut.parser(ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                            must_be_on_current_line=False)
                         # ACT & ASSERT #
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            sut.parse_from_parse_source(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                        parse_source,
-                                                        must_be_on_current_line=False)
+                            parser.parse(parse_source)
 
 
 class TestCombinedExpressions(TestCaseBase):
@@ -1163,9 +1160,8 @@ class TestCombinedExpressions(TestCaseBase):
 def _check(put: unittest.TestCase,
            arrangement: Arrangement,
            expectation: Expectation):
-    actual = sut.parse_from_parse_source(arrangement.grammar,
-                                         arrangement.source,
-                                         arrangement.must_be_on_current_line)
+    parser = sut.parser(arrangement.grammar, arrangement.must_be_on_current_line)
+    actual = parser.parse(arrangement.source)
     if expectation.expression != actual:
         put.fail('Unexpected expression.\nExpected: {}\nActual  : {}'.format(
             str(expectation.expression),
