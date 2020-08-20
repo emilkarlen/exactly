@@ -48,7 +48,7 @@ class ParserOfMatcherOnArbitraryLine(ParserFromTokenParserBase[LineMatcherSdv]):
 
 def parse_line_matcher_from_token_parser(token_parser: TokenParser,
                                          must_be_on_current_line: bool = True) -> LineMatcherSdv:
-    expr_parser = parse_expression.parser(GRAMMAR, must_be_on_current_line)
+    expr_parser = parse_expression.parser__full(GRAMMAR, must_be_on_current_line)
     return expr_parser.parse_from_token_parser(token_parser)
 
 

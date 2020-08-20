@@ -67,7 +67,7 @@ def parse_optional_transformer_sdv_preceding_mandatory_element(parser: TokenPars
 
 def parse_string_transformer_from_token_parser(token_parser: TokenParser,
                                                must_be_on_current_line: bool = True) -> StringTransformerSdv:
-    expr_parser = parse_expression.parser(GRAMMAR, must_be_on_current_line)
+    expr_parser = parse_expression.parser__full(GRAMMAR, must_be_on_current_line)
     return expr_parser.parse_from_token_parser(token_parser)
 
 

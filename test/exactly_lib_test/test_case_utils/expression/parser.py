@@ -1,26 +1,23 @@
-import itertools
 import unittest
 from typing import List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_utils.expression import parser as sut
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines, \
     remaining_source_string
+from exactly_lib_test.test_case_utils.expression.test_resources import parse_w_variants_cases, parse_check, \
+    test_grammars
 from exactly_lib_test.test_case_utils.expression.test_resources import test_grammars as ast
 from exactly_lib_test.test_case_utils.expression.test_resources.case_generation import \
     current_line_case_variants_for_grammar
 from exactly_lib_test.test_case_utils.expression.test_resources.ex_arr import Arrangement, Expectation, \
     SourceExpectation, SourceCase
 from exactly_lib_test.test_case_utils.expression.test_resources.parse_check import check, \
-    check_with_must_be_on_current_line_variants, check_fail__expr_on_following_line_is_accepted, \
-    check_fail__must_be_on_current_line, check__multi
-from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import InfixOpA, InfixOpB, PrefixOpExprP, \
-    GRAMMARS
+    PARSER_MAKER_OF_FULL_EXPR_PARSER
+from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import InfixOpA, InfixOpB, PrefixOpExprP
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
@@ -28,59 +25,87 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailuresCommonToAllGrammars),
-        unittest.makeSuite(TestSinglePrimitiveExpression),
-        unittest.makeSuite(TestSinglePrefixOpExpression),
-        unittest.makeSuite(TestSingleRefExpression),
+
+        unittest.makeSuite(TestFailuresCommonToAllGrammarsForSimpleExprParser),
+        unittest.makeSuite(TestSinglePrimitiveExpressionForSimpleExprParser),
+        unittest.makeSuite(TestSinglePrefixOpExpressionForSimpleExprParser),
+        unittest.makeSuite(TestSingleRefExpressionForSimpleExprParser),
+
+        unittest.makeSuite(TestFailuresCommonToAllGrammarsForFullExprParser),
+        unittest.makeSuite(TestSinglePrimitiveExpressionForFullExprParser),
+        unittest.makeSuite(TestSinglePrefixOpExpressionForFullExprParser),
+        unittest.makeSuite(TestSingleRefExpressionForFullExprParser),
+
+        unittest.makeSuite(TestSpecificForSimpleExprParse),
+
         unittest.makeSuite(TestInfixOpExpression),
         unittest.makeSuite(TestCombinedExpressions),
     ])
 
 
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               arrangement: Arrangement,
-               expectation: Expectation):
-        check(self, arrangement, expectation)
+class TestFailuresCommonToAllGrammarsForSimpleExprParser(parse_w_variants_cases.WithParserMakerOfSimpleExprParser,
+                                                         parse_w_variants_cases.TestFailuresCommonToAllGrammars):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
 
 
-class TestFailuresCommonToAllGrammars(TestCaseBase):
-    def test(self):
-        for grammar in GRAMMARS:
-            cases = [
-                NameAndValue(
-                    'source is just space',
-                    remaining_source('   '),
-                ),
-                NameAndValue(
-                    'first token quoted/soft',
-                    remaining_source(str(surrounded_by_soft_quotes('token'))),
-                ),
-                NameAndValue(
-                    'first token quoted/hard',
-                    remaining_source(str(surrounded_by_hard_quotes('token'))),
-                ),
-                NameAndValue(
-                    'missing )',
-                    remaining_source('( {primitive} '.format(primitive=ast.PRIMITIVE_SANS_ARG)),
-                ),
-            ]
-            for case in cases:
-                with self.subTest(grammar=grammar.name,
-                                  case_name=case.name):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.parser(grammar.value, case.value).parse(case.value)
+class TestSinglePrimitiveExpressionForSimpleExprParser(parse_w_variants_cases.WithParserMakerOfSimpleExprParser,
+                                                       parse_w_variants_cases.TestSinglePrimitiveExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
 
 
-class TestSinglePrimitiveExpression(TestCaseBase):
+class TestSinglePrefixOpExpressionForSimpleExprParser(parse_w_variants_cases.WithParserMakerOfSimpleExprParser,
+                                                      parse_w_variants_cases.TestSinglePrefixOpExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestSingleRefExpressionForSimpleExprParser(parse_w_variants_cases.WithParserMakerOfSimpleExprParser,
+                                                 parse_w_variants_cases.TestSingleRefExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestFailuresCommonToAllGrammarsForFullExprParser(parse_w_variants_cases.WithParserMakerOfFullExprParser,
+                                                       parse_w_variants_cases.TestFailuresCommonToAllGrammars):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestSinglePrimitiveExpressionForFullExprParser(parse_w_variants_cases.WithParserMakerOfFullExprParser,
+                                                     parse_w_variants_cases.TestSinglePrimitiveExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestSinglePrefixOpExpressionForFullExprParser(parse_w_variants_cases.WithParserMakerOfFullExprParser,
+                                                    parse_w_variants_cases.TestSinglePrefixOpExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestSingleRefExpressionForFullExprParser(parse_w_variants_cases.WithParserMakerOfFullExprParser,
+                                               parse_w_variants_cases.TestSingleRefExpression):
+    # To debug an individual test case - override the test method in the super class
+    # and call super.
+    pass
+
+
+class TestSpecificForSimpleExprParse(unittest.TestCase):
     def test_successful_parse_of_expr_sans_argument(self):
-        space_after = '           '
-        token_after = str(surrounded_by_hard_quotes('not an expression'))
+        infix_op_and_expr_after = ' '.join([ast.INFIX_OP_A, ast.PRIMITIVE_SANS_ARG])
 
         format_map = {
             'primitive_expr': ast.PRIMITIVE_SANS_ARG,
-            'space_after': space_after,
-            'token_after': token_after,
+            'infix_op_and_expr_after': infix_op_and_expr_after,
         }
 
         def source(s: str) -> str:
@@ -88,54 +113,37 @@ class TestSinglePrimitiveExpression(TestCaseBase):
 
         cases = [
             SourceCase(
-                'first line is only primitive expr',
-                source('{primitive_expr}'),
-                SourceExpectation.is_at_end_of_line(1)
-            ),
-            SourceCase(
-                'first line is primitive expr with space around',
-                source('  {primitive_expr}{space_after}'),
+                'primitive followed by INFIX-OP EXPR',
+                source('{primitive_expr} {infix_op_and_expr_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                       remaining_part_of_current_line=space_after[1:])
+                                                       remaining_part_of_current_line=infix_op_and_expr_after),
             ),
             SourceCase(
-                'expression is followed by non-expression',
-                source('{primitive_expr} {token_after}'),
+                '( primitive ) followed by INFIX-OP EXPR',
+                source('( {primitive_expr} ) {infix_op_and_expr_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                       remaining_part_of_current_line=token_after)
-            ),
-            SourceCase(
-                '( primitive )',
-                source('( {primitive_expr} )'),
-                SourceExpectation.is_at_end_of_line(1),
-            ),
-            SourceCase(
-                '( primitive ) followed by non-expression',
-                source('( {primitive_expr} ) {token_after}'),
-                SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                       remaining_part_of_current_line=token_after),
-            ),
-            SourceCase(
-                '( ( primitive ) )',
-                source('( ( {primitive_expr} ) )'),
-                SourceExpectation.is_at_end_of_line(1),
+                                                       remaining_part_of_current_line=infix_op_and_expr_after),
             ),
         ]
         # ACT & ASSERT #
-        check_with_must_be_on_current_line_variants(self, ast.PrimitiveSansArg(), GRAMMARS, cases)
+        parse_check.check_with_must_be_on_current_line_variants(
+            self,
+            parse_check.PARSER_MAKER_OF_SIMPLE_EXPR_PARSER,
+            ast.PrimitiveSansArg(),
+            test_grammars.GRAMMARS,
+            cases,
+        )
 
     def test_successful_parse_of_expr_with_argument(self):
         # ARRANGE #
 
         the_argument = 'the-argument'
-        space_after = '           '
-        token_after = str(surrounded_by_hard_quotes('not an expression'))
+        infix_op_and_expr_after = ' '.join([ast.INFIX_OP_A, ast.PRIMITIVE_SANS_ARG])
 
         format_map = {
             'primitive_with_arg': ast.PRIMITIVE_WITH_ARG,
             'argument': the_argument,
-            'space_after': space_after,
-            'token_after': token_after,
+            'infix_op_and_expr_after': infix_op_and_expr_after,
         }
 
         def source(s: str) -> str:
@@ -143,348 +151,28 @@ class TestSinglePrimitiveExpression(TestCaseBase):
 
         cases = [
             SourceCase(
-                'first line is only primitive expr',
-                source('{primitive_with_arg} {argument}'),
-                SourceExpectation.is_at_end_of_line(1)
-            ),
-            SourceCase(
-                'first line is primitive expr with space around',
-                source('  {primitive_with_arg}    {argument}{space_after}'),
+                'primitive_with_arg INFIX-OP EXPR',
+                source('{primitive_with_arg} {argument} {infix_op_and_expr_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                       remaining_part_of_current_line=space_after[1:])
+                                                       remaining_part_of_current_line=infix_op_and_expr_after),
             ),
             SourceCase(
-                'expression is followed by non-expression',
-                source('  {primitive_with_arg}    {argument} {token_after}'),
+                '( primitive_with_arg ) INFIX-OP EXPR',
+                source('( {primitive_with_arg} {argument} ) {infix_op_and_expr_after}'),
                 SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                       remaining_part_of_current_line=token_after)
-            ),
-            SourceCase(
-                '( primitive )',
-                source('( {primitive_with_arg} {argument} )'),
-                SourceExpectation.is_at_end_of_line(1),
-            ),
-            SourceCase(
-                'primitive, within parenthesis, with tokens on separate lines',
-                source('( \n {primitive_with_arg} \n {argument} \n )'),
-                SourceExpectation.is_at_end_of_line(4),
-            ),
-            SourceCase(
-                'primitive, within parenthesis, with expression tokens on separate lines, followed by non-expression',
-                source('( \n {primitive_with_arg} \n {argument} \n ) {token_after}'),
-                SourceExpectation.source_is_not_at_end(current_line_number=4,
-                                                       remaining_part_of_current_line=token_after),
-            ),
-            SourceCase(
-                '( ( primitive ) )',
-                source('( ( {primitive_with_arg} {argument} ) )'),
-                SourceExpectation.is_at_end_of_line(1),
+                                                       remaining_part_of_current_line=infix_op_and_expr_after),
             ),
         ]
 
         # ACT & ASSERT #
 
-        check_with_must_be_on_current_line_variants(self,
-                                                    ast.PrimitiveWithArg(the_argument),
-                                                    GRAMMARS,
-                                                    cases)
-
-    def test_fail__expr_on_following_line_is_accepted(self):
-        cases = [
-            NameAndValue(
-                'token is not the name of a primitive expression',
-                ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
-            ),
-            NameAndValue(
-                'token is the name of a primitive expression, but it is quoted/soft',
-                str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG)),
-            ),
-            NameAndValue(
-                'token is the name of a primitive expression, but it is quoted/hard',
-                str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG)),
-            ),
-        ]
-        check_fail__expr_on_following_line_is_accepted(
+        parse_check.check_with_must_be_on_current_line_variants(
             self,
-            GRAMMARS,
+            parse_check.PARSER_MAKER_OF_SIMPLE_EXPR_PARSER,
+            ast.PrimitiveWithArg(the_argument),
+            test_grammars.GRAMMARS,
             cases,
         )
-
-    def test_fail__must_be_on_current_line(self):
-        cases = [
-            NameAndValue(
-                'token is not the name of a primitive expression',
-                [ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME],
-            ),
-            NameAndValue(
-                'token is the name of a primitive expression, but it is quoted/soft',
-                [str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG))],
-            ),
-            NameAndValue(
-                'token is the name of a primitive expression, but it is quoted/hard',
-                [str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG))],
-            ),
-            NameAndValue(
-                'token is the name of a primitive expression, but it is on the next line',
-                [ast.PRIMITIVE_SANS_ARG],
-            ),
-        ]
-        # ACT & ASSERT #
-        check_fail__must_be_on_current_line(
-            self,
-            GRAMMARS,
-            cases,
-        )
-
-
-class TestSinglePrefixOpExpression(TestCaseBase):
-    PREFIX_OPERATORS = [
-        (
-            ast.PREFIX_P,
-            ast.PrefixOpExprP,
-        ),
-        (
-            ast.PREFIX_Q,
-            ast.PrefixOpExprQ,
-        ),
-    ]
-
-    def test_successful_parse_with_primitive_expr(self):
-
-        space_after = '           '
-        token_after = str(surrounded_by_hard_quotes('not an expression'))
-
-        primitive_expr = ast.PrimitiveSansArg()
-        primitive_expr_src = ast.PRIMITIVE_SANS_ARG
-
-        def cases_for_operator(the_prefix_operator: str) -> List[SourceCase]:
-            sf = StringFormatter({
-                'op': the_prefix_operator,
-                'primitive_expr': primitive_expr_src,
-                'space_after': space_after,
-                'token_after': token_after,
-            })
-            return [
-                SourceCase(
-                    'first line is only primitive expr',
-                    sf.format('{op} {primitive_expr}'),
-                    SourceExpectation.is_at_end_of_line(1)
-                ),
-                SourceCase(
-                    'first line is primitive expr with space around',
-                    sf.format(' {op}  {primitive_expr}{space_after}'),
-                    SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                           remaining_part_of_current_line=space_after[1:])
-                ),
-                SourceCase(
-                    'expression is followed by non-expression',
-                    sf.format('{op} {primitive_expr} {token_after}'),
-                    SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                           remaining_part_of_current_line=token_after)
-                ),
-                SourceCase(
-                    '( op primitive )',
-                    sf.format('( {op} {primitive_expr} )'),
-                    SourceExpectation.is_at_end_of_line(1),
-                ),
-                SourceCase(
-                    'op ( primitive )',
-                    sf.format('{op} ( {primitive_expr} )'),
-                    SourceExpectation.is_at_end_of_line(1),
-                ),
-                SourceCase(
-                    'no source after operator, but expr on following line',
-                    sf.format('{op}\n{primitive_expr}'),
-                    SourceExpectation.is_at_end_of_line(2),
-                ),
-            ]
-
-        operator_cases = [
-            (prefix_operator,
-             mk_prefix_expr(primitive_expr),
-             cases_for_operator(prefix_operator))
-            for prefix_operator, mk_prefix_expr in self.PREFIX_OPERATORS
-        ]
-
-        for grammar in GRAMMARS:
-            for operator_case in operator_cases:
-                cases = current_line_case_variants_for_grammar(operator_case[1],
-                                                               grammar.value,
-                                                               operator_case[2])
-                for case in cases:
-                    with self.subTest(grammar=grammar.name,
-                                      prefix_operator=operator_case[0],
-                                      name=case.name):
-                        self._check(
-                            case.arrangement,
-                            case.expectation)
-
-    def test_successful_parse_with_infix_op_expressions(self):
-        s = ast.PrimitiveSansArg()
-        cases = [
-            NArrEx(
-                'prefix operator binds to following primitive expression (single infix ops)',
-                Arrangement(
-                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                    source=remaining_source('{p_op} {s}  {bin_op}  {s}  {bin_op}  {p_op} {s}'.format(
-                        s=ast.PRIMITIVE_SANS_ARG,
-                        p_op=ast.PREFIX_P,
-                        bin_op=ast.INFIX_OP_A,
-                    )),
-                ),
-                Expectation(
-                    expression=InfixOpA([PrefixOpExprP(s), s, PrefixOpExprP(s)]),
-                    source=asrt_source.is_at_end_of_line(1),
-                ),
-            ),
-            NArrEx(
-                'prefix operator binds to following primitive expression (different infix ops)',
-                Arrangement(
-                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                    source=remaining_source('{p_op} {s}  {bin_op_a}  {s}  {bin_op_b}  {p_op} {s}'.format(
-                        s=ast.PRIMITIVE_SANS_ARG,
-                        p_op=ast.PREFIX_P,
-                        bin_op_a=ast.INFIX_OP_A,
-                        bin_op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-                    )),
-                ),
-                Expectation(
-                    expression=InfixOpB([InfixOpA([PrefixOpExprP(s), s]), PrefixOpExprP(s)]),
-                    source=asrt_source.is_at_end_of_line(1),
-                ),
-            ),
-        ]
-        # ACT & ASSERT #
-
-        check__multi(self, cases)
-
-    def test_fail(self):
-        for grammar_description, grammar in GRAMMARS:
-            for prefix_operator, mk_prefix_expr in self.PREFIX_OPERATORS:
-                cases = [
-                    NameAndValue(
-                        'no source after operator',
-                        remaining_source(prefix_operator),
-                    ),
-                    NameAndValue(
-                        'operator followed by non-expression',
-                        remaining_source('{op} {non_expr}'.format(
-                            op=prefix_operator,
-                            non_expr=str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG)))),
-                    ),
-                ]
-                for case in cases:
-                    with self.subTest(grammar=grammar_description,
-                                      prefix_operator=prefix_operator,
-                                      case_name=case.name):
-                        parser = sut.parser(grammar, must_be_on_current_line=True)
-                        with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(case.value)
-
-
-class TestSingleRefExpression(TestCaseBase):
-    def test_successful_parse(self):
-        symbol_name = 'the_symbol_name'
-        space_after = '           '
-        token_after = str(surrounded_by_hard_quotes('not an expression'))
-        symbol_ref_syntax_cases = [
-            NameAndValue('plain',
-                         symbol_name,
-                         ),
-            NameAndValue('reference syntax',
-                         symbol_reference_syntax_for_name(symbol_name),
-                         ),
-        ]
-
-        def cases_for_symbol_syntax(symbol_reference: NameAndValue[str]) -> List[SourceCase]:
-            sf = StringFormatter({
-                'symbol_name': symbol_reference.value,
-                'space_after': space_after,
-                'token_after': token_after,
-            })
-
-            def source(template: str) -> str:
-                return sf.format(template)
-
-            def name(case: str) -> str:
-                return 'symbol_syntax={} / {}'.format(
-                    symbol_reference.name,
-                    case
-                )
-
-            return [
-                SourceCase(
-                    name('first line is only primitive expr'),
-                    source('{symbol_name}'),
-                    SourceExpectation.is_at_end_of_line(1)
-                ),
-                SourceCase(
-                    name('first line is primitive expr with space around'),
-                    source('  {symbol_name}{space_after}'),
-                    SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                           remaining_part_of_current_line=space_after[1:])
-                ),
-                SourceCase(
-                    name('expression is followed by non-expression'),
-                    source('{symbol_name} {token_after}'),
-                    SourceExpectation.source_is_not_at_end(current_line_number=1,
-                                                           remaining_part_of_current_line=token_after)
-                ),
-            ]
-
-        source_cases = list(
-            itertools.chain.from_iterable([
-                cases_for_symbol_syntax(symbol_ref_syntax)
-                for symbol_ref_syntax in symbol_ref_syntax_cases
-            ])
-        )
-
-        check_with_must_be_on_current_line_variants(
-            self,
-            expected_expression=ast.RefExpr(symbol_name),
-            grammars=GRAMMARS,
-            original_source_cases=source_cases
-        )
-
-    def test_token_SHOULD_be_interpreted_as_sym_ref_WHEN_sym_ref_syntax_is_used_for_existing_primitive(self):
-        for grammar_description, grammar in GRAMMARS:
-            with self.subTest(grammar=grammar_description):
-                self._check(
-                    Arrangement(
-                        grammar=grammar,
-                        source=remaining_source(
-                            symbol_reference_syntax_for_name(ast.PRIMITIVE_SANS_ARG)
-                        ),
-                    ),
-                    Expectation(
-                        expression=ast.RefExpr(ast.PRIMITIVE_SANS_ARG),
-                        source=asrt_source.is_at_end_of_line(1),
-                    )
-                )
-
-    def test_fail(self):
-        symbol_name = 'the_symbol_name'
-        for grammar_description, grammar in GRAMMARS:
-            cases = [
-                NameAndValue(
-                    'symbol name is quoted',
-                    remaining_source(str(surrounded_by_hard_quotes(symbol_name))),
-                ),
-                NameAndValue(
-                    'symbol reference syntax with invalid symbol name character: space',
-                    remaining_source(symbol_reference_syntax_for_name('the symbol')),
-                ),
-                NameAndValue(
-                    'symbol reference syntax with invalid symbol name character: &',
-                    remaining_source(symbol_reference_syntax_for_name('the&symbol')),
-                ),
-            ]
-            for case in cases:
-                with self.subTest(grammar=grammar_description,
-                                  case_name=case.name):
-                    parser = sut.parser(grammar, must_be_on_current_line=True)
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(case.value)
 
 
 class TestInfixOpExpression(unittest.TestCase):
@@ -597,8 +285,48 @@ class TestInfixOpExpression(unittest.TestCase):
                                       operator_source=operator_source,
                                       valid_primitive_expr_source=valid_primitive_expr_source):
                         check(self,
+                              PARSER_MAKER_OF_FULL_EXPR_PARSER,
                               case.arrangement,
                               case.expectation)
+
+    def test_successful_parse_with_infix_op_expressions(self):
+        s = ast.PrimitiveSansArg()
+        cases = [
+            NArrEx(
+                'prefix operator binds to following primitive expression (single infix ops)',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{p_op} {s}  {bin_op}  {s}  {bin_op}  {p_op} {s}'.format(
+                        s=ast.PRIMITIVE_SANS_ARG,
+                        p_op=ast.PREFIX_P,
+                        bin_op=ast.INFIX_OP_A,
+                    )),
+                ),
+                Expectation(
+                    expression=InfixOpA([PrefixOpExprP(s), s, PrefixOpExprP(s)]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+            NArrEx(
+                'prefix operator binds to following primitive expression (different infix ops)',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('{p_op} {s}  {bin_op_a}  {s}  {bin_op_b}  {p_op} {s}'.format(
+                        s=ast.PRIMITIVE_SANS_ARG,
+                        p_op=ast.PREFIX_P,
+                        bin_op_a=ast.INFIX_OP_A,
+                        bin_op_b=ast.INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
+                    )),
+                ),
+                Expectation(
+                    expression=InfixOpB([InfixOpA([PrefixOpExprP(s), s]), PrefixOpExprP(s)]),
+                    source=asrt_source.is_at_end_of_line(1),
+                ),
+            ),
+        ]
+        # ACT & ASSERT #
+
+        parse_check.check__multi(self, PARSER_MAKER_OF_FULL_EXPR_PARSER, cases)
 
     def test_success_of_expression_within_parentheses(self):
         s = ast.PrimitiveSansArg()
@@ -668,6 +396,7 @@ class TestInfixOpExpression(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 check(self,
+                      PARSER_MAKER_OF_FULL_EXPR_PARSER,
                       case.arrangement,
                       case.expectation
                       )
@@ -756,6 +485,7 @@ class TestInfixOpExpression(unittest.TestCase):
         for case in cases:
             with self.subTest(name=case.name):
                 check(self,
+                      PARSER_MAKER_OF_FULL_EXPR_PARSER,
                       case.arrangement,
                       case.expectation
                       )
@@ -815,8 +545,10 @@ class TestInfixOpExpression(unittest.TestCase):
                                           source='appears on first line',
                                           must_be_on_current_line=must_be_on_current_line):
                             # ACT & ASSERT #
-                            parser = sut.parser(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                must_be_on_current_line=must_be_on_current_line)
+                            parser = PARSER_MAKER_OF_FULL_EXPR_PARSER.make(
+                                ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                must_be_on_current_line=must_be_on_current_line,
+                            )
                             with self.assertRaises(SingleInstructionInvalidArgumentException):
                                 parser.parse(remaining_source_string(case.value))
 
@@ -828,14 +560,14 @@ class TestInfixOpExpression(unittest.TestCase):
                                       source='appears not on first line',
                                       must_be_on_current_line=must_be_on_current_line):
                         parse_source = remaining_source_string('\n' + case.value)
-                        parser = sut.parser(ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                            must_be_on_current_line=False)
+                        parser = PARSER_MAKER_OF_FULL_EXPR_PARSER.make(ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                                                       must_be_on_current_line=False)
                         # ACT & ASSERT #
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
                             parser.parse(parse_source)
 
 
-class TestCombinedExpressions(TestCaseBase):
+class TestCombinedExpressions(unittest.TestCase):
     def test__inside_parentheses__primitive_recursive_followed_by_binary_op_on_following_line(self):
         s = ast.PrimitiveSansArg()
 
@@ -847,7 +579,9 @@ class TestCombinedExpressions(TestCaseBase):
             op_a=ast.INFIX_OP_A,
         )
 
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -873,7 +607,9 @@ class TestCombinedExpressions(TestCaseBase):
             op_a=ast.INFIX_OP_A,
         )
 
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -898,7 +634,9 @@ class TestCombinedExpressions(TestCaseBase):
             op_a=ast.INFIX_OP_A,
         )
 
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -927,7 +665,9 @@ class TestCombinedExpressions(TestCaseBase):
             s=ast.PRIMITIVE_SANS_ARG,
         )
 
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -978,7 +718,9 @@ class TestCombinedExpressions(TestCaseBase):
             x=s_x.argument,
 
         )
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,
@@ -1024,7 +766,9 @@ class TestCombinedExpressions(TestCaseBase):
             y=s_y.argument,
 
         )
-        self._check(
+        check(
+            self,
+            PARSER_MAKER_OF_FULL_EXPR_PARSER,
             Arrangement(
                 grammar=
                 ast.GRAMMAR_WITH_ALL_COMPONENTS,

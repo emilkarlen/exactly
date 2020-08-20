@@ -34,7 +34,7 @@ def string_matcher_parser() -> Parser[StringMatcherSdv]:
 
 def parse_string_matcher(token_parser: TokenParser,
                          must_be_on_current_line: bool = False) -> StringMatcherSdv:
-    expr_parser = ep.parser(GRAMMAR, must_be_on_current_line)
+    expr_parser = ep.parser__full(GRAMMAR, must_be_on_current_line)
     return expr_parser.parse_from_token_parser(token_parser)
 
 

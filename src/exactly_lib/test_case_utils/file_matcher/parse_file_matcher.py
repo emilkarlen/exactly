@@ -73,7 +73,7 @@ def parse_sdv(token_parser: TokenParser,
     token_parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         token_parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    expr_parser = ep.parser(GRAMMAR, must_be_on_current_line)
+    expr_parser = ep.parser__full(GRAMMAR, must_be_on_current_line)
     return expr_parser.parse_from_token_parser(token_parser)
 
 

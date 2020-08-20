@@ -10,13 +10,24 @@ from ...section_document.element_parsers.ps_or_tp import parsers
 from ...util.cli_syntax import option_syntax
 
 
-def parser(grammar: Grammar[EXPR],
-           must_be_on_current_line: bool = True,
-           ) -> Parser[EXPR]:
+def parser__simple(grammar: Grammar[EXPR],
+                   must_be_on_current_line: bool = True,
+                   ) -> Parser[EXPR]:
+    """A parser that parses a mandatory simple expr on any following line"""
+    return _parser_for_must_be_on_current_line(
+        grammar,
+        _SimpleParserOnAnyLineParser(grammar),
+        must_be_on_current_line,
+    )
+
+
+def parser__full(grammar: Grammar[EXPR],
+                 must_be_on_current_line: bool = True,
+                 ) -> Parser[EXPR]:
     """A parser that parses a mandatory full expr on any following line"""
     return _parser_for_must_be_on_current_line(
         grammar,
-        _ExprOnAnyLineParser(grammar),
+        _FullParserOnAnyLineParser(grammar),
         must_be_on_current_line,
     )
 
@@ -36,7 +47,16 @@ def _parser_for_must_be_on_current_line(grammar: Grammar[EXPR],
     )
 
 
-class _ExprOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
+class _SimpleParserOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
+    def __init__(self, grammar: Grammar[EXPR]):
+        super().__init__(False, False)
+        self._grammar = grammar
+
+    def parse_from_token_parser(self, parser: TokenParser) -> EXPR:
+        return _Parser(self._grammar, parser).parse_mandatory_primitive(False)
+
+
+class _FullParserOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
     def __init__(self, grammar: Grammar[EXPR]):
         super().__init__(False, False)
         self._grammar = grammar
@@ -161,10 +181,13 @@ class _Parser(Generic[EXPR]):
     def consume_optional_start_parentheses(self) -> bool:
         start_parenthesis = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(
             ['('],
-            False)
+            False,
+        )
         return start_parenthesis is not None
 
     def consume_mandatory_end_parentheses(self) -> None:
-        self.parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([')'],
-                                                                                      lambda x: None,
-                                                                                      'Expression inside ( )')
+        self.parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
+            [')'],
+            lambda x: None,
+            'Expression inside ( )',
+        )
