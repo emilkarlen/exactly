@@ -25,7 +25,7 @@ class TestStdinShouldBeEmpty(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
-        py_file = File('stdin-checker.py',
+        py_file = File('stdin-parse_check.py',
                        py_programs.pgm_that_exists_with_zero_exit_code_iff_stdin_is_not_expected(''))
 
         py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)

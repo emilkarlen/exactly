@@ -1,23 +1,28 @@
 import itertools
 import unittest
-from typing import Optional, Sequence, List
+from typing import List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.expression import parser as sut
-from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source_of_lines, \
     remaining_source_string
 from exactly_lib_test.test_case_utils.expression.test_resources import test_grammars as ast
-from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import InfixOpA, InfixOpB, PrefixOpExprP
+from exactly_lib_test.test_case_utils.expression.test_resources.case_generation import \
+    current_line_case_variants_for_grammar
+from exactly_lib_test.test_case_utils.expression.test_resources.ex_arr import Arrangement, Expectation, \
+    SourceExpectation, SourceCase
+from exactly_lib_test.test_case_utils.expression.test_resources.parse_check import check, \
+    check_with_must_be_on_current_line_variants, check_fail__expr_on_following_line_is_accepted, \
+    check_fail__must_be_on_current_line, check__multi
+from exactly_lib_test.test_case_utils.expression.test_resources.test_grammars import InfixOpA, InfixOpB, PrefixOpExprP, \
+    GRAMMARS
 from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
 
 
@@ -32,41 +37,11 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-GRAMMARS = [
-    NameAndValue(
-        'sans infix-op expressions',
-        ast.GRAMMAR_SANS_INFIX_OP_EXPRESSIONS,
-    ),
-    NameAndValue(
-        'with infix-op expressions',
-        ast.GRAMMAR_WITH_ALL_COMPONENTS,
-    ),
-]
-
-
-class Arrangement:
-    def __init__(self,
-                 grammar: sut.Grammar,
-                 source: ParseSource,
-                 must_be_on_current_line: bool = True):
-        self.grammar = grammar
-        self.source = source
-        self.must_be_on_current_line = must_be_on_current_line
-
-
-class Expectation:
-    def __init__(self,
-                 expression: ast.Expr,
-                 source: ValueAssertion):
-        self.expression = expression
-        self.source = source
-
-
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                arrangement: Arrangement,
                expectation: Expectation):
-        _check(self, arrangement, expectation)
+        check(self, arrangement, expectation)
 
 
 class TestFailuresCommonToAllGrammars(TestCaseBase):
@@ -95,71 +70,6 @@ class TestFailuresCommonToAllGrammars(TestCaseBase):
                                   case_name=case.name):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         sut.parser(grammar.value, case.value).parse(case.value)
-
-
-class SourceExpectation:
-    def __init__(self,
-                 current_line_number: int,
-                 remaining_part_of_current_line: Optional[str],
-                 ):
-        self.current_line_number = current_line_number
-        self.remaining_part_of_current_line = remaining_part_of_current_line
-
-    @staticmethod
-    def is_at_end_of_line(n: int) -> 'SourceExpectation':
-        return SourceExpectation(n, None)
-
-    @staticmethod
-    def source_is_not_at_end(current_line_number: int,
-                             remaining_part_of_current_line: str) -> 'SourceExpectation':
-        return SourceExpectation(
-            current_line_number,
-            remaining_part_of_current_line,
-        )
-
-    def for_added_empty_first_line(self) -> 'SourceExpectation':
-        return SourceExpectation(
-            self.current_line_number + 1,
-            self.remaining_part_of_current_line,
-        )
-
-    @property
-    def assertion(self) -> ValueAssertion[ParseSource]:
-        return (
-            asrt_source.is_at_end_of_line(self.current_line_number)
-            if self.remaining_part_of_current_line is None
-            else
-            asrt_source.source_is_not_at_end(
-                current_line_number=asrt.equals(self.current_line_number),
-                remaining_part_of_current_line=asrt.equals(self.remaining_part_of_current_line)
-            )
-        )
-
-
-class SourceCase:
-    def __init__(self,
-                 name: str,
-                 source: str,
-                 expectation: SourceExpectation,
-                 ):
-        self.name = name
-        self.source = source
-        self.expectation = expectation
-
-    @property
-    def parse_source(self) -> ParseSource:
-        return remaining_source(self.source)
-
-    @property
-    def assertion(self) -> ValueAssertion[ParseSource]:
-        return self.expectation.assertion
-
-    def for_added_empty_first_line(self) -> 'SourceCase':
-        return SourceCase(
-            self.name + ' / first line is empty',
-            '\n' + self.source,
-            self.expectation.for_added_empty_first_line()
-        )
 
 
 class TestSinglePrimitiveExpression(TestCaseBase):
@@ -212,7 +122,7 @@ class TestSinglePrimitiveExpression(TestCaseBase):
             ),
         ]
         # ACT & ASSERT #
-        _check_with_must_be_on_current_line_variants(self, ast.PrimitiveSansArg(), GRAMMARS, cases)
+        check_with_must_be_on_current_line_variants(self, ast.PrimitiveSansArg(), GRAMMARS, cases)
 
     def test_successful_parse_of_expr_with_argument(self):
         # ARRANGE #
@@ -274,10 +184,10 @@ class TestSinglePrimitiveExpression(TestCaseBase):
 
         # ACT & ASSERT #
 
-        _check_with_must_be_on_current_line_variants(self,
-                                                     ast.PrimitiveWithArg(the_argument),
-                                                     GRAMMARS,
-                                                     cases)
+        check_with_must_be_on_current_line_variants(self,
+                                                    ast.PrimitiveWithArg(the_argument),
+                                                    GRAMMARS,
+                                                    cases)
 
     def test_fail__expr_on_following_line_is_accepted(self):
         cases = [
@@ -294,62 +204,37 @@ class TestSinglePrimitiveExpression(TestCaseBase):
                 str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG)),
             ),
         ]
-        for grammar_description, grammar in GRAMMARS:
-            for case in cases:
-                # Source is on first line
-                for must_be_on_current_line in [False, True]:
-                    with self.subTest(grammar=grammar_description,
-                                      case_name=case.name,
-                                      source='is on first line',
-                                      must_be_on_current_line=must_be_on_current_line):
-                        # ACT & ASSERT #
-                        parse_source = remaining_source_string(case.value)
-                        parser = sut.parser(grammar, must_be_on_current_line=must_be_on_current_line)
-                        with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(parse_source)
-                # Source is not on first line
-                with self.subTest(grammar=grammar_description,
-                                  case_name=case.name,
-                                  source='is not on first line',
-                                  must_be_on_current_line=must_be_on_current_line):
-                    parse_source = remaining_source_string('\n' + case.value)
-                    parser = sut.parser(grammar, must_be_on_current_line=must_be_on_current_line)
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(parse_source)
+        check_fail__expr_on_following_line_is_accepted(
+            self,
+            GRAMMARS,
+            cases,
+        )
 
     def test_fail__must_be_on_current_line(self):
-        for grammar_description, grammar in GRAMMARS:
-            cases = [
-                NameAndValue(
-                    'token is not the name of a primitive expression',
-                    remaining_source('',
-                                     [ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME],
-                                     ),
-                ),
-                NameAndValue(
-                    'token is the name of a primitive expression, but it is quoted/soft',
-                    remaining_source('',
-                                     [str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG))]
-                                     ),
-                ),
-                NameAndValue(
-                    'token is the name of a primitive expression, but it is quoted/hard',
-                    remaining_source('',
-                                     [str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG))]
-                                     ),
-                ),
-                NameAndValue(
-                    'token is the name of a primitive expression, but it is on the next line',
-                    remaining_source('',
-                                     [ast.PRIMITIVE_SANS_ARG]),
-                ),
-            ]
-            for case in cases:
-                with self.subTest(grammar=grammar_description,
-                                  case_name=case.name):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser = sut.parser(grammar, must_be_on_current_line=True)
-                        parser.parse(case.value)
+        cases = [
+            NameAndValue(
+                'token is not the name of a primitive expression',
+                [ast.NOT_A_PRIMITIVE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME],
+            ),
+            NameAndValue(
+                'token is the name of a primitive expression, but it is quoted/soft',
+                [str(surrounded_by_soft_quotes(ast.PRIMITIVE_SANS_ARG))],
+            ),
+            NameAndValue(
+                'token is the name of a primitive expression, but it is quoted/hard',
+                [str(surrounded_by_hard_quotes(ast.PRIMITIVE_SANS_ARG))],
+            ),
+            NameAndValue(
+                'token is the name of a primitive expression, but it is on the next line',
+                [ast.PRIMITIVE_SANS_ARG],
+            ),
+        ]
+        # ACT & ASSERT #
+        check_fail__must_be_on_current_line(
+            self,
+            GRAMMARS,
+            cases,
+        )
 
 
 class TestSinglePrefixOpExpression(TestCaseBase):
@@ -423,9 +308,9 @@ class TestSinglePrefixOpExpression(TestCaseBase):
 
         for grammar in GRAMMARS:
             for operator_case in operator_cases:
-                cases = _current_line_case_variants_for_grammar(operator_case[1],
-                                                                grammar.value,
-                                                                operator_case[2])
+                cases = current_line_case_variants_for_grammar(operator_case[1],
+                                                               grammar.value,
+                                                               operator_case[2])
                 for case in cases:
                     with self.subTest(grammar=grammar.name,
                                       prefix_operator=operator_case[0],
@@ -469,12 +354,9 @@ class TestSinglePrefixOpExpression(TestCaseBase):
                 ),
             ),
         ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                self._check(
-                    case.arrangement,
-                    case.expectation
-                )
+        # ACT & ASSERT #
+
+        check__multi(self, cases)
 
     def test_fail(self):
         for grammar_description, grammar in GRAMMARS:
@@ -557,7 +439,7 @@ class TestSingleRefExpression(TestCaseBase):
             ])
         )
 
-        _check_with_must_be_on_current_line_variants(
+        check_with_must_be_on_current_line_variants(
             self,
             expected_expression=ast.RefExpr(symbol_name),
             grammars=GRAMMARS,
@@ -706,17 +588,17 @@ class TestInfixOpExpression(unittest.TestCase):
                 expected_expression = operator_constructor([expected_primitive_expr,
                                                             expected_primitive_expr])
                 source_cases = source_cases_for_expressions(valid_primitive_expr_source, operator_source)
-                cases = _current_line_case_variants_for_grammar(expected_expression,
-                                                                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                                                source_cases)
+                cases = current_line_case_variants_for_grammar(expected_expression,
+                                                               ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                                               source_cases)
 
                 for case in cases:
                     with self.subTest(name=case.name,
                                       operator_source=operator_source,
                                       valid_primitive_expr_source=valid_primitive_expr_source):
-                        _check(self,
-                               case.arrangement,
-                               case.expectation)
+                        check(self,
+                              case.arrangement,
+                              case.expectation)
 
     def test_success_of_expression_within_parentheses(self):
         s = ast.PrimitiveSansArg()
@@ -785,10 +667,10 @@ class TestInfixOpExpression(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                _check(self,
-                       case.arrangement,
-                       case.expectation
-                       )
+                check(self,
+                      case.arrangement,
+                      case.expectation
+                      )
 
     def test_success_of_expression_within_parentheses_spanning_several_lines(self):
         s = ast.PrimitiveSansArg()
@@ -873,10 +755,10 @@ class TestInfixOpExpression(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                _check(self,
-                       case.arrangement,
-                       case.expectation
-                       )
+                check(self,
+                      case.arrangement,
+                      case.expectation
+                      )
 
     def test_fail_parse_of_infix_op_expression(self):
         # ARRANGE #
@@ -1155,113 +1037,6 @@ class TestCombinedExpressions(TestCaseBase):
                 asrt_source.is_at_end_of_line(1),
             )
         )
-
-
-def _check(put: unittest.TestCase,
-           arrangement: Arrangement,
-           expectation: Expectation):
-    parser = sut.parser(arrangement.grammar, arrangement.must_be_on_current_line)
-    actual = parser.parse(arrangement.source)
-    if expectation.expression != actual:
-        put.fail('Unexpected expression.\nExpected: {}\nActual  : {}'.format(
-            str(expectation.expression),
-            str(actual),
-        ))
-    put.assertEqual(expectation.expression,
-                    actual,
-                    'parsed expression: ' + str(actual))
-    expectation.source.apply_with_message(put,
-                                          arrangement.source,
-                                          'source after parse')
-
-
-def _current_line_case_variants_for_grammar(expected_expression: ast.Expr,
-                                            grammar: Grammar,
-                                            source_cases: Sequence[SourceCase],
-                                            ) -> List[NArrEx[Arrangement, Expectation]]:
-    ret_val = [
-        NArrEx(
-            the_source_case.name + ' / must_be_on_current_line=True',
-            Arrangement(
-                grammar=grammar,
-                source=the_source_case.parse_source,
-                must_be_on_current_line=True,
-            ),
-            Expectation(
-                expression=expected_expression,
-                source=the_source_case.assertion,
-            )
-        )
-        for the_source_case in source_cases
-    ]
-
-    ret_val += [
-        NArrEx(
-            the_source_case.name + ' / must_be_on_current_line=False',
-            Arrangement(
-                grammar=grammar,
-                source=the_source_case.parse_source,
-                must_be_on_current_line=False,
-            ),
-            Expectation(
-                expression=expected_expression,
-                source=the_source_case.assertion,
-            )
-        )
-        for the_source_case in source_cases
-    ]
-
-    ret_val += [
-        _for_added_empty_first_line(expected_expression, grammar, the_source_case)
-        for the_source_case in source_cases
-    ]
-
-    return ret_val
-
-
-def _for_added_empty_first_line(expected_expression: ast.Expr,
-                                the_grammar: Grammar,
-                                src_case: SourceCase) -> NArrEx[Arrangement, Expectation]:
-    case_for_empty_first_line = src_case.for_added_empty_first_line()
-    return NArrEx(
-        case_for_empty_first_line.name + ' / must_be_on_current_line=False',
-        Arrangement(
-            grammar=the_grammar,
-            source=case_for_empty_first_line.parse_source,
-            must_be_on_current_line=False,
-        ),
-        Expectation(
-            expression=expected_expression,
-            source=case_for_empty_first_line.assertion,
-        )
-    )
-
-
-def _check_with_must_be_on_current_line_variants(
-        put: unittest.TestCase,
-        expected_expression: ast.Expr,
-        grammars: Sequence[NameAndValue[Grammar]],
-        original_source_cases: Sequence[SourceCase],
-):
-    grammar_cases = [
-        NameAndValue(
-            the_grammar.name,
-            _current_line_case_variants_for_grammar(expected_expression,
-                                                    the_grammar.value,
-                                                    original_source_cases)
-        )
-        for the_grammar in grammars
-    ]
-
-    for grammar_case in grammar_cases:
-        for source_case in grammar_case.value:
-            with put.subTest(grammar=grammar_case.name,
-                             name=source_case.name):
-                _check(
-                    put,
-                    source_case.arrangement,
-                    source_case.expectation,
-                )
 
 
 if __name__ == '__main__':

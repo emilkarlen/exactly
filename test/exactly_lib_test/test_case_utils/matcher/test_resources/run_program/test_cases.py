@@ -27,7 +27,7 @@ def argument_list_exe_case(command_line_arguments: List[str],
                            ) -> NExArr[PrimAndExeExpectation[MatcherWTrace, MatchingResult],
                                        Arrangement]:
     py_file = File(
-        'arguments-checker.py',
+        'arguments-parse_check.py',
         py_run_programs.pgm_that_exists_with_zero_exit_code_iff_arguments_are_expected(expected_program_arguments)
     )
 
@@ -68,7 +68,7 @@ def environment_exe_case(environment: Dict[str, str],
                          ) -> NExArr[PrimAndExeExpectation[MatcherWTrace, MatchingResult],
                                      Arrangement]:
     py_file = File(
-        'environment-vars-checker.py',
+        'environment-vars-parse_check.py',
         py_programs.pgm_that_exists_with_zero_exit_code_iff_environment_vars_not_included(environment)
     )
 

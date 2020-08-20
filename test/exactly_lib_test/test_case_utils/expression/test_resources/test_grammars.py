@@ -265,3 +265,14 @@ GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
     prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
     infix_op_expressions=(),
 )
+
+GRAMMARS = [
+    NameAndValue(
+        'sans infix-op expressions',
+        GRAMMAR_SANS_INFIX_OP_EXPRESSIONS,
+    ),
+    NameAndValue(
+        'with infix-op expressions',
+        GRAMMAR_WITH_ALL_COMPONENTS,
+    ),
+]
