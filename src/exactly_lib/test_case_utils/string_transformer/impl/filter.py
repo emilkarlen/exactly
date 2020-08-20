@@ -30,7 +30,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse_filter(parser: TokenParser) -> StringTransformerSdv:
-    line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
+    line_matcher = parse_line_matcher.parsers(True).full.parse_from_token_parser(parser)
     return _StringTransformerSelectSdv(line_matcher)
 
 

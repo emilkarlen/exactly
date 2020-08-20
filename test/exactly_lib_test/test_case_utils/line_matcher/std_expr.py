@@ -4,6 +4,7 @@ from typing import Callable
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
@@ -49,12 +50,12 @@ class LineMatcherConfiguration(MatcherConfiguration[LineMatcherLine]):
     def logic_type(self) -> LogicValueType:
         return LogicValueType.LINE_MATCHER
 
-    def parser(self) -> Parser[MatcherSdv[LineMatcherLine]]:
-        return parse_line_matcher.parser()
+    def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[LineMatcherLine]]:
+        return parse_line_matcher.parsers()
 
-    def checker(self) -> IntegrationChecker[MatcherWTrace[LineMatcherLine],
-                                            Callable[[FullResolvingEnvironment], LineMatcherLine],
-                                            MatchingResult]:
+    def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[LineMatcherLine],
+                                                                    Callable[[FullResolvingEnvironment], LineMatcherLine],
+                                                                    MatchingResult]:
         return integration_check.CHECKER
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> LineMatcherLine:

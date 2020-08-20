@@ -54,8 +54,7 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
     def _parse_transformer(parser: TokenParser) -> StringTransformerSdv:
         from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 
-        return parse_string_transformer.parse_string_transformer_from_token_parser(parser,
-                                                                                   must_be_on_current_line=False)
+        return parse_string_transformer.parsers().full.parse_from_token_parser(parser)
 
     def _parse_command_and_arguments(self, parser: TokenParser) -> ProgramSdv:
         return parser.parse_default_or_optional_command(self._parser_of_executable_file.parse_from_token_parser,

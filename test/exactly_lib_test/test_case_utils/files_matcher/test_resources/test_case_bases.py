@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
+from exactly_lib.test_case_utils.files_matcher.parse_files_matcher import parsers
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -29,7 +30,7 @@ class TestCaseBaseForParser(unittest.TestCase):
     def checker(self) -> MatcherChecker:
         return MatcherChecker(
             self,
-            sut.files_matcher_parser())
+            parsers().full)
 
 
 class TestWithAssertionVariantBase(TestCaseBaseForParser):
@@ -43,7 +44,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase, ABC):
         valid_instruction_arguments_con = args.complete_arguments_constructor(
             self.assertion_variant.arguments
         )
-        parser = sut.files_matcher_parser()
+        parser = parsers().full
         for expectation_type in ExpectationType:
             etc = pfh_expectation_type_config(expectation_type)
             valid_instruction_arguments = valid_instruction_arguments_con.apply(etc)
@@ -64,7 +65,7 @@ class TestParseInvalidSyntaxWithMissingSelectorArgCaseBase(TestParseInvalidSynta
             self.assertion_variant.arguments,
             file_matcher=' '
         )
-        parser = sut.files_matcher_parser()
+        parser = parsers().full
         for expectation_type in ExpectationType:
             etc = pfh_expectation_type_config(expectation_type)
             instruction_arguments_without_valid_file_matcher_arg = instruction_args_without_valid_file_matcher.apply(
@@ -91,7 +92,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ACT #
 
-        matcher = sut.files_matcher_parser().parse(source)
+        matcher = parsers().full.parse(source)
         assert isinstance(matcher, MatcherSdv)
         actual = matcher.references
 

@@ -68,7 +68,7 @@ class TestInvalidSyntax(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parser().parse(case.value.as_remaining_source)
+                    sut.parsers(True).full.parse(case.value.as_remaining_source)
 
 
 class Test(unittest.TestCase):

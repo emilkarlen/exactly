@@ -28,7 +28,7 @@ def arbitrary_model() -> ModelConstructor:
 
 
 CHECKER = integration_check.IntegrationChecker(
-    parse_string_matcher.string_matcher_parser(),
+    parse_string_matcher.parsers().full,
     MatcherPropertiesConfiguration(),
     False,
 )

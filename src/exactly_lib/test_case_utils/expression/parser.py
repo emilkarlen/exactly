@@ -1,4 +1,4 @@
-from typing import Generic, Optional, Callable
+from typing import Generic, Optional, Callable, Mapping
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -6,48 +6,68 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol import symbol_syntax
 from .grammar import Grammar, EXPR
-from ...section_document.element_parsers.ps_or_tp import parsers
+from ...section_document.element_parsers.ps_or_tp import parsers as parser_impls
 from ...util.cli_syntax import option_syntax
 
 
-def parser__simple(grammar: Grammar[EXPR],
-                   must_be_on_current_line: bool = True,
-                   ) -> Parser[EXPR]:
-    """A parser that parses a mandatory simple expr on any following line"""
-    return _parser_for_must_be_on_current_line(
-        grammar,
-        _SimpleParserOnAnyLineParser(grammar),
-        must_be_on_current_line,
+class GrammarParsers(Generic[EXPR]):
+    def __init__(self,
+                 simple: Parser[EXPR],
+                 full: Parser[EXPR],
+                 ):
+        self._simple = simple
+        self._full = full
+
+    @property
+    def simple(self) -> Parser[EXPR]:
+        """A parser that parses a simple expression - i.e. without binary operators
+        (except when inside parenthesis, of course).
+        """
+        return self._simple
+
+    @property
+    def full(self) -> Parser[EXPR]:
+        """A parser that parses a full expression - i.e. with binary operators"""
+        return self._full
+
+
+def parsers(grammar: Grammar[EXPR],
+            must_be_on_current_line: bool = True,
+            ) -> GrammarParsers[EXPR]:
+    """Parsers that parses a mandatory EXPR"""
+    return GrammarParsers(
+        simple=parser_impls.parser_for_must_be_on_current_line(
+            grammar,
+            _SimpleParserOnAnyLineParser(grammar),
+            must_be_on_current_line,
+        ),
+        full=parser_impls.parser_for_must_be_on_current_line(
+            grammar,
+            _FullParserOnAnyLineParser(grammar),
+            must_be_on_current_line,
+        ),
     )
+
+
+def parsers_for_must_be_on_current_line(grammar: Grammar[EXPR]) -> Mapping[bool, GrammarParsers[EXPR]]:
+    return {
+        b: parsers(grammar, must_be_on_current_line=b)
+        for b in [False, True]
+    }
 
 
 def parser__full(grammar: Grammar[EXPR],
                  must_be_on_current_line: bool = True,
                  ) -> Parser[EXPR]:
     """A parser that parses a mandatory full expr on any following line"""
-    return _parser_for_must_be_on_current_line(
+    return parser_impls.parser_for_must_be_on_current_line(
         grammar,
         _FullParserOnAnyLineParser(grammar),
         must_be_on_current_line,
     )
 
 
-def _parser_for_must_be_on_current_line(grammar: Grammar[EXPR],
-                                        any_line_parser: Parser[EXPR],
-                                        must_be_on_current_line: bool = True,
-                                        ) -> Parser[EXPR]:
-    return (
-        parsers.CurrentLineMustNotBeEmptyExceptForSpace(
-            any_line_parser,
-            'Missing ' + grammar.concept.syntax_element.name
-        )
-        if must_be_on_current_line
-        else
-        any_line_parser
-    )
-
-
-class _SimpleParserOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
+class _SimpleParserOnAnyLineParser(Generic[EXPR], parser_impls.ParserFromTokenParserBase[EXPR]):
     def __init__(self, grammar: Grammar[EXPR]):
         super().__init__(False, False)
         self._grammar = grammar
@@ -56,7 +76,7 @@ class _SimpleParserOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserB
         return _Parser(self._grammar, parser).parse_mandatory_primitive(False)
 
 
-class _FullParserOnAnyLineParser(Generic[EXPR], parsers.ParserFromTokenParserBase[EXPR]):
+class _FullParserOnAnyLineParser(Generic[EXPR], parser_impls.ParserFromTokenParserBase[EXPR]):
     def __init__(self, grammar: Grammar[EXPR]):
         super().__init__(False, False)
         self._grammar = grammar

@@ -34,7 +34,7 @@ class TestParenthesisSyntax(unittest.TestCase):
         for case in case_generator.parse_should_fail_when_syntax_is_invalid():
             with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parser().parse(case.value)
+                    sut.parsers().full.parse(case.value)
 
     def test_expression_inside_parentheses_SHOULD_be_validated(self):
         symbol_name = 'fc_symbol'

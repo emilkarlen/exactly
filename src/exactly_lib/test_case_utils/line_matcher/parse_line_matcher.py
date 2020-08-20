@@ -5,9 +5,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
+from exactly_lib.test_case_utils.expression import grammar, parser as ep
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherSdv
@@ -26,47 +25,17 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 
-def parser() -> Parser[LineMatcherSdv]:
-    return _PARSER
+def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[LineMatcherSdv]:
+    return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
 
 
-class _Parser(ParserFromTokenParserBase[LineMatcherSdv]):
-    def __init__(self):
-        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
-
-    def parse_from_token_parser(self, parser: TokenParser) -> LineMatcherSdv:
-        return parse_line_matcher_from_token_parser(parser)
-
-
-_PARSER = _Parser()
-
-
-class ParserOfMatcherOnArbitraryLine(ParserFromTokenParserBase[LineMatcherSdv]):
-    def parse_from_token_parser(self, token_parser: TokenParser) -> LineMatcherSdv:
-        return parse_line_matcher_from_token_parser(token_parser, must_be_on_current_line=False)
-
-
-def parse_line_matcher_from_token_parser(token_parser: TokenParser,
-                                         must_be_on_current_line: bool = True) -> LineMatcherSdv:
-    expr_parser = parse_expression.parser__full(GRAMMAR, must_be_on_current_line)
-    return expr_parser.parse_from_token_parser(token_parser)
-
-
-ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
-    '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
-}
-
-_HELP_TEXT_TEMPLATE_FORMATS = ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS.copy()
-
-_HELP_TEXT_TEMPLATE_FORMATS.update({
+_TP = TextParser({
+    'REG_EX': REPLACE_REGEX_ARGUMENT.name,
     'FIRST_LINE_NUMBER': FIRST_LINE_NUMBER,
     'MODEL': matcher_model.LINE_MATCHER_MODEL,
 })
 
-_TP = TextParser(_HELP_TEXT_TEMPLATE_FORMATS)
-
-_REGEX_MATCHER_SED_DESCRIPTION = """Matches {MODEL:s} that contains a given {_REG_EX_}."""
+_REGEX_MATCHER_SED_DESCRIPTION = """Matches {MODEL:s} that contains a given {REG_EX}."""
 
 _LINE_NUMBER_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} with a given line number.
@@ -132,3 +101,5 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         ),
     ),
 )
+
+_PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

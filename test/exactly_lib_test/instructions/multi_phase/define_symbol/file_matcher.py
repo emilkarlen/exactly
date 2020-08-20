@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
         non_matching_name = 'non-matching name'
 
         glob_pattern_arguments = file_matcher_arguments(name_pattern=name_pattern)
-        expected_glob_pattern_matcher_sdv = parse_file_matcher.parser().parse(remaining_source(glob_pattern_arguments))
+        expected_glob_pattern_matcher_sdv = parse_file_matcher.parsers().full.parse(remaining_source(glob_pattern_arguments))
 
         expected_glob_pattern_matcher = resolving_helper__fake().resolve_matcher(expected_glob_pattern_matcher_sdv)
 

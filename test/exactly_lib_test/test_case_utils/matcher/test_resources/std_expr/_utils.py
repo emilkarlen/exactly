@@ -246,7 +246,7 @@ class BinaryOperatorApplicationCheckHelper(Generic[MODEL]):
             cases_with_same_number_of_operands,
         )
 
-        self.conf.checker().check_multi__w_source_variants(
+        self.conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
             self.put,
             source,
             self.helper.is_sym_refs_to(operand_symbol_names),

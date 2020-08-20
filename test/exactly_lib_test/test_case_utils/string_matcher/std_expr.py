@@ -1,9 +1,9 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
@@ -50,12 +50,12 @@ class StringMatcherConfiguration(MatcherConfiguration[StringModel]):
     def logic_type(self) -> LogicValueType:
         return LogicValueType.STRING_MATCHER
 
-    def parser(self) -> Parser[MatcherSdv[StringModel]]:
-        return parse_string_matcher.string_matcher_parser()
+    def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[StringModel]]:
+        return parse_string_matcher.parsers()
 
-    def checker(self) -> IntegrationChecker[MatcherWTrace[StringModel],
-                                            Callable[[FullResolvingEnvironment], StringModel],
-                                            MatchingResult]:
+    def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[StringModel],
+                                                                    Callable[[FullResolvingEnvironment], StringModel],
+                                                                    MatchingResult]:
         return integration_check.CHECKER
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> StringModel:

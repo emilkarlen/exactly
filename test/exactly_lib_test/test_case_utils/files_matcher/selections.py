@@ -52,7 +52,7 @@ class TestSymbolReferenceFromBothSelectorAndFilesMatcherShouldBeReported(unittes
 
         # ACT #
 
-        sdv = sut.files_matcher_parser().parse(source)
+        sdv = sut.parsers().full.parse(source)
 
         # ASSERT #
 
@@ -101,7 +101,7 @@ class TestSequenceOfSelectionsAreCombinedWithAnd(unittest.TestCase):
         # ARRANGE #
         positive_expectation = expectation_type_config__non_is_success(ExpectationType.POSITIVE)
         rel_opt_conf = rel_opt_confs.conf_rel_sds(RelSdsOptionType.REL_TMP)
-        parser = sut.files_matcher_parser()
+        parser = sut.parsers().full
 
         # dir contents
 

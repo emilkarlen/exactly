@@ -37,13 +37,13 @@ class TestDocumentation(unittest.TestCase):
 
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_raise_exception_WHEN_no_arguments(self):
-        parser = sut.files_matcher_parser()
+        parser = sut.parsers(must_be_on_current_line=True).full
         for source in equivalent_source_variants(self, ''):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
                 parser.parse(source)
 
     def test_raise_exception_WHEN_invalid_assertion_variant(self):
-        parser = sut.files_matcher_parser()
+        parser = sut.parsers(must_be_on_current_line=True).full
         cases = [
             NameAndValue(
                 'Matcher is missing',

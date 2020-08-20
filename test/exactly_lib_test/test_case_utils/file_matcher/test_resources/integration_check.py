@@ -48,7 +48,7 @@ def file_in_tcds(relativity: RelOptionType, file_name: str) -> ModelConstructor:
 ARBITRARY_MODEL = constant_relative_file_name('arbitrary-file.txt')
 
 CHECKER = integration_check.IntegrationChecker(
-    parse_file_matcher.parser(),
+    parse_file_matcher.parsers().full,
     MatcherPropertiesConfiguration(),
     False,
 )

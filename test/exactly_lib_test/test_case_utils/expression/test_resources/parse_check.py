@@ -20,7 +20,7 @@ class ParserMaker(ABC):
     @abstractmethod
     def make(self,
              grammar: Grammar[EXPR],
-             must_be_on_current_line,
+             must_be_on_current_line: bool,
              ) -> Parser[EXPR]:
         pass
 
@@ -28,17 +28,17 @@ class ParserMaker(ABC):
 class _ParserMakerOfFullExprParser(ParserMaker):
     def make(self,
              grammar: Grammar[EXPR],
-             must_be_on_current_line,
+             must_be_on_current_line: bool,
              ) -> Parser[EXPR]:
-        return sut.parser__full(grammar, must_be_on_current_line)
+        return sut.parsers(grammar, must_be_on_current_line).full
 
 
 class _ParserMakerOfSimpleExprParser(ParserMaker):
     def make(self,
              grammar: Grammar[EXPR],
-             must_be_on_current_line,
+             must_be_on_current_line: bool,
              ) -> Parser[EXPR]:
-        return sut.parser__simple(grammar, must_be_on_current_line)
+        return sut.parsers(grammar, must_be_on_current_line).simple
 
 
 PARSER_MAKER_OF_FULL_EXPR_PARSER = _ParserMakerOfFullExprParser()

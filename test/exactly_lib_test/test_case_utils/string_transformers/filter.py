@@ -53,7 +53,7 @@ class TestInvalidSyntax(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parser().parse(parse_source.remaining_source(case.value))
+                    sut.parsers(True).full.parse(parse_source.remaining_source(case.value))
 
 
 class TestSelectTransformer(unittest.TestCase):

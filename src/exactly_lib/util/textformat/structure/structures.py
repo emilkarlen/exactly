@@ -134,10 +134,10 @@ def first_row_is_header_table(rows_iterable,
                        rows_iterable)
 
 
-def plain_table(rows_iterable,
+def plain_table(rows: List[List[TableCell]],
                 column_separator: str = '  ') -> ParagraphItem:
     return table.Table(table.TableFormat(column_separator),
-                       rows_iterable)
+                       rows)
 
 
 def text_from_unknown(str_or_text: StrOrText) -> Text:

@@ -4,7 +4,7 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources.properties_
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check
 
 CHECKER = integration_check.IntegrationChecker(
-    parse.parser(),
+    parse.parsers().full,
     FilesConditionPropertiesConfiguration(),
     False,
 )

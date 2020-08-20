@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_system.value_type import LogicValueType
@@ -44,13 +44,13 @@ class MatcherConfiguration(Generic[MODEL], ABC):
         pass
 
     @abstractmethod
-    def parser(self) -> Parser[MatcherSdv[MODEL]]:
+    def parsers_for_expr_on_any_line(self) -> GrammarParsers[MatcherSdv[MODEL]]:
         pass
 
     @abstractmethod
-    def checker(self) -> IntegrationChecker[MatcherWTrace[MODEL],
-                                            Callable[[FullResolvingEnvironment], MODEL],
-                                            MatchingResult]:
+    def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[MODEL],
+                                                                    Callable[[FullResolvingEnvironment], MODEL],
+                                                                    MatchingResult]:
         pass
 
     @abstractmethod

@@ -10,7 +10,7 @@ def parse(quantifier: Quantifier,
           token_parser: TokenParser) -> StringMatcherSdv:
     return parse_quantified_matcher.parse_after_quantifier_token(
         quantifier,
-        parse_line_matcher.ParserOfMatcherOnArbitraryLine(),
+        parse_line_matcher.parsers().full,
         line_matchers.ELEMENT_SETUP,
         token_parser
     )

@@ -64,7 +64,7 @@ class TestParseInvalidSyntax(test_case_bases.TestParseInvalidSyntaxWithMissingSe
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgument(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
-        return expression.Configuration(sut.files_matcher_parser(),
+        return expression.Configuration(sut.parsers().full,
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumFilesCheck(),
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
@@ -90,7 +90,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
         # ACT #
 
-        actual_matcher = sut.files_matcher_parser().parse(source)
+        actual_matcher = sut.parsers().full.parse(source)
 
         assert isinstance(actual_matcher, MatcherSdv)
 

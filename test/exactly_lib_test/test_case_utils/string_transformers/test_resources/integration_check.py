@@ -19,7 +19,7 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
 StExpectation = Expectation[StringTransformer, StringModel]
 
 CHECKER = logic_integration_check.IntegrationChecker(
-    parse_string_transformer.parser(),
+    parse_string_transformer.parsers(True).full,
     StringTransformerPropertiesConfiguration(),
     True,
 )

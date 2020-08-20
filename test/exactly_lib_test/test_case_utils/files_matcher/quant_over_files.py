@@ -114,7 +114,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
-        return expression.Configuration(sut.files_matcher_parser(),
+        return expression.Configuration(sut.parsers().full,
                                         TheInstructionArgumentsVariantConstructorForIntegerResolvingOfNumLinesCheck(),
                                         invalid_integers_according_to_custom_validation=[-1, -2])
 
@@ -156,7 +156,7 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
 
         # ACT #
 
-        matcher_sdv = sut.files_matcher_parser().parse(source)
+        matcher_sdv = sut.parsers().full.parse(source)
 
         assert isinstance(matcher_sdv, MatcherSdv)
 
@@ -241,7 +241,7 @@ class TestExistsContentsEmptyFile(unittest.TestCase):
 
     @property
     def instruction_checker(self) -> MatcherChecker:
-        return MatcherChecker(self, sut.files_matcher_parser())
+        return MatcherChecker(self, sut.parsers().full)
 
     def test_one_empty_and_one_non_empty_file(self):
         self.instruction_checker.check_expectation_type_variants(
@@ -305,7 +305,7 @@ class TestExistsTypeDir(unittest.TestCase):
 
     @property
     def instruction_checker(self) -> MatcherChecker:
-        return MatcherChecker(self, sut.files_matcher_parser())
+        return MatcherChecker(self, sut.parsers().full)
 
     def test_one_dir_and_one_regular(self):
         self.instruction_checker.check_expectation_type_variants(
@@ -345,7 +345,7 @@ class TestForAllContentsEmptyFile(unittest.TestCase):
 
     @property
     def instruction_checker(self) -> MatcherChecker:
-        return MatcherChecker(self, sut.files_matcher_parser())
+        return MatcherChecker(self, sut.parsers().full)
 
     def test_one_empty_and_one_non_empty_file(self):
         self.instruction_checker.check_expectation_type_variants(
@@ -550,7 +550,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
 
     @property
     def instruction_checker(self) -> MatcherChecker:
-        return MatcherChecker(self, sut.files_matcher_parser())
+        return MatcherChecker(self, sut.parsers().full)
 
     def test_it_SHOULD_be_possible_to_create_multiple_intermediate_files(self):
         # ARRANGE #

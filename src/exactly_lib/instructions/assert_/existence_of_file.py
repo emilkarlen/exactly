@@ -172,7 +172,7 @@ class Parser(InstructionParserWithoutSourceFileLocationInfo):
             parser.consume_mandatory_constant_unquoted_string(
                 PROPERTIES_SEPARATOR,
                 must_be_on_current_line=True)
-            file_matcher = parse_file_matcher.parse_sdv(parser, must_be_on_current_line=False)
+            file_matcher = parse_file_matcher.parsers().full.parse_from_token_parser(parser)
             parser.report_superfluous_arguments_if_not_at_eol()
 
         return file_matcher

@@ -61,10 +61,7 @@ class LineMatcherParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_line_matcher.parse_line_matcher_from_token_parser(
-            token_parser,
-            must_be_on_current_line=False,
-        )
+        return parse_line_matcher.parsers(False).full.parse_from_token_parser(token_parser)
 
 
 class StringMatcherParser(TypeValueParser):
@@ -72,7 +69,7 @@ class StringMatcherParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_string_matcher.parse_string_matcher(token_parser)
+        return parse_string_matcher.parsers().full.parse_from_token_parser(token_parser)
 
 
 class FileMatcherParser(TypeValueParser):
@@ -80,10 +77,7 @@ class FileMatcherParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_file_matcher.parse_sdv(
-            token_parser,
-            must_be_on_current_line=False,
-        )
+        return parse_file_matcher.parsers().full.parse_from_token_parser(token_parser)
 
 
 class FilesMatcherParser(TypeValueParser):
@@ -91,10 +85,7 @@ class FilesMatcherParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_files_matcher.parse_files_matcher(
-            token_parser,
-            must_be_on_current_line=False,
-        )
+        return parse_files_matcher.parsers().full.parse_from_token_parser(token_parser)
 
 
 class FilesConditionParser(TypeValueParser):
@@ -102,10 +93,7 @@ class FilesConditionParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_files_condition.parse(
-            token_parser,
-            must_be_on_current_line=False,
-        )
+        return parse_files_condition.parsers().full.parse_from_token_parser(token_parser)
 
 
 class StringTransformerParser(TypeValueParser):
@@ -113,10 +101,7 @@ class StringTransformerParser(TypeValueParser):
               fs_location_info: FileSystemLocationInfo,
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
-        return parse_string_transformer.parse_string_transformer_from_token_parser(
-            token_parser,
-            must_be_on_current_line=False
-        )
+        return parse_string_transformer.parsers().full.parse_from_token_parser(token_parser)
 
 
 class ProgramParser(TypeValueParser):

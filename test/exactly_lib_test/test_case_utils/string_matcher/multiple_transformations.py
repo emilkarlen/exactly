@@ -66,7 +66,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
 
         # ACT & ASSERT #
 
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
         prepend_and_equals_expected_matcher_sdv = parser.parse(trans_and_eq_expected_matcher_source)
 
         prepend_and_equals_expected_matcher = StringMatcherSymbolContext.of_sdv(

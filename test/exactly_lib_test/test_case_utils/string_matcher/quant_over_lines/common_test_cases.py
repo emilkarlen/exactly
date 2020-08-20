@@ -56,7 +56,7 @@ class _TestCaseBase(unittest.TestCase):
                     args_variant = args_variant_constructor.construct(expectation_type,
                                                                       quantifier)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.string_matcher_parser().parse(test_configuration.source_for(args_variant))
+                        sut.parsers().full.parse(test_configuration.source_for(args_variant))
 
 
 class _ParseWithMissingLineMatcherArgument(_TestCaseBase):
@@ -194,7 +194,7 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                                     common_arguments: CommonArgumentsConstructor,
                                     line_matcher: str,
                                     expected_symbols: ValueAssertion[Sequence[SymbolReference]]):
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
 
         for expectation_type in ExpectationType:
             for quantifier in Quantifier:

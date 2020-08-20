@@ -88,7 +88,7 @@ class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgu
 
 class ParseShouldFailWhenRegexArgumentIsMissing(tc.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             for maybe_full_match in FULL_MATCH_OPTION_ALTERNATIVES:
                 with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option,

@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
             is_reference_to_file_matcher(fm_symbol_name),
         )
 
-        parser = sut.files_matcher_parser()
+        parser = sut.parsers().full
 
         for case in FULL_AND_NON_FULL_CASES:
             fsm = case.arguments_for_fc(fc_argument)

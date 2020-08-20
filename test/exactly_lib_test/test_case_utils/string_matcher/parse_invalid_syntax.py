@@ -32,7 +32,7 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(test_configurat
             NameAndValue('illegal argument',
                          'this-is-an-illegal-argument'),
         ]
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
         for case in cases:
             with self.subTest(case_name=case.name):
                 source = test_configuration.source_for(
@@ -51,7 +51,7 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(test_configurat
 
 class ParseShouldFailWhenCheckIsMissing(test_configuration.TestWithNegationArgumentBase):
     def _doTest(self, maybe_not: ExpectationTypeConfigForNoneIsSuccess):
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 source = test_configuration.source_for(
@@ -74,7 +74,7 @@ class ParseShouldFailWhenCheckIsIllegal(test_configuration.TestWithNegationArgum
             NameAndValue('illegal option',
                          'this-is-an-illegal-argument'),
         ]
-        parser = sut.string_matcher_parser()
+        parser = sut.parsers().full
         for case in cases:
             for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
                 with self.subTest(illegal_check=case.name,

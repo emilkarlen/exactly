@@ -25,4 +25,4 @@ def _assert_parse_raises(put: unittest.TestCase, files_condition: FilesCondition
         source = case.arguments_for_fc(files_condition).as_remaining_source
         with put.subTest(case.name):
             with put.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.files_matcher_parser().parse(source)
+                sut.parsers().full.parse(source)

@@ -79,7 +79,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 symbol_table = symbol.symbol_table
 
-                expected_matcher_sdv = parse_line_matcher.parser().parse(remaining_source(matcher_argument))
+                expected_matcher_sdv = parse_line_matcher.parsers().full.parse(remaining_source(matcher_argument))
 
                 expected_matcher = resolving_helper(symbol_table).resolve_matcher(expected_matcher_sdv)
 

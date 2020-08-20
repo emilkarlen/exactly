@@ -8,15 +8,12 @@ from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
-from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers import token_stream_parser
-from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_matcher.impl import \
     name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
@@ -27,12 +24,13 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv, FileMatcher
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
@@ -45,36 +43,8 @@ REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
-def parser() -> Parser[FileMatcherSdv]:
-    return _PARSER
-
-
-class _Parser(parsers.ParserFromTokenParserBase[FileMatcherSdv]):
-    def __init__(self):
-        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
-
-    def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdv:
-        return parse_sdv(token_parser, must_be_on_current_line=True)
-
-
-class ParserOfMatcherOnArbitraryLine(parsers.ParserFromTokenParserBase[MatcherSdv[FileMatcherModel]]):
-    def __init__(self):
-        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
-
-    def parse_from_token_parser(self, token_parser: TokenParser) -> FileMatcherSdv:
-        return parse_sdv(token_parser, must_be_on_current_line=False)
-
-
-_PARSER = _Parser()
-
-
-def parse_sdv(token_parser: TokenParser,
-              must_be_on_current_line: bool) -> FileMatcherSdv:
-    token_parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
-        token_parser,
-        ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
-    expr_parser = ep.parser__full(GRAMMAR, must_be_on_current_line)
-    return expr_parser.parse_from_token_parser(token_parser)
+def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcherSdv]:
+    return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
 
 
 def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
@@ -87,21 +57,19 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
-        '{_TYPE_}')
+        TYPE_MATCHER_ARGUMENT.name)
     return sdv_components.matcher_sdv_from_constant_primitive(FileMatcherType(file_type))
 
 
 def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdv:
-    string_matcher = parse_string_matcher.parse_string_matcher(parser,
-                                                               must_be_on_current_line=False)
+    string_matcher = parse_string_matcher.parsers().full.parse_from_token_parser(parser)
     return regular_file_contents.sdv(string_matcher)
 
 
 def _parse_dir_contents(token_parser: TokenParser) -> FileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
     model_constructor = DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
-    files_matcher = parse_files_matcher.parse_files_matcher(token_parser,
-                                                            False)
+    files_matcher = parse_files_matcher.parsers().full.parse_from_token_parser(token_parser)
     return dir_contents.dir_matches_files_matcher_sdv(model_constructor,
                                                       files_matcher)
 
@@ -110,26 +78,8 @@ def _constant(matcher: FileMatcher) -> FileMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(matcher)
 
 
-ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
-    '_MATCHER_': types.FILE_MATCHER_TYPE_INFO.name.singular,
-    '_NAME_MATCHER_': file_matcher.NAME_MATCHER_NAME,
-    '_TYPE_MATCHER_': file_matcher.TYPE_MATCHER_NAME,
-    '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
-    '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
-    '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
-    'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
-    '_GLOB_PATTERN_INFORMATIVE_NAME_': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
-    '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
-    'MODEL': matcher_model.FILE_MATCHER_MODEL,
-    'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
-    'program': types.PROGRAM_TYPE_INFO.name,
-    'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
-    'exit_code': misc_texts.EXIT_CODE,
-}
-
-
 def _file_types_table() -> docs.ParagraphItem:
-    def row(type_name: str, description: str) -> list:
+    def row(type_name: str, description: str) -> List[TableCell]:
         return [
             docs.cell(docs.paras(doc_format.enum_name_text(type_name))),
             docs.cell(_TP.fnap(description)),
@@ -233,7 +183,17 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     ),
 )
 
-_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
+_PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)
+
+_TP = TextParser({
+    'MATCHER': types.FILE_MATCHER_TYPE_INFO.name.singular,
+    'TYPE': TYPE_MATCHER_ARGUMENT.name,
+    'SYMLINK_TYPE': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
+    'GLOB_PATTERN_INFORMATIVE_NAME': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
+    'REG_EX_PATTERN_INFORMATIVE_NAME': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
+    'MODEL': matcher_model.FILE_MATCHER_MODEL,
+    'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+})
 
 _DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG = token_stream_parser.ErrorMessageConfiguration(
     'Missing {_CONTENTS_OPTIONS_} or {_FILES_MATCHER_}',
@@ -249,10 +209,10 @@ _NAME_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} who's ...
 
 
-  * name : matches {_GLOB_PATTERN_INFORMATIVE_NAME_}, or
+  * name : matches {GLOB_PATTERN_INFORMATIVE_NAME}, or
   
   
-  * base name : matches {_REG_EX_PATTERN_INFORMATIVE_NAME_}
+  * base name : matches {REG_EX_PATTERN_INFORMATIVE_NAME}
 """
 
 
@@ -261,8 +221,6 @@ def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
 
 
 _TYPE_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {_SYMLINK_TYPE_}).
-{_TYPE_} is one of:
+Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {SYMLINK_TYPE}).
+{TYPE} is one of:
 """
-
-_TP = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)

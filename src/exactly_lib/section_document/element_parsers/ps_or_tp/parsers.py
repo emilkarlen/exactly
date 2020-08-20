@@ -5,6 +5,7 @@ from exactly_lib.section_document.element_parsers import instruction_parser_exce
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import PARSE_RESULT, Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.test_case_utils.expression.grammar import Grammar, EXPR
 
 T = TypeVar('T')
 
@@ -61,3 +62,18 @@ class CurrentLineMustNotBeEmptyExceptForSpace(Generic[PARSE_RESULT], Parser[PARS
     def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
         parser.require_is_not_at_eol(self._error_message_if_current_line_empty)
         return self._with_non_empty_current_line.parse_from_token_parser(parser)
+
+
+def parser_for_must_be_on_current_line(grammar: Grammar[EXPR],
+                                       any_line_parser: Parser[EXPR],
+                                       must_be_on_current_line: bool = True,
+                                       ) -> Parser[EXPR]:
+    return (
+        CurrentLineMustNotBeEmptyExceptForSpace(
+            any_line_parser,
+            'Missing ' + grammar.concept.syntax_element.name
+        )
+        if must_be_on_current_line
+        else
+        any_line_parser
+    )

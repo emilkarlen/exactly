@@ -2,11 +2,10 @@ from typing import Sequence
 
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
-from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
+from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import parse as parse_fc
 from exactly_lib.test_case_utils.files_matcher import config
@@ -23,22 +22,15 @@ from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.name_and_value import NameAndValue
 
 
-def files_matcher_parser() -> Parser[FilesMatcherSdv]:
-    return parsers.ParserFromTokenParserFunction(parse_files_matcher,
-                                                 consume_last_line_if_is_at_eol_after_parse=False)
-
-
-def parse_files_matcher(token_parser: TokenParser,
-                        must_be_on_current_line: bool = True) -> FilesMatcherSdv:
-    expr_parser = ep.parser__full(GRAMMAR, must_be_on_current_line)
-    return expr_parser.parse_from_token_parser(token_parser)
+def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FilesMatcherSdv]:
+    return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
 
 
 def _file_quantified_assertion(quantifier: Quantifier,
                                parser: TokenParser) -> FilesMatcherSdv:
     return parse_quantified_matcher.parse_after_quantifier_token(
         quantifier,
-        parse_file_matcher.ParserOfMatcherOnArbitraryLine(),
+        parse_file_matcher.parsers().full,
         quant_over_files.ELEMENT_SETUP,
         parser,
     )
@@ -53,16 +45,16 @@ def _parse_num_files_check(parser: TokenParser) -> FilesMatcherSdv:
 
 
 def _parse_selection(parser: TokenParser) -> FilesMatcherSdv:
-    element_matcher = parse_file_matcher.parse_sdv(parser, False)
-    matcher_on_selection = parse_files_matcher(parser, False)
+    element_matcher = parse_file_matcher.parsers().full.parse_from_token_parser(parser)
+    matcher_on_selection = parsers().full.parse_from_token_parser(parser)
 
     return sub_set_selection.matcher(element_matcher,
                                      matcher_on_selection)
 
 
 def _parse_prune(parser: TokenParser) -> FilesMatcherSdv:
-    element_matcher = parse_file_matcher.parse_sdv(parser, False)
-    matcher_on_selection = parse_files_matcher(parser, False)
+    element_matcher = parse_file_matcher.parsers().full.parse_from_token_parser(parser)
+    matcher_on_selection = parsers().full.parse_from_token_parser(parser)
 
     return prune.matcher(element_matcher,
                          matcher_on_selection)
@@ -70,7 +62,7 @@ def _parse_prune(parser: TokenParser) -> FilesMatcherSdv:
 
 def _parse_matches(parser: TokenParser) -> FilesMatcherSdv:
     is_full = parser.consume_optional_option(config.MATCHES_FULL_OPTION.name)
-    fc = parse_fc.parse(parser, False)
+    fc = parse_fc.parsers().full.parse_from_token_parser(parser)
     return (
         matches_full.sdv(fc)
         if is_full
@@ -93,7 +85,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[F
     ]
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         quant_over_files.ELEMENT_SETUP,
-        parse_file_matcher.ParserOfMatcherOnArbitraryLine(),
+        parse_file_matcher.parsers().full,
     )
 
     ret_val += quantification_setup.quantification_grammar_expressions()
@@ -128,3 +120,5 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     value_type=ValueType.FILES_MATCHER,
     simple_expressions=_simple_expressions(),
 )
+
+_PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

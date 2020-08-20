@@ -33,7 +33,7 @@ class TestCaseBase(unittest.TestCase):
 
     def _assert_failing_parse(self, source: ParseSource):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parser().parse(source)
+            sut.parsers().full.parse(source)
 
     def _check_with_source_variants(self,
                                     arguments: Arguments,

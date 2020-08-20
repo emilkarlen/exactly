@@ -4,7 +4,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker imp
     MatcherPropertiesConfiguration
 
 CHECKER = integration_check.IntegrationChecker(
-    parse_files_matcher.files_matcher_parser(),
+    parse_files_matcher.parsers().full,
     MatcherPropertiesConfiguration(),
     False,
 )

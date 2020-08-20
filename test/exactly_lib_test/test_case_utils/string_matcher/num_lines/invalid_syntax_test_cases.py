@@ -27,7 +27,7 @@ class _TestCaseBase(unittest.TestCase):
             with self.subTest(expectation_type=expectation_type):
                 args_variant = args_variant_constructor.construct(expectation_type)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.string_matcher_parser().parse(
+                    sut.parsers().full.parse(
                         test_configuration.source_for(args_variant)
                     )
 

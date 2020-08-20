@@ -30,7 +30,7 @@ class TestReference(unittest.TestCase):
     def test_parse_SHOULD_fail_WHEN_initial_token_is_neither_valid_sym_ref_nor_primitive(self):
         source = remaining_source(symbol_syntax.NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parser().parse(source)
+            sut.parsers().full.parse(source)
 
     def test_referenced_symbol_SHOULD_be_validated(self):
         symbol_name = 'fc_symbol'

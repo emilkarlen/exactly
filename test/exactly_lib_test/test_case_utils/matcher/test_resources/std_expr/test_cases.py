@@ -51,7 +51,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         for case in case_generator.parse_should_fail_when_syntax_is_invalid():
             with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    conf.parser().parse(case.value)
+                    conf.parsers_for_expr_on_any_line().full.parse(case.value)
 
     def test_expression_inside_parentheses_SHOULD_be_validated(self):
         # ARRANGE #
@@ -63,7 +63,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi__w_source_variants(
+        conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
             self,
             arguments=ArgumentElements(['(', symbol_name, ')']).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -99,7 +99,7 @@ class TestParenthesisBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for source_case in source_cases:
             with self.subTest(source_case.name):
-                conf.checker().check_multi__w_source_variants(
+                conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -112,12 +112,12 @@ class TestConstantBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_operand_is_missing(self):
         source = remaining_source(logic.CONSTANT_MATCHER)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.parser().parse(source)
+            self.configuration.parsers_for_expr_on_any_line().full.parse(source)
 
     def test_application(self):
         conf = self.configuration
         for value in [False, True]:
-            conf.checker().check__w_source_variants(
+            conf.checker_for_parser_of_full_expr().check__w_source_variants(
                 self,
                 arguments=matcher_argument.Constant(value).as_arguments,
                 input_=conf.arbitrary_model,
@@ -143,7 +143,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_initial_token_is_neither_valid_sym_ref_nor_primitive(self):
         source = remaining_source(self.configuration.not_a_valid_symbol_name_nor_valid_primitive_or_operator())
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.parser().parse(source)
+            self.configuration.parsers_for_expr_on_any_line().full.parse(source)
 
     def test_referenced_symbol_SHOULD_be_validated(self):
         # ARRANGE #
@@ -157,7 +157,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for symbol_ref_syntax in symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
-                conf.checker().check_multi__w_source_variants(
+                conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
                     self,
                     arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -177,7 +177,7 @@ class TestSymbolReferenceBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for symbol_ref_syntax in symbol_ref_syntax_cases(symbol_name):
             with self.subTest(symbol_ref_syntax=symbol_ref_syntax.name):
-                conf.checker().check_multi__w_source_variants(
+                conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
                     self,
                     arguments=Arguments(symbol_ref_syntax.value),
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -190,7 +190,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_parse_SHOULD_fail_WHEN_operand_is_missing(self):
         source = remaining_source(logic.NOT_OPERATOR_NAME)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.parser().parse(source)
+            self.configuration.parsers_for_expr_on_any_line().full.parse(source)
 
     def test_validation_SHOULD_fail_WHEN_validation_of_negated_expr_fails(self):
         # ARRANGE #
@@ -202,7 +202,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         # ACT & ASSERT #
 
-        conf.checker().check_multi__w_source_variants(
+        conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
             self,
             arguments=ArgumentElements([logic.NOT_OPERATOR_NAME, symbol_name]).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -269,7 +269,7 @@ class TestNegationBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
 
         for source_case in source_cases:
             with self.subTest(source_case.name):
-                conf.checker().check_multi__w_source_variants(
+                conf.checker_for_parser_of_full_expr().check_multi__w_source_variants(
                     self,
                     arguments=source_case.value.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(helper.is_sym_ref_to(symbol_name)),
@@ -297,14 +297,14 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         arguments = ArgumentElements([self.configuration.valid_symbol_name_and_not_valid_primitive_or_operator(),
                                       self.operator_name])
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.configuration.parser().parse(arguments.as_remaining_source)
+            self.configuration.parsers_for_expr_on_any_line().full.parse(arguments.as_remaining_source)
 
     def test_validation_SHOULD_fail_WHEN_validation_of_any_of_2_operands_fails(self):
         helper = BinaryOperatorValidationCheckHelper(self.operator_name,
                                                      ['_op1_', '_op2_'],
                                                      self.configuration)
 
-        self.configuration.checker().check_multi__w_source_variants(
+        self.configuration.checker_for_parser_of_full_expr().check_multi__w_source_variants(
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
@@ -317,7 +317,7 @@ class _TestBinaryOperatorBase(Generic[MODEL], _TestCaseBase[MODEL], ABC):
                                                      ['_op1_', '_op2_', '_op3_'],
                                                      self.configuration)
 
-        self.configuration.checker().check_multi__w_source_variants(
+        self.configuration.checker_for_parser_of_full_expr().check_multi__w_source_variants(
             self,
             helper.operand_expr_source(),
             symbol_references=helper.symbol_references_expectation(),
@@ -580,7 +580,7 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         conf = self.configuration
         helper = self._asrt_helper
 
-        conf.checker().check__w_source_variants(
+        conf.checker_for_parser_of_full_expr().check__w_source_variants(
             self,
             arguments.as_arguments,
             conf.arbitrary_model,

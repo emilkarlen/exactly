@@ -3,13 +3,11 @@ from typing import Optional, Tuple, Sequence
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
-from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
-from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression import parser as grammar_parser
+from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import files_conditions
 from exactly_lib.test_case_utils.files_condition import syntax
@@ -19,30 +17,12 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
 from . import documentation
+from ..expression.parser import GrammarParsers
 from ...util.str_ import str_constructor
 
 
-def parser(must_be_on_current_line: bool = False) -> Parser[FilesConditionSdv]:
-    return (
-        _PARSER_FROM_CURRENT_LINE
-        if must_be_on_current_line
-        else
-        _PARSER_FROM_ARBITRARY_LINE
-    )
-
-
-class _ParserFromArbitraryLine(parsers.ParserFromTokenParserBase[FilesConditionSdv]):
-    def __init__(self):
-        super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
-
-    def parse_from_token_parser(self, parser: TokenParser) -> FilesConditionSdv:
-        return parse(parser, must_be_on_current_line=False)
-
-
-def parse(token_parser: TokenParser,
-          must_be_on_current_line: bool = True) -> FilesConditionSdv:
-    expr_parser = grammar_parser.parser__full(GRAMMAR, must_be_on_current_line)
-    return expr_parser.parse_from_token_parser(token_parser)
+def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FilesConditionSdv]:
+    return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
 
 
 def _parse_constant(tokens: TokenParser) -> FilesConditionSdv:
@@ -72,7 +52,7 @@ def _parse_elements(tokens: TokenParser) -> Sequence[Tuple[StringSdv, Optional[F
         file_name = parse_string.parse_string_sdv(tokens.token_stream, _FILE_NAME_STRING_CONFIGURATION)
         if tokens.head_is_unquoted_and_equals(syntax.FILE_MATCHER_SEPARATOR):
             tokens.consume_head()
-            file_matcher = parse_file_matcher.parse_sdv(tokens, False)
+            file_matcher = parse_file_matcher.parsers().full.parse_from_token_parser(tokens)
             return file_name, file_matcher
         else:
             is_at_eol_or_end_of_set()
@@ -92,13 +72,6 @@ def _token_is_set_end(token: Token) -> bool:
 def _token_is_matcher_separator(token: Token) -> bool:
     return token.is_plain and token.string == syntax.FILE_MATCHER_SEPARATOR
 
-
-_PARSER_FROM_ARBITRARY_LINE = _ParserFromArbitraryLine()
-
-_PARSER_FROM_CURRENT_LINE = parsers.CurrentLineMustNotBeEmptyExceptForSpace(
-    _PARSER_FROM_ARBITRARY_LINE,
-    'Missing ' + syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
-)
 
 _FILE_NAME_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     text_docs.single_pre_formatted_line_object(
@@ -142,3 +115,5 @@ GRAMMAR = grammar.Grammar(
     infix_op_expressions=(),
     prefix_op_expressions=(),
 )
+
+_PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)
