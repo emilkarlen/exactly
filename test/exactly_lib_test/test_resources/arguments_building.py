@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, List
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util import collection
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
@@ -98,6 +99,15 @@ class Singleton(ArgumentElementsRenderer):
     @property
     def elements(self) -> List[WithToString]:
         return [self.value]
+
+
+class SymbolReferenceWReferenceSyntax(ArgumentElementsRenderer):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)]
 
 
 NEW_LINE = Singleton('\n')

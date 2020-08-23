@@ -17,6 +17,10 @@ from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_re
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_data_type
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_definition
+from exactly_lib_test.test_resources import arguments_building as args
+from exactly_lib_test.test_resources import matcher_argument as matcher_args
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -191,6 +195,10 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
             for context in symbols
         ])
 
+    @property
+    def argument(self) -> ArgumentElementsRenderer:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
+
 
 class DataTypeSymbolContext(Generic[SDV_TYPE], SymbolContext[SDV_TYPE], ABC):
     def __init__(self, name: str, ):
@@ -245,6 +253,10 @@ class MatcherTypeSymbolContext(Generic[MODEL], LogicTypeSymbolContext[MatcherSdv
     @property
     def value(self) -> MatcherSymbolValueContext[MODEL]:
         return self._value
+
+    @property
+    def argument(self) -> MatcherArgument:
+        return matcher_args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 class SymbolsArrEx:

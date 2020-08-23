@@ -13,6 +13,8 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
     MatcherSymbolValueContext, MatcherTypeSymbolContext
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import LineMatcherArg
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -138,6 +140,10 @@ class LineMatcherSymbolContext(MatcherTypeSymbolContext[LineMatcherLine]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'LineMatcherSymbolContext':
         return LineMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def argument(self) -> LineMatcherArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 class LineMatcherSymbolContextOfPrimitiveConstant(LineMatcherSymbolContext):

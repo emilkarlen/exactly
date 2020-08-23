@@ -40,7 +40,7 @@ class TestParenthesisSyntax(unittest.TestCase):
         symbol_name = 'fc_symbol'
         CHECKER.check_multi__w_source_variants(
             self,
-            arguments=args.Parentheses(args.SymbolReferenceReferenceSyntax(symbol_name)).as_arguments,
+            arguments=args.Parentheses(args.SymbolReferenceWReferenceSyntax(symbol_name)).as_arguments,
             symbol_references=asrt.matches_singleton_sequence(is_reference_to_files_condition(symbol_name)),
             input_=None,
             execution=failing_validation_cases__multi_exe(symbol_name),
@@ -59,7 +59,7 @@ class TestParenthesisSyntax(unittest.TestCase):
             'fc_symbol',
             referenced_sdv
         )
-        source = args.Parentheses(args.SymbolReferenceReferenceSyntax(symbol.name))
+        source = args.Parentheses(args.SymbolReferenceWReferenceSyntax(symbol.name))
         # ACT & ASSERT #
         CHECKER.check__w_source_variants(
             self,

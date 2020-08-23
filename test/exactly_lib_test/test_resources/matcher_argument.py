@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from exactly_lib.definitions import logic
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util import collection
 from exactly_lib.util.parse import token
@@ -38,6 +39,14 @@ class Constant(MatcherArgument):
     @property
     def elements(self) -> List:
         return [logic.CONSTANT_MATCHER, logic.BOOLEANS[self.value]]
+
+
+class SymbolReferenceWReferenceSyntax(MatcherArgument):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def elements(self) -> List:
+        return [symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)]
 
 
 class BinaryOperatorMatcher(MatcherArgument, BinaryOperator, ABC):

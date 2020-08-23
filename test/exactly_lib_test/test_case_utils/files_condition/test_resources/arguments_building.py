@@ -69,7 +69,7 @@ class SymbolReferenceNameSyntax(FilesConditionArg):
         return ArgumentElements([self.symbol_name])
 
 
-class SymbolReferenceReferenceSyntax(FilesConditionArg):
+class SymbolReferenceWReferenceSyntax(FilesConditionArg):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 

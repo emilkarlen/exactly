@@ -3,6 +3,7 @@ from typing import List
 
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import line_matcher
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
@@ -30,6 +31,15 @@ class SymbolReference(LineMatcherArg):
     @property
     def elements(self) -> List:
         return [self._symbol_name]
+
+
+class SymbolReferenceWReferenceSyntax(LineMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)]
 
 
 class LineNum(LineMatcherArg):

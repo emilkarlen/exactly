@@ -10,6 +10,8 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbol
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
     arbitrary__without_symbol_references
+from exactly_lib_test.test_resources import arguments_building as args
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

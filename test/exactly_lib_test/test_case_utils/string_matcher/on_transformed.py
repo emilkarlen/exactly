@@ -105,7 +105,7 @@ class TestStringTransformerShouldBeParsedAsSimpleExpression(unittest.TestCase):
         )
         arguments = args2.Transformed(
             str(string_transformer_argument),
-            args2.SymbolReferenceWithReferenceSyntax('STRING_MATCHER_SYMBOL')
+            args2.SymbolReferenceWReferenceSyntax('STRING_MATCHER_SYMBOL')
         )
         cases = [
             NameAndValue(

@@ -8,6 +8,8 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
     MatcherSymbolValueContext, MatcherTypeSymbolContext
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -91,6 +93,10 @@ class FilesMatcherSymbolContext(MatcherTypeSymbolContext[FilesMatcherModel]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'FilesMatcherSymbolContext':
         return FilesMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def argument(self) -> FilesMatcherArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 class FilesMatcherSymbolContextOfPrimitiveConstant(FilesMatcherSymbolContext):

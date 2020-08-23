@@ -9,6 +9,8 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import LogicTypeSymbolContext, LogicSymbolValueContext, \
     ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -83,6 +85,10 @@ class FilesConditionSymbolContext(LogicTypeSymbolContext[FilesConditionSdv]):
     @property
     def value(self) -> FilesConditionSymbolValueContext:
         return self._value
+
+    @property
+    def argument(self) -> FilesConditionArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FilesConditionSymbolValueContext.of_sdv(arbitrary_sdv())

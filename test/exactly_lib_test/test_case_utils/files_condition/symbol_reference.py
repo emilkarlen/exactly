@@ -58,7 +58,7 @@ class TestReference(unittest.TestCase):
             'fc_symbol',
             referenced_sdv
         )
-        source = args.SymbolReferenceReferenceSyntax(symbol.name)
+        source = args.SymbolReferenceWReferenceSyntax(symbol.name)
         # ACT & ASSERT #
         CHECKER.check__w_source_variants(
             self,

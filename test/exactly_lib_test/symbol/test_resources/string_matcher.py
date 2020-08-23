@@ -13,6 +13,8 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
     MatcherSymbolValueContext, MatcherTypeSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -125,6 +127,10 @@ class StringMatcherSymbolContext(MatcherTypeSymbolContext[StringModel]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'StringMatcherSymbolContext':
         return StringMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def argument(self) -> StringMatcherArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 class StringMatcherSymbolContextOfPrimitiveConstant(StringMatcherSymbolContext):

@@ -10,6 +10,8 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
     MatcherSymbolValueContext, MatcherTypeSymbolContext
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
+from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -108,6 +110,10 @@ class FileMatcherSymbolContext(MatcherTypeSymbolContext[FileMatcherModel]):
     @staticmethod
     def of_arbitrary_value(name: str) -> 'FileMatcherSymbolContext':
         return FileMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
+
+    @property
+    def argument(self) -> FileMatcherArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
 
 class FileMatcherSymbolContextOfPrimitiveConstant(FileMatcherSymbolContext):
