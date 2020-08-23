@@ -9,10 +9,14 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources import parse_source
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
+    LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
@@ -32,6 +36,7 @@ from exactly_lib_test.type_system.logic.test_resources.values import is_identica
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidSyntax),
+        TestFilesMatcherShouldBeParsedAsSimpleExpression(),
         unittest.makeSuite(TestSelectTransformer),
         unittest.makeSuite(TestLineMatcherPrimitive),
         ValidatorShouldValidateLineMatcher(),
@@ -56,6 +61,43 @@ class TestInvalidSyntax(unittest.TestCase):
                     sut.parsers(True).full.parse(parse_source.remaining_source(case.value))
 
 
+class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+
+        model = ['the line']
+        line_matcher__constant_false = LineMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER',
+            False,
+        )
+        after_bin_op = 'after bin op'
+        lm_argument = lm_args.And([
+            lm_args.SymbolReference(line_matcher__constant_false.name),
+            lm_args.Custom(after_bin_op),
+        ])
+        arguments = st_args.syntax_for_select_transformer(lm_argument.as_str)
+
+        # ACT & ASSERT #
+
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=remaining_source(arguments),
+            input_=model_construction.of_lines(model),
+            arrangement=arrangement_w_tcds(
+                symbols=line_matcher__constant_false.symbol_table,
+            ),
+            expectation=expectation_of_successful_execution(
+                source=asrt_source.is_at_line(
+                    current_line_number=1,
+                    remaining_part_of_current_line=lm_argument.operator_name + ' ' + after_bin_op,
+                ),
+                symbol_references=line_matcher__constant_false.references_assertion,
+                output_lines=[],
+                is_identity_transformer=False,
+            )
+        )
+
+
 class TestSelectTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
         # ARRANGE #
@@ -70,7 +112,7 @@ class TestSelectTransformer(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(arguments),
             model_construction.of_lines([]),
@@ -121,7 +163,7 @@ class TestSelectTransformer(unittest.TestCase):
         for case in cases:
             with self.subTest(case_name=case.name):
                 arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(case.actual),
@@ -189,7 +231,7 @@ class TestSelectTransformer(unittest.TestCase):
             with self.subTest(case_name=case.name):
                 # ACT & ASSERT #
 
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(input_lines),
@@ -225,7 +267,7 @@ class TestLineMatcherPrimitive(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(arguments),
             model_construction.of_lines(lines),
@@ -248,7 +290,7 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
                     model_construction.of_lines([]),

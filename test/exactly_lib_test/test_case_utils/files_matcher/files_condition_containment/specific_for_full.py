@@ -30,7 +30,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
         # ARRANGE #
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'dir-w-single-file')
         # ACT & ASSERT #
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args.matches_full(fc_args.FilesConditionArg.empty()).as_arguments,
             model_constructor__non_recursive(checked_dir.path_sdv),
@@ -94,7 +94,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             )
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.is_empty_sequence,
@@ -112,7 +112,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
         arguments = args.matches_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc,
-                                      fm_args.SymbolReferenceWSyntax(file_matcher_name)),
+                                      fm_args.SymbolReferenceWReferenceSyntax(file_matcher_name)),
             ])
         )
 
@@ -155,7 +155,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             )
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([
@@ -176,7 +176,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
         arguments = args.matches_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc__1,
-                                      fm_args.SymbolReferenceWSyntax(file_matcher_name)),
+                                      fm_args.SymbolReferenceWReferenceSyntax(file_matcher_name)),
                 fc_args.FileCondition(name_of_file_in_fc__2),
             ])
         )
@@ -235,7 +235,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
             ),
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([
@@ -257,7 +257,7 @@ class TestNoMatchWhenModelContainsMoreFilesThanFc(unittest.TestCase):
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'checked-dir')
 
         # ACT & ASSERT #
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             arguments.as_arguments,
             input_=model_constructor__recursive(checked_dir.path_sdv),

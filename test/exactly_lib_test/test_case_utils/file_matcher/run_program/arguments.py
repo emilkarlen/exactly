@@ -97,7 +97,7 @@ def _check(
 
     # ACT && ASSERT #
 
-    integration_check.CHECKER.check_multi__w_source_variants_for_full_line_parser(
+    integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants_for_full_line_parser(
         put,
         args.RunProgram(
             program_args.symbol_ref_command_elements(

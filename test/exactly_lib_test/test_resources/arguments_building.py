@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, List
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.util import collection
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
@@ -19,7 +20,17 @@ class ArgumentElementsRenderer(ABC):
     """
 
     def __str__(self):
-        return ' '.join([str(element) for element in self.elements])
+        strings = []
+        elements = [str(e) for e in self.elements]
+        if not elements:
+            return ''
+        strings.append(elements[0])
+        for element_str in elements[1:]:
+            if not element_str.isspace():
+                strings.append(' ')
+            strings.append(element_str)
+
+        return ''.join(strings)
 
     @property
     @abstractmethod
@@ -236,3 +247,56 @@ class OptionWithArgument(SequenceOfElementsBase):
     @property
     def elements(self) -> List[WithToString]:
         return [OptionArgument(self.option_name), self.option_argument]
+
+
+class PrefixOperator(ArgumentElementsRenderer):
+    def __init__(self,
+                 operator: str,
+                 operand: ArgumentElementsRenderer):
+        self._operator = operator
+        self._operand = operand
+
+    @property
+    def operator(self) -> str:
+        return self._operator
+
+    @property
+    def operand(self) -> ArgumentElementsRenderer:
+        return self._operand
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return [self._operator] + self.operand.elements
+
+
+class BinaryOperator(ArgumentElementsRenderer):
+    def __init__(self,
+                 operator: str,
+                 operands: Sequence[ArgumentElementsRenderer]):
+        self._operands = operands
+        self._operator = operator
+        if len(operands) == 0:
+            raise ValueError('binary operator: Must have at least one operand')
+
+    @property
+    def operator(self) -> str:
+        return self._operator
+
+    @property
+    def operands(self) -> Sequence[ArgumentElementsRenderer]:
+        return self._operands
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return elements_for_binary_operator_arg(self._operator, self.operands)
+
+
+def elements_for_binary_operator_arg(operator: str, operands: Sequence[ArgumentElementsRenderer]) -> List:
+    return collection.concat_list(
+        collection.intersperse_list(
+            [operator],
+            [
+                operand.elements
+                for operand in operands
+            ])
+    )

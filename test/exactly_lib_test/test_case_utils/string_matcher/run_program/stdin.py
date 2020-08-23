@@ -43,7 +43,7 @@ class TestStdinShouldBeEmpty(unittest.TestCase):
 
         # ACT && ASSERT #
 
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
             args.RunProgram(
                 program_args.symbol_ref_command_elements(

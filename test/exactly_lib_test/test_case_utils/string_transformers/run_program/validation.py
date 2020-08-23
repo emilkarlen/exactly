@@ -24,7 +24,7 @@ class TestValidation(unittest.TestCase):
 
         # ACT && ASSERT #
 
-        integration_check.CHECKER.check_multi(
+        integration_check.CHECKER__PARSE_FULL.check_multi(
             self,
             args.syntax_for_run(
                 program_args.symbol_ref_command_elements(program_symbol_name),
@@ -51,7 +51,7 @@ class TestValidation(unittest.TestCase):
 
         # ACT && ASSERT #
 
-        integration_check.CHECKER.check_multi(
+        integration_check.CHECKER__PARSE_FULL.check_multi(
             self,
             args.syntax_for_run(
                 program_args.symbol_ref_command_elements(program_symbol_name),

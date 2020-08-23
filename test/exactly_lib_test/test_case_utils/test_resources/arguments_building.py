@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.definitions import logic
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType
@@ -8,7 +9,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import arguments_b
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument, \
     PathArgument, path_argument
 from exactly_lib_test.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, QuotedStringArgument
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, QuotedStringArgument, \
+    BinaryOperator, PrefixOperator
 from exactly_lib_test.test_resources.strings import WithToString
 
 
@@ -43,6 +45,22 @@ def option(option_name: OptionName,
         return ab.OptionArgument(option_name)
     else:
         return ab.OptionWithArgument(option_name, argument)
+
+
+def prefix_operator(operator: str, operand: ArgumentElementsRenderer) -> PrefixOperator:
+    return PrefixOperator(operator, operand)
+
+
+def binary_operator(operator: str, operands: Sequence[ArgumentElementsRenderer]) -> BinaryOperator:
+    return BinaryOperator(operator, operands)
+
+
+def conjunction(operands: Sequence[ArgumentElementsRenderer]) -> BinaryOperator:
+    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
+
+
+def disjunction(operands: Sequence[ArgumentElementsRenderer]) -> BinaryOperator:
+    return BinaryOperator(logic.OR_OPERATOR_NAME, operands)
 
 
 def symbol_reference(symbol_name: str) -> ArgumentElementsRenderer:

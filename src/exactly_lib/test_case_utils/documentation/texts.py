@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types, syntax_elements
@@ -10,6 +10,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE = (
     'The {} must terminate.'.format(types.PROGRAM_TYPE_INFO.singular_name)
 )
+
 _TP = TextParser({
     'exit_code': misc_texts.EXIT_CODE,
     'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
@@ -50,4 +51,16 @@ unless {ignore_exit_code_option} is given.
 
 
 {termination}
+"""
+
+
+def type_expression_has_syntax_of_primitive(type_names: Sequence[str]) -> List[ParagraphItem]:
+    types_list = ', '.join(type_names)
+    return TextParser({'TYPES': types_list, 'Note': misc_texts.NOTE_LINE_HEADER}).fnap(
+        _TYPE_EXPRESSION_HAS_SYNTAX_OF_PRIMITIVE
+    )
+
+
+_TYPE_EXPRESSION_HAS_SYNTAX_OF_PRIMITIVE = """\
+{Note} {TYPES} may not contain infix operators (unless inside parenthesis).
 """

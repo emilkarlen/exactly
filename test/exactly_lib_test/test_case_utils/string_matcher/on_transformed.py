@@ -1,5 +1,11 @@
 import unittest
 
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
+from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
+from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
@@ -15,6 +21,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import \
     validation_cases as string_matcher_failing_validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases \
     as string_transformer_failing_validation_cases
+from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
@@ -26,6 +33,8 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quot
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        TestStringTransformerShouldBeParsedAsSimpleExpression(),
+        TestStringMatcherShouldBeParsedAsSimpleExpression(),
         TestValidationShouldFailWhenValidationOfStringMatcherFails(),
         TestValidationShouldFailWhenValidationOfStringTransformerFails(),
         TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(),
@@ -58,7 +67,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             args2.Transformed(
                 _TRANSFORMER_SYMBOL_NAME,
@@ -84,6 +93,87 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
         )
 
 
+class TestStringTransformerShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        string_transformer_argument = ab.binary_operator(
+            names.SEQUENCE_OPERATOR_NAME,
+            [
+                ab.symbol_reference('TRANSFORMER_SYMBOL_1'),
+                ab.symbol_reference('TRANSFORMER_SYMBOL_2'),
+            ],
+        )
+        arguments = args2.Transformed(
+            str(string_transformer_argument),
+            args2.SymbolReferenceWithReferenceSyntax('STRING_MATCHER_SYMBOL')
+        )
+        cases = [
+            NameAndValue(
+                'parse STRING-MATCHER as simple expr',
+                sut.parsers().simple,
+            ),
+            NameAndValue(
+                'parse STRING-MATCHER as full expr',
+                sut.parsers().full,
+            ),
+        ]
+
+        for case in cases:
+            with self.subTest(case.name):
+                # ACT & ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    case.value.parse(arguments.as_remaining_source)
+
+
+class TestStringMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        model__original = 'the model text'
+        model_constructor = integration_check.model_of(model__original)
+
+        string_transformer = StringTransformerSymbolContext.of_primitive(
+            'THE_STRING_TRANSFORMER',
+            string_transformers.to_uppercase()
+        )
+        sm_equals = StringMatcherSymbolContext.of_primitive(
+            'STRING_MATCHER_1',
+            string_matchers.EqualsConstant(model__original.upper())
+        )
+        symbol = [
+            string_transformer,
+            sm_equals,
+        ]
+
+        after_bin_op = 'after bin op'
+        sm_conjunction = args2.conjunction([
+            args2.SymbolReference(sm_equals.name),
+            args2.Custom(after_bin_op),
+        ])
+        arguments = args2.Transformed(
+            string_transformer.name__sym_ref_syntax,
+            sm_conjunction
+        )
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=arguments.as_remaining_source,
+            input_=model_constructor,
+            arrangement=arrangement_w_tcds(
+                symbols=SymbolContext.symbol_table_of_contexts(symbol),
+            ),
+            expectation=Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_line(
+                        current_line_number=1,
+                        remaining_part_of_current_line=' '.join([sm_conjunction.operator, after_bin_op])
+                    ),
+                    symbol_references=SymbolContext.references_assertion_of_contexts(symbol)
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(True)
+                )
+            ),
+        )
+
+
 class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCase):
     def runTest(self):
         string_transformer = StringTransformerSymbolContext.of_primitive(
@@ -93,7 +183,7 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
         for case in string_matcher_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
                 symbol_context = case.value.symbol_context
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     args2.Transformed(
                         string_transformer.name,
@@ -124,7 +214,7 @@ class TestValidationShouldFailWhenValidationOfStringTransformerFails(unittest.Te
     def runTest(self):
         for case in string_transformer_failing_validation_cases.failing_validation_cases():
             with self.subTest(validation_case=case.name):
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     args2.Transformed(
                         case.value.symbol_context.name,
@@ -157,7 +247,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             transformed='TEXT',
         )
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args2.Transformed(
                 to_upper_transformer.name,
@@ -195,7 +285,7 @@ class TestWithBinaryOperators(unittest.TestCase):
             transformed='TEXT',
         )
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args2.conjunction([
                 args2.Parenthesis(
@@ -262,7 +352,7 @@ class TestWithBinaryOperators(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args2.Transformed(
                 to_upper_transformer.name__sym_ref_syntax,

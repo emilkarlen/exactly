@@ -9,7 +9,9 @@ EOF
 ) && contents equals <<EOF
 EOF
 
-exists A : type file && contents ( equals <<EOF
+exists A : type file && contents (
+  ( equals <<EOF
 EOF
-) && equals <<EOF
+  ) && equals <<EOF
 EOF
+)

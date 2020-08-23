@@ -29,7 +29,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         # ARRANGE #
         checked_dir = DirArgumentHelper(RelOptionType.REL_TMP, 'dir-w-single-file')
         # ACT & ASSERT #
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             args.matches_non_full(fc_args.FilesConditionArg.empty()).as_arguments,
             model_constructor__non_recursive(checked_dir.path_sdv),
@@ -93,7 +93,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
             )
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.is_empty_sequence,
@@ -110,7 +110,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         arguments = args.matches_non_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc,
-                                      fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
+                                      fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
             ])
         )
 
@@ -153,7 +153,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
             )
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([
@@ -175,7 +175,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
         arguments = args.matches_non_full(
             fc_args.FilesCondition([
                 fc_args.FileCondition(name_of_file_in_fc__1,
-                                      fm_args.SymbolReferenceWSyntax(file_matcher_name)),
+                                      fm_args.SymbolReferenceWReferenceSyntax(file_matcher_name)),
                 fc_args.FileCondition(name_of_file_in_fc__2),
             ])
         )
@@ -259,7 +259,7 @@ class TestModelContainsMoreFilesThanFc(unittest.TestCase):
             ),
         ]
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments.as_arguments,
             symbol_references=asrt.matches_sequence([

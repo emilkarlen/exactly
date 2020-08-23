@@ -48,11 +48,11 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation,
                ):
-        integration_check.CHECKER.check(self,
-                                        source,
-                                        model.arbitrary_model(),
-                                        arrangement,
-                                        expectation)
+        integration_check.CHECKER__PARSE_FULL.check(self,
+                                                    source,
+                                                    model.arbitrary_model(),
+                                                    arrangement,
+                                                    expectation)
 
     def test_invalid_integer_argument_according_to_custom_validation(self):
         for invalid_integer_value in self._conf().invalid_integers_according_to_custom_validation:

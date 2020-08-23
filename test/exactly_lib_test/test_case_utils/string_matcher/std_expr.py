@@ -56,7 +56,7 @@ class StringMatcherConfiguration(MatcherConfiguration[StringModel]):
     def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[StringModel],
                                                                     Callable[[FullResolvingEnvironment], StringModel],
                                                                     MatchingResult]:
-        return integration_check.CHECKER
+        return integration_check.CHECKER__PARSE_FULL
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> StringModel:
         return integration_check.MODEL_THAT_MUST_NOT_BE_USED

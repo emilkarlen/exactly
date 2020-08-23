@@ -34,7 +34,7 @@ class TestEnvironmentVarsShouldBePassedToProcess(unittest.TestCase):
 
         # ACT && ASSERT #
 
-        integration_check.CHECKER.check_multi(
+        integration_check.CHECKER__PARSE_FULL.check_multi(
             self,
             args.RunProgram(
                 program_args.symbol_ref_command_elements(

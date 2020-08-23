@@ -3,8 +3,14 @@ from exactly_lib_test.test_case_utils.logic.test_resources import integration_ch
 from exactly_lib_test.test_case_utils.matcher.test_resources.matcher_checker import \
     MatcherPropertiesConfiguration
 
-CHECKER = integration_check.IntegrationChecker(
+CHECKER__PARSE_FULL = integration_check.IntegrationChecker(
     parse_files_matcher.parsers().full,
+    MatcherPropertiesConfiguration(),
+    False,
+)
+
+CHECKER__PARSE_SIMPLE = integration_check.IntegrationChecker(
+    parse_files_matcher.parsers().simple,
     MatcherPropertiesConfiguration(),
     False,
 )

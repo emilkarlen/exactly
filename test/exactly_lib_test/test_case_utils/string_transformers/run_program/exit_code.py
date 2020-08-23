@@ -79,7 +79,7 @@ class TestExitCodeInterpretation(unittest.TestCase):
 
                 # ACT && ASSERT #
 
-                integration_check.CHECKER.check(
+                integration_check.CHECKER__PARSE_FULL.check(
                     self,
                     args.syntax_for_run(
                         program_args.symbol_ref_command_elements(program_symbol.name),

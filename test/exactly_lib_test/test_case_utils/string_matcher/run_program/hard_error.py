@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 class TestHardError(unittest.TestCase):
     def runTest(self):
         # ARRANGE & ACT && ASSERT #
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
             args.RunProgram(
                 program_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM)

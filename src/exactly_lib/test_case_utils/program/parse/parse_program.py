@@ -1,4 +1,5 @@
-from exactly_lib.definitions.primitives import string_transformer
+from typing import Callable
+
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
@@ -23,6 +24,7 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
                  must_be_on_current_line: bool = False,
                  ):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False)
+        self._string_transformer_parser_fun = None
         self._must_be_on_current_line = must_be_on_current_line
         self._parser_of_executable_file = parse_executable_file.parser_of_program(exe_file_relativity)
         self._program_variant_setups = {
@@ -39,10 +41,7 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramSdv:
         command_as_program = self._parse_command_and_arguments(parser)
 
-        optional_transformer = parser.consume_and_handle_optional_option3(
-            self._parse_transformer,
-            string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
-        )
+        optional_transformer = self._string_transformer_parser_function()(parser)
 
         return functional.reduce_optional(
             lambda transformer: command_as_program.new_with_appended_transformations([transformer]),
@@ -50,11 +49,12 @@ class _Parser(ParserFromTokenParserBase[ProgramSdv]):
             optional_transformer,
         )
 
-    @staticmethod
-    def _parse_transformer(parser: TokenParser) -> StringTransformerSdv:
-        from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
+    def _string_transformer_parser_function(self) -> Callable[[TokenParser], StringTransformerSdv]:
+        if self._string_transformer_parser_fun is None:
+            from exactly_lib.test_case_utils.string_transformer import parse_transformation_option
+            self._string_transformer_parser_fun = parse_transformation_option.parse_optional_option__optional
 
-        return parse_string_transformer.parsers().full.parse_from_token_parser(parser)
+        return self._string_transformer_parser_fun
 
     def _parse_command_and_arguments(self, parser: TokenParser) -> ProgramSdv:
         return parser.parse_default_or_optional_command(self._parser_of_executable_file.parse_from_token_parser,

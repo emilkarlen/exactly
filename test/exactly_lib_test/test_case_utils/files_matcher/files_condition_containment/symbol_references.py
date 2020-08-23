@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         fm_symbol_name = 'file_matcher_symbol'
         fc_argument = fc_args.FilesCondition([
             fc_args.FileCondition('file-name',
-                                  fm_args.SymbolReferenceWSyntax(fm_symbol_name))
+                                  fm_args.SymbolReferenceWReferenceSyntax(fm_symbol_name))
         ])
         symbol_references_expectation = asrt.matches_singleton_sequence(
             is_reference_to_file_matcher(fm_symbol_name),

@@ -93,4 +93,20 @@ class FilesMatcherSymbolContext(MatcherTypeSymbolContext[FilesMatcherModel]):
         return FilesMatcherSymbolContext(name, ARBITRARY_SYMBOL_VALUE_CONTEXT)
 
 
+class FilesMatcherSymbolContextOfPrimitiveConstant(FilesMatcherSymbolContext):
+    def __init__(self,
+                 name: str,
+                 result: bool,
+                 definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 ):
+        super().__init__(name,
+                         FilesMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(result),
+                                                                     definition_source))
+        self._result = result
+
+    @property
+    def result_value(self) -> bool:
+        return self._result
+
+
 ARBITRARY_SYMBOL_VALUE_CONTEXT = FilesMatcherSymbolValueContext.of_primitive(constant.MatcherWithConstantResult(True))

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
@@ -13,6 +13,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
+from exactly_lib_test.test_resources import arguments_building
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.arguments_building import OptionArgument, ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
@@ -43,7 +44,7 @@ class SymbolReference(FileMatcherArg):
         return [self.symbol_name]
 
 
-class SymbolReferenceWSyntax(FileMatcherArg):
+class SymbolReferenceWReferenceSyntax(FileMatcherArg):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 
@@ -62,6 +63,26 @@ class Type(FileMatcherArg):
             file_matcher.TYPE_MATCHER_NAME,
             file_properties.TYPE_INFO[self.file_type].type_argument,
         ]
+
+
+class BinaryOperator(FileMatcherArg):
+    def __init__(self,
+                 operator: str,
+                 operands: Sequence[FileMatcherArg]):
+        self.operator = operator
+        self.operands = operands
+
+    @property
+    def elements(self) -> List:
+        return arguments_building.elements_for_binary_operator_arg(self.operator, self.operands)
+
+
+def conjunction(operands: Sequence[FileMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
+
+
+def disjunction(operands: Sequence[FileMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(logic.OR_OPERATOR_NAME, operands)
 
 
 class NameVariant(matcher_argument.MatcherArgComponent, ABC):

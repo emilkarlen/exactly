@@ -3,34 +3,44 @@ import unittest
 from pathlib import Path
 from typing import Sequence
 
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.symbol.test_resources import files_matcher as files_matcher_test_impl
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
+    FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import model as models
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg, \
     SymbolReference
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check_helper import \
     IntegrationCheckHelper
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.parsers import TOP_LEVEL_PARSER_CASES
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
-    PrimAndExeExpectation, Expectation
+    PrimAndExeExpectation, Expectation, arrangement_w_tcds, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import EXECUTION_IS_PASS
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.files.file_structure import sym_link, Dir, \
-    FileSystemElement, File
-from exactly_lib_test.test_resources.matcher_argument import Conjunction, Parenthesis
+    FileSystemElement, File, DirContents
+from exactly_lib_test.test_resources.matcher_argument import conjunction, Parenthesis
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -46,6 +56,8 @@ def suite() -> unittest.TestSuite:
         TestPruneShouldBeIgnoredWhenModelIsNotRecursive(),
         TestDetectionOfSymLink(),
         TestBrokenSymLinksShouldBeTreatedAsNonDirFiles(),
+        TestFileMatcherShouldBeParsedAsSimpleExpression(),
+        TestFilesMatcherShouldBeParsedAsSimpleExpression(),
     ])
 
 
@@ -64,6 +76,84 @@ def _name_starts_with__and_hard_error_if_applied_to_non_directory(name: str,
         ]
         )
     )
+
+
+class TestFileMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        file_matcher_argument = fm_args.conjunction(
+            [
+                fm_args.SymbolReferenceWReferenceSyntax('FILE_MATCHER_SYMBOL_1'),
+                fm_args.SymbolReferenceWReferenceSyntax('FILE_MATCHER_SYMBOL_2'),
+            ],
+        )
+        files_matcher_argument = fsm_args.Empty()
+
+        arguments = fsm_args.Prune(
+            file_matcher_argument,
+            files_matcher_argument
+        )
+        for top_level_parser_case in TOP_LEVEL_PARSER_CASES:
+            with self.subTest(top_level_parser_case.name):
+                # ACT & ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    top_level_parser_case.value.parse(arguments.as_remaining_source)
+
+
+class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        model_contents = DirContents([
+            Dir('a-dir', [
+                File.empty('a-file-in-pruned-dir')
+            ]),
+        ])
+
+        file_matcher = FileMatcherSymbolContextOfPrimitiveConstant(
+            'FILE_MATCHER_SYMBOL',
+            True,
+        )
+        files_matcher__parsed = FilesMatcherSymbolContext.of_primitive(
+            'FILES_MATCHER_1',
+            files_matcher_test_impl.FilesMatcherNumFilesTestImpl(1)
+        )
+        symbols = [file_matcher, files_matcher__parsed]
+
+        files_matcher_bin_op_expr = fsm_args.conjunction([
+            fm_args.SymbolReferenceWReferenceSyntax(files_matcher__parsed.name),
+            fsm_args.Custom('after bin op'),
+        ])
+
+        arguments = fsm_args.Prune(
+            fm_args.SymbolReferenceWReferenceSyntax(file_matcher.name),
+            files_matcher_bin_op_expr,
+        )
+        model_rel_opt_conf = rel_opt_confs.conf_rel_any(RelOptionType.REL_ACT)
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            arguments.as_remaining_source,
+            models.model_constructor__recursive(model_rel_opt_conf.path_sdv_for_root_dir()),
+            arrangement_w_tcds(
+                symbols=SymbolContext.symbol_table_of_contexts(symbols),
+                tcds_contents=model_rel_opt_conf.populator_for_relativity_option_root(model_contents)
+            ),
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_line(
+                        current_line_number=1,
+                        remaining_part_of_current_line=' '.join([
+                            files_matcher_bin_op_expr.operator,
+                            files_matcher_bin_op_expr.operands[1].as_str,
+                        ])
+                    ),
+                    symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
+                ),
+                ExecutionExpectation(
+                    main_result=matcher_assertions.is_matching_success(),
+                ),
+            ),
+        )
 
 
 class _HardErrorIfAppliedToNonDirectory(FileMatcherTestImplBase):
@@ -316,7 +406,7 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
             self,
             helper,
             arguments=
-            fms_args.Prune(
+            fsm_args.Prune(
                 fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
                 helper.files_matcher_sym_ref_arg()
             ),
@@ -342,9 +432,9 @@ class TestRecursiveWithJustPrune(unittest.TestCase):
             self,
             helper,
             arguments=
-            fms_args.Prune(
+            fsm_args.Prune(
                 fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
-                fms_args.Prune(
+                fsm_args.Prune(
                     fm_args.SymbolReference(NAME_STARTS_WITH__P2.name),
                     helper.files_matcher_sym_ref_arg(),
                 ),
@@ -371,9 +461,9 @@ class TestDetectionOfSymLink(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
-            source=fms_args.Prune(
+            source=fsm_args.Prune(
                 fm_args.Type(FileType.SYMLINK),
                 helper.files_matcher_sym_ref_arg(),
             ).as_remaining_source,
@@ -405,9 +495,9 @@ class TestBrokenSymLinksShouldBeTreatedAsNonDirFiles(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
-            source=fms_args.Prune(
+            source=fsm_args.Prune(
                 matcher_argument.Constant(False),
                 helper.files_matcher_sym_ref_arg(),
             ).as_remaining_source,
@@ -440,9 +530,9 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
         argument_cases = [
             NIE(
                 'prune followed by selection',
-                input_value=fms_args.Prune(
+                input_value=fsm_args.Prune(
                     fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
-                    fms_args.Selection(
+                    fsm_args.Selection(
                         fm_args.SymbolReference(NAME_STARTS_WITH__S1.name),
                         helper.files_matcher_sym_ref_arg(),
                     ),
@@ -455,9 +545,9 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
             ),
             NIE(
                 'selection followed by prune',
-                input_value=fms_args.Selection(
+                input_value=fsm_args.Selection(
                     fm_args.SymbolReference(NAME_STARTS_WITH__S1.name),
-                    fms_args.Prune(
+                    fsm_args.Prune(
                         fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
                         helper.files_matcher_sym_ref_arg(),
                     ),
@@ -476,7 +566,7 @@ class TestRecursiveWithPruneAndSelection(unittest.TestCase):
 
         for argument_case in argument_cases:
             with self.subTest(argument_case.name):
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     arguments=
                     argument_case.input_value.as_arguments,
@@ -510,7 +600,7 @@ class TestRecursiveWithPruneAndDepthLimitations(unittest.TestCase):
 
         helper = IntegrationCheckHelper()
 
-        arguments = fms_args.Prune(
+        arguments = fsm_args.Prune(
             fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
             helper.files_matcher_sym_ref_arg(),
         ).as_arguments
@@ -520,7 +610,7 @@ class TestRecursiveWithPruneAndDepthLimitations(unittest.TestCase):
         for depth, nie in COMBINATION_OF_PRUNE_AND_DEPTH_LIMITATIONS:
             with self.subTest(data=nie.name,
                               depth=depth):
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     arguments=
                     arguments,
@@ -563,18 +653,18 @@ class TestRecursiveWithPruneAndBinaryOperator(unittest.TestCase):
                 ])
         ]
 
-        arguments = Conjunction([
+        arguments = conjunction([
             Parenthesis(
-                fms_args.Prune(
+                fsm_args.Prune(
                     fm_args.SymbolReference(NAME_STARTS_WITH__P1.name),
-                    fms_args.NumFiles(int_condition(comparators.EQ, 1))
+                    fsm_args.NumFiles(int_condition(comparators.EQ, 1))
                 )),
-            fms_args.NumFiles(int_condition(comparators.EQ, 2)),
+            fsm_args.NumFiles(int_condition(comparators.EQ, 2)),
         ])
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             arguments=
             arguments.as_arguments,
@@ -604,14 +694,14 @@ class TestPruneShouldBeIgnoredWhenModelIsNotRecursive(unittest.TestCase):
 
         test_fails_if_applied__matcher_symbol_context = test_fails_if_applied(self)
 
-        arguments = fms_args.Prune(
+        arguments = fsm_args.Prune(
             fm_args.SymbolReference(test_fails_if_applied__matcher_symbol_context.name),
             helper.files_matcher_sym_ref_arg(),
         )
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
             source=
             arguments.as_remaining_source,
@@ -652,7 +742,7 @@ def _check_multi(
         symbols_common_to_all_cases: Sequence[SymbolContext],
         symbol_references: ValueAssertion[Sequence[SymbolReference]],
         execution_cases: Sequence[NEA[Sequence[FileSystemElement], Sequence[FileSystemElement]]]):
-    integration_check.CHECKER.check_multi__w_source_variants(
+    integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
         put,
         arguments=arguments.as_arguments,
         symbol_references=symbol_references,
@@ -693,3 +783,7 @@ def test_fails_if_applied(put: unittest.TestCase) -> FileMatcherSymbolContext:
             )
         )
     )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

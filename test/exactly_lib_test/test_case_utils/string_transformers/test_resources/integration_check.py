@@ -1,5 +1,6 @@
 from typing import List, Sequence
 
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.string_model import StringModel
@@ -18,8 +19,14 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
 
 StExpectation = Expectation[StringTransformer, StringModel]
 
-CHECKER = logic_integration_check.IntegrationChecker(
+CHECKER__PARSE_FULL = logic_integration_check.IntegrationChecker(
     parse_string_transformer.parsers(True).full,
+    StringTransformerPropertiesConfiguration(),
+    True,
+)
+
+CHECKER__PARSE_SIMPLE = logic_integration_check.IntegrationChecker(
+    parse_string_transformer.parsers(True).simple,
     StringTransformerPropertiesConfiguration(),
     True,
 )
@@ -27,9 +34,11 @@ CHECKER = logic_integration_check.IntegrationChecker(
 
 def expectation_of_successful_execution(output_lines: List[str],
                                         symbol_references: ValueAssertion[Sequence[SymbolReference]],
-                                        is_identity_transformer: bool = False) -> StExpectation:
+                                        is_identity_transformer: bool = False,
+                                        source: ValueAssertion[ParseSource] = asrt.anything_goes()) -> StExpectation:
     return Expectation(
         ParseExpectation(
+            source=source,
             symbol_references=symbol_references
         ),
         ExecutionExpectation(

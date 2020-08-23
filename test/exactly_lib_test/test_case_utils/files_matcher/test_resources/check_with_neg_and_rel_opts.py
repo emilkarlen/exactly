@@ -69,7 +69,7 @@ class MatcherChecker:
         with self.put.subTest(case_name=test_case_name,
                               expectation_type=etc.expectation_type.name,
                               arguments=instruction_source.source_string):
-            integration_check.CHECKER.check(
+            integration_check.CHECKER__PARSE_FULL.check(
                 self.put,
                 instruction_source,
                 model,

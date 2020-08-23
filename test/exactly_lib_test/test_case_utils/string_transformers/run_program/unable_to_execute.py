@@ -24,7 +24,7 @@ class TestUnableToExecute(unittest.TestCase):
             with self.subTest(with_ignored_exit_code=with_ignored_exit_code):
                 # ACT && ASSERT #
 
-                integration_check.CHECKER.check(
+                integration_check.CHECKER__PARSE_FULL.check(
                     self,
                     args.syntax_for_run(
                         program_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM),

@@ -16,7 +16,7 @@ from exactly_lib_test.type_system.trace.test_resources import matching_result_as
 def execute_single(put: unittest.TestCase,
                    case: SingleCaseGenerator,
                    ):
-    integration_check.CHECKER.check(
+    integration_check.CHECKER__PARSE_FULL.check(
         put,
         source=case.arguments().as_remaining_source,
         input_=
@@ -48,7 +48,7 @@ def execute_list(put: unittest.TestCase,
 
 def execute_multi(put: unittest.TestCase,
                   generator: MultipleExecutionCasesGenerator):
-    integration_check.CHECKER.check_multi(
+    integration_check.CHECKER__PARSE_FULL.check_multi(
         put,
         generator.arguments().as_arguments,
         parse_expectation=ParseExpectation(

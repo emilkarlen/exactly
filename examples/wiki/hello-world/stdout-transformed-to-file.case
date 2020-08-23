@@ -6,7 +6,7 @@ hello-world
 
 file transformed-output.txt = -file
                               -rel-result stdout
-                              -transformed-by TO_UPPER_CASE | replace '^HELLO, ' ''
+                              -transformed-by ( TO_UPPER_CASE | replace '^HELLO, ' '' )
 
 
 [assert]

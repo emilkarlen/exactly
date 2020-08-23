@@ -4,7 +4,9 @@ file F = "text"
 
 [assert]
 
-contents F ( -transformed-by TO_UPPER_CASE equals 'TEXT' ) && equals 'text'
-
 # Left  "equals" applies to the transformed model.
 # Right "equals" applies to the original    model.
+
+contents F ( -transformed-by TO_UPPER_CASE equals 'TEXT' ) && equals 'text'
+
+contents F -transformed-by TO_UPPER_CASE equals 'TEXT' && equals 'text'

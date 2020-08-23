@@ -426,7 +426,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         return [self.symbol_context]
 
 
-def conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfiguration:
+def conf_rel_any(relativity: RelOptionType) -> RelativityOptionConfigurationForRelOptionType:
     return RelativityOptionConfigurationForRelOptionType(
         relativity,
         OptionStringConfigurationForRelativityOption(relativity))

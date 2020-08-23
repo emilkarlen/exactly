@@ -53,7 +53,7 @@ def check_non_full_and_full(
     for case in FULL_AND_NON_FULL_CASES:
         with put.subTest(case.name):
             matcher_argument = case.arguments_for_fc(files_condition_argument)
-            integration_check.CHECKER.check__w_source_variants(
+            integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                 put,
                 matcher_argument.as_arguments,
                 model,
@@ -80,7 +80,7 @@ def check_non_full_and_full__multi(
 
         with put.subTest(case.name):
             matcher_argument = case.arguments_for_fc(files_condition_argument)
-            integration_check.CHECKER.check_multi__w_source_variants(
+            integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
                 put,
                 matcher_argument.as_arguments,
                 symbol_references,

@@ -3,6 +3,7 @@ from typing import Sequence, List
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
@@ -35,6 +36,14 @@ class SymbolReference(StringMatcherArg):
 
     def __str__(self):
         return self.symbol_name
+
+
+class SymbolReferenceWithReferenceSyntax(StringMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    def __str__(self):
+        return symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)
 
 
 class Transformed(StringMatcherArg):
@@ -71,7 +80,7 @@ class Equals(StringMatcherArg):
         return matcher_options.EQUALS_ARGUMENT + ' ' + self._string_argument
 
 
-class LineMatches(StringMatcherArg):
+class Quantification(StringMatcherArg):
     def __init__(self,
                  quantifier: Quantifier,
                  line_matcher: str):
@@ -136,4 +145,12 @@ def conjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
 
 
 def disjunction(operands: Sequence[StringMatcherArg]) -> BinaryOperator:
-    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
+    return BinaryOperator(logic.OR_OPERATOR_NAME, operands)
+
+
+class Custom(StringMatcherArg):
+    def __init__(self, string_matcher: WithToString):
+        self.string_matcher = string_matcher
+
+    def __str__(self):
+        return str(self.string_matcher)

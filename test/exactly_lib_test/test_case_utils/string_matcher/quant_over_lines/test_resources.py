@@ -101,7 +101,7 @@ class TestCaseBase(unittest.TestCase):
                 for source in equivalent_source_variants__with_source_check__for_expression_parser(
                         self,
                         complete_instruction_arguments):
-                    integration_check.CHECKER.check(
+                    integration_check.CHECKER__PARSE_FULL.check(
                         self,
                         source,
                         integration_check.model_of(actual_file_contents),

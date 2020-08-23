@@ -7,7 +7,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType, \
+    RelSdsOptionType
+from exactly_lib.test_case_utils.string_transformer import names as str_trans_names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
@@ -21,6 +23,7 @@ from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils imp
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
 from exactly_lib_test.instructions.test_resources.parse_file_maker import file_with_rel_opt_conf, \
     accepted_non_hds_source_relativities, ALLOWED_SRC_FILE_RELATIVITIES, TransformableContentsConstructor
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
@@ -35,7 +38,9 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.validat
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
-    conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration
+    conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
+    conf_rel_sds
+from exactly_lib_test.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
@@ -232,6 +237,33 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             main_side_effects_on_sds=expected_non_hds_contents,
                         ))
 
+    def test_string_transformer_should_be_parsed_as_simple_expression(self):
+        # ARRANGE #
+        transformation_w_infix_op = args.BinaryOperator(
+            str_trans_names.SEQUENCE_OPERATOR_NAME,
+            [
+                args.SymbolReferenceWReferenceSyntax('str_trans_1'),
+                args.SymbolReferenceWReferenceSyntax('str_trans_2'),
+            ]
+        )
+        src_rel_opt_conf = conf_rel_sds(RelSdsOptionType.REL_ACT)
+        file_contents_arg = TransformableContentsConstructor(
+            file_with_rel_opt_conf('src-file', src_rel_opt_conf)
+        ).with_transformation(transformation_w_infix_op.as_str).as_arguments
+
+        for phase_is_after_act in [False, True]:
+            parser = sut.parts_parser(phase_is_after_act)
+            source = remaining_source(
+                'dst-file-name {contents_arguments}'.format(
+                    contents_arguments=file_contents_arg.first_line
+                ),
+                file_contents_arg.following_lines,
+            )
+            with self.subTest(phase_is_after_act=phase_is_after_act):
+                # ACT & ASSERT #
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
     def test_all_relativities__with_transformer(self):
         # ARRANGE #
 
@@ -274,9 +306,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         Expectation(
                             main_result=IS_SUCCESS,
                             main_side_effects_on_sds=expected_non_hds_contents,
-                            symbol_usages=asrt.matches_sequence([
-                                is_reference_to_string_transformer__usage(to_upper_transformer.name),
-                            ])
+                            symbol_usages=to_upper_transformer.usages_assertion,
                         ))
 
     def test_validation_should_include_validation_of_string_transformer(self):

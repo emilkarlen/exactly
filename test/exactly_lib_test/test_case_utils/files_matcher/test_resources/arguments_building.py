@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, List
 
 from exactly_lib.definitions import logic
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
@@ -13,8 +14,10 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_synta
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
+from exactly_lib_test.test_resources import arguments_building
 from exactly_lib_test.test_resources.arguments_building import FromArgumentElementsBase
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
+from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -29,6 +32,15 @@ class SymbolReference(FilesMatcherArg):
     @property
     def elements(self) -> List:
         return [self.symbol_name]
+
+
+class SymbolReferenceWReferenceSyntax(FilesMatcherArg):
+    def __init__(self, symbol_name: str):
+        self.symbol_name = symbol_name
+
+    @property
+    def elements(self) -> List:
+        return [symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)]
 
 
 class Empty(FilesMatcherArg):
@@ -125,6 +137,35 @@ def matches_non_full(files_condition: FilesConditionArg) -> FilesMatcherArg:
 
 def matches_full(files_condition: FilesConditionArg) -> FilesMatcherArg:
     return MatchesFilesCondition(True, files_condition)
+
+
+class BinaryOperator(FilesMatcherArg):
+    def __init__(self,
+                 operator: str,
+                 operands: Sequence[FilesMatcherArg]):
+        self.operator = operator
+        self.operands = operands
+
+    @property
+    def elements(self) -> List:
+        return arguments_building.elements_for_binary_operator_arg(self.operator, self.operands)
+
+
+def conjunction(operands: Sequence[FilesMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
+
+
+def disjunction(operands: Sequence[FilesMatcherArg]) -> BinaryOperator:
+    return BinaryOperator(logic.OR_OPERATOR_NAME, operands)
+
+
+class Custom(FilesMatcherArg):
+    def __init__(self, string_matcher: WithToString):
+        self.string_matcher = string_matcher
+
+    @property
+    def elements(self) -> List:
+        return [str(self.string_matcher)]
 
 
 class AssertionVariantArgumentsConstructor:

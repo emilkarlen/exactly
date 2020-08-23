@@ -17,7 +17,10 @@ class FrozenSetBasedOnEquality(tuple):
         return FrozenSetBasedOnEquality(ret_val)
 
 
-def _unique(elements: Sequence) -> list:
+T = TypeVar('T')
+
+
+def _unique(elements: Sequence[T]) -> List[T]:
     ret_val = []
     for x in elements:
         if x not in ret_val:
@@ -25,14 +28,11 @@ def _unique(elements: Sequence) -> list:
     return ret_val
 
 
-def intersperse_list(element_between, elements: Sequence) -> list:
+def intersperse_list(element_between: T, elements: Sequence[T]) -> List[T]:
     if len(elements) <= 1:
         return list(elements)
     else:
         return [elements[0]] + [element_between] + intersperse_list(element_between, elements[1:])
-
-
-T = TypeVar('T')
 
 
 def concat_list(list_of_lists: Sequence[Sequence[T]]) -> List[T]:

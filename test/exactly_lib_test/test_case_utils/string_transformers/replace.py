@@ -128,7 +128,7 @@ class Test(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(source),
             model_construction.of_lines(input_lines),
@@ -154,7 +154,7 @@ class Test(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(source),
             model_construction.of_lines(input_lines),
@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
             with self.subTest(source_case.name):
                 # ACT & ASSERT #
 
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
                     model_construction.of_lines(lines_for(source_case.actual)),
@@ -192,7 +192,7 @@ class Test(unittest.TestCase):
             with self.subTest(source_case.name):
                 # ACT & ASSERT #
 
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
                     model_construction.of_lines(lines_for(source_case.regex)),
@@ -238,7 +238,7 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
             with self.subTest(quoting_case.name):
                 # ACT & ASSERT #
 
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
                     model_construction.of_lines(input_lines),
@@ -265,7 +265,7 @@ class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
             source = arg.syntax_for_replace_transformer(regex_case.regex_string,
                                                         'arbitrary_replacement')
             with self.subTest(regex_case.case_name):
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
                     model_construction.arbitrary_model_constructor(),

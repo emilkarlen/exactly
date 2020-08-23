@@ -37,7 +37,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
         fm_symbol_name = 'the_file_matcher'
         arguments = args.FilesCondition([
             args.FileCondition('file-name',
-                               fm_args.SymbolReferenceWSyntax(fm_symbol_name))
+                               fm_args.SymbolReferenceWReferenceSyntax(fm_symbol_name))
         ])
         # ACT & ASSERT #
         CHECKER.check_multi__w_source_variants(
@@ -55,7 +55,7 @@ class TestValidationErrorShouldBeDetected(unittest.TestCase):
         valid_fm = FileMatcherSymbolContext.of_primitive_constant('a_valid_file_matcher', True)
         arguments = args.FilesCondition([
             args.FileCondition('/an/absolute/file/name',
-                               fm_args.SymbolReferenceWSyntax(valid_fm.name)),
+                               fm_args.SymbolReferenceWReferenceSyntax(valid_fm.name)),
         ])
         # ACT & ASSERT #
         CHECKER.check(
@@ -88,20 +88,20 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                 'single name entry',
                 args.FilesCondition([
                     args.FileCondition(file_name,
-                                       fm_args.SymbolReferenceWSyntax(fm_symbol))
+                                       fm_args.SymbolReferenceWReferenceSyntax(fm_symbol))
                 ]),
             ),
             NameAndValue(
                 'two entries with same file name, 1st without and 2nd with FileMatcher',
                 args.FilesCondition([
                     args.FileCondition(file_name),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm_symbol)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm_symbol)),
                 ]),
             ),
             NameAndValue(
                 'two entries with same file name, 1st with and 2nd without FileMatcher',
                 args.FilesCondition([
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm_symbol)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm_symbol)),
                     args.FileCondition(file_name),
                 ]),
             ),
@@ -144,7 +144,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
 
         arguments = args.FilesCondition([
             args.FileCondition(file_name_wo_matcher),
-            args.FileCondition(file_name_w_matcher, fm_args.SymbolReferenceWSyntax(fm_symbol)),
+            args.FileCondition(file_name_w_matcher, fm_args.SymbolReferenceWReferenceSyntax(fm_symbol)),
         ])
         # ACT & ASSERT #
         CHECKER.check_multi__w_source_variants(
@@ -184,8 +184,8 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
         fm__w_variations = 'fm_w_variations'
 
         arguments = args.FilesCondition([
-            args.FileCondition(file_name__constant, fm_args.SymbolReferenceWSyntax(fm__constant.name)),
-            args.FileCondition(file_name__w_variations, fm_args.SymbolReferenceWSyntax(fm__w_variations)),
+            args.FileCondition(file_name__constant, fm_args.SymbolReferenceWReferenceSyntax(fm__constant.name)),
+            args.FileCondition(file_name__w_variations, fm_args.SymbolReferenceWReferenceSyntax(fm__w_variations)),
         ])
         # ACT & ASSERT #
         CHECKER.check_multi__w_source_variants(
@@ -232,31 +232,31 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
             NameAndValue(
                 'two entries',
                 args.FilesCondition([
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm1_symbol.name)),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm2_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm1_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm2_symbol.name)),
                 ]),
             ),
             NameAndValue(
                 'one empty entry above',
                 args.FilesCondition([
                     args.FileCondition(file_name),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm1_symbol.name)),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm2_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm1_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm2_symbol.name)),
                 ]),
             ),
             NameAndValue(
                 'one empty entry between',
                 args.FilesCondition([
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm1_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm1_symbol.name)),
                     args.FileCondition(file_name),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm2_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm2_symbol.name)),
                 ]),
             ),
             NameAndValue(
                 'one empty entry below',
                 args.FilesCondition([
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm1_symbol.name)),
-                    args.FileCondition(file_name, fm_args.SymbolReferenceWSyntax(fm2_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm1_symbol.name)),
+                    args.FileCondition(file_name, fm_args.SymbolReferenceWReferenceSyntax(fm2_symbol.name)),
                     args.FileCondition(file_name),
                 ]),
             ),
@@ -308,9 +308,9 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
                 ],
                 args.FilesCondition([
                     args.FileCondition(fn_1_time_wo_fm),
-                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWSyntax(fn_1_time__fm.name)),
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_1.name)),
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_2.name)),
+                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_1_time__fm.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_1.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_2.name)),
                 ]),
             ),
             NIE(
@@ -321,10 +321,10 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
                     is_reference_to_file_matcher(fn_2_times__fm_2.name),
                 ],
                 args.FilesCondition([
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_1.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_1.name)),
                     args.FileCondition(fn_1_time_wo_fm),
-                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWSyntax(fn_1_time__fm.name)),
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_2.name)),
+                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_1_time__fm.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_2.name)),
                 ]),
             ),
             NIE(
@@ -335,10 +335,10 @@ class TestMultipleMatchersForFileShouldBeCombinedWithConjunctionInOrderOfAppeara
                     is_reference_to_file_matcher(fn_1_time__fm.name),
                 ],
                 args.FilesCondition([
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_1.name)),
-                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWSyntax(fn_2_times__fm_2.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_1.name)),
+                    args.FileCondition(fn_2_times_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_2_times__fm_2.name)),
                     args.FileCondition(fn_1_time_wo_fm),
-                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWSyntax(fn_1_time__fm.name)),
+                    args.FileCondition(fn_1_time_w_fm, fm_args.SymbolReferenceWReferenceSyntax(fn_1_time__fm.name)),
                 ]),
             ),
         ]

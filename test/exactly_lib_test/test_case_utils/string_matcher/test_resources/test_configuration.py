@@ -31,11 +31,11 @@ class TestCaseBase(unittest.TestCase):
                model: ModelConstructor,
                arrangement: Arrangement,
                expectation: Expectation):
-        integration_check.CHECKER.check(self,
-                                        source,
-                                        model,
-                                        arrangement,
-                                        expectation)
+        integration_check.CHECKER__PARSE_FULL.check(self,
+                                                    source,
+                                                    model,
+                                                    arrangement,
+                                                    expectation)
 
     def _check_with_source_variants(self,
                                     instruction_argument: Arguments,
@@ -44,12 +44,12 @@ class TestCaseBase(unittest.TestCase):
                                     expectation: Expectation):
         for source in equivalent_source_variants__with_source_check__for_expression_parser(
                 self, instruction_argument):
-            integration_check.CHECKER.check(self,
-                                            source,
-                                            model,
-                                            arrangement,
-                                            expectation,
-                                            )
+            integration_check.CHECKER__PARSE_FULL.check(self,
+                                                        source,
+                                                        model,
+                                                        arrangement,
+                                                        expectation,
+                                                        )
 
 
 class TestWithNegationArgumentBase(TestCaseBase):

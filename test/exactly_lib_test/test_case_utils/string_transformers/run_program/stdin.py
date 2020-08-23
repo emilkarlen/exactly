@@ -50,7 +50,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
             with self.subTest(with_ignored_exit_code=with_ignored_exit_code):
                 # ACT && ASSERT #
 
-                integration_check.CHECKER.check__w_source_variants_for_full_line_parser(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants_for_full_line_parser(
                     self,
                     args.syntax_for_run(
                         program_args.symbol_ref_command_elements(program_symbol.name),

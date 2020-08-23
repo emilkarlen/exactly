@@ -9,13 +9,13 @@ file file-C.txt = 'C'
 [assert]
 
 dir-contents .
-             -selection type file && contents equals 'A'
+             -selection ( type file && contents equals 'A' )
              num-files == 1
 
 dir-contents .
-             -selection type file && ! contents equals 'A'
+             -selection ( type file && ! contents equals 'A' )
              num-files == 2
 
 dir-contents .
-             -selection type dir || ( type file && contents equals 'A' )
+             -selection ( type dir || ( type file && contents equals 'A' ) )
              num-files == 3

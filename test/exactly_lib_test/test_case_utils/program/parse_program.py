@@ -5,9 +5,11 @@ from typing import Sequence, List, Callable
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.program.parse import parse_program
+from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
@@ -194,6 +196,57 @@ class TestWithoutExecution(unittest.TestCase):
                             )
                         )
                     )
+
+    def test_string_transformer_should_be_parsed_as_simple_expression(self):
+        # ARRANGE #
+        transformer = StringTransformerPrimitiveSymbolContext(
+            'STRING_TRANSFORMER',
+            string_transformers.to_uppercase()
+        )
+        after_bin_op = 'after bin op'
+        string_transformer_argument = ab.binary_operator(
+            names.SEQUENCE_OPERATOR_NAME,
+            [
+                ab.symbol_reference(transformer.name),
+                ab.singleton(after_bin_op),
+            ],
+        )
+        expected_source_after_parse = asrt_source.is_at_line(
+            current_line_number=2,
+            remaining_part_of_current_line=string_transformer_argument.operator + ' ' + after_bin_op,
+        )
+        for command_case in _single_line_command_cases():
+            command_followed_by_transformer = pgm_args.program_followed_by_transformation(
+                command_case.command_renderer,
+                string_transformer_argument,
+            )
+            symbols = list(command_case.symbols) + [transformer]
+
+            with self.subTest(command=command_case.name):
+                source = command_followed_by_transformer.as_remaining_source
+                # ACT & ASSERT #
+                CHECKER_WO_EXECUTION.check(
+                    self,
+                    source,
+                    None,
+                    command_case.mk_arrangement(SymbolContext.symbol_table_of_contexts(symbols)),
+                    Expectation(
+                        ParseExpectation(
+                            source=expected_source_after_parse,
+                            symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
+                        ),
+                        primitive=lambda env: (
+                            asrt_pgm_val.matches_program(
+                                asrt_command.matches_command(
+                                    driver=command_case.expected_command(env),
+                                    arguments=asrt.is_empty_sequence
+                                ),
+                                stdin=asrt_pgm_val.no_stdin(),
+                                transformer=asrt.is_(transformer.primitive),
+                            )
+                        )
+                    )
+                )
 
 
 def _single_line_command_cases__w_argument_list() -> List[Case]:

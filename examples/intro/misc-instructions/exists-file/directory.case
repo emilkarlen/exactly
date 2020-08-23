@@ -3,7 +3,6 @@
 
 dir actual-file
 
-dir non-empty-dir
 dir non-empty-dir/dir-1
 dir non-empty-dir/dir-2
 
@@ -22,5 +21,5 @@ exists non-empty-dir :
     dir-contents (
       ! empty
       &&
-      every file : type dir && dir-contents empty
+      every file : ( type dir && dir-contents empty )
     )

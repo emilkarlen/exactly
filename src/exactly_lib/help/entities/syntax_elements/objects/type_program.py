@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, InvokationVariantHelper
 from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements, actors
 from exactly_lib.definitions.entity import types
@@ -15,6 +16,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import arg_config_with_name
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
@@ -46,19 +48,9 @@ class _Documentation(SyntaxElementDocumentation):
         return self._pgm_and_args.syntax_element_definitions + self._global_sed_list()
 
     def _global_sed_list(self) -> List[SyntaxElementDescription]:
-        return [self._transformation_sed()]
+        return [_transformation_sed()]
 
-    def _transformation_sed(self) -> SyntaxElementDescription:
-        return cli_argument_syntax_element_description(
-            string_transformer.STRING_TRANSFORMATION_ARGUMENT,
-            _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION),
-            [
-                invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
-                                                       string_transformer.TRANSFORMATION_OPTION)]),
-            ]
-        )
-
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[CrossReferenceId]:
         info_refs = cross_reference_id_list([
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
@@ -273,6 +265,25 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
         ]
 
 
+def _transformation_description_rest() -> List[ParagraphItem]:
+    ret_val = _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION)
+    ret_val += texts.type_expression_has_syntax_of_primitive([
+        syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+    ])
+    return ret_val
+
+
+def _transformation_sed() -> SyntaxElementDescription:
+    return cli_argument_syntax_element_description(
+        string_transformer.STRING_TRANSFORMATION_ARGUMENT,
+        _transformation_description_rest(),
+        [
+            invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
+                                                   string_transformer.TRANSFORMATION_OPTION)]),
+        ]
+    )
+
+
 PATH_OF_EXISTING_FILE_OPT_CONFIG = arg_config_with_name('PATH-OF-EXISTING',
                                                         pgm_syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF)
 
@@ -415,7 +426,7 @@ Transforms the output from the program.
 Depending on the context, either stdout or stderr is transformed.
 
 
-Must appear on a separate line.
+{Note} Must appear on a separate line.
 
 If not, it will be interpreted as an {ARGUMENT}.
 """

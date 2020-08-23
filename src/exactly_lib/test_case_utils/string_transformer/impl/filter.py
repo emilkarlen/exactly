@@ -9,6 +9,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
@@ -30,7 +31,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse_filter(parser: TokenParser) -> StringTransformerSdv:
-    line_matcher = parse_line_matcher.parsers(True).full.parse_from_token_parser(parser)
+    line_matcher = parse_line_matcher.parsers(True).simple.parse_from_token_parser(parser)
     return _StringTransformerSelectSdv(line_matcher)
 
 
@@ -127,7 +128,11 @@ class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialS
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+        ret_val = _TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+        ret_val += texts.type_expression_has_syntax_of_primitive([
+            syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
+        ])
+        return ret_val
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:

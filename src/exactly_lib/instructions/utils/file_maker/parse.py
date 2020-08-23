@@ -70,10 +70,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                 my_parser)
         contents_transformer = parse_transformation_option.parse_optional_option(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
-        return FileMakerForContentsFromExistingFile(identity.IDENTITY_TRANSFORMER_SDV
-                                                    if contents_transformer is None
-                                                    else
-                                                    contents_transformer,
+        return FileMakerForContentsFromExistingFile(contents_transformer,
                                                     src_file)
 
     def _parse_program(output: ProcOutputFile, my_parser: TokenParser) -> FileMaker:

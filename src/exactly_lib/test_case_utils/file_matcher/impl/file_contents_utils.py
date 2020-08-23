@@ -15,6 +15,7 @@ from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase, \
     FileMatcherAdvImplBase
@@ -187,9 +188,10 @@ class FileContentsSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNa
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
+        matcher_type = self._documentation.names.contents_matcher_syntax_element.singular_name
         tp = TextParser({
             '_file_type_': file_properties.TYPE_INFO[self._documentation.names.accepted_file_type].name,
-            '_matcher_type_': self._documentation.names.contents_matcher_syntax_element.singular_name,
+            '_matcher_type_': matcher_type,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
             'MODEL': matcher_model.FILE_MATCHER_MODEL,
             'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
@@ -197,6 +199,7 @@ class FileContentsSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNa
 
         ret_val = tp.fnap(_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION)
         ret_val += tp.fnap(MATCHER_FILE_HANDLING_DESCRIPTION)
+        ret_val += texts.type_expression_has_syntax_of_primitive([matcher_type])
 
         return ret_val
 

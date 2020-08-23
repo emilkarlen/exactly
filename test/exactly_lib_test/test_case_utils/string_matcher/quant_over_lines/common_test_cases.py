@@ -8,16 +8,20 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher__usage, \
-    successful_matcher_with_validation, LineMatcherSymbolContext, is_reference_to_line_matcher
+    successful_matcher_with_validation, LineMatcherSymbolContext, is_reference_to_line_matcher, \
+    LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
-    ExecutionExpectation, Expectation
+    ExecutionExpectation, Expectation, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import test_resources as tr
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args2
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, arguments_building, \
     test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
@@ -30,12 +34,14 @@ from exactly_lib_test.test_case_utils.test_resources import validation as asrt_v
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         _ParseWithMissingLineMatcherArgument(),
         _ParseWithInvalidLineMatcher(),
+        _TestFilesMatcherShouldBeParsedAsSimpleExpression(),
 
         _TestLineMatcherValidatorIsApplied(),
         _TestStringTransformerValidatorIsApplied(),
@@ -138,6 +144,45 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                             ),
                             expectation=case.expected
                         )
+
+
+class _TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        model = integration_check.model_of('string with at least one line')
+
+        line_matcher = LineMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER',
+            True,
+        )
+        after_bin_op = 'after bin op'
+        lm_argument = lm_args.And([
+            lm_args.SymbolReference(line_matcher.name),
+            lm_args.Custom(after_bin_op),
+        ])
+        for quantifier in Quantifier:
+            arguments = args2.Quantification(quantifier, lm_argument.as_str)
+            with self.subTest(quantifier):
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    source=arguments.as_remaining_source,
+                    input_=model,
+                    arrangement=arrangement_w_tcds(
+                        symbols=line_matcher.symbol_table,
+                    ),
+                    expectation=Expectation(
+                        ParseExpectation(
+                            source=asrt_source.is_at_line(
+                                current_line_number=1,
+                                remaining_part_of_current_line=lm_argument.operator_name + ' ' + after_bin_op),
+                            symbol_references=line_matcher.references_assertion
+                        ),
+                        ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(line_matcher.result_value)
+                        )
+                    ),
+                )
 
 
 class _TestStringTransformerValidatorIsApplied(TestCaseBase):

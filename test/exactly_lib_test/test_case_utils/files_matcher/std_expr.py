@@ -59,7 +59,7 @@ class FilesMatcherConfiguration(MatcherConfiguration[FilesMatcherModel]):
     def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[FilesMatcherModel],
                                                                     Callable[[FullResolvingEnvironment], FilesMatcherModel],
                                                                     MatchingResult]:
-        return integration_check.CHECKER
+        return integration_check.CHECKER__PARSE_FULL
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> FilesMatcherModel:
         return model.arbitrary_model()(environment)

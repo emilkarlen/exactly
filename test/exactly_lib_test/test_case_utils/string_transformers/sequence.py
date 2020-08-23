@@ -83,7 +83,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
             # ACT & ASSERT #
 
             with self.subTest(case.name):
-                integration_check.CHECKER.check__w_source_variants(
+                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
                     model_construction.of_lines(initial_model_lines),
@@ -128,7 +128,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
 
                 with self.subTest(validation_case=case.name,
                                   order_case=order_case.name):
-                    integration_check.CHECKER.check__w_source_variants(
+                    integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                         self,
                         Arguments(arguments),
                         model_construction.of_lines([]),

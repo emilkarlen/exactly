@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html),
 with exception of a "0." prefix until version 1 is released.
 
+## [next-release] - YYYY-MM-DD
+
+### Added
+
+### Changed
+
+ - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parenthesis)
+
+### Fixed
+
 ## [0.12.3] - 2020-08-18
 
 ### Added
@@ -21,8 +31,6 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` / `matches -full` - Crash rendering err msg for recursive model w too few files.
  - Test - tests not working for CWD=/ or CWD=/sub
  - Test - tests not working for Python >= 3.8 (comparison of XML-strings generated from objects with dicts)
-
-### Added
 
 ## [0.12.2] - 2020-07-21
 

@@ -5,7 +5,8 @@ from exactly_lib.definitions import logic
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util import collection
 from exactly_lib.util.parse import token
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton, \
+    BinaryOperator
 from exactly_lib_test.test_resources.strings import WithToString
 
 PAREN_R = Singleton(')')
@@ -39,28 +40,24 @@ class Constant(MatcherArgument):
         return [logic.CONSTANT_MATCHER, logic.BOOLEANS[self.value]]
 
 
-class _BinaryOperatorBase(MatcherArgument, ABC):
+class BinaryOperatorMatcher(MatcherArgument, BinaryOperator, ABC):
     def __init__(self,
-                 operator_name: str,
-                 matchers: List[MatcherArgument]):
-        self.matchers = matchers
-        self.operator_name = operator_name
-        value_error_if_empty(operator_name, matchers)
+                 operator: str,
+                 operands: Sequence[MatcherArgument]):
+        super().__init__(operator, operands)
+        self._operands = operands
 
     @property
-    def elements(self) -> List[WithToString]:
-        return concat_and_intersperse_non_empty_list(self.operator_name,
-                                                     self.matchers)
+    def operands(self) -> Sequence[MatcherArgument]:
+        return self._operands
 
 
-class Conjunction(_BinaryOperatorBase):
-    def __init__(self, matchers: List[MatcherArgument]):
-        super().__init__(logic.AND_OPERATOR_NAME, matchers)
+def conjunction(operands: Sequence[MatcherArgument]) -> BinaryOperatorMatcher:
+    return BinaryOperatorMatcher(logic.AND_OPERATOR_NAME, operands)
 
 
-class Disjunction(_BinaryOperatorBase):
-    def __init__(self, matchers: List[MatcherArgument]):
-        super().__init__(logic.OR_OPERATOR_NAME, matchers)
+def disjunction(operands: Sequence[MatcherArgument]) -> BinaryOperatorMatcher:
+    return BinaryOperatorMatcher(logic.OR_OPERATOR_NAME, operands)
 
 
 class Parenthesis(MatcherArgument):

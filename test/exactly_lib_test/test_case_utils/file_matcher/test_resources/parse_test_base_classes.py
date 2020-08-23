@@ -25,11 +25,11 @@ class TestCaseBase(unittest.TestCase):
                model_constructor: ModelConstructor,
                arrangement: Arrangement,
                expectation: Expectation):
-        integration_check.CHECKER.check(self,
-                                        source,
-                                        model_constructor,
-                                        arrangement,
-                                        expectation)
+        integration_check.CHECKER__PARSE_FULL.check(self,
+                                                    source,
+                                                    model_constructor,
+                                                    arrangement,
+                                                    expectation)
 
     def _assert_failing_parse(self, source: ParseSource):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -40,11 +40,11 @@ class TestCaseBase(unittest.TestCase):
                                     model_constructor: ModelConstructor,
                                     arrangement: Arrangement,
                                     expectation: Expectation):
-        integration_check.CHECKER.check__w_source_variants(self,
-                                                           arguments,
-                                                           model_constructor,
-                                                           arrangement,
-                                                           expectation)
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(self,
+                                                                       arguments,
+                                                                       model_constructor,
+                                                                       arrangement,
+                                                                       expectation)
 
     def _check_cases__with_source_variants(self, cases: Sequence[NEA[bool, Actual]]):
         for case in cases:

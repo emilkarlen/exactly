@@ -12,6 +12,7 @@ from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from exactly_lib.test_case_utils.documentation import texts
 
 
 def parse_after_quantifier_token(
@@ -46,8 +47,8 @@ class GrammarSetup(Generic[MODEL, ELEMENT]):
     def parse_exists(self, parser: TokenParser) -> MatcherSdv[MODEL]:
         return parse_after_quantifier_token(Quantifier.EXISTS, self._element_predicate_parser, self._setup, parser)
 
-    def quantification_grammar_expressions(self) -> Sequence[
-        NameAndValue[grammar.PrimitiveExpression[MatcherSdv[MODEL]]]]:
+    def quantification_grammar_expressions(self,
+                                           ) -> Sequence[NameAndValue[grammar.PrimitiveExpression[MatcherSdv[MODEL]]]]:
         return (
             NameAndValue(
                 logic.ALL_QUANTIFIER_ARGUMENT,
@@ -104,7 +105,11 @@ class QuantificationDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialS
             'element_matcher': self._element_matcher_syntax_name,
         })
 
-        return tp.fnap(_DESCRIPTION_OF_QUANTIFICATION)
+        ret_val = tp.fnap(_DESCRIPTION_OF_QUANTIFICATION)
+        ret_val += texts.type_expression_has_syntax_of_primitive([
+            self._element_matcher_syntax_name,
+        ])
+        return ret_val
 
 
 _DESCRIPTION_OF_QUANTIFICATION = """\

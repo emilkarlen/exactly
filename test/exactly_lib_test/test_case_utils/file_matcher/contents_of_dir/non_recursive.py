@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
@@ -11,15 +12,15 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.hard_error import \
     HardErrorDueToHardErrorFromFilesMatcherHelper
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import validation_cases
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext, \
+    FilesMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
-    PrimAndExeExpectation
+    PrimAndExeExpectation, Expectation, ExecutionExpectation
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -30,6 +31,7 @@ from exactly_lib_test.util.simple_textstruct.test_resources import renderer_asse
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestFilesMatcherShouldBeValidated(),
+        TestFilesMatcherShouldBeParsedAsSimpleExpression(),
         TestHardErrorDueToInvalidModel(),
         TestHardErrorDueToHardErrorFromFilesMatcher(),
         TestApplication(),
@@ -39,10 +41,46 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        files_matcher = FilesMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER',
+            True,
+        )
+        after_bin_op = 'after bin op'
+        # ACT & ASSERT #
+        fsm_argument = fsm_args.conjunction([
+            fsm_args.SymbolReference(files_matcher.name),
+            fsm_args.Custom(after_bin_op),
+        ])
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=args.DirContents(
+                fsm_argument,
+            ).as_remaining_source,
+            input_=integration_check.current_directory(),
+            arrangement=arrangement_w_tcds(
+                symbols=files_matcher.symbol_table,
+            ),
+            expectation=Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_line(
+                        current_line_number=1,
+                        remaining_part_of_current_line=fsm_argument.operator + ' ' + after_bin_op),
+                    symbol_references=files_matcher.references_assertion
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(files_matcher.result_value)
+                )
+            ),
+        )
+
+
 class TestFilesMatcherShouldBeValidated(unittest.TestCase):
     def runTest(self):
         fsm_symbol_name = 'the_files_matcher'
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             args.DirContents(args.SymbolReference(fsm_symbol_name)
                              ).as_arguments,
@@ -65,7 +103,7 @@ class TestHardErrorDueToInvalidModel(unittest.TestCase):
         location = RelSdsOptionType.REL_TMP
         model_file_name = 'the-checked-file'
 
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments=
             args.DirContents(
@@ -100,10 +138,10 @@ class TestHardErrorDueToHardErrorFromFilesMatcher(unittest.TestCase):
     def runTest(self):
         helper = HardErrorDueToHardErrorFromFilesMatcherHelper()
 
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
-            source=fm_args.DirContents(
-                fms_args.SymbolReference(helper.files_matcher_name)
+            source=args.DirContents(
+                fsm_args.SymbolReference(helper.files_matcher_name)
             ).as_remaining_source,
             input_=helper.model_constructor(),
             arrangement=helper.arrangement(),
@@ -121,10 +159,10 @@ class TestApplication(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
-            arguments=fm_args.DirContents(
-                fms_args.SymbolReference(files_matcher_name)
+            arguments=args.DirContents(
+                fsm_args.SymbolReference(files_matcher_name)
             ).as_arguments,
             input_=
             integration_check.file_in_sds(checked_dir_location, checked_dir.name),
@@ -170,10 +208,10 @@ class TestFilesOfModel(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check_multi(
+        integration_check.CHECKER__PARSE_FULL.check_multi(
             self,
-            arguments=fm_args.DirContents(
-                fms_args.SymbolReference(model_checker_symbol_name)
+            arguments=args.DirContents(
+                fsm_args.SymbolReference(model_checker_symbol_name)
             ).as_arguments,
             parse_expectation=
             ParseExpectation(
@@ -214,7 +252,7 @@ class TestConcreteMatcher(unittest.TestCase):
             'checked-dir',
         )
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments=helper.arg__non_recursive().as_arguments,
             input_=
@@ -232,7 +270,7 @@ class TestConcreteMatcher(unittest.TestCase):
             'checked-dir',
         )
         # ACT & ASSERT #
-        integration_check.CHECKER.check_multi__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check_multi__w_source_variants(
             self,
             arguments=helper.arg__non_recursive().as_arguments,
             input_=

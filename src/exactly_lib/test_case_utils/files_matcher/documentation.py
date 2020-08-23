@@ -4,6 +4,7 @@ from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils import file_properties
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.util.cli_syntax import option_syntax
@@ -42,7 +43,12 @@ class SelectionDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntax
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_SELECTION_DESCRIPTION)
+        ret_val = _TP.fnap(_SELECTION_DESCRIPTION)
+        ret_val += texts.type_expression_has_syntax_of_primitive([
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+            syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
+        ])
+        return ret_val
 
 
 class PruneDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
@@ -55,7 +61,12 @@ class PruneDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToke
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_PRUNE_DESCRIPTION)
+        ret_val = _TP.fnap(_PRUNE_DESCRIPTION)
+        ret_val += texts.type_expression_has_syntax_of_primitive([
+            syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+            syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
+        ])
+        return ret_val
 
 
 class MatchesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):

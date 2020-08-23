@@ -30,6 +30,24 @@ class FilesMatcherTestImpl(FilesMatcherImplBase):
         )
 
 
+class FilesMatcherNumFilesTestImpl(FilesMatcherImplBase):
+    def __init__(self, expected_num_files: int):
+        super().__init__()
+        self._expected_num_files = expected_num_files
+
+    @property
+    def name(self) -> str:
+        return str(type(self)) + ': test impl num-files ==  ' + str(self._expected_num_files)
+
+    def matches_w_trace(self, model: FilesMatcherModel) -> MatchingResult:
+        return (
+            self._new_tb()
+                .build_result(
+                len(list(model.files())) == self._expected_num_files
+            )
+        )
+
+
 class FilesMatcherDdvConstantTestImpl(FilesMatcherDdvImplBase):
     def __init__(self,
                  constant: FilesMatcherAdv,

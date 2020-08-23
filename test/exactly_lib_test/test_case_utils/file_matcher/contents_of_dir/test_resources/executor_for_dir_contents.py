@@ -19,7 +19,7 @@ from exactly_lib_test.type_system.trace.test_resources import matching_result_as
 
 class ExecutorOfCaseGeneratorForDirContents(ExecutorOfCaseGenerator):
     def execute_single(self, put: unittest.TestCase, case: SingleCaseGenerator):
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             put,
             source=self._concrete_arguments(case.arguments()).as_remaining_source,
             input_=
@@ -47,7 +47,7 @@ class ExecutorOfCaseGeneratorForDirContents(ExecutorOfCaseGenerator):
                 self.execute_single(put, case.value)
 
     def execute_multi(self, put: unittest.TestCase, generator: MultipleExecutionCasesGenerator):
-        integration_check.CHECKER.check_multi(
+        integration_check.CHECKER__PARSE_FULL.check_multi(
             put,
             self._concrete_arguments(generator.arguments()).as_arguments,
             parse_expectation=ParseExpectation(

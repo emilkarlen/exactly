@@ -44,7 +44,7 @@ class TestSymbolReferenceReporting(unittest.TestCase):
                 args.FilesCondition([
                     args.FileCondition(
                         'constant-file-name',
-                        fm_args.SymbolReferenceWSyntax(FILE_MATCHER_SYMBOL_NAME)
+                        fm_args.SymbolReferenceWReferenceSyntax(FILE_MATCHER_SYMBOL_NAME)
                     ),
                 ]),
             ),
@@ -57,7 +57,7 @@ class TestSymbolReferenceReporting(unittest.TestCase):
                 args.FilesCondition([
                     args.FileCondition(
                         SymbolWithReferenceSyntax(STRING_SYMBOL_NAME),
-                        fm_args.SymbolReferenceWSyntax(FILE_MATCHER_SYMBOL_NAME)
+                        fm_args.SymbolReferenceWReferenceSyntax(FILE_MATCHER_SYMBOL_NAME)
                     ),
                 ]),
             ),
@@ -72,11 +72,11 @@ class TestSymbolReferenceReporting(unittest.TestCase):
                 args.FilesCondition([
                     args.FileCondition(
                         SymbolWithReferenceSyntax(STRING_SYMBOL_NAME),
-                        fm_args.SymbolReferenceWSyntax(FILE_MATCHER_SYMBOL_NAME),
+                        fm_args.SymbolReferenceWReferenceSyntax(FILE_MATCHER_SYMBOL_NAME),
                     ),
                     args.FileCondition(
                         SymbolWithReferenceSyntax(STRING_SYMBOL_NAME_2),
-                        fm_args.SymbolReferenceWSyntax(FILE_MATCHER_SYMBOL_NAME_2),
+                        fm_args.SymbolReferenceWReferenceSyntax(FILE_MATCHER_SYMBOL_NAME_2),
                     ),
                 ]),
             ),

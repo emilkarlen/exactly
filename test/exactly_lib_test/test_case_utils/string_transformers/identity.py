@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER.check__w_source_variants(
+        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(arguments),
             model_construction.of_lines(model_content_lines),

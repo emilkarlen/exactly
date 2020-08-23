@@ -6,6 +6,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
@@ -31,8 +32,8 @@ def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[StringMatch
 
 
 def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:
-    transformer = parse_string_transformer.parsers().full.parse_from_token_parser(parser)
-    matcher_on_transformed = parsers().full.parse_from_token_parser(parser)
+    transformer = _STRING_TRANSFORMER_PARSER.parse_from_token_parser(parser)
+    matcher_on_transformed = _STRING_MATCHER_COMPONENT_PARSER.parse_from_token_parser(parser)
     return on_transformed.StringMatcherWithTransformationSdv(transformer, matcher_on_transformed)
 
 
@@ -46,7 +47,12 @@ class _OnTransformedDescription(grammar.PrimitiveExpressionDescriptionWithNameAs
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return TextParser().fnap(_DESCRIPTION__ON_TRANSFORMED)
+        ret_val = TextParser().fnap(_DESCRIPTION__ON_TRANSFORMED)
+        ret_val += texts.type_expression_has_syntax_of_primitive([
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+            syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
+        ])
+        return ret_val
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
@@ -74,7 +80,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[S
 
     quantification_setup = parse_quantified_matcher.GrammarSetup(
         line_matches.line_matchers.ELEMENT_SETUP,
-        parse_line_matcher.parsers().full,
+        parse_line_matcher.parsers().simple,
     )
 
     ret_val += quantification_setup.quantification_grammar_expressions()
@@ -115,6 +121,9 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)
+
+_STRING_TRANSFORMER_PARSER = parse_string_transformer.parsers().simple
+_STRING_MATCHER_COMPONENT_PARSER = parsers().simple
 
 _DESCRIPTION__ON_TRANSFORMED = """\
 Applies a matcher to a transformed variant of the string.

@@ -27,8 +27,14 @@ def arbitrary_model() -> ModelConstructor:
     return empty_model()
 
 
-CHECKER = integration_check.IntegrationChecker(
+CHECKER__PARSE_FULL = integration_check.IntegrationChecker(
     parse_string_matcher.parsers().full,
+    MatcherPropertiesConfiguration(),
+    False,
+)
+
+CHECKER__PARSE_SIMPLE = integration_check.IntegrationChecker(
+    parse_string_matcher.parsers().simple,
     MatcherPropertiesConfiguration(),
     False,
 )

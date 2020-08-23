@@ -1,6 +1,7 @@
 import shlex
 import unittest
 
+from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -10,11 +11,13 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, is_reference_to_file_matcher
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, is_reference_to_file_matcher, \
+    FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
@@ -35,11 +38,13 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import test_transformers_setup
+from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
@@ -47,6 +52,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseInvalidSyntax),
 
         unittest.makeSuite(TestSymbolReferences),
+        TestFilesMatcherShouldBeParsedAsSimpleExpression(),
 
         unittest.makeSuite(TestFileMatcherShouldBeValidated),
         unittest.makeSuite(TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines),
@@ -92,7 +98,7 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
 
                 with self.subTest(quantifier=quantifier,
                                   validation_case=case.name):
-                    integration_check.CHECKER.check(
+                    integration_check.CHECKER__PARSE_FULL.check(
                         self,
                         source=remaining_source(str(arguments)),
                         input_=arbitrary_model(),
@@ -110,6 +116,55 @@ class TestFileMatcherShouldBeValidated(unittest.TestCase):
                             ),
                         ),
                     )
+
+
+class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        checked_dir_rel_conf = relativity_options.conf_rel_any(RelOptionType.REL_ACT)
+        checked_dir_populator = checked_dir_rel_conf.populator_for_relativity_option_root(
+            DirContents([
+                File.empty('a-file-so-that-checked-dir-is-not-empty')
+            ]
+            )
+        )
+
+        file_matcher = FileMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER',
+            True,
+        )
+        after_bin_op = 'after bin op'
+        fm_argument = fm_args.conjunction([
+            fm_args.SymbolReference(file_matcher.name),
+            fm_args.Custom(after_bin_op),
+        ])
+        # ACT & ASSERT #
+        for quantifier in Quantifier:
+            arguments = args.Quantification(quantifier, fm_argument)
+            with self.subTest(quantifier):
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    source=arguments.as_remaining_source,
+                    input_=model.model_constructor__non_recursive(
+                        path_sdvs.of_rel_option(checked_dir_rel_conf.relativity)
+                    ),
+                    arrangement=arrangement_w_tcds(
+                        symbols=file_matcher.symbol_table,
+                        tcds_contents=checked_dir_populator
+                    ),
+                    expectation=Expectation(
+                        ParseExpectation(
+                            source=asrt_source.is_at_line(
+                                current_line_number=1,
+                                remaining_part_of_current_line=fm_argument.operator + ' ' + after_bin_op),
+                            symbol_references=file_matcher.references_assertion
+                        ),
+                        ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(file_matcher.result_value)
+                        )
+                    ),
+                )
 
 
 class TestFailingValidationPreSdsDueToInvalidIntegerArgumentOfNumLines(expression.TestFailingValidationPreSdsAbstract):
@@ -150,7 +205,9 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
                 Quantifier.ALL,
                 file_contents_arg2(sm_arg.NumLines(condition_str))))
 
-        argument = arguments_constructor.apply(expectation_type_config__non_is_success(ExpectationType.NEGATIVE))
+        argument = arguments_constructor.apply(
+            expectation_type_config__non_is_success(ExpectationType.NEGATIVE)
+        )
 
         source = remaining_source(argument)
 
@@ -205,7 +262,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
                                 expectation_type=expectation_type.name,
                                 arguments=arguments,
                                 non_regular_file=non_regular_file.name):
-                            integration_check.CHECKER.check(
+                            integration_check.CHECKER__PARSE_FULL.check(
                                 self,
                                 remaining_source(arguments),
                                 the_model,
@@ -447,7 +504,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 with self.subTest(
                         expectation_type=expectation_type.name,
                         arguments=arguments):
-                    integration_check.CHECKER.check(
+                    integration_check.CHECKER__PARSE_FULL.check(
                         self,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
@@ -512,7 +569,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
                 with self.subTest(
                         expectation_type=expectation_type.name,
                         arguments=arguments):
-                    integration_check.CHECKER.check(
+                    integration_check.CHECKER__PARSE_FULL.check(
                         self,
                         remaining_source(arguments),
                         model.model_with_source_path_as_sub_dir_of_rel_root(name_of_checked_dir)(relativity_root_conf),
@@ -575,7 +632,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
         etc = expectation_type_config__non_is_success(ExpectationType.POSITIVE)
         arguments = for_all__equals__arguments.apply(etc)
         # ACT & ASSERT #
-        integration_check.CHECKER.check(
+        integration_check.CHECKER__PARSE_FULL.check(
             self,
             remaining_source(arguments),
             model.model_with_rel_root_as_source_path(relativity_root_conf),

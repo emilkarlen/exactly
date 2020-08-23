@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -11,5 +13,16 @@ def parse_optional_option(token_parser: TokenParser) -> StringTransformerSdv:
     """
     return token_parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_SDV,
-        parse_string_transformer.parsers(True).full.parse_from_token_parser,
+        _PARSER__CURRENT_LINE__SIMPLE.parse_from_token_parser,
         string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
+
+
+def parse_optional_option__optional(token_parser: TokenParser) -> Optional[StringTransformerSdv]:
+    return token_parser.consume_and_handle_optional_option3(
+        _PARSER__ANY_LINE__SIMPLE.parse_from_token_parser,
+        string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
+    )
+
+
+_PARSER__CURRENT_LINE__SIMPLE = parse_string_transformer.parsers(True).simple
+_PARSER__ANY_LINE__SIMPLE = parse_string_transformer.parsers().simple

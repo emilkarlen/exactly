@@ -45,7 +45,7 @@ class TestResultShouldBeHardErrorWhenFileMatcherReportsHardError(unittest.TestCa
             fc_args.FilesCondition([
                 fc_args.FileCondition(
                     file_in_model,
-                    fm_args.SymbolReferenceWSyntax(
+                    fm_args.SymbolReferenceWReferenceSyntax(
                         unconditionally_hard_error_file_matcher.name
                     )),
             ]),
@@ -83,7 +83,7 @@ class TestFailWhenFewerFilesInModel(unittest.TestCase):
             True
         )
 
-        unconditionally_matching_file_matcher_sym_ref_arg = fm_args.SymbolReferenceWSyntax(
+        unconditionally_matching_file_matcher_sym_ref_arg = fm_args.SymbolReferenceWReferenceSyntax(
             unconditionally_matching_file_matcher.name
         )
         unconditionally_matching_file_matcher_sym_ref_assertion = unconditionally_matching_file_matcher.reference_assertion
@@ -199,7 +199,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(
                         name_of_file_in_model,
-                        fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
+                        fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
                     ),
                 ]),
                 Arrangement(
@@ -222,7 +222,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(
                         name_of_file_in_model,
-                        fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)
+                        fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)
                     ),
                 ]),
                 Arrangement(
@@ -287,7 +287,7 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_file_in_model__regular),
                     fc_args.FileCondition(name_of_file_in_model__dir,
-                                          fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
                 ]),
                 arrangement,
                 Expectation(
@@ -303,9 +303,9 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 'expected names - all with matchers, 1st matches, 2nd do not match',
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_file_in_model__regular,
-                                          fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
                     fc_args.FileCondition(name_of_file_in_model__dir,
-                                          fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)),
                 ]),
                 arrangement,
                 Expectation(
@@ -323,9 +323,9 @@ class TestNonMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 'expected names - all with matchers, 1st do not match, 2nd matches',
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_file_in_model__regular,
-                                          fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)),
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)),
                     fc_args.FileCondition(name_of_file_in_model__dir,
-                                          fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)),
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)),
                 ]),
                 arrangement,
                 Expectation(
@@ -431,7 +431,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(
                         name_of_single_file,
-                        fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
+                        fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
                     ),
                 ]),
                 Arrangement(
@@ -454,7 +454,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(
                         name_of_single_file,
-                        fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)
+                        fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)
                     ),
                 ]),
                 Arrangement(
@@ -517,7 +517,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 'with matcher on regular file',
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_regular_file,
-                                          fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
                                           ),
                     fc_args.FileCondition(name_of_dir),
                 ]),
@@ -536,7 +536,7 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_regular_file),
                     fc_args.FileCondition(name_of_dir,
-                                          fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)
                                           ),
                 ]),
                 arrangement,
@@ -553,10 +553,10 @@ class TestMatchingCasesWithSameNumberOfFilesInFcAndModel(unittest.TestCase):
                 'with matcher on both files',
                 fc_args.FilesCondition([
                     fc_args.FileCondition(name_of_regular_file,
-                                          fm_args.SymbolReferenceWSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_REGULAR_FILE_FILE_MATCHER.name)
                                           ),
                     fc_args.FileCondition(name_of_dir,
-                                          fm_args.SymbolReferenceWSyntax(IS_DIR_FILE_MATCHER.name)
+                                          fm_args.SymbolReferenceWReferenceSyntax(IS_DIR_FILE_MATCHER.name)
                                           ),
                 ]),
                 arrangement,

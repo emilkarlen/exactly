@@ -4,7 +4,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import FULL_AND_NON_FULL_CASES
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import CHECKER
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_check import CHECKER__PARSE_FULL
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -18,13 +18,13 @@ class Test(unittest.TestCase):
         fm_symbol_name = 'the_file_matcher'
         fc_argument = fc_args.FilesCondition([
             fc_args.FileCondition('file-name',
-                                  fm_args.SymbolReferenceWSyntax(fm_symbol_name))
+                                  fm_args.SymbolReferenceWReferenceSyntax(fm_symbol_name))
         ])
         for case in FULL_AND_NON_FULL_CASES:
             fsm = case.arguments_for_fc(fc_argument)
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                CHECKER.check_multi__w_source_variants(
+                CHECKER__PARSE_FULL.check_multi__w_source_variants(
                     self,
                     fsm.as_arguments,
                     symbol_references=asrt.matches_singleton_sequence(

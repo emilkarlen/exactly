@@ -61,15 +61,15 @@ def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
     return sdv_components.matcher_sdv_from_constant_primitive(FileMatcherType(file_type))
 
 
-def _parse_regular_file_contents(parser: TokenParser) -> FileMatcherSdv:
-    string_matcher = parse_string_matcher.parsers().full.parse_from_token_parser(parser)
+def _parse_regular_file_contents(token_parser: TokenParser) -> FileMatcherSdv:
+    string_matcher = parse_string_matcher.parsers().simple.parse_from_token_parser(token_parser)
     return regular_file_contents.sdv(string_matcher)
 
 
 def _parse_dir_contents(token_parser: TokenParser) -> FileMatcherSdv:
     from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
     model_constructor = DIR_CONTENTS_MODEL_PARSER.parse(token_parser)
-    files_matcher = parse_files_matcher.parsers().full.parse_from_token_parser(token_parser)
+    files_matcher = parse_files_matcher.parsers().simple.parse_from_token_parser(token_parser)
     return dir_contents.dir_matches_files_matcher_sdv(model_constructor,
                                                       files_matcher)
 

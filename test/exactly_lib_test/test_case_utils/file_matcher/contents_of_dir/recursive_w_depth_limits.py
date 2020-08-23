@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 class TestParseShouldFailWhenInvalidLimitOption(unittest.TestCase):
     def runTest(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            integration_check.CHECKER.parser.parse(
+            integration_check.CHECKER__PARSE_FULL.parser.parse(
                 fm_args.DirContentsRecursiveInvalidOptionArgs(
                     'invalid-option'
                 )
