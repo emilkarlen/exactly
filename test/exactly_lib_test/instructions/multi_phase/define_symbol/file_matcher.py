@@ -8,6 +8,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher, file_matcher_models
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -17,6 +18,7 @@ from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolv
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_syntax import file_matcher_arguments
@@ -38,7 +40,8 @@ class Test(unittest.TestCase):
         non_matching_name = 'non-matching name'
 
         glob_pattern_arguments = file_matcher_arguments(name_pattern=name_pattern)
-        expected_glob_pattern_matcher_sdv = parse_file_matcher.parsers().full.parse(remaining_source(glob_pattern_arguments))
+        sut_parser = parse_file_matcher.parsers().full
+        expected_glob_pattern_matcher_sdv = sut_parser.parse(remaining_source(glob_pattern_arguments))
 
         expected_glob_pattern_matcher = resolving_helper__fake().resolve_matcher(expected_glob_pattern_matcher_sdv)
 
@@ -100,6 +103,14 @@ class Test(unittest.TestCase):
                     )
                     # ACT & ASSERT #
                     INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+
+    def test_matcher_SHOULD_be_parsed_as_full_expression(self):
+        matcher_helpers.check_matcher_should_be_parsed_as_full_expression(
+            self,
+            FileMatcherSymbolContext.of_arbitrary_value('symbol_1'),
+            FileMatcherSymbolContext.of_arbitrary_value('symbol_2'),
+            LogicValueType.FILE_MATCHER,
+        )
 
     def test_failing_parse(self):
         cases = [

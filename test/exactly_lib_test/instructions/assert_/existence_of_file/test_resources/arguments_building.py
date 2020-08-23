@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import List, Optional
 
 from exactly_lib.definitions import logic
@@ -6,19 +6,12 @@ from exactly_lib.instructions.assert_ import existence_of_file
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 
 
-class Argument(ABC):
+class Argument(ArgumentElementsRenderer, ABC):
     """Generate source using __str__"""
     pass
-
-    def __str__(self):
-        return ' '.join([str(element) for element in self.elements])
-
-    @property
-    @abstractmethod
-    def elements(self) -> List:
-        pass
 
 
 class PathArg(Argument):

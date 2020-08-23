@@ -134,6 +134,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         INSTRUCTION_CHECKER.check(self, source, arrangement, expectation)
 
+    def test_matcher_SHOULD_be_parsed_as_full_expression(self):
+        matcher_helpers.check_matcher_should_be_parsed_as_full_expression(
+            self,
+            FilesMatcherSymbolContext.of_arbitrary_value('symbol_1'),
+            FilesMatcherSymbolContext.of_arbitrary_value('symbol_2'),
+            LogicValueType.FILES_MATCHER,
+        )
+
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
         # ARRANGE #
 

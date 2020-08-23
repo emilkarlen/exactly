@@ -17,6 +17,7 @@ from exactly_lib_test.test_case_utils.files_condition.test_resources.complex_mat
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import prim_asrt__constant
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -82,7 +83,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
     def test_single_file_name_with_matcher(self):
         # ARRANGE #
         file_name = 'file-name'
-        fm_symbol = 'file_maker'
+        fm_symbol = 'file_matcher'
         cases = [
             NameAndValue(
                 'single name entry',
@@ -140,7 +141,7 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
         file_name_w_matcher = 'file-name-with-matcher'
         file_name_wo_matcher = 'file-name-without-matcher'
 
-        fm_symbol = 'file_maker'
+        fm_symbol = 'file_matcher'
 
         arguments = args.FilesCondition([
             args.FileCondition(file_name_wo_matcher),
@@ -219,6 +220,42 @@ class TestApplicationWithMax1MatcherPerFile(unittest.TestCase):
                 )
                 for expected_result_of_matcher_w_variations in [False, True]
             ]
+        )
+
+    def test_file_matcher_SHOULD_be_parsed_as_full_expression(self):
+        # ARRANGE #
+        file_name = 'file-name'
+        fm_1 = FileMatcherSymbolContextOfPrimitiveConstant('file_matcher_1', False)
+        fm_2 = FileMatcherSymbolContextOfPrimitiveConstant('file_matcher_2', True)
+        symbols = [fm_1, fm_2]
+
+        arguments = args.FilesCondition([
+            args.FileCondition(file_name,
+                               fm_args.disjunction([fm_1.argument,
+                                                    fm_2.argument]))
+        ])
+        expected_result = fm_1.result_value or fm_2.result_value
+        # ACT & ASSERT #
+        CHECKER.check__w_source_variants(
+            self,
+            arguments=arguments.as_arguments,
+            input_=None,
+            arrangement=arrangement_wo_tcds(
+                symbols=SymbolContext.symbol_table_of_contexts(symbols)
+            ),
+            expectation=
+            Expectation(
+                ParseExpectation(
+                    symbol_references=SymbolContext.references_assertion_of_contexts(symbols)
+                ),
+                primitive=
+                prim_asrt__constant(
+                    asrt_primitive.files_matches({
+                        PurePosixPath(file_name):
+                            asrt_primitive.is_matcher_that_gives(expected_result)
+                    })
+                )
+            )
         )
 
 

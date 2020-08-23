@@ -195,6 +195,13 @@ class SymbolContext(Generic[SDV_TYPE], ABC):
             for context in symbols
         ])
 
+    @staticmethod
+    def usages_assertion_of_contexts(symbols: Sequence['SymbolContext']) -> ValueAssertion[Sequence[SymbolUsage]]:
+        return asrt.matches_sequence([
+            symbol.usage_assertion
+            for symbol in symbols
+        ])
+
     @property
     def argument(self) -> ArgumentElementsRenderer:
         return args.SymbolReferenceWReferenceSyntax(self.name)

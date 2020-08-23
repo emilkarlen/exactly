@@ -42,6 +42,14 @@ def src2(type_: ValueType,
                       value_template.format_map(format_map))
 
 
+def src3(type_: ValueType,
+         symbol_name: str,
+         value: str) -> str:
+    return src__const(type_,
+                      symbol_name,
+                      value)
+
+
 def src__const(type_: ValueType,
                symbol_name: str,
                value: str) -> str:
@@ -110,4 +118,6 @@ def symbol_def_instruction(type_: ValueType, value: WithToString) -> ArgumentEle
     return arguments_building.SequenceOfElements(
         ()
     )
+
+
 SB = ParseSourceBuilder(_STD_FORMAT_MAP)

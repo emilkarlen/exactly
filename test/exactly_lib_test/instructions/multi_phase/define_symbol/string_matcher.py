@@ -133,6 +133,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         INSTRUCTION_CHECKER.check(self, source, arrangement, expectation)
 
+    def test_matcher_SHOULD_be_parsed_as_full_expression(self):
+        matcher_helpers.check_matcher_should_be_parsed_as_full_expression(
+            self,
+            StringMatcherSymbolContext.of_arbitrary_value('symbol_1'),
+            StringMatcherSymbolContext.of_arbitrary_value('symbol_2'),
+            LogicValueType.STRING_MATCHER,
+        )
+
     def test_successful_parse_and_application_of_non_trivial_matcher(self):
         defined_name = 'defined_name'
 

@@ -14,11 +14,13 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.hard_e
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.validation import ValidationHelper
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import SourceArrangement, \
-    ExecutionExpectation, ParseExpectation
+    ExecutionExpectation, ParseExpectation, Expectation2
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
@@ -29,8 +31,12 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     files_matcher_integration as fm_tr
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data, model_checker
-from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
+from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext, \
+    FilesMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -47,6 +53,7 @@ def suite() -> unittest.TestSuite:
         TestFilesOfModel(),
         TestDetectionOfFileType(),
         TestMultiLineSyntax(),
+        TestFilesMatcherShouldBeParsedAsFullExpression(),
     ])
 
 
@@ -284,6 +291,46 @@ class TestMultiLineSyntax(unittest.TestCase):
                     ),
                     execution=execution_cases,
                 )
+
+
+class TestFilesMatcherShouldBeParsedAsFullExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        checked_dir = Dir.empty('the-checked-dir')
+
+        fsm_1 = FilesMatcherSymbolContextOfPrimitiveConstant('fsm_1', True)
+        fsm_2 = FilesMatcherSymbolContextOfPrimitiveConstant('fsm_2', False)
+        symbols = [fsm_1, fsm_2]
+
+        rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
+
+        arguments = args.SequenceOfArguments([
+            rel_conf.file_argument_with_option(checked_dir.name),
+            fsm_args.disjunction([fsm_1.argument, fsm_2.argument]),
+        ])
+        is_pass = fsm_1.result_value or fsm_2.result_value
+        # ACT # & ASSERT #
+        INSTRUCTION_CHECKER.check_2(
+            self,
+            arguments.as_remaining_source,
+            ArrangementPostAct2(
+                symbols=SymbolContext.symbol_table_of_contexts(symbols),
+                tcds=TcdsArrangementPostAct(
+                    tcds_contents=rel_conf.populator_for_relativity_option_root(
+                        DirContents([checked_dir])
+                    )
+                )
+            ),
+            Expectation2(
+                ParseExpectation(
+                    source=asrt_source.source_is_at_end,
+                    symbol_usages=SymbolContext.usages_assertion_of_contexts(symbols),
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_pfh.is_non_hard_error(is_pass),
+                ),
+            )
+        )
 
 
 def _arguments(path: ArgumentElementsRenderer,

@@ -16,21 +16,28 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.instructions.assert_.existence_of_file import test_resources as args
+from exactly_lib_test.instructions.assert_.existence_of_file.test_resources import arguments_building as args
+from exactly_lib_test.instructions.assert_.existence_of_file.test_resources.instruction_check import CHECKER
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker, \
     InstructionArgumentsVariantConstructor
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
+    ExecutionExpectation
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.data.test_resources.path import path_or_string_reference_restrictions
 from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
+    FileMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_path_argument, \
     path_argument
+from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
@@ -62,6 +69,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
         unittest.makeSuite(TestDifferentSourceVariants),
+        TestMatcherShouldBeParsedAsFullExpression(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -100,6 +108,47 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
+
+class TestMatcherShouldBeParsedAsFullExpression(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        checked_file = File.empty('the-checked-file.txt')
+
+        fm_1 = FileMatcherSymbolContextOfPrimitiveConstant('fm_1', True)
+        fm_2 = FileMatcherSymbolContextOfPrimitiveConstant('fm_2', False)
+        symbols = [fm_1, fm_2]
+
+        rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
+
+        arguments = args.CompleteInstructionArg(
+            ExpectationType.POSITIVE,
+            args.PathArg(rel_conf.file_argument_with_option(checked_file.name)),
+            fm_args.disjunction([fm_1.argument, fm_2.argument]),
+        )
+        is_pass = fm_1.result_value or fm_2.result_value
+        # ACT # & ASSERT #
+        CHECKER.check_2(
+            self,
+            arguments.as_remaining_source,
+            ArrangementPostAct2(
+                symbols=SymbolContext.symbol_table_of_contexts(symbols),
+                tcds=TcdsArrangementPostAct(
+                    tcds_contents=rel_conf.populator_for_relativity_option_root(
+                        DirContents([checked_file])
+                    )
+                )
+            ),
+            Expectation2(
+                ParseExpectation(
+                    source=asrt_source.source_is_at_end,
+                    symbol_usages=SymbolContext.usages_assertion_of_contexts(symbols),
+                ),
+                ExecutionExpectation(
+                    main_result=pfh_assertions.is_non_hard_error(is_pass),
+                ),
+            )
+        )
 
 
 class SymbolUsagesTest(unittest.TestCase):
@@ -167,9 +216,8 @@ class FileMatcherValidationTest(unittest.TestCase):
             with self.subTest(failing_file_matcher_case.name):
                 # ACT & ASSERT #
 
-                instruction_check.check(
+                CHECKER.check(
                     self,
-                    sut.Parser(),
                     remaining_source(str(argument)),
                     ArrangementPostAct(
                         symbols=failing_symbol_context.symbol_table,
@@ -201,9 +249,8 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        instruction_check.check(
+        CHECKER.check(
             self,
-            sut.Parser(),
             remaining_source(str(argument)),
             ArrangementPostAct(
                 symbols=file_matcher_that_raises_hard_error.symbol_table,

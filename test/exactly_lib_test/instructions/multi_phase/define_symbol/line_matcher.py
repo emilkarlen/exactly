@@ -8,6 +8,7 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, constant
 from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
@@ -109,6 +110,14 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 # ACT & ASSERT #
 
                 INSTRUCTION_CHECKER.check(self, source, ArrangementWithSds(), expectation)
+
+    def test_matcher_SHOULD_be_parsed_as_full_expression(self):
+        matcher_helpers.check_matcher_should_be_parsed_as_full_expression(
+            self,
+            LineMatcherSymbolContext.of_arbitrary_value('symbol_1'),
+            LineMatcherSymbolContext.of_arbitrary_value('symbol_2'),
+            LogicValueType.LINE_MATCHER,
+        )
 
 
 class TestUnsuccessfulScenarios(unittest.TestCase):
