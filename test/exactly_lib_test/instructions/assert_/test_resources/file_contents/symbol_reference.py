@@ -18,7 +18,7 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES

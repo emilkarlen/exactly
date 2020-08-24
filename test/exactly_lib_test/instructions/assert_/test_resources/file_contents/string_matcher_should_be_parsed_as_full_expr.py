@@ -7,7 +7,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherS
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 
 

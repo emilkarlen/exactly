@@ -7,7 +7,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import SB
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase

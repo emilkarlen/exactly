@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import SB
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

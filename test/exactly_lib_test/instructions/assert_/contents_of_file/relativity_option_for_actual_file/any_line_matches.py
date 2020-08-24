@@ -16,7 +16,7 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
     LineMatchesAssertionArgumentsConstructor
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 

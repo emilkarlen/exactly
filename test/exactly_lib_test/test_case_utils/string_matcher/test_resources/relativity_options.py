@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
     SdsPopulatorForSubDir
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     TcdsPopulator
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import SUB_DIR_RESOLVER
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import SUB_DIR_RESOLVER
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

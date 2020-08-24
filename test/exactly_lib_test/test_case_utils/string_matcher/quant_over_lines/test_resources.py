@@ -11,7 +11,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, arguments_building, \
     test_configuration
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success

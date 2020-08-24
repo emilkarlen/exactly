@@ -10,7 +10,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.misc import \
+from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
