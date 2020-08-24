@@ -568,65 +568,52 @@ class TestInfixOpExpression(unittest.TestCase):
 
 
 class TestCombinedExpressions(unittest.TestCase):
-    def test__inside_parentheses__primitive_recursive_followed_by_binary_op_on_following_line(self):
+    def test__inside_parentheses__primitive_recursive_followed_by_binary_op(self):
         s = ast.PrimitiveSansArg()
 
         expected = ast.InfixOpA([ast.PrimitiveRecursive(s), s])
 
-        arguments = '( \n {r} {s} \n {op_a} \n {s} \n )'.format(
-            r=ast.PRIMITIVE_RECURSIVE,
-            s=ast.PRIMITIVE_SANS_ARG,
-            op_a=ast.INFIX_OP_A,
-        )
-
-        check(
-            self,
-            PARSER_MAKER_OF_FULL_EXPR_PARSER,
-            Arrangement(
-                grammar=
-                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                source=
-                remaining_source(arguments)),
-            Expectation(
-                expression=
-                expected,
-                source=
-                asrt_source.is_at_end_of_line(5),
-            )
-        )
-
-    def test__inside_parentheses__primitive_recursive_followed_by_binary_op_on_same_line(self):
-        s = ast.PrimitiveSansArg()
-
-        expected = ast.PrimitiveRecursive(ast.InfixOpA([s, s]))
-        # TODO want this to be same as above - fix with precedences
-
-        arguments = '( \n {r} {s} {op_a} \n {s} \n )'.format(
-            r=ast.PRIMITIVE_RECURSIVE,
-            s=ast.PRIMITIVE_SANS_ARG,
-            op_a=ast.INFIX_OP_A,
-        )
-
-        check(
-            self,
-            PARSER_MAKER_OF_FULL_EXPR_PARSER,
-            Arrangement(
-                grammar=
-                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                source=
-                remaining_source(arguments)),
-            Expectation(
-                expression=
-                expected,
-                source=
-                asrt_source.is_at_end_of_line(4),
-            )
-        )
+        cases = [
+            NameAndValue(
+                'bin op on same line',
+                '( \n {r} {s} \n {op_a} \n {s} \n )'.format(
+                    r=ast.PRIMITIVE_RECURSIVE,
+                    s=ast.PRIMITIVE_SANS_ARG,
+                    op_a=ast.INFIX_OP_A,
+                ),
+            ),
+            NameAndValue(
+                'bin op on following line',
+                '( \n {r} {s} {op_a} \n {s} \n )'.format(
+                    r=ast.PRIMITIVE_RECURSIVE,
+                    s=ast.PRIMITIVE_SANS_ARG,
+                    op_a=ast.INFIX_OP_A,
+                ),
+            ),
+        ]
+        for case in cases:
+            expected_source = asrt_source.is_at_end_of_line(len(case.value.splitlines()))
+            with self.subTest(case.name):
+                check(
+                    self,
+                    PARSER_MAKER_OF_FULL_EXPR_PARSER,
+                    Arrangement(
+                        grammar=
+                        ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                        source=
+                        remaining_source(case.value)),
+                    Expectation(
+                        expression=
+                        expected,
+                        source=
+                        expected_source,
+                    )
+                )
 
     def test__primitive_recursive_followed_by_binary_op_on_same_line(self):
         s = ast.PrimitiveSansArg()
 
-        expected = ast.PrimitiveRecursive(ast.InfixOpA([s, s]))
+        expected = ast.InfixOpA([ast.PrimitiveRecursive(s), s])
 
         arguments = '{r} {s} {op_a} {s}'.format(
             r=ast.PRIMITIVE_RECURSIVE,
