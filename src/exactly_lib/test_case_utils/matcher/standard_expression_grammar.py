@@ -31,7 +31,16 @@ def new_grammar(concept: grammar.Concept,
         concept,
         mk_reference=mk_reference,
         primitive_expressions=all_simple_expressions,
-        infix_op_expressions=[
+        prefix_op_expressions=[
+            NameAndValue(
+                logic.NOT_OPERATOR_NAME,
+                grammar.PrefixOpExpression(combinator_sdvs.Negation,
+                                           OperatorExpressionDescriptionFromFunctions(
+                                               tp.fnap__fun(_NOT_SED_DESCRIPTION)
+                                           ))
+            )
+        ],
+        infix_op_expressions_in_order_of_decreasing_precedence=[[
             NameAndValue(
                 logic.AND_OPERATOR_NAME,
                 grammar.InfixOpExpression(combinator_sdvs.Conjunction,
@@ -46,16 +55,7 @@ def new_grammar(concept: grammar.Concept,
                                               tp.fnap__fun(_OR_SED_DESCRIPTION)
                                           ))
             ),
-        ],
-        prefix_op_expressions=[
-            NameAndValue(
-                logic.NOT_OPERATOR_NAME,
-                grammar.PrefixOpExpression(combinator_sdvs.Negation,
-                                           OperatorExpressionDescriptionFromFunctions(
-                                               tp.fnap__fun(_NOT_SED_DESCRIPTION)
-                                           ))
-            )
-        ],
+        ]],
     )
 
 

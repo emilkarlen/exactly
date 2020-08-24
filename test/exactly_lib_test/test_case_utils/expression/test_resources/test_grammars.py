@@ -240,7 +240,8 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
     primitive_expressions=PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE,
-    infix_op_expressions=(
+    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
+    infix_op_expressions_in_order_of_decreasing_precedence=[(
         NameAndValue(
             INFIX_OP_A,
             grammar.InfixOpExpression(InfixOpA,
@@ -253,8 +254,7 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
                                       ConstantOperatorExpressionDescription([], [],
                                                                             [CROSS_REF_ID]))
         ),
-    ),
-    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
+    )],
 )
 
 GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
@@ -262,7 +262,7 @@ GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
     mk_reference=_mk_reference,
     primitive_expressions=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
     prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
-    infix_op_expressions=(),
+    infix_op_expressions_in_order_of_decreasing_precedence=(),
 )
 
 GRAMMARS = [

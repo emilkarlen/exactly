@@ -52,7 +52,8 @@ GRAMMAR = grammar.Grammar(
                                         identity.SyntaxDescription())
         ),
     ),
-    infix_op_expressions=[
+    prefix_op_expressions=(),
+    infix_op_expressions_in_order_of_decreasing_precedence=[[
         NameAndValue(
             names.SEQUENCE_OPERATOR_NAME,
             grammar.InfixOpExpression(
@@ -60,8 +61,7 @@ GRAMMAR = grammar.Grammar(
                 sequence.SYNTAX_DESCRIPTION,
             )
         ),
-    ],
-    prefix_op_expressions=(),
+    ]],
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Sequence, TypeVar, Generic, Callable
+from typing import Sequence, TypeVar, Generic, Callable
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.util import collection
 from exactly_lib.util import name_and_value
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -117,14 +118,16 @@ class Grammar(Generic[EXPR]):
                  concept: Concept,
                  mk_reference: Callable[[str], EXPR],
                  primitive_expressions: Sequence[NameAndValue[PrimitiveExpression[EXPR]]],
-                 infix_op_expressions: Sequence[NameAndValue[InfixOpExpression[EXPR]]],
-                 prefix_op_expressions: Optional[Sequence[NameAndValue[PrefixOpExpression[EXPR]]]] = None,
+                 prefix_op_expressions: Sequence[NameAndValue[PrefixOpExpression[EXPR]]],
+                 infix_op_expressions_in_order_of_decreasing_precedence:
+                 Sequence[Sequence[NameAndValue[InfixOpExpression[EXPR]]]],
                  ):
         self.concept = concept
         self.mk_reference = mk_reference
         self.primitive_expressions_list = primitive_expressions
         self.primitive_expressions = name_and_value.to_dict(primitive_expressions)
-        self.infix_op_expressions_list = infix_op_expressions
-        self.infix_op_expressions = name_and_value.to_dict(infix_op_expressions)
-        self.prefix_op_expressions = name_and_value.to_dict(prefix_op_expressions) if prefix_op_expressions else {}
-        self.prefix_op_expressions_list = prefix_op_expressions if prefix_op_expressions else ()
+        self.prefix_op_expressions_list = prefix_op_expressions
+        self.prefix_op_expressions = name_and_value.to_dict(prefix_op_expressions)
+        infix_op_expressions_sequence = collection.concat_list(infix_op_expressions_in_order_of_decreasing_precedence)
+        self.infix_op_expressions_list = infix_op_expressions_sequence
+        self.infix_op_expressions = name_and_value.to_dict(infix_op_expressions_sequence)

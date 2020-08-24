@@ -35,9 +35,9 @@ def intersperse_list(element_between: T, elements: Sequence[T]) -> List[T]:
         return [elements[0]] + [element_between] + intersperse_list(element_between, elements[1:])
 
 
-def concat_list(list_of_lists: Sequence[Sequence[T]]) -> List[T]:
+def concat_list(xss: Sequence[Sequence[T]]) -> List[T]:
     ret_val = []
-    for element_list in list_of_lists:
+    for element_list in xss:
         ret_val += element_list
 
     return ret_val

@@ -112,7 +112,7 @@ GRAMMAR = grammar.Grammar(
 
         ),
     ),
-    infix_op_expressions=(),
+    infix_op_expressions_in_order_of_decreasing_precedence=(),
     prefix_op_expressions=(),
 )
 
