@@ -114,10 +114,4 @@ def multi_line_source(first_line: str,
                             [src(line, **kwargs) for line in following_lines])
 
 
-def symbol_def_instruction(type_: ValueType, value: WithToString) -> ArgumentElementsRenderer:
-    return argument_renderer.SequenceOfElements(
-        ()
-    )
-
-
 SB = ParseSourceBuilder(_STD_FORMAT_MAP)
