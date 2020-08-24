@@ -104,7 +104,7 @@ GRAMMAR = grammar.Grammar(
         syntax_element_name=syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.argument,
     ),
     mk_reference=files_conditions.new_reference,
-    primitive_expressions=(
+    primitives=(
         NameAndValue(
             syntax.BEGIN_BRACE,
             grammar.PrimitiveExpression(_parse_constant,
@@ -112,8 +112,8 @@ GRAMMAR = grammar.Grammar(
 
         ),
     ),
-    infix_op_expressions_in_order_of_decreasing_precedence=(),
-    prefix_op_expressions=(),
+    infix_operators_in_order_of_increasing_precedence=(),
+    prefix_operators=(),
 )
 
 _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE = ep.parsers_for_must_be_on_current_line(GRAMMAR)

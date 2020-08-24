@@ -64,7 +64,6 @@ def check(put: unittest.TestCase,
                                           arrangement.source,
                                           'source after parse')
 
-
 def check__multi(put: unittest.TestCase,
                  parser_maker: ParserMaker,
                  cases: Sequence[NArrEx[Arrangement, Expectation]],

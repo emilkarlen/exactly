@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping, Any
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict, Optional, ContextManager, Generic, Mapping, Any, \
+    Union, AbstractSet
 
 from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers import misc_utils
@@ -325,9 +326,10 @@ class TokenParser:
                     actual_string)
             )
 
-    def consume_optional_constant_string_that_must_be_unquoted_and_equal(self,
-                                                                         expected_constants: Sequence[str],
-                                                                         must_be_on_current_line: bool = True) -> str:
+    def consume_optional_constant_string_that_must_be_unquoted_and_equal(
+            self,
+            expected_constants: Union[Sequence[str], AbstractSet[str]],
+            must_be_on_current_line: bool = True) -> str:
         """
         Consumes the first token if it is an unquoted string that is equal to one of the expected string constants.
         :param expected_constants: collection of names=strings. Must support the Python 'in' operator

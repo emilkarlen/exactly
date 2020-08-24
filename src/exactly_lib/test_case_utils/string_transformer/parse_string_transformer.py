@@ -30,7 +30,7 @@ def _mk_reference(name: str) -> StringTransformerSdv:
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
     mk_reference=_mk_reference,
-    primitive_expressions=(
+    primitives=(
         NameAndValue(
             names.REPLACE_TRANSFORMER_NAME,
             grammar.PrimitiveExpression(replace.parse_replace,
@@ -52,8 +52,8 @@ GRAMMAR = grammar.Grammar(
                                         identity.SyntaxDescription())
         ),
     ),
-    prefix_op_expressions=(),
-    infix_op_expressions_in_order_of_decreasing_precedence=[[
+    prefix_operators=(),
+    infix_operators_in_order_of_increasing_precedence=[[
         NameAndValue(
             names.SEQUENCE_OPERATOR_NAME,
             grammar.InfixOpExpression(

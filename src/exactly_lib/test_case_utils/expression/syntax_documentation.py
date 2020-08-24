@@ -51,8 +51,8 @@ class Syntax:
         return ret_val
 
     def _precedence_description(self) -> List[ParagraphItem]:
-        has_prefix_op = bool(self.grammar.prefix_op_expressions)
-        has_bin_op = bool(self.grammar.infix_op_expressions)
+        has_prefix_op = bool(self.grammar.prefix_operators)
+        has_bin_op = bool(self.grammar.infix_operators)
 
         if has_bin_op:
             if has_prefix_op:
@@ -64,9 +64,9 @@ class Syntax:
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         expression_lists = [
-            self.grammar.primitive_expressions_list,
-            self.grammar.prefix_op_expressions_list,
-            self.grammar.infix_op_expressions_list,
+            self.grammar.primitive_operators_list,
+            self.grammar.prefix_operators_list,
+            self.grammar.infix_operators_list,
         ]
         return list(itertools.chain.from_iterable(
             map(_seds_for_expr, expression_lists)
@@ -77,9 +77,9 @@ class Syntax:
         :returns: A new list, which may contain duplicate elements.
         """
         expression_dicts = [
-            self.grammar.primitive_expressions,
-            self.grammar.prefix_op_expressions,
-            self.grammar.infix_op_expressions,
+            self.grammar.primitives,
+            self.grammar.prefix_operators,
+            self.grammar.infix_operators,
         ]
         return list(itertools.chain.from_iterable(
             map(_see_also_targets_for_expr,
@@ -95,7 +95,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.primitive_expressions_list
+            for expr in self.grammar.primitive_operators_list
         ]
 
     def _invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
@@ -131,7 +131,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.infix_op_expressions_list
+            for expr in self.grammar.infix_operators_list
         ]
 
     def _invokation_variants_prefix(self) -> List[InvokationVariant]:
@@ -145,7 +145,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.prefix_op_expressions_list
+            for expr in self.grammar.prefix_operators_list
         ]
 
     def _invokation_variants_parentheses(self) -> List[InvokationVariant]:

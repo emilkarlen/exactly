@@ -1,28 +1,25 @@
 from typing import Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as expression_parser
-from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveExprDescription, \
+    ConstantOperatorExpressionDescription, CONCEPT
 
 
 class Expr:
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.__dict__ == other.__dict__
-        return NotImplemented
+        return False
 
     def __ne__(self, other):
         if isinstance(other, self.__class__):
             return not self.__eq__(other)
-        return NotImplemented
+        return True
 
     def __hash__(self):
         return hash(tuple(sorted(self.__dict__.items())))
@@ -127,67 +124,6 @@ PREFIX_Q = 'prefix_q'
 INFIX_OP_A = 'infix_op_a'
 INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
-CONCEPT = grammar.Concept(
-    NameWithGenderWithFormatting(
-        NameWithGender('a',
-                       'concept singular',
-                       'concept plural')),
-    'type-system-name',
-    a.Named('SYNTAX-ELEMENT-NAME'))
-
-
-class ConstantPrimitiveExprDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
-    def __init__(self,
-                 argument_usage_list: Sequence[a.ArgumentUsage],
-                 description_rest: Sequence[ParagraphItem],
-                 syntax_elements: Sequence[SyntaxElementDescription] = (),
-                 see_also_targets: Sequence[SeeAlsoTarget] = (),
-                 ):
-        self._argument_usage_list = argument_usage_list
-        self._description_rest = description_rest
-        self._see_also_targets = list(see_also_targets)
-        self._syntax_elements = syntax_elements
-
-    @property
-    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return self._argument_usage_list
-
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return self._description_rest
-
-    @property
-    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
-        return self._syntax_elements
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return self._see_also_targets
-
-
-class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
-    def __init__(self,
-                 description_rest: Sequence[ParagraphItem],
-                 syntax_elements: Sequence[SyntaxElementDescription] = (),
-                 see_also_targets: Sequence[SeeAlsoTarget] = (),
-                 ):
-        self._description_rest = description_rest
-        self._see_also_targets = list(see_also_targets)
-        self._syntax_elements = syntax_elements
-
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return self._description_rest
-
-    @property
-    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
-        return self._syntax_elements
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return self._see_also_targets
-
-
 PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE = (
     NameAndValue(
         PRIMITIVE_WITH_ARG,
@@ -239,9 +175,9 @@ def _mk_reference(name: str) -> Expr:
 GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    primitive_expressions=PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE,
-    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
-    infix_op_expressions_in_order_of_decreasing_precedence=[(
+    primitives=PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE,
+    prefix_operators=PREFIX_OP_EXPRESSIONS,
+    infix_operators_in_order_of_increasing_precedence=[(
         NameAndValue(
             INFIX_OP_A,
             grammar.InfixOpExpression(InfixOpA,
@@ -260,9 +196,9 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
 GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
     concept=CONCEPT,
     mk_reference=_mk_reference,
-    primitive_expressions=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
-    prefix_op_expressions=PREFIX_OP_EXPRESSIONS,
-    infix_op_expressions_in_order_of_decreasing_precedence=(),
+    primitives=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
+    prefix_operators=PREFIX_OP_EXPRESSIONS,
+    infix_operators_in_order_of_increasing_precedence=(),
 )
 
 GRAMMARS = [

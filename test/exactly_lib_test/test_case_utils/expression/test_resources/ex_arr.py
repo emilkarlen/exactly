@@ -22,7 +22,8 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  expression: ast.Expr,
-                 source: ValueAssertion):
+                 source: ValueAssertion[ParseSource],
+                 ):
         self.expression = expression
         self.source = source
 

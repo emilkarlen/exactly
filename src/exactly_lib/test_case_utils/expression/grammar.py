@@ -117,17 +117,21 @@ class Grammar(Generic[EXPR]):
     def __init__(self,
                  concept: Concept,
                  mk_reference: Callable[[str], EXPR],
-                 primitive_expressions: Sequence[NameAndValue[PrimitiveExpression[EXPR]]],
-                 prefix_op_expressions: Sequence[NameAndValue[PrefixOpExpression[EXPR]]],
-                 infix_op_expressions_in_order_of_decreasing_precedence:
+                 primitives: Sequence[NameAndValue[PrimitiveExpression[EXPR]]],
+                 prefix_operators: Sequence[NameAndValue[PrefixOpExpression[EXPR]]],
+                 infix_operators_in_order_of_increasing_precedence:
                  Sequence[Sequence[NameAndValue[InfixOpExpression[EXPR]]]],
                  ):
         self.concept = concept
         self.mk_reference = mk_reference
-        self.primitive_expressions_list = primitive_expressions
-        self.primitive_expressions = name_and_value.to_dict(primitive_expressions)
-        self.prefix_op_expressions_list = prefix_op_expressions
-        self.prefix_op_expressions = name_and_value.to_dict(prefix_op_expressions)
-        infix_op_expressions_sequence = collection.concat_list(infix_op_expressions_in_order_of_decreasing_precedence)
-        self.infix_op_expressions_list = infix_op_expressions_sequence
-        self.infix_op_expressions = name_and_value.to_dict(infix_op_expressions_sequence)
+        self.primitive_operators_list = primitives
+        self.primitives = name_and_value.to_dict(primitives)
+        self.prefix_operators_list = prefix_operators
+        self.prefix_operators = name_and_value.to_dict(prefix_operators)
+        infix_operators_sequence = collection.concat_list(infix_operators_in_order_of_increasing_precedence)
+        self.infix_operators_list = infix_operators_sequence
+        self.infix_operators = name_and_value.to_dict(infix_operators_sequence)
+        self.infix_ops_inc_precedence = [
+            name_and_value.to_dict(infix_ops_of_precedence)
+            for infix_ops_of_precedence in infix_operators_in_order_of_increasing_precedence
+        ]

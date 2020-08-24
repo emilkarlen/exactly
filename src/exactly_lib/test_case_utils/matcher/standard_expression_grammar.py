@@ -30,8 +30,8 @@ def new_grammar(concept: grammar.Concept,
     return grammar.Grammar(
         concept,
         mk_reference=mk_reference,
-        primitive_expressions=all_simple_expressions,
-        prefix_op_expressions=[
+        primitives=all_simple_expressions,
+        prefix_operators=[
             NameAndValue(
                 logic.NOT_OPERATOR_NAME,
                 grammar.PrefixOpExpression(combinator_sdvs.Negation,
@@ -40,7 +40,7 @@ def new_grammar(concept: grammar.Concept,
                                            ))
             )
         ],
-        infix_op_expressions_in_order_of_decreasing_precedence=[[
+        infix_operators_in_order_of_increasing_precedence=[[
             NameAndValue(
                 logic.AND_OPERATOR_NAME,
                 grammar.InfixOpExpression(combinator_sdvs.Conjunction,
