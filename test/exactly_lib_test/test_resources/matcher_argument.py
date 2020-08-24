@@ -6,7 +6,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util import collection
 from exactly_lib.util.parse import token
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, Singleton, \
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, Singleton, \
     BinaryOperator
 from exactly_lib_test.test_resources.strings import WithToString
 

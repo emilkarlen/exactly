@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_resources import arguments_building as ab
+from exactly_lib_test.test_resources import argument_renderer as arg_r
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.file_structure import python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -119,7 +119,7 @@ class TestNonZeroExitCode(TestCaseBase):
 class TestNonZeroExitCodeAndIgnoredExitCode(TestCaseBase):
     def runTest(self):
         argument_elements = (
-            ab.OptionArgument(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME).as_argument_elements
+            arg_r.OptionArgument(program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME).as_argument_elements
                 .followed_by(pgm_args.interpret_py_source_elements('exit(1)'))
         )
         self.conf.run_test(

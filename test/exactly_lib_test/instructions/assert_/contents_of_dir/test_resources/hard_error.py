@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators im
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

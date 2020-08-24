@@ -7,8 +7,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
     syntax_for_transformer_option
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources import arguments_building as primitive_ab
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources import argument_renderer as primitive_ab
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.strings import WithToString
 

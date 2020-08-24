@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as string_matcher_syntax
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     argument_syntax as string_transformers_syntax
-from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources import argument_renderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.strings import WithToString
 
 
@@ -115,7 +115,7 @@ def multi_line_source(first_line: str,
 
 
 def symbol_def_instruction(type_: ValueType, value: WithToString) -> ArgumentElementsRenderer:
-    return arguments_building.SequenceOfElements(
+    return argument_renderer.SequenceOfElements(
         ()
     )
 

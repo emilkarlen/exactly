@@ -36,8 +36,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check import s
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     TcdsPopulator, \
     TcdsPopulatorForRelOptionType
-from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources import argument_renderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -113,7 +113,7 @@ class OptionStringConfiguration:
 
 class OptionStringConfigurationForDefaultRelativity(OptionStringConfiguration):
     def __init__(self):
-        super().__init__(arguments_building.EmptyArgument())
+        super().__init__(argument_renderer.EmptyArgument())
 
 
 class OptionStringConfigurationForRelativityOption(OptionStringConfiguration):

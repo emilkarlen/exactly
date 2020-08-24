@@ -36,8 +36,8 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_contex
     FilesMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
-from exactly_lib_test.test_resources import arguments_building as args
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments
+from exactly_lib_test.test_resources import argument_renderer as args
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, SequenceOfArguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

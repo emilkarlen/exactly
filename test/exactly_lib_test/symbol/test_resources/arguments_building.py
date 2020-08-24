@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.strings import WithToString
 
 

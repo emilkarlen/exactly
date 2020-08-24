@@ -32,7 +32,7 @@ from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_execu
     suite_for, \
     ExpectationOnExeFile
 from exactly_lib_test.test_resources import string_formatting
-from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
+from exactly_lib_test.test_resources.argument_renderer import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \

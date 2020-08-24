@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_bui
     SymbolReference
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, Dir
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_utils import NExArr

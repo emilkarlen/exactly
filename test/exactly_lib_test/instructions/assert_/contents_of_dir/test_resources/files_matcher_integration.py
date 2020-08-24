@@ -15,7 +15,7 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, SequenceOfArguments, \
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, SequenceOfArguments, \
     OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr

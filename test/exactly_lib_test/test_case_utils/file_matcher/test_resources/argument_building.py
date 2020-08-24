@@ -13,9 +13,9 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
-from exactly_lib_test.test_resources import arguments_building
+from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources import matcher_argument
-from exactly_lib_test.test_resources.arguments_building import OptionArgument, ArgumentElementsRenderer
+from exactly_lib_test.test_resources.argument_renderer import OptionArgument, ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 
@@ -74,7 +74,7 @@ class BinaryOperator(FileMatcherArg):
 
     @property
     def elements(self) -> List:
-        return arguments_building.elements_for_binary_operator_arg(self.operator, self.operands)
+        return argument_renderer.elements_for_binary_operator_arg(self.operator, self.operands)
 
 
 def conjunction(operands: Sequence[FileMatcherArg]) -> BinaryOperator:

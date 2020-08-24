@@ -14,8 +14,8 @@ from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_synta
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import ExpectationTypeConfig
-from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import FromArgumentElementsBase
+from exactly_lib_test.test_resources import argument_renderer
+from exactly_lib_test.test_resources.argument_renderer import FromArgumentElementsBase
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -148,7 +148,7 @@ class BinaryOperator(FilesMatcherArg):
 
     @property
     def elements(self) -> List:
-        return arguments_building.elements_for_binary_operator_arg(self.operator, self.operands)
+        return argument_renderer.elements_for_binary_operator_arg(self.operator, self.operands)
 
 
 def conjunction(operands: Sequence[FilesMatcherArg]) -> BinaryOperator:

@@ -5,14 +5,14 @@ from exactly_lib.definitions import path as path_texts
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib_test.test_resources import arguments_building
-from exactly_lib_test.test_resources.arguments_building import SequenceOfElementsBase, ArgumentElementsRenderer
+from exactly_lib_test.test_resources import argument_renderer
+from exactly_lib_test.test_resources.argument_renderer import SequenceOfElementsBase, ArgumentElementsRenderer
 from exactly_lib_test.test_resources.strings import WithToString
 
 
 def rel_symbol_arg(symbol_name: str) -> ArgumentElementsRenderer:
-    return arguments_building.SequenceOfElements([
-        arguments_building.OptionArgument(path_texts.REL_SYMBOL_OPTION_NAME),
+    return argument_renderer.SequenceOfElements([
+        argument_renderer.OptionArgument(path_texts.REL_SYMBOL_OPTION_NAME),
         symbol_name,
     ])
 
@@ -90,4 +90,4 @@ class RelOptPathArgument(PathArgument):
 
 
 def rel_option_type_arg(relativity: RelOptionType) -> ArgumentElementsRenderer:
-    return arguments_building.OptionArgument(REL_OPTIONS_MAP[relativity].option_name)
+    return argument_renderer.OptionArgument(REL_OPTIONS_MAP[relativity].option_name)

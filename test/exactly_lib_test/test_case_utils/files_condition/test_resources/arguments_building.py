@@ -5,7 +5,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_resources.arguments_building import Singleton, \
+from exactly_lib_test.test_resources.argument_renderer import Singleton, \
     FromArgumentElementsBase
 from exactly_lib_test.test_resources.strings import WithToString
 

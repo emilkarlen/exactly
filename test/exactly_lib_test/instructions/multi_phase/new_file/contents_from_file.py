@@ -40,7 +40,7 @@ from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity im
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
     conf_rel_sds
-from exactly_lib_test.test_resources import arguments_building as args
+from exactly_lib_test.test_resources import argument_renderer as args
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \

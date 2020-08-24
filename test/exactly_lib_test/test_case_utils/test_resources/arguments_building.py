@@ -4,30 +4,30 @@ from exactly_lib.definitions import logic
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import arguments_building as sym_ab
-from exactly_lib_test.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer, QuotedStringArgument, \
+from exactly_lib_test.test_resources import argument_renderer as arg_r
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, QuotedStringArgument, \
     BinaryOperator, PrefixOperator
 from exactly_lib_test.test_resources.strings import WithToString
 
 
 def empty() -> ArgumentElementsRenderer:
-    return ab.EmptyArgument()
+    return arg_r.EmptyArgument()
 
 
 def singleton(value: WithToString) -> ArgumentElementsRenderer:
-    return ab.Singleton(value)
+    return arg_r.Singleton(value)
 
 
 def sequence(arguments: Sequence[WithToString],
              separator: WithToString = None) -> ArgumentElementsRenderer:
     if separator is not None:
-        return ab.SequenceOfElementsSeparatedByElement(separator, arguments)
+        return arg_r.SequenceOfElementsSeparatedByElement(separator, arguments)
     else:
-        return ab.SequenceOfElements(arguments)
+        return arg_r.SequenceOfElements(arguments)
 
 
 def sequence__r(arguments: Sequence[ArgumentElementsRenderer]) -> ArgumentElementsRenderer:
-    return ab.SequenceOfArguments(arguments)
+    return arg_r.SequenceOfArguments(arguments)
 
 
 def quoted_string(string_value: str,
@@ -38,10 +38,10 @@ def quoted_string(string_value: str,
 def option(option_name: OptionName,
            argument: WithToString = None) -> ArgumentElementsRenderer:
     return (
-        ab.OptionArgument(option_name)
+        arg_r.OptionArgument(option_name)
         if argument is None
         else
-        ab.OptionWithArgument(option_name, argument)
+        arg_r.OptionWithArgument(option_name, argument)
     )
 
 

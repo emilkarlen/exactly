@@ -21,7 +21,7 @@ from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resource
     SingleCaseGenerator, ExecutionResult, FullExecutionResult, ModelFile, ValidationFailure, \
     MultipleExecutionCasesGenerator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
-from exactly_lib_test.test_resources.arguments_building import SequenceOfArguments, ArgumentElementsRenderer, \
+from exactly_lib_test.test_resources.argument_renderer import SequenceOfArguments, ArgumentElementsRenderer, \
     OptionArgument
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

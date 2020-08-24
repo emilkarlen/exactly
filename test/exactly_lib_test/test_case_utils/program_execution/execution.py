@@ -19,7 +19,7 @@ from exactly_lib_test.test_case_utils.program_execution.test_resources.integrati
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import test_transformers_setup
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_with_stdout_stderr_exit_code
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

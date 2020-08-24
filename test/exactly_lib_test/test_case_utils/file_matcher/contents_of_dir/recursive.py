@@ -27,7 +27,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_contex
     FilesMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     PrimAndExeExpectation, ExecutionExpectation, ParseExpectation, Expectation
-from exactly_lib_test.test_resources.arguments_building import OptionArgument
+from exactly_lib_test.test_resources.argument_renderer import OptionArgument
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
