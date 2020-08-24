@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.instructions.setup import copy as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -21,8 +22,9 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_populator impo
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check__consume_last_line
-from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
+    RelativityOptionConfigurationForRelNonHds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
     ChangeDirectoryToDirectory
@@ -122,7 +124,7 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
     def test_install_file(self):
         for relativity_option in source_relativity_options('SOURCE_SYMBOL_NAME'):
             with self.subTest(msg=relativity_option.test_case_description):
-                file_arg = ab.path('existing-file', relativity_option.option_argument)
+                file_arg = relativity_option.path_argument_of_rel_name('existing-file')
                 file_to_install = DirContents([(File(file_arg.name,
                                                      'contents'))])
                 self._run(file_arg,
@@ -370,7 +372,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
                   )
 
 
-def source_relativity_options(symbol_name: str) -> list:
+def source_relativity_options(symbol_name: str) -> List[RelativityOptionConfigurationRelHds]:
     return [
         rel_opt_conf.default_conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
         rel_opt_conf.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
@@ -381,7 +383,7 @@ def source_relativity_options(symbol_name: str) -> list:
     ]
 
 
-def destination_relativity_options(symbol_name: str) -> list:
+def destination_relativity_options(symbol_name: str) -> List[RelativityOptionConfigurationForRelNonHds]:
     return [
         rel_opt_conf.default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
         rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
@@ -398,7 +400,7 @@ def destination_relativity_options(symbol_name: str) -> list:
     ]
 
 
-def some_destination_relativity_options() -> list:
+def some_destination_relativity_options() -> List[RelativityOptionConfigurationForRelNonHds]:
     return [
         rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
         rel_opt_conf.conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),

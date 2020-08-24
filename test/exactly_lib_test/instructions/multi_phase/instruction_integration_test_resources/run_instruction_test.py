@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
@@ -226,5 +227,5 @@ class TestInvalidSyntaxSuperfluousArguments(TestCaseBase):
 def source_for_interpreting(relativity: RelOptionType,
                             file_name: str) -> ParseSource:
     return pgm_args.program(pgm_args.interpret_py_source_file(
-        args.path_rel_opt(file_name,
-                          relativity))).as_remaining_source
+        path_arguments.RelOptPathArgument(file_name,
+                                          relativity))).as_remaining_source

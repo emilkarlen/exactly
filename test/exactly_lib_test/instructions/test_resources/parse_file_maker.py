@@ -78,7 +78,7 @@ def file_with_rel_opt_conf(file_name: str,
         file_args = following_line_args
 
     if rel_option is not None:
-        file_args.append(rel_option.file_argument_with_option(file_name))
+        file_args.append(rel_option.path_argument_of_rel_name(file_name))
     else:
         file_args.append(file_name)
 

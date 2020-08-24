@@ -30,7 +30,8 @@ from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext,
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
+from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
@@ -38,7 +39,6 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
-from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files import file_structure as fs
@@ -206,7 +206,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
 
                 rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
 
-                source = arg.elements([rel_opt_conf.file_argument_with_option(expected_file.name)]) \
+                source = arg.elements([rel_opt_conf.path_argument_of_rel_name(expected_file.name)]) \
                     .followed_by(program_contents_arguments) \
                     .as_remaining_source
 
@@ -313,8 +313,8 @@ class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_pre_sds_fails(self):
         # ARRANGE #
         program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
-                                                              RelOptionType.REL_HDS_CASE))
+            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
+                                                                                RelOptionType.REL_HDS_CASE))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,
@@ -327,8 +327,8 @@ class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_post_sds_fails(self):
         # ARRANGE #
         program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file',
-                                                              RelOptionType.REL_ACT))
+            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
+                                                                                RelOptionType.REL_ACT))
         )
         complete_arguments = instr_args.from_program('dst-file.txt',
                                                      ProcOutputFile.STDOUT,

@@ -35,7 +35,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbo
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import symbol_path_argument, \
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import symbol_path_argument, \
     path_argument
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
@@ -123,7 +123,7 @@ class TestMatcherShouldBeParsedAsFullExpression(unittest.TestCase):
 
         arguments = args.CompleteInstructionArg(
             ExpectationType.POSITIVE,
-            args.PathArg(rel_conf.file_argument_with_option(checked_file.name)),
+            rel_conf.path_argument_of_rel_name(checked_file.name),
             fm_args.disjunction([fm_1.argument, fm_2.argument]),
         )
         is_pass = fm_1.result_value or fm_2.result_value
@@ -169,20 +169,20 @@ class SymbolUsagesTest(unittest.TestCase):
         cases = [
             NEA('no symbols',
                 asrt.matches_sequence([]),
-                args.WithOptionalNegation(args.PathArg(path_argument('plain-file-name')))
+                args.WithOptionalNegation(path_argument('plain-file-name'))
                 ),
             NEA('path symbol',
                 asrt.matches_sequence([
                     expected_path_symbol_ref,
                 ]),
-                args.WithOptionalNegation(args.PathArg(symbol_path_argument(path_symbol_name)))
+                args.WithOptionalNegation(symbol_path_argument(path_symbol_name))
                 ),
             NEA('path symbol and file matcher symbol',
                 asrt.matches_sequence([
                     expected_path_symbol_ref,
                     expected_file_matcher_ref,
                 ]),
-                args.WithOptionalNegation(args.PathArg(symbol_path_argument(path_symbol_name)),
+                args.WithOptionalNegation(symbol_path_argument(path_symbol_name),
                                           fm_args.SymbolReference(file_matcher_symbol_name))
                 ),
         ]
@@ -210,7 +210,7 @@ class FileMatcherValidationTest(unittest.TestCase):
 
             argument = args.CompleteInstructionArg(
                 ExpectationType.POSITIVE,
-                args.PathArg(path_argument('ignored-file')),
+                path_argument('ignored-file'),
                 fm_args.SymbolReference(failing_symbol_context.name))
 
             with self.subTest(failing_file_matcher_case.name):
@@ -244,7 +244,7 @@ class HardErrorInFileMatcherTest(unittest.TestCase):
 
         argument = args.CompleteInstructionArg(
             ExpectationType.POSITIVE,
-            args.PathArg(path_relativity.file_argument_with_option(checked_file.name)),
+            path_relativity.path_argument_of_rel_name(checked_file.name),
             fm_args.SymbolReference(file_matcher_that_raises_hard_error.name))
 
         # ACT & ASSERT #
@@ -280,7 +280,7 @@ class ArgumentsConstructorWithFileMatcher(InstructionArgumentsVariantConstructor
               rel_opt_config: RelativityOptionConfiguration) -> str:
         argument = args.CompleteInstructionArg(
             etc.expectation_type,
-            args.PathArg(rel_opt_config.file_argument_with_option(self._file_name)),
+            rel_opt_config.path_argument_of_rel_name(self._file_name),
             self._file_matcher)
 
         return str(argument)

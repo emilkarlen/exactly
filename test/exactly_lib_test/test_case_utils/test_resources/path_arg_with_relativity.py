@@ -23,4 +23,4 @@ class PathArgumentWithRelativity:
 
     @property
     def as_argument_element(self) -> ArgumentElementsRenderer:
-        return self.relativity.file_argument_with_option(self.file_name)
+        return self.relativity.path_argument_of_rel_name(self.file_name)

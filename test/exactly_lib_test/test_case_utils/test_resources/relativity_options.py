@@ -26,13 +26,12 @@ from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContex
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as path_args, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument, \
-    path_argument
+from exactly_lib_test.test_case_file_structure.test_resources import path_arguments as path_args, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.non_hds_populator import NonHdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
     TcdsPopulator, \
@@ -105,7 +104,7 @@ class OptionStringConfiguration:
         return str(self.argument)
 
     def file_argument(self, file_name: str) -> PathArgument:
-        return path_argument(file_name, self.argument)
+        return path_args.path_argument(file_name, self.argument)
 
     def __str__(self):
         return '{}(option_string={})'.format(type(self),
@@ -196,8 +195,8 @@ class RelativityOptionConfiguration(ABC):
     def option_argument(self) -> ArgumentElementsRenderer:
         return self._cli_option.argument
 
-    def file_argument_with_option(self, file_name: str) -> PathArgument:
-        return path_argument(file_name, self._cli_option.argument)
+    def path_argument_of_rel_name(self, file_name: str) -> PathArgument:
+        return path_args.path_argument(file_name, self._cli_option.argument)
 
     @property
     def option_argument_str(self) -> str:

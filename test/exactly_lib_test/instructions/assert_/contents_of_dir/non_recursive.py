@@ -24,7 +24,7 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
@@ -305,7 +305,7 @@ class TestFilesMatcherShouldBeParsedAsFullExpression(unittest.TestCase):
         rel_conf = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
 
         arguments = args.SequenceOfArguments([
-            rel_conf.file_argument_with_option(checked_dir.name),
+            rel_conf.path_argument_of_rel_name(checked_dir.name),
             fsm_args.disjunction([fsm_1.argument, fsm_2.argument]),
         ])
         is_pass = fsm_1.result_value or fsm_2.result_value

@@ -19,6 +19,7 @@ from exactly_lib_test.symbol.test_resources.arguments_building import SymbolRefe
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -85,7 +86,8 @@ class TestFailingValidationPreSds(TestCaseBase):
         # ARRANGE #
 
         program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file', RelOptionType.REL_HDS_CASE))
+            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
+                                                                                RelOptionType.REL_HDS_CASE))
         )
         arguments = po_ab.from_program(program_with_ref_to_file_in_hds_ds,
                                        matcher_arguments.emptiness_matcher())
@@ -102,7 +104,8 @@ class TestFailingValidationPostSds(TestCaseBase):
         # ARRANGE #
 
         program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(ab.path_rel_opt('non-existing-file', RelOptionType.REL_ACT))
+            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
+                                                                                RelOptionType.REL_ACT))
         )
         arguments = po_ab.from_program(program_with_ref_to_file_in_hds_ds,
                                        matcher_arguments.emptiness_matcher())

@@ -20,6 +20,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -148,8 +149,8 @@ class TestExecuteInterpret(TestCaseBase):
         self._check_single_line_arguments_with_source_variants(
             args.sequence([
                 pgm_args.interpret_py_source_file(
-                    args.path_rel_opt('exit-with-value-on-command-line.py',
-                                      RelOptionType.REL_TMP)),
+                    path_arguments.RelOptPathArgument('exit-with-value-on-command-line.py',
+                                                      RelOptionType.REL_TMP)),
                 0,
             ]).as_str,
             tcds_test.Arrangement(

@@ -252,7 +252,7 @@ class TestSingleElement(unittest.TestCase):
                     'default relativity SHOULD be CASE_HOME',
                     ab.sequence([ab.option(
                         syntax_elements.EXISTING_FILE_OPTION_NAME),
-                        rel_opt_conf.file_argument_with_option(
+                        rel_opt_conf.path_argument_of_rel_name(
                             plain_file_name)]
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
@@ -352,7 +352,7 @@ class TestSingleElement(unittest.TestCase):
                     'default relativity SHOULD be CASE_HOME',
                     ab.sequence([ab.option(
                         syntax_elements.EXISTING_DIR_OPTION_NAME),
-                        rel_opt_conf.file_argument_with_option(
+                        rel_opt_conf.path_argument_of_rel_name(
                             checked_file_name)]
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
@@ -467,7 +467,7 @@ class TestSingleElement(unittest.TestCase):
                     'default relativity SHOULD be CASE_HOME',
                     ab.sequence([ab.option(
                         syntax_elements.EXISTING_PATH_OPTION_NAME),
-                        rel_opt_conf.file_argument_with_option(
+                        rel_opt_conf.path_argument_of_rel_name(
                             plain_file_name)]
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),

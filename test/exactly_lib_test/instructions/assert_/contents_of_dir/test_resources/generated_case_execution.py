@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
     ExecutionExpectation, SourceArrangement
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptPathArgument
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct, \
     TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_executor import \

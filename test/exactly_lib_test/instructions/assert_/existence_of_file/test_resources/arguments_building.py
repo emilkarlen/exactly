@@ -4,7 +4,7 @@ from typing import List, Optional
 from exactly_lib.definitions import logic
 from exactly_lib.instructions.assert_ import existence_of_file
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import PathArgument
+from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementsRenderer
 
@@ -14,21 +14,10 @@ class Argument(ArgumentElementsRenderer, ABC):
     pass
 
 
-class PathArg(Argument):
-    """Generate source using __str__"""
-
-    def __init__(self, path: PathArgument):
-        self.path = path
-
-    @property
-    def elements(self) -> List:
-        return list(self.path.elements)
-
-
 class CompleteInstructionArg(Argument):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 path: PathArg,
+                 path: PathArgument,
                  file_matcher: Optional[FileMatcherArg] = None):
         self.expectation_type = expectation_type
         self.path = path
@@ -52,7 +41,7 @@ class CompleteInstructionArg(Argument):
 
 class WithOptionalNegation:
     def __init__(self,
-                 path: PathArg,
+                 path: PathArgument,
                  file_matcher: Optional[FileMatcherArg] = None):
         self.path = path
         self.file_matcher = file_matcher
