@@ -40,22 +40,26 @@ def new_grammar(concept: grammar.Concept,
                                            ))
             )
         ],
-        infix_operators_in_order_of_increasing_precedence=[[
-            NameAndValue(
-                logic.AND_OPERATOR_NAME,
-                grammar.InfixOpExpression(combinator_sdvs.Conjunction,
-                                          OperatorExpressionDescriptionFromFunctions(
-                                              tp.fnap__fun(_AND_SED_DESCRIPTION)
-                                          ))
+        infix_operators_in_order_of_increasing_precedence=(
+            (
+                NameAndValue(
+                    logic.OR_OPERATOR_NAME,
+                    grammar.InfixOpExpression(combinator_sdvs.Disjunction,
+                                              OperatorExpressionDescriptionFromFunctions(
+                                                  tp.fnap__fun(_OR_SED_DESCRIPTION)
+                                              ))
+                ),
             ),
-            NameAndValue(
-                logic.OR_OPERATOR_NAME,
-                grammar.InfixOpExpression(combinator_sdvs.Disjunction,
-                                          OperatorExpressionDescriptionFromFunctions(
-                                              tp.fnap__fun(_OR_SED_DESCRIPTION)
-                                          ))
+            (
+                NameAndValue(
+                    logic.AND_OPERATOR_NAME,
+                    grammar.InfixOpExpression(combinator_sdvs.Conjunction,
+                                              OperatorExpressionDescriptionFromFunctions(
+                                                  tp.fnap__fun(_AND_SED_DESCRIPTION)
+                                              ))
+                ),
             ),
-        ]],
+        ),
     )
 
 

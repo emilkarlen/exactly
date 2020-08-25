@@ -490,6 +490,45 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_conjunction_followed_by_disjunction(self):
         # ARRANGEMENT #
 
+        sym_a = NameAndValue('_a_', matchers.ConstantMatcherWithCustomName('a', True))
+        sym_b = NameAndValue('_b_', matchers.ConstantMatcherWithCustomName('b', False))
+        sym_c = NameAndValue('_c_', matchers.ConstantMatcherWithCustomName('c', True))
+
+        all_symbols = [sym_a, sym_b, sym_c]
+
+        arguments = ArgumentElements([
+            sym_a.name,
+            logic.AND_OPERATOR_NAME,
+            sym_b.name,
+            logic.OR_OPERATOR_NAME,
+            sym_c.name,
+        ])
+
+        expected_trace = tree.Node(
+            logic.OR_OPERATOR_NAME, True, (),
+            [
+                tree.Node(
+                    logic.AND_OPERATOR_NAME, False, (),
+                    [
+                        sym_a.value.trace_tree,
+                        sym_b.value.trace_tree,
+                    ]),
+                sym_c.value.trace_tree,
+            ]
+        )
+
+        # ACT & ASSERT #
+
+        self._check(
+            arguments,
+            True,
+            all_symbols,
+            expected_trace,
+        )
+
+    def test_conjunction_followed_by_disjunction__with_negation(self):
+        # ARRANGEMENT #
+
         sym_a = NameAndValue('_a_', matchers.ConstantMatcherWithCustomName('a', False))
         sym_b = NameAndValue('_b_', matchers.ConstantMatcherWithCustomName('b', True))
         sym_c = NameAndValue('_c_', matchers.ConstantMatcherWithCustomName('c', False))
@@ -532,6 +571,45 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
     def test_disjunction_followed_by_conjunction(self):
         # ARRANGEMENT #
 
+        sym_a = NameAndValue('_a_', matchers.ConstantMatcherWithCustomName('a', False))
+        sym_b = NameAndValue('_b_', matchers.ConstantMatcherWithCustomName('b', True))
+        sym_c = NameAndValue('_c_', matchers.ConstantMatcherWithCustomName('c', False))
+
+        all_symbols = [sym_a, sym_b, sym_c]
+
+        arguments = ArgumentElements([
+            sym_a.name,
+            logic.OR_OPERATOR_NAME,
+            sym_b.name,
+            logic.AND_OPERATOR_NAME,
+            sym_c.name,
+        ])
+
+        expected_trace = tree.Node(
+            logic.OR_OPERATOR_NAME, False, (),
+            [
+                sym_a.value.trace_tree,
+                tree.Node(
+                    logic.AND_OPERATOR_NAME, False, (),
+                    [
+                        sym_b.value.trace_tree,
+                        sym_c.value.trace_tree,
+                    ]),
+            ]
+        )
+
+        # ACT & ASSERT #
+
+        self._check(
+            arguments,
+            False,
+            all_symbols,
+            expected_trace,
+        )
+
+    def test_disjunction_followed_by_conjunction__with_negation(self):
+        # ARRANGEMENT #
+
         sym_a = NameAndValue('_a_', matchers.ConstantMatcherWithCustomName('a', True))
         sym_b = NameAndValue('_b_', matchers.ConstantMatcherWithCustomName('b', False))
         sym_c = NameAndValue('_c_', matchers.ConstantMatcherWithCustomName('c', True))
@@ -539,26 +617,23 @@ class TestPrecedence(Generic[MODEL], _TestCaseBase[MODEL], ABC):
         all_symbols = [sym_a, sym_b, sym_c]
 
         arguments = ArgumentElements([
-            logic.NOT_OPERATOR_NAME,
-            sym_a.name,
+            logic.NOT_OPERATOR_NAME, sym_a.name,
             logic.OR_OPERATOR_NAME,
-            logic.NOT_OPERATOR_NAME,
-            sym_b.name,
+            logic.NOT_OPERATOR_NAME, sym_b.name,
             logic.AND_OPERATOR_NAME,
-            logic.NOT_OPERATOR_NAME,
-            sym_c.name,
+            logic.NOT_OPERATOR_NAME, sym_c.name,
         ])
 
         expected_trace = tree.Node(
-            logic.AND_OPERATOR_NAME, False, (),
+            logic.OR_OPERATOR_NAME, False, (),
             [
+                tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_a.value.trace_tree]),
                 tree.Node(
-                    logic.OR_OPERATOR_NAME, True, (),
+                    logic.AND_OPERATOR_NAME, False, (),
                     [
-                        tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_a.value.trace_tree]),
                         tree.Node(logic.NOT_OPERATOR_NAME, True, (), [sym_b.value.trace_tree]),
+                        tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_c.value.trace_tree]),
                     ]),
-                tree.Node(logic.NOT_OPERATOR_NAME, False, (), [sym_c.value.trace_tree]),
             ]
         )
 

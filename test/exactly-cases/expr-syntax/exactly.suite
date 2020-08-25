@@ -1,0 +1,7 @@
+*.case
+
+[setup]
+
+def file-matcher F = constant false
+def file-matcher T = constant true
+

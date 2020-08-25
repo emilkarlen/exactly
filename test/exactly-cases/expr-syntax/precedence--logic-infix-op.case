@@ -1,0 +1,9 @@
+[setup]
+
+file a-file
+
+[assert]
+
+exists a-file : F && F || T
+
+exists a-file : T || F && F

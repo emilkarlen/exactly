@@ -12,7 +12,8 @@ with exception of a "0." prefix until version 1 is released.
 ### Changed
 
  - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parenthesis)
-
+ - Syntax of type expressions - Precedences of `||` and `&&`
+ 
 ### Fixed
 
 ## [0.12.3] - 2020-08-18

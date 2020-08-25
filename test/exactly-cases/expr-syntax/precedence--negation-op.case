@@ -1,0 +1,7 @@
+[setup]
+
+file a-file
+
+[assert]
+
+exists a-file : ! F || ! T && F
