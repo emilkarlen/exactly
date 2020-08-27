@@ -16,6 +16,8 @@ with exception of a "0." prefix until version 1 is released.
  
 ### Fixed
 
+ - Syntax error messages - Include instruction name
+
 ## [0.12.3] - 2020-08-18
 
 ### Added

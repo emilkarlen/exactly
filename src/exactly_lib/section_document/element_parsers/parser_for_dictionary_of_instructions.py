@@ -16,16 +16,15 @@ InstructionNameExtractor = Callable[[str], str]
 class _ErrMsgSourceConstructor:
     def __init__(self, before_parse: ParseSource):
         self._first_line = before_parse.current_line
-        self._remaining_source__before = before_parse.remaining_source
+        self._remaining__before = before_parse.remaining_source
 
     def ending_at(self, after_parse: ParseSource) -> LineSequence:
-        remaining_source__after = after_parse.remaining_source
-        num_chars__consumed = len(self._remaining_source__before) - len(remaining_source__after)
+        num_chars = len(self._remaining__before) - len(after_parse.remaining_source)
 
-        if num_chars__consumed < len(self._first_line.text):
+        if num_chars < len(self._first_line.text):
             return line_sequence_from_line(self._first_line)
 
-        source__consumed = self._remaining_source__before[:num_chars__consumed]
+        source__consumed = self._remaining__before[:num_chars]
         return LineSequence(self._first_line.line_number, source__consumed.split('\n'))
 
 
@@ -46,11 +45,12 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
+        err_msg_constructor = _ErrMsgSourceConstructor(source)
         name = self._extract_name(source)
         parser = self._lookup_parser(source.current_line, name)
         source.consume_part_of_current_line(len(name))
         source.consume_initial_space_on_current_line()
-        return self._parse(fs_location_info, source, parser, name, _ErrMsgSourceConstructor(source))
+        return self._parse(fs_location_info, source, parser, name, err_msg_constructor)
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
