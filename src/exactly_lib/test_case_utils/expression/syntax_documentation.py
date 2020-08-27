@@ -6,11 +6,13 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from .grammar import Grammar, PrimitiveDescription, OperatorDescription, ElementWithDescription
 from ...definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from ...definitions.entity.syntax_elements import SyntaxElementInfo
+from ...util import collection, name_and_value
 from ...util.name_and_value import NameAndValue
 
 
@@ -23,6 +25,7 @@ class Syntax:
         self.grammar = grammar
         self.concept_argument = a.Single(a.Multiplicity.MANDATORY,
                                          self.grammar.concept.syntax_element)
+        self.infix_operators__list = collection.concat_list(grammar.infix_ops_inc_precedence__seq)
 
         self._tp = TextParser({
             'symbol_concept': formatting.concept_name_with_formatting(concepts.SYMBOL_CONCEPT_INFO.name),
@@ -38,35 +41,53 @@ class Syntax:
         )
 
     def invokation_variants(self) -> List[InvokationVariant]:
-        return (self._invokation_variants_simple() +
+        return (self._invokation_variants_primitive() +
                 self._invokation_variants_prefix() +
-                self._invokation_variants_complex() +
+                self._invokation_variants_infix() +
                 self._invokation_variants_symbol_ref() +
                 self._invokation_variants_parentheses()
                 )
 
-    def global_description(self) -> List[ParagraphItem]:
-        ret_val = self._precedence_description()
-        ret_val += self._tp.fnap(_DESCRIPTION__SYNTAX)
-        return ret_val
+    def syntax_description(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION__SYNTAX)
 
-    def _precedence_description(self) -> List[ParagraphItem]:
-        has_prefix_op = bool(self.grammar.prefix_operators)
-        has_bin_op = bool(self.grammar.infix_operators)
+    def precedence_description(self) -> List[ParagraphItem]:
+        num_infix_op_levels = len(self.grammar.infix_ops_inc_precedence)
+        has_infix_op = num_infix_op_levels > 0
 
-        if has_bin_op:
-            if has_prefix_op:
-                return self._tp.fnap(_DESCRIPTION__PRECEDENCE__PREFIX_AND_BINARY)
-            else:
-                return self._tp.fnap(_DESCRIPTION__PRECEDENCE__ONLY_BINARY)
-        else:
+        if not has_infix_op:
             return []
+
+        has_prefix_ops = bool(self.grammar.prefix_operators__seq)
+
+        if has_prefix_ops:
+            return self.precedence_description_w_list()
+        else:
+            if num_infix_op_levels == 1:
+                if len(self.grammar.infix_ops_inc_precedence[0]) <= 1:
+                    return []
+                else:
+                    return self._tp.fnap(_DESCRIPTION__PRECEDENCE__SAME_PRECEDENCE)
+            else:
+                return self.precedence_description_w_list()
+
+    def precedence_description_w_list(self) -> List[ParagraphItem]:
+        levels_navs = [self.grammar.prefix_operators__seq]
+        levels_navs += reversed(self.grammar.infix_ops_inc_precedence__seq)
+
+        levels_list = docs.simple_header_only_list([
+            ', '.join(map(NameAndValue.name.fget, level_navs))
+            for level_navs in levels_navs
+        ],
+            docs.lists.ListType.ORDERED_LIST,
+        )
+        return [levels_list]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         expression_lists = [
-            self.grammar.primitive_operators_list,
-            self.grammar.prefix_operators_list,
-            self.grammar.infix_operators_list,
+            self.grammar.primitives__seq,
+            self.grammar.prefix_operators__seq,
+            self.infix_operators__list,
         ]
         return list(itertools.chain.from_iterable(
             map(_seds_for_expr, expression_lists)
@@ -79,14 +100,14 @@ class Syntax:
         expression_dicts = [
             self.grammar.primitives,
             self.grammar.prefix_operators,
-            self.grammar.infix_operators,
+            name_and_value.to_dict(self.infix_operators__list),
         ]
         return list(itertools.chain.from_iterable(
             map(_see_also_targets_for_expr,
                 expression_dicts)
         ))
 
-    def _invokation_variants_simple(self) -> List[InvokationVariant]:
+    def _invokation_variants_primitive(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
                                   syntax: PrimitiveDescription) -> InvokationVariant:
             all_arguments = [syntax.initial_argument(name)] + list(syntax.argument_usage_list)
@@ -95,7 +116,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.primitive_operators_list
+            for expr in self.grammar.primitives__seq
         ]
 
     def _invokation_variants_symbol_ref(self) -> List[InvokationVariant]:
@@ -120,7 +141,7 @@ class Syntax:
                                ),
         ]
 
-    def _invokation_variants_complex(self) -> List[InvokationVariant]:
+    def _invokation_variants_infix(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
                                   syntax: OperatorDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
@@ -131,7 +152,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.infix_operators_list
+            for expr in itertools.chain.from_iterable(self.grammar.infix_ops_inc_precedence__seq)
         ]
 
     def _invokation_variants_prefix(self) -> List[InvokationVariant]:
@@ -145,7 +166,7 @@ class Syntax:
 
         return [
             invokation_variant_of(expr.name, expr.value.syntax)
-            for expr in self.grammar.prefix_operators_list
+            for expr in self.grammar.prefix_operators__seq
         ]
 
     def _invokation_variants_parentheses(self) -> List[InvokationVariant]:
@@ -206,6 +227,10 @@ _DESCRIPTION__PRECEDENCE__PREFIX_AND_BINARY = """\
 Prefix operators have the highest precedence.
 
 {BIN_OP_PRECEDENCE}
+"""
+
+_DESCRIPTION__PRECEDENCE__SAME_PRECEDENCE = """\
+All operators have the same precedence.
 """
 
 _DESCRIPTION__SYNTAX = """\

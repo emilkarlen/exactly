@@ -128,6 +128,7 @@ class _Parser(Generic[EXPR]):
         while infix_operator_name:
             expression = self.infix_op_sequence_for_single_op(
                 infix_operator_name,
+                infix_ops__curr_level[infix_operator_name],
                 expression,
                 infix_ops__next_levels,
                 is_inside_parens=new_line_ignore is _IS_INSIDE_PARENTHESIS
@@ -149,6 +150,7 @@ class _Parser(Generic[EXPR]):
     def infix_op_sequence_for_single_op(
             self,
             operator_name: str,
+            operator: InfixOperator[EXPR],
             first_operand: EXPR,
             infix_ops_levels: Sequence[Mapping[str, InfixOperator[EXPR]]],
             is_inside_parens: bool,
@@ -168,7 +170,7 @@ class _Parser(Generic[EXPR]):
                 must_be_on_current_line=not is_inside_parens):
             parse_mandatory_operand_and_append()
 
-        return self.grammar.infix_operators[operator_name].mk_expression(operands)
+        return operator.mk_expression(operands)
 
     def parse_mandatory_primitive(self, must_be_on_current_line: bool) -> EXPR:
         if must_be_on_current_line:

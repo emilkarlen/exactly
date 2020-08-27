@@ -6,8 +6,6 @@ from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAM
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.test_case_utils.expression import syntax_documentation
-from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.str_.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -64,27 +62,18 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
-                 grammar: Grammar,
-                 main_description_rest: SectionContents):
-        self._syntax = syntax_documentation.Syntax(grammar)
-        main_description_rest = SectionContents(self._syntax.global_description() +
-                                                main_description_rest.initial_paragraphs,
-                                                main_description_rest.sections)
+                 ):
         super().__init__(TypeCategory.LOGIC,
                          name_and_cross_ref_target,
                          corresponding_syntax_element,
-                         main_description_rest,
-                         syntax_elements=self._syntax.syntax_element_descriptions())
+                         SectionContents.empty())
 
     """
     Documents a type of the type system.
     """
 
-    def invokation_variants(self) -> List[InvokationVariant]:
-        return self._syntax.invokation_variants()
-
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        return super().see_also_targets() + self._syntax.see_also_targets()
+        return super().see_also_targets()
 
 
 def types_help(types: Iterable[TypeDocumentation]) -> EntityTypeHelp:

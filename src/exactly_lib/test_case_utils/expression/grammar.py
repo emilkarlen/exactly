@@ -4,7 +4,6 @@ from typing import Sequence, TypeVar, Generic, Callable
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.util import collection
 from exactly_lib.util import name_and_value
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -124,13 +123,11 @@ class Grammar(Generic[EXPR]):
                  ):
         self.concept = concept
         self.mk_reference = mk_reference
-        self.primitive_operators_list = primitives
+        self.primitives__seq = primitives
         self.primitives = name_and_value.to_dict(primitives)
-        self.prefix_operators_list = prefix_operators
+        self.prefix_operators__seq = prefix_operators
         self.prefix_operators = name_and_value.to_dict(prefix_operators)
-        infix_operators_sequence = collection.concat_list(infix_operators_in_order_of_increasing_precedence)
-        self.infix_operators_list = infix_operators_sequence
-        self.infix_operators = name_and_value.to_dict(infix_operators_sequence)
+        self.infix_ops_inc_precedence__seq = infix_operators_in_order_of_increasing_precedence
         self.infix_ops_inc_precedence = [
             name_and_value.to_dict(infix_ops_of_precedence)
             for infix_ops_of_precedence in infix_operators_in_order_of_increasing_precedence

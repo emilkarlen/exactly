@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
@@ -124,15 +124,34 @@ PREFIX_Q = 'prefix_q'
 INFIX_OP_A = 'infix_op_a'
 INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
+
+def infix_op_of(name: str, mk_expr: Callable[[Sequence[Expr]], Expr]) -> NameAndValue[grammar.InfixOperator[Expr]]:
+    return NameAndValue(
+        name,
+        grammar.InfixOperator(mk_expr,
+                              ConstantOperatorDescription([], [],
+                                                          [CROSS_REF_ID]))
+    )
+
+
+def prefix_op(name: str, mk_expr: Callable[[Expr], Expr]) -> NameAndValue[grammar.PrefixOperator[Expr]]:
+    return NameAndValue(
+        name,
+        grammar.PrefixOperator(mk_expr,
+                               ConstantOperatorDescription([]))
+
+    )
+
+
 PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE = (
     NameAndValue(
         PRIMITIVE_WITH_ARG,
         grammar.Primitive(parse_primitive_with_arg,
                           ConstantPrimitiveDescription([], [],
-                                                                 [SyntaxElementDescription(
-                                                                         PRIMITIVE_WITH_ARG + '-SED',
-                                                                         ())],
-                                                                 [CROSS_REF_ID]))
+                                                       [SyntaxElementDescription(
+                                                           PRIMITIVE_WITH_ARG + '-SED',
+                                                           ())],
+                                                       [CROSS_REF_ID]))
     ),
     NameAndValue(
         PRIMITIVE_SANS_ARG,
@@ -155,16 +174,8 @@ PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE = (
 )
 
 PREFIX_OP_EXPRESSIONS = (
-    NameAndValue(
-        PREFIX_P,
-        grammar.PrefixOperator(PrefixOpExprP,
-                               ConstantOperatorDescription([]))
-    ),
-    NameAndValue(
-        PREFIX_Q,
-        grammar.PrefixOperator(PrefixOpExprQ,
-                               ConstantOperatorDescription([]))
-    ),
+    prefix_op(PREFIX_P, PrefixOpExprP),
+    prefix_op(PREFIX_Q, PrefixOpExprQ),
 )
 
 
@@ -172,30 +183,31 @@ def _mk_reference(name: str) -> Expr:
     return RefExpr(name)
 
 
-GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
-    concept=CONCEPT,
-    mk_reference=_mk_reference,
+def grammar_of(
+        primitives: Sequence[NameAndValue[grammar.Primitive[Expr]]],
+        prefix_operators: Sequence[NameAndValue[grammar.PrefixOperator[Expr]]],
+        infix_operators_in_order_of_increasing_precedence:
+        Sequence[Sequence[NameAndValue[grammar.InfixOperator[Expr]]]],
+) -> grammar.Grammar[Expr]:
+    return grammar.Grammar(
+        concept=CONCEPT,
+        mk_reference=_mk_reference,
+        primitives=primitives,
+        prefix_operators=prefix_operators,
+        infix_operators_in_order_of_increasing_precedence=infix_operators_in_order_of_increasing_precedence,
+    )
+
+
+GRAMMAR_WITH_ALL_COMPONENTS = grammar_of(
     primitives=PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE,
     prefix_operators=PREFIX_OP_EXPRESSIONS,
     infix_operators_in_order_of_increasing_precedence=[(
-        NameAndValue(
-            INFIX_OP_A,
-            grammar.InfixOperator(InfixOpA,
-                                  ConstantOperatorDescription([], [],
-                                                                  [CROSS_REF_ID]))
-        ),
-        NameAndValue(
-            INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            grammar.InfixOperator(InfixOpB,
-                                  ConstantOperatorDescription([], [],
-                                                                  [CROSS_REF_ID]))
-        ),
+        infix_op_of(INFIX_OP_A, InfixOpA),
+        infix_op_of(INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME, InfixOpB),
     )],
 )
 
-GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar.Grammar(
-    concept=CONCEPT,
-    mk_reference=_mk_reference,
+GRAMMAR_SANS_INFIX_OP_EXPRESSIONS = grammar_of(
     primitives=PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE,
     prefix_operators=PREFIX_OP_EXPRESSIONS,
     infix_operators_in_order_of_increasing_precedence=(),

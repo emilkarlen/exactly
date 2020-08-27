@@ -5,7 +5,10 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
+from exactly_lib.test_case_utils.expression.grammar import Grammar
+from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.textformat.structure import document, core
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents, SectionItem
 
@@ -48,7 +51,7 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
     def __init__(self,
                  type_category: Optional[TypeCategory],
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
-                 main_description_rest: List[ParagraphItem],
+                 main_description_rest: Sequence[ParagraphItem],
                  main_description_rest_sub_sections: Sequence[SectionItem],
                  invokation_variants: List[InvokationVariant],
                  syntax_element_descriptions: List[SyntaxElementDescription],
@@ -61,7 +64,7 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
         self._see_also_targets = see_also_targets
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
-        return self._main_description_rest
+        return list(self._main_description_rest)
 
     def main_description_rest_sub_sections(self) -> List[SectionItem]:
         return list(self._main_description_rest_sub_sections)
@@ -78,7 +81,7 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
 
 def syntax_element_documentation(type_category: Optional[TypeCategory],
                                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
-                                 main_description_rest: List[ParagraphItem],
+                                 main_description_rest: Sequence[ParagraphItem],
                                  main_description_rest_sub_sections: Sequence[SectionItem],
                                  invokation_variants: List[InvokationVariant],
                                  syntax_element_descriptions: List[SyntaxElementDescription],
@@ -95,3 +98,36 @@ def syntax_element_documentation(type_category: Optional[TypeCategory],
 def syntax_elements_help(syntax_elements: Iterable[SyntaxElementDocumentation]) -> EntityTypeHelp:
     return EntityTypeHelp(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
                           syntax_elements)
+
+
+def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
+                          grammar: Grammar) -> SyntaxElementDocumentation:
+    syntax = Syntax(grammar)
+
+    description_sub_sections = []
+    description_sub_sections += _section_iff_has_paragraphs(_PRECEDENCES_HEADER, syntax.precedence_description())
+    description_sub_sections += _section_iff_has_paragraphs(_SYNTAX_HEADER, syntax.syntax_description())
+
+    return syntax_element_documentation(
+        TypeCategory.LOGIC,
+        type_info,
+        (),
+        description_sub_sections,
+        syntax.invokation_variants(),
+        syntax.syntax_element_descriptions(),
+        syntax.see_also_targets(),
+    )
+
+
+def _section_iff_has_paragraphs(header: str, paragraphs: Sequence[ParagraphItem]) -> Sequence[SectionItem]:
+    return (
+        (document.Section(core.StringText(header),
+                          document.SectionContents(list(paragraphs))),)
+        if paragraphs
+        else
+        ()
+    )
+
+
+_PRECEDENCES_HEADER = 'Operator precedence'
+_SYNTAX_HEADER = 'Syntax'
