@@ -77,15 +77,22 @@ class OperatorDescription(ElementDescriptionBase, ABC):
     pass
 
 
+class InfixOperatorDescription(OperatorDescription, ABC):
+    @property
+    @abstractmethod
+    def operand_evaluation__lazy__left_to_right(self) -> bool:
+        pass
+
+
 class InfixOperator(Generic[EXPR], ElementWithDescription):
     def __init__(self,
                  mk_expression: Callable[[Sequence[EXPR]], EXPR],
-                 syntax: OperatorDescription,
+                 syntax: InfixOperatorDescription,
                  ):
         self.mk_expression = mk_expression
         self.syntax = syntax
 
-    def description(self) -> ElementDescriptionBase:
+    def description(self) -> InfixOperatorDescription:
         return self.syntax
 
 
@@ -97,7 +104,7 @@ class PrefixOperator(Generic[EXPR], ElementWithDescription):
         self.mk_expression = mk_expression
         self.syntax = syntax
 
-    def description(self) -> ElementDescriptionBase:
+    def description(self) -> OperatorDescription:
         return self.syntax
 
 

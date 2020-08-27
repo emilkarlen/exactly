@@ -17,6 +17,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestMisc),
         unittest.makeSuite(TestPrecedenceDescriptions),
+        unittest.makeSuite(TestEvaluationDescription),
     ])
 
 
@@ -120,6 +121,67 @@ class TestPrecedenceDescriptions(unittest.TestCase):
             with self.subTest(case.name):
                 # ACT #
                 actual = syntax.precedence_description()
+                # ASSERT #
+                self.assertGreater(len(actual), 0, 'number of paragraphs')
+                asrt.is_sequence_of(asrt_struct.is_paragraph_item).apply_without_message(self, actual)
+
+
+class TestEvaluationDescription(unittest.TestCase):
+    def test_description_SHOULD_be_empty(self):
+        cases = [
+            NameAndValue(
+                'grammar wo operators',
+                _grammar_with_operators((), ())
+            ),
+            NameAndValue(
+                'grammar w just single prefix op',
+                _grammar_with_operators(
+                    [test_grammars.prefix_op('name', test_grammars.PrefixOpExprP)],
+                    (),
+                )
+            ),
+            NameAndValue(
+                'grammar w just single infix op - not eval lazy l2r',
+                _grammar_with_operators(
+                    (),
+                    [[test_grammars.infix_op_of('name', test_grammars.InfixOpA, False)]],
+                )
+            ),
+        ]
+        for case in cases:
+            syntax = sut.Syntax(case.value)
+            with self.subTest(case.name):
+                # ACT #
+                actual = syntax.evaluation_description()
+                # ASSERT #
+                self.assertEqual(0, len(actual), 'number of paragraphs')
+
+    def test_description_SHOULD_not_be_empty(self):
+        cases = [
+            NameAndValue(
+                'grammar w just 2 infix OPs (of same precedence)',
+                _grammar_with_operators(
+                    (),
+                    [[test_grammars.infix_op_of('op_1', test_grammars.InfixOpA, True),
+                      test_grammars.infix_op_of('op_2', test_grammars.InfixOpA)]],
+                )
+            ),
+            NameAndValue(
+                'grammar w just 2 infix OPs (of different precedences)',
+                _grammar_with_operators(
+                    (),
+                    [
+                        [test_grammars.infix_op_of('op_1', test_grammars.InfixOpA)],
+                        [test_grammars.infix_op_of('op_2', test_grammars.InfixOpA, True)],
+                    ],
+                )
+            ),
+        ]
+        for case in cases:
+            syntax = sut.Syntax(case.value)
+            with self.subTest(case.name):
+                # ACT #
+                actual = syntax.evaluation_description()
                 # ASSERT #
                 self.assertGreater(len(actual), 0, 'number of paragraphs')
                 asrt.is_sequence_of(asrt_struct.is_paragraph_item).apply_without_message(self, actual)

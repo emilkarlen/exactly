@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as expression_parser
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveDescription, \
-    ConstantOperatorDescription, CONCEPT
+    ConstantOperatorDescription, CONCEPT, ConstantInfixOperatorDescription
 
 
 class Expr:
@@ -125,12 +125,15 @@ INFIX_OP_A = 'infix_op_a'
 INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 
 
-def infix_op_of(name: str, mk_expr: Callable[[Sequence[Expr]], Expr]) -> NameAndValue[grammar.InfixOperator[Expr]]:
+def infix_op_of(name: str,
+                mk_expr: Callable[[Sequence[Expr]], Expr],
+                eval_lazy_l_to_r: bool = False) -> NameAndValue[grammar.InfixOperator[Expr]]:
     return NameAndValue(
         name,
         grammar.InfixOperator(mk_expr,
-                              ConstantOperatorDescription([], [],
-                                                          [CROSS_REF_ID]))
+                              ConstantInfixOperatorDescription([], [],
+                                                               [CROSS_REF_ID],
+                                                               eval_lazy_l_to_r))
     )
 
 

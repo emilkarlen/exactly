@@ -3,7 +3,8 @@ from typing import Sequence, TypeVar
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions, \
+    InfixOperatorDescriptionFromFunctions
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -36,8 +37,8 @@ def new_grammar(concept: grammar.Concept,
                 logic.NOT_OPERATOR_NAME,
                 grammar.PrefixOperator(combinator_sdvs.Negation,
                                        OperatorDescriptionFromFunctions(
-                                               tp.fnap__fun(_NOT_SED_DESCRIPTION)
-                                           ))
+                                           tp.fnap__fun(_NOT_SED_DESCRIPTION)
+                                       ))
             )
         ],
         infix_operators_in_order_of_increasing_precedence=(
@@ -45,18 +46,20 @@ def new_grammar(concept: grammar.Concept,
                 NameAndValue(
                     logic.OR_OPERATOR_NAME,
                     grammar.InfixOperator(combinator_sdvs.Disjunction,
-                                          OperatorDescriptionFromFunctions(
-                                                  tp.fnap__fun(_OR_SED_DESCRIPTION)
-                                              ))
+                                          InfixOperatorDescriptionFromFunctions(
+                                              tp.fnap__fun(_OR_SED_DESCRIPTION),
+                                              operand_evaluation__lazy__left_to_right=True,
+                                          ))
                 ),
             ),
             (
                 NameAndValue(
                     logic.AND_OPERATOR_NAME,
                     grammar.InfixOperator(combinator_sdvs.Conjunction,
-                                          OperatorDescriptionFromFunctions(
-                                                  tp.fnap__fun(_AND_SED_DESCRIPTION)
-                                              ))
+                                          InfixOperatorDescriptionFromFunctions(
+                                              tp.fnap__fun(_AND_SED_DESCRIPTION),
+                                              operand_evaluation__lazy__left_to_right=True,
+                                          ))
                 ),
             ),
         ),

@@ -7,7 +7,8 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions, \
+    InfixOperatorDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
@@ -133,6 +134,6 @@ _TEXT_PARSER = TextParser({
 
 })
 
-SYNTAX_DESCRIPTION = OperatorDescriptionFromFunctions(
+SYNTAX_DESCRIPTION = InfixOperatorDescriptionFromFunctions(
     _TEXT_PARSER.fnap__fun(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
 )

@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -67,7 +68,7 @@ class Syntax:
         has_prefix_ops = bool(self.grammar.prefix_operators__seq)
 
         if has_prefix_ops:
-            return self.precedence_description_w_list()
+            return self._precedence_description_w_list()
         else:
             if num_infix_op_levels == 1:
                 if len(self.grammar.infix_ops_inc_precedence[0]) <= 1:
@@ -75,19 +76,25 @@ class Syntax:
                 else:
                     return self._tp.fnap(_DESCRIPTION__PRECEDENCE__SAME_PRECEDENCE)
             else:
-                return self.precedence_description_w_list()
+                return self._precedence_description_w_list()
 
-    def precedence_description_w_list(self) -> List[ParagraphItem]:
-        levels_navs = [self.grammar.prefix_operators__seq]
-        levels_navs += reversed(self.grammar.infix_ops_inc_precedence__seq)
+    def evaluation_description(self) -> List[ParagraphItem]:
+        op_eval_lay_l_to_r = [
+            operator.name
+            for operator in self.infix_operators__list
+            if operator.value.description().operand_evaluation__lazy__left_to_right
+        ]
 
-        levels_list = docs.simple_header_only_list([
-            ', '.join(map(NameAndValue.name.fget, level_navs))
-            for level_navs in levels_navs
-        ],
-            docs.lists.ListType.ORDERED_LIST,
+        if not op_eval_lay_l_to_r:
+            return []
+
+        operators_header = ', '.join(op_eval_lay_l_to_r)
+        list_item = docs.simple_list(
+            [lists.HeaderContentListItem(docs.text(operators_header),
+                                         self._tp.fnap(_OPERANDS__LAZY__LEFT_TO_RIGHT))],
+            lists.ListType.VARIABLE_LIST,
         )
-        return [levels_list]
+        return [list_item]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         expression_lists = [
@@ -112,6 +119,18 @@ class Syntax:
             map(_see_also_targets_for_expr,
                 expression_dicts)
         ))
+
+    def _precedence_description_w_list(self) -> List[ParagraphItem]:
+        levels_navs = [self.grammar.prefix_operators__seq]
+        levels_navs += reversed(self.grammar.infix_ops_inc_precedence__seq)
+
+        levels_list = docs.simple_header_only_list([
+            ', '.join(map(NameAndValue.name.fget, level_navs))
+            for level_navs in levels_navs
+        ],
+            lists.ListType.ORDERED_LIST,
+        )
+        return [levels_list]
 
     def _invokation_variants_primitive(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
@@ -245,4 +264,8 @@ Operators and parentheses must be separated by {whitespace}.
 
 _DESCRIPTION__SYNTAX__WO_OPERATORS = """\
 Parentheses must be separated by {whitespace}.
+"""
+
+_OPERANDS__LAZY__LEFT_TO_RIGHT = """\
+Operands are evaluated lazily, from left to right.
 """

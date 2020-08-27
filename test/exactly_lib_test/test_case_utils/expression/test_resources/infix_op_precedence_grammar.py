@@ -8,7 +8,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
 from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveDescription, \
-    ConstantOperatorDescription
+    ConstantOperatorDescription, ConstantInfixOperatorDescription
 
 
 class Expr:
@@ -102,7 +102,7 @@ CONCEPT = grammar.Concept(
     'type-system-name',
     a.Named('SYNTAX-ELEMENT-NAME'))
 
-OPERATOR_DESCRIPTION = ConstantOperatorDescription([], [], [CROSS_REF_ID])
+INFIX_OPERATOR_DESCRIPTION = ConstantInfixOperatorDescription([], [], [CROSS_REF_ID])
 
 
 def _mk_reference(name: str) -> Expr:
@@ -119,8 +119,8 @@ GRAMMAR = grammar.Grammar(
                 parse_primitive,
                 ConstantPrimitiveDescription([], [],
                                              [SyntaxElementDescription(
-                                                     PRIMITIVE_WITH_ARG + '-SED',
-                                                     ())],
+                                                 PRIMITIVE_WITH_ARG + '-SED',
+                                                 ())],
                                              [CROSS_REF_ID]))
         ),
     ),
@@ -135,21 +135,21 @@ GRAMMAR = grammar.Grammar(
         [
             NameAndValue(
                 IOP_2u,
-                grammar.InfixOperator(InfixOp2u, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp2u, INFIX_OPERATOR_DESCRIPTION)
             ),
             NameAndValue(
                 IOP_2v,
-                grammar.InfixOperator(InfixOp2v, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp2v, INFIX_OPERATOR_DESCRIPTION)
             ),
         ],
         [
             NameAndValue(
                 IOP_1u,
-                grammar.InfixOperator(InfixOp1u, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp1u, INFIX_OPERATOR_DESCRIPTION)
             ),
             NameAndValue(
                 IOP_1v,
-                grammar.InfixOperator(InfixOp1v, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp1v, INFIX_OPERATOR_DESCRIPTION)
             ),
         ],
     ],

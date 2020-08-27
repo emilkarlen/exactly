@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression.grammar import OperatorDescription
+from exactly_lib.test_case_utils.expression.grammar import OperatorDescription, InfixOperatorDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -59,6 +59,35 @@ class ConstantOperatorDescription(OperatorDescription):
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
         return self._see_also_targets
+
+
+class ConstantInfixOperatorDescription(InfixOperatorDescription):
+    def __init__(self,
+                 description_rest: Sequence[ParagraphItem],
+                 syntax_elements: Sequence[SyntaxElementDescription] = (),
+                 see_also_targets: Sequence[SeeAlsoTarget] = (),
+                 operand_evaluation__lazy__left_to_right: bool = False,
+                 ):
+        self._description_rest = description_rest
+        self._see_also_targets = list(see_also_targets)
+        self._syntax_elements = syntax_elements
+        self._operand_evaluation__lazy__left_to_right = operand_evaluation__lazy__left_to_right
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return self._description_rest
+
+    @property
+    def syntax_elements(self) -> Sequence[SyntaxElementDescription]:
+        return self._syntax_elements
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return self._see_also_targets
+
+    @property
+    def operand_evaluation__lazy__left_to_right(self) -> bool:
+        return self._operand_evaluation__lazy__left_to_right
 
 
 CONCEPT = grammar.Concept(

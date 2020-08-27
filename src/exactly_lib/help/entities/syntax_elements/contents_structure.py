@@ -106,6 +106,7 @@ def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
 
     description_sub_sections = []
     description_sub_sections += _section_iff_has_paragraphs(_PRECEDENCES_HEADER, syntax.precedence_description())
+    description_sub_sections += _section_iff_has_paragraphs(_EVALUATION_HEADER, syntax.evaluation_description())
     description_sub_sections += _section_iff_has_paragraphs(_SYNTAX_HEADER, syntax.syntax_description())
 
     return syntax_element_documentation(
@@ -130,4 +131,5 @@ def _section_iff_has_paragraphs(header: str, paragraphs: Sequence[ParagraphItem]
 
 
 _PRECEDENCES_HEADER = 'Operator precedence'
+_EVALUATION_HEADER = 'Evaluation'
 _SYNTAX_HEADER = 'Syntax'
