@@ -3,7 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
     cli_argument_syntax_element_description, invokation_variant_from_args
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
@@ -31,6 +31,7 @@ class Syntax:
             'symbol_concept': formatting.concept_name_with_formatting(concepts.SYMBOL_CONCEPT_INFO.name),
             'concept_name': self.grammar.concept.name,
             'BIN_OP_PRECEDENCE': _BIN_OP_PRECEDENCE,
+            'whitespace': misc_texts.WHITESPACE,
         })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
@@ -49,7 +50,12 @@ class Syntax:
                 )
 
     def syntax_description(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION__SYNTAX)
+        return (
+            self._tp.fnap(_DESCRIPTION__SYNTAX__W_OPERATORS)
+            if self.infix_operators__list
+            else
+            self._tp.fnap(_DESCRIPTION__SYNTAX__WO_OPERATORS)
+        )
 
     def precedence_description(self) -> List[ParagraphItem]:
         num_infix_op_levels = len(self.grammar.infix_ops_inc_precedence)
@@ -233,6 +239,10 @@ _DESCRIPTION__PRECEDENCE__SAME_PRECEDENCE = """\
 All operators have the same precedence.
 """
 
-_DESCRIPTION__SYNTAX = """\
-Operators and parentheses must be separated by whitespace.
+_DESCRIPTION__SYNTAX__W_OPERATORS = """\
+Operators and parentheses must be separated by {whitespace}.
+"""
+
+_DESCRIPTION__SYNTAX__WO_OPERATORS = """\
+Parentheses must be separated by {whitespace}.
 """

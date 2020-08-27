@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.common.help import documentation_text
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, SyntaxElementDescription
-from exactly_lib.definitions import formatting, logic
+from exactly_lib.definitions import formatting, logic, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
@@ -100,7 +100,7 @@ A {FILE_NAME} is a {STRING}.
 The file name must be a relative path, using {posix_syntax}.
 """
 
-_SPACE_SEPARATION_PARAGRAPH = 'All parts must be separated by space.'
+_SPACE_SEPARATION_PARAGRAPH = 'All parts must be separated by {whitespace}.'
 
 _TP = TextParser({
     'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
@@ -110,7 +110,7 @@ _TP = TextParser({
     'FILE_MATCHER_SEPARATOR': formatting.keyword(syntax.FILE_MATCHER_SEPARATOR),
     'posix_syntax': documentation_text.POSIX_SYNTAX,
     'CONJUNCTION': logic.AND_OPERATOR_NAME,
-    'SPACE_SEPARATION_PARAGRAPH': _SPACE_SEPARATION_PARAGRAPH,
+    'SPACE_SEPARATION_PARAGRAPH': _SPACE_SEPARATION_PARAGRAPH.format(whitespace=misc_texts.WHITESPACE),
 })
 
 

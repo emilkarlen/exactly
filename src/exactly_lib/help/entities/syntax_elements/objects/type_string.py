@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions import path
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
@@ -24,6 +24,7 @@ class _Documentation(SyntaxElementDocumentation):
             'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'CHR': 'CHARACTER',
+            'whitespace': misc_texts.WHITESPACE,
             'SOFT_Q': token.SOFT_QUOTE_CHAR,
             'HARD_Q': token.HARD_QUOTE_CHAR,
 
@@ -86,7 +87,7 @@ _DESCRIPTION_OF_NAKED = """\
 A "naked" sequence of characters.
 
 
-{CHR} may not be whitespace.
+{CHR} may not be {whitespace}.
 
 
 Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is substituted.

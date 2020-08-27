@@ -6,6 +6,8 @@ NOTES_SECTION_HEADER = 'Notes'
 NOTE_SECTION_HEADER = 'NOTE'
 NOTE_LINE_HEADER = 'Note:'
 
+WHITESPACE = 'whitespace'
+
 SYNTAX_ERROR_NAME = name.a_name(name.name_with_plural_s('syntax error'))
 
 FILE_ACCESS_ERROR_NAME = name.a_name(name.name_with_plural_s('file access error'))
