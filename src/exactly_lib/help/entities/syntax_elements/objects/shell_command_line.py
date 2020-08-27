@@ -24,6 +24,7 @@ _TEXT_PARSER = TextParser({
 DOCUMENTATION = syntax_element_documentation(None,
                                              syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,
                                              _TEXT_PARSER.fnap(_MAIN_DESCRIPTION_REST),
+                                             (),
                                              [],
                                              [],
                                              [])

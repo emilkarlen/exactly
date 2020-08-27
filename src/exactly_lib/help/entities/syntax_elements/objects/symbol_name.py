@@ -9,6 +9,7 @@ _MAIN_DESCRIPTION_REST = syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION
 DOCUMENTATION = syntax_element_documentation(None,
                                              syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
                                              normalize_and_parse(_MAIN_DESCRIPTION_REST),
+                                             (),
                                              [],
                                              [],
                                              [concepts.SYMBOL_CONCEPT_INFO.cross_reference_target])

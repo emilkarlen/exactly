@@ -37,6 +37,7 @@ DOCUMENTATION = syntax_element_documentation(
     None,
     syntax_elements.REGEX_SYNTAX_ELEMENT,
     [],
+    (),
     [
         InvokationVariant(
             cl_syntax.cl_syntax_for_args(_CL_ARGUMENTS)

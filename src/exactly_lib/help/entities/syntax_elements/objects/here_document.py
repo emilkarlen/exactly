@@ -30,6 +30,7 @@ _TEXT_PARSER = TextParser({
 DOCUMENTATION = syntax_element_documentation(None,
                                              syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                              _TEXT_PARSER.fnap(_MAIN_DESCRIPTION_REST),
+                                             (),
                                              [],
                                              [],
                                              cross_reference_id_list([

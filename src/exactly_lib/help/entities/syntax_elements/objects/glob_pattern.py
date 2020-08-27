@@ -60,6 +60,7 @@ DOCUMENTATION = syntax_element_documentation(
     _TP.paras(_DIRECTORY_SPECIFICATIONS_HEADER) +
     [_DIRECTORY_SPECIFICATIONS] +
     _TP.fnap(_FOOTER),
+    (),
     [],
     [],
     [

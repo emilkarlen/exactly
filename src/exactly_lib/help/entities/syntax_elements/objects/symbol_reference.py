@@ -10,6 +10,7 @@ DOCUMENTATION = syntax_element_documentation(
     None,
     syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
     [],
+    (),
     [
         InvokationVariant(
             symbol_reference_syntax_for_name(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name)

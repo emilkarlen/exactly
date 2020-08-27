@@ -30,10 +30,10 @@ class TestAllSyntaxElementsList(unittest.TestCase):
             [
                 syntax_element_documentation(None,
                                              name_and_ref_target('SE1', 'single line description of SE1'),
-                                             [], [], [], []),
+                                             [], (), [], [], []),
                 syntax_element_documentation(None,
                                              name_and_ref_target('SE2', 'single line description of SE2'),
-                                             [], [], [], []),
+                                             [], (), [], [], []),
             ])
         # ACT #
         actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
@@ -46,32 +46,39 @@ class TestIndividualSyntaxElement(unittest.TestCase):
         nrt = name_and_ref_target('SE1', 'single line description of SE1')
         test_cases = [
             ('minimal',
-             syntax_element_documentation(None, nrt, [], [], [], [])
+             syntax_element_documentation(None, nrt, [], (), [], [], [])
              ),
             ('with  main description rest',
              syntax_element_documentation(None, nrt,
                                           [docs.para('a paragraph')],
+                                          (), [], [], [])
+             ),
+            ('with  main description rest sub sections',
+             syntax_element_documentation(None, nrt,
+                                          [],
+                                          [docs.section('a section header', docs.paras('section contents'))],
                                           [], [], [])
              ),
             ('with invokation variants',
-             syntax_element_documentation(None, nrt, [],
+             syntax_element_documentation(None, nrt, [], (),
                                           syntax_parts.INVOKATION_VARIANTS,
                                           [], [])
              ),
             ('with syntax element descriptions',
-             syntax_element_documentation(None, nrt, [],
+             syntax_element_documentation(None, nrt, [], (),
                                           [],
                                           syntax_parts.SYNTAX_ELEMENT_DESCRIPTIONS,
                                           [])
              ),
             ('see_also_specific',
-             syntax_element_documentation(None, nrt, [], [],
+             syntax_element_documentation(None, nrt, [], (), [],
                                           [CustomCrossReferenceId('custom-target-name')],
                                           [])
              ),
             ('full',
              syntax_element_documentation(None, nrt,
                                           [docs.para('a paragraph')],
+                                          [docs.section('a section header', docs.paras('section contents'))],
                                           [InvokationVariant('syntax',
                                                              [docs.para('a paragraph')])],
                                           syntax_parts.SYNTAX_ELEMENT_DESCRIPTIONS,

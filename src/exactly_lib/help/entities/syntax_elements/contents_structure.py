@@ -1,4 +1,4 @@
-from typing import Optional, List, Iterable
+from typing import Optional, List, Iterable, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -46,20 +46,25 @@ class SyntaxElementDocumentation(EntityDocumentation):
 
 class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
     def __init__(self,
-                 type_category: TypeCategory,
+                 type_category: Optional[TypeCategory],
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                  main_description_rest: List[ParagraphItem],
+                 main_description_rest_sub_sections: Sequence[SectionItem],
                  invokation_variants: List[InvokationVariant],
                  syntax_element_descriptions: List[SyntaxElementDescription],
                  see_also_targets: List[SeeAlsoTarget]):
         super().__init__(type_category, name_and_cross_ref_target)
         self._main_description_rest = main_description_rest
+        self._main_description_rest_sub_sections = main_description_rest_sub_sections
         self._invokation_variants = invokation_variants
         self._syntax_element_descriptions = syntax_element_descriptions
         self._see_also_targets = see_also_targets
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         return self._main_description_rest
+
+    def main_description_rest_sub_sections(self) -> List[SectionItem]:
+        return list(self._main_description_rest_sub_sections)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._invokation_variants
@@ -71,15 +76,17 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
         return self._see_also_targets
 
 
-def syntax_element_documentation(type_category: TypeCategory,
+def syntax_element_documentation(type_category: Optional[TypeCategory],
                                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                                  main_description_rest: List[ParagraphItem],
+                                 main_description_rest_sub_sections: Sequence[SectionItem],
                                  invokation_variants: List[InvokationVariant],
                                  syntax_element_descriptions: List[SyntaxElementDescription],
                                  see_also_targets: List[SeeAlsoTarget]) -> SyntaxElementDocumentation:
     return SyntaxElementDocumentationWithConstantValues(type_category,
                                                         name_and_cross_ref_target,
                                                         main_description_rest,
+                                                        main_description_rest_sub_sections,
                                                         invokation_variants,
                                                         syntax_element_descriptions,
                                                         see_also_targets)

@@ -34,6 +34,7 @@ DOCUMENTATION = syntax_element_documentation(
     None,
     syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT,
     [],
+    (),
     invokation_variants=[
         InvokationVariant(cl_syntax.cl_syntax_for_args([
             _MANDATORY_OPERATOR_ARGUMENT,
