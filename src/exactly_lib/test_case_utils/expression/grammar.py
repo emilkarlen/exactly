@@ -12,7 +12,7 @@ from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class ExpressionDescriptionBase(ABC):
+class ElementDescriptionBase(ABC):
     @property
     @abstractmethod
     def description_rest(self) -> Sequence[ParagraphItem]:
@@ -27,7 +27,7 @@ class ExpressionDescriptionBase(ABC):
         return ()
 
 
-class PrimitiveExpressionDescription(ExpressionDescriptionBase, ABC):
+class PrimitiveDescription(ElementDescriptionBase, ABC):
     @abstractmethod
     def initial_argument(self, name: str) -> a.ArgumentUsage:
         pass
@@ -38,13 +38,13 @@ class PrimitiveExpressionDescription(ExpressionDescriptionBase, ABC):
         pass
 
 
-class PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken(PrimitiveExpressionDescription, ABC):
+class PrimitiveDescriptionWithNameAsInitialSyntaxToken(PrimitiveDescription, ABC):
     def initial_argument(self, name: str) -> a.ArgumentUsage:
         return a.Single(a.Multiplicity.MANDATORY,
                         a.Constant(name))
 
 
-class PrimitiveExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken(PrimitiveExpressionDescription, ABC):
+class PrimitiveDescriptionWithSyntaxElementAsInitialSyntaxToken(PrimitiveDescription, ABC):
     def __init__(self, syntax_element_name: str):
         self._syntax_element_name = syntax_element_name
 
@@ -53,52 +53,52 @@ class PrimitiveExpressionDescriptionWithSyntaxElementAsInitialSyntaxToken(Primit
                         a.Named(self._syntax_element_name))
 
 
-class ExpressionWithDescription(ABC):
+class ElementWithDescription(ABC):
     @abstractmethod
-    def description(self) -> ExpressionDescriptionBase:
+    def description(self) -> ElementDescriptionBase:
         pass
 
 
 EXPR = TypeVar('EXPR')
 
 
-class PrimitiveExpression(Generic[EXPR], ExpressionWithDescription):
+class Primitive(Generic[EXPR], ElementWithDescription):
     def __init__(self,
                  parse_arguments: Callable[[TokenParser], EXPR],
-                 syntax: PrimitiveExpressionDescription,
+                 syntax: PrimitiveDescription,
                  ):
         self.parse_arguments = parse_arguments
         self.syntax = syntax
 
-    def description(self) -> ExpressionDescriptionBase:
+    def description(self) -> ElementDescriptionBase:
         return self.syntax
 
 
-class OperatorExpressionDescription(ExpressionDescriptionBase, ABC):
+class OperatorDescription(ElementDescriptionBase, ABC):
     pass
 
 
-class InfixOpExpression(Generic[EXPR], ExpressionWithDescription):
+class InfixOperator(Generic[EXPR], ElementWithDescription):
     def __init__(self,
-                 mk_complex: Callable[[Sequence[EXPR]], EXPR],
-                 syntax: OperatorExpressionDescription,
-                 ):
-        self.mk_complex = mk_complex
-        self.syntax = syntax
-
-    def description(self) -> ExpressionDescriptionBase:
-        return self.syntax
-
-
-class PrefixOpExpression(Generic[EXPR], ExpressionWithDescription):
-    def __init__(self,
-                 mk_expression: Callable[[EXPR], EXPR],
-                 syntax: OperatorExpressionDescription,
+                 mk_expression: Callable[[Sequence[EXPR]], EXPR],
+                 syntax: OperatorDescription,
                  ):
         self.mk_expression = mk_expression
         self.syntax = syntax
 
-    def description(self) -> ExpressionDescriptionBase:
+    def description(self) -> ElementDescriptionBase:
+        return self.syntax
+
+
+class PrefixOperator(Generic[EXPR], ElementWithDescription):
+    def __init__(self,
+                 mk_expression: Callable[[EXPR], EXPR],
+                 syntax: OperatorDescription,
+                 ):
+        self.mk_expression = mk_expression
+        self.syntax = syntax
+
+    def description(self) -> ElementDescriptionBase:
         return self.syntax
 
 
@@ -117,10 +117,10 @@ class Grammar(Generic[EXPR]):
     def __init__(self,
                  concept: Concept,
                  mk_reference: Callable[[str], EXPR],
-                 primitives: Sequence[NameAndValue[PrimitiveExpression[EXPR]]],
-                 prefix_operators: Sequence[NameAndValue[PrefixOpExpression[EXPR]]],
+                 primitives: Sequence[NameAndValue[Primitive[EXPR]]],
+                 prefix_operators: Sequence[NameAndValue[PrefixOperator[EXPR]]],
                  infix_operators_in_order_of_increasing_precedence:
-                 Sequence[Sequence[NameAndValue[InfixOpExpression[EXPR]]]],
+                 Sequence[Sequence[NameAndValue[InfixOperator[EXPR]]]],
                  ):
         self.concept = concept
         self.mk_reference = mk_reference

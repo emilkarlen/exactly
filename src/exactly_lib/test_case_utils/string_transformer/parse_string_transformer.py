@@ -33,30 +33,30 @@ GRAMMAR = grammar.Grammar(
     primitives=(
         NameAndValue(
             names.REPLACE_TRANSFORMER_NAME,
-            grammar.PrimitiveExpression(replace.parse_replace,
-                                        replace.SyntaxDescription())
+            grammar.Primitive(replace.parse_replace,
+                              replace.SyntaxDescription())
         ),
         NameAndValue(
             names.SELECT_TRANSFORMER_NAME,
-            grammar.PrimitiveExpression(filter.parse_filter,
-                                        filter.SyntaxDescription())
+            grammar.Primitive(filter.parse_filter,
+                              filter.SyntaxDescription())
         ),
         NameAndValue(
             names.RUN_PROGRAM_TRANSFORMER_NAME,
-            grammar.PrimitiveExpression(parse_run.parse,
-                                        parse_run.SyntaxDescription())
+            grammar.Primitive(parse_run.parse,
+                              parse_run.SyntaxDescription())
         ),
         NameAndValue(
             names.IDENTITY_TRANSFORMER_NAME,
-            grammar.PrimitiveExpression(identity.parse_identity,
-                                        identity.SyntaxDescription())
+            grammar.Primitive(identity.parse_identity,
+                              identity.SyntaxDescription())
         ),
     ),
     prefix_operators=(),
     infix_operators_in_order_of_increasing_precedence=[[
         NameAndValue(
             names.SEQUENCE_OPERATOR_NAME,
-            grammar.InfixOpExpression(
+            grammar.InfixOperator(
                 sequence.StringTransformerSequenceSdv,
                 sequence.SYNTAX_DESCRIPTION,
             )

@@ -21,7 +21,7 @@ def parse(token_parser: TokenParser) -> StringTransformerSdv:
     return sdv.sdv(is_ignore_exit_code, program)
 
 
-class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

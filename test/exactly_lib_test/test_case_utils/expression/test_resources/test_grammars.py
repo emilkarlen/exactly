@@ -6,8 +6,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as expression_parser
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveExprDescription, \
-    ConstantOperatorExpressionDescription, CONCEPT
+from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveDescription, \
+    ConstantOperatorDescription, CONCEPT
 
 
 class Expr:
@@ -127,17 +127,17 @@ INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME = '||'
 PRIMITIVE_EXPRESSIONS__EXCEPT_RECURSIVE = (
     NameAndValue(
         PRIMITIVE_WITH_ARG,
-        grammar.PrimitiveExpression(parse_primitive_with_arg,
-                                    ConstantPrimitiveExprDescription([], [],
-                                                                     [SyntaxElementDescription(
+        grammar.Primitive(parse_primitive_with_arg,
+                          ConstantPrimitiveDescription([], [],
+                                                                 [SyntaxElementDescription(
                                                                          PRIMITIVE_WITH_ARG + '-SED',
                                                                          ())],
-                                                                     [CROSS_REF_ID]))
+                                                                 [CROSS_REF_ID]))
     ),
     NameAndValue(
         PRIMITIVE_SANS_ARG,
-        grammar.PrimitiveExpression(parse_primitive_sans_arg,
-                                    ConstantPrimitiveExprDescription([], []))
+        grammar.Primitive(parse_primitive_sans_arg,
+                          ConstantPrimitiveDescription([], []))
     ),
 )
 
@@ -146,9 +146,9 @@ PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE = (
         [
             NameAndValue(
                 PRIMITIVE_RECURSIVE,
-                grammar.PrimitiveExpression(
+                grammar.Primitive(
                     parse_recursive_primitive_of_grammar_w_all_components,
-                    ConstantPrimitiveExprDescription([], [])
+                    ConstantPrimitiveDescription([], [])
                 )
             )
         ]
@@ -157,13 +157,13 @@ PRIMITIVE_EXPRESSIONS__INCLUDING_RECURSIVE = (
 PREFIX_OP_EXPRESSIONS = (
     NameAndValue(
         PREFIX_P,
-        grammar.PrefixOpExpression(PrefixOpExprP,
-                                   ConstantOperatorExpressionDescription([]))
+        grammar.PrefixOperator(PrefixOpExprP,
+                               ConstantOperatorDescription([]))
     ),
     NameAndValue(
         PREFIX_Q,
-        grammar.PrefixOpExpression(PrefixOpExprQ,
-                                   ConstantOperatorExpressionDescription([]))
+        grammar.PrefixOperator(PrefixOpExprQ,
+                               ConstantOperatorDescription([]))
     ),
 )
 
@@ -180,15 +180,15 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
     infix_operators_in_order_of_increasing_precedence=[(
         NameAndValue(
             INFIX_OP_A,
-            grammar.InfixOpExpression(InfixOpA,
-                                      ConstantOperatorExpressionDescription([], [],
-                                                                            [CROSS_REF_ID]))
+            grammar.InfixOperator(InfixOpA,
+                                  ConstantOperatorDescription([], [],
+                                                                  [CROSS_REF_ID]))
         ),
         NameAndValue(
             INFIX_OP_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME,
-            grammar.InfixOpExpression(InfixOpB,
-                                      ConstantOperatorExpressionDescription([], [],
-                                                                            [CROSS_REF_ID]))
+            grammar.InfixOperator(InfixOpB,
+                                  ConstantOperatorDescription([], [],
+                                                                  [CROSS_REF_ID]))
         ),
     )],
 )

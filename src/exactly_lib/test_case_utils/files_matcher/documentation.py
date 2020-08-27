@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class EmptyDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class EmptyDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return ()
@@ -23,7 +23,7 @@ class EmptyDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToke
         return _TP.fnap(_CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY)
 
 
-class NumFilesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class NumFilesDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
@@ -33,7 +33,7 @@ class NumFilesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxT
         return _TP.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)
 
 
-class SelectionDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class SelectionDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -51,7 +51,7 @@ class SelectionDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntax
         return ret_val
 
 
-class PruneDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class PruneDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -69,7 +69,7 @@ class PruneDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToke
         return ret_val
 
 
-class MatchesDoc(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class MatchesDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (

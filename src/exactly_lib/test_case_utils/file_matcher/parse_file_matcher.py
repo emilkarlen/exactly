@@ -92,7 +92,7 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-class _NameSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -115,7 +115,7 @@ class _NameSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsIni
         ])
 
 
-class _TypeSyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _TypeSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
@@ -139,7 +139,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     simple_expressions=(
         NameAndValue(
             file_matcher.NAME_MATCHER_NAME,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 _parse_name_matcher,
                 _NameSyntaxDescription()
             )
@@ -147,7 +147,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 
         NameAndValue(
             file_matcher.TYPE_MATCHER_NAME,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 _parse_type_matcher,
                 _TypeSyntaxDescription()
             )
@@ -155,7 +155,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 
         NameAndValue(
             file_check_properties.REGULAR_FILE_CONTENTS,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 _parse_regular_file_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
                     file_or_dir_contents_doc.REGULAR_FILE_DOCUMENTATION_SETUP
@@ -165,7 +165,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 
         NameAndValue(
             file_check_properties.DIR_CONTENTS,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 _parse_dir_contents,
                 file_contents_utils.FileContentsSyntaxDescription(
                     file_or_dir_contents_doc.DIR_DOCUMENTATION
@@ -175,7 +175,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
 
         NameAndValue(
             file_matcher.PROGRAM_MATCHER_NAME,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 parse_run.parse,
                 RunSyntaxDescription(),
             )

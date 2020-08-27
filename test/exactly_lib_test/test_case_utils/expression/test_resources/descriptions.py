@@ -3,13 +3,13 @@ from typing import Sequence
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression.grammar import OperatorExpressionDescription
+from exactly_lib.test_case_utils.expression.grammar import OperatorDescription
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class ConstantPrimitiveExprDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class ConstantPrimitiveDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     def __init__(self,
                  argument_usage_list: Sequence[a.ArgumentUsage],
                  description_rest: Sequence[ParagraphItem],
@@ -38,7 +38,7 @@ class ConstantPrimitiveExprDescription(grammar.PrimitiveExpressionDescriptionWit
         return self._see_also_targets
 
 
-class ConstantOperatorExpressionDescription(OperatorExpressionDescription):
+class ConstantOperatorDescription(OperatorDescription):
     def __init__(self,
                  description_rest: Sequence[ParagraphItem],
                  syntax_elements: Sequence[SyntaxElementDescription] = (),

@@ -7,8 +7,8 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting, NameWithGender
-from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveExprDescription, \
-    ConstantOperatorExpressionDescription
+from exactly_lib_test.test_case_utils.expression.test_resources.descriptions import ConstantPrimitiveDescription, \
+    ConstantOperatorDescription
 
 
 class Expr:
@@ -102,7 +102,7 @@ CONCEPT = grammar.Concept(
     'type-system-name',
     a.Named('SYNTAX-ELEMENT-NAME'))
 
-OPERATOR_DESCRIPTION = ConstantOperatorExpressionDescription([], [], [CROSS_REF_ID])
+OPERATOR_DESCRIPTION = ConstantOperatorDescription([], [], [CROSS_REF_ID])
 
 
 def _mk_reference(name: str) -> Expr:
@@ -115,41 +115,41 @@ GRAMMAR = grammar.Grammar(
     primitives=(
         NameAndValue(
             PRIMITIVE_WITH_ARG,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 parse_primitive,
-                ConstantPrimitiveExprDescription([], [],
-                                                 [SyntaxElementDescription(
+                ConstantPrimitiveDescription([], [],
+                                             [SyntaxElementDescription(
                                                      PRIMITIVE_WITH_ARG + '-SED',
                                                      ())],
-                                                 [CROSS_REF_ID]))
+                                             [CROSS_REF_ID]))
         ),
     ),
     prefix_operators=[
         NameAndValue(
             POP,
-            grammar.PrefixOpExpression(PrefixOp,
-                                       ConstantOperatorExpressionDescription([]))
+            grammar.PrefixOperator(PrefixOp,
+                                   ConstantOperatorDescription([]))
         ),
     ],
     infix_operators_in_order_of_increasing_precedence=[
         [
             NameAndValue(
                 IOP_2u,
-                grammar.InfixOpExpression(InfixOp2u, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp2u, OPERATOR_DESCRIPTION)
             ),
             NameAndValue(
                 IOP_2v,
-                grammar.InfixOpExpression(InfixOp2v, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp2v, OPERATOR_DESCRIPTION)
             ),
         ],
         [
             NameAndValue(
                 IOP_1u,
-                grammar.InfixOpExpression(InfixOp1u, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp1u, OPERATOR_DESCRIPTION)
             ),
             NameAndValue(
                 IOP_1v,
-                grammar.InfixOpExpression(InfixOp1v, OPERATOR_DESCRIPTION)
+                grammar.InfixOperator(InfixOp1v, OPERATOR_DESCRIPTION)
             ),
         ],
     ],

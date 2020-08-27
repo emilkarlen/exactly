@@ -20,7 +20,7 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
     return num_lines.sdv(matcher)
 
 
-class Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,

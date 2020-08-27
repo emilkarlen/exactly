@@ -107,8 +107,8 @@ GRAMMAR = grammar.Grammar(
     primitives=(
         NameAndValue(
             syntax.BEGIN_BRACE,
-            grammar.PrimitiveExpression(_parse_constant,
-                                        documentation.ConstantSyntaxDescription())
+            grammar.Primitive(_parse_constant,
+                              documentation.ConstantSyntaxDescription())
 
         ),
     ),

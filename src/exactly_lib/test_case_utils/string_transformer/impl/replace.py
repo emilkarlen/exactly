@@ -169,7 +169,7 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
                                str(self._compiled_regular_expression))
 
 
-class SyntaxDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

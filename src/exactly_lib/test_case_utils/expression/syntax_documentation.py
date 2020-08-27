@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from .grammar import Grammar, PrimitiveExpressionDescription, OperatorExpressionDescription, ExpressionWithDescription
+from .grammar import Grammar, PrimitiveDescription, OperatorDescription, ElementWithDescription
 from ...definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from ...definitions.entity.syntax_elements import SyntaxElementInfo
 from ...util.name_and_value import NameAndValue
@@ -88,7 +88,7 @@ class Syntax:
 
     def _invokation_variants_simple(self) -> List[InvokationVariant]:
         def invokation_variant_of(name: str,
-                                  syntax: PrimitiveExpressionDescription) -> InvokationVariant:
+                                  syntax: PrimitiveDescription) -> InvokationVariant:
             all_arguments = [syntax.initial_argument(name)] + list(syntax.argument_usage_list)
             return invokation_variant_from_args(all_arguments,
                                                 syntax.description_rest)
@@ -122,7 +122,7 @@ class Syntax:
 
     def _invokation_variants_complex(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
-                                  syntax: OperatorExpressionDescription) -> InvokationVariant:
+                                  syntax: OperatorDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
                                          a.Constant(operator_name))
             all_arguments = [self.concept_argument, operator_argument, self.concept_argument]
@@ -136,7 +136,7 @@ class Syntax:
 
     def _invokation_variants_prefix(self) -> List[InvokationVariant]:
         def invokation_variant_of(operator_name: str,
-                                  syntax: OperatorExpressionDescription) -> InvokationVariant:
+                                  syntax: OperatorDescription) -> InvokationVariant:
             operator_argument = a.Single(a.Multiplicity.MANDATORY,
                                          a.Constant(operator_name))
             all_arguments = [operator_argument, self.concept_argument]
@@ -179,7 +179,7 @@ def _see_also_targets_for_expr(expressions_dict: dict) -> List[SeeAlsoTarget]:
     return from_expressions + always
 
 
-def _seds_for_expr(expressions: List[NameAndValue[ExpressionWithDescription]]) -> List[SyntaxElementDescription]:
+def _seds_for_expr(expressions: List[NameAndValue[ElementWithDescription]]) -> List[SyntaxElementDescription]:
     return list(itertools.chain.from_iterable([
         expr.value.description().syntax_elements
         for expr in expressions

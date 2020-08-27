@@ -37,7 +37,7 @@ def _parse_on_transformed(parser: TokenParser) -> StringMatcherSdv:
     return on_transformed.StringMatcherWithTransformationSdv(transformer, matcher_on_transformed)
 
 
-class _OnTransformedDescription(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class _OnTransformedDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (
@@ -59,22 +59,22 @@ class _OnTransformedDescription(grammar.PrimitiveExpressionDescriptionWithNameAs
         return syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
 
 
-def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[StringMatcherSdv]]]:
+def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatcherSdv]]]:
     ret_val = [
         NameAndValue(
             matcher_options.EMPTY_ARGUMENT,
-            grammar.PrimitiveExpression(emptieness.parse,
-                                        emptieness.Description())
+            grammar.Primitive(emptieness.parse,
+                              emptieness.Description())
         ),
         NameAndValue(
             matcher_options.EQUALS_ARGUMENT,
-            grammar.PrimitiveExpression(equality.parse,
-                                        equality.Description())
+            grammar.Primitive(equality.parse,
+                              equality.Description())
         ),
         NameAndValue(
             matcher_options.MATCHES_ARGUMENT,
-            grammar.PrimitiveExpression(matches.parse,
-                                        matches.Description())
+            grammar.Primitive(matches.parse,
+                              matches.Description())
         ),
     ]
 
@@ -88,18 +88,18 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.PrimitiveExpression[S
     ret_val += [
         NameAndValue(
             matcher_options.NUM_LINES_ARGUMENT,
-            grammar.PrimitiveExpression(num_lines.parse,
-                                        num_lines.Description())
+            grammar.Primitive(num_lines.parse,
+                              num_lines.Description())
         ),
         NameAndValue(
             option_syntax.option_syntax(
                 string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-            grammar.PrimitiveExpression(_parse_on_transformed,
-                                        _OnTransformedDescription())
+            grammar.Primitive(_parse_on_transformed,
+                              _OnTransformedDescription())
         ),
         NameAndValue(
             matcher_options.RUN_PROGRAM_ARGUMENT,
-            grammar.PrimitiveExpression(
+            grammar.Primitive(
                 run_program.parse,
                 run_program.SyntaxDescription(),
             )

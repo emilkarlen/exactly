@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol import symbol_syntax
-from .grammar import Grammar, EXPR, InfixOpExpression
+from .grammar import Grammar, EXPR, InfixOperator
 from ...section_document.element_parsers.ps_or_tp import parsers as parser_impls
 from ...util import collection
 from ...util.cli_syntax import option_syntax
@@ -97,7 +97,7 @@ class _Parser(Generic[EXPR]):
     def parse_w_maybe_infix_ops(
             self,
             new_line_ignore: Optional[int],
-            infix_ops_levels: Sequence[Mapping[str, InfixOpExpression[EXPR]]],
+            infix_ops_levels: Sequence[Mapping[str, InfixOperator[EXPR]]],
     ) -> EXPR:
         return (
             self.parse_w_infix_ops(new_line_ignore,
@@ -110,7 +110,7 @@ class _Parser(Generic[EXPR]):
     def parse_w_infix_ops(
             self,
             new_line_ignore: Optional[int],
-            infix_ops_levels: Sequence[Mapping[str, InfixOpExpression[EXPR]]],
+            infix_ops_levels: Sequence[Mapping[str, InfixOperator[EXPR]]],
     ) -> EXPR:
         infix_ops__curr_level = infix_ops_levels[0]
         infix_op_names__curr_level = infix_ops__curr_level.keys()
@@ -150,7 +150,7 @@ class _Parser(Generic[EXPR]):
             self,
             operator_name: str,
             first_operand: EXPR,
-            infix_ops_levels: Sequence[Mapping[str, InfixOpExpression[EXPR]]],
+            infix_ops_levels: Sequence[Mapping[str, InfixOperator[EXPR]]],
             is_inside_parens: bool,
     ) -> EXPR:
         single_accepted_operator = (operator_name,)
@@ -168,7 +168,7 @@ class _Parser(Generic[EXPR]):
                 must_be_on_current_line=not is_inside_parens):
             parse_mandatory_operand_and_append()
 
-        return self.grammar.infix_operators[operator_name].mk_complex(operands)
+        return self.grammar.infix_operators[operator_name].mk_expression(operands)
 
     def parse_mandatory_primitive(self, must_be_on_current_line: bool) -> EXPR:
         if must_be_on_current_line:

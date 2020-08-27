@@ -25,7 +25,7 @@ def parse(token_parser: TokenParser) -> StringMatcherSdv:
     return matches.sdv(is_full_match, regex_sdv)
 
 
-class Description(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken):
+class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return (

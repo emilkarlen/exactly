@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class SyntaxDescriptionBase(grammar.PrimitiveExpressionDescriptionWithNameAsInitialSyntaxToken, ABC):
+class SyntaxDescriptionBase(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken, ABC):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [

@@ -3,7 +3,7 @@ from typing import Sequence, TypeVar
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.expression import grammar
-from exactly_lib.test_case_utils.expression.grammar_elements import OperatorExpressionDescriptionFromFunctions
+from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -16,7 +16,7 @@ MODEL = TypeVar('MODEL')
 def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
-                simple_expressions: Sequence[NameAndValue[grammar.PrimitiveExpression[MatcherSdv[MODEL]]]],
+                simple_expressions: Sequence[NameAndValue[grammar.Primitive[MatcherSdv[MODEL]]]],
                 ) -> grammar.Grammar[MatcherSdv[MODEL]]:
     tp = TextParser({
         'model': model,
@@ -34,8 +34,8 @@ def new_grammar(concept: grammar.Concept,
         prefix_operators=[
             NameAndValue(
                 logic.NOT_OPERATOR_NAME,
-                grammar.PrefixOpExpression(combinator_sdvs.Negation,
-                                           OperatorExpressionDescriptionFromFunctions(
+                grammar.PrefixOperator(combinator_sdvs.Negation,
+                                       OperatorDescriptionFromFunctions(
                                                tp.fnap__fun(_NOT_SED_DESCRIPTION)
                                            ))
             )
@@ -44,8 +44,8 @@ def new_grammar(concept: grammar.Concept,
             (
                 NameAndValue(
                     logic.OR_OPERATOR_NAME,
-                    grammar.InfixOpExpression(combinator_sdvs.Disjunction,
-                                              OperatorExpressionDescriptionFromFunctions(
+                    grammar.InfixOperator(combinator_sdvs.Disjunction,
+                                          OperatorDescriptionFromFunctions(
                                                   tp.fnap__fun(_OR_SED_DESCRIPTION)
                                               ))
                 ),
@@ -53,8 +53,8 @@ def new_grammar(concept: grammar.Concept,
             (
                 NameAndValue(
                     logic.AND_OPERATOR_NAME,
-                    grammar.InfixOpExpression(combinator_sdvs.Conjunction,
-                                              OperatorExpressionDescriptionFromFunctions(
+                    grammar.InfixOperator(combinator_sdvs.Conjunction,
+                                          OperatorDescriptionFromFunctions(
                                                   tp.fnap__fun(_AND_SED_DESCRIPTION)
                                               ))
                 ),
