@@ -1,6 +1,7 @@
 import unittest
 from typing import List
 
+from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.logic.program.process_execution.command import Command
@@ -13,11 +14,11 @@ from exactly_lib_test.test_case_file_structure.test_resources import hds_populat
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_resources.programs import shell_commands
-from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
-from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
-from exactly_lib_test.test_resources.value_assertions import shlex_assertions as asrt_shlex
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
+    value_assertion_str as asrt_str, \
+    shlex_assertions as asrt_shlex, \
+    process_result_assertions as asrt_proc_result, \
+    file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -43,7 +44,7 @@ class _ShellExecutionCheckerHelper:
               ):
         instruction_argument_source = instruction_argument_source_template.format(
             actor_option=self.cli_option,
-            shell_option=actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD,
+            shell_option=parse_act_interpreter.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD,
         )
         for source, source_assertion in equivalent_source_variants_with_assertion(put, instruction_argument_source):
             # ARRANGE #
@@ -198,6 +199,7 @@ class TestShellHandlingViaExecution(unittest.TestCase):
                   source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
                   act_phase_source_lines=[act_phase_source_line]),
               Expectation(
-                  sub_process_result_from_execute=pr.stdout(asrt.Equals('output on stdout\n',
-                                                                        'expected output on stdout')))
+                  sub_process_result_from_execute=asrt_proc_result.stdout(
+                      asrt.Equals('output on stdout\n'))
+              )
               )

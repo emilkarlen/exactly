@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
+from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.instructions.configuration import actor as sut
-from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 def shell_command_syntax_for(command: str) -> str:
-    return actor_utils.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' ' + command
+    return parse_act_interpreter.SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' ' + command
 
 
 class Arrangement:

@@ -1,9 +1,9 @@
-import shlex
 from typing import List, Sequence
 
 from exactly_lib.actors import file_interpreter
-from exactly_lib.actors import source_interpreter as source_interpreter
+from exactly_lib.actors import source_interpreter
 from exactly_lib.actors.program import actor
+from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
@@ -12,14 +12,11 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts, actors, syntax_elements
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_case import phase_names, actor as help_texts
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
-from exactly_lib.type_system.logic.program.process_execution import commands
-from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
@@ -29,17 +26,11 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
 
-SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = SHELL_KEYWORD
-
 SOURCE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='source')
 SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.long)
 
 FILE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='file')
 FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
-
-EXECUTABLE_ARGUMENT = a.Named(help_texts.EXECUTABLE)
-PROGRAM_ARGUMENT_ARGUMENT = a.Named(help_texts.ARGUMENT)
-COMMAND_ARGUMENT = a.Constant(help_texts.COMMAND)
 
 
 class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
@@ -146,34 +137,11 @@ def parse(instruction_argument: str) -> NameAndValue[Actor]:
 
 
 def _parse_source_interpreter(arg: str) -> Actor:
-    return source_interpreter.actor(_parse_interpreter_command(arg))
+    return source_interpreter.actor(parse_act_interpreter.parse(arg))
 
 
 def _parse_file_interpreter(arg: str) -> Actor:
-    return file_interpreter.actor(_parse_interpreter_command(arg))
-
-
-def _parse_interpreter_command(arg: str) -> Command:
-    args = arg.split(maxsplit=1)
-    if not args:
-        raise SingleInstructionInvalidArgumentException('Missing interpreter')
-    if args[0] == SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD:
-        if len(args) == 1:
-            raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
-        else:
-            return commands.shell_command(args[1])
-    command_and_arguments = shlex_split(arg)
-    if not command_and_arguments:
-        raise SingleInstructionInvalidArgumentException('Missing interpreter')
-    return commands.system_program_command(command_and_arguments[0],
-                                           command_and_arguments[1:])
-
-
-def shlex_split(s: str) -> list:
-    try:
-        return shlex.split(s)
-    except Exception:
-        raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + s)
+    return file_interpreter.actor(parse_act_interpreter.parse(arg))
 
 
 _DESCRIPTION_OF_ACTOR_WITH_INTERPRETER = """\
