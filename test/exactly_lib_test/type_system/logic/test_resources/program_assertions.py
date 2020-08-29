@@ -4,7 +4,7 @@ from exactly_lib.type_system.logic.program.process_execution.command import Comm
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.program.stdin_data import StdinData
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertionBase
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

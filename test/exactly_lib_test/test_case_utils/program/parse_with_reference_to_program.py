@@ -21,7 +21,6 @@ from exactly_lib_test.symbol.data.test_resources import symbol_reference_asserti
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
@@ -42,7 +41,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_line_transformer
-from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
+from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
+    command_assertions as asrt_command
 
 
 def suite() -> unittest.TestSuite:

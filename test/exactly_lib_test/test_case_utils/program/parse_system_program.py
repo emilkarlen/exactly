@@ -21,7 +21,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_program
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources import validation_check, command_assertions as asrt_command
+from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as cmd_line_args
@@ -33,7 +33,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_line_transformer
-from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
+from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
+    command_assertions as asrt_command
 
 
 def suite() -> unittest.TestSuite:

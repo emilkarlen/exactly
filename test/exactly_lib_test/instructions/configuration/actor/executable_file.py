@@ -8,7 +8,7 @@ from exactly_lib.type_system.logic.program.process_execution.command import Comm
 from exactly_lib_test.instructions.configuration.actor.test_resources import Arrangement, Expectation, check, \
     file_in_hds_act_dir
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \

@@ -14,7 +14,6 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     Expectation, Arrangement, AssertionResolvingEnvironment, prim_asrt__constant, arrangement_w_tcds
@@ -36,7 +35,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_str_trans, string_transformers
-from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
+from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
+    command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
 

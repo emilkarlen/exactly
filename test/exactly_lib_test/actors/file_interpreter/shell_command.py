@@ -11,7 +11,7 @@ from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, suite_for_execution
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments

@@ -21,7 +21,6 @@ from exactly_lib_test.actors.test_resources.test_validation_for_single_line_sour
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case.test_resources import command_assertions as asrt_command
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
@@ -31,6 +30,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes, surrounded_by_soft_quotes
