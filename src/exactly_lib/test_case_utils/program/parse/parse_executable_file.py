@@ -16,6 +16,12 @@ def parser_of_program(
     return _ParserOfProgram(exe_file_relativity)
 
 
+def parser_of_command(
+        exe_file_relativity: RelOptionArgumentConfiguration = syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
+) -> Parser[CommandSdv]:
+    return _ParserOfCommand(exe_file_relativity)
+
+
 def parse_as_command(token_parser: TokenParser,
                      exe_file_relativity: RelOptionArgumentConfiguration = syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF,
                      ) -> CommandSdv:
@@ -32,13 +38,12 @@ class _ParserOfCommand(ParserFromTokenParserBase[CommandSdv]):
     def __init__(self, relativity_of_exe_file: RelOptionArgumentConfiguration):
         super().__init__(consume_last_line_if_is_at_eol_after_parse=False,
                          consume_last_line_if_is_at_eof_after_parse=False)
-        self._relativity_of_exe_file = relativity_of_exe_file
         self._additional_commands_parser = parse_arguments.parser()
+        self._exe_file_and_args_parser = parse_executable_file_executable.parser(relativity_of_exe_file)
 
     def parse_from_token_parser(self, parser: TokenParser) -> CommandSdv:
-        program = parse_executable_file_executable.parse_from_token_parser(parser,
-                                                                           self._relativity_of_exe_file)
-        command_sdv = program.as_command
+        exe_file_and_args = self._exe_file_and_args_parser.parse_from_token_parser(parser)
+        command_sdv = exe_file_and_args.as_command
         additional_arguments = self._additional_commands_parser.parse_from_token_parser(parser)
         return command_sdv.new_with_additional_arguments(additional_arguments)
 

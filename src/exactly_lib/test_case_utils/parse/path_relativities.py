@@ -4,6 +4,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
     RelOptionArgumentConfiguration
 
 ALL_REL_OPTIONS = set(RelOptionType) - {RelOptionType.REL_RESULT}
+ALL_HDS_REL_OPTIONS = {RelOptionType.REL_HDS_CASE, RelOptionType.REL_HDS_ACT}
 
 ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
 
@@ -28,6 +29,10 @@ REL_OPTIONS_CONFIGURATION = all_rel_options_config(RelOptionType.REL_HDS_CASE)
 
 STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
     ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
+    True)
+
+HDS_AND_ABS_RELATIVITY_VARIANTS = PathRelativityVariants(
+    ALL_HDS_REL_OPTIONS,
     True)
 
 STANDARD_NON_HDS_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HDS_RELATIVITY_VARIANTS,
