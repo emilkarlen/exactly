@@ -15,6 +15,7 @@ from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -106,13 +107,17 @@ class Expectation:
                  = asrt_eh.is_any_exit_code,
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
-                 post_sds: Callable[[SandboxDirectoryStructure], PostSdsExpectation] = lambda sds: PostSdsExpectation()
+                 post_sds: Callable[[SandboxDirectoryStructure], PostSdsExpectation] =
+                 lambda sds: PostSdsExpectation(),
+                 after_execution: ValueAssertion[Tcds] =
+                 asrt.anything_goes(),
                  ):
         self.symbol_usages = symbol_usages
         self.validation = validation
         self.prepare = prepare
         self.execute = execute
         self.post_sds = post_sds
+        self.after_execution = after_execution
 
     @staticmethod
     def hard_error_from_prepare(
@@ -308,9 +313,10 @@ class _Checker:
         if sub_process_result:
             msg_builder = MessageBuilder('Sub process output from execute ' + error_msg_extra_info)
             self._expectation_post_sds.sub_process_result_from_execute.apply(self._put, sub_process_result, msg_builder)
-        self._expectation_post_sds.side_effects_on_files_after_execute.apply(self._put, env.sds)
 
+        self._expectation_post_sds.side_effects_on_files_after_execute.apply(self._put, env.sds)
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
+        self._expectation.after_execution.apply_with_message(self._put, env.tcds, 'after execution')
 
     def _check_symbols_after(self, atc: ActionToCheck, step: str):
         self._expectation.symbol_usages.apply_with_message(
