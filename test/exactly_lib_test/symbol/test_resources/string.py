@@ -45,33 +45,40 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
     def __init__(self,
                  sdv: StringSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                  ):
         super().__init__(sdv, definition_source)
+        self._default_restrictions = default_restrictions
 
     @staticmethod
     def of_sdv(sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                ) -> 'StringSymbolValueContext':
         """
         Use this to create from an SDV, since constructor will
         may be changed to take other type of arg.
         """
-        return StringSymbolValueContext(sdv, definition_source)
+        return StringSymbolValueContext(sdv, definition_source, default_restrictions)
 
     @staticmethod
     def of_constant(primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                    default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                     ) -> 'StringSymbolValueContext':
-        return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source)
+        return StringSymbolValueContext(string_sdvs.str_constant(primitive), definition_source, default_restrictions)
 
     @staticmethod
-    def of_reference(referenced_symbol_name: str,
-                     restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
-                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                     ) -> 'StringSymbolValueContext':
+    def of_reference(
+            referenced_symbol_name: str,
+            restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+            default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+    ) -> 'StringSymbolValueContext':
         return StringSymbolValueContext.of_sdv(string_sdv_of_single_symbol_reference(referenced_symbol_name,
                                                                                      restrictions),
-                                               definition_source)
+                                               definition_source,
+                                               default_restrictions)
 
     @staticmethod
     def of_arbitrary_value() -> 'StringSymbolValueContext':
@@ -86,10 +93,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
         return asrt_value.equals_string_sdv(self.sdv)
 
     def reference_assertion(self, symbol_name: str) -> ValueAssertion[SymbolReference]:
-        return asrt_sym_usage.matches_reference_2__ref(
-            symbol_name,
-            asrt_rest.is_string_value_restriction
-        )
+        return asrt_sym_usage.matches_reference_2__ref(symbol_name, self._default_restrictions)
 
     @staticmethod
     def reference_assertion__string_made_up_of_just_strings(symbol_name: str) -> ValueAssertion[SymbolReference]:
@@ -142,32 +146,37 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     def of_sdv(name: str,
                sdv: StringSdv,
                definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+               default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolValueContext.of_sdv(sdv, definition_source)
+            StringSymbolValueContext.of_sdv(sdv, definition_source, default_restrictions)
         )
 
     @staticmethod
     def of_constant(name: str,
                     primitive: str,
                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                    default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                     ) -> 'StringSymbolContext':
         return StringSymbolContext(
             name,
-            StringSymbolValueContext.of_constant(primitive, definition_source)
+            StringSymbolValueContext.of_constant(primitive, definition_source, default_restrictions)
         )
 
     @staticmethod
-    def of_reference(name: str,
-                     referenced_symbol_name: str,
-                     restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
-                     definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
-                     ) -> 'StringSymbolContext':
+    def of_reference(
+            name: str,
+            referenced_symbol_name: str,
+            restrictions: ReferenceRestrictions = reference_restrictions.is_any_data_type(),
+            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+            default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
+    ) -> 'StringSymbolContext':
         return StringSymbolContext(name,
                                    StringSymbolValueContext.of_reference(referenced_symbol_name,
                                                                          restrictions,
-                                                                         definition_source)
+                                                                         definition_source,
+                                                                         default_restrictions)
                                    )
 
     @staticmethod
@@ -218,8 +227,10 @@ class StringConstantSymbolContext(StringSymbolContext):
                  name: str,
                  constant: str = 'string value',
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                  ):
-        super().__init__(name, StringSymbolValueContext.of_constant(constant, definition_source))
+        super().__init__(name,
+                         StringSymbolValueContext.of_constant(constant, definition_source, default_restrictions))
         self._constant = constant
 
     @property
@@ -232,17 +243,14 @@ class StringIntConstantSymbolContext(StringConstantSymbolContext):
                  name: str,
                  constant: int,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
+                 default_restrictions: ValueAssertion[ReferenceRestrictions] = asrt_rest.is_string_value_restriction,
                  ):
-        super().__init__(name, str(constant), definition_source)
+        super().__init__(name, str(constant), definition_source, default_restrictions)
         self._int_constant = constant
 
     @property
     def int_value(self) -> int:
         return self._int_constant
-
-
-def arbitrary_symbol_context(symbol_name: str) -> StringSymbolContext:
-    return StringConstantSymbolContext(symbol_name, 'arbitrary value')
 
 
 ARBITRARY_SYMBOL_VALUE_CONTEXT = StringSymbolValueContext.of_constant('arbitrary value')

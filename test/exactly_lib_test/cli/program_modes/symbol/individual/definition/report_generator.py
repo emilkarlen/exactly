@@ -20,6 +20,7 @@ from exactly_lib_test.symbol.data.test_resources import path, list_
 from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
 from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
     files_condition, program, string
+from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
@@ -101,7 +102,7 @@ class TestReferences(unittest.TestCase):
     def test_symbol_with_single_reference(self):
         # ARRANGE #
 
-        referenced_symbol = string.arbitrary_symbol_context('referenced_symbol')
+        referenced_symbol = StringConstantSymbolContext.of_arbitrary_value('referenced_symbol')
 
         referencing_symbol = StringMatcherSymbolContext.of_sdv(
             'referencing_symbol',
