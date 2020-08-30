@@ -4,7 +4,7 @@ from exactly_lib.actors import file_interpreter as actor
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
@@ -49,7 +49,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
+            syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
 

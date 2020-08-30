@@ -5,7 +5,7 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity import actors, concepts
+from exactly_lib.definitions.entity import actors, concepts, syntax_elements
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -43,6 +43,7 @@ class _ActorConcept(ConceptDocumentation):
                     phase_infos.CONFIGURATION.instruction_cross_reference_target(
                         instruction_names.ACTOR_INSTRUCTION_NAME),
                     PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
+                    syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.cross_reference_target,
                 ]
                 +
                 actors.all_actor_cross_refs()

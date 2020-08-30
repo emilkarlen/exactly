@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.documentation_text import paths_uses_posix_syntax
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
@@ -59,6 +59,8 @@ def path_type_path_rendering() -> SectionItem:
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
         'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
         'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+        'external_program': misc_texts.EXTERNAL_PROGRAM,
+        'os_process': misc_texts.OS_PROCESS_NAME,
     })
     return Section(tp.text(_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER),
                    tp.section_contents(_PATH_TYPE_PATH_RENDERING_DESCRIPTION))
@@ -91,8 +93,8 @@ _PATH_TYPE_PATH_RENDERING_DESCRIPTION = """\
 All {path_type} values are rendered as absolute paths.
 
 
-This means, e.g., that values can be passed to external programs,
-which may use them without consideration of the current directory of the program process.
+This means, e.g., that values can be passed to {external_program:s},
+which may use them without consideration of the current directory of the {os_process}.
 
 
 Note though, that a {path_type} value that is defined using the {def_instruction} instruction

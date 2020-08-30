@@ -12,10 +12,6 @@ SYNTAX_ERROR_NAME = name.a_name(name.name_with_plural_s('syntax error'))
 
 FILE_ACCESS_ERROR_NAME = name.a_name(name.name_with_plural_s('file access error'))
 
-OS_PROCESS_NAME = misc_name_with_formatting(
-    name.an_name(name.Name('OS process',
-                           'OS processes')))
-
 EXIT_IDENTIFIER = misc_name_with_formatting(
     name.an_name(name.name_with_plural_s('exit identifier')))
 
@@ -28,7 +24,12 @@ STDOUT = 'stdout'
 STDERR = 'stderr'
 STDIN = 'stdin'
 
+OS_PROCESS_NAME = misc_name_with_formatting(
+    name.an_name(name.Name('OS process',
+                           'OS processes')))
+
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
+EXTERNAL_PROGRAM = misc_name_with_formatting(name.an_name(name.name_with_plural_s('external program')))
 SHELL_COMMAND = name.a_name(name.name_with_plural_s('shell command'))
 SHELL_COMMAND_LINE = name.a_name(name.name_with_plural_s('shell command line'))
 IS_A_SHELL_CMD = ''.join(('is a ', SHELL_COMMAND.singular,

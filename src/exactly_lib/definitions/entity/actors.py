@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NA
 from exactly_lib.definitions.test_case import phase_names
 from . import syntax_elements
 
+
 def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_NAMES,
                                   actor_name)
@@ -24,13 +25,15 @@ COMMAND_LINE_ACTOR = name_and_ref_target(
 
 SOURCE_INTERPRETER_ACTOR = name_and_ref_target(
     'source interpreter',
-    'Treats the {act_phase} phase as source code to be executed by an interpreter'.format(
-        act_phase=phase_names.ACT.syntax)
+    'Treats the {act_phase} phase as source code to be executed by an {interpreter}'.format(
+        act_phase=phase_names.ACT.syntax,
+        interpreter=syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name,
+    )
 )
 
 FILE_INTERPRETER_ACTOR = name_and_ref_target(
     'file interpreter',
-    'Executes a source code file using an interpreter'
+    'Executes a source code file using an ' + syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name
 )
 
 NULL_ACTOR = name_and_ref_target(
@@ -47,9 +50,6 @@ ALL_ACTORS = [
     NULL_ACTOR,
 ]
 
-# Bad to have definition of default value in help package.
-# But do not know where the best place to put it is,
-# so it remains here for some time ...
 DEFAULT_ACTOR = COMMAND_LINE_ACTOR
 
 DEFAULT_ACTOR_SINGLE_LINE_VALUE = (formatting.entity(DEFAULT_ACTOR.singular_name) +

@@ -4,6 +4,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import StringText
 
@@ -104,4 +105,11 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
 INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
     'INTEGER-MATCHER',
     'Matches an integer'
+)
+
+ACT_INTERPRETER_SYNTAX_ELEMENT = name_and_ref_target(
+    'ACT-INTERPRETER',
+    'An interpreter program that executes source code of the {:emphasis} phase'.format(
+        phase_names.ACT
+    )
 )

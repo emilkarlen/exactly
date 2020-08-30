@@ -119,7 +119,7 @@ SYMBOL_CONCEPT_INFO = name_and_ref_target(
 
 ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
     all_entity_types.ACTOR_ENTITY_TYPE_NAMES,
-    _format('Resolves the {action_to_check} by interpreting the contents of the {act} phase.')
+    _format('Resolves the {action_to_check} by reading the contents of the {act} phase.')
 )
 
 ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(

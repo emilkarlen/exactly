@@ -1,4 +1,4 @@
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
@@ -115,7 +115,7 @@ STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
 PROGRAM_TYPE_INFO = name_and_ref_target(
     ValueType.PROGRAM,
     a_name_with_plural_s('program'),
-    'An external program, with optional arguments, and optional transformation of the output.',
+    '{:a/u}, with optional arguments, and optional transformation of the output.'.format(misc_texts.EXTERNAL_PROGRAM),
 )
 
 FILES_CONDITION_TYPE_INFO = name_and_ref_target(

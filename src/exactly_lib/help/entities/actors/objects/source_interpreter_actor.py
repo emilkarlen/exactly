@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -21,7 +21,6 @@ class InterpreterActorDocumentation(ActorDocumentation):
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
         }
         self._parser = TextParser(format_map)
@@ -37,7 +36,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
-            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
+            syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
 
@@ -45,19 +44,11 @@ DOCUMENTATION = InterpreterActorDocumentation()
 
 _MAIN_DESCRIPTION_REST = """\
 The contents of the {phase[act]} phase is stored in a file, and the name of this file is given as
-the last argument to the given interpreter.
-
-If the interpreter is {shell_command:a}, then the quoted file name (according to {shell_syntax_concept}) is appended
-to the end of the command string.
-
-
-The interpreter may be specified, either via the {actor_instruction} instruction
-(both in test cases and test suites),
-or the {actor_option} command line option.
+the last argument to the interpreter.
 """
 
 _ACT_PHASE_CONTENTS = """\
-Source code to be interpreted by the given interpreter.
+Source code to be interpreted by the interpreter.
 """
 
 _ACT_PHASE_CONTENTS_SYNTAX = """\

@@ -2,7 +2,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import for_type_with_grammar
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
-    integer, integer_comparison, shell_command_line
+    integer, integer_comparison, shell_command_line, act_interpreter
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
@@ -25,6 +25,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     type_string.DOCUMENTATION,
     type_list.DOCUMENTATION,
     type_path.DOCUMENTATION,
+    act_interpreter.documentation(),
 
     for_type_with_grammar(syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                           parse_file_matcher.GRAMMAR),

@@ -10,7 +10,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.definitions.entity import concepts, actors
+from exactly_lib.definitions.entity import concepts, actors, syntax_elements
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names, actor as help_texts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
@@ -61,11 +61,13 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
         source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
-        return (self._command_line_invokation_variants() +
-                self._interpreter_actor_invokation_variants(FILE_INTERPRETER_ACTOR,
-                                                            file_interpreter_arg) +
-                self._interpreter_actor_invokation_variants(SOURCE_INTERPRETER_ACTOR,
-                                                            source_interpreter_arg))
+        return (
+            self._command_line_invokation_variant(),
+            self._interpreter_actor_invokation_variant(FILE_INTERPRETER_ACTOR,
+                                                       file_interpreter_arg),
+            self._interpreter_actor_invokation_variant(SOURCE_INTERPRETER_ACTOR,
+                                                       source_interpreter_arg),
+        )
 
     def main_description_rest(self) -> List[ParagraphItem]:
         if self.main_description_rest_un_formatted:
@@ -76,59 +78,37 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         from exactly_lib.definitions.entity.actors import all_actor_cross_refs
         return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target]
+                 syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.cross_reference_target,
+                 ]
                 +
                 all_actor_cross_refs()
                 )
 
-    def _command_line_invokation_variants(self) -> List[InvokationVariant]:
+    def _command_line_invokation_variant(self) -> InvokationVariant:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
                                           a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
-        return [
-            invokation_variant_from_args([MANDATORY_EQ_ARG, command_line_actor_arg],
-                                         self._description_of_command_line()),
-        ]
+        return invokation_variant_from_args([MANDATORY_EQ_ARG, command_line_actor_arg],
+                                            self._description_of_command_line()
+                                            )
 
-    def _interpreter_actor_invokation_variants(self,
-                                               actor: SingularNameAndCrossReferenceId,
-                                               cli_option: a.Single) -> List[InvokationVariant]:
-        shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                              a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
-        command_argument = a.Single(a.Multiplicity.MANDATORY, COMMAND_ARGUMENT)
-        executable_arg = a.Single(a.Multiplicity.MANDATORY, EXECUTABLE_ARGUMENT)
-        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, PROGRAM_ARGUMENT_ARGUMENT)
-        return [
-            invokation_variant_from_args([MANDATORY_EQ_ARG,
-                                          cli_option,
-                                          executable_arg,
-                                          optional_arguments_arg],
-                                         self._description_of_executable_program_interpreter(actor)),
-            invokation_variant_from_args([MANDATORY_EQ_ARG,
-                                          cli_option,
-                                          shell_interpreter_argument,
-                                          command_argument],
-                                         self._description_of_shell_command_interpreter(actor)),
+    def _interpreter_actor_invokation_variant(self,
+                                              actor_w_interpreter: SingularNameAndCrossReferenceId,
+                                              cli_option: a.Single) -> InvokationVariant:
+        return invokation_variant_from_args([MANDATORY_EQ_ARG,
+                                             cli_option,
+                                             syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.single_mandatory,
+                                             ],
+                                            self._description_of_actor_with_interpreter(actor_w_interpreter))
 
-        ]
-
-    def _description_of_file_interpreter(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION_OF_FILE_INTERPRETER, {
-            'interpreter_actor': formatting.entity(FILE_INTERPRETER_ACTOR.singular_name)
-        })
-
-    def _description_of_executable_program_interpreter(self,
-                                                       actor: SingularNameAndCrossReferenceId) -> List[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION_OF_SOURCE_INTERPRETER, {
-            'interpreter_actor': formatting.entity(actor.singular_name)
-        })
-
-    def _description_of_shell_command_interpreter(self, actor: SingularNameAndCrossReferenceId) -> List[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER, {
-            'interpreter_actor': formatting.entity(actor.singular_name)
+    def _description_of_actor_with_interpreter(self,
+                                               actor_w_interpreter: SingularNameAndCrossReferenceId,
+                                               ) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_ACTOR_WITH_INTERPRETER, {
+            'interpreter_actor': formatting.entity(actor_w_interpreter.singular_name)
         })
 
     def _description_of_command_line(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_DESCRIPTION_OF_SHELL)
+        return self._tp.fnap(_DESCRIPTION_OF_COMMAND_LINE)
 
 
 def parse(instruction_argument: str) -> NameAndValue[Actor]:
@@ -196,18 +176,10 @@ def shlex_split(s: str) -> list:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + s)
 
 
-_DESCRIPTION_OF_FILE_INTERPRETER = """\
-Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
+_DESCRIPTION_OF_ACTOR_WITH_INTERPRETER = """\
+Specifies that the {interpreter_actor} {actor} should be used, with the given interpreter.
 """
 
-_DESCRIPTION_OF_SOURCE_INTERPRETER = """\
-Specifies that the {interpreter_actor} {actor} should be used, with an executable program as interpreter.
-"""
-
-_DESCRIPTION_OF_SHELL_COMMAND_SOURCE_INTERPRETER = """\
-Specifies that the {interpreter_actor} {actor} should be used, with a shell command as interpreter.
-"""
-
-_DESCRIPTION_OF_SHELL = """\
+_DESCRIPTION_OF_COMMAND_LINE = """\
 Specifies that the {command_line_actor} {actor} should be used.
 """
