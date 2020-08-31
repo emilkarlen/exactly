@@ -3,11 +3,11 @@ from contextlib import contextmanager
 from typing import List, ContextManager
 
 from exactly_lib.actors.program import actor as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.program.test_resources import ConfigurationWithPythonProgramBase
 from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_file_rel_hds_act as single_file_rel_home
+    test_validation_for_single_file_rel_hds_act as single_file_rel_home, relativity_configurations
 from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
@@ -18,7 +18,6 @@ from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathD
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
@@ -74,8 +73,8 @@ class TestValidationErrorPreSds(unittest.TestCase):
             instr([executable_file_name])
         ]
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT,
-                                     fs.DirContents([File.empty(executable_file_name)]))
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([File.empty(executable_file_name)]))
         )
         expectation = Expectation(
             validation=pre_sds_validation_fails__svh()
@@ -94,11 +93,12 @@ class TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments(unittest
             instr(['system-under-test first-argument "quoted argument"'])
         ]
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    'system-under-test',
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])))
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        'system-under-test',
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])))
         expected_output = lines_content(['first-argument',
                                          'quoted argument'])
         expectation = Expectation(
@@ -132,11 +132,12 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    executable,
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        executable,
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])),
             symbol_table=list_symbol.symbol_table
         )
 
@@ -168,11 +169,12 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    executable,
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        executable,
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])),
             symbol_table=symbol.symbol_table
         )
 
@@ -203,11 +205,12 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    symbol_for_executable.str_value,
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        symbol_for_executable.str_value,
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])),
             symbol_table=symbol_for_executable.symbol_table
         )
 
@@ -241,11 +244,12 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    symbol_for_executable.str_value,
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        symbol_for_executable.str_value,
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])),
             symbol_table=SymbolContext.symbol_table_of_contexts([
                 symbol_for_executable,
                 argument_symbol,
@@ -294,9 +298,11 @@ class TestSymbolUsages(unittest.TestCase):
             PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.Dir(sub_dir_of_home, [executable_file])
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.Dir(sub_dir_of_home, [executable_file])
+                ])
+            ),
             symbol_table=SymbolContext.symbol_table_of_contexts([
                 dir_symbol,
                 executable_file_name_symbol,
@@ -333,11 +339,13 @@ class TestSymbolUsages(unittest.TestCase):
         )
 
         arrangement = Arrangement(
-            hds_contents=contents_in(RelHdsOptionType.REL_HDS_ACT, fs.DirContents([
-                fs.python_executable_file(
-                    executable_file_name,
-                    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
-            ])),
+            hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                fs.DirContents([
+                    fs.python_executable_file(
+                        executable_file_name,
+                        PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                ])
+            ),
             symbol_table=symbol.symbol_table
         )
 
@@ -347,8 +355,10 @@ class TestSymbolUsages(unittest.TestCase):
             ),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(
-                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                      'CLI arguments, one per line'))
+                sub_process_result_from_execute=pr.stdout(
+                    asrt.Equals(expected_output,
+                                'CLI arguments, one per line')
+                )
             ),
         )
         check_execution(self,

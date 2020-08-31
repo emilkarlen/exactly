@@ -2,7 +2,7 @@ import os
 import unittest
 from typing import Optional
 
-from exactly_lib.actors.source_interpreter import python3
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut

@@ -2,7 +2,7 @@ import pathlib
 from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.data import path_part_sdvs
+from exactly_lib.symbol.data import path_part_sdvs, path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.path_sdv_impls import path_rel_symbol
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
@@ -199,6 +199,9 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     @property
     def value(self) -> PathSymbolValueContext:
         return self._value
+
+    def reference_sdv__path_or_string(self, default_relativity: RelOptionType) -> PathSdv:
+        return path_sdvs.reference(self.reference__path_or_string, path_part_sdvs.empty(), default_relativity)
 
     @property
     def reference__path(self) -> SymbolReference:

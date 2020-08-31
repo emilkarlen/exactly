@@ -3,7 +3,7 @@ import pathlib
 import shutil
 import unittest
 
-from exactly_lib.actors.source_interpreter import python3
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues

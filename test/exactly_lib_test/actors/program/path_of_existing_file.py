@@ -1,13 +1,13 @@
 import unittest
 
 from exactly_lib.actors.program import actor as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.actors.test_resources import integration_check
+from exactly_lib_test.actors.test_resources import relativity_configurations
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -19,14 +19,13 @@ from exactly_lib_test.util.test_resources import py_program
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestDefaultRelativityOfExistingPath(),
+        TestValidationErrorWhenExecutableFileDoesNotExist(),
     ])
 
 
 class TestDefaultRelativityOfExistingPath(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-
-        expected_default_relativity_of_existing_file = RelHdsOptionType.REL_HDS_CASE
 
         result = SubProcessResult(
             exitcode=5,
@@ -48,10 +47,8 @@ class TestDefaultRelativityOfExistingPath(unittest.TestCase):
             sut.actor(),
             [instr(source_w_relative_name_of_existing_file.as_arguments.lines)],
             Arrangement(
-                hds_contents=hds_populators.contents_in(
-                    expected_default_relativity_of_existing_file,
-                    DirContents([py_file]),
-                )
+                hds_contents=relativity_configurations.PROGRAM_FILE.populator_for_relativity_option_root__hds(
+                    DirContents([py_file]))
             ),
             Expectation(
                 execute=asrt_eh.is_exit_code(result.exitcode),
@@ -62,5 +59,24 @@ class TestDefaultRelativityOfExistingPath(unittest.TestCase):
                         stderr=asrt.equals(result.stderr),
                     )
                 )
+            ),
+        )
+
+
+class TestValidationErrorWhenExecutableFileDoesNotExist(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+
+        source_w_relative_name_of_existing_file = args.interpret_py_source_file('program.py')
+
+        # ACT & ASSERT #
+
+        integration_check.check_execution(
+            self,
+            sut.actor(),
+            [instr(source_w_relative_name_of_existing_file.as_arguments.lines)],
+            Arrangement(),
+            Expectation(
+                validation=pre_sds_validation_fails__svh()
             ),
         )

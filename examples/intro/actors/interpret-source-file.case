@@ -1,14 +1,18 @@
 [conf]
 
-actor = -file python
+actor = -file % python
 
 [act]
 
-src/my-source-file.py
+src/my-source-file.py arg1 "arg 2"
 
 [assert]
 
 stdout equals
 <<-
 I am a source file
+
+I was given
+ * arg1
+ * arg 2
 -

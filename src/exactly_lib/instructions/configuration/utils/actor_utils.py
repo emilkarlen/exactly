@@ -1,8 +1,8 @@
-from typing import List, Sequence
+from typing import List, Sequence, Dict, Callable
 
 from exactly_lib.actors import file_interpreter
-from exactly_lib.actors import source_interpreter
-from exactly_lib.actors.program import actor
+from exactly_lib.actors.program import actor as program_actor
+from exactly_lib.actors.source_interpreter import actor
 from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
@@ -14,11 +14,11 @@ from exactly_lib.definitions.entity import concepts, actors, syntax_elements
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -34,19 +34,18 @@ FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
 
 
 class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
-    def __init__(self, name: str,
-                 single_line_description_un_formatted: str,
-                 main_description_rest_un_formatted: str = None):
-        self.single_line_description_un_formatted = single_line_description_un_formatted
-        self.main_description_rest_un_formatted = main_description_rest_un_formatted
+    def __init__(self, name: str):
         super().__init__(name, {
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': phase_names.ACT.emphasis,
-            'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR)
+            'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR),
+            'ACT_INTERPRETER': syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+            'setup': phase_names.SETUP,
         })
 
     def single_line_description(self) -> str:
-        return self._tp.format(self.single_line_description_un_formatted)
+        return self._tp.format(_SINGLE_LINE_DESCRIPTION)
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
@@ -61,10 +60,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         )
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        if self.main_description_rest_un_formatted:
-            return self._tp.fnap(self.main_description_rest_un_formatted)
-        else:
-            return []
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         from exactly_lib.definitions.entity.actors import all_actor_cross_refs
@@ -102,47 +98,56 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.fnap(_DESCRIPTION_OF_COMMAND_LINE)
 
 
-def parse(instruction_argument: str) -> NameAndValue[Actor]:
-    """
-    :raises SingleInstructionInvalidArgumentException In case of invalid syntax
-    """
-    arg = instruction_argument.strip()
-    if not arg:
-        raise SingleInstructionInvalidArgumentException('An actor must be given')
-    try:
-        args = arg.split(maxsplit=2)
-    except Exception as ex:
-        raise SingleInstructionInvalidArgumentException(str(ex))
-    if args[0] != instruction_arguments.ASSIGNMENT_OPERATOR:
-        raise SingleInstructionInvalidArgumentException('Missing ' +
-                                                        instruction_arguments.ASSIGNMENT_OPERATOR)
-    del args[0]
-    if not args:
-        raise SingleInstructionInvalidArgumentException('Missing arguments after ' +
-                                                        instruction_arguments.ASSIGNMENT_OPERATOR)
-    if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
-        if len(args) > 1:
-            raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])
-        return NameAndValue(actors.COMMAND_LINE_ACTOR.singular_name,
-                            actor.actor())
-    if len(args) == 1:
-        raise SingleInstructionInvalidArgumentException('Missing file argument for ' + args[0])
-    if matches(SOURCE_INTERPRETER_OPTION_NAME, args[0]):
-        return NameAndValue(actors.SOURCE_INTERPRETER_ACTOR.singular_name,
-                            _parse_source_interpreter(args[1]))
-    if matches(FILE_INTERPRETER_OPTION_NAME, args[0]):
-        return NameAndValue(actors.FILE_INTERPRETER_ACTOR.singular_name,
-                            _parse_file_interpreter(args[1]))
-    raise SingleInstructionInvalidArgumentException('Invalid option: "{}"'.format(args[0]))
+def parse(source: ParseSource) -> NameAndValue[Actor]:
+    with token_stream_parser.from_parse_source(source,
+                                               consume_last_line_if_is_at_eol_after_parse=True) as token_parser:
+        return _parse_from_token_parser(token_parser)
 
 
-def _parse_source_interpreter(arg: str) -> Actor:
-    return source_interpreter.actor(parse_act_interpreter.parse(arg))
+def _parse_from_token_parser(token_parser: TokenParser) -> NameAndValue[Actor]:
+    token_parser.consume_mandatory_keyword(instruction_arguments.ASSIGNMENT_OPERATOR, False)
+    ret_val = token_parser.parse_mandatory_command(_actor_parsers_setup(),
+                                                   concepts.ACTOR_CONCEPT_INFO.singular_name.upper())
+    token_parser.report_superfluous_arguments_if_not_at_eol()
+    return ret_val
 
 
-def _parse_file_interpreter(arg: str) -> Actor:
-    return file_interpreter.actor(parse_act_interpreter.parse(arg))
+def _actor_parsers_setup() -> Dict[str, Callable[[TokenParser], NameAndValue[Actor]]]:
+    return {
+        COMMAND_LINE_ACTOR_OPTION: _parse_command_line_actor,
 
+        FILE_INTERPRETER_OPTION: _parse_file_actor,
+
+        SOURCE_INTERPRETER_OPTION: _parse_source_actor,
+    }
+
+
+def _parse_command_line_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
+    return NameAndValue(actors.COMMAND_LINE_ACTOR.singular_name,
+                        program_actor.actor())
+
+
+def _parse_file_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
+    act_interpreter = parse_act_interpreter.parser().parse_from_token_parser(token_parser)
+    return NameAndValue(actors.FILE_INTERPRETER_ACTOR.singular_name,
+                        file_interpreter.actor(act_interpreter))
+
+
+def _parse_source_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
+    act_interpreter = parse_act_interpreter.parser().parse_from_token_parser(token_parser)
+    return NameAndValue(actors.SOURCE_INTERPRETER_ACTOR.singular_name,
+                        actor.actor(act_interpreter))
+
+
+_SINGLE_LINE_DESCRIPTION = 'Specifies the {actor} that will execute the {act_phase} phase'
+
+_MAIN_DESCRIPTION_REST = """\
+The {actor} specified by this instruction has precedence over all other ways
+to specify the actor.
+
+
+{ACT_INTERPRETER} may reference {symbol:s} defined in the {setup:emphasis} phase.
+"""
 
 _DESCRIPTION_OF_ACTOR_WITH_INTERPRETER = """\
 Specifies that the {interpreter_actor} {actor} should be used, with the given interpreter.

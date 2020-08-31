@@ -21,7 +21,7 @@ class _PreprocessorConcept(ConceptDocumentation):
         tp = TextParser({
             'the_concept': formatting.concept(self.name().singular),
             'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
-            'is_a_shell_cmd': misc_texts.IS_A_SHELL_CMD,
+            'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
             'exit_code': misc_texts.EXIT_CODE,
         })
         return from_simple_description(
@@ -41,10 +41,10 @@ class _PreprocessorConcept(ConceptDocumentation):
 PREPROCESSOR_CONCEPT = _PreprocessorConcept()
 
 _DESCRIPTION_REST = """\
-A {the_concept} {is_a_shell_cmd}
+A {the_concept} {is_a_system_cmd}
 
 
-When executed, it is given a single (additional) argument: the name of the test case file to transform.
+When executed, it is given a single (additional) argument: the path of the test case file to transform.
 
 
 The result of the transformation is the output on stdout.

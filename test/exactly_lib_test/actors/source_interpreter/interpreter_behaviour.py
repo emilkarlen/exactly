@@ -3,33 +3,31 @@ import unittest
 from contextlib import contextmanager
 from typing import List, ContextManager
 
-from exactly_lib.actors.source_interpreter import executable_file as sut, python3
-from exactly_lib.actors.source_interpreter.source_file_management import SourceFileManager, \
-    SourceInterpreterSetup
-from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
-from exactly_lib_test.actors.source_interpreter import common_tests
+from exactly_lib.actors.source_interpreter import actor as sut
+from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
+from exactly_lib.test_case_utils.program.command import command_sdvs
+from exactly_lib.type_system.data import paths
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution
-from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.util.test_resources import py_program
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
-        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
-
-        common_tests.suite_for(sut.actor(python3.source_interpreter_setup()),
-                               is_shell=False),
+        unittest.makeSuite(TestValidationErrorWhenInterpreterDoesNotExist),
     ])
 
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        actor = sut.actor(python3.source_interpreter_setup())
+        actor = sut.actor(python3.python_command())
         super().__init__(actor)
 
     def program_that_exits_with_code(self,
@@ -67,28 +65,25 @@ def _instructions_for(py_statements: List[str]) -> ContextManager[TestCaseSource
     )
 
 
-class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
+class TestValidationErrorWhenInterpreterDoesNotExist(unittest.TestCase):
     def runTest(self):
-        language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        actor = sut.actor(language_setup)
+        actor = sut.actor(_command_for_non_existing_interpreter())
         empty_source = []
         check_execution(self,
                         actor,
                         empty_source,
                         Arrangement(),
                         Expectation(
-                            execute=eh_assertions.is_hard_error)
+                            validation=pre_sds_validation_fails__svh()
+                        )
                         )
 
 
-class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> ProgramAndArguments:
-        interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
-        return ProgramAndArguments(str(interpreter_path),
-                                   [script_file_name])
-
-    def base_name_from_stem(self, stem: str) -> str:
-        return stem + '.src'
+def _command_for_non_existing_interpreter() -> CommandSdv:
+    interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
+    return command_sdvs.for_executable_file(
+        path_sdvs.constant(paths.absolute_path(interpreter_path))
+    )
 
 
 if __name__ == '__main__':

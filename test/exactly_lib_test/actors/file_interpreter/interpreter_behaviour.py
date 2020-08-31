@@ -1,16 +1,13 @@
 import pathlib
-import sys
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.program.process_execution.commands import executable_file_command
 from exactly_lib.util.str_.misc_formatting import lines_content
-from exactly_lib_test.actors.file_interpreter import common_tests
-from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase
+from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase, \
+    COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
@@ -20,6 +17,7 @@ from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpe
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
@@ -28,17 +26,12 @@ from exactly_lib_test.test_case_file_structure.test_resources.hds_populators imp
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
-from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes, surrounded_by_soft_quotes
-
-COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(
-    paths.absolute_file_name(sys.executable).value_when_no_dir_dependencies__d(),
-    []
-)
 
 
 class TheConfiguration(TheConfigurationBase):
@@ -52,8 +45,6 @@ def suite() -> unittest.TestSuite:
 
     tests.append(suite_for(the_configuration))
     tests.append(suite_for_execution(the_configuration))
-
-    tests.append(common_tests.suite_for(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
 
     return unittest.TestSuite(tests)
 
@@ -159,13 +150,6 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                 os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
             )
         )
-        expectation = integration_check.Expectation()
-        # ACT #
-        integration_check.check_execution(self,
-                                          self.configuration.actor,
-                                          act_phase_instructions,
-                                          arrangement, expectation)
-        # ASSERT #
         expected_command = asrt_command.matches_command(
             driver=asrt_command.matches_executable_file_command_driver(asrt.anything_goes()),
             arguments=asrt.matches_sequence([
@@ -175,11 +159,16 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
                 asrt.equals(arg_3),
             ])
         )
-        expected_command.apply_with_message(
-            self,
-            executor_that_records_arguments.command,
-            'command',
+        expectation = integration_check.Expectation(
+            after_execution=ExecutedCommandAssertion(executor_that_records_arguments,
+                                                     lambda tcds: expected_command)
         )
+        # ACT & ASSERT #
+        integration_check.check_execution(self,
+                                          self.configuration.actor,
+                                          act_phase_instructions,
+                                          arrangement,
+                                          expectation)
 
 
 class TestSymbolUsages(unittest.TestCase):
@@ -210,8 +199,8 @@ class TestSymbolUsages(unittest.TestCase):
             ),
             execute=eh_assertions.is_exit_code(0),
             post_sds=PostSdsExpectation.constant(
-                sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
-                                                                      'CLI arguments, one per line'))
+                sub_process_result_from_execute=asrt_pr.stdout(asrt.Equals(expected_output,
+                                                                           'CLI arguments, one per line'))
             ),
         )
         integration_check.check_execution(self,

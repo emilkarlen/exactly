@@ -9,7 +9,6 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, Refer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.type_system.value_type import ValueType, DataValueType
-from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
     asrt_rest
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as asrt_value
@@ -114,7 +113,7 @@ class StringSymbolValueContext(DataSymbolValueContext[StringSdv]):
                                             ) -> ValueAssertion[SymbolReference]:
         return asrt_sym_ref.matches_reference_2(
             symbol_name,
-            concrete_restriction_assertion.equals_data_type_reference_restrictions(
+            asrt_rest.equals_data_type_reference_restrictions(
                 parse_path.path_or_string_reference_restrictions(
                     accepted_relativities)
             )

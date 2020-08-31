@@ -4,7 +4,7 @@ import shutil
 import unittest
 from typing import Dict, Optional
 
-from exactly_lib.actors.source_interpreter import python3
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult

@@ -8,7 +8,7 @@ from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.common.argument_parsing_of_actor import \
     resolve_actor_from_argparse_argument
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO
@@ -121,11 +121,10 @@ def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
                          default=False,
                          action="store_true",
                          help=TEXT_PARSER.format(EXECUTING_ACT_PHASE_OPTION_DESCRIPTION))
-    ret_val.add_argument(short_and_long_option_syntax.long_syntax(
-        common_opts.OPTION_FOR_ACTOR__LONG),
-        metavar=common_opts.ACTOR_OPTION_ARGUMENT,
-        nargs=1,
-        help=TEXT_PARSER.format(ACTOR_OPTION_DESCRIPTION))
+    ret_val.add_argument(short_and_long_option_syntax.long_syntax(common_opts.OPTION_FOR_ACTOR__LONG),
+                         metavar=common_opts.ACTOR_OPTION_ARGUMENT,
+                         nargs=1,
+                         help=TEXT_PARSER.format(ACTOR_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_SUITE__LONG),
                          metavar=opt.SUITE_OPTION_METAVAR,
                          nargs=1,
@@ -149,13 +148,19 @@ ACTOR_OPTION_DESCRIPTION = """\
 Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
 
 
-{interpreter_program} {is_a_shell_cmd}
+{interpreter_program} {is_a_system_cmd}
 
 
 Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.
 """
 
+PREPROCESSOR_OPTION_DESCRIPTION = """\
+{concept_single_line_description}.
+
+
+{preprocessor} {is_a_system_cmd}
+"""
 SUITE_OPTION_DESCRIPTION = """\
 Runs the test case as if it were part of the given suite.
 
@@ -186,13 +191,6 @@ If execution of the test case cannot be started (due to invalid syntax, e.g.),
 then nothing is output on stdout.
 """
 
-PREPROCESSOR_OPTION_DESCRIPTION = """\
-{concept_single_line_description}.
-
-
-{preprocessor} {is_a_shell_cmd}
-"""
-
 TEXT_PARSER = TextParser({
     'phase': PHASE_NAME_DICTIONARY,
     'preprocessor': opt.PREPROCESSOR_OPTION_ARGUMENT,
@@ -202,6 +200,7 @@ TEXT_PARSER = TextParser({
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
+    'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
     'concept_single_line_description': concepts.PREPROCESSOR_CONCEPT_INFO.single_line_description_str,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })

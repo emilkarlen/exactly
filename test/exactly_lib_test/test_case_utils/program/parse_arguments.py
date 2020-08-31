@@ -31,6 +31,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources import arguments_buil
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line
+from exactly_lib_test.test_case_utils.program.test_resources.command_cmd_line_args import \
+    remaining_part_of_current_line_as_literal
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
@@ -171,9 +173,9 @@ class TestSingleElement(unittest.TestCase):
 
         cases = [
             Case('string with one space after marker, and no space at EOL',
-                 ' '.join([
-                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                     str_with_space_and_invalid_token_syntax]),
+                 remaining_part_of_current_line_as_literal(
+                     str_with_space_and_invalid_token_syntax
+                 ).as_str,
                  ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
@@ -181,9 +183,9 @@ class TestSingleElement(unittest.TestCase):
                      references=asrt.is_empty_sequence,
                  )),
             Case('with surrounding space',
-                 ' '.join([
-                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                     '   ' + str_with_space_and_invalid_token_syntax + '  \t ']),
+                 remaining_part_of_current_line_as_literal(
+                     '   ' + str_with_space_and_invalid_token_syntax + '  \t '
+                 ).as_str,
                  ARRANGEMENT__NEUTRAL,
                  Expectation(
                      elements=[list_sdvs.str_element(str_with_space_and_invalid_token_syntax)],
@@ -191,11 +193,11 @@ class TestSingleElement(unittest.TestCase):
                      references=asrt.is_empty_sequence,
                  )),
             Case('with symbol reference',
-                 ' '.join([
-                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                 remaining_part_of_current_line_as_literal(
                      ''.join(['before',
                               symbol_reference_syntax_for_name(symbol_name),
-                              'after'])]),
+                              'after'])
+                 ).as_str,
                  Arrangement(
                      StringSymbolContext.of_arbitrary_value(symbol_name).symbol_table),
                  Expectation(

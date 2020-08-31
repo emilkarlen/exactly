@@ -9,11 +9,19 @@ with exception of a "0." prefix until version 1 is released.
 
 ### Added
 
+ - Interpreter actors - interpreter `% STRING [PROGRAM-ARGUMENT]...`
+ - Interpreter actors - interpreter `-python [PROGRAM-ARGUMENT]...`
+
 ### Changed
 
  - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parenthesis)
  - Syntax of type expressions - Precedences of `||` and `&&`
- 
+ - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
+
+### Removed
+
+ - Interpreter actors - interpreter `$ SHELL-COMMAND`
+
 ### Fixed
 
  - Syntax error messages - Include instruction name

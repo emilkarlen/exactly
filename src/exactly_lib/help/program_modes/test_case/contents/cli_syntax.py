@@ -5,10 +5,12 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
+from exactly_lib.definitions import conf_params
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
 from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
+from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_suite import file_names, instruction_names, section_infos
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.common.cli_syntax import PREPROCESSOR_OPTION, SUITE_OPTION, \
@@ -77,9 +79,22 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.ACTOR_OPTION_DESCRIPTION),
             see_also_items=see_also_items_from_cross_refs([
                 ACTOR_CONCEPT_INFO.cross_reference_target,
-                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
+                phase_infos.CONFIGURATION.instruction_cross_reference_target(conf_params.ACTOR),
+                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             ]),
         )
+
+    def _preprocessor_argument(self) -> cli_syntax.DescribedArgument:
+        return cli_syntax.DescribedArgument(
+            PREPROCESSOR_OPTION,
+            argument_parsing.TEXT_PARSER.fnap(argument_parsing.PREPROCESSOR_OPTION_DESCRIPTION),
+            see_also_items=see_also_items_from_cross_refs([
+                PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
+                section_infos.CONFIGURATION.instruction_cross_reference_target(
+                    instruction_names.INSTRUCTION_NAME__PREPROCESSOR),
+                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
+            ]
+            ))
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
@@ -95,18 +110,6 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _EXECUTING_ACT_PHASE_OPTION,
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.EXECUTING_ACT_PHASE_OPTION_DESCRIPTION),
         )
-
-    def _preprocessor_argument(self) -> cli_syntax.DescribedArgument:
-        return cli_syntax.DescribedArgument(
-            PREPROCESSOR_OPTION,
-            argument_parsing.TEXT_PARSER.fnap(argument_parsing.PREPROCESSOR_OPTION_DESCRIPTION),
-            see_also_items=see_also_items_from_cross_refs([
-                PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
-                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-                section_infos.CONFIGURATION.instruction_cross_reference_target(
-                    instruction_names.INSTRUCTION_NAME__PREPROCESSOR),
-            ]
-            ))
 
     def _suite_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(

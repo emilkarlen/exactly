@@ -107,6 +107,12 @@ INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
     'Matches an integer'
 )
 
+PROGRAM_ARGUMENT_SYNTAX_ELEMENT = name_and_ref_target(
+    'PROGRAM-ARGUMENT',
+    'An individual string, or a list of strings, '
+    'with additional features for text-until-end-of-line and references to existing files',
+)
+
 ACT_INTERPRETER_SYNTAX_ELEMENT = name_and_ref_target(
     'ACT-INTERPRETER',
     'An interpreter program that executes source code of the {:emphasis} phase'.format(

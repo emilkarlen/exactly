@@ -12,7 +12,7 @@ OPTION_FOR_EXECUTING_ACT_PHASE = short_and_long_option_syntax.long_syntax(OPTION
 OPTION_FOR_PREPROCESSOR__LONG = 'preprocessor'
 OPTION_FOR_PREPROCESSOR = short_and_long_option_syntax.long_syntax(OPTION_FOR_PREPROCESSOR__LONG)
 
-PREPROCESSOR_OPTION_ARGUMENT = common_cli_options.SHELL_COMMAND
+PREPROCESSOR_OPTION_ARGUMENT = common_cli_options.SYSTEM_COMMAND
 
 OPTION_FOR_SUITE__LONG = 'suite'
 OPTION_FOR_SUITE = short_and_long_option_syntax.long_syntax(OPTION_FOR_SUITE__LONG)

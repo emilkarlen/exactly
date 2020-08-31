@@ -1,40 +1,31 @@
+from typing import Sequence
+
+from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
-from exactly_lib.definitions import misc_texts, formatting, instruction_arguments
+from exactly_lib.definitions import misc_texts, formatting
+from exactly_lib.definitions.argument_rendering import path_syntax
+from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.entity import syntax_elements, concepts
-from exactly_lib.definitions.test_case import actor as help_texts
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation, \
     SyntaxElementDocumentation
-from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
+from exactly_lib.help.entities.utils import programs
+from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-_TEXT_PARSER = TextParser({
-    'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
-    'shell_cmd_line': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND_LINE),
-    'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-    'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
-    'external_program': misc_texts.EXTERNAL_PROGRAM,
-})
-
-SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = SHELL_KEYWORD
-PROGRAM_ARGUMENT_ARGUMENT = a.Named(help_texts.ARGUMENT)
-COMMAND_ARGUMENT = a.Constant(help_texts.COMMAND)
 
 
 def documentation() -> SyntaxElementDocumentation:
-    shell_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                          a.Constant(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD))
-    command_argument = a.Single(a.Multiplicity.MANDATORY, instruction_arguments.COMMAND_ARGUMENT)
     executable_arg = syntax_elements.PATH_SYNTAX_ELEMENT.single_mandatory
-    optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, PROGRAM_ARGUMENT_ARGUMENT)
+    optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE,
+                                      syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.argument)
     invokation_variants = [
         invokation_variant_from_args([executable_arg,
                                       optional_arguments_arg],
-                                     _TEXT_PARSER.fnap(_EXECUTABLE_FILE__DESCRIPTION)),
-        invokation_variant_from_args([shell_interpreter_argument,
-                                      command_argument],
-                                     _TEXT_PARSER.fnap(_SHELL_COMMAND__DESCRIPTION)),
-
+                                     _executable_file_description()),
+        programs.system_program([optional_arguments_arg]),
+        programs.python_interpreter([optional_arguments_arg]),
     ]
     return syntax_element_documentation(
         None,
@@ -43,30 +34,35 @@ def documentation() -> SyntaxElementDocumentation:
         (),
         invokation_variants,
         [],
-        [
-            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
-            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-        ],
+        name_and_cross_ref.cross_reference_id_list([
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+            syntax_elements.STRING_SYNTAX_ELEMENT,
+            syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT,
+        ]),
     )
 
+
+def _executable_file_description() -> Sequence[ParagraphItem]:
+    return rel_path_doc.path_element_relativity_paragraphs(
+        parse_act_interpreter.EXE_FILE_RELATIVITIES.options,
+        _TEXT_PARSER.paras(path_syntax.the_path_of('{executable_file:a}.')),
+    )
+
+
+_TEXT_PARSER = TextParser({
+    'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
+    'external_program': misc_texts.EXTERNAL_PROGRAM,
+    'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
+    'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+    'setup_phase': phase_names.SETUP,
+})
 
 _MAIN__DESCRIPTION = """\
 {external_program:a/u} that interprets a source code file, who's path is given as a command line argument.
 
 
 When the program is applied, the path of the source code file is added as the last argument.
-"""
-_EXECUTABLE_FILE__DESCRIPTION = """\
-{executable_file:a/u} with arguments.
 
 
-The {PATH} of the file to interpret is given as an additional last argument.
-"""
-
-_SHELL_COMMAND__DESCRIPTION = """\
-{shell_cmd_line:a/u}.
-
-
-The {PATH} of file to interpret (quoted according to {shell_syntax_concept}) is appended
-to the end of the command string.
+Referenced {symbol:s} must have been defined in the {setup_phase:emphasis} phase.
 """

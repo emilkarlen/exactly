@@ -169,7 +169,7 @@ E.g. executable program files, source code files and {shell_command:s}.
 
 
 The {actor}
-interprets the contents of the {act} phase,
+reads the contents of the {act} phase,
 and thereby resolves the {ATC}.
 
 
@@ -189,11 +189,11 @@ An {ATC} that is a Python source file, executed with arguments:
 ```
 [conf]
 
-actor = -file python
+actor = -file % python
 
 [act]
 
-my-python-logic_symbol_utils.py argument1 "second argument"
+my-python-program.py argument1 "second argument"
 ```
 
 

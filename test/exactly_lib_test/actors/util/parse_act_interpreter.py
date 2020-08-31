@@ -10,6 +10,9 @@ from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
+from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \
+    asrt_rest
+from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.sdv_assertions import matches_sdv
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
@@ -21,9 +24,9 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -33,6 +36,105 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quot
 
 def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestWithoutExecution)
+
+
+class TestWithoutExecution(unittest.TestCase):
+    TCDS = fake_tcds()
+    PARSER = sut.parser()
+
+    def test_without_arguments(self):
+        # ARRANGE #
+        command_cases = _single_line_command_cases()
+        for command_case in command_cases:
+            expected_command_sdv = command_case.sdv_assertion(self.TCDS,
+                                                              arguments=asrt.is_empty_sequence)
+            for source_case in equivalent_source_variants_for_consume_until_end_of_last_line2(
+                    command_case.source.as_arguments):
+                with self.subTest(command=command_case.name,
+                                  following_source_variant=source_case.name):
+                    # ACT #
+                    actual = self.PARSER.parse(command_case.source.as_remaining_source)
+                    # ASSERT #
+                    expected_command_sdv.apply_without_message(self, actual)
+
+    def test_with_arguments(self):
+        arg_wo_space = 'arg_wo_space'
+        arg_w_space = 'an arg w space'
+        arg_w_space__src = surrounded_by_soft_quotes(arg_w_space)
+        string_symbol = StringConstantSymbolContext(
+            'STRING_SYMBOL',
+            'the string value',
+            default_restrictions=asrt_rest.is_any_data_type_reference_restrictions(),
+        )
+        list_symbol = ListConstantSymbolContext(
+            'LIST_SYMBOL',
+            ['1st value', '2nd value'],
+        )
+        string_with_invalid_quoting = '"string without ending soft quote'
+        arguments_cases = [
+            ArgumentsCase(
+                'one',
+                source=ArgumentElements([arg_w_space__src]),
+                expected_arguments=[arg_w_space],
+            ),
+            ArgumentsCase(
+                'two',
+                source=ArgumentElements([arg_wo_space, arg_w_space__src]),
+                expected_arguments=[arg_wo_space, arg_w_space],
+            ),
+            ArgumentsCase(
+                'string symbol reference',
+                source=ArgumentElements([string_symbol.name__sym_ref_syntax]),
+                expected_arguments=[string_symbol.str_value],
+                symbols=[string_symbol],
+            ),
+            ArgumentsCase(
+                'list symbol reference',
+                source=ArgumentElements([list_symbol.name__sym_ref_syntax]),
+                expected_arguments=list_symbol.constant_list,
+                symbols=[list_symbol],
+            ),
+            ArgumentsCase(
+                'list and string symbol reference',
+                source=ArgumentElements([list_symbol.name__sym_ref_syntax,
+                                         string_symbol.name__sym_ref_syntax]),
+                expected_arguments=list_symbol.constant_list + [string_symbol.str_value],
+                symbols=[list_symbol, string_symbol],
+            ),
+            ArgumentsCase(
+                'special program argument',
+                source=command_cmd_line_args.remaining_part_of_current_line_as_literal(
+                    string_with_invalid_quoting
+                ).as_argument_elements,
+                expected_arguments=[string_with_invalid_quoting],
+                symbols=[],
+            ),
+        ]
+        # ARRANGE #
+        command_cases = _single_line_command_cases()
+        for command_case in command_cases:
+            for arguments_case in arguments_cases:
+                source_w_arguments = (
+                    command_case.source.as_argument_elements
+                        .followed_by(arguments_case.source)
+                        .as_arguments
+                )
+                expected_arguments = asrt.matches_sequence([
+                    asrt.equals(arg)
+                    for arg in arguments_case.expected_arguments
+                ])
+                expected_command_sdv = command_case.sdv_assertion(self.TCDS,
+                                                                  arguments=expected_arguments,
+                                                                  arguments_symbols=arguments_case.symbols)
+                for source_case in equivalent_source_variants_for_consume_until_end_of_last_line2(source_w_arguments):
+                    with self.subTest(command=command_case.name,
+                                      arguments=arguments_case.name,
+                                      following_source_variant=source_case.name):
+                        # ACT #
+                        actual = self.PARSER.parse(source_case.input_value)
+                        # ASSERT #
+                        source_case.expected_value.apply_with_message(self, source_case.input_value, 'source')
+                        expected_command_sdv.apply_with_message(self, actual, 'command')
 
 
 class Case:
@@ -50,15 +152,17 @@ class Case:
     def sdv_assertion(self,
                       tcds: Tcds,
                       arguments: ValueAssertion[Sequence[str]],
+                      arguments_symbols: Sequence[SymbolContext] = (),
                       ) -> ValueAssertion[SymbolDependentValue]:
         expected_command = asrt_command.matches_command(
             driver=self.expected_command_driver(tcds),
             arguments=arguments
         )
+        symbols = tuple(self.symbols) + tuple(arguments_symbols)
         return matches_sdv(
             asrt.is_instance(CommandSdv),
-            symbols=SymbolContext.symbol_table_of_contexts(self.symbols),
-            references=SymbolContext.references_assertion_of_contexts(self.symbols),
+            symbols=SymbolContext.symbol_table_of_contexts(symbols),
+            references=SymbolContext.references_assertion_of_contexts(symbols),
             resolved_value=asrt.is_instance_with(
                 CommandDdv,
                 matches_dir_dependent_value(
@@ -68,68 +172,7 @@ class Case:
         )
 
 
-class TestWithoutExecution(unittest.TestCase):
-    TCDS = fake_tcds()
-    PARSER = sut.parser()
-
-    def test_without_arguments(self):
-        # ARRANGE #
-        command_cases = _single_line_command_cases__w_argument_list()
-        for command_case in command_cases:
-            expected_command_sdv = command_case.sdv_assertion(self.TCDS,
-                                                              arguments=asrt.is_empty_sequence)
-            for source_case in equivalent_source_variants_for_consume_until_end_of_last_line2(
-                    command_case.source.as_arguments):
-                with self.subTest(command=command_case.name,
-                                  following_source_variant=source_case.name):
-                    # ACT #
-                    actual = self.PARSER.parse(command_case.source.as_remaining_source)
-                    # ASSERT #
-                    expected_command_sdv.apply_without_message(self, actual)
-
-    def test_with_arguments(self):
-        arg_wo_space = 'arg_wo_space'
-        arg_w_space = 'an arg w space'
-        arg_w_space__src = surrounded_by_soft_quotes(arg_w_space)
-        arguments_cases = [
-            NIE(
-                'one',
-                input_value=ArgumentElements([arg_w_space__src]),
-                expected_value=[arg_w_space],
-            ),
-            NIE(
-                'two',
-                input_value=ArgumentElements([arg_wo_space, arg_w_space__src]),
-                expected_value=[arg_wo_space, arg_w_space],
-            ),
-        ]
-        # ARRANGE #
-        command_cases = _single_line_command_cases__w_argument_list()
-        for command_case in command_cases:
-            for arguments_case in arguments_cases:
-                source_w_arguments = (
-                    command_case.source.as_argument_elements
-                        .followed_by(arguments_case.input_value)
-                        .as_arguments
-                )
-                expected_arguments = asrt.matches_sequence([
-                    asrt.equals(arg)
-                    for arg in arguments_case.expected_value
-                ])
-                expected_command_sdv = command_case.sdv_assertion(self.TCDS,
-                                                                  arguments=expected_arguments)
-                for source_case in equivalent_source_variants_for_consume_until_end_of_last_line2(source_w_arguments):
-                    with self.subTest(command=command_case.name,
-                                      arguments=arguments_case.name,
-                                      following_source_variant=source_case.name):
-                        # ACT #
-                        actual = self.PARSER.parse(source_case.input_value)
-                        # ASSERT #
-                        source_case.expected_value.apply_with_message(self, source_case.input_value, 'source')
-                        expected_command_sdv.apply_with_message(self, actual, 'command')
-
-
-def _single_line_command_cases__w_argument_list() -> List[Case]:
+def _single_line_command_cases() -> List[Case]:
     exe_file_name = 'executable-file'
     exe_file_relativity__explicit = rel_opt.conf_rel_hds(RelHdsOptionType.REL_HDS_ACT)
     exe_file_ddv__explicit_relativity = paths.of_rel_option(exe_file_relativity__explicit.relativity,
@@ -195,6 +238,19 @@ def _single_line_command_cases__w_argument_list() -> List[Case]:
                 ))
         ),
     ]
+
+
+class ArgumentsCase:
+    def __init__(self,
+                 name: str,
+                 source: ArgumentElements,
+                 expected_arguments: Sequence[str],
+                 symbols: Sequence[SymbolContext] = (),
+                 ):
+        self.name = name
+        self.source = source
+        self.expected_arguments = expected_arguments
+        self.symbols = symbols
 
 
 def constant_assertion(constant: ValueAssertion[CommandDriver]) -> Callable[[Tcds], ValueAssertion[CommandDriver]]:

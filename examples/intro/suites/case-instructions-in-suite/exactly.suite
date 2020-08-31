@@ -14,7 +14,7 @@ test.case
 
 act-home = bin
 
-actor = -file $ python
+actor = -file % python
 
 
 [setup]

@@ -94,7 +94,7 @@ ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
     a_name_with_plural_s('preprocessor'),
-    'A shell command that transforms a test case file as the first step of processing it'
+    'A command line that transforms a test case file as the first step of processing it'
 )
 
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(

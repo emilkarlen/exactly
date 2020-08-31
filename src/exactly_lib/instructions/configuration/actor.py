@@ -1,7 +1,9 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
-from exactly_lib.section_document.element_parsers.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
+from exactly_lib.section_document import model
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
@@ -10,22 +12,15 @@ from exactly_lib.util.name_and_value import NameAndValue
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
-                                  actor_utils.InstructionDocumentation(instruction_name,
-                                                                       _SINGLE_LINE_DESCRIPTION_UNFORMATTED,
-                                                                       _MAIN_DESCRIPTION_REST_UNFORMATTED))
+                                  actor_utils.InstructionDocumentation(instruction_name))
 
 
-_SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Specifies the {actor} that will execute the {act_phase} phase'
-
-_MAIN_DESCRIPTION_REST_UNFORMATTED = """\
-The {actor} specified by this instruction has precedence over all other ways
-to specify the actor.
-"""
-
-
-class Parser(InstructionParserThatConsumesCurrentLine):
-    def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        actor = actor_utils.parse(rest_of_line)
+class Parser(InstructionParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource,
+              ) -> model.Instruction:
+        actor = actor_utils.parse(source)
         return Instruction(actor)
 
 
