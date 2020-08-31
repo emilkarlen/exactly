@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.data import path_part_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.data.path_sdv_impls import path_with_symbol
+from exactly_lib.symbol.data.path_sdv_impls import path_rel_symbol
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
@@ -105,7 +105,7 @@ class PathSymbolValueContext(DataSymbolValueContext[PathSdv]):
                      definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                      ) -> 'PathSymbolValueContext':
         return PathSymbolValueContext(
-            path_with_symbol.PathSdvRelSymbol(
+            path_rel_symbol.PathSdvRelSymbol(
                 path_part_sdvs.empty(),
                 SymbolReference(referenced_symbol_name,
                                 path_reference_restrictions(accepted_relativities))

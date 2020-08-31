@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.symbol.data import path_part_sdvs
-from exactly_lib.symbol.data.path_sdv_impls import path_with_symbol as sut
+from exactly_lib.symbol.data.path_sdv_impls import path_rel_symbol as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type

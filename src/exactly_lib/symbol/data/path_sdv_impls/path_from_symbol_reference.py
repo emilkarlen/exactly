@@ -13,9 +13,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-# Do not want to have this class as public - but want it in a separate file ...
-# so lets it have a "protected" name.
-class _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
+class SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
     """
     A file-ref from a symbol reference, that can be either a string or a file-ref
     """
@@ -23,7 +21,8 @@ class _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
     def __init__(self,
                  path_or_string_symbol: SymbolReference,
                  suffix_sdv: PathPartSdv,
-                 default_relativity: RelOptionType):
+                 default_relativity: RelOptionType,
+                 ):
         self._path_or_string_symbol = path_or_string_symbol
         self._suffix_sdv = suffix_sdv
         self.default_relativity = default_relativity
@@ -40,14 +39,15 @@ class _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(PathSdv):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return [self._path_or_string_symbol] + self._suffix_sdv.references
+        return [self._path_or_string_symbol] + list(self._suffix_sdv.references)
 
 
-class _DataValueSymbol2PathResolverVisitor(DataTypeSdvPseudoVisitor):
+class _DataValueSymbol2PathResolverVisitor(DataTypeSdvPseudoVisitor[PathDdv]):
     def __init__(self,
                  suffix_sdv: PathPartSdv,
                  default_relativity: RelOptionType,
-                 symbols: SymbolTable):
+                 symbols: SymbolTable,
+                 ):
         self.suffix_sdv = suffix_sdv
         self.symbols = symbols
         self.default_relativity = default_relativity
@@ -61,12 +61,12 @@ class _DataValueSymbol2PathResolverVisitor(DataTypeSdvPseudoVisitor):
         return paths.stacked(path, paths.constant_path_part(suffix_str))
 
     def visit_string(self, value: StringSdv) -> PathDdv:
-        sv = value.resolve(self.symbols)
-        first_suffix_str = sv.value_when_no_dir_dependencies()
+        string_ddv = value.resolve(self.symbols)
+        first_suffix_str = string_ddv.value_when_no_dir_dependencies()
         following_suffix_str = self.suffix_sdv.resolve(self.symbols).value()
         path_str = first_suffix_str + following_suffix_str
-        path_ddv = pathlib.Path(path_str)
-        if path_ddv.is_absolute():
+        path = pathlib.Path(path_str)
+        if path.is_absolute():
             return paths.absolute_file_name(path_str)
         else:
             return paths.of_rel_option(self.default_relativity,

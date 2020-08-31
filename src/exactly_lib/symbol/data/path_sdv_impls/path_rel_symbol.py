@@ -11,12 +11,12 @@ from exactly_lib.util.symbol_table import SymbolTable
 class PathSdvRelSymbol(PathSdv):
     def __init__(self,
                  path_suffix: PathPartSdv,
-                 symbol_reference_of_path: SymbolReference):
+                 relativity: SymbolReference):
         self.path_suffix = path_suffix
-        self.symbol_reference_of_path = symbol_reference_of_path
+        self.relativity = relativity
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
-        base_path = lookups.lookup_and_resolve_path(symbols, self.symbol_reference_of_path.name)
+        base_path = lookups.lookup_and_resolve_path(symbols, self.relativity.name)
         suffix = self.path_suffix.resolve(symbols)
         return (
             paths.stacked(base_path, suffix)
@@ -27,4 +27,4 @@ class PathSdvRelSymbol(PathSdv):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return [self.symbol_reference_of_path] + list(self.path_suffix.references)
+        return [self.relativity] + list(self.path_suffix.references)

@@ -30,8 +30,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
-from exactly_lib.test_case_utils.parse.path_from_symbol_reference import \
-    _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -192,7 +190,7 @@ def _just_argument_with_symbol_references(string_fragments: list,
     if _first_fragment_is_symbol_that_can_act_as_path(string_fragments):
         path_or_str_sym_ref, path_suffix = _extract_parts_that_can_act_as_path_and_suffix(string_fragments,
                                                                                           conf)
-        return _SdvThatIsIdenticalToReferencedPathOrWithStringValueAsSuffix(
+        return path_sdvs.reference(
             path_or_str_sym_ref,
             path_suffix,
             conf.options.default_option)
