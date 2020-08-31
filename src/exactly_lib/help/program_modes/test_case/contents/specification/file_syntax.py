@@ -212,7 +212,7 @@ stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 this assertion expects 4 lines of output
 {line_comment_char} this is the second line of the expected output
 
-the above empty line is part of the expected output
+the empty line above is part of the expected output
 EOF
 ```
 """

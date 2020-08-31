@@ -17,6 +17,7 @@ from exactly_lib.test_case_utils.documentation.relative_path_options_documentati
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import section_contents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -31,6 +32,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         self._tp = TextParser({
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
+            'ACT_INTERPRETER': formatting.syntax_element(syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name),
         })
 
     def act_phase_contents(self) -> doc.SectionContents:
@@ -50,6 +52,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
             syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
 
@@ -90,5 +93,6 @@ _ACT_PHASE_CONTENTS = """\
 A single line which is a file name followed by optional arguments.
 
 
-The file name and arguments may be quoted according to {shell_syntax_concept}.
+The file name and arguments
+are given as arguments to the {ACT_INTERPRETER}.
 """

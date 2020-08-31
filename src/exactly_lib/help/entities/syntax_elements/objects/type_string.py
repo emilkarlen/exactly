@@ -3,6 +3,7 @@ from typing import List
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions import path
+from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
@@ -28,8 +29,8 @@ class _Documentation(SyntaxElementDocumentation):
             'SOFT_Q': token.SOFT_QUOTE_CHAR,
             'HARD_Q': token.HARD_QUOTE_CHAR,
 
-            'soft_quotes': formatting.concept(token.SOFT_QUOTE_NAME.plural),
-            'hard_quotes': formatting.concept(token.HARD_QUOTE_NAME.plural),
+            'soft_quotes': formatting.concept(syntax_descriptions.SOFT_QUOTE_NAME.plural),
+            'hard_quotes': formatting.concept(syntax_descriptions.HARD_QUOTE_NAME.plural),
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
 
             'REL_CD_OPTION': path.REL_CWD_OPTION,
@@ -121,5 +122,5 @@ An empty {list_type} value is rendered as an empty string.
 A non-empty {list_type} value is rendered by separating the elements with a single space.
 
 
-A {path_type} value is rendered as absolute paths (even when relativity is {REL_CD_OPTION}).
+A {path_type} value is rendered as absolute paths (even if relativity is {REL_CD_OPTION}).
 """

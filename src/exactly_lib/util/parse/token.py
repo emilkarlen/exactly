@@ -1,6 +1,6 @@
 import enum
 
-from exactly_lib.util.str_.name import name_with_plural_s
+from exactly_lib.definitions.syntax_descriptions import SOFT_QUOTE_NAME, HARD_QUOTE_NAME
 
 
 class TokenType(enum.Enum):
@@ -15,10 +15,6 @@ class QuoteType(enum.Enum):
 
 SOFT_QUOTE_CHAR = '"'
 HARD_QUOTE_CHAR = '\''
-
-SOFT_QUOTE_NAME = name_with_plural_s('soft quote')
-
-HARD_QUOTE_NAME = name_with_plural_s('hard quote')
 
 QUOTE_CHARS = frozenset([SOFT_QUOTE_CHAR,
                          HARD_QUOTE_CHAR])
@@ -58,14 +54,14 @@ class Token(tuple):
     @property
     def quote_type(self) -> QuoteType:
         """
-        Precontition: is_quoted
+        Precondition: is_quoted
         """
         return QuoteType.SOFT if self[2][0] == SOFT_QUOTE_CHAR else QuoteType.HARD
 
     @property
     def is_hard_quote_type(self) -> bool:
         """
-        Precontition: is_quoted
+        Precondition: is_quoted
         """
         return self[2][0] == HARD_QUOTE_CHAR
 
