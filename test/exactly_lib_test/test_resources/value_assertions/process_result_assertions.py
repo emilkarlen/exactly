@@ -75,9 +75,9 @@ def stdout(assertion_on_str: ValueAssertion[str]) -> ValueAssertion[SubProcessRe
     return _SubProcessResultAssertion(stdout=assertion_on_str)
 
 
-def sub_process_result(exitcode: ValueAssertion = asrt.anything_goes(),
-                       stdout: ValueAssertion = asrt.anything_goes(),
-                       stderr: ValueAssertion = asrt.anything_goes(),
+def sub_process_result(exitcode: ValueAssertion[int] = asrt.anything_goes(),
+                       stdout: ValueAssertion[str] = asrt.anything_goes(),
+                       stderr: ValueAssertion[str] = asrt.anything_goes(),
                        ) -> ValueAssertion[SubProcessResult]:
     return _SubProcessResultAssertion(exitcode,
                                       stdout,
@@ -86,9 +86,9 @@ def sub_process_result(exitcode: ValueAssertion = asrt.anything_goes(),
 
 class _SubProcessResultAssertion(ValueAssertionBase[SubProcessResult]):
     def __init__(self,
-                 exitcode: ValueAssertion = asrt.anything_goes(),
-                 stdout: ValueAssertion = asrt.anything_goes(),
-                 stderr: ValueAssertion = asrt.anything_goes(),
+                 exitcode: ValueAssertion[int] = asrt.anything_goes(),
+                 stdout: ValueAssertion[str] = asrt.anything_goes(),
+                 stderr: ValueAssertion[str] = asrt.anything_goes(),
                  ):
         self._exitcode = exitcode
         self._stdout = stdout

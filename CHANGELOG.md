@@ -25,6 +25,9 @@ with exception of a "0." prefix until version 1 is released.
 ### Fixed
 
  - Syntax error messages - Include instruction name
+ - CLI case:  `--preprocessor` - Detection of invalid argument syntax
+ - CLI case:  `--actor`        - Detection of invalid argument syntax
+ - CLI suite: `--actor`        - Detection of invalid argument syntax
 
 ## [0.12.3] - 2020-08-18
 

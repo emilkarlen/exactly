@@ -2,6 +2,7 @@ import unittest
 from pathlib import Path
 from typing import List
 
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.program_modes.test_suite import argument_parsing as sut
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.definitions.test_suite import file_names
@@ -55,12 +56,30 @@ class TestSuiteFile(unittest.TestCase):
             arguments=[existing_dir.name]
         )
 
+    def test_fail_WHEN_actor_argument_is_invalidly_quoted(self):
+        empty_suite_file = File.empty('test.suite')
+        self._expect_raise_argument_parsing_error(
+            cwd_contents=DirContents([empty_suite_file]),
+            arguments=[common_cli_options.OPTION_FOR_ACTOR,
+                       "word 'unmatched quote in actor argument",
+                       empty_suite_file.name]
+        )
+
+    def test_fail_WHEN_actor_argument_is_empty(self):
+        empty_suite_file = File.empty('test.suite')
+        self._expect_raise_argument_parsing_error(
+            cwd_contents=DirContents([empty_suite_file]),
+            arguments=[common_cli_options.OPTION_FOR_ACTOR,
+                       '',
+                       empty_suite_file.name]
+        )
+
     def _expect_raise_argument_parsing_error(self,
                                              cwd_contents: DirContents,
                                              arguments: List[str]):
         with tmp_dir_as_cwd(cwd_contents):
             with self.assertRaises(ArgumentParsingError):
-                return sut.parse(self.handling_setup, arguments)
+                sut.parse(self.handling_setup, arguments)
 
     def _expect_successful_parse(self,
                                  cwd_contents: DirContents,

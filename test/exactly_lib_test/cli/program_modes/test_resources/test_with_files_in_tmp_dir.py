@@ -1,5 +1,4 @@
 import unittest
-
 from typing import List
 
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -35,3 +34,18 @@ def check(put: unittest.TestCase,
                                                   main_program)
         # ASSERT #
         expectation.apply_without_message(put, result)
+
+
+def check_without_files(put: unittest.TestCase,
+                        command_line_arguments: List[str],
+                        expectation: ValueAssertion[SubProcessResult],
+                        main_program_config: MainProgramConfig =
+                        main_program_execution.main_program_config(test_case_definition_for(InstructionsSetup())),
+                        ):
+    # ARRANGE #
+    main_program = main_program_from_config(main_program_config)
+    # ACT #
+    result = capture_output_from_main_program(command_line_arguments,
+                                              main_program)
+    # ASSERT #
+    expectation.apply_without_message(put, result)

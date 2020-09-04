@@ -1,6 +1,5 @@
 import argparse
 import pathlib
-import shlex
 from typing import List, Dict, Tuple
 
 from exactly_lib import program_info
@@ -8,11 +7,11 @@ from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.common.argument_parsing_of_actor import \
     resolve_actor_from_argparse_argument
+from exactly_lib.cli.program_modes.common.shlex_arg_parse import shlex_split
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO
-from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
@@ -141,7 +140,8 @@ def _parse_preprocessor(default_preprocessor: Preprocessor,
     if preprocessor_argument is None:
         return default_preprocessor
     else:
-        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
+        command_line = shlex_split(opt.OPTION_FOR_PREPROCESSOR__LONG, preprocessor_argument[0])
+        return PreprocessorViaExternalProgram(command_line)
 
 
 ACTOR_OPTION_DESCRIPTION = """\
@@ -198,8 +198,6 @@ TEXT_PARSER = TextParser({
     'interpreter_program': common_opts.ACTOR_OPTION_ARGUMENT,
     'INTERPRETER_ACTOR_TERM': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
-    'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
-    'is_a_shell_cmd': IS_A_SHELL_CMD,
     'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
     'concept_single_line_description': concepts.PREPROCESSOR_CONCEPT_INFO.single_line_description_str,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,

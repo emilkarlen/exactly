@@ -12,7 +12,6 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
-from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_suite import file_names
@@ -120,7 +119,7 @@ _ACTOR_OPTION_DESCRIPTION = """\
 Specifies a default {interpreter_actor} {actor} to use for every test case in the suite.
 
 
-{interpreter_program} {is_a_shell_cmd}
+{interpreter_program} {is_a_system_cmd}
 
 
 {NOTE} An {actor} specified in the test suite or individual test cases
@@ -161,7 +160,7 @@ _TP = TextParser({
     'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
     'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
-    'is_a_shell_cmd': IS_A_SHELL_CMD,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
     'NOTE': misc_texts.NOTE_LINE_HEADER,
+    'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
 })

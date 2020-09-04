@@ -124,7 +124,7 @@ class _Parser:
                                  INTERPRETER_ACTOR_TERM=formatting.entity(
                                      actors.SOURCE_INTERPRETER_ACTOR.singular_name),
                                  ACTOR_CONCEPT=formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-                                 shell_syntax_concept=formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
+                                 is_a_system_cmd=misc_texts.IS_A_SYSTEM_CMD,
                              ))
         return ret_val
 
@@ -147,7 +147,7 @@ Use "{help_option}" for more info.
 _ACTOR_OPTION_DESCRIPTION = """\
 Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
 
-{ARGUMENT} is an absolute path followed by optional arguments (using {shell_syntax_concept}).
+{ARGUMENT} {is_a_system_cmd}
 
 Note that an {ACTOR_CONCEPT} specified in the test suite or individual test cases
 has precedence over the {ACTOR_CONCEPT} given here.
