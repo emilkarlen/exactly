@@ -1,10 +1,10 @@
-from typing import Iterable, List, Sequence
+from typing import Iterable, List, Sequence, Optional
 
 from exactly_lib.symbol.data import list_sdv
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
-from exactly_lib.symbol.sdv_structure import SymbolDependentValue
+from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
@@ -90,8 +90,8 @@ def equals_list_sdv(expected: ListSdv,
 
 
 def matches_list_sdv(expected_resolved_value: ListDdv,
-                     expected_symbol_references: ValueAssertion,
-                     symbols: SymbolTable = None) -> ValueAssertion[SymbolDependentValue]:
+                     expected_symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                     symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
     return sdv_type_assertions.matches_sdv_of_list(expected_symbol_references,
                                                    equals_list_ddv(
                                                        expected_resolved_value),
