@@ -4,10 +4,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
     extract_mandatory_arguments_after_eq
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
@@ -28,19 +27,19 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
             'preprocessor': formatting.concept_(concepts.PREPROCESSOR_CONCEPT_INFO),
-            'shell_cmd_line': syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.singular_name,
-            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
+            'cmd_line': misc_texts.SYSTEM_COMMAND_LINE.singular,
+            'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
         })
 
     def single_line_description(self) -> str:
         return self._tp.format('Sets a {preprocessor} to transform each test case file in the suite')
 
     def invokation_variants(self) -> List[InvokationVariant]:
-        shell_cmd_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument)
+        cmd_arg = a.Single(a.Multiplicity.MANDATORY,
+                           a.Named(misc_texts.SYSTEM_COMMAND_LINE.singular))
         return [
             invokation_variant_from_args([MANDATORY_EQ_ARG,
-                                          shell_cmd_arg]),
+                                          cmd_arg]),
         ]
 
     def main_description_rest(self) -> List[ParagraphItem]:
@@ -49,7 +48,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             concepts.PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
-            syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.cross_reference_target,
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
         ]
 
@@ -59,7 +57,7 @@ The {preprocessor} is only used for the test cases in the current suite -
 not in sub suites.
 
 
-{shell_cmd_line} uses {shell_syntax_concept}.
+{cmd_line} {is_a_system_cmd}
 """
 
 
