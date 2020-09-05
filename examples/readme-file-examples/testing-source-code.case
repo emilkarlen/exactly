@@ -1,6 +1,6 @@
 [conf]
 
-actor = -source % python
+actor = source % python
 
 [act]
 

@@ -8,6 +8,6 @@ sub-dir/in-sub-dir-of-dir-with-suite.case
 [conf]
 
 
-actor = -file % python
+actor = file % python
 
 act-home = src

@@ -22,7 +22,7 @@ class TestCommandLineActorForActPhaseContentsOfExecutableFile(unittest.TestCase)
         executable_file = sys.executable
         command_executor = CommandExecutorThatRecordsArguments()
         arrangement = Arrangement(
-            source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
+            source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_NAME),
             act_phase_source_lines=[executable_file],
             os_services=os_services_access.new_for_cmd_exe(command_executor),
         )

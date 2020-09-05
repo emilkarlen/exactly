@@ -35,13 +35,13 @@ class TestFailingParseForAnyActor(unittest.TestCase):
 
 class TestFailingParseForCommandLineActor(unittest.TestCase):
     def test_fail_when_extra_unexpected_argument(self):
-        source = source4(actor_utils.COMMAND_LINE_ACTOR_OPTION + ' extra-unexpected-argument')
+        source = source4(actor_utils.COMMAND_LINE_ACTOR_NAME + ' extra-unexpected-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestFailingParseForSourceInterpreterActor(unittest.TestCase):
     def test_fail_when_missing_program_argument(self):
-        source = source4(actor_utils.SOURCE_INTERPRETER_OPTION)
+        source = source4(actor_utils.SOURCE_INTERPRETER_NAME)
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)

@@ -6,4 +6,4 @@ in-same-dir-as-suite-conf-in-both-suite-and-case.case
 [conf]
 
 
-actor = -file % python
+actor = file % python

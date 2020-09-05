@@ -17,7 +17,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestSourceInterpreterActorForExecutableFile(unittest.TestCase):
-    helper = CheckHelper(actor_utils.SOURCE_INTERPRETER_OPTION)
+    helper = CheckHelper(actor_utils.SOURCE_INTERPRETER_NAME)
 
     def _check_both_single_and_multiple_line_source(
             self,

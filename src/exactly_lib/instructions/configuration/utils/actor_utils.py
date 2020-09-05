@@ -19,18 +19,12 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
-COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
-COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
-
-SOURCE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='source')
-SOURCE_INTERPRETER_OPTION = long_option_syntax(SOURCE_INTERPRETER_OPTION_NAME.long)
-
-FILE_INTERPRETER_OPTION_NAME = a.OptionName(long_name='file')
-FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
+COMMAND_LINE_ACTOR_NAME = 'command'
+FILE_INTERPRETER_NAME = 'file'
+SOURCE_INTERPRETER_NAME = 'source'
 
 
 class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
@@ -49,8 +43,8 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
-        source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
-        file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
+        source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Named(SOURCE_INTERPRETER_NAME))
+        file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Named(FILE_INTERPRETER_NAME))
         return (
             self._command_line_invokation_variant(),
             self._interpreter_actor_invokation_variant(FILE_INTERPRETER_ACTOR,
@@ -73,7 +67,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
 
     def _command_line_invokation_variant(self) -> InvokationVariant:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
-                                          a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
+                                          a.Named(COMMAND_LINE_ACTOR_NAME))
         return invokation_variant_from_args([MANDATORY_EQ_ARG, command_line_actor_arg],
                                             self._description_of_command_line()
                                             )
@@ -114,11 +108,11 @@ def _parse_from_token_parser(token_parser: TokenParser) -> NameAndValue[Actor]:
 
 def _actor_parsers_setup() -> Dict[str, Callable[[TokenParser], NameAndValue[Actor]]]:
     return {
-        COMMAND_LINE_ACTOR_OPTION: _parse_command_line_actor,
+        COMMAND_LINE_ACTOR_NAME: _parse_command_line_actor,
 
-        FILE_INTERPRETER_OPTION: _parse_file_actor,
+        FILE_INTERPRETER_NAME: _parse_file_actor,
 
-        SOURCE_INTERPRETER_OPTION: _parse_source_actor,
+        SOURCE_INTERPRETER_NAME: _parse_source_actor,
     }
 
 

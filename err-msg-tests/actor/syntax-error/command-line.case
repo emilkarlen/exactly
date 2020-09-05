@@ -1,6 +1,6 @@
 [conf]
 
-actor = -command
+actor = command
 
 [act]
 
