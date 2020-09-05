@@ -115,7 +115,9 @@ STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
 PROGRAM_TYPE_INFO = name_and_ref_target(
     ValueType.PROGRAM,
     a_name_with_plural_s('program'),
-    '{:a/u}, with optional arguments, and optional transformation of the output.'.format(misc_texts.EXTERNAL_PROGRAM),
+    '{:a/u}, with optional arguments, and optional transformation of the output.'.format(
+        misc_texts.EXTERNAL_PROGRAM
+    ),
 )
 
 FILES_CONDITION_TYPE_INFO = name_and_ref_target(
@@ -136,3 +138,7 @@ ALL_TYPES_INFO_TUPLE = (
     PROGRAM_TYPE_INFO,
     FILES_CONDITION_TYPE_INFO,
 )
+
+DATA_TYPES_WITH_STRING_CONVERSION = (STRING_TYPE_INFO,
+                                     PATH_TYPE_INFO,
+                                     LIST_TYPE_INFO)

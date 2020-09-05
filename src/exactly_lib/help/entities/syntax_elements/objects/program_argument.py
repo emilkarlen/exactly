@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.documentation import relative_path_options_docu
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import arg_config_with_name
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.str_ import english_text
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
@@ -17,8 +18,7 @@ TEXT_UNTIL_END_OF_LINE_ARGUMENT = a.Named('TEXT-UNTIL-END-OF-LINE')
 def documentation() -> SyntaxElementDocumentation:
     invokation_variants = [
         _string(),
-        _list(),
-        _path(),
+        _symbol_reference(),
         _text_until_end_of_line(),
         _existing_path(
             pgm_syntax_elements.EXISTING_FILE_OPTION_NAME,
@@ -83,19 +83,11 @@ def _string() -> InvokationVariant:
     )
 
 
-def _list() -> InvokationVariant:
+def _symbol_reference() -> InvokationVariant:
     return invokation_variant_from_args([
-        syntax_elements.LIST_SYNTAX_ELEMENT.single_mandatory,
+        syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.single_mandatory,
     ],
-        _TEXT_PARSER.fnap(_LIST_DESCRIPTION)
-    )
-
-
-def _path() -> InvokationVariant:
-    return invokation_variant_from_args([
-        syntax_elements.PATH_SYNTAX_ELEMENT.single_mandatory,
-    ],
-        _TEXT_PARSER.fnap(_PATH_DESCRIPTION)
+        _TEXT_PARSER.fnap(_SYMBOL_REFERENCE_DESCRIPTION)
     )
 
 
@@ -109,32 +101,35 @@ _TEXT_PARSER = TextParser({
     'list_se': formatting.syntax_element_(syntax_elements.LIST_SYNTAX_ELEMENT),
     'path_type': types.PATH_TYPE_INFO.name,
     'path_se': formatting.syntax_element_(syntax_elements.PATH_SYNTAX_ELEMENT),
+    'to_string_types': english_text.or_sequence([dt.singular_name for dt in types.DATA_TYPES_WITH_STRING_CONVERSION]),
     'soft_quote': formatting.entity_name_with_formatting(syntax_descriptions.SOFT_QUOTE_NAME),
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    'Note': misc_texts.NOTE_LINE_HEADER,
 })
 
 _MAIN__DESCRIPTION = """\
 An individual argument, or a list of arguments, in case of an unquoted reference
-to {list_type:a/q} {symbol:/q}.
+to {list_type:a/q} {symbol}.
 
 
 An argument list is an ordinary {list_type:/q} value, with additional features
 for text-until-end-of-line and references to existing files.
 """
 
-_PATH_DESCRIPTION = """\
-{path_type:a/u} value is rendered as an absolute path.
-"""
-
-_LIST_DESCRIPTION = """\
-Elements of a referenced list are appended to the preceding arguments -
-argument lists are not nested.
+_SYMBOL_REFERENCE_DESCRIPTION = """\
+A reference to a symbol of type {to_string_types}.
 
 
-To pass a {list_se} as a single argument to a program,
-convert it to a {string_se} by surrounding it with {soft_quote:s}.
-(The elements will be separated by a single space.)
+{path_type:a/u} {symbol} gives a single argument that is it's absolute path.
+
+
+{list_type:a/u} {symbol} gives a list of arguments.
+
+
+{Note} To pass a {list_type} as a single argument,
+convert it to a {string_type} by surrounding it with {soft_quote:s}.
+The elements will be separated by a single space.
 """
 
 _TEXT_UNTIL_END_OF_LINE_DESCRIPTION = """\
@@ -148,7 +143,7 @@ A {path_se}, with additional check for existence.
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
-Values are rendered as absolute paths.
+Gives a single argument of an absolute path.
 """
 
 _EXISTING_DIR_DESCRIPTION = """\
@@ -158,7 +153,7 @@ A {path_se}, with additional check for existence.
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
-Values are rendered as absolute paths.
+Gives a single argument of an absolute path.
 """
 
 _EXISTING_PATH_DESCRIPTION = """\
@@ -168,5 +163,5 @@ A {path_se}, with additional check for existence.
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 
 
-Values are rendered as absolute paths.
+Gives a single argument of an absolute path.
 """
