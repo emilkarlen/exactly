@@ -1,5 +1,8 @@
+ALL = clean build install uninstall36 uninstall-venv upload upload-test
+
+.PHONY: $(ALL)
 help:
-	echo clean build install uninstall36 uninstall-venv upload
+	@echo $(ALL)
 
 clean:
 	rm -rf build
@@ -24,3 +27,5 @@ uninstall-venv:
 upload:
 	python3 -m twine upload dist/*
 
+upload-test:
+	python3 -m twine upload --repository pypitest dist/*
