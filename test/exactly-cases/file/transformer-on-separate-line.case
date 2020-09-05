@@ -1,0 +1,11 @@
+[setup]
+
+file string.txt = "some contents"
+
+file transformed.txt = -file -rel-act string.txt
+                       -transformed-by
+                          TO_UPPER_CASE
+
+[assert]
+
+contents transformed.txt equals "SOME CONTENTS"
