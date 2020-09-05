@@ -6,9 +6,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import file_matcher
-from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
-from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.expression import grammar
@@ -195,15 +193,7 @@ _TP = TextParser({
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
 })
 
-_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG = token_stream_parser.ErrorMessageConfiguration(
-    'Missing {_CONTENTS_OPTIONS_} or {_FILES_MATCHER_}',
-    {
-        '_CONTENTS_OPTIONS_': file_or_dir_contents.DIR_FILE_SET_OPTIONS.name,
-        '_FILES_MATCHER_': syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
-    }
-)
-
-DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser(_DIR_CONTENTS_MODEL_NOT_ON_CURRENT_LINE_ERR_MSG)
+DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser()
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} who's ...

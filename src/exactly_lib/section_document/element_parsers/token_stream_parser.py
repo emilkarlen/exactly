@@ -661,9 +661,7 @@ ParserFromTokenParser = Callable[[TokenParser], T]
 
 class ParserFromTokens(Generic[T], ABC):
     @abstractmethod
-    def parse(self,
-              token_parser: TokenParser,
-              must_be_on_current_line: bool = False) -> T:
+    def parse(self, token_parser: TokenParser) -> T:
         pass
 
 
