@@ -19,6 +19,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` - rename `-prune` -> `-with-pruned`
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
+ - Python compatibility: Increased to Python v 3.5.9
  
 ### Removed
 
