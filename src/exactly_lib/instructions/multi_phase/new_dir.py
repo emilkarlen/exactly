@@ -121,8 +121,8 @@ _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
 _MAIN_DESCRIPTION_REST_BODY = """\
-Creates parent directories if needed.
+Intermediate directories as created, if required.
 
 
-Does nothing if the given directory already exists.
+If the directory already exists, nothing is done.
 """
