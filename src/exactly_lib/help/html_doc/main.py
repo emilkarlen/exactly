@@ -131,7 +131,7 @@ def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerat
                                     symbol_cli_syntax.root(_SYMBOL_HEADER)
                                     ),
                             h.child('help',
-                                    help.root('Getting Help')
+                                    help.root('Help System')
                                     ),
                         ]
                         )
