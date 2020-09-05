@@ -1,6 +1,7 @@
 from typing import List, Sequence, Dict, Callable
 
 from exactly_lib.actors import file_interpreter
+from exactly_lib.actors import null as null_actor
 from exactly_lib.actors.program import actor as program_actor
 from exactly_lib.actors.source_interpreter import actor
 from exactly_lib.actors.util import parse_act_interpreter
@@ -22,6 +23,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
+NULL_ACTOR_NAME = actors.NULL_ACTOR.singular_name
 COMMAND_LINE_ACTOR_NAME = 'command'
 FILE_INTERPRETER_NAME = 'file'
 SOURCE_INTERPRETER_NAME = 'source'
@@ -33,6 +35,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': phase_names.ACT.emphasis,
             'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR),
+            'null_actor': formatting.entity_(actors.NULL_ACTOR),
             'ACT_INTERPRETER': syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name,
             'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'setup': phase_names.SETUP,
@@ -51,6 +54,7 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                                        file_interpreter_arg),
             self._interpreter_actor_invokation_variant(SOURCE_INTERPRETER_ACTOR,
                                                        source_interpreter_arg),
+            self._null_invokation_variant(),
         )
 
     def main_description_rest(self) -> List[ParagraphItem]:
@@ -64,6 +68,13 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
                 +
                 all_actor_cross_refs()
                 )
+
+    def _null_invokation_variant(self) -> InvokationVariant:
+        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
+                                          a.Named(NULL_ACTOR_NAME))
+        return invokation_variant_from_args([MANDATORY_EQ_ARG, command_line_actor_arg],
+                                            self._description_of_null()
+                                            )
 
     def _command_line_invokation_variant(self) -> InvokationVariant:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -87,6 +98,9 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.fnap(_DESCRIPTION_OF_ACTOR_WITH_INTERPRETER, {
             'interpreter_actor': formatting.entity(actor_w_interpreter.singular_name)
         })
+
+    def _description_of_null(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_DESCRIPTION_OF_NULL)
 
     def _description_of_command_line(self) -> List[ParagraphItem]:
         return self._tp.fnap(_DESCRIPTION_OF_COMMAND_LINE)
@@ -113,7 +127,14 @@ def _actor_parsers_setup() -> Dict[str, Callable[[TokenParser], NameAndValue[Act
         FILE_INTERPRETER_NAME: _parse_file_actor,
 
         SOURCE_INTERPRETER_NAME: _parse_source_actor,
+
+        NULL_ACTOR_NAME: _parse_null_actor,
     }
+
+
+def _parse_null_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
+    return NameAndValue(actors.NULL_ACTOR.singular_name,
+                        null_actor.actor())
 
 
 def _parse_command_line_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
@@ -149,4 +170,8 @@ Specifies that the {interpreter_actor} {actor} should be used, with the given in
 
 _DESCRIPTION_OF_COMMAND_LINE = """\
 Specifies that the {command_line_actor} {actor} should be used.
+"""
+
+_DESCRIPTION_OF_NULL = """\
+Specifies that the {null_actor} {actor} should be used.
 """

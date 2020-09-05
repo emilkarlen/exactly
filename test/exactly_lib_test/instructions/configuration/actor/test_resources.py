@@ -25,6 +25,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants_with_assertion
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.sequence_assertions import matches_elements_except_last
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
@@ -38,7 +39,7 @@ def shell_command_syntax_for(command: str) -> str:
 class Arrangement:
     def __init__(self,
                  source: ParseSource,
-                 act_phase_source_lines: list,
+                 act_phase_source_lines: List[str],
                  hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
                  ):
@@ -50,8 +51,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 sub_process_result_from_execute: ValueAssertion = asrt.anything_goes(),
-                 source_after_parse: ValueAssertion = asrt.anything_goes(),
+                 sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
+                 source_after_parse: ValueAssertion[ParseSource] = asrt.anything_goes(),
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  after_execution: ValueAssertion[Tcds] = asrt.anything_goes(),
                  ):
