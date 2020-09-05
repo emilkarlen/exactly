@@ -17,7 +17,7 @@ from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
     FULL_RESULT_VALIDATE, \
-    FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
+    FULL_RESULT_INTERNAL_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.value_assertions import xml_etree as asrt_etree
@@ -120,7 +120,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         cases = [
             FULL_RESULT_HARD_ERROR,
             FULL_RESULT_VALIDATE,
-            FULL_RESULT_IMPLEMENTATION_ERROR,
+            FULL_RESULT_INTERNAL_ERROR,
         ]
         for case_result in cases:
             with self.subTest(case_result_status=case_result.status):

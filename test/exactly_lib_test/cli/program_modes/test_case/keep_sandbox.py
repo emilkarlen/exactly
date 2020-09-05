@@ -11,7 +11,7 @@ from exactly_lib.execution.phase_step import STEP__MAIN, STEP__VALIDATE_POST_SET
     STEP__ACT__PREPARE, STEP__ACT__EXECUTE, STEP__ACT__PARSE, STEP__VALIDATE_PRE_SDS
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.exit_values import EXECUTION__IMPLEMENTATION_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
+from exactly_lib.processing.exit_values import EXECUTION__INTERNAL_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
     EXECUTION__VALIDATION_ERROR, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -129,7 +129,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
             EXECUTION__HARD_ERROR:
                 setup_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
 
-            EXECUTION__IMPLEMENTATION_ERROR:
+            EXECUTION__INTERNAL_ERROR:
                 setup_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
         }
         # ACT & ASSERT #
@@ -140,7 +140,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
         cases = {
             STEP__ACT__PARSE:
                 {
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         ActorThatRunsConstantActions(
                             parse_atc=DO_RAISES_EXCEPTION),
 
@@ -155,7 +155,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
                         ActorThatRunsConstantActions(
                             validate_pre_sds_action=SVH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         ActorThatRunsConstantActions(
                             validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
                 },
@@ -186,7 +186,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
             EXECUTION__HARD_ERROR:
                 before_assert_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
 
-            EXECUTION__IMPLEMENTATION_ERROR:
+            EXECUTION__INTERNAL_ERROR:
                 before_assert_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
         }
         # ACT & ASSERT #
@@ -201,7 +201,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
             EXECUTION__HARD_ERROR:
                 assert_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
 
-            EXECUTION__IMPLEMENTATION_ERROR:
+            EXECUTION__INTERNAL_ERROR:
                 assert_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
         }
         # ACT & ASSERT #
@@ -216,7 +216,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
             EXECUTION__HARD_ERROR:
                 cleanup_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
 
-            EXECUTION__IMPLEMENTATION_ERROR:
+            EXECUTION__INTERNAL_ERROR:
                 cleanup_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
         }
         # ACT & ASSERT #
@@ -267,7 +267,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         setup_phase_instruction_that(validate_post_setup=SVH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         setup_phase_instruction_that(validate_post_setup_initial_action=DO_RAISES_EXCEPTION),
                 },
             STEP__MAIN:
@@ -275,7 +275,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         setup_phase_instruction_that(main=SH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         setup_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),
                 },
         }
@@ -295,7 +295,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                         ActorThatRunsConstantActions(
                             validate_post_setup_action=SVH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         ActorThatRunsConstantActions(
                             validate_post_setup_initial_action=DO_RAISES_EXCEPTION),
 
@@ -306,13 +306,13 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                         ActorThatRunsConstantActions(
                             prepare_action=SH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         ActorThatRunsConstantActions(
                             prepare_initial_action=DO_RAISES_EXCEPTION),
                 },
             STEP__ACT__EXECUTE:
                 {
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         ActorThatRunsConstantActions(
                             execute_initial_action=DO_RAISES_EXCEPTION),
                 },
@@ -345,7 +345,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         before_assert_phase_instruction_that(validate_post_setup=SVH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         before_assert_phase_instruction_that(
                             validate_post_setup_initial_action=DO_RAISES_EXCEPTION),
 
@@ -355,7 +355,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         before_assert_phase_instruction_that(main=SH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         before_assert_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),
                 },
         }
@@ -374,7 +374,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         assert_phase_instruction_that(validate_post_setup=SVH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         assert_phase_instruction_that(validate_post_setup_initial_action=DO_RAISES_EXCEPTION),
 
                 },
@@ -386,7 +386,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         assert_phase_instruction_that(main=do_return(pfh.new_pfh_hard_error__str('hard error msg'))),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         assert_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),
                 },
         }
@@ -401,7 +401,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                     EXECUTION__HARD_ERROR:
                         cleanup_phase_instruction_that(main=SH_HARD_ERROR),
 
-                    EXECUTION__IMPLEMENTATION_ERROR:
+                    EXECUTION__INTERNAL_ERROR:
                         cleanup_phase_instruction_that(main_initial_action=DO_RAISES_EXCEPTION),
 
                 },

@@ -2,7 +2,6 @@ import os
 import unittest
 from typing import Optional
 
-from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
@@ -17,6 +16,7 @@ from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -207,7 +207,7 @@ class TestFailure(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_act_execute(self):
+    def test_internal_error_in_act_execute(self):
         test_case = _single_successful_instruction_in_each_phase(single_line_sequence(72, 'ignored'))
         self._check(
             Arrangement(test_case,
@@ -215,7 +215,7 @@ class TestFailure(TestCaseBase):
                             execute_action=execute_action_that_raises(
                                 test.ImplementationErrorTestException()))),
             Expectation(
-                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(

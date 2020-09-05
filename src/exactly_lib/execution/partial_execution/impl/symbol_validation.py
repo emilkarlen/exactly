@@ -1,6 +1,6 @@
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor, \
-    execute_action_and_catch_implementation_exception, run_instructions_phase_step
+    execute_action_and_catch_internal_error_exception, run_instructions_phase_step
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
 from exactly_lib.execution.impl.symbol_validation import validate_symbol_usages
@@ -61,7 +61,7 @@ class SymbolsValidator:
                                       FailureDetails.new_message(res.error_message))
                 )
 
-        execute_action_and_catch_implementation_exception(action, failure_con)
+        execute_action_and_catch_internal_error_exception(action, failure_con)
 
     def _validate(self,
                   step: PhaseStep,

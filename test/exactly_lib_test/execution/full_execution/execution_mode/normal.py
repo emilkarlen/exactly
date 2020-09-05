@@ -80,7 +80,7 @@ class Test(TestCaseBase):
                 [phase_step.CONFIGURATION__MAIN],
             ))
 
-    def test_implementation_error_in_configuration_phase(self):
+    def test_internal_error_in_configuration_phase(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
                  test.configuration_phase_instruction_that(
@@ -89,7 +89,7 @@ class Test(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    FullExeResultStatus.IMPLEMENTATION_ERROR,
+                    FullExeResultStatus.INTERNAL_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(

@@ -12,7 +12,7 @@ class ExecutionFailureStatus(Enum):
     VALIDATION_ERROR = 1
     FAIL = 2
     HARD_ERROR = 99
-    IMPLEMENTATION_ERROR = 100
+    INTERNAL_ERROR = 100
 
 
 class ActionToCheckOutcome(tuple):

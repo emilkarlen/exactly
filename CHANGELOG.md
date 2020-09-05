@@ -18,7 +18,8 @@ with exception of a "0." prefix until version 1 is released.
  - Syntax of type expressions - Precedences of `||` and `&&`
  - Type `files-matcher` - rename `-prune` -> `-with-pruned`
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
-
+ - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
+ 
 ### Removed
 
  - Interpreter actors - interpreter `$ SHELL-COMMAND`

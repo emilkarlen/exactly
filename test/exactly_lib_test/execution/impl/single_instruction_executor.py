@@ -100,7 +100,7 @@ class Test(unittest.TestCase):
             element,
             element.instruction_info)
         # ASSERT #
-        self._check_failure_result(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+        self._check_failure_result(ExecutionFailureStatus.INTERNAL_ERROR,
                                    result,
                                    asrt_failure_details.matches_exception(asrt.equals(exception)))
 

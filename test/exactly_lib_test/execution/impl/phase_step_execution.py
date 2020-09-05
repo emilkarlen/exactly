@@ -151,7 +151,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+            asrt_failure.is_present_with(ExecutionFailureStatus.INTERNAL_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_exception_of_type(TestException)),
             ['instruction header for source line number: 1',

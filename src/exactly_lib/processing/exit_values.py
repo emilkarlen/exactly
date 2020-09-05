@@ -18,7 +18,7 @@ def from_result(result: processing.Result) -> ExitValue:
     elif result.status is processing.Status.ACCESS_ERROR:
         return from_access_error(result.access_error_type)
     else:
-        return EXECUTION__IMPLEMENTATION_ERROR
+        return EXECUTION__INTERNAL_ERROR
 
 
 NO_EXECUTION__FILE_ACCESS_ERROR = from_access_error(processing.AccessErrorType.FILE_ACCESS_ERROR)
@@ -43,8 +43,8 @@ _FOR_FULL_RESULT = {
     FullExeResultStatus.XFAIL: _for_full_result(FullExeResultStatus.XFAIL, ForegroundColor.CYAN),
     FullExeResultStatus.XPASS: _for_full_result(FullExeResultStatus.XPASS, ForegroundColor.RED),
     FullExeResultStatus.HARD_ERROR: _for_full_result(FullExeResultStatus.HARD_ERROR, ForegroundColor.PURPLE),
-    FullExeResultStatus.IMPLEMENTATION_ERROR: _for_full_result(FullExeResultStatus.IMPLEMENTATION_ERROR,
-                                                               ForegroundColor.PURPLE),
+    FullExeResultStatus.INTERNAL_ERROR: _for_full_result(FullExeResultStatus.INTERNAL_ERROR,
+                                                         ForegroundColor.PURPLE),
 }
 
 
@@ -59,7 +59,7 @@ EXECUTION__SKIPPED = from_full_result(FullExeResultStatus.SKIPPED)
 EXECUTION__XFAIL = from_full_result(FullExeResultStatus.XFAIL)
 EXECUTION__XPASS = from_full_result(FullExeResultStatus.XPASS)
 EXECUTION__HARD_ERROR = from_full_result(FullExeResultStatus.HARD_ERROR)
-EXECUTION__IMPLEMENTATION_ERROR = from_full_result(FullExeResultStatus.IMPLEMENTATION_ERROR)
+EXECUTION__INTERNAL_ERROR = from_full_result(FullExeResultStatus.INTERNAL_ERROR)
 
 ALL_EXIT_VALUES = ([
                        NO_EXECUTION__FILE_ACCESS_ERROR,

@@ -76,7 +76,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_no_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -151,7 +151,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -201,14 +201,14 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_prepare(self):
+    def test_internal_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
                         act_executor_prepare=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(
@@ -262,14 +262,14 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_execute(self):
+    def test_internal_error_in_execute(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(
-                asrt_result.matches2(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
                                      ExpectedFailureForPhaseFailure.new_with_exception(

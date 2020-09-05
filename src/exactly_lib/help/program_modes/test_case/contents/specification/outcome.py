@@ -189,11 +189,11 @@ def interrupted_execution_list() -> ParagraphItem:
                       TEXT_PARSER.para(_FAILURE_CONDITION_OF_HARD_ERROR),
                       exit_values.EXECUTION__HARD_ERROR)
                   ),
-        list_item('Implementation error',
+        list_item('Internal error',
                   step_with_single_exit_value(
                       [],
-                      TEXT_PARSER.para(_FAILURE_CONDITION_OF_IMPLEMENTATION_ERROR),
-                      exit_values.EXECUTION__IMPLEMENTATION_ERROR)
+                      TEXT_PARSER.para(_FAILURE_CONDITION_OF_INTERNAL_ERROR),
+                      exit_values.EXECUTION__INTERNAL_ERROR)
                   ),
     ]
     return lists.HeaderContentList(items,
@@ -270,7 +270,7 @@ def all_exit_values_summary_table() -> ParagraphItem:
                                         key=ExitValue.exit_identifier.fget))
 
 
-_FAILURE_CONDITION_OF_IMPLEMENTATION_ERROR = 'An error in the implementation of {program_name} is detected.'
+_FAILURE_CONDITION_OF_INTERNAL_ERROR = 'An error in the implementation of {program_name}, or similar, is detected.'
 
 _FAILURE_CONDITION_OF_HARD_ERROR = """\
 An instruction fails to do it's job.

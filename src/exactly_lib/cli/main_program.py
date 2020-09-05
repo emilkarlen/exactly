@@ -288,7 +288,7 @@ def _resolve_os_services() -> OsServices:
 
         raise _StartupError(
             ProcessResultReporterWithInitialExitValueOutput(
-                exit_values.EXECUTION__IMPLEMENTATION_ERROR,
+                exit_values.EXECUTION__INTERNAL_ERROR,
                 ProcOutputFile.STDOUT,
                 print_ex_msg)
         )

@@ -30,11 +30,11 @@ class ActionToCheckParser:
                 instruction = element.instruction_info.instruction
                 if not isinstance(instruction, ActPhaseInstruction):
                     msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
-                    raise PhaseStepFailureException(failure_con.implementation_error_msg(msg))
+                    raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
                 instructions.append(instruction)
             else:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
-                raise PhaseStepFailureException(failure_con.implementation_error_msg(msg))
+                raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
 
         actor = self._actor.value
 
@@ -52,7 +52,7 @@ class ActionToCheckParser:
                 )
                 )
 
-        return phase_step_execution.execute_action_and_catch_implementation_exception(parse_action, failure_con)
+        return phase_step_execution.execute_action_and_catch_internal_error_exception(parse_action, failure_con)
 
     def _actor_info_lines(self) -> SequenceRenderer[LineElement]:
         return combinators.SingletonSequenceR(

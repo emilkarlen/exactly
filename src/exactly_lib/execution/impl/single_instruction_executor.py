@@ -114,7 +114,7 @@ def execute_element(executor: ControlledInstructionExecutor,
             FailureDetails.new_message(fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
-            ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+            ExecutionFailureStatus.INTERNAL_ERROR,
             element.source_location_info.source_location_path,
             FailureDetails.new_exception(ex)
         )

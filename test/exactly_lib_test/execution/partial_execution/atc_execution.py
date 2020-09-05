@@ -91,7 +91,7 @@ class TestExecutionSequence(unittest.TestCase):
                          step_recorder.recorded_elements,
                          'executed steps')
 
-    def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_implementation_error(self):
+    def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_internal_error(self):
         # ARRANGE #
         atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
@@ -104,7 +104,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
-        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.IMPLEMENTATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.INTERNAL_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([],

@@ -7,7 +7,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.impl import phase_step_executors
 from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor, \
-    run_instructions_phase_step, execute_action_and_catch_implementation_exception
+    run_instructions_phase_step, execute_action_and_catch_internal_error_exception
 from exactly_lib.execution.impl.phase_step_executors import InstructionEnvPostSdsGetter
 from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
@@ -248,18 +248,18 @@ class _PartialExecutor:
                                       FailureDetails.new_message(res.failure_message))
                 )
 
-        execute_action_and_catch_implementation_exception(action, failure_con)
+        execute_action_and_catch_internal_error_exception(action, failure_con)
 
     def _act__validate_post_setup(self):
         failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_POST_SETUP)
 
-        execute_action_and_catch_implementation_exception(
+        execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.validate_post_setup(failure_con.apply), failure_con)
 
     def _act__prepare(self):
         failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__PREPARE)
 
-        execute_action_and_catch_implementation_exception(
+        execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.prepare(failure_con.apply),
             failure_con
         )
@@ -267,7 +267,7 @@ class _PartialExecutor:
     def _act__execute(self):
         failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__EXECUTE)
 
-        return execute_action_and_catch_implementation_exception(
+        return execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.execute(failure_con.apply), failure_con)
 
     def _before_assert__validate_pre_sds(self):

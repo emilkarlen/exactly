@@ -19,9 +19,9 @@ class Test(unittest.TestCase):
                          translate_status(TestCaseStatus.PASS,
                                           ExecutionFailureStatus.HARD_ERROR))
 
-        self.assertEqual(FullExeResultStatus.IMPLEMENTATION_ERROR,
+        self.assertEqual(FullExeResultStatus.INTERNAL_ERROR,
                          translate_status(TestCaseStatus.PASS,
-                                          ExecutionFailureStatus.IMPLEMENTATION_ERROR))
+                                          ExecutionFailureStatus.INTERNAL_ERROR))
 
     def test_FAIL(self):
         self.assertEqual(FullExeResultStatus.XPASS,
@@ -36,6 +36,6 @@ class Test(unittest.TestCase):
                          translate_status(TestCaseStatus.FAIL,
                                           ExecutionFailureStatus.HARD_ERROR))
 
-        self.assertEqual(FullExeResultStatus.IMPLEMENTATION_ERROR,
+        self.assertEqual(FullExeResultStatus.INTERNAL_ERROR,
                          translate_status(TestCaseStatus.FAIL,
-                                          ExecutionFailureStatus.IMPLEMENTATION_ERROR))
+                                          ExecutionFailureStatus.INTERNAL_ERROR))

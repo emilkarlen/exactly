@@ -209,10 +209,10 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                                  expected_result_statuses=result_is_access_error(AccessErrorType.SYNTAX_ERROR))),
             ])
 
-    def test_instruction_with_implementation_error(self):
+    def test_instruction_with_internal_error(self):
         name_of_failing_instruction = 'instruction-with-implementation-error'
         self._check_failing_line(
-            configuration=configuration_with_instruction_in_each_phase_with_implementation_error(
+            configuration=configuration_with_instruction_in_each_phase_with_internal_error(
                 name_of_failing_instruction),
             phases=phase_identifier.ALL_WITH_INSTRUCTIONS,
             invalid_line_cases=[
@@ -220,7 +220,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
-                                     FullExeResultStatus.IMPLEMENTATION_ERROR))),
+                                     FullExeResultStatus.INTERNAL_ERROR))),
             ])
 
     def test_instruction_validation_fails(self):
@@ -282,7 +282,7 @@ def configuration_with_instruction_in_each_phase_with_failing_validation(
     return configuration_for_instruction_set(instruction_set)
 
 
-def configuration_with_instruction_in_each_phase_with_implementation_error(
+def configuration_with_instruction_in_each_phase_with_internal_error(
         instruction_name: str) -> sut.Configuration:
     instr_setup_factory = InstructionWithImplementationErrorFactory()
     instruction_set = InstructionsSetup(

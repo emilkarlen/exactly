@@ -39,7 +39,7 @@ def execute_phase(phase_contents: SectionContents,
     Exceptions raised by this object are not handled.
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
-    Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
+    Exceptions raised by this object are translated to INTERNAL_ERROR.
     :return: None, if there was no error. Otherwise, the first error.
     """
     failure = execute_phase_prim(phase_contents,
@@ -75,7 +75,7 @@ def execute_phase_prim(phase_contents: SectionContents,
     Exceptions raised by this object are not handled.
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
-    Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
+    Exceptions raised by this object are translated to INTERNAL_ERROR.
     :return: None, if there was no error. Otherwise, the first error.
     """
     for element in phase_contents.elements:
@@ -107,12 +107,12 @@ class PhaseStepFailureResultConstructor:
                                 PhaseFailureInfo(self.step,
                                                  failure_details))
 
-    def implementation_error(self, ex: Exception) -> PhaseStepFailure:
-        return self.apply(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+    def internal_error(self, ex: Exception) -> PhaseStepFailure:
+        return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,
                           FailureDetails.new_exception(ex))
 
-    def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
-        return self.apply(ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+    def internal_error_msg(self, msg: str) -> PhaseStepFailure:
+        return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,
                           FailureDetails.new_constant_message(msg))
 
 
@@ -134,7 +134,7 @@ def run_instructions_phase_step(step: PhaseStep,
 T = TypeVar('T')
 
 
-def execute_action_and_catch_implementation_exception(action_that_raises_phase_step_failure_exception: Callable[[], T],
+def execute_action_and_catch_internal_error_exception(action_that_raises_phase_step_failure_exception: Callable[[], T],
                                                       failure_con: PhaseStepFailureResultConstructor
                                                       ) -> T:
     """
@@ -146,4 +146,4 @@ def execute_action_and_catch_implementation_exception(action_that_raises_phase_s
     except PhaseStepFailureException:
         raise
     except Exception as ex:
-        raise PhaseStepFailureException(failure_con.implementation_error(ex))
+        raise PhaseStepFailureException(failure_con.internal_error(ex))

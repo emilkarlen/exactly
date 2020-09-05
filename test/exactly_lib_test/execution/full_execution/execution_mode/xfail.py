@@ -129,7 +129,7 @@ class Test(TestCaseBase):
                 [phase_step.CONFIGURATION__MAIN],
             ))
 
-    def test_with_implementation_error(self):
+    def test_with_internal_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(TestCaseStatus.FAIL)) \
@@ -141,7 +141,7 @@ class Test(TestCaseBase):
                         execute_test_action=execute_action_that_returns_exit_code(128)),
             Expectation(
                 asrt_result.matches2(
-                    FullExeResultStatus.IMPLEMENTATION_ERROR,
+                    FullExeResultStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(128),
                     ExpectedFailureForInstructionFailure.new_with_exception(

@@ -97,7 +97,7 @@ class TestImplementationError(TestCaseBase):
             Arrangement(test_case),
             Expectation(
                 asrt_result.matches2(
-                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(

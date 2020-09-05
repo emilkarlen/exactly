@@ -50,7 +50,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_setup_main_step(self):
+    def test_internal_error_in_setup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
@@ -60,7 +60,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -120,7 +120,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_before_assert_main_step(self):
+    def test_internal_error_in_before_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.BEFORE_ASSERT,
                  test.before_assert_phase_instruction_that(
@@ -130,7 +130,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(12)),
             Expectation(
                 asrt_result.matches2(
-                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(12),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -250,7 +250,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_assert_main_step(self):
+    def test_internal_error_in_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.ASSERT,
                  test.assert_phase_instruction_that(
@@ -260,7 +260,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
                     ExpectedFailureForInstructionFailure.new_with_exception(
@@ -338,7 +338,7 @@ class Test(TestCaseBase):
                  ],
             ))
 
-    def test_implementation_error_in_cleanup_main_step(self):
+    def test_internal_error_in_cleanup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
@@ -348,7 +348,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
                 asrt_result.matches2(
-                    ExecutionFailureStatus.IMPLEMENTATION_ERROR,
+                    ExecutionFailureStatus.INTERNAL_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
                     ExpectedFailureForInstructionFailure.new_with_exception(

@@ -21,7 +21,7 @@ FAIL_STATUSES = {FullExeResultStatus.FAIL,
 
 ERROR_STATUSES = {FullExeResultStatus.VALIDATION_ERROR,
                   FullExeResultStatus.HARD_ERROR,
-                  FullExeResultStatus.IMPLEMENTATION_ERROR,
+                  FullExeResultStatus.INTERNAL_ERROR,
                   }
 
 NON_PASS_STATUSES = FAIL_STATUSES.union(ERROR_STATUSES)
