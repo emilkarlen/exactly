@@ -1,12 +1,17 @@
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from typing import List
+
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.str_ import english_text
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -16,27 +21,28 @@ class _Documentation(SyntaxElementDocumentation):
                          syntax_elements.LIST_SYNTAX_ELEMENT)
 
         self._tp = TextParser({
-            'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
-            'list_type': formatting.keyword(types.LIST_TYPE_INFO.name.singular),
-            'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+            'string_type': types.STRING_TYPE_INFO.name,
+            'list_type': types.LIST_TYPE_INFO.name,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+            'to_string_types': english_text.or_sequence([
+                dt.singular_name for dt in types.DATA_TYPES_WITH_STRING_CONVERSION
+            ]),
         })
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            InvokationVariant(
-                cl_syntax.cl_syntax_for_args(self._cl_arguments())
-            )
+            invokation_variant_from_args(self._cl_arguments())
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             self._symbol_reference_sed(),
         ]
 
-    def main_description_rest_paragraphs(self) -> list:
+    def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         return []
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         info_refs = cross_reference_id_list([
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
@@ -53,7 +59,7 @@ class _Documentation(SyntaxElementDocumentation):
                                         self._tp.fnap(_SYMBOL_REFERENCE_DESCRIPTION))
 
     @staticmethod
-    def _cl_arguments() -> list:
+    def _cl_arguments() -> List[a.ArgumentUsage]:
         return [
             a.Choice(a.Multiplicity.ZERO_OR_MORE,
                      [
@@ -66,9 +72,9 @@ class _Documentation(SyntaxElementDocumentation):
 DOCUMENTATION = _Documentation()
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
-A reference to a {symbol} defined as either {string_type} or {list_type}.
+A reference to a {symbol} defined as either {to_string_types}.
 
 
 If it is a {list_type}, it is concatenated with the surrounding elements -
-lists cannot be nested.
+{list_type:s} cannot be nested.
 """
