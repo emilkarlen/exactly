@@ -35,6 +35,6 @@ MATCHES_FULL_OPTION = a.option('full')
 
 SELECTION_OPTION = a.option('selection')
 
-PRUNE_OPTION = a.option('prune')
+PRUNE_OPTION = a.option('with-pruned')
 
 QUANTIFICATION_OVER_FILE_ARGUMENT = 'file'

@@ -22,5 +22,5 @@ def file-matcher DIR_CONTAINS_NON_EMPTY_DIRS =
 
 
 dir-contents . -recursive
-    -prune DIR_CONTAINS_NON_EMPTY_DIRS
+    -with-pruned DIR_CONTAINS_NON_EMPTY_DIRS
     empty

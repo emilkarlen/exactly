@@ -5,5 +5,15 @@ file PRUNE/regular
 [assert]
 
 dir-contents . -recursive
-               ( -prune name 'PRUNE' num-files == 1 ) &&
+               ( -with-pruned
+                   name 'PRUNE'
+                   num-files == 1
+               ) &&
+               num-files == 2
+
+
+dir-contents . -recursive
+               -with-pruned
+                   name 'PRUNE'
+                   num-files == 1 &&
                num-files == 2
