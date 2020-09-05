@@ -44,8 +44,7 @@ setup(
         'Topic :: Software Development :: Testing',
         'Topic :: System :: Systems Administration',
         'Environment :: Console',
-        'Operating System :: POSIX :: Linux',
-        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX',
     ],
     python_requires='>={}'.format(program_info.PYTHON_VERSION__MIN),
     entry_points={
