@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements, types
@@ -48,27 +48,23 @@ class _HdsConcept(ConceptDocumentation):
             'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
             'conf_params': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
             'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
+            'Note': misc_texts.NOTE_LINE_HEADER,
         })
 
     def purpose(self) -> DescriptionWithSubSections:
-        rest_paragraphs = []
-        rest_paragraphs += self._tp.fnap(_MAIN_DESCRIPTION_REST)
-        rest_paragraphs += self._directory_listing()
-
         sub_sections = [
-            self._section(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name.capitalize(),
-                          _CONFIGURATION_PARAMETER),
-            self._section('Relative paths',
-                          _RELATIVITY),
-            self._section(self._tp.format(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.plural.capitalize()),
-                          _BUILTIN_SYMBOL),
+            self._tp.section(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name.capitalize(),
+                             _CONFIGURATION_PARAMETER),
+            self._tp.section('Relative paths',
+                             _RELATIVITY),
+            self._tp.section(self._tp.format(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.plural.capitalize()),
+                             _BUILTIN_SYMBOL),
+            docs.section('Directories',
+                         self._directory_listing()),
         ]
         return DescriptionWithSubSections(self.single_line_description(),
-                                          SectionContents(rest_paragraphs, sub_sections))
-
-    def _section(self, header: str, text_to_format: str) -> docs.Section:
-        return docs.section(header,
-                            self._tp.fnap(text_to_format))
+                                          SectionContents(self._tp.fnap(_MAIN_DESCRIPTION_REST),
+                                                          sub_sections))
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = [
@@ -147,11 +143,16 @@ _ALL_DIRECTORIES = (
 )
 
 _MAIN_DESCRIPTION_REST = """\
-Typically, the directories in the {hds_concept} ({HDS}) exist before the test case is executed.
+The directories in the {hds_concept} ({HDS}) exist before the test case is executed.
 They contain files read by, but not modified by, the test case.
 
 
-Directories:
+{program_name} prevents modification of the contents of these directories,
+by preventing them from being used by modification operations.
+
+
+{Note} {program_name} cannot prevent an external program from
+modifying their contents.
 """
 
 _CONFIGURATION_PARAMETER = """
