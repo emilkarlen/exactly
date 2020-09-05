@@ -80,7 +80,7 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                   WithAssertPhasePurpose):
-    PROPERTIES = a.Named('PROPERTIES')
+    PROPERTIES = a.Named('FILE-PROPERTIES')
 
     def __init__(self, name: str):
         self.negation_argument = a.Constant(NEGATION_OPERATOR)
