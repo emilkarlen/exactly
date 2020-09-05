@@ -27,9 +27,11 @@ class _ActorConcept(ConceptDocumentation):
             'actor_instruction': formatting.InstructionName(instruction_names.ACTOR_INSTRUCTION_NAME),
             'act': phase_infos.ACT.name,
             'default_actor': actors.DEFAULT_ACTOR_SINGLE_LINE_VALUE,
+            'null_actor': formatting.entity(actors.NULL_ACTOR.singular_name),
             'actor_conf_param': formatting.conf_param_(conf_params.ACTOR_CONF_PARAM_INFO),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
             'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
+            'space': misc_texts.WHITESPACE,
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION)
         return DescriptionWithSubSections(self.single_line_description(),
@@ -72,6 +74,11 @@ A test case uses a single {actor}.
 
 
 Default {actor} is: {default_actor}.
+
+
+If the contents of {act:syntax} is empty,
+or consists of only {space} and comment lines,
+then the {null_actor} {actor} is used.
 
 
 Other {actor:s} are configured via the {actor_conf_param} {conf_param},
