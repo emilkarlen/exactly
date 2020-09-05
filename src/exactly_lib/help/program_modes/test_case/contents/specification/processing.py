@@ -127,11 +127,8 @@ or if it exits with a non-zero {exit_code}.
 """
 
 PURPOSE_OF_SYNTAX_CHECKING = """\
-Checks the syntax of all elements in the test case file
--
-phases,
-their {instruction:s},
-and the {ATC} of the {act_phase:syntax} phase.
+Checks the syntax of all elements in the test case file,
+except for the {act_phase:syntax} phase.
 
 
 Processes {directive:s} ({including}).
@@ -143,7 +140,8 @@ or if a {directive} fails.
 """
 
 PURPOSE_OF_VALIDATION = """\
-Checks references to {symbol:s} and external resources (files).
+Checks references to {symbol:s} and external resources (files),
+and the syntax of the {act_phase:syntax} phase.
 """
 
 FAILURE_CONDITION_OF_VALIDATION = """\
