@@ -41,5 +41,5 @@ _OUTCOME = """\
 {PASS} if the {exit_code} is zero,
 or {ignore_exit_code_option} is given.
 
-Otherwise, {FAIL}.
+Otherwise {FAIL}.
 """
