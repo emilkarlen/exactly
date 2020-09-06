@@ -31,7 +31,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.str_ import str_constructor
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 _OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
 
@@ -57,8 +57,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def single_line_description(self) -> str:
         return 'Tests the ' + _PROPERTY_NAME
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION)
+    def outcome(self) -> SectionContents:
+        return self._tp.section_contents(_OUTCOME)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -171,7 +171,7 @@ def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
 
 _PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)
 
-_MAIN_DESCRIPTION = """\
+_OUTCOME = """\
 {PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_MATCHER}.
 """
 
