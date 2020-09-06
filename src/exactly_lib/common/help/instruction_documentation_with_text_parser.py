@@ -6,6 +6,7 @@ from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -61,7 +62,8 @@ class InstructionDocumentationWithSplittedPartsForRestDocBase(InstructionDocumen
 class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
     InstructionDocumentationWithSplittedPartsForRestDocBase,
     WithAssertPhasePurpose):
-    def __init__(self, instruction_name: str,
+    def __init__(self,
+                 instruction_name: str,
                  format_map: Dict[str, str],
                  is_in_assert_phase: bool):
         the_format_map = {
@@ -76,11 +78,19 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
     def assert_phase_purpose(self) -> AssertPhasePurpose:
         return AssertPhasePurpose.HELPER
 
-    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
+    def notes(self) -> SectionContents:
+        paragraphs = self._notes__specific()
+
         if self._is_in_assert_phase:
-            return self._tp.fnap(_NOT_AN_ASSERTION_IN_ASSERT_PHASE)
-        else:
-            return []
+            paragraphs += self._tp.fnap(_NOT_AN_ASSERTION_IN_ASSERT_PHASE)
+
+        return SectionContents(paragraphs)
+
+    def _notes__specific(self) -> List[ParagraphItem]:
+        return []
+
+    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
+        return []
 
 
 _NOT_AN_ASSERTION_IN_ASSERT_PHASE = """\

@@ -7,8 +7,9 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 
 
 def setup(instruction_name: str,
+          is_in_assert_phase: bool,
           mk_parser: Callable[[InstructionPartsParser], InstructionParser],
           ) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         mk_parser(parser.PARTS_PARSER),
-        doc.TheInstructionDocumentation(instruction_name))
+        doc.TheInstructionDocumentation(instruction_name, is_in_assert_phase))

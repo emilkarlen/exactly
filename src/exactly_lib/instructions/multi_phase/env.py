@@ -40,7 +40,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return 'Manipulates environment variables'
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST_BODY)
+        return []
+
+    def _notes__specific(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_NOTES)
 
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
@@ -231,6 +234,6 @@ Elements of the form "${{var_name}}" in {VALUE}, will be replaced with the value
 or the empty string, if there is no environment variable with that name.
 """
 
-_MAIN_DESCRIPTION_REST_BODY = """\
+_NOTES = """\
 The manipulation affects all following phases.
 """

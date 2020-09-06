@@ -16,7 +16,6 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.table import TableCell
 from . import type_setup, type_parser
 from .type_setup import TypeSetup
@@ -24,7 +23,7 @@ from .type_setup import TypeSetup
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
                                   IsAHelperIfInAssertPhase):
-    def __init__(self, name: str):
+    def __init__(self, name: str, is_in_assert_phase: bool):
         self.name = syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
         self.string_value = syntax_elements.STRING_SYNTAX_ELEMENT.argument
         super().__init__(name,
@@ -32,7 +31,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                              'NAME': self.name.name,
                              'SYMBOL': concepts.SYMBOL_CONCEPT_INFO.name,
                          },
-                         False)
+                         is_in_assert_phase)
 
     def single_line_description(self) -> str:
         return self._tp.format('Defines {SYMBOL:a}')
@@ -40,8 +39,8 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _main_description_rest_body(self) -> List[ParagraphItem]:
         return []
 
-    def notes(self) -> SectionContents:
-        return self._tp.section_contents(_NOTES)
+    def _notes__specific(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
