@@ -17,6 +17,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -37,8 +38,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def single_line_description(self) -> str:
         return self._tp.format(_SINGLE_LINE_DESCRIPTION)
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return single_eq_invokation_variants(self._INTEGER_ARG_NAME)
@@ -78,7 +79,7 @@ class _Instruction(ConfigurationPhaseInstruction):
 _SINGLE_LINE_DESCRIPTION = """\
 Sets the timeout of sub processes executed by instructions and the {phase[act]} phase."""
 
-_MAIN_DESCRIPTION_REST = """\
+_NOTES = """\
 Default: {default_value_str}
 
 
