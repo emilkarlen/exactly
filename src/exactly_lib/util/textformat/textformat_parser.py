@@ -1,7 +1,7 @@
 from typing import List, Callable, Any, Mapping, Optional
 
 from exactly_lib.util.str_.formatter import StringFormatter
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.parse import normalize_and_parse, split_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -28,6 +28,14 @@ class TextParser:
     def paras(self, s: str, extra: Optional[Mapping[str, Any]] = None,
               ) -> List[ParagraphItem]:
         return docs.paras(self.format(s, extra))
+
+    def fap(self, s: str, extra: Optional[Mapping[str, Any]] = None,
+            ) -> List[ParagraphItem]:
+        """
+        1. Text replacements according to `format_map` given to the constructor.
+        2. parse result
+        """
+        return split_and_parse(self.format(s, extra))
 
     def fnap(self, s: str, extra: Optional[Mapping[str, Any]] = None,
              ) -> List[ParagraphItem]:

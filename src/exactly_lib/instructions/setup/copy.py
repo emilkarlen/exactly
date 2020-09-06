@@ -31,6 +31,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -80,7 +81,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.format('Copies files and directories into the {sandbox}')
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
+        return self._tp.fap(_MAIN_DESCRIPTION_REST)
+
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -248,12 +252,16 @@ _MAIN_DESCRIPTION_REST = """\
     (the basename of {SOURCE} is not preserved).
 
 
+    Intermediate directories as created, if required.
+
+
   * If {DESTINATION} does exist
   
     it must be a directory, and {SOURCE} is copied into that directory,
     as a file/directory with the basename of {SOURCE}.
+"""
 
-
+_NOTES = """\
 If given, {DESTINATION} must appear on the same line as {SOURCE}.
 
 

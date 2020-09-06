@@ -59,6 +59,12 @@ def normalize_and_parse(text: str,
     return _Parser(normalized_lines, list_settings).apply()
 
 
+def split_and_parse(text: str,
+                    list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> List[ParagraphItem]:
+    lines = list(text.splitlines())
+    return _Parser(lines, list_settings).apply()
+
+
 def _strip_empty_lines(space_normalized_lines: List[str]):
     while space_normalized_lines and not space_normalized_lines[0]:
         del space_normalized_lines[0]
