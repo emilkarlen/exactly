@@ -26,7 +26,5 @@ class TheDocumentation(TheInstructionDocumentationBase, WithAssertPhasePurpose):
 
 
 _OUTCOME = """\
-The assertion {PASS} if, and only if, the exit code from {COMMAND} is 0.
-
-All other exit codes makes the assertion {FAIL}.
+{PASS} if, and only if, the exit code from {COMMAND} is 0.
 """
