@@ -30,6 +30,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Fixed
 
  - Syntax error messages - Include instruction name
+ - Help text of instruction `[assert]`/`exists`
  - CLI case:  `--preprocessor` - Detection of invalid argument syntax
  - CLI case:  `--actor`        - Detection of invalid argument syntax
  - CLI suite: `--actor`        - Detection of invalid argument syntax

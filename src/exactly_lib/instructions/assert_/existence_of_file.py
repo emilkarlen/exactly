@@ -11,6 +11,7 @@ from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
+from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
@@ -47,7 +48,7 @@ from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.str_ import str_constructor
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -88,13 +89,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
             'PATH': _PATH_ARGUMENT.name,
             'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
             'NEGATION_OPERATOR': NEGATION_OPERATOR,
+            'PASS': exit_values.EXECUTION__PASS.exit_identifier,
         })
 
     def single_line_description(self) -> str:
         return 'Tests the existence, and optionally properties, of a file'
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
+
+    def outcome(self) -> SectionContents:
+        return SectionContents(self._tp.fap(_OUTCOME))
 
     def invokation_variants(self) -> List[InvokationVariant]:
         negation_arguments = [negation_of_predicate.optional_negation_argument_usage()]
@@ -334,19 +339,22 @@ _PROPERTIES_DESCRIPTION = """\
 Applies a {FILE_MATCHER} on {PATH}, if it exists.
 """
 
-_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION = """\
+_NOTES = """\
 Symbolic links are not followed in the test of existence
 (so a broken symbolic link is considered to exist).
+"""
+
+_OUTCOME = """\
+  * When not negated
+  
+    {PASS} if, and only if:
+
+    {PATH} exists, and has the given properties.
 
 
-When not negated, the assertion will
-PASS if, and only if:
+  * When negated
 
-{PATH} exists, and has the specified properties.
+    {PASS} if, and only if:
 
-
-When negated, the assertion will
-FAIL if, and only if:
-
-{PATH} does not exist, or {PATH} does not have the specified properties.
+    {PATH} does not exist, or {PATH} does not have the given properties.
 """
