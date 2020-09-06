@@ -96,7 +96,7 @@ class _PgmAndArgs(SyntaxElementDescriptionTree):
     def _pgm_for_arg_list_variant(self) -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY, self._pgm_for_arg_list.element),
-            a.Single(a.Multiplicity.ZERO_OR_MORE, syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.argument),
+            syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.zero_or_more,
         ],
             _TEXT_PARSER.fnap(_PGM_WITH_ARG_LIST_INVOKATION_VARIANT_DESCRIPTION))
 

@@ -11,15 +11,14 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_
     SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def documentation() -> SyntaxElementDocumentation:
     executable_arg = syntax_elements.PATH_SYNTAX_ELEMENT.single_mandatory
-    optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE,
-                                      syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.argument)
+    optional_arguments_arg = syntax_elements.PROGRAM_ARGUMENT_SYNTAX_ELEMENT.zero_or_more
+
     invokation_variants = [
         invokation_variant_from_args([executable_arg,
                                       optional_arguments_arg],
