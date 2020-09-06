@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance, \
+    suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
     INVALID_SYNTAX_CASES
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import src2
@@ -23,7 +24,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     suites = []
     for test_case in test_cases:
         suites.append(test_case(conf))
-    suites.append(suite_for_documentation_instance(conf.documentation()))
+    suites.append(suite_for_instruction_documentation(conf.documentation()))
     return unittest.TestSuite(suites)
 
 

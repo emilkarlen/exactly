@@ -9,7 +9,8 @@ from exactly_lib_test.instructions.multi_phase.define_symbol import \
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name', False)),
+        suite_for_instruction_documentation(doc.TheInstructionDocumentation('instruction name', True)),
         common_failing_cases.suite(),
         string_type.suite(),
         path_type.suite(),

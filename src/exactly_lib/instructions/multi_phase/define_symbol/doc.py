@@ -16,6 +16,7 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import IsAHelp
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.table import TableCell
 from . import type_setup, type_parser
 from .type_setup import TypeSetup
@@ -37,7 +38,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return self._tp.format('Defines {SYMBOL:a}')
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
+        return []
+
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -95,10 +99,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
-_MAIN_DESCRIPTION_REST = """\
-Defines the symbol {NAME} to be a value of the given type.
-
-
+_NOTES = """\
 {NAME} must not have been defined earlier.
 
 
