@@ -53,7 +53,7 @@ class InstructionDocumentationWithSplittedPartsForRestDocBase(InstructionDocumen
         return []
 
     def _main_description_rest_body(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
+        return []
 
     def _main_description_rest_epilogue(self) -> List[ParagraphItem]:
         return []

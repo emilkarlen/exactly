@@ -36,8 +36,8 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def single_line_description(self) -> str:
         return self._tp.format('Creates a directory')
 
-    def _main_description_rest_body(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST_BODY)
+    def _notes__specific(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
@@ -120,7 +120,7 @@ _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 
-_MAIN_DESCRIPTION_REST_BODY = """\
+_NOTES = """\
 Intermediate directories as created, if required.
 
 
