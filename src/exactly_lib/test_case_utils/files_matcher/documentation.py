@@ -96,6 +96,8 @@ _TP = TextParser({
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'symbolic_link': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK].name,
     'matches_full_option': option_syntax.option_syntax(config.MATCHES_FULL_OPTION.name),
+    'prune_option': option_syntax.option_syntax(config.PRUNE_OPTION.name),
+    'selection_option': option_syntax.option_syntax(config.SELECTION_OPTION.name),
 })
 
 _MATCHES_DESCRIPTION = """\
@@ -109,6 +111,10 @@ than those in {FILES_CONDITION}.
 
 _SELECTION_DESCRIPTION = """\
 Applies {FILES_MATCHER} to the sub set of {element:s} matched by {FILE_MATCHER}.
+
+
+{NOTE} If combined with {prune_option} - pruning is done before {selection_option},
+regardless of their mutual order.
 """
 
 _PRUNE_DESCRIPTION = """\
