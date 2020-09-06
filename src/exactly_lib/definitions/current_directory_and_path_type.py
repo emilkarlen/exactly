@@ -37,6 +37,7 @@ def def_instruction_rel_cd_description(path_arg_name: str) -> List[ParagraphItem
         'path_arg': path_arg_name,
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
         'symbols_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
+        'Note': misc_texts.NOTE_LINE_HEADER,
     })
     return tp.fnap(_DEF_INSTRUCTION_REL_CD_DESCRIPTION)
 
@@ -47,7 +48,7 @@ def cd_instruction_section_on_def_instruction() -> List[ParagraphItem]:
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
         'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
-        'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+        'path_type': types.PATH_TYPE_INFO.name,
     })
     return tp.fnap(_CD_INSTRUCTION_SECTION_ON_DEF_INSTRUCTION)
 
@@ -58,9 +59,10 @@ def path_type_path_rendering() -> SectionItem:
         'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
         'rel_cd_option': formatting.cli_option(path.REL_CWD_OPTION),
-        'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+        'path_type': types.PATH_TYPE_INFO.name,
         'external_program': misc_texts.EXTERNAL_PROGRAM,
         'os_process': misc_texts.OS_PROCESS_NAME,
+        'Note': misc_texts.NOTE_LINE_HEADER,
     })
     return Section(tp.text(_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER),
                    tp.section_contents(_PATH_TYPE_PATH_RENDERING_DESCRIPTION))
@@ -81,7 +83,7 @@ not when it is defined.
 """
 
 _DEF_INSTRUCTION_REL_CD_DESCRIPTION = """\
-NOTE: When a {path_arg} value is defined to be relative the {current_directory_concept},
+{Note} When a {path_arg} value is defined to be relative the {current_directory_concept},
 it means that it is relative the directory that is current when the symbol is REFERENCED,
 
 not when it is defined.
@@ -97,7 +99,7 @@ This means, e.g., that values can be passed to {external_program:s},
 which may use them without consideration of the current directory of the {os_process}.
 
 
-Note though, that a {path_type} value that is defined using the {def_instruction} instruction
+{Note} {path_type:a/u} value that is defined using the {def_instruction} instruction
 with relativity of {current_directory_concept}
 ({rel_cd_option}) is evaluated when it is REFERENCED,
 
