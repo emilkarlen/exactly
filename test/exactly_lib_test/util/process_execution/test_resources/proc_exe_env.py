@@ -6,7 +6,6 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 def proc_exe_env_for_test(
         timeout_in_seconds: Optional[int] = 30,
         environ: Optional[Dict[str, str]] = None,
-
 ) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(
         timeout_in_seconds=timeout_in_seconds,

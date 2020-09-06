@@ -12,7 +12,9 @@ file interesting-records.txt =
      -stdout-from
       % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
 
-$ touch file
+% touch file
+
+$ ls *.txt
 
 file root-files.txt =
      -stdout-from
@@ -29,6 +31,8 @@ $ echo ${PATH} > output.txt
 [assert]
 
 run my-assert-helper-program
+
+% stat root-files.txt
 
 $ test -f root-files.txt
 
@@ -49,4 +53,4 @@ EOF
 
 [cleanup]
 
-run % mysql @[MYSQL_BATCH]@ :> drop table my_table
+% mysql @[MYSQL_BATCH]@ :> drop table my_table

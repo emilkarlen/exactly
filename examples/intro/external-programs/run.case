@@ -1,11 +1,20 @@
 #
 # The "run" instruction can be used in all phases except "act".
 #
+# It has two shortcuts - "%" and "$"
+# for running programs in the OS PATH and shell commands.
+#
+#
+# In the "act" phase - the default "actor" runs an arbitrary PROGRAM.
+#
 
 [setup]
 
+def string THE_FILE = the-file
 
-run my-setup-helper-program with arguments
+def program STAT = % stat
+
+run % touch @[THE_FILE]@
 
 run -python -existing-file my-py-setup-helper.py 'with argument'
 
@@ -17,11 +26,13 @@ run -ignore-exit-code % stat non-existing-file
 [act]
 
 
-system-under-test
+@ STAT @[THE_FILE]@
 
 
 [assert]
 
+
+exit-code == 0
 
 #
 # Assertion passes if exit code from the program is 0,

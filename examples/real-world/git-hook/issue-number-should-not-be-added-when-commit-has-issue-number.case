@@ -4,17 +4,17 @@
 including repo-in-cwd-with-installed-commit-hook.setup
 
 
-$ git checkout -b "AB-123-branch-with-issue-number"
+% git checkout -b AB-123-branch-with-issue-number
 
 file file-to-add
 
-$ git add file-to-add
+% git add file-to-add
 
 
 [act]
 
 
-$ git commit -m "AB-123: commit message with issue number"
+% git commit -m "AB-123: commit message with issue number"
 
 
 [assert]

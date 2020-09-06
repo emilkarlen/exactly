@@ -11,6 +11,14 @@ sys.stdout.writelines(sys.stdin.readlines())
 """
 
 
+def copy_stdin_to_stderr_and_exit_with(exit_code: int) -> str:
+    return """\
+import sys
+sys.stderr.write(sys.stdin.read())
+sys.exit({})
+""".format(exit_code)
+
+
 def py_pgm_that_exits_with_1st_value_on_command_line(stderr_output: str) -> str:
     return """\
 import sys
@@ -33,6 +41,14 @@ sys.exit({exit_code})
 """.format(stdout=stdout_output,
            stderr=stderr_output,
            exit_code=exit_code)
+
+
+def exit_with(exit_code: int = 0) -> str:
+    return """\
+import sys
+
+sys.exit({})
+""".format(exit_code)
 
 
 def py_pgm_that_writes_os_linesep_to_stdout() -> str:

@@ -1,0 +1,23 @@
+#
+# The "$" instruction executes a program accessible via the OS PATH.
+#
+
+[setup]
+
+$ touch empty-file.txt
+
+[act]
+
+% ls
+
+[assert]
+
+stdout equals <<-
+empty-file.txt
+-
+
+#
+# Assertion passes if exit code from the program is 0.
+#
+
+% stat empty-file.txt

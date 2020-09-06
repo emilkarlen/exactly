@@ -309,7 +309,9 @@ The following case shows some examples, but *doesn't make sense* tough::
          -stdout-from
           % mysql @[MYSQL_BATCH]@ :> select * from a_table where name = "interesting"
 
-    $ touch file
+    % touch file
+
+    $ ls *.txt
 
     file root-files.txt =
          -stdout-from
@@ -326,6 +328,8 @@ The following case shows some examples, but *doesn't make sense* tough::
     [assert]
 
     run my-assert-helper-program
+
+    % stat root-files.txt
 
     $ test -f root-files.txt
 
@@ -346,7 +350,7 @@ The following case shows some examples, but *doesn't make sense* tough::
 
     [cleanup]
 
-    run % mysql @[MYSQL_BATCH]@ :> drop table my_table
+    % mysql @[MYSQL_BATCH]@ :> drop table my_table
 
 
 A program executed in ``[assert]`` becomes an assertion that depends on the exit code.
@@ -523,13 +527,13 @@ to commit messages::
 
     ## Setup a (non empty) git repo.
 
-    $ git init
+    % git init
 
     file file-in-repo = "A file in the repo"
 
-    $ git add file-in-repo
+    % git add file-in-repo
 
-    $ git commit -m "commit of file already in repo"
+    % git commit -m "commit of file already in repo"
 
 
     ## Install the commit hook to test.
@@ -540,17 +544,17 @@ to commit messages::
     ## Setup a branch, with issue number in its name,
     # and a file to commit.
 
-    $ git checkout -b "@[ISSUE_ID]@-branch-with-issue-id"
+    % git checkout -b @[ISSUE_ID]@-branch-with-issue-id
 
     file file-to-add = "A file to add on the branch"
 
-    $ git add file-to-add
+    % git add file-to-add
 
 
     [act]
 
 
-    $ git commit -m "@[MESSAGE_WO_ISSUE_ID]@"
+    % git commit -m @[MESSAGE_WO_ISSUE_ID]@
 
 
     [assert]

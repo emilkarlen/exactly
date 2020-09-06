@@ -94,7 +94,7 @@ def expectation(validation: ValidationAssertions = validation_utils.all_validati
                 source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
                 assertion_on_instruction_environment:
-                ValueAssertion[InstructionEnvironmentForPostSdsStep] = asrt.anything_goes(),
+                ValueAssertion[InstructionApplicationEnvironment] = asrt.anything_goes(),
                 ) -> Expectation[T]:
     return Expectation(
         validation_pre_sds=validation.pre_sds,

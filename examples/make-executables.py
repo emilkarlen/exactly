@@ -167,7 +167,6 @@ INTRO_FILES = itertools.chain.from_iterable(
         do_nothing_list(external_programs_dir,
                         [MY_ASSERT_HELPER_PROGRAM,
                          MY_SETUP_HELPER_PROGRAM,
-                         SYSTEM_UNDER_TEST,
                          ]),
 
         do_nothing_list(home_dir / 'bin',

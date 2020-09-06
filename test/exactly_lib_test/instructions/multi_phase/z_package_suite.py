@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.instructions.multi_phase import \
     new_dir, change_dir, \
-    env, shell
+    env, shell, sys_cmd
 from exactly_lib_test.instructions.multi_phase.define_symbol import z_package_suite as define_symbol
 from exactly_lib_test.instructions.multi_phase.new_file import z_package_suite as new_file
 from exactly_lib_test.instructions.multi_phase.run_program import z_package_suite as run_program
@@ -17,6 +17,7 @@ def suite() -> unittest.TestSuite:
         new_file.suite(),
         run_program.suite(),
         env.suite(),
+        sys_cmd.suite(),
         shell.suite(),
         define_symbol.suite(),
     ])

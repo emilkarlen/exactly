@@ -11,3 +11,4 @@ stdout_stderr
 file-existence
 env-var
 run
+programs

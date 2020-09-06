@@ -28,6 +28,11 @@ class SyntaxElementInfo(SingularNameAndCrossReferenceId):
         return a.Single(a.Multiplicity.OPTIONAL,
                         self.argument)
 
+    @property
+    def zero_or_more(self) -> a.ArgumentUsage:
+        return a.Single(a.Multiplicity.ZERO_OR_MORE,
+                        self.argument)
+
 
 def syntax_element_cross_ref(syntax_element_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,

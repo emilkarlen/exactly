@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.hard_error import HardErrorException
@@ -22,14 +24,20 @@ class CommandExecutorThatRecordsArguments(CommandExecutor):
 
 
 class CommandExecutorThatJustReturnsConstant(CommandExecutor):
-    def __init__(self, constant_return_value: int = 0):
+    def __init__(self,
+                 constant_return_value: int = 0,
+                 string_to_write_to_stderr: Optional[str] = None):
         self.constant_return_value = constant_return_value
+        self.string_to_write_to_stderr = string_to_write_to_stderr
 
     def execute(self,
                 command: Command,
                 settings: ProcessExecutionSettings,
                 files: StdFiles,
                 ) -> int:
+        if self.string_to_write_to_stderr is not None:
+            files.output.err.write(self.string_to_write_to_stderr)
+
         return self.constant_return_value
 
 

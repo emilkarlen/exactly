@@ -6,17 +6,17 @@ def string COMMIT_MESSAGE_WITHOUT_ISSUE = "commit message without issue number, 
 including repo-in-cwd-with-installed-commit-hook.setup
 
 
-$ git checkout -b "AB-123-branch-with-issue-number"
+% git checkout -b AB-123-branch-with-issue-number
 
 file file-to-add
 
-$ git add file-to-add
+% git add file-to-add
 
 
 [act]
 
 
-$ git commit -m "@[COMMIT_MESSAGE_WITHOUT_ISSUE]@"
+% git commit -m @[COMMIT_MESSAGE_WITHOUT_ISSUE]@
 
 
 [assert]

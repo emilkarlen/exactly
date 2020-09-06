@@ -7,6 +7,7 @@ from exactly_lib_test.instructions.assert_ import \
     new_file, \
     new_dir, \
     shell, \
+    sys_cmd, \
     env, \
     define_symbol
 from exactly_lib_test.instructions.assert_ import stdout, stderr
@@ -33,6 +34,7 @@ def suite() -> unittest.TestSuite:
         new_dir.suite(),
         change_dir.suite(),
         run.suite(),
+        sys_cmd.suite(),
         shell.suite(),
         env.suite(),
     ])

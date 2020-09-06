@@ -12,6 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import non_hds_pop
 from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, PlainTcdsActionFromTcdsAction
+from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
 class ArrangementBase:
@@ -31,7 +32,7 @@ class ArrangementWithSds(ArrangementBase):
                  non_hds_contents: non_hds_populator.NonHdsPopulator = non_hds_populator.empty(),
                  tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
-                 process_execution_settings=with_no_timeout(),
+                 process_execution_settings=proc_exe_env_for_test(),
                  post_sds_population_action: TcdsAction = TcdsAction(),
                  symbols: SymbolTable = None,
                  fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,

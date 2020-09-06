@@ -15,7 +15,7 @@ run -python -c :> print('This does some setup!')
 [act]
 
 
-system-under-test
+-python -c :> print('This is the Action To Check!')
 
 
 [assert]

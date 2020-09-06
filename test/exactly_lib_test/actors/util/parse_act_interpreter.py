@@ -24,7 +24,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args
+from exactly_lib_test.test_case_utils.program.test_resources import program_arguments
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
@@ -103,7 +103,7 @@ class TestWithoutExecution(unittest.TestCase):
             ),
             ArgumentsCase(
                 'special program argument',
-                source=command_cmd_line_args.remaining_part_of_current_line_as_literal(
+                source=program_arguments.remaining_part_of_current_line_as_literal(
                     string_with_invalid_quoting
                 ).as_argument_elements,
                 expected_arguments=[string_with_invalid_quoting],

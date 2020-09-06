@@ -31,7 +31,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources import arguments_buil
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line
-from exactly_lib_test.test_case_utils.program.test_resources.command_cmd_line_args import \
+from exactly_lib_test.test_case_utils.program.test_resources import program_arguments
+from exactly_lib_test.test_case_utils.program.test_resources.program_arguments import \
     remaining_part_of_current_line_as_literal
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
@@ -252,10 +253,8 @@ class TestSingleElement(unittest.TestCase):
 
                 _case = Case(
                     'default relativity SHOULD be CASE_HOME',
-                    ab.sequence([ab.option(
-                        syntax_elements.EXISTING_FILE_OPTION_NAME),
-                        rel_opt_conf.path_argument_of_rel_name(
-                            plain_file_name)]
+                    program_arguments.existing_file(
+                        rel_opt_conf.path_argument_of_rel_name(plain_file_name)
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
@@ -352,10 +351,8 @@ class TestSingleElement(unittest.TestCase):
 
                 _case = Case(
                     'default relativity SHOULD be CASE_HOME',
-                    ab.sequence([ab.option(
-                        syntax_elements.EXISTING_DIR_OPTION_NAME),
-                        rel_opt_conf.path_argument_of_rel_name(
-                            checked_file_name)]
+                    program_arguments.existing_dir(
+                        rel_opt_conf.path_argument_of_rel_name(checked_file_name)
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(
@@ -467,10 +464,8 @@ class TestSingleElement(unittest.TestCase):
 
                 _case = Case(
                     'default relativity SHOULD be CASE_HOME',
-                    ab.sequence([ab.option(
-                        syntax_elements.EXISTING_PATH_OPTION_NAME),
-                        rel_opt_conf.path_argument_of_rel_name(
-                            plain_file_name)]
+                    program_arguments.existing_path(
+                        rel_opt_conf.path_argument_of_rel_name(plain_file_name)
                     ).as_str,
                     Arrangement(rel_opt_conf.symbols.in_arrangement()),
                     Expectation(

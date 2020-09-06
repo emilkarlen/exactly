@@ -12,6 +12,7 @@ with exception of a "0." prefix until version 1 is released.
  - Interpreter actors - interpreter `% STRING [PROGRAM-ARGUMENT]...`
  - Interpreter actors - interpreter `-python [PROGRAM-ARGUMENT]...`
  - Instruction `conf`/`actor` - Ability to set the "null" actor
+ - Instruction `%`
 
 ### Changed
 
