@@ -34,7 +34,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 
 
-def _get_description_rest() -> Sequence[ParagraphItem]:
+def _get_outcome() -> Sequence[ParagraphItem]:
     return ()
 
 
@@ -45,7 +45,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSource),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name',
                                                                             'single line description',
-                                                                            _get_description_rest)),
+                                                                            _get_outcome)),
     ])
 
 

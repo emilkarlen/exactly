@@ -23,6 +23,7 @@ from exactly_lib.test_case_utils.parse import options as option_parsing
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 IGNORE_EXIT_CODE_OPTION_NAME = program_primitives.WITH_IGNORED_EXIT_CODE_OPTION_NAME
 
@@ -38,7 +39,7 @@ def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
     )
 
 
-NON_ASSERT_PHASE_DESCRIPTION_REST = texts.run_with_ignored_exit_code_option
+NON_ASSERT_PHASE_OUTCOME = texts.run_outcome__with_ignored_exit_code_option
 
 NON_ASSERT_PHASE_SINGLE_LINE_DESCRIPTION = 'Runs {program_type:a/q}'.format_map({
     'program_type': types.PROGRAM_TYPE_INFO.name
@@ -50,9 +51,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def __init__(self,
                  name: str,
                  single_line_description: str,
-                 description_rest: Callable[[], Sequence[ParagraphItem]],
+                 outcome: Callable[[], Sequence[ParagraphItem]],
                  ):
-        self.description_rest = description_rest
+        self._outcome = outcome
         super().__init__(name, {
             'program_type': types.PROGRAM_TYPE_INFO.name
         })
@@ -61,8 +62,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def single_line_description(self) -> str:
         return self._single_line_description
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return list(self.description_rest())
+    def outcome(self) -> SectionContents:
+        return SectionContents(list(self._outcome()))
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
@@ -71,6 +72,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                 a.Single(a.Multiplicity.MANDATORY, syntax_elements.PROGRAM_SYNTAX_ELEMENT.argument),
             ]),
         ]
+
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(texts.THE_PROGRAM_TYPE_MUST_TERMINATE_SENTENCE)
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_ref_list = [

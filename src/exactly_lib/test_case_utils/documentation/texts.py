@@ -25,20 +25,17 @@ _TP = TextParser({
 OUTPUT_ON_STDERR__HEADER = 'Output on ' + misc_texts.STDERR
 
 
-def run_with_ignored_exit_code_option() -> List[ParagraphItem]:
+def run_outcome__with_ignored_exit_code_option() -> List[ParagraphItem]:
     return _TP.fnap(_RUN_WITH_IGNORED_EXIT_CODE_OPTION)
 
 
-def run_with_ignored_exit_code_option__w_str_trans() -> List[ParagraphItem]:
+def run_description__with_ignored_exit_code_option__w_str_trans() -> List[ParagraphItem]:
     return _TP.fnap(_RUN_WITH_IGNORED_EXIT_CODE_OPTION__W_TRANSFORMATIONS)
 
 
 _RUN_WITH_IGNORED_EXIT_CODE_OPTION = """\
 The result is {HARD_ERROR} if the {exit_code} is non-zero,
 unless {ignore_exit_code_option} is given.
-
-
-{termination}
 """
 
 _RUN_WITH_IGNORED_EXIT_CODE_OPTION__W_TRANSFORMATIONS = """\

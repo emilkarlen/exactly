@@ -37,7 +37,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
             'stdin': misc_texts.STDIN,
             'stdout': misc_texts.STDOUT,
         })
-        return tp.fnap(_DESCRIPTION_REST) + texts.run_with_ignored_exit_code_option()
+        return tp.fnap(_DESCRIPTION_REST) + texts.run_outcome__with_ignored_exit_code_option()
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:

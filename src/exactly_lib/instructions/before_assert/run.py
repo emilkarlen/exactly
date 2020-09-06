@@ -8,4 +8,4 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         instruction_from_parts.Parser(run.parts_parser(instruction_name)),
         run.TheInstructionDocumentation(instruction_name,
                                         run.NON_ASSERT_PHASE_SINGLE_LINE_DESCRIPTION,
-                                        description_rest=run.NON_ASSERT_PHASE_DESCRIPTION_REST))
+                                        outcome=run.NON_ASSERT_PHASE_OUTCOME))
