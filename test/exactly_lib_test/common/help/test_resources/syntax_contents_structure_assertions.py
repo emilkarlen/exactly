@@ -6,10 +6,10 @@ is_invokation_variant = asrt.is_instance_with(
     InvokationVariant,
     asrt.And([
         asrt.sub_component('syntax',
-                           lambda x: x.syntax,
+                           lambda iv: iv.syntax,
                            asrt.IsInstance(str)),
         asrt.sub_component_sequence('description_rest',
-                                    lambda x: x.description_rest,
+                                    lambda iv: iv.description_rest,
                                     asrt_struct.is_paragraph_item)
     ]))
 
@@ -17,10 +17,13 @@ is_syntax_element_description = asrt.is_instance_with(
     SyntaxElementDescription,
     asrt.And([
         asrt.sub_component('name',
-                           lambda x: x.element_name,
+                           lambda sed: sed.element_name,
                            asrt.IsInstance(str)),
-        asrt.sub_component_sequence('description_rest',
-                                    lambda x: x.description_rest,
+        asrt.sub_component_sequence('before_invokation_variants',
+                                    lambda sed: sed.before_invokation_variants,
+                                    asrt_struct.is_paragraph_item),
+        asrt.sub_component_sequence('after_invokation_variants',
+                                    lambda sed: sed.after_invokation_variants,
                                     asrt_struct.is_paragraph_item),
         asrt.sub_component_sequence('invokation_variants',
                                     lambda sed: sed.invokation_variants,

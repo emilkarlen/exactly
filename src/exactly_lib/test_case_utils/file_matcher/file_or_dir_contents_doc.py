@@ -48,7 +48,7 @@ def get_dir_syntax_descriptions() -> Sequence[SyntaxElementDescription]:
 def get_traversal_options_sed() -> SyntaxElementDescription:
     return SyntaxElementDescription(
         file_or_dir_contents.DIR_FILE_SET_OPTIONS.name,
-        _TP.fnap(_DIR_FILE_SET_OPTIONS_MAIN),
+        (),
         [
             invokation_variant_from_args([
                 a.Single(
@@ -66,7 +66,8 @@ def get_traversal_options_sed() -> SyntaxElementDescription:
             ],
                 _TP.fnap(DIR_CONTENTS_RECURSION_DESCRIPTION),
             )
-        ]
+        ],
+        _TP.fnap(_DIR_FILE_SET_OPTIONS_MAIN)
     )
 
 

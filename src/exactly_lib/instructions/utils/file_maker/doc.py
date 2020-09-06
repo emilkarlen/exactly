@@ -11,7 +11,6 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc, texts
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from . import defs
 
@@ -99,25 +98,21 @@ class FileContentsDocumentation:
     def _transformation_sed(self) -> SyntaxElementDescription:
         return cli_argument_syntax_element_description(
             string_transformer.STRING_TRANSFORMATION_ARGUMENT,
-            self._transformation_description(),
+            self._tp.fnap(_TRANSFORMATION_DESCRIPTION),
             [
                 invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
                                                        string_transformer.TRANSFORMATION_OPTION)]),
-            ]
+            ],
+            texts.type_expression_has_syntax_of_primitive([
+                syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+            ]),
         )
-
-    def _transformation_description(self) -> List[ParagraphItem]:
-        ret_val = self._tp.fnap(_TRANSFORMATION_DESCRIPTION)
-        ret_val += texts.type_expression_has_syntax_of_primitive([
-            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
-        ])
-
-        return ret_val
 
 
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the original contents.
 """
+
 _PROGRAM_DESCRIPTION = """\
 The output from {program_type:a/q}.
 
@@ -125,6 +120,7 @@ The output from {program_type:a/q}.
 {PROGRAM} includes arguments until end of line,
 and an optional {TRANSFORMATION} on a following line.
 """
+
 _FILE_DESCRIPTION = """\
 The contents of an existing file.
 

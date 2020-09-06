@@ -77,7 +77,7 @@ class _PgmAndArgs(SyntaxElementDescriptionTree):
         return a.Named('PGM-AND-ARGS')
 
     @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
+    def before_invokation_variants(self) -> Sequence[ParagraphItem]:
         return _TEXT_PARSER.fnap(_PGM_AND_ARGS)
 
     @property
@@ -123,7 +123,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
         return a.Named('PGM-FOR-ARG-LIST')
 
     @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
+    def before_invokation_variants(self) -> Sequence[ParagraphItem]:
         return _TEXT_PARSER.fnap(PGM_WITH_ARG_LIST_DESCRIPTION)
 
     @property

@@ -36,29 +36,38 @@ def invokation_variant_from_args(argument_usages: Sequence[a.ArgumentUsage],
 class SyntaxElementDescription(tuple):
     def __new__(cls,
                 element_name: str,
-                description_rest: Sequence[ParagraphItem],
-                invokation_variants: Sequence[InvokationVariant] = None):
+                before_invokation_variants: Sequence[ParagraphItem],
+                invokation_variants: Sequence[InvokationVariant] = (),
+                after_invokation_variants: Sequence[ParagraphItem] = (),
+                ):
         return tuple.__new__(cls, (element_name,
-                                   description_rest,
-                                   [] if invokation_variants is None else invokation_variants))
+                                   before_invokation_variants,
+                                   invokation_variants,
+                                   after_invokation_variants))
 
     @property
     def element_name(self) -> str:
         return self[0]
 
     @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
+    def before_invokation_variants(self) -> Sequence[ParagraphItem]:
         return self[1]
 
     @property
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return self[2]
 
+    @property
+    def after_invokation_variants(self) -> Sequence[ParagraphItem]:
+        return self[3]
+
 
 def cli_argument_syntax_element_description(argument: a.Argument,
-                                            description_rest: Sequence[ParagraphItem],
-                                            invokation_variants: Sequence[InvokationVariant] = None
+                                            before_invokation_variants: Sequence[ParagraphItem],
+                                            invokation_variants: Sequence[InvokationVariant] = (),
+                                            after_invokation_variants: Sequence[ParagraphItem] = (),
                                             ) -> SyntaxElementDescription:
     return SyntaxElementDescription(arg_syntax(argument),
-                                    description_rest,
-                                    invokation_variants)
+                                    before_invokation_variants,
+                                    invokation_variants,
+                                    after_invokation_variants)

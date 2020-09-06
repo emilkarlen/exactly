@@ -32,7 +32,7 @@ class SyntaxElementDescriptionTree(SyntaxDescriptionHelperBase):
         raise NotImplementedError('abstract method')
 
     @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
+    def before_invokation_variants(self) -> Sequence[ParagraphItem]:
         return []
 
     @property
@@ -40,9 +40,13 @@ class SyntaxElementDescriptionTree(SyntaxDescriptionHelperBase):
         return []
 
     @property
+    def after_invokation_variants(self) -> Sequence[ParagraphItem]:
+        return ()
+
+    @property
     def as_sed(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(self.element.name,
-                                        self.description_rest,
+                                        self.before_invokation_variants,
                                         self.invokation_variants)
 
     @property
@@ -90,12 +94,15 @@ class SyntaxElementDescriptionTreeFromSed(SyntaxElementDescriptionTree):
         return self._element
 
     @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return self._sed.description_rest
+    def before_invokation_variants(self) -> Sequence[ParagraphItem]:
+        return self._sed.before_invokation_variants
 
     @property
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return self._sed.invokation_variants
+
+    def after_invokation_variants(self) -> Sequence[ParagraphItem]:
+        return self._sed.after_invokation_variants
 
 
 def flatten(trees: Sequence[SyntaxElementDescriptionTree]) -> List[SyntaxElementDescriptionTree]:
