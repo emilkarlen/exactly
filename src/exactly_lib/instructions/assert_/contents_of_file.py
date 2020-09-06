@@ -26,6 +26,7 @@ from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_path
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 ACTUAL_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
@@ -53,10 +54,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return 'Tests the contents of a file'
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return file_or_dir_contents_doc.description(
-            ACTUAL_PATH_ARGUMENT.name,
-            FileType.REGULAR,
-        )
+        return []
+
+    def outcome(self) -> SectionContents:
+        return file_or_dir_contents_doc.outcome(ACTUAL_PATH_ARGUMENT.name,
+                                                FileType.REGULAR)
+
+    def notes(self) -> SectionContents:
+        return file_or_dir_contents_doc.notes()
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__file(self.actual_file_arg)

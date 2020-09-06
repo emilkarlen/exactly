@@ -17,19 +17,6 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 TRAVERSAL_OPTION_USAGES = (a.Single(a.Multiplicity.OPTIONAL, file_or_dir_contents.DIR_FILE_SET_OPTIONS),)
 
 
-def description(
-        checked_file: str,
-        expected_file_type: FileType,
-) -> List[ParagraphItem]:
-    tp = TextParser({
-        'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
-        'checked_file': checked_file,
-        'file_type': TYPE_INFO[expected_file_type].name,
-        'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
-    })
-    return tp.fnap(_ERROR_WHEN_INVALID_FILE__OUTCOME)
-
-
 def outcome(
         checked_file: str,
         expected_file_type: FileType,
