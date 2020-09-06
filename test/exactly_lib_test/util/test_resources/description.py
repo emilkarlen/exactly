@@ -8,7 +8,7 @@ is_description = asrt.And([
         'single line description',
         Description.single_line_description.fget,
         struct_check.is_text),
-    asrt.sub_component_list(
+    asrt.sub_component_sequence(
         'rest paragraph-items',
         Description.rest.fget,
         struct_check.is_paragraph_item),
@@ -20,7 +20,7 @@ is_description_with_sub_sections = asrt.And([
         'single line description',
         DescriptionWithSubSections.single_line_description.fget,
         struct_check.is_text),
-    asrt.sub_component_list(
+    asrt.sub_component_sequence(
         'rest sub-sections',
         DescriptionWithSubSections.rest.fget,
         struct_check.is_section_contents),

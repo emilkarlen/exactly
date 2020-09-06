@@ -67,9 +67,9 @@ class _IsTargetInfoNode(ValueAssertionBase):
                value,
                message_builder: asrt.MessageBuilder):
         _is_TargetInfoNodeObject_shallow.apply(put, value, message_builder)
-        asrt.sub_component_list('children',
-                                TargetInfoNode.children.fget,
-                                self).apply(put, value, message_builder)
+        asrt.sub_component_sequence('children',
+                                    TargetInfoNode.children.fget,
+                                    self).apply(put, value, message_builder)
 
 
 _is_TargetInfoNodeObject_shallow = asrt.And([

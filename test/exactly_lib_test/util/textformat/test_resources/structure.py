@@ -101,7 +101,7 @@ class _IsParagraphItem(ParagraphItemVisitor, ValueAssertionBase):
                                               asrt.IsInstance(TableFormat))
         is_table_row = asrt.every_element('table row cells',
                                           is_table_cell)
-        rows_assertion = asrt.sub_component_list('rows', Table.rows.fget, is_table_row, '/')
+        rows_assertion = asrt.sub_component_sequence('rows', Table.rows.fget, is_table_row, '/')
 
         assertion = asrt.And([format_assertion,
                               rows_assertion])
@@ -118,9 +118,9 @@ is_table_cell = asrt.is_instance_with(TableCell,
 
 is_paragraph = asrt.And([
     asrt.IsInstance(Paragraph),
-    asrt.sub_component_list('text blocks',
-                            lambda p: p.start_on_new_line_blocks,
-                            is_text)])
+    asrt.sub_component_sequence('text blocks',
+                                lambda p: p.start_on_new_line_blocks,
+                                is_text)])
 
 
 class SectionAssertion:
@@ -130,9 +130,9 @@ class SectionAssertion:
                             message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         asrt.And([
             asrt.IsInstance(doc.SectionContents),
-            asrt.sub_component_list('initial_paragraphs',
-                                    doc.SectionContents.initial_paragraphs.fget,
-                                    is_paragraph_item)
+            asrt.sub_component_sequence('initial_paragraphs',
+                                        doc.SectionContents.initial_paragraphs.fget,
+                                        is_paragraph_item)
         ]).apply(put, value, message_builder)
         assert isinstance(value, doc.SectionContents)
         sections_message = asrt.sub_component_builder('sections', message_builder)
@@ -178,9 +178,9 @@ is_section_contents = asrt.OfCallable(SECTION_ASSERTION.is_section_contents)
 is_article_contents = asrt.is_instance_with(
     doc.ArticleContents,
     asrt.and_([
-        asrt.sub_component_list('abstract_paragraphs',
-                                doc.ArticleContents.abstract_paragraphs.fget,
-                                is_paragraph_item),
+        asrt.sub_component_sequence('abstract_paragraphs',
+                                    doc.ArticleContents.abstract_paragraphs.fget,
+                                    is_paragraph_item),
         asrt.sub_component('section_contents',
                            doc.ArticleContents.section_contents.fget,
                            is_section_contents)
@@ -199,9 +199,9 @@ is_list_item = asrt.And([
     asrt.sub_component('header',
                        lists.HeaderContentListItem.header.fget,
                        is_text),
-    asrt.sub_component_list('values',
-                            lists.HeaderContentListItem.content_paragraph_items.fget,
-                            is_paragraph_item)
+    asrt.sub_component_sequence('values',
+                                lists.HeaderContentListItem.content_paragraph_items.fget,
+                                is_paragraph_item)
 ])
 
 is_separations = asrt.IsInstance(lists.Separations)
@@ -224,7 +224,7 @@ is_header_value_list = asrt.And([
     asrt.sub_component('format',
                        lists.HeaderContentList.list_format.fget,
                        is_list_format),
-    asrt.sub_component_list('items',
-                            lists.HeaderContentList.items.fget,
-                            is_list_item),
+    asrt.sub_component_sequence('items',
+                                lists.HeaderContentList.items.fget,
+                                is_list_item),
 ])

@@ -439,15 +439,15 @@ def append_to_message(s: str) -> Callable[[MessageBuilder], MessageBuilder]:
     return ret_val
 
 
-def sub_component_list(list_name: str,
-                       list_getter: Callable[[T], Sequence[U]],
-                       element_assertion: ValueAssertion[U],
-                       component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
+def sub_component_sequence(sequence_name: str,
+                           sequence_getter: Callable[[T], Sequence[U]],
+                           element_assertion: ValueAssertion[U],
+                           component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
     """
     Short cut for creating a SubComponentValueAssertion that checks a list
     """
-    return sub_component(list_name,
-                         list_getter,
+    return sub_component(sequence_name,
+                         sequence_getter,
                          every_element('',
                                        element_assertion),
                          component_separator)

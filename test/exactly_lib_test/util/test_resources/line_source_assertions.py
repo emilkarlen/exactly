@@ -39,9 +39,9 @@ def is_line_sequence(description: str = '') -> ValueAssertion[LineSequence]:
                                      asrt.sub_component('line_number',
                                                         LineSequence.first_line_number.fget,
                                                         asrt.is_instance(int)),
-                                     asrt.sub_component_list('lines',
-                                                             LineSequence.lines.fget,
-                                                             asrt.is_instance(str))
+                                     asrt.sub_component_sequence('lines',
+                                                                 LineSequence.lines.fget,
+                                                                 asrt.is_instance(str))
                                  ]),
                                  description)
 
