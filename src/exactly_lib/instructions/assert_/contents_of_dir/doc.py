@@ -20,6 +20,7 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
@@ -41,10 +42,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return _SINGLE_LINE_DESCRIPTION
 
     def main_description_rest(self) -> List[ParagraphItem]:
-        return file_or_dir_contents_doc.description(
-            _PATH_ARGUMENT.name,
-            FileType.DIRECTORY
-        )
+        return []
+
+    def outcome(self) -> SectionContents:
+        return file_or_dir_contents_doc.outcome(_PATH_ARGUMENT.name,
+                                                FileType.DIRECTORY)
+
+    def notes(self) -> SectionContents:
+        return file_or_dir_contents_doc.notes()
 
     def invokation_variants(self) -> List[InvokationVariant]:
         files_matcher_arg = a.Single(a.Multiplicity.MANDATORY,

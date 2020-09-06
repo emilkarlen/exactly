@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.file_properties import FileType, TYPE_INFO
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 TRAVERSAL_OPTION_USAGES = (a.Single(a.Multiplicity.OPTIONAL, file_or_dir_contents.DIR_FILE_SET_OPTIONS),)
@@ -26,7 +27,26 @@ def description(
         'file_type': TYPE_INFO[expected_file_type].name,
         'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     })
-    return tp.fnap(_ERROR_WHEN_INVALID_FILE_DESCRIPTION)
+    return tp.fnap(_ERROR_WHEN_INVALID_FILE__OUTCOME)
+
+
+def outcome(
+        checked_file: str,
+        expected_file_type: FileType,
+) -> SectionContents:
+    tp = TextParser({
+        'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
+        'checked_file': checked_file,
+        'file_type': TYPE_INFO[expected_file_type].name,
+    })
+    return tp.section_contents(_ERROR_WHEN_INVALID_FILE__OUTCOME)
+
+
+def notes() -> SectionContents:
+    tp = TextParser({
+        'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
+    })
+    return tp.section_contents(_NOTES)
 
 
 _TP = TextParser({
@@ -82,9 +102,11 @@ DIR_DOCUMENTATION = file_contents_utils.DocumentationSetup(
     get_dir_syntax_descriptions,
 )
 
-_ERROR_WHEN_INVALID_FILE_DESCRIPTION = """\
+_ERROR_WHEN_INVALID_FILE__OUTCOME = """\
 The result is {HARD_ERROR} if {checked_file} is not an existing {file_type}.
+"""
 
+_NOTES = """\
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 """
 
