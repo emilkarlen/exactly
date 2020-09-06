@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import conf_params, concepts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
@@ -16,7 +17,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.test_case_status import TestCaseStatus, NAME_2_STATUS
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -37,9 +38,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def single_line_description(self) -> str:
         return self._tp.format('Sets the {status_config_param} {conf_param}')
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
-
     def invokation_variants(self) -> List[InvokationVariant]:
         return single_eq_invokation_variants(a.Named(_ARG_NAME))
 
@@ -51,7 +49,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                      [execution_modes_list()])
         ]
 
-    def see_also_targets(self) -> list:
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
+
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target]
 
 
@@ -81,6 +82,6 @@ class _Instruction(ConfigurationPhaseInstruction):
         return sh.new_sh_success()
 
 
-_MAIN_DESCRIPTION_REST = """\
+_NOTES = """\
 The default {status_config_param} is {default_mode}.
 """
