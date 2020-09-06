@@ -1,12 +1,12 @@
 import functools
 from typing import List, Iterable
 
-from exactly_lib.definitions import doc_format
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import CliListConstructorGetter, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
+from exactly_lib.help.render import headers
 from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
@@ -51,7 +51,7 @@ class IndividualSyntaxElementConstructor(ArticleContentsConstructor):
         initial_paragraphs = []
         invokation_variants = self.syntax_element.invokation_variants()
         if len(invokation_variants) > 1:
-            initial_paragraphs.append(docs.para(doc_format.text_as_header('Forms:')))
+            initial_paragraphs.append(headers.FORMS_PARA)
         initial_paragraphs += invokation_variants_paragraphs(None,
                                                              invokation_variants,
                                                              self.syntax_element.syntax_element_descriptions())

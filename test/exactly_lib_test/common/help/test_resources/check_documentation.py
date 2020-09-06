@@ -19,6 +19,8 @@ def suite_for_instruction_documentation(documentation: InstructionDocumentation)
         TestInstructionName,
         TestSingleLineDescription,
         TestMainDescriptionRest,
+        TestMainDescriptionNotes,
+        TestMainDescriptionOutcome,
         TestInvokationVariants,
         TestSyntaxElementDescriptions,
         TestSeeAlsoTargets,
@@ -62,6 +64,18 @@ class TestMainDescriptionRest(WithDescriptionBase):
     def runTest(self):
         actual = self.description.main_description_rest()
         struct_check.is_paragraph_item_list().apply(self, actual)
+
+
+class TestMainDescriptionNotes(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.notes()
+        struct_check.is_section_contents.apply(self, actual)
+
+
+class TestMainDescriptionOutcome(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.outcome()
+        struct_check.is_section_contents.apply(self, actual)
 
 
 class TestInvokationVariants(WithDescriptionBase):
