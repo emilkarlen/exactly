@@ -2,8 +2,7 @@ from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithSplittedPartsForRestDocBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
-    invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.definitions import instruction_arguments, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -15,10 +14,10 @@ from exactly_lib.instructions.multi_phase.utils.assert_phase_info import \
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
+from exactly_lib.processing import exit_values
 from exactly_lib.test_case_utils.program.parse import parse_shell_command
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 def parts_parser(instruction_name: str) -> InstructionPartsParser:
@@ -50,7 +49,9 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
                  single_line_description: str):
         super().__init__(name, {
             'COMMAND': instruction_arguments.COMMAND_ARGUMENT.name,
-            'HARD_ERROR': EXECUTION__HARD_ERROR.exit_identifier,
+            'PASS': exit_values.EXECUTION__PASS.exit_identifier,
+            'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
+            'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.__single_line_description = single_line_description
         self.command_arg = instruction_arguments.COMMAND_ARGUMENT
@@ -69,12 +70,6 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
                 []),
         ]
 
-    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        return [
-            SyntaxElementDescription(self.command_arg.name,
-                                     self._tp.fnap(_COMMAND_SYNTAX_ELEMENT_DESCRIPTION))
-        ]
-
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
             syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,
@@ -86,17 +81,10 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         super().__init__(name,
                          _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS)
 
-    def _main_description_rest_prologue(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_NON_ASSERT_PHASE_REST_PRELUDE)
+    def outcome(self) -> SectionContents:
+        return self._tp.section_contents(_OUTCOME__NON_ASSERT_PHASE)
 
 
-_NON_ASSERT_PHASE_REST_PRELUDE = """\
+_OUTCOME__NON_ASSERT_PHASE = """\
 The result is {HARD_ERROR} if {COMMAND} exits with a non-zero exit code.
-"""
-
-_COMMAND_SYNTAX_ELEMENT_DESCRIPTION = """\
-Something that is understood by the current operating system's shell.
-
-
-It is the literal text until end of line.
 """
