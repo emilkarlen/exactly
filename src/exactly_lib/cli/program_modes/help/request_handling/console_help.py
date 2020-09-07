@@ -40,7 +40,7 @@ class ConsoleHelpRequestHandler(RequestHandler):
             file.write(os.linesep)
 
 
-def _formatter(page_width):
+def _formatter(page_width: int) -> section.Formatter:
     text_formatter = text.TextFormatter(HelpCrossReferenceFormatter())
     return section.Formatter(paragraph_item.Formatter(text_formatter,
                                                       Wrapper(page_width=page_width),
@@ -69,7 +69,7 @@ def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
     return CrossReferenceTextConstructor()
 
 
-class _HelpCommandLineGetterVisitor(concrete_cross_refs.CrossReferenceIdVisitor):
+class _HelpCommandLineGetterVisitor(concrete_cross_refs.CrossReferenceTargetVisitor):
     def visit_custom(self, x: concrete_cross_refs.CustomCrossReferenceId):
         raise ValueError('A Custom Cross Reference IDs cannot be displayed as a command line')
 

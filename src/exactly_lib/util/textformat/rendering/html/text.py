@@ -25,10 +25,10 @@ class TextRenderer:
             str_setter = set_text_after(text_container)
 
         setter = ContentSetter(self.target_renderer, element_container, str_setter)
-        return setter.visit(text)
+        return text.accept(setter)
 
 
-class ContentSetter(core.TextVisitor):
+class ContentSetter(core.TextVisitor[Element]):
     def __init__(self,
                  target_renderer: TargetRenderer,
                  content_root: Element,
@@ -55,7 +55,7 @@ class ContentSetter(core.TextVisitor):
         content_setter = ContentSetter(self.target_renderer,
                                        a,
                                        set_text_inside(a))
-        content_setter.visit(text.title_text)
+        text.title_text.accept(content_setter)
         return a
 
     def visit_anchor(self, text: core.AnchorText) -> Element:
@@ -64,7 +64,7 @@ class ContentSetter(core.TextVisitor):
         content_setter = ContentSetter(self.target_renderer,
                                        a,
                                        set_text_inside(a))
-        content_setter.visit(text.anchored_text)
+        text.anchored_text.accept(content_setter)
         return a
 
     def _target_str(self, text: core.CrossReferenceText) -> str:

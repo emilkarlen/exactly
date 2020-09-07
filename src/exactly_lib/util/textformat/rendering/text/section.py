@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.rendering.text import paragraph_item
 from exactly_lib.util.textformat.rendering.text.wrapper import Indent
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, SectionItem, SectionItemVisitor, \
@@ -30,11 +32,12 @@ def no_separation() -> Separation:
     return Separation(0, 0, 0)
 
 
-class Formatter(SectionItemVisitor):
+class Formatter(SectionItemVisitor[List[str]]):
     def __init__(self,
                  paragraph_item_formatter: paragraph_item.Formatter,
                  separation: Separation = Separation(),
-                 section_content_indent_str: str = ''):
+                 section_content_indent_str: str = '',
+                 ):
         self.paragraph_item_formatter = paragraph_item_formatter
         self.section_content_indent = Indent(section_content_indent_str,
                                              section_content_indent_str)
@@ -43,7 +46,8 @@ class Formatter(SectionItemVisitor):
 
     def format_section_contents(self,
                                 section_contents: SectionContents,
-                                prepend_separator_for_contents: bool = False) -> list:
+                                prepend_separator_for_contents: bool = False,
+                                ) -> List[str]:
         ret_val = []
         init_para_lines = self.paragraph_item_formatter.format_paragraph_items(section_contents.initial_paragraphs)
         sections_lines = self.format_section_items(section_contents.sections)
@@ -56,10 +60,10 @@ class Formatter(SectionItemVisitor):
         ret_val.extend(sections_lines)
         return ret_val
 
-    def format_section_item(self, section_item: SectionItem) -> list:
-        return self.visit(section_item)
+    def format_section_item(self, section_item: SectionItem) -> List[str]:
+        return section_item.accept(self)
 
-    def format_section(self, section: Section) -> list:
+    def format_section(self, section: Section) -> List[str]:
         ret_val = []
         ret_val.extend(self.paragraph_item_formatter.format_text(section.header))
         self.wrapper.push_indent_increase(self.section_content_indent)
@@ -67,7 +71,7 @@ class Formatter(SectionItemVisitor):
         self.wrapper.pop_indent()
         return ret_val
 
-    def format_section_items(self, section_items: list) -> list:
+    def format_section_items(self, section_items: list) -> List[str]:
         ret_val = []
         for section in section_items:
             if ret_val:
@@ -78,11 +82,11 @@ class Formatter(SectionItemVisitor):
     def visit_section(self, section: Section):
         return self.format_section(section)
 
-    def visit_article(self, article: Article):
+    def visit_article(self, article: Article) -> List[str]:
         as_section = Section(article.header,
                              article.contents.combined_as_section_contents)
 
         return self.format_section(as_section)
 
-    def _blanks(self, num_lines: int) -> list:
+    def _blanks(self, num_lines: int) -> List[str]:
         return self.wrapper.blank_lines(num_lines)

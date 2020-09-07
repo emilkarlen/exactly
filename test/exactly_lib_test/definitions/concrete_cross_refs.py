@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.definitions.cross_ref import concrete_cross_refs as sut
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.str_.name import name_with_plural_s
+from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget, CrossReferenceTarget
 
 
 def suite() -> unittest.TestSuite:
@@ -184,6 +185,19 @@ ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE = [
 
 
 class CrossReferenceIdVisitorTest(unittest.TestCase):
+    def test_visit_Url(self):
+        # ARRANGE #
+        x = sut.UrlCrossReferenceTarget('the url')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.UrlCrossReferenceTarget],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_EntityCrossReferenceId(self):
         # ARRANGE #
         x = sut.EntityCrossReferenceId(EntityTypeNames('entity_type_identifier',
@@ -286,35 +300,40 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
             visitor.visit(x)
 
 
-class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReferenceIdVisitor):
+class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReferenceTargetVisitor[CrossReferenceTarget]):
     def __init__(self):
         self.visited_classes = []
 
-    def visit_entity(self, x: sut.EntityCrossReferenceId):
+    def visit_url(self, x: UrlCrossReferenceTarget) -> CrossReferenceTarget:
+        self.visited_classes.append(sut.UrlCrossReferenceTarget)
+        return x
+
+    def visit_entity(self, x: sut.EntityCrossReferenceId) -> CrossReferenceTarget:
         self.visited_classes.append(sut.EntityCrossReferenceId)
         return x
 
-    def visit_test_case_phase(self, x: sut.TestCasePhaseCrossReference):
+    def visit_test_case_phase(self, x: sut.TestCasePhaseCrossReference) -> CrossReferenceTarget:
         self.visited_classes.append(sut.TestCasePhaseCrossReference)
         return x
 
-    def visit_test_case_phase_instruction(self, x: sut.TestCasePhaseInstructionCrossReference):
+    def visit_test_case_phase_instruction(self, x: sut.TestCasePhaseInstructionCrossReference) -> CrossReferenceTarget:
         self.visited_classes.append(sut.TestCasePhaseInstructionCrossReference)
         return x
 
-    def visit_test_suite_section(self, x: sut.TestSuiteSectionCrossReference):
+    def visit_test_suite_section(self, x: sut.TestSuiteSectionCrossReference) -> CrossReferenceTarget:
         self.visited_classes.append(sut.TestSuiteSectionCrossReference)
         return x
 
-    def visit_test_suite_section_instruction(self, x: sut.TestSuiteSectionInstructionCrossReference):
+    def visit_test_suite_section_instruction(self,
+                                             x: sut.TestSuiteSectionInstructionCrossReference) -> CrossReferenceTarget:
         self.visited_classes.append(sut.TestSuiteSectionInstructionCrossReference)
         return x
 
-    def visit_custom(self, x: sut.CustomCrossReferenceId):
+    def visit_custom(self, x: sut.CustomCrossReferenceId) -> CrossReferenceTarget:
         self.visited_classes.append(sut.CustomCrossReferenceId)
         return x
 
-    def visit_predefined_part(self, x: sut.PredefinedHelpContentsPartReference):
+    def visit_predefined_part(self, x: sut.PredefinedHelpContentsPartReference) -> CrossReferenceTarget:
         self.visited_classes.append(sut.PredefinedHelpContentsPartReference)
         return x
 

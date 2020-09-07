@@ -147,7 +147,7 @@ class _ListFormatter:
         return Indent(indent_str, indent_str)
 
 
-class _ParagraphItemFormatter(ParagraphItemVisitor):
+class _ParagraphItemFormatter(ParagraphItemVisitor[List[str]]):
     def __init__(self, formatter: Formatter):
         self.formatter = formatter
 

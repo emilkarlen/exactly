@@ -26,7 +26,7 @@ def paragraph_formatter(page_width: int = 100) -> paragraph_item.Formatter:
                                     list_formats=list_formats_with(indent_str='  '))
 
 
-def section_formatter(page_width) -> section.Formatter:
+def section_formatter(page_width: int) -> section.Formatter:
     return section.Formatter(paragraph_formatter(page_width),
                              section_content_indent_str='   ')
 

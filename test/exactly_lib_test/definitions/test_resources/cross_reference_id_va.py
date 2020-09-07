@@ -24,7 +24,7 @@ class _IsCrossReferenceId(ValueAssertionBase):
 is_any = _IsCrossReferenceId()
 
 
-class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
+class _IsCrossReferenceTargetAssertionGetter(CrossReferenceTargetVisitor):
     def visit_entity(self, x: EntityCrossReferenceId):
         return _assertion_on_properties_of(x, entity_is_valid)
 
@@ -54,7 +54,7 @@ def _is_str(component_name: str, component_getter: types.FunctionType) -> ValueA
     return asrt.sub_component(component_name, component_getter, asrt.IsInstance(str))
 
 
-_IS_CROSS_REFERENCE_ID_ASSERTION_GETTER = _IsCrossReferenceIdAssertionGetter()
+_IS_CROSS_REFERENCE_ID_ASSERTION_GETTER = _IsCrossReferenceTargetAssertionGetter()
 
 test_case_phase_is_valid = _is_str('phase name', TestCasePhaseCrossReference.phase_name.fget)
 
@@ -118,11 +118,11 @@ class _CrossReferenceIdEquals(ValueAssertionBase):
                value,
                message_builder: asrt.MessageBuilder):
         put.assertIsInstance(value, type(self.expected), message_builder.apply('type of CrossReferenceId'))
-        equality_checker = _CrossReferenceIdEqualsWhenClassIsEqual(self.expected, put, message_builder)
+        equality_checker = _CrossReferenceTargetEqualsWhenClassIsEqual(self.expected, put, message_builder)
         equality_checker.visit(value)
 
 
-class _CrossReferenceIdEqualsWhenClassIsEqual(CrossReferenceIdVisitor):
+class _CrossReferenceTargetEqualsWhenClassIsEqual(CrossReferenceTargetVisitor):
     def __init__(self,
                  expected: CrossReferenceId,
                  put: unittest.TestCase,

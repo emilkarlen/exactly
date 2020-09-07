@@ -95,7 +95,7 @@ class SectionItemRenderer:
         """
         :return: The last rendered element, or parent, if no element was rendered.
         """
-        return _SectionItemRenderer(self, environment, parent).visit(section_item)
+        return section_item.accept(_SectionItemRenderer(self, environment, parent))
 
     def render_section(self,
                        environment: Environment,
@@ -150,7 +150,7 @@ class SectionItemRenderer:
         return ret_val
 
 
-class _SectionItemRenderer(SectionItemVisitor):
+class _SectionItemRenderer(SectionItemVisitor[Element]):
     def __init__(self,
                  renderer: SectionItemRenderer,
                  environment: Environment,
@@ -159,8 +159,8 @@ class _SectionItemRenderer(SectionItemVisitor):
         self.parent = parent
         self.environment = environment
 
-    def visit_section(self, section: Section):
+    def visit_section(self, section: Section) -> Element:
         return self.renderer.render_section(self.environment, self.parent, section)
 
-    def visit_article(self, article: Article):
+    def visit_article(self, article: Article) -> Element:
         return self.renderer.render_article(self.environment, self.parent, article)

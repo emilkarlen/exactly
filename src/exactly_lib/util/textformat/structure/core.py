@@ -1,4 +1,5 @@
-from typing import Set, Optional
+from abc import ABC, abstractmethod
+from typing import Set, Optional, TypeVar, Generic
 
 
 class TaggedItem:
@@ -34,11 +35,30 @@ class UrlCrossReferenceTarget(CrossReferenceTarget):
         return self._url
 
 
-class Text(TaggedItem):
-    pass
+T = TypeVar('T')
 
 
-class ConcreteText(Text):
+class TextVisitor(Generic[T], ABC):
+    @abstractmethod
+    def visit_string(self, text: 'StringText') -> T:
+        pass
+
+    @abstractmethod
+    def visit_cross_reference(self, text: 'CrossReferenceText') -> T:
+        pass
+
+    @abstractmethod
+    def visit_anchor(self, text: 'AnchorText') -> T:
+        pass
+
+
+class Text(TaggedItem, ABC):
+    @abstractmethod
+    def accept(self, visitor: TextVisitor[T]) -> T:
+        pass
+
+
+class ConcreteText(Text, ABC):
     def __init__(self, tags: Optional[Set[str]] = None):
         self._tags = set() if tags is None else tags
 
@@ -57,6 +77,9 @@ class StringText(ConcreteText):
     @property
     def value(self) -> str:
         return self._value
+
+    def accept(self, visitor: TextVisitor[T]) -> T:
+        return visitor.visit_string(self)
 
 
 class CrossReferenceText(ConcreteText):
@@ -88,6 +111,9 @@ class CrossReferenceText(ConcreteText):
     def allow_rendering_of_visible_extra_target_text(self) -> bool:
         return self._allow_rendering_of_visible_extra_target_text
 
+    def accept(self, visitor: TextVisitor[T]) -> T:
+        return visitor.visit_cross_reference(self)
+
 
 class AnchorText(Text):
     """
@@ -112,25 +138,8 @@ class AnchorText(Text):
     def tags(self) -> Set[str]:
         return self._anchored_text.tags
 
-
-class TextVisitor:
-    def visit(self, text: Text):
-        if isinstance(text, StringText):
-            return self.visit_string(text)
-        if isinstance(text, CrossReferenceText):
-            return self.visit_cross_reference(text)
-        if isinstance(text, AnchorText):
-            return self.visit_anchor(text)
-        raise TypeError('Not a value of sub type of %s: %s' % (str(Text), str(text)))
-
-    def visit_string(self, text: StringText):
-        raise NotImplementedError()
-
-    def visit_cross_reference(self, text: CrossReferenceText):
-        raise NotImplementedError()
-
-    def visit_anchor(self, text: AnchorText):
-        raise NotImplementedError()
+    def accept(self, visitor: TextVisitor[T]) -> T:
+        return visitor.visit_anchor(self)
 
 
 class ParagraphItem:

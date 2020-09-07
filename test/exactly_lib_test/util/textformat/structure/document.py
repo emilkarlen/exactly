@@ -6,30 +6,30 @@ from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(SectionItemVisitorTest)
+    return unittest.makeSuite(TestAccept)
 
 
-class SectionItemVisitorThatRecordsExpectedClassAndReturnsArg(sut.SectionItemVisitor):
+class SectionItemVisitorThatRecordsExpectedClassAndReturnsArg(sut.SectionItemVisitor[sut.SectionItem]):
     def __init__(self):
         self.visited_classes = []
 
-    def visit_section(self, section: sut.Section):
+    def visit_section(self, section: sut.Section) -> sut.SectionItem:
         self.visited_classes.append(sut.Section)
         return section
 
-    def visit_article(self, article: sut.Article):
+    def visit_article(self, article: sut.Article) -> sut.SectionItem:
         self.visited_classes.append(sut.Article)
         return article
 
 
-class SectionItemVisitorTest(unittest.TestCase):
+class TestAccept(unittest.TestCase):
     def test_section(self):
         # ARRANGE   #
         section = sut.Section(StringText('header'),
                               sut.empty_section_contents())
         visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
         # ACT #
-        ret_val = visitor.visit(section)
+        ret_val = section.accept(visitor)
         # ASSERT #
         self.assertEqual([sut.Section],
                          visitor.visited_classes)
@@ -42,24 +42,11 @@ class SectionItemVisitorTest(unittest.TestCase):
                                               sut.empty_section_contents()))
         visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
         # ACT #
-        ret_val = visitor.visit(article)
+        ret_val = article.accept(visitor)
         # ASSERT #
         self.assertEqual([sut.Article],
                          visitor.visited_classes)
         self.assertIs(article, ret_val)
-
-    def test_visit_SHOULD_raise_type_error_WHEN_argument_is_not_a_valid_section_item(self):
-        visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
-        unknown_section_item = UnknownSectionItem()
-        with self.assertRaises(TypeError):
-            visitor.visit(unknown_section_item)
-
-
-class UnknownSectionItem(sut.SectionItem):
-    def __init__(self):
-        super().__init__(StringText('header of unknown item'),
-                         target=None,
-                         tags=set())
 
 
 if __name__ == '__main__':

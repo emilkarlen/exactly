@@ -24,18 +24,18 @@ class SectionContentsConstructorFromHierarchyGenerator(SectionContentsConstructo
         target_factory = _NullTargetInfoFactory()
         section_item = self.generator.generate(target_factory).section_item(SectionItemNodeEnvironment(set()),
                                                                             environment)
-        section_item = self._targets_stripper.visit(section_item)
+        section_item = section_item.accept(self._targets_stripper)
         return section_item_contents_as_section_contents(section_item)
 
 
-class _TargetsStripper(document.SectionItemVisitor):
-    def visit_section(self, section: document.Section):
+class _TargetsStripper(document.SectionItemVisitor[document.SectionItem]):
+    def visit_section(self, section: document.Section) -> document.SectionItem:
         return document.Section(section.header,
                                 self._strip_section_contents(section.contents),
                                 None,
                                 section.tags)
 
-    def visit_article(self, article: document.Article):
+    def visit_article(self, article: document.Article) -> document.SectionItem:
         return document.Article(article.header,
                                 self._strip_article_contents(article.contents),
                                 None,
@@ -47,7 +47,8 @@ class _TargetsStripper(document.SectionItemVisitor):
 
     def _strip_section_contents(self, contents: document.SectionContents) -> document.SectionContents:
         return document.SectionContents(contents.initial_paragraphs,
-                                        list(map(self.visit, contents.sections)))
+                                        [section.accept(self) for section in contents.sections]
+                                        )
 
 
 class _NullTargetInfoFactory(TargetInfoFactory):

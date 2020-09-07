@@ -43,13 +43,10 @@ def transform_list_to_table(l: lists.HeaderContentList) -> table.Table:
 
 
 def section_item_contents_as_section_contents(section_item: doc.SectionItem) -> doc.SectionContents:
-    return _ContentsAsSectionContentsHelper().visit(section_item)
+    return section_item.accept(_ContentsAsSectionContentsHelper())
 
 
-class _ContentsAsSectionContentsHelper(doc.SectionItemVisitor):
-    def __init__(self):
-        pass
-
+class _ContentsAsSectionContentsHelper(doc.SectionItemVisitor[doc.SectionContents]):
     def visit_section(self, section: doc.Section) -> doc.SectionContents:
         return section.contents
 

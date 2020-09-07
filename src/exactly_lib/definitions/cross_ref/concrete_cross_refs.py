@@ -1,4 +1,6 @@
+from abc import ABC, abstractmethod
 from enum import Enum
+from typing import TypeVar, Generic
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
@@ -146,8 +148,11 @@ class PredefinedHelpContentsPartReference(CrossReferenceId):
         return self._part is other._part
 
 
-class CrossReferenceIdVisitor:
-    def visit(self, x: CrossReferenceTarget):
+T = TypeVar('T')
+
+
+class CrossReferenceTargetVisitor(Generic[T], ABC):
+    def visit(self, x: CrossReferenceTarget) -> T:
         if isinstance(x, CustomCrossReferenceId):
             return self.visit_custom(x)
         if isinstance(x, TestCasePhaseCrossReference):
@@ -168,26 +173,34 @@ class CrossReferenceIdVisitor:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceTarget),
                                                        str(x)))
 
-    def visit_entity(self, x: EntityCrossReferenceId):
+    @abstractmethod
+    def visit_entity(self, x: EntityCrossReferenceId) -> T:
         raise NotImplementedError()
 
-    def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
+    @abstractmethod
+    def visit_test_case_phase(self, x: TestCasePhaseCrossReference) -> T:
         raise NotImplementedError()
 
-    def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference):
+    @abstractmethod
+    def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference) -> T:
         raise NotImplementedError()
 
-    def visit_test_suite_section(self, x: TestSuiteSectionCrossReference):
+    @abstractmethod
+    def visit_test_suite_section(self, x: TestSuiteSectionCrossReference) -> T:
         raise NotImplementedError()
 
-    def visit_test_suite_section_instruction(self, x: TestSuiteSectionInstructionCrossReference):
+    @abstractmethod
+    def visit_test_suite_section_instruction(self, x: TestSuiteSectionInstructionCrossReference) -> T:
         raise NotImplementedError()
 
-    def visit_custom(self, x: CustomCrossReferenceId):
+    @abstractmethod
+    def visit_custom(self, x: CustomCrossReferenceId) -> T:
         raise NotImplementedError()
 
-    def visit_url(self, x: UrlCrossReferenceTarget):
+    @abstractmethod
+    def visit_url(self, x: UrlCrossReferenceTarget) -> T:
         raise NotImplementedError()
 
-    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
+    @abstractmethod
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference) -> T:
         raise NotImplementedError()

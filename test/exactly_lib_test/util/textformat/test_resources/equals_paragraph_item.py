@@ -91,7 +91,7 @@ class _EqualsText(ValueAssertionBase):
         checker = _EqualsTextVisitor(value,
                                      put,
                                      message_builder)
-        checker.visit(self.expected)
+        self.expected.accept(checker)
 
 
 class _EqualsParagraphItemVisitor(ParagraphItemVisitor):

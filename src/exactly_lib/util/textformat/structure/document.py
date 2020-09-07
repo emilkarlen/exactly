@@ -1,6 +1,19 @@
-from typing import List, Optional, Set
+from abc import ABC, abstractmethod
+from typing import List, Optional, Set, TypeVar, Generic
 
 from . import core
+
+T = TypeVar('T')
+
+
+class SectionItemVisitor(Generic[T], ABC):
+    @abstractmethod
+    def visit_section(self, section: 'Section') -> T:
+        pass
+
+    @abstractmethod
+    def visit_article(self, article: 'Article') -> T:
+        pass
 
 
 class SectionItem(core.TaggedItem):
@@ -26,6 +39,10 @@ class SectionItem(core.TaggedItem):
     @property
     def tags(self) -> Set[str]:
         return self._tags
+
+    @abstractmethod
+    def accept(self, visitor: SectionItemVisitor[T]) -> T:
+        pass
 
 
 class SectionContents(tuple):
@@ -91,6 +108,9 @@ class Section(SectionItem):
     def contents(self) -> SectionContents:
         return self._contents
 
+    def accept(self, visitor: SectionItemVisitor[T]) -> T:
+        return visitor.visit_section(self)
+
 
 class Article(SectionItem):
     """
@@ -110,6 +130,9 @@ class Article(SectionItem):
     def contents(self) -> ArticleContents:
         return self._contents
 
+    def accept(self, visitor: SectionItemVisitor[T]) -> T:
+        return visitor.visit_article(self)
+
 
 def empty_section_contents() -> SectionContents:
     return SectionContents([], [])
@@ -125,20 +148,3 @@ def empty_section(header: core.Text) -> Section:
 
 def empty_article(header: core.Text) -> Article:
     return Article(header, empty_article_contents())
-
-
-class SectionItemVisitor:
-    def visit(self, item: SectionItem):
-        if isinstance(item, Section):
-            return self.visit_section(item)
-        elif isinstance(item, Article):
-            return self.visit_article(item)
-        else:
-            raise TypeError('Unknown {}: {}'.format(SectionItem,
-                                                    str(item)))
-
-    def visit_section(self, section: Section):
-        raise NotImplemented('abstract method')
-
-    def visit_article(self, article: Article):
-        raise NotImplemented('abstract method')

@@ -17,7 +17,7 @@ class CrossReferenceTextConstructor(text.CrossReferenceTextConstructor):
         return CrossReferenceText(StringText(_TITLE_RENDERER.visit(x)), x)
 
 
-class _TitleRenderer(concrete_cross_refs.CrossReferenceIdVisitor):
+class _TitleRenderer(concrete_cross_refs.CrossReferenceTargetVisitor):
     def __init__(self):
         self.any_instruction = AnyInstructionNameDictionary()
         self.suite_section_name_dict = suite_section_name_dictionary()

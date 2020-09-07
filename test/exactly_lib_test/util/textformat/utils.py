@@ -76,23 +76,23 @@ class TestParagraphItemVisitor(unittest.TestCase):
                          'No visit method should have been executed.')
 
 
-class AVisitorThatRecordsVisitedMethods(sut.ParagraphItemVisitor):
+class AVisitorThatRecordsVisitedMethods(sut.ParagraphItemVisitor[core.ParagraphItem]):
     def __init__(self):
         self.visited_types = []
 
-    def visit_paragraph(self, paragraph: Paragraph):
+    def visit_paragraph(self, paragraph: Paragraph) -> core.ParagraphItem:
         self.visited_types.append(Paragraph)
         return paragraph
 
-    def visit_header_value_list(self, header_value_list: lists.HeaderContentList):
+    def visit_header_value_list(self, header_value_list: lists.HeaderContentList) -> core.ParagraphItem:
         self.visited_types.append(lists.HeaderContentList)
         return header_value_list
 
-    def visit_literal_layout(self, x: LiteralLayout):
+    def visit_literal_layout(self, x: LiteralLayout) -> core.ParagraphItem:
         self.visited_types.append(LiteralLayout)
         return x
 
-    def visit_table(self, table: Table):
+    def visit_table(self, table: Table) -> core.ParagraphItem:
         self.visited_types.append(Table)
         return table
 
