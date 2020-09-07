@@ -15,8 +15,8 @@ from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl import on_transformed
-from exactly_lib.test_case_utils.string_matcher.parse.parts import emptieness, equality, line_matches, matches, \
-    num_lines, run_program
+from exactly_lib.test_case_utils.string_matcher.parse import emptieness, equality, line_matches, matches, num_lines, \
+    run_program
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.value_type import ValueType

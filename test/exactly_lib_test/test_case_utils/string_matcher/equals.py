@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
+from exactly_lib.test_case_utils.string_matcher.parse.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source

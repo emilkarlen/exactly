@@ -130,7 +130,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         raise NotImplementedError()
 
     def runTest(self):
-        from exactly_lib.test_case_utils.string_matcher.parse.parts.equality import \
+        from exactly_lib.test_case_utils.string_matcher.parse.equality import \
             EXPECTED_FILE_REL_OPT_ARG_CONFIG
 
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
