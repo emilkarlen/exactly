@@ -525,30 +525,21 @@ to commit messages::
     def program GET_LOG_MESSAGE_OF_LAST_COMMIT = % git log -1 --format=%s
 
 
-    ## Setup a (non empty) git repo.
+    #### Setup a git repo with the commit hook to test
 
     % git init
-
-    file file-in-repo = "A file in the repo"
-
-    % git add file-in-repo
-
-    % git commit -m "commit of file already in repo"
-
-
-    ## Install the commit hook to test.
 
     copy prepare-commit-msg .git/hooks
 
 
-    ## Setup a branch, with issue number in its name,
-    # and a file to commit.
+    #### Setup a branch, with issue number in its name,
+    # and a file to commit
 
     % git checkout -b @[ISSUE_ID]@-branch-with-issue-id
 
-    file file-to-add = "A file to add on the branch"
+    file file-on-branch.txt
 
-    % git add file-to-add
+    % git add file-on-branch.txt
 
 
     [act]
