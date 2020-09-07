@@ -88,14 +88,11 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                         'File references',
                         tp.fnap(_FILE_REFERENCES)
                     ),
-                    h.child('see-also',
-                            h.with_not_in_toc(
-                                h.leaf(
-                                    see_also.SEE_ALSO_TITLE,
-                                    see_also.SeeAlsoSectionContentsConstructor(
-                                        see_also.items_of_targets(_dir_struct_see_also_targets())
-                                    )))
-                            ),
+                    h.leaf_not_in_toc(
+                        see_also.SEE_ALSO_TITLE,
+                        see_also.SeeAlsoSectionContentsConstructor(
+                            see_also.items_of_targets(_dir_struct_see_also_targets())
+                        )),
                 ]
             ),
             h.child_hierarchy(
@@ -103,14 +100,11 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                 concepts.SYMBOL_CONCEPT_INFO.plural_name.capitalize(),
                 paragraphs.constant(tp.fnap(_SYMBOLS)),
                 [
-                    h.with_not_in_toc(
-                        h.child_leaf(
-                            'see-also',
-                            see_also.SEE_ALSO_TITLE,
-                            see_also.SeeAlsoSectionContentsConstructor(
-                                see_also.items_of_targets(_symbols_see_also_targets())
-                            ))
-                    )
+                    h.leaf_not_in_toc(
+                        see_also.SEE_ALSO_TITLE,
+                        see_also.SeeAlsoSectionContentsConstructor(
+                            see_also.items_of_targets(_symbols_see_also_targets())
+                        ))
                 ]
             ),
             h.child_hierarchy(
@@ -133,14 +127,12 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                         'Timeout',
                         tp.fnap(_OS_PROC_TIMEOUT),
                     ),
-                    h.with_not_in_toc(
-                        h.child_leaf(
-                            'see-also',
-                            see_also.SEE_ALSO_TITLE,
-                            see_also.SeeAlsoSectionContentsConstructor(
-                                see_also.items_of_targets(_os_process_see_also_targets())
-                            )))
-                    ,
+                    h.leaf_not_in_toc(
+                        see_also.SEE_ALSO_TITLE,
+                        see_also.SeeAlsoSectionContentsConstructor(
+                            see_also.items_of_targets(_os_process_see_also_targets())
+                        )
+                    ),
                 ],
             ),
         ]

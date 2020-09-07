@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.constructor.environment import ConstructionEnvi
 from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
-    SectionConstructor, SectionItemConstructor, ArticleContentsConstructor
+    SectionConstructor, ArticleContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
     SectionItemNode
@@ -23,6 +23,12 @@ def leaf(header: StrOrStringText,
          contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
     return _SectionLeafGenerator(docs.str_text(header), contents_constructor)
+
+
+def leaf_not_in_toc(header: StrOrStringText,
+                    contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
+    """A section without sub sections that appear in the TOC/target hierarchy"""
+    return _SectionLeafNotInTocGenerator(docs.str_text(header), contents_constructor)
 
 
 def leaf_article(header: StrOrStringText,
@@ -83,10 +89,6 @@ def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
                                          hierarchy_to_fix_root_target_for)
 
 
-def with_not_in_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
-    return _HierarchyNotInToc(hierarchy_to_hide)
-
-
 class _ChildSectionHierarchyGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  local_target_name: str,
@@ -109,6 +111,18 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
         return _LeafSectionNode(target_factory.root(self._header),
                                 self._contents_renderer)
+
+
+class _SectionLeafNotInTocGenerator(SectionHierarchyGenerator):
+    def __init__(self,
+                 header: StringText,
+                 contents_renderer: SectionContentsConstructor):
+        self._header = header
+        self._contents_renderer = contents_renderer
+
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        return _LeafNotInTocSectionNode(self._header,
+                                        self._contents_renderer)
 
 
 class _ArticleLeafGenerator(SectionHierarchyGenerator):
@@ -161,18 +175,6 @@ class _HierarchyWithFixedRootTarget(SectionHierarchyGenerator):
                                            target_factory))
 
 
-class _HierarchyNotInToc(SectionHierarchyGenerator):
-    """
-    A section item that does not appear in the TOC.
-    """
-
-    def __init__(self, hidden: SectionHierarchyGenerator):
-        self._hidden = hidden
-
-    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return _NodeWithNoTargetInfoNode(self._hidden.generate(target_factory))
-
-
 class _LeafSectionNode(LeafSectionItemNodeWithRoot):
     """
     A section without sub sections that appear in the target-hierarchy.
@@ -198,16 +200,29 @@ class _LeafSectionNode(LeafSectionItemNodeWithRoot):
         return RetVal()
 
 
-class _NodeWithNoTargetInfoNode(SectionItemNode):
+class _LeafNotInTocSectionNode(SectionItemNode):
     """
-    A section that have no target info
+    A section without sub sections that appear in the target-hierarchy.
     """
 
-    def __init__(self, node: SectionItemNode):
-        self._section = node
+    def __init__(self,
+                 header: StringText,
+                 contents_renderer: SectionContentsConstructor,
+                 ):
+        self._header = header
+        self._contents_renderer = contents_renderer
 
     def target_info_node(self) -> Optional[TargetInfoNode]:
         return None
 
-    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
-        return self._section.section_item_constructor(node_environment)
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionConstructor:
+        super_self = self
+
+        class RetVal(SectionConstructor):
+            def apply(self, environment: ConstructionEnvironment) -> doc.Section:
+                return doc.Section(super_self._header,
+                                   super_self._contents_renderer.apply(environment),
+                                   target=None,
+                                   tags=None)
+
+        return RetVal()

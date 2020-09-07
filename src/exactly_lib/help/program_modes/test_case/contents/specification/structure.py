@@ -93,13 +93,12 @@ def root(header: str, test_case_help: TestCaseHelp) -> generator.SectionHierarch
                                     const_paragraphs('Part of suite',
                                                      tp.fnap(_PART_OF_SUITE))
                                     ),
-                            h.with_not_in_toc(
-                                h.leaf(
-                                    see_also.SEE_ALSO_TITLE,
-                                    see_also.SeeAlsoSectionContentsConstructor(
-                                        see_also.items_of_targets(_suite_see_also_targets())
-                                    )))
-                            ,
+                            h.leaf_not_in_toc(
+                                see_also.SEE_ALSO_TITLE,
+                                see_also.SeeAlsoSectionContentsConstructor(
+                                    see_also.items_of_targets(_suite_see_also_targets())
+                                )
+                            ),
                         ]),
                     ),
         ]
