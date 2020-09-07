@@ -26,7 +26,6 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
@@ -36,9 +35,8 @@ from exactly_lib.test_case_utils.err_msg.path_rendering import HeaderAndPathMajo
 from exactly_lib.test_case_utils.file_matcher import file_matcher_models
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
-from exactly_lib.test_case_utils.parse import parse_path
-from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
-    RelOptionsConfiguration
+from exactly_lib.test_case_utils.parse import parse_path, path_relativities
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -66,15 +64,7 @@ _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 _FILE_EXISTENCE_CHECK = file_properties.must_exist(follow_symlinks=False)
 
 _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
-    RelOptionsConfiguration(
-        PathRelativityVariants(
-            {RelOptionType.REL_CWD,
-             RelOptionType.REL_HDS_ACT,
-             RelOptionType.REL_ACT,
-             RelOptionType.REL_TMP,
-             },
-            True),
-        RelOptionType.REL_CWD),
+    path_relativities.PATH_ASSERTION_REL_OPTS_CONF,
     _PATH_ARGUMENT.name,
     True)
 

@@ -1,21 +1,12 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives import file_or_dir_contents
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import rel_opts_configuration
+from exactly_lib.test_case_utils.parse import rel_opts_configuration, path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
-    rel_opts_configuration.RelOptionsConfiguration(
-        rel_opts_configuration.PathRelativityVariants({
-            RelOptionType.REL_CWD,
-            RelOptionType.REL_HDS_ACT,
-            RelOptionType.REL_TMP,
-            RelOptionType.REL_ACT,
-        },
-            True),
-        RelOptionType.REL_CWD),
+    path_relativities.PATH_ASSERTION_REL_OPTS_CONF,
     PATH_ARGUMENT.name,
     True)
 

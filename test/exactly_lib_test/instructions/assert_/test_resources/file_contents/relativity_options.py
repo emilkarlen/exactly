@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -42,7 +43,7 @@ class TestWithConfigurationAndRelativityOptionAndNegationBase(TestWithConfigurat
 
 
 def suite_for__conf__rel_opts__negations(instruction_configuration: InstructionTestConfiguration,
-                                         relativity_options: list,
+                                         relativity_options: List[RelativityOptionConfiguration],
                                          test_cases: list) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         not_negated = [tc(instruction_configuration, option_configuration, ExpectationType.POSITIVE)

@@ -16,7 +16,6 @@ from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhas
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.test_case_utils.file_contents_check_syntax import \
     FileContentsCheckerHelp
@@ -95,8 +94,6 @@ class _ActualFileParser(ComparisonActualFileParser):
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
-    rel_opts_configuration.RelOptionsConfiguration(
-        path_relativities.ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE,
-        RelOptionType.REL_CWD),
+    path_relativities.PATH_ASSERTION_REL_OPTS_CONF,
     ACTUAL_PATH_ARGUMENT.name,
     True)

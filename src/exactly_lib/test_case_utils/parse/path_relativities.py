@@ -8,15 +8,12 @@ ALL_HDS_REL_OPTIONS = {RelOptionType.REL_HDS_CASE, RelOptionType.REL_HDS_ACT}
 
 ALL_REL_OPTION_VARIANTS = PathRelativityVariants(ALL_REL_OPTIONS, True)
 
-ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE}
-
-ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX = PathRelativityVariants(
-    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
-    False)
-
-ALL_REL_OPTION_VARIANTS_WITH_TARGETS_INSIDE_SANDBOX_OR_ABSOLUTE = PathRelativityVariants(
-    ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX,
+PATH_ASSERTION_RELATIVITIES = PathRelativityVariants(
+    ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
     True)
+
+PATH_ASSERTION_REL_OPTS_CONF = RelOptionsConfiguration(PATH_ASSERTION_RELATIVITIES,
+                                                       RelOptionType.REL_CWD)
 
 
 def all_rel_options_config(default: RelOptionType) -> RelOptionsConfiguration:
@@ -27,16 +24,9 @@ def all_rel_options_config(default: RelOptionType) -> RelOptionsConfiguration:
 
 REL_OPTIONS_CONFIGURATION = all_rel_options_config(RelOptionType.REL_HDS_CASE)
 
-STANDARD_NON_HDS_RELATIVITY_VARIANTS = PathRelativityVariants(
-    ALL_REL_OPTIONS - {RelOptionType.REL_HDS_CASE},
-    True)
-
 HDS_AND_ABS_RELATIVITY_VARIANTS = PathRelativityVariants(
     ALL_HDS_REL_OPTIONS,
     True)
-
-STANDARD_NON_HDS_OPTIONS = RelOptionsConfiguration(STANDARD_NON_HDS_RELATIVITY_VARIANTS,
-                                                   RelOptionType.REL_CWD)
 
 
 def all_rel_options_arg_config(argument_syntax_name: str,
@@ -48,13 +38,3 @@ def all_rel_options_arg_config(argument_syntax_name: str,
 
 
 ALL_REL_OPTIONS_ARG_CONFIG = all_rel_options_arg_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
-
-
-def non_hds_config(argument_syntax_name: str,
-                   path_suffix_is_required: bool = True) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(STANDARD_NON_HDS_OPTIONS,
-                                          argument_syntax_name,
-                                          path_suffix_is_required)
-
-
-NON_HDS_CONFIG = non_hds_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
