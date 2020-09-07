@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
@@ -49,14 +49,14 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
 
     def raise_not_a_here_doc_exception():
         raise SingleInstructionInvalidArgumentException('Not a {}: {}'.format(
-            instruction_arguments.HERE_DOCUMENT.name,
+            syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             token_parser.remaining_part_of_current_line))
 
     if not here_document_is_mandatory and token_parser.is_at_eol:
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return None
 
-    token_parser.require_has_valid_head_token(instruction_arguments.HERE_DOCUMENT.name)
+    token_parser.require_has_valid_head_token(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name)
 
     while token_parser.is_at_eol:
         token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()

@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithSplittedPartsForRestDocBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
-from exactly_lib.definitions import instruction_arguments, misc_texts
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
@@ -47,14 +47,14 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
     def __init__(self,
                  name: str,
                  single_line_description: str):
+        self.command_arg = syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument
         super().__init__(name, {
-            'COMMAND': instruction_arguments.COMMAND_ARGUMENT.name,
+            'COMMAND': self.command_arg.name,
             'PASS': exit_values.EXECUTION__PASS.exit_identifier,
             'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.__single_line_description = single_line_description
-        self.command_arg = instruction_arguments.COMMAND_ARGUMENT
 
     def single_line_description(self) -> str:
         return self.__single_line_description

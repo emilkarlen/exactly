@@ -1,4 +1,4 @@
-from exactly_lib.definitions import instruction_arguments, misc_texts
+from exactly_lib.definitions import misc_texts
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 
 HELP_COMMAND = 'help'
@@ -14,7 +14,6 @@ COMMAND_DESCRIPTIONS = {
                                                         SYMBOL_COMMAND),
 }
 
-SHELL_COMMAND = instruction_arguments.COMMAND_ARGUMENT.name
 SYSTEM_COMMAND = misc_texts.SYSTEM_COMMAND_LINE.singular
 
 OPTION_FOR_ACTOR__LONG = 'actor'

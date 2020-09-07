@@ -1,7 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -36,8 +35,8 @@ TYPE_SETUPS_LIST = [
               type_parser.StringParser(),
               [
                   a.Choice(a.Multiplicity.MANDATORY,
-                           [instruction_arguments.STRING,
-                            instruction_arguments.HERE_DOCUMENT])
+                           [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                            syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument])
               ]),
     TypeSetup.new_with_std_syntax(types.LIST_TYPE_INFO,
                                   type_parser.ListParser()),

@@ -2,7 +2,6 @@ from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map, ParserFromTokens
@@ -42,7 +41,7 @@ def parse_integer_comparison_operator_and_rhs(
 class MandatoryIntegerParser(ParserFromTokens[IntegerSdv]):
     def __init__(self,
                  custom_integer_restriction: Optional[CustomIntegerValidator] = None,
-                 integer_argument_name_in_err_msg: str = INTEGER_ARGUMENT.name,
+                 integer_argument_name_in_err_msg: str = syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
                  ):
         self._custom_integer_restriction = custom_integer_restriction
         self._integer_argument_name_in_err_msg = integer_argument_name_in_err_msg

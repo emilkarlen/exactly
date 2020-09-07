@@ -42,7 +42,7 @@ RELATIVITY_OPTIONS_CONFIGURATION = parse_here_doc_or_path.CONFIGURATION
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = instruction_arguments.PATH_ARGUMENT
+        self.path_arg = syntax_elements.PATH_SYNTAX_ELEMENT.argument
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
             self.path_arg.name,
             instruction_arguments.RELATIVITY_ARGUMENT.name,

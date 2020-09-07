@@ -84,7 +84,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         return cross_reference_id_list(name_and_cross_refs)
 
 
-_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(

@@ -1,7 +1,6 @@
 from typing import List, Sequence
 
 from exactly_lib.definitions import doc_format, matcher_model, misc_texts
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types
@@ -31,14 +30,14 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
+NAME_MATCHER_ARGUMENT = syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
 REG_EX_OPTION = a.OptionName(long_name='regex')
 
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
-                           syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
+                           syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
 
 
 def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcherSdv]:
@@ -96,7 +95,7 @@ class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntax
         return [
             a.Choice(a.Multiplicity.MANDATORY,
                      [
-                         instruction_arguments.GLOB_PATTERN,
+                         syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
                          REG_EX_ARGUMENT,
                      ])
         ]

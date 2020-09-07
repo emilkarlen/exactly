@@ -96,7 +96,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return docs.first_row_is_header_table(rows)
 
 
-_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 _NOTES = """\
 {NAME} must not have been defined earlier.

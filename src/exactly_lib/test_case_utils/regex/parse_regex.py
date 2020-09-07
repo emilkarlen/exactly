@@ -131,7 +131,7 @@ class _ValidatorWhichCreatesRegex(DdvValidator):
             return text_docs.single_line(
                 str_constructor.FormatPositional(
                     "Invalid {}: '{}'",
-                    instruction_arguments.REG_EX.name,
+                    syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
                     ex,
                 )
             )

@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.definitions import instruction_arguments, matcher_model
+from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -16,9 +16,9 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
+REPLACE_REGEX_ARGUMENT = syntax_elements.REGEX_SYNTAX_ELEMENT.argument
 
-REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
+REPLACE_REPLACEMENT_ARGUMENT = syntax_elements.STRING_SYNTAX_ELEMENT.argument
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 

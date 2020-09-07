@@ -1,4 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
@@ -54,5 +55,5 @@ class _ParseAsProgram(ParserFromTokenParserBase[ProgramSdv]):
 
 
 _PARSE_FORMAT_MAP = {
-    'COMMAND': instruction_arguments.COMMAND_ARGUMENT.name
+    'COMMAND': syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.singular_name
 }

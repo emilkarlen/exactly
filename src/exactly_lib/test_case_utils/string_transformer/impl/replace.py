@@ -1,6 +1,5 @@
 from typing import Pattern, Sequence, Iterator
 
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -33,7 +32,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
+REPLACE_REGEX_ARGUMENT = syntax_elements.REGEX_SYNTAX_ELEMENT.argument
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
@@ -42,7 +41,7 @@ _PARSE_REPLACEMENT_CONFIGURATION = parse_string.Configuration('REPLACEMENT')
 
 
 def parse_replace(token_parser: TokenParser) -> StringTransformerSdv:
-    token_parser.require_has_valid_head_token(syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
+    token_parser.require_has_valid_head_token(REPLACE_REGEX_ARGUMENT.name)
     source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
                                                       must_be_on_same_line=True)
     token_parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)

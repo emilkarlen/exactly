@@ -1,4 +1,3 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
@@ -72,38 +71,38 @@ FILES_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_MATCHER_
 FILES_CONDITION_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILES_CONDITION_TYPE_INFO)
 
 SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.COMMAND_ARGUMENT.name,
+    'SHELL-COMMAND-LINE',
     'A shell command line, as the remaining part of the current line.'
 )
 
 SYMBOL_NAME_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.SYMBOL_NAME_ARGUMENT.name,
+    'SYMBOL-NAME',
     'The name of a symbol'
 )
 
 SYMBOL_REFERENCE_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.SYMBOL_REFERENCE.name,
+    'SYMBOL-REFERENCE',
     'A reference to a symbol using special reference syntax'
 )
 
 HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.HERE_DOCUMENT.name,
+    'HERE-DOCUMENT',
     'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
         string=types.STRING_TYPE_INFO.singular_name)
 )
 
 REGEX_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.REG_EX.name,
+    'REG-EX',
     'A regular expression, using Python syntax'
 )
 
 GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.GLOB_PATTERN.name,
+    'GLOB-PATTERN',
     'A file name glob pattern'
 )
 
 INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
-    instruction_arguments.INTEGER_ARGUMENT.name,
+    'INTEGER',
     'An integer expression'
 )
 

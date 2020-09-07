@@ -1,6 +1,5 @@
 from typing import Sequence, Iterator
 
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -122,8 +121,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
-            a.Single(a.Multiplicity.MANDATORY,
-                     instruction_arguments.LINE_MATCHER),
+            syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.single_mandatory,
         ]
 
     @property

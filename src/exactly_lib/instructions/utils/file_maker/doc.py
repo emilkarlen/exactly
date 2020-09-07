@@ -2,7 +2,6 @@ from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
     cli_argument_syntax_element_description
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
@@ -52,15 +51,9 @@ class FileContentsDocumentation:
         optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
                                                   string_transformer.STRING_TRANSFORMATION_ARGUMENT)
 
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
-                                instruction_arguments.HERE_DOCUMENT)
-
-        string_arg = a.Single(a.Multiplicity.MANDATORY,
-                              instruction_arguments.STRING)
-
-        program_token = a.Single(a.Multiplicity.MANDATORY,
-                                 syntax_elements.PROGRAM_SYNTAX_ELEMENT.argument)
-
+        here_doc_arg = syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.single_mandatory
+        string_arg = syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory
+        program_token = syntax_elements.PROGRAM_SYNTAX_ELEMENT.single_mandatory
         output_channel_token = a.Choice(a.Multiplicity.MANDATORY,
                                         [a.Option(option_name)
                                          for option_name in defs.PROGRAM_OUTPUT_OPTIONS.values()

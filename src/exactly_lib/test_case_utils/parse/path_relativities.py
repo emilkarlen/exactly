@@ -1,4 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
@@ -37,4 +38,4 @@ def all_rel_options_arg_config(argument_syntax_name: str,
                                           path_suffix_is_required)
 
 
-ALL_REL_OPTIONS_ARG_CONFIG = all_rel_options_arg_config(instruction_arguments.PATH_SYNTAX_ELEMENT_NAME)
+ALL_REL_OPTIONS_ARG_CONFIG = all_rel_options_arg_config(syntax_elements.PATH_SYNTAX_ELEMENT.singular_name)

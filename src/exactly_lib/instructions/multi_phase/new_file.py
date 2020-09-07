@@ -175,7 +175,7 @@ class _DstFileNameSdvValidator(SdvValidator):
         return None
 
 
-_DST_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_DST_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_DST_PATH_ARGUMENT.name)
 

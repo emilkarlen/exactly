@@ -1,7 +1,7 @@
 import functools
 from typing import Tuple
 
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
@@ -20,9 +20,10 @@ CONFIGURATION = path_relativities.ALL_REL_OPTIONS_ARG_CONFIG
 FILE_ARGUMENT_OPTION = a.OptionName(long_name='file')
 
 MISSING_SOURCE = 'Missing argument ({string}, {path} or {here_doc})'.format(
-    string=instruction_arguments.STRING.name,
+    string=syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
     path=option_syntax(FILE_ARGUMENT_OPTION),
-    here_doc=instruction_arguments.HERE_DOCUMENT.name, )
+    here_doc=syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
+)
 
 
 def parse_from_parse_source(source: ParseSource,

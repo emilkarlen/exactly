@@ -40,6 +40,6 @@ EXE_FILE_RELATIVITIES = rel_opts_configuration.RelOptionArgumentConfiguration(
         path_relativities.HDS_AND_ABS_RELATIVITY_VARIANTS,
         RelOptionType.REL_HDS_CASE,
     ),
-    instruction_arguments.PATH_SYNTAX_ELEMENT_NAME,
+    syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
     True,
 )

@@ -59,7 +59,7 @@ NEGATION_OPERATOR = logic.NOT_OPERATOR_NAME
 
 PROPERTIES_SEPARATOR = logic.QUANTIFICATION_SEPARATOR_ARGUMENT
 
-_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 _FILE_EXISTENCE_CHECK = file_properties.must_exist(follow_symlinks=False)
 

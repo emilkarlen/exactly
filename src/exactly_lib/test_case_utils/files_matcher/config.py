@@ -1,9 +1,9 @@
-from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, path_relativities
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     path_relativities.PATH_ASSERTION_REL_OPTS_CONF,

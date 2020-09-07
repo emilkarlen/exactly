@@ -19,7 +19,7 @@ class Parser(ExecutableObjectParser[ProgramToExecute]):
     def __init__(self):
         self._program_parser = parse_program.program_parser(
             exe_file_relativity=relativity_configuration_of_action_to_check(
-                instruction_arguments.PATH_SYNTAX_ELEMENT_NAME
+                syntax_elements.PATH_SYNTAX_ELEMENT.singular_name
             )
         )
 

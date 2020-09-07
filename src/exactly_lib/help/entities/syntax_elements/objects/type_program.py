@@ -1,10 +1,9 @@
 from typing import List, Sequence
 
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args, cli_argument_syntax_element_description
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, InvokationVariantHelper
-from exactly_lib.definitions import instruction_arguments, formatting, misc_texts
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -139,8 +138,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
     def _exe_file() -> InvokationVariant:
         return invokation_variant_from_args(
             [
-                a.Single(a.Multiplicity.MANDATORY,
-                         instruction_arguments.PATH_ARGUMENT)
+                syntax_elements.PATH_SYNTAX_ELEMENT.single_mandatory
             ],
             rel_path_doc.path_element_relativity_paragraphs(
                 path_relativities.REL_OPTIONS_CONFIGURATION,

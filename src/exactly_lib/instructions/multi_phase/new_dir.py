@@ -116,7 +116,7 @@ PARTS_PARSER = instruction_part_utils.PartsParserFromEmbryoParser(
     instruction_part_utils.MainStepResultTranslatorForTextRendererAsHardError(),
 )
 
-_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_PATH_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 RELATIVITY_VARIANTS = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
 

@@ -40,8 +40,8 @@ class StringOrHereDocOrFile:
 
     def argument_usage(self, multiplicity: a.Multiplicity) -> a.ArgumentUsage:
         return a.Choice(multiplicity,
-                        [instruction_arguments.STRING,
-                         instruction_arguments.HERE_DOCUMENT,
+                        [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                         syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument,
                          self._expected_file_arg])
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:

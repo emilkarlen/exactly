@@ -1,4 +1,5 @@
 from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
@@ -122,6 +123,6 @@ REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(
     REL_OPTIONS_CONFIGURATION,
-    instruction_arguments.PATH_ARGUMENT,
+    syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
     syntax.PATH_SUFFIX_IS_REQUIRED,
 )

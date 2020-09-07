@@ -125,7 +125,7 @@ def parts_parser(is_after_act_phase: bool) -> InstructionPartsParser:
     )
 
 
-_DIR_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_DIR_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 
 def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:
