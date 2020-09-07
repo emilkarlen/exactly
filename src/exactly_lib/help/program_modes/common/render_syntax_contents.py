@@ -1,9 +1,9 @@
 from typing import Iterable, List, Sequence, Optional
 
+from exactly_lib.common.help.headers import WHERE_PARA, FORMS_PARA
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.help import std_tags
-from exactly_lib.help.render.headers import WHERE_PARA, FORMS_PARA
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem

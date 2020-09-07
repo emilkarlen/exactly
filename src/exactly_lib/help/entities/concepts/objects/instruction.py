@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.common.help.headers import FORMS_PARA
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_string
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -10,7 +11,6 @@ from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
-from exactly_lib.help.render.headers import FORMS_PARA
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser

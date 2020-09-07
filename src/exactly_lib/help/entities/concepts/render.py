@@ -1,8 +1,8 @@
 from typing import List
 
+from exactly_lib.common.help.headers import DESCRIPTION__HEADER__CAPITALIZED
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.render import see_also as render_utils
-from exactly_lib.help.render.headers import DESCRIPTION__HEADER__CAPITALIZED
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \

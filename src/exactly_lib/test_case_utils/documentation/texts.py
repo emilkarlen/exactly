@@ -1,5 +1,6 @@
 from typing import List, Sequence
 
+from exactly_lib.common.help import headers
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.primitives import program
@@ -19,7 +20,7 @@ _TP = TextParser({
     'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
     'program': types.PROGRAM_TYPE_INFO.name,
     'string_transformer': types.STRING_TRANSFORMER_TYPE_INFO.name,
-    'NOTE': misc_texts.NOTE_LINE_HEADER,
+    'NOTE': headers.NOTE_LINE_HEADER,
 })
 
 OUTPUT_ON_STDERR__HEADER = 'Output on ' + misc_texts.STDERR
@@ -53,7 +54,7 @@ unless {ignore_exit_code_option} is given.
 
 def type_expression_has_syntax_of_primitive(type_names: Sequence[str]) -> List[ParagraphItem]:
     types_list = ', '.join(type_names)
-    return TextParser({'TYPES': types_list, 'Note': misc_texts.NOTE_LINE_HEADER}).fnap(
+    return TextParser({'TYPES': types_list, 'Note': headers.NOTE_LINE_HEADER}).fnap(
         _TYPE_EXPRESSION_HAS_SYNTAX_OF_PRIMITIVE
     )
 

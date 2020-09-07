@@ -1,7 +1,8 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting, misc_texts
+from exactly_lib.common.help import headers
+from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements, types
@@ -48,7 +49,7 @@ class _HdsConcept(ConceptDocumentation):
             'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
             'conf_params': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
             'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
-            'Note': misc_texts.NOTE_LINE_HEADER,
+            'Note': headers.NOTE_LINE_HEADER,
         })
 
     def purpose(self) -> DescriptionWithSubSections:

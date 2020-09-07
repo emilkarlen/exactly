@@ -4,6 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
@@ -161,6 +162,6 @@ _TP = TextParser({
     'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
-    'NOTE': misc_texts.NOTE_LINE_HEADER,
+    'NOTE': headers.NOTE_LINE_HEADER,
     'is_a_system_cmd': misc_texts.IS_A_SYSTEM_CMD,
 })

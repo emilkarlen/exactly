@@ -1,5 +1,6 @@
 from typing import List, Sequence
 
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args, cli_argument_syntax_element_description
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, InvokationVariantHelper
@@ -196,7 +197,7 @@ _TEXT_PARSER = TextParser({
     'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
     'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
     'relativity': formatting.misc_name_with_formatting(misc_texts.RELATIVITY),
-    'Note': misc_texts.NOTE_LINE_HEADER,
+    'Note': headers.NOTE_LINE_HEADER,
     'program_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR),
     'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
 })

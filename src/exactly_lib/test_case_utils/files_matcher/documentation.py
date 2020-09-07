@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.help import headers
 from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -92,7 +93,7 @@ _TP = TextParser({
     'FILES_CONDITION': syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
     'model': matcher_model.FILES_MATCHER_MODEL,
     'element': matcher_model.FILE_MATCHER_MODEL,
-    'NOTE': misc_texts.NOTE_LINE_HEADER,
+    'NOTE': headers.NOTE_LINE_HEADER,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'symbolic_link': file_properties.TYPE_INFO[file_properties.FileType.SYMLINK].name,
     'matches_full_option': option_syntax.option_syntax(config.MATCHES_FULL_OPTION.name),

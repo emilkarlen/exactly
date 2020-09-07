@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.help.render.headers import DESCRIPTION__HEADER__UPPERCASE, SYNOPSIS_TEXT
+from exactly_lib.common.help.headers import DESCRIPTION__HEADER__UPPERCASE, SYNOPSIS_TEXT
 from exactly_lib.util.textformat.structure import document as doc
 
 

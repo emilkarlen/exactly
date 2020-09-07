@@ -1,7 +1,7 @@
 from pathlib import PurePosixPath
 from typing import List, Sequence
 
-from exactly_lib.common.help import documentation_text
+from exactly_lib.common.help import documentation_text, headers
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
@@ -12,7 +12,6 @@ from exactly_lib.definitions.current_directory_and_path_type import path_type_pa
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
-from exactly_lib.definitions.misc_texts import NOTE_SECTION_HEADER
 from exactly_lib.definitions.path import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -80,7 +79,7 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             docs.section('Relativity',
                          self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY),
-                         [docs.section(NOTE_SECTION_HEADER,
+                         [docs.section(headers.NOTES__HEADER__UPPERCASE,
                                        self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY_NOTE))]),
             path_type_path_rendering()
         ]

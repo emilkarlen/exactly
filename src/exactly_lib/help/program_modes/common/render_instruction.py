@@ -1,8 +1,8 @@
 from typing import Callable, List
 
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.render import headers
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
 from exactly_lib.help.render.see_also import see_also_sections
 from exactly_lib.util.textformat.constructor import sections

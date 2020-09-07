@@ -1,3 +1,4 @@
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant
 from exactly_lib.definitions import misc_texts, formatting, syntax_descriptions
 from exactly_lib.definitions.argument_rendering import path_syntax
@@ -105,7 +106,7 @@ _TEXT_PARSER = TextParser({
     'soft_quote': formatting.entity_name_with_formatting(syntax_descriptions.SOFT_QUOTE_NAME),
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
-    'Note': misc_texts.NOTE_LINE_HEADER,
+    'Note': headers.NOTE_LINE_HEADER,
 })
 
 _MAIN__DESCRIPTION = """\

@@ -1,6 +1,7 @@
 from typing import List
 
-from exactly_lib.definitions import formatting, misc_texts
+from exactly_lib.common.help import headers
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
@@ -36,7 +37,7 @@ class IndividualActorConstructor(ArticleContentsConstructor):
             [
                 (self._parser.format('{act_phase} phase contents'), self.actor.act_phase_contents()),
                 (self._parser.format('Syntax of {act_phase} phase contents'), self.actor.act_phase_contents_syntax()),
-                (misc_texts.NOTES_SECTION_HEADER, self.actor.notes()),
+                (headers.NOTES__HEADER__CAPITALIZED, self.actor.notes()),
             ]
         )
         sub_sections += see_also_sections(self.actor.see_also_targets(), environment)

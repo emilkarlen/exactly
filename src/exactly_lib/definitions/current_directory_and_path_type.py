@@ -1,5 +1,6 @@
 from typing import List
 
+from exactly_lib.common.help import headers
 from exactly_lib.common.help.documentation_text import paths_uses_posix_syntax
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions import path
@@ -37,7 +38,7 @@ def def_instruction_rel_cd_description(path_arg_name: str) -> List[ParagraphItem
         'path_arg': path_arg_name,
         'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
         'symbols_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
-        'Note': misc_texts.NOTE_LINE_HEADER,
+        'Note': headers.NOTE_LINE_HEADER,
     })
     return tp.fnap(_DEF_INSTRUCTION_REL_CD_DESCRIPTION)
 
@@ -62,7 +63,7 @@ def path_type_path_rendering() -> SectionItem:
         'path_type': types.PATH_TYPE_INFO.name,
         'external_program': misc_texts.EXTERNAL_PROGRAM,
         'os_process': misc_texts.OS_PROCESS_NAME,
-        'Note': misc_texts.NOTE_LINE_HEADER,
+        'Note': headers.NOTE_LINE_HEADER,
     })
     return Section(tp.text(_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER),
                    tp.section_contents(_PATH_TYPE_PATH_RENDERING_DESCRIPTION))
