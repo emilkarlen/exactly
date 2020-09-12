@@ -100,7 +100,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._doc_elements.syntax_element_descriptions()
 
     def see_also_targets(self) -> List[CrossReferenceId]:
-        return self._doc_elements.see_also_targets()
+        return (
+                self._doc_elements.see_also_targets() +
+                [concepts.SDS_CONCEPT_INFO.cross_reference_target]
+        )
 
 
 class Parser(InstructionParser):
