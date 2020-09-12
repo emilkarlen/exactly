@@ -6,9 +6,14 @@ from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
 from exactly_lib.type_system.data import paths
+from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import relativity_configurations
@@ -18,12 +23,18 @@ from exactly_lib_test.actors.test_resources.integration_check import Expectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.actors.test_resources.program_argument_validation import ARGUMENT_VALIDATION_CASES
 from exactly_lib_test.execution.test_resources import eh_assertions
+from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
+from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
+from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, path_arguments
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
+from exactly_lib_test.test_case_utils.program.test_resources import program_arguments
+from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab, relativity_options
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import Dir
@@ -31,6 +42,8 @@ from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
@@ -44,6 +57,8 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(TestValidationShouldFailWhenSourceFileDoesNotExist())
     ret_val.addTest(TestValidationShouldFailWhenSourceFileIsADirectory())
 
+    ret_val.addTest(TestArgumentsAreProgramArguments())
+    ret_val.addTest(TestArgumentsOfInterpreterAndActAreConcatenated())
     ret_val.addTest(unittest.makeSuite(TestValidationOfArguments))
 
     ret_val.addTest(TestStringSymbolReferenceInInterpreter())
@@ -295,17 +310,6 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
                         expectation)
 
 
-class ValidationCase:
-    def __init__(self,
-                 name: str,
-                 path_relativity: RelOptionType,
-                 expectation: Expectation,
-                 ):
-        self.name = name
-        self.path_relativity = path_relativity
-        self.expectation = expectation
-
-
 class TestValidationOfArguments(unittest.TestCase):
     def test_arguments_of_interpreter(self):
         # ARRANGE #
@@ -338,3 +342,182 @@ class TestValidationOfArguments(unittest.TestCase):
                     ),
                     case.expectation,
                 )
+
+    def test_arguments_of_program_file(self):
+        # ARRANGE #
+        exe_file = fs.python_executable_file(
+            'program-name',
+            py_programs.exit_with(0)
+        )
+        actor = sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE)
+        for case in ARGUMENT_VALIDATION_CASES:
+            with self.subTest(case.name):
+                act_contents = ab.sequence__r([
+                    ab.singleton(exe_file.name),
+                    program_arguments.existing_file(
+                        path_arguments.RelOptPathArgument('non-existing',
+                                                          case.path_relativity)
+                    )
+                ])
+                act_instruction = instr([act_contents.as_str])
+                # ACT & ASSERT #
+                integration_check.check_execution(
+                    self,
+                    actor,
+                    [act_instruction],
+                    Arrangement(
+                        hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                            fs.DirContents([exe_file])
+                        )
+                    ),
+                    case.expectation,
+                )
+
+
+class TestArgumentsAreProgramArguments(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        actor = sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE)
+
+        exe_file = fs.python_executable_file(
+            'program-name',
+            py_programs.exit_with_0()
+        )
+        text_until_end_of_line = 'some {}invalidly quoted text'.format(SOFT_QUOTE_CHAR)
+
+        existing_path_relativity = relativity_options.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
+
+        existing_path_argument = path_arguments.RelOptPathArgument(
+            'existing-path',
+            existing_path_relativity.relativity,
+        )
+        act_contents = ab.sequence__r([
+            ab.singleton(exe_file.name),
+            program_arguments.existing_path(
+                existing_path_argument
+            ),
+            program_arguments.remaining_part_of_current_line_as_literal(text_until_end_of_line),
+        ])
+
+        def get_command_assertion(tcds: Tcds) -> ValueAssertion[Command]:
+            symbols = SymbolTable.empty()
+            return asrt_command.matches_command(
+                asrt.anything_goes(),
+                asrt.equals([
+                    str(relativity_configurations.ATC_FILE
+                        .named_file_conf(exe_file.name)
+                        .path_sdv
+                        .resolve(symbols)
+                        .value_of_any_dependency__d(tcds)
+                        .primitive
+                        ),
+                    str(existing_path_relativity
+                        .named_file_conf(existing_path_argument.name)
+                        .path_sdv
+                        .resolve(symbols)
+                        .value_of_any_dependency__d(tcds)
+                        .primitive
+                        ),
+                    text_until_end_of_line,
+                ])
+            )
+
+        act_instruction = instr([act_contents.as_str])
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
+        # ACT & ASSERT #
+        integration_check.check_execution(
+            self,
+            actor,
+            [act_instruction],
+            Arrangement(
+                process_execution=ProcessExecutionArrangement(
+                    os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+                ),
+                hds_contents=hds_populators.multiple([
+                    relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                        fs.DirContents([exe_file])
+                    ),
+                    existing_path_relativity.populator_for_relativity_option_root__hds(
+                        fs.DirContents([fs.File.empty(existing_path_argument.name)])
+                    ),
+                ])
+            ),
+            Expectation(
+                after_execution=ExecutedCommandAssertion(
+                    executor_that_records_arguments,
+                    get_command_assertion,
+                )
+            ),
+        )
+
+
+class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        actor = sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE)
+
+        exe_file = fs.python_executable_file(
+            'program-name',
+            py_programs.exit_with_0()
+        )
+        argument_to_act_file = 'argument-to-act-file'
+        act_contents = ab.sequence__r([
+            ab.singleton(exe_file.name),
+            ab.singleton(argument_to_act_file)
+        ])
+        interpreter_arguments_symbol = ListConstantSymbolContext('INTERPRETER_ARGS_LIST', ['1st', '2nd'])
+        interpreter_arguments = arguments_sdvs.new_without_validation(
+            interpreter_arguments_symbol.sdv
+        )
+        actor = sut.actor(
+            command_sdvs.for_executable_file(
+                path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+                interpreter_arguments
+            )
+        )
+
+        def get_command_assertion(tcds: Tcds) -> ValueAssertion[Command]:
+            symbols = SymbolTable.empty()
+            return asrt_command.matches_command(
+                asrt.anything_goes(),
+                asrt.equals(
+                    interpreter_arguments_symbol.constant_list +
+                    [
+                        str(relativity_configurations.ATC_FILE
+                            .named_file_conf(exe_file.name)
+                            .path_sdv
+                            .resolve(symbols)
+                            .value_of_any_dependency__d(tcds)
+                            .primitive
+                            ),
+                        argument_to_act_file,
+                    ]
+                )
+            )
+
+        act_instruction = instr([act_contents.as_str])
+        executor_that_records_arguments = CommandExecutorThatRecordsArguments()
+        # ACT & ASSERT #
+        integration_check.check_execution(
+            self,
+            actor,
+            [act_instruction],
+            Arrangement(
+                process_execution=ProcessExecutionArrangement(
+                    os_services=os_services_access.new_for_cmd_exe(executor_that_records_arguments)
+                ),
+                hds_contents=relativity_configurations.ATC_FILE.populator_for_relativity_option_root__hds(
+                    fs.DirContents([exe_file])
+                )
+            ),
+            Expectation(
+                after_execution=ExecutedCommandAssertion(
+                    executor_that_records_arguments,
+                    get_command_assertion,
+                )
+            ),
+        )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

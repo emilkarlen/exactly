@@ -1,0 +1,18 @@
+[conf]
+
+actor = file % python
+
+[act]
+
+src/my-source-file.py -existing-path -rel-home bin/hello-world :> one more "argument
+
+[assert]
+
+stdout equals
+<<-
+I am a source file
+
+I was given
+ * @[EXACTLY_HOME]@/bin/hello-world
+ * one more "argument
+-

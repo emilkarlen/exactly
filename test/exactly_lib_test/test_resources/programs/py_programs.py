@@ -51,6 +51,10 @@ sys.exit({})
 """.format(exit_code)
 
 
+def exit_with_0() -> str:
+    return ''
+
+
 def py_pgm_that_writes_os_linesep_to_stdout() -> str:
     return """\
 import sys

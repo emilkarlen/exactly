@@ -12,8 +12,8 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -30,8 +30,9 @@ from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.parse import parse_path, parse_list
+from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
+from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
@@ -46,7 +47,7 @@ def actor(interpreter: CommandSdv) -> Actor:
 class _SourceInfoForInterpreterWithArgumentList:
     def __init__(self,
                  file_name: PathSdv,
-                 arguments: ListSdv):
+                 arguments: ArgumentsSdv):
         self.path = file_name
         self.arguments = arguments
 
@@ -72,13 +73,16 @@ class _Actor(Actor):
             arguments += info.arguments.resolve(environment.symbols).value_of_any_dependency(environment.tcds)
             return Command(interpreter_command.driver, arguments)
 
-        def get_interpreter_validator(symbols: SymbolTable) -> DdvValidator:
-            return ddv_validators.all_of(self._interpreter.resolve(symbols).validators)
+        def get_interpreter_and_args_validator(symbols: SymbolTable) -> DdvValidator:
+            return ddv_validators.all_of(
+                tuple(self._interpreter.resolve(symbols).validators) +
+                tuple(info.arguments.resolve(symbols).validators)
+            )
 
-        interpreter_validator = sdv_validation.SdvValidatorFromDdvValidator(get_interpreter_validator)
+        interpreter_and_args_validator = sdv_validation.SdvValidatorFromDdvValidator(get_interpreter_and_args_validator)
 
         return _ActionToCheck(symbol_usages,
-                              interpreter_validator,
+                              interpreter_and_args_validator,
                               info.path,
                               make_command)
 
@@ -86,7 +90,7 @@ class _Actor(Actor):
 class _ActionToCheck(ActionToCheck):
     def __init__(self,
                  symbol_usages: Sequence[SymbolUsage],
-                 interpreter_validator: SdvValidator,
+                 interpreter_and_args_validator: SdvValidator,
                  source_file: PathSdv,
                  make_command: Callable[[FullResolvingEnvironment], Command],
                  ):
@@ -95,7 +99,7 @@ class _ActionToCheck(ActionToCheck):
         self._make_command = make_command
 
         self._validator = sdv_validation.all_of([
-            interpreter_validator,
+            interpreter_and_args_validator,
             PathCheckValidator(
                 PathCheck(source_file,
                           file_properties.must_exist_as(file_properties.FileType.REGULAR))
@@ -166,6 +170,6 @@ class _Parsing:
 
     def _parse_program_with_arguments(self) -> _SourceInfoForInterpreterWithArgumentList:
         source_file = self._parse_path()
-        arguments = parse_list.parse_list(self._source)
+        arguments = parse_arguments.parser().parse(self._source)
         return _SourceInfoForInterpreterWithArgumentList(source_file,
                                                          arguments)
