@@ -4,11 +4,11 @@ import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.actors.test_resources import relativity_configurations
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
@@ -30,45 +30,35 @@ from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
 
-def suite_for(command_that_runs_python_file: CommandSdv) -> unittest.TestSuite:
+def suite_for() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
 
     ret_val.addTest(TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist())
     ret_val.addTest(TestValidationShouldFailWhenInterpreterProgramFileIsADirectory())
 
-    ret_val.addTest(TestValidationShouldFailWhenSourceFileDoesNotExist(command_that_runs_python_file))
-    ret_val.addTest(TestValidationShouldFailWhenSourceFileIsADirectory(command_that_runs_python_file))
+    ret_val.addTest(TestValidationShouldFailWhenSourceFileDoesNotExist())
+    ret_val.addTest(TestValidationShouldFailWhenSourceFileIsADirectory())
 
     ret_val.addTest(TestStringSymbolReferenceInInterpreter())
-    ret_val.addTest(TestStringSymbolReferenceInSourceAndArgument(command_that_runs_python_file))
-    ret_val.addTest(TestMultipleSymbolReferencesInSourceFileRef(command_that_runs_python_file))
+    ret_val.addTest(TestStringSymbolReferenceInSourceAndArgument())
+    ret_val.addTest(TestMultipleSymbolReferencesInSourceFileRef())
 
     return ret_val
 
 
-class TestCaseBase(unittest.TestCase):
-    def __init__(self, command_that_runs_python_file: CommandSdv):
-        super().__init__()
-        self.command_that_runs_python_file = command_that_runs_python_file
-
-    def shortDescription(self):
-        return '{}, command={}'.format(
-            str(type(self)),
-            self.command_that_runs_python_file,
-        )
-
+class TestCaseWInterpreterThatRunsPythonProgramFileBase(unittest.TestCase):
     def _check(self,
                command_line: str,
                arrangement: Arrangement,
                expectation: Expectation):
         check_execution(self,
-                        sut.actor(self.command_that_runs_python_file),
+                        sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
                         [instr([command_line])],
                         arrangement,
                         expectation)
 
 
-class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
+class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         command_line = 'non-existing-file.src'
         arrangement = Arrangement()
@@ -81,7 +71,7 @@ class TestValidationShouldFailWhenSourceFileDoesNotExist(TestCaseBase):
                     expectation)
 
 
-class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
+class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         source_file = 'source-file.src'
         command_line = source_file
@@ -97,7 +87,7 @@ class TestValidationShouldFailWhenSourceFileIsADirectory(TestCaseBase):
                     expectation)
 
 
-class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
+class TestStringSymbolReferenceInSourceAndArgument(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         symbol_for_source_file = StringConstantSymbolContext('source_file_symbol_name',
                                                              'the-source-file.py')
@@ -139,7 +129,7 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
                     expectation)
 
 
-class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
+class TestMultipleSymbolReferencesInSourceFileRef(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = ConstantSuffixPathDdvSymbolContext('dir_symbol_name',

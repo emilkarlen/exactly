@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
@@ -11,11 +10,8 @@ from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurat
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_file_rel_hds_act as single_file_rel_home
-from exactly_lib_test.actors.test_resources.action_to_check import Configuration, \
-    suite_for_execution
+from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
-from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
-    TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
@@ -36,7 +32,7 @@ from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quot
 
 class TheConfiguration(TheConfigurationBase):
     def __init__(self):
-        super().__init__(sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE))
+        super().__init__(ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE)
 
 
 def suite() -> unittest.TestSuite:
@@ -52,40 +48,22 @@ def suite() -> unittest.TestSuite:
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
     return unittest.TestSuite([
         single_file_rel_home.suite_for(configuration),
-        custom_suite_for(configuration),
-        other_custom_suite(),
+        TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(),
+        TestFileReferenceCanBeQuoted(),
+        TestArgumentsAreParsedAndPassedToExecutor(),
+        unittest.makeSuite(TestSymbolUsages),
     ])
 
 
-def other_custom_suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestSymbolUsages)
-
-
-def custom_suite_for(conf: TheConfiguration) -> unittest.TestSuite:
-    test_cases = [
-        TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted,
-        TestFileReferenceCanBeQuoted,
-        TestArgumentsAreParsedAndPassedToExecutor,
-    ]
-    return unittest.TestSuite([tc(conf) for tc in test_cases])
-
-
-class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(TestCaseForConfigurationForValidation):
+class TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(unittest.TestCase):
     def runTest(self):
         act_phase_instructions = [instr(["""valid-file-ref 'quoting missing ending single-quote"""]),
                                   instr([''])]
         with self.assertRaises(ParseException):
-            self._do_parse(act_phase_instructions)
+            ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE.parse(act_phase_instructions)
 
 
 class TestFileReferenceCanBeQuoted(unittest.TestCase):
-    def __init__(self, configuration: Configuration):
-        super().__init__()
-        self.configuration = configuration
-
-    def shortDescription(self):
-        return str(type(self)) + '/' + str(type(self.configuration))
-
     def runTest(self):
         # ARRANGE #
         expected_file_name = 'quoted file name.src'
@@ -102,7 +80,7 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
         expectation = integration_check.Expectation()
         # ACT #
         integration_check.check_execution(self,
-                                          self.configuration.actor,
+                                          ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE,
                                           act_phase_instructions,
                                           arrangement, expectation)
         # ASSERT #
@@ -120,16 +98,9 @@ class TestFileReferenceCanBeQuoted(unittest.TestCase):
 
 
 class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
-    def __init__(self, configuration: Configuration):
-        super().__init__()
-        self.configuration = configuration
-
-    def shortDescription(self):
-        return str(type(self)) + '/' + str(type(self.configuration))
-
     def runTest(self):
         # ARRANGE #
-        atc_file_name = 'existing-file.src'
+        atc_file_name = 'existing-file.py'
         arg_1 = 'un-quoted'
         arg_2 = 'single quoted'
         arg_3 = 'double quoted'
@@ -165,7 +136,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         )
         # ACT & ASSERT #
         integration_check.check_execution(self,
-                                          self.configuration.actor,
+                                          ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE,
                                           act_phase_instructions,
                                           arrangement,
                                           expectation)
@@ -204,17 +175,13 @@ class TestSymbolUsages(unittest.TestCase):
             ),
         )
         integration_check.check_execution(self,
-                                          sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
+                                          ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE,
                                           [instr([command_line])],
                                           arrangement,
                                           expectation)
 
 
-def _instructions_for_file_in_hds_dir(home_dir_path: pathlib.Path, statements: list) -> list:
-    with open(str(home_dir_path / 'sut.py'), 'w') as f:
-        f.write(lines_content(statements))
-    return [instr(['sut.py'])]
-
+ACTOR_THAT_RUNS_PYTHON_PROGRAM_FILE = sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE)
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
