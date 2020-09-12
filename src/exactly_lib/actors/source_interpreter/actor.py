@@ -30,7 +30,7 @@ class _TheValidatorConstructor(parts.ValidatorConstructor[pa.InterpreterAndSourc
         def get_validator(symbols: SymbolTable) -> DdvValidator:
             return ddv_validators.all_of(executable_object.interpreter.resolve(symbols).validators)
 
-        return parts.ValidatorFromPreOrPostSdsValidator(
+        return parts.ValidatorWithHardErrorFromPostSdsValidation(
             sdv_validation.SdvValidatorFromDdvValidator(get_validator)
         )
 

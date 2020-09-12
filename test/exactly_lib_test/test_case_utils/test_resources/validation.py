@@ -222,3 +222,11 @@ def post_sds_validation_fails__svh(error_message: ValueAssertion[TextRenderer] =
         pre_sds=asrt_svh.is_success(),
         post_sds=asrt_svh.is_validation_error(error_message),
     )
+
+
+def post_sds_validation_hard_error__svh(error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()
+                                        ) -> ValidationExpectationSvh:
+    return ValidationExpectationSvh(
+        pre_sds=asrt_svh.is_success(),
+        post_sds=asrt_svh.is_hard_error(error_message),
+    )

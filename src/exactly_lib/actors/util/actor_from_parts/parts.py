@@ -97,8 +97,8 @@ class UnconditionallySuccessfulValidator(Validator):
 
 
 class ValidatorFromPreOrPostSdsValidator(Validator):
-    def __init__(self, validator_that_must_validate_pre_sds: SdvValidator):
-        self.validator = PreOrPostSdsSvhValidationErrorValidator(validator_that_must_validate_pre_sds)
+    def __init__(self, validator: SdvValidator):
+        self.validator = PreOrPostSdsSvhValidationErrorValidator(validator)
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -110,6 +110,24 @@ class ValidatorFromPreOrPostSdsValidator(Validator):
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         env = environment.path_resolving_environment
         return self.validator.validate_post_sds_if_applicable(env)
+
+
+class ValidatorWithHardErrorFromPostSdsValidation(Validator):
+    def __init__(self, validator: SdvValidator):
+        self.validator = validator
+
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        env = environment.path_resolving_environment
+        mb_err_msg = self.validator.validate_pre_sds_if_applicable(env)
+        return svh.new_maybe_svh_validation_error(mb_err_msg)
+
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        env = environment.path_resolving_environment
+        mb_err_msg = self.validator.validate_post_sds_if_applicable(env)
+        return svh.new_maybe_svh_hard_error(mb_err_msg)
 
 
 class ExecutableObjectParser(Generic[EXECUTABLE_OBJECT], ABC):

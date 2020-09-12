@@ -4,13 +4,14 @@ import unittest
 
 from exactly_lib.actors.source_interpreter import actor as sut
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.program.command import command_sdvs
+from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
 from exactly_lib.type_system.data import paths
-from exactly_lib_test.actors.test_resources import relativity_configurations
+from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
+from exactly_lib_test.actors.test_resources import relativity_configurations, integration_check
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
+from exactly_lib_test.actors.test_resources.program_argument_validation import ARGUMENT_VALIDATION_CASES
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -22,40 +23,32 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 
 
-def suite_for(parser_that_executes_python_program: Actor) -> unittest.TestSuite:
+def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
 
         TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(),
         TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(),
+        TestValidationOfInterpreterArguments(),
 
         TestStringSymbolReferenceInInterpreter(),
-        TestThatSymbolReferencesAreReportedAndUsed(parser_that_executes_python_program),
-        TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(parser_that_executes_python_program),
+        TestThatSymbolReferencesAreReportedAndUsed(),
+        TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(),
     ])
 
 
-class TestCaseBase(unittest.TestCase):
-    def __init__(self,
-                 actor_that_executes_python_program: Actor,
-                 ):
-        super().__init__()
-        self.actor_that_executes_python_program = actor_that_executes_python_program
-
-    def shortDescription(self):
-        return str(type(self))
-
+class TestCaseWInterpreterThatRunsPythonProgramFileBase(unittest.TestCase):
     def _check(self,
                source_line: str,
                arrangement: Arrangement,
                expectation: Expectation):
         check_execution(self,
-                        self.actor_that_executes_python_program,
+                        sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE),
                         [instr([source_line])],
                         arrangement,
                         expectation)
 
 
-class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
+class TestThatSymbolReferencesAreReportedAndUsed(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
 
@@ -83,7 +76,7 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
             ))
 
 
-class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
+class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseWInterpreterThatRunsPythonProgramFileBase):
     def runTest(self):
         symbol = ConstantSuffixPathDdvSymbolContext('symbol_name',
                                                     RelOptionType.REL_ACT,
@@ -213,3 +206,33 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
                         [instr([source_file.name])],
                         arrangement,
                         expectation)
+
+
+class TestValidationOfInterpreterArguments(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        for case in ARGUMENT_VALIDATION_CASES:
+            with self.subTest(case.name):
+                interpreter_arguments = arguments_sdvs.ref_to_path_that_must_exist(
+                    path_sdvs.of_rel_option_with_const_file_name(case.path_relativity,
+                                                                 'non-existing-file')
+                )
+                actor = sut.actor(
+                    command_sdvs.for_executable_file(
+                        path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+                        interpreter_arguments
+                    )
+                )
+                act_instruction = instr([])
+                # ACT & ASSERT #
+                integration_check.check_execution(
+                    self,
+                    actor,
+                    [act_instruction],
+                    Arrangement(),
+                    case.expectation,
+                )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
