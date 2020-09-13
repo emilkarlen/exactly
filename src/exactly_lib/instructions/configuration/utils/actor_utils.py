@@ -17,6 +17,7 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -57,8 +58,8 @@ class InstructionDocumentation(InstructionDocumentationWithTextParserBase):
             self._null_invokation_variant(),
         )
 
-    def main_description_rest(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
+    def notes(self) -> SectionContents:
+        return self._tp.section_contents(_NOTES)
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         from exactly_lib.definitions.entity.actors import all_actor_cross_refs
@@ -156,7 +157,7 @@ def _parse_source_actor(token_parser: TokenParser) -> NameAndValue[Actor]:
 
 _SINGLE_LINE_DESCRIPTION = 'Specifies the {actor} that will execute the {act_phase} phase'
 
-_MAIN_DESCRIPTION_REST = """\
+_NOTES = """\
 The {actor} specified by this instruction has precedence over all other ways
 to specify the actor.
 
