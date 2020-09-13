@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, syntax_descriptions
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -50,8 +50,9 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     def description_rest(self) -> Sequence[ParagraphItem]:
         tp = TextParser({
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
-            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
-            'expected_file_arg': self._string_or_here_doc_or_file_arg.path_name,
+            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(
+                'the file ' + self._string_or_here_doc_or_file_arg.path_name
+            ),
         })
         return tp.fnap(_DESCRIPTION)
 
@@ -76,5 +77,5 @@ Matches if the string is equal to a given
 string, {HERE_DOCUMENT} or contents of a file.
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {expected_file_arg} is NOT substituted.
+{Sym_refs_are_not_substituted}
 """

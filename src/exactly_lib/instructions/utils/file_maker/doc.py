@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
     cli_argument_syntax_element_description
+from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
@@ -28,6 +29,9 @@ class FileContentsDocumentation:
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'SRC_PATH_ARGUMENT': defs.SRC_PATH_ARGUMENT.name,
+            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(
+                'the file ' + defs.SRC_PATH_ARGUMENT.name
+            ),
         })
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
@@ -119,5 +123,5 @@ _FILE_DESCRIPTION = """\
 The contents of an existing file.
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {SRC_PATH_ARGUMENT} is NOT substituted.
+{Sym_refs_are_not_substituted}
 """

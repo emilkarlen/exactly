@@ -50,6 +50,7 @@ def documentation() -> SyntaxElementDocumentation:
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.PATH_SYNTAX_ELEMENT,
             syntax_elements.LIST_SYNTAX_ELEMENT,
+            syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
         ]),
     )
 
@@ -107,6 +108,9 @@ _TEXT_PARSER = TextParser({
     'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
     'Note': headers.NOTE_LINE_HEADER,
+    'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in(
+        TEXT_UNTIL_END_OF_LINE_ARGUMENT.name
+    ),
 })
 
 _MAIN__DESCRIPTION = """\
@@ -135,6 +139,9 @@ The elements will be separated by a single space.
 
 _TEXT_UNTIL_END_OF_LINE_DESCRIPTION = """\
 The remaining part of the current line becomes a single argument.
+
+
+{Sym_refs_are_substituted}
 """
 
 _EXISTING_FILE_DESCRIPTION = """\

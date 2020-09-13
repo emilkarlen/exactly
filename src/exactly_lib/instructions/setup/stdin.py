@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import instruction_arguments, formatting, syntax_descriptions
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
@@ -51,9 +51,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         )
         self._tp = TextParser({
             'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
-            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
             'FILE': RELATIVITY_OPTIONS_CONFIGURATION.argument_syntax_name,
             'atc': formatting.concept(concepts.ACTION_TO_CHECK_NAME.singular),
+            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(
+                'the file ' + RELATIVITY_OPTIONS_CONFIGURATION.argument_syntax_name
+            ),
         })
 
     def single_line_description(self) -> str:
@@ -135,5 +137,5 @@ _DESCRIPTION_REST = """\
 Sets stdin to be the contents of a string, {HERE_DOCUMENT} or file.
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file {FILE} is NOT substituted.
+{Sym_refs_are_not_substituted}
 """

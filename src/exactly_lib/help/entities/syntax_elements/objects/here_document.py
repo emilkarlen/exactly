@@ -1,3 +1,4 @@
+from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
@@ -19,14 +20,13 @@ What matters is that the maker at start and end of input
 matches.
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the text is substituted.
-
+{Sym_refs_are_substituted}
 """
 
 _TEXT_PARSER = TextParser({
-    'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name
-
+    'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in('the text'),
 })
+
 DOCUMENTATION = syntax_element_documentation(None,
                                              syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                              _TEXT_PARSER.fnap(_MAIN_DESCRIPTION_REST),

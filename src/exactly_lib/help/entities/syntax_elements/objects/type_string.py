@@ -31,8 +31,8 @@ class _Documentation(SyntaxElementDocumentation):
 
             'soft_quotes': formatting.concept(syntax_descriptions.SOFT_QUOTE_NAME.plural),
             'hard_quotes': formatting.concept(syntax_descriptions.HARD_QUOTE_NAME.plural),
-            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
-
+            'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in('the string'),
+            'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in('the string'),
             'REL_CD_OPTION': path.REL_CWD_OPTION,
         })
 
@@ -91,25 +91,21 @@ A "naked" sequence of characters.
 {CHR} may not be {whitespace}.
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is substituted.
+{Sym_refs_are_substituted}
 """
 
 _DESCRIPTION_OF_SOFT_Q = """\
 Characters surrounded by {soft_quotes} ({SOFT_Q}).
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is substituted.
+{Sym_refs_are_substituted}
 """
 
 _DESCRIPTION_OF_HARD_Q = """\
 Characters surrounded by {hard_quotes} ({HARD_Q}).
 
 
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is NOT substituted.
-"""
-
-_SYMBOL_REFERENCE_DESCRIPTION_FOR_FILE = """\
-Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the file is NOT substituted.
+{Sym_refs_are_not_substituted}
 """
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
