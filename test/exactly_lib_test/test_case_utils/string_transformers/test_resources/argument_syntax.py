@@ -43,9 +43,9 @@ def syntax_for_run(program: ArgumentElements, ignore_exit_code: bool = False) ->
     return argument_elements.as_arguments
 
 
-def syntax_for_select_transformer(line_matcher: str) -> str:
+def syntax_for_filter_transformer(line_matcher: str) -> str:
     return ' '.join([
-        names.SELECT_TRANSFORMER_NAME,
+        names.FILTER_TRANSFORMER_NAME,
         line_matcher,
     ])
 

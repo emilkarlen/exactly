@@ -32,7 +32,7 @@ GRAMMAR = grammar.Grammar(
     mk_reference=_mk_reference,
     primitives=(
         NameAndValue(
-            names.SELECT_TRANSFORMER_NAME,
+            names.FILTER_TRANSFORMER_NAME,
             grammar.Primitive(filter.parse_filter,
                               filter.SyntaxDescription())
         ),

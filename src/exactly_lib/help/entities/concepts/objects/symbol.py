@@ -82,7 +82,7 @@ class _SymbolConcept(ConceptDocumentation):
         ]
 
     def _reference_paragraphs(self) -> List[ParagraphItem]:
-        from exactly_lib.test_case_utils.string_transformer.names import SELECT_TRANSFORMER_NAME
+        from exactly_lib.test_case_utils.string_transformer.names import FILTER_TRANSFORMER_NAME
         from exactly_lib.definitions.primitives.file_or_dir_contents import EMPTINESS_CHECK_ARGUMENT
         from exactly_lib.test_case_utils.string_matcher.matcher_options import EQUALS_ARGUMENT
 
@@ -104,7 +104,7 @@ class _SymbolConcept(ConceptDocumentation):
 
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
             'transformed': string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION,
-            'select_transformer': SELECT_TRANSFORMER_NAME,
+            'filter_transformer': FILTER_TRANSFORMER_NAME,
             'not': logic.NOT_OPERATOR_NAME,
             'empty': EMPTINESS_CHECK_ARGUMENT,
             'equals': EQUALS_ARGUMENT,
@@ -236,7 +236,7 @@ For example:
 
 {def} {list_type: <{max_type_width}} L = first {ref_syntax_of_2nd_element_symbol} "third element"
 
-{stdout} {transformed} ( {select_transformer} LINE_MATCHER_SYMBOL ) {not} {empty}
+{stdout} {transformed} ( {filter_transformer} LINE_MATCHER_SYMBOL ) {not} {empty}
 
 {stdout} {equals} {file_option} {rel_option} PATH_SYMBOL {ref_syntax_of_dir_name_symbol}/{ref_syntax_of_base_name_symbol}
 ```

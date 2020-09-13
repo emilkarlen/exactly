@@ -37,7 +37,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidSyntax),
         TestFilesMatcherShouldBeParsedAsSimpleExpression(),
-        unittest.makeSuite(TestSelectTransformer),
+        unittest.makeSuite(TestFiltering),
         unittest.makeSuite(TestLineMatcherPrimitive),
         ValidatorShouldValidateLineMatcher(),
     ])
@@ -48,11 +48,11 @@ class TestInvalidSyntax(unittest.TestCase):
         cases = [
             NameAndValue(
                 'no arguments',
-                st_args.syntax_for_select_transformer(''),
+                st_args.syntax_for_filter_transformer(''),
             ),
             NameAndValue(
                 'argument is not a line matcher',
-                st_args.syntax_for_select_transformer(symbol_syntax.NOT_A_VALID_SYMBOL_NAME),
+                st_args.syntax_for_filter_transformer(symbol_syntax.NOT_A_VALID_SYMBOL_NAME),
             ),
         ]
         for case in cases:
@@ -75,7 +75,7 @@ class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
             lm_args.SymbolReference(line_matcher__constant_false.name),
             lm_args.Custom(after_bin_op),
         ])
-        arguments = st_args.syntax_for_select_transformer(lm_argument.as_str)
+        arguments = st_args.syntax_for_filter_transformer(lm_argument.as_str)
 
         # ACT & ASSERT #
 
@@ -98,7 +98,7 @@ class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
         )
 
 
-class TestSelectTransformer(unittest.TestCase):
+class TestFiltering(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
         # ARRANGE #
 
@@ -108,7 +108,7 @@ class TestSelectTransformer(unittest.TestCase):
         )
         line_matcher_arg = lm_arg.SymbolReference(matcher.name)
 
-        arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+        arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 
         # ACT & ASSERT #
 
@@ -162,7 +162,7 @@ class TestSelectTransformer(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case_name=case.name):
-                arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+                arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
@@ -224,7 +224,7 @@ class TestSelectTransformer(unittest.TestCase):
         ]
         line_matcher_name = 'the_line_matcher_symbol_name'
         line_matcher_arg = lm_arg.SymbolReference(line_matcher_name)
-        arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+        arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 
         for case in cases:
             matcher, input_lines, expected_output_lines = case.value
@@ -255,7 +255,7 @@ class TestLineMatcherPrimitive(unittest.TestCase):
         # ARRANGE #
 
         reg_ex_pattern = 'const_pattern'
-        arguments = st_args.syntax_for_select_transformer(str(lm_arg.Matches(reg_ex_pattern)))
+        arguments = st_args.syntax_for_filter_transformer(str(lm_arg.Matches(reg_ex_pattern)))
 
         lines = [
             reg_ex_pattern,
@@ -286,7 +286,7 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
             line_matcher_symbol_context = case.value.symbol_context
             line_matcher_arg = lm_arg.SymbolReference(line_matcher_symbol_context.name)
 
-            arguments = st_args.syntax_for_select_transformer(str(line_matcher_arg))
+            arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 
             with self.subTest(case.name):
                 # ACT & ASSERT #

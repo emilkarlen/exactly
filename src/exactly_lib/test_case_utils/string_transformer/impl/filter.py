@@ -79,7 +79,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
     Keeps lines matched by a given :class:`LineMatcher`,
     and discards lines not matched.
     """
-    NAME = names.SELECT_TRANSFORMER_NAME + ' ' + syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name
+    NAME = names.FILTER_TRANSFORMER_NAME + ' ' + syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name
 
     def __init__(self, line_matcher: LineMatcher):
         super().__init__()
@@ -96,7 +96,7 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
 
     @property
     def name(self) -> str:
-        return names.SELECT_TRANSFORMER_NAME
+        return names.FILTER_TRANSFORMER_NAME
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(self._line_matcher)

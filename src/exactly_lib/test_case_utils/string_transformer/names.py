@@ -2,7 +2,7 @@ from exactly_lib.definitions.primitives import program
 
 IDENTITY_TRANSFORMER_NAME = 'identity'
 REPLACE_TRANSFORMER_NAME = 'replace'
-SELECT_TRANSFORMER_NAME = 'filter'
+FILTER_TRANSFORMER_NAME = 'filter'
 TO_UPPER_CASE = 'to-upper-case'
 TO_LOWER_CASE = 'to-lower-case'
 SEQUENCE_OPERATOR_NAME = '|'
