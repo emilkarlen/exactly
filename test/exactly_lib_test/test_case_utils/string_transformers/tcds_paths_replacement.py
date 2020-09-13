@@ -4,17 +4,27 @@ import unittest
 from contextlib import contextmanager
 from typing import ContextManager
 
+from exactly_lib.definitions import path
+from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_file_structure import tcds_symbols
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement as sut
+from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.replaced_env_vars import \
-    ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase, \
-    ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
+    expectation_of_successful_execution
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.replace_tcds_dirs import \
+    ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase, \
+    ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
 
 
@@ -23,6 +33,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestMisc),
         unittest.makeSuite(TestSubDirRelationshipBetweenHdsActAndHdsCase),
         unittest.makeSuite(TestWhenRelHdsCaseIsEqualToRelHdsActThenVariableWithPrecedenceShouldBeUsed),
+        TestIntegration(),
     ])
 
 
@@ -33,12 +44,45 @@ def _transform_string_to_string(tcds: Tcds, string_input: str) -> str:
     return string_models.as_string(output)
 
 
+class TestIntegration(unittest.TestCase):
+    def runTest(self):
+        def model(environment: FullResolvingEnvironment) -> string_models.StringModel:
+            return string_models.StringModelFromLines(
+                with_appended_new_lines([
+                    str(environment.tcds.hds.case_dir),
+                    str(environment.tcds.hds.act_dir),
+                    str(environment.tcds.sds.act_dir),
+                    str(environment.tcds.sds.user_tmp_dir),
+                ]),
+                environment.application_environment.tmp_files_space.sub_dir_space()
+            )
+
+        expected = with_appended_new_lines([
+            path.EXACTLY_DIR__REL_HDS_CASE,
+            path.EXACTLY_DIR__REL_HDS_ACT,
+            path.EXACTLY_DIR__REL_ACT,
+            path.EXACTLY_DIR__REL_TMP,
+        ])
+
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+            self,
+            Arguments(args.tcds_path_replacement()),
+            model,
+            arrangement_w_tcds(),
+            expectation_of_successful_execution(
+                symbol_references=asrt.is_empty_sequence,
+                output_lines=expected,
+                is_identity_transformer=False,
+            )
+        )
+
+
 class TestMisc(unittest.TestCase):
     def test_all_variables(self):
         # ARRANGE #
         with tcds_with_act_as_curr_dir() as path_resolving_env_pre_or_post_sds:
             tcds = path_resolving_env_pre_or_post_sds.tcds
-            generator = ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables()
+            generator = ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables()
             # ACT #
             actual = _transform_string_to_string(tcds,
                                                  generator.contents_before_replacement(tcds))
@@ -78,7 +122,7 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
                 hds = HomeDirectoryStructure(case_dir=a_dir.parent,
                                              act_dir=a_dir)
                 tcds = Tcds(hds, sds)
-                generator = ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
+                generator = ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
                     name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,
                     name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
                 )
@@ -96,7 +140,7 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
                 hds = HomeDirectoryStructure(case_dir=a_dir,
                                              act_dir=a_dir.parent)
                 tcds = Tcds(hds, sds)
-                generator = ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
+                generator = ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
                     name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
                     name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,
                 )

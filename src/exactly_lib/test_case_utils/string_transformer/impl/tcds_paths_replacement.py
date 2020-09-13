@@ -4,29 +4,81 @@ from typing import Iterable, Sequence, Tuple
 from exactly_lib import program_info
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import directory_variable_name_text
+from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.formatting import program_name
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_file_structure import tcds_symbols
 from exactly_lib.test_case_file_structure.tcds import Tcds
-from exactly_lib.test_case_utils.string_transformer.impl.custom import CustomStringTransformer
+from exactly_lib.test_case_utils.expression import grammar
+from exactly_lib.test_case_utils.string_transformer import names
+from exactly_lib.test_case_utils.string_transformer import sdvs
+from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
+    StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformerAdv
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 HDS_PATH_WITH_REPLACEMENT_PRECEDENCE = tcds_symbols.SYMBOL_HDS_CASE
 
 
-class TcdsPathsReplacementStringTransformer(CustomStringTransformer):
+def parse(token_parser: TokenParser) -> StringTransformerSdv:
+    return sdvs.StringTransformerSdvConstantOfDdv(ddv(names.TCDS_PATH_REPLACEMENT))
+
+
+class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return ()
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        tp = TextParser({
+            'checked_file': 'checked file',
+            'program_name': program_info.PROGRAM_NAME,
+            'TCDS': concepts.TCDS_CONCEPT_INFO.acronym,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+            'builtin_symbol': all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name,
+            'hds_act_symbol': tcds_symbols.SYMBOL_HDS_ACT,
+            'hds_case_symbol': tcds_symbols.SYMBOL_HDS_CASE,
+            'hds_symbol_with_replacement_precedence': HDS_PATH_WITH_REPLACEMENT_PRECEDENCE,
+        })
+        prologue = tp.fnap(_PROLOGUE)
+        epilogue = tp.fnap(_EPILOGUE)
+        variables_list = [
+            docs.simple_header_only_list(map(directory_variable_name_text,
+                                             sorted(tcds_symbols.ALL_REPLACED_SYMBOLS)),
+                                         docs.lists.ListType.ITEMIZED_LIST)
+        ]
+        return prologue + variables_list + epilogue
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return [
+            concepts.TCDS_CONCEPT_INFO.cross_reference_target,
+        ]
+
+
+class TcdsPathsReplacementStringTransformer(StringTransformerFromLinesTransformer):
     def __init__(self,
                  name: str,
                  tcds: Tcds,
                  ):
-        super().__init__(name)
+        self._name = name
         self._name_and_value_list = _derive_name_and_value_list(tcds)
+        self._structure = renderers.header_only(name)
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    def structure(self) -> StructureRenderer:
+        return self._structure
 
     def _transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (_replace(self._name_and_value_list, line) for line in lines)
@@ -82,38 +134,15 @@ def _first_is(key_of_first_element: str, all_vars: dict) -> iter:
     return [(key_of_first_element, value_of_first_element)] + list(all_vars.items())
 
 
-def help_section_contents() -> SectionContents:
-    text_parser = TextParser({
-        'checked_file': 'checked file',
-        'program_name': program_info.PROGRAM_NAME,
-        'hds_act_symbol': tcds_symbols.SYMBOL_HDS_ACT,
-        'hds_case_symbol': tcds_symbols.SYMBOL_HDS_CASE,
-        'hds_symbol_with_replacement_precedence': HDS_PATH_WITH_REPLACEMENT_PRECEDENCE,
-    })
-    prologue = text_parser.fnap(_WITH_REPLACED_TCDS_PATHS_PROLOGUE)
-    variables_list = [docs.simple_header_only_list(map(directory_variable_name_text,
-                                                       sorted(tcds_symbols.ALL_REPLACED_SYMBOLS)),
-                                                   docs.lists.ListType.ITEMIZED_LIST)]
-    return SectionContents(prologue + variables_list)
-
-
-def see_also() -> Sequence[SeeAlsoTarget]:
-    return [
-        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
-    ]
-
-
-SINGLE_LINE_DESCRIPTION = """\
+_PROLOGUE = """\
 Every occurrence of a string that matches the absolute path of a {TCDS} directory
-is replaced with the name of the corresponding {symbol}.
-""".format(program_name=program_name(program_info.PROGRAM_NAME),
-           TCDS=concepts.TCDS_CONCEPT_INFO.acronym,
-           symbol=concepts.SYMBOL_CONCEPT_INFO.singular_name)
+is replaced with the name of the corresponding {builtin_symbol}.
 
-_WITH_REPLACED_TCDS_PATHS_PROLOGUE = """\
+
+Paths/{symbol:s} that are replaced:
+"""
+
+_EPILOGUE = """\
 If {hds_case_symbol} and {hds_act_symbol} are equal, then paths will be replaced with
 {hds_symbol_with_replacement_precedence}.
-
-
-Paths that are replaced:
 """

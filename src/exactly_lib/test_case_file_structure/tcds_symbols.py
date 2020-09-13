@@ -75,6 +75,6 @@ def exists_at_assert(tcds: Tcds) -> Dict[str, str]:
 
 def replaced(tcds: Tcds) -> Dict[str, str]:
     """
-    The environment variables that are replaced by the REPLACE_TEST_CASE_DIRS transformer.
+    The environment variables that are replaced by the replace-tcds-dirs transformer.
     """
     return exists_at_setup_main(tcds)

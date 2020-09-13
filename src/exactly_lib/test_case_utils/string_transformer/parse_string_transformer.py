@@ -5,6 +5,7 @@ from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity, case_converters
+from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement
 from exactly_lib.test_case_utils.string_transformer.impl.run_program import parse as parse_run
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -55,6 +56,11 @@ GRAMMAR = grammar.Grammar(
             names.RUN_PROGRAM_TRANSFORMER_NAME,
             grammar.Primitive(parse_run.parse,
                               parse_run.SyntaxDescription())
+        ),
+        NameAndValue(
+            names.TCDS_PATH_REPLACEMENT,
+            grammar.Primitive(tcds_paths_replacement.parse,
+                              tcds_paths_replacement.SyntaxDescription())
         ),
         NameAndValue(
             names.IDENTITY_TRANSFORMER_NAME,

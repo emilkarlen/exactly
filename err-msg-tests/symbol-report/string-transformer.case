@@ -11,7 +11,7 @@ def string-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-pro
 def string-transformer RUN__W_TRANSFORMER = run -ignore-exit-code % my-program arg1 "arg 2"
                                             -transformed-by to-lower-case
 
-def string-transformer BUILTIN  = REPLACE_TEST_CASE_DIRS
+def string-transformer REPLACE_TCDS_DIRS  = replace-tcds-dirs
 
 def string-transformer TO_LOWER_CASE = to-lower-case
 
