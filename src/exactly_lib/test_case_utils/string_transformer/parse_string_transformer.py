@@ -32,14 +32,14 @@ GRAMMAR = grammar.Grammar(
     mk_reference=_mk_reference,
     primitives=(
         NameAndValue(
-            names.REPLACE_TRANSFORMER_NAME,
-            grammar.Primitive(replace.parse_replace,
-                              replace.SyntaxDescription())
-        ),
-        NameAndValue(
             names.SELECT_TRANSFORMER_NAME,
             grammar.Primitive(filter.parse_filter,
                               filter.SyntaxDescription())
+        ),
+        NameAndValue(
+            names.REPLACE_TRANSFORMER_NAME,
+            grammar.Primitive(replace.parse_replace,
+                              replace.SyntaxDescription())
         ),
         NameAndValue(
             names.TO_LOWER_CASE,
