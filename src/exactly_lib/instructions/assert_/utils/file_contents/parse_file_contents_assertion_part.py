@@ -12,7 +12,5 @@ from exactly_lib.type_system.logic.string_model import StringModel
 
 def parse(token_parser: TokenParser) -> AssertionPart[ComparisonActualFile, StringModel]:
     string_matcher_sdv = parsers().full.parse_from_token_parser(token_parser)
-    token_parser.report_superfluous_arguments_if_not_at_eol()
-    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     return assertion_part.compose(ConstructFileToCheckAssertionPart(),
                                   StringMatcherAssertionPart(string_matcher_sdv))

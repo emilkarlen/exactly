@@ -708,7 +708,7 @@ def from_parse_source(source: ParseSource,
     finally:
         source.consume(tp.token_stream.position)
 
-    if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol:
+    if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol__except_for_space:
         source.consume_current_line()
     elif consume_last_line_if_is_at_eof_after_parse and source.is_at_eof:
         source.consume_current_line()

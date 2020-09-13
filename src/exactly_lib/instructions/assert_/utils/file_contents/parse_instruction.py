@@ -33,6 +33,7 @@ class Parser(AssertPhaseInstructionTokenParser):
     def parse_from_token_parser(self, parser: TokenParser) -> AssertPhaseInstruction:
         actual_file_constructor = self._actual_file_parser.parse_from_token_parser(parser)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
+        parser.report_superfluous_arguments_if_not_at_eol()
 
         assertion_part_sequence = assertion_part.compose(
             IdentityAssertionPartWithValidationAndReferences(actual_file_constructor.validator,
