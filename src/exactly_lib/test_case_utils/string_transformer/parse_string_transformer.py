@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.expression import grammar, parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
-from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity
+from exactly_lib.test_case_utils.string_transformer.impl import filter, replace, sequence, identity, case_converters
 from exactly_lib.test_case_utils.string_transformer.impl.run_program import parse as parse_run
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -40,6 +40,16 @@ GRAMMAR = grammar.Grammar(
             names.SELECT_TRANSFORMER_NAME,
             grammar.Primitive(filter.parse_filter,
                               filter.SyntaxDescription())
+        ),
+        NameAndValue(
+            names.TO_LOWER_CASE,
+            grammar.Primitive(case_converters.parse_to_lower_case,
+                              case_converters.to_lower_case__documentation())
+        ),
+        NameAndValue(
+            names.TO_UPPER_CASE,
+            grammar.Primitive(case_converters.parse_to_upper_case,
+                              case_converters.to_upper_case__documentation())
         ),
         NameAndValue(
             names.RUN_PROGRAM_TRANSFORMER_NAME,

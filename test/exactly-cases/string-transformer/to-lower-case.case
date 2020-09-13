@@ -1,4 +1,13 @@
+[setup]
+
+file f.txt = "
+An
+Elephant!"
+
 [assert]
 
-stdout -transformed-by TO_LOWER_CASE
-       empty
+contents f.txt
+     -transformed-by to-lower-case
+     equals "
+an
+elephant!"

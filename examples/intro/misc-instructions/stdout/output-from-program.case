@@ -32,7 +32,7 @@ eof
 
 stdout -from
        @ ARGUMENT_PRINTER :> Hello, Python World!
-       -transformed-by TO_UPPER_CASE
+       -transformed-by to-upper-case
        equals <<eof
 HELLO, PYTHON WORLD!
 eof

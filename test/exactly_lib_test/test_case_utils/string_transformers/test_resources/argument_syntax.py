@@ -57,3 +57,11 @@ def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
 
 def arbitrary_value_on_single_line() -> str:
     return syntax_for_replace_transformer('REGEX', 'REPLACEMENT')
+
+
+def to_lower_case() -> str:
+    return names.TO_LOWER_CASE
+
+
+def to_upper_case() -> str:
+    return names.TO_UPPER_CASE

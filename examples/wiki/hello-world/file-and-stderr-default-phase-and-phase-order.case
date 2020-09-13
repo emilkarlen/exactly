@@ -2,7 +2,7 @@ hello-world -o output.txt
 
 [before-assert]
 
-def string-transformer MY_TRANSFORMER  = TO_UPPER_CASE | replace '^HELLO, ' ''
+def string-transformer MY_TRANSFORMER  = to-upper-case | replace '^HELLO, ' ''
 
 def line-matcher       MY_LINE_MATCHER = matches ^WORLD!$
 

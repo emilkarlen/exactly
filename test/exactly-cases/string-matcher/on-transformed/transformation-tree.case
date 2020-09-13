@@ -8,7 +8,7 @@ file source.txt = <<-
 [assert]
 
 contents source.txt
-         -transformed-by TO_UPPER_CASE
+         -transformed-by to-upper-case
          (
            -transformed-by filter line-num == 1 matches '1ST'
            &&

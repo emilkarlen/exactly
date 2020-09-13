@@ -4,7 +4,7 @@
 file f.txt = "some text"
 
 def program CAT_FILE = % cat
-                       -transformed-by TO_UPPER_CASE
+                       -transformed-by to-upper-case
 
 
 [assert]
@@ -17,6 +17,6 @@ stdout -from
 
 stdout -from
        % cat f.txt
-       -transformed-by TO_UPPER_CASE
+       -transformed-by to-upper-case
        equals
        "SOME TEXT"

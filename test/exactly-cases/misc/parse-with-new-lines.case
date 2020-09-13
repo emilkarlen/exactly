@@ -15,7 +15,7 @@ EOF
 
 dir-contents the-dir every file :
                          contents
-                             -transformed-by TO_UPPER_CASE
+                             -transformed-by to-upper-case
                                  ! any line : (
                                      matches 'CONTENTS' &&
                                      !

@@ -11,6 +11,6 @@ EOF
 
 
 contents checked-file
-  -transformed-by TO_UPPER_CASE
+  -transformed-by to-upper-case
     -transformed-by filter line-num == 1
       ! num-lines == 1

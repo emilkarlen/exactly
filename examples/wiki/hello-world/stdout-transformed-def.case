@@ -4,7 +4,7 @@ hello-world
 
 [assert]
 
-def string-transformer MY_TRANSFORMER = TO_UPPER_CASE | replace '^HELLO, ' ''
+def string-transformer MY_TRANSFORMER = to-upper-case | replace '^HELLO, ' ''
 
 stdout -transformed-by MY_TRANSFORMER
        every line : matches ^WORLD!$
