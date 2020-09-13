@@ -65,3 +65,7 @@ def to_lower_case() -> str:
 
 def to_upper_case() -> str:
     return names.TO_UPPER_CASE
+
+
+def tcds_path_replacement() -> str:
+    return names.TCDS_PATH_REPLACEMENT
