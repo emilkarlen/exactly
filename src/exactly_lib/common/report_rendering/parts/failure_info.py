@@ -13,22 +13,22 @@ class FailureInfoRenderer(SequenceRenderer[MajorBlock]):
 
     def render_sequence(self) -> Sequence[MajorBlock]:
         everything = rend_comb.ConcatenationR([
-            _GetFailureInfoLocationRenderer().visit(self._failure_info),
-            failure_details.FailureDetailsRenderer(self._failure_info.failure_details)
+            self._failure_info.accept(_GetFailureInfoLocationRenderer()),
+            failure_details.FailureDetailsRenderer(self._failure_info.failure_details),
         ])
 
         return everything.render_sequence()
 
 
 class _GetFailureInfoLocationRenderer(FailureInfoVisitor[SequenceRenderer[MajorBlock]]):
-    def _visit_phase_failure(self, failure_info: PhaseFailureInfo) -> SequenceRenderer[MajorBlock]:
+    def visit_phase_failure(self, failure_info: PhaseFailureInfo) -> SequenceRenderer[MajorBlock]:
         return source_location.location_blocks_renderer(
             None,
             failure_info.phase_step.phase.identifier,
             None
         )
 
-    def _visit_instruction_failure(self, failure_info: InstructionFailureInfo) -> SequenceRenderer[MajorBlock]:
+    def visit_instruction_failure(self, failure_info: InstructionFailureInfo) -> SequenceRenderer[MajorBlock]:
         return source_location.location_blocks_renderer(
             failure_info.source_location,
             failure_info.phase_step.phase.identifier,

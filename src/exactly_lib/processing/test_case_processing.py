@@ -96,7 +96,7 @@ class Result(tuple):
         if self.error_info is not None:
             return self.error_info.source_location_path
         else:
-            return self.execution_result.failure_info.source_location_path
+            return self.execution_result.failure_info.source_location
 
 
 def new_internal_error(error_info: ErrorInfo) -> Result:
