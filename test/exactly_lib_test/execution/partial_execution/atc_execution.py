@@ -70,13 +70,12 @@ class CwdRegisterer:
 
 
 class TestExecutionSequence(unittest.TestCase):
-    def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_validation_error(self):
+    def test_WHEN_parse_raises_parse_exception_THEN_execution_SHOULD_stop_with_result_of_syntax_error(self):
         # ARRANGE #
         expected_cause = 'failure message'
-        atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
-                                                             atc_that_does_nothing)
+                                                             _atc_that_does_nothing())
         actor = ActorForConstantAtc(
             recording_atc,
             parse_atc=do_raise(ParseException.of_str(expected_cause))
@@ -84,7 +83,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   actor=actor)
         # ASSERT #
-        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.VALIDATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(ExecutionFailureStatus.SYNTAX_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([],
@@ -93,10 +92,9 @@ class TestExecutionSequence(unittest.TestCase):
 
     def test_WHEN_parse_raises_unknown_exception_THEN_execution_SHOULD_stop_with_result_of_internal_error(self):
         # ARRANGE #
-        atc_that_does_nothing = ActionToCheckThatRunsConstantActions()
         step_recorder = ListRecorder()
         recording_atc = ActionToCheckWrapperThatRecordsSteps(step_recorder,
-                                                             atc_that_does_nothing)
+                                                             _atc_that_does_nothing())
         actor = ActorForConstantAtc(
             recording_atc,
             parse_atc=do_raise(ValueError('failure message'))
@@ -361,6 +359,10 @@ def _execute(actor: Actor,
 
 def _python_program_that_prints_stdin_to(output_file_path: pathlib.Path) -> str:
     return _PYTHON_PROGRAM_THAT_PRINTS_STDIN_TO_FILE_NAME.format(file_name=str(output_file_path))
+
+
+def _atc_that_does_nothing() -> ActionToCheck:
+    return ActionToCheckThatRunsConstantActions()
 
 
 _PYTHON_PROGRAM_THAT_PRINTS_STDIN_TO_FILE_NAME = """\

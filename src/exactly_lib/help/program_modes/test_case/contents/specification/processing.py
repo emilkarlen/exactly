@@ -3,12 +3,14 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting, misc_texts, processing
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, directives
 from exactly_lib.definitions.test_case import phase_infos, phase_names
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import \
     step_with_single_exit_value, step_with_multiple_exit_values
 from exactly_lib.help.render import see_also
 from exactly_lib.processing import exit_values
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
@@ -24,14 +26,15 @@ class ContentsConstructor(SectionContentsConstructor):
             'phase': phase_names.PHASE_NAME_DICTIONARY,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
+            'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name,
+            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
+            'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
+            'actor': concepts.ACTOR_CONCEPT_INFO.name,
             'exit_code': misc_texts.EXIT_CODE,
             'exit_identifier': misc_texts.EXIT_IDENTIFIER,
-            'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name,
             'act_phase': phase_infos.ACT.name,
-            'symbol': concepts.SYMBOL_CONCEPT_INFO.name,
             'cli_option_for_preprocessor': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
-            'directive': concepts.DIRECTIVE_CONCEPT_INFO.name,
             'including': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
 
             'stdout': misc_texts.STDOUT,
@@ -69,15 +72,24 @@ class ContentsConstructor(SectionContentsConstructor):
                                self._tp.fnap(PURPOSE_OF_SYNTAX_CHECKING),
                                self._tp.fnap(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
                                [
-                                   ('Syntax error', exit_values.NO_EXECUTION__SYNTAX_ERROR),
-                                   ('File inclusion error', exit_values.NO_EXECUTION__FILE_ACCESS_ERROR),
-                               ])
+                                   NameAndValue('Syntax error',
+                                                exit_values.NO_EXECUTION__SYNTAX_ERROR),
+                                   NameAndValue('File inclusion error',
+                                                exit_values.NO_EXECUTION__FILE_ACCESS_ERROR),
+                               ],
+                           )
                            ),
-            docs.list_item(processing.STEP_VALIDATION.singular.capitalize(),
-                           step_with_single_exit_value(
+            docs.list_item(self._tp.text('{validation:/u} and syntax checking of {act_phase:syntax}'),
+                           step_with_multiple_exit_values(
                                self._tp.fnap(PURPOSE_OF_VALIDATION),
-                               self._tp.para(FAILURE_CONDITION_OF_VALIDATION),
-                               exit_values.EXECUTION__VALIDATION_ERROR)
+                               self._tp.fnap(FAILURE_CONDITION_OF_VALIDATION),
+                               [
+                                   NameAndValue(self._tp.text('Invalid syntax of {act_phase:syntax}'),
+                                                exit_values.EXECUTION__SYNTAX_ERROR),
+                                   NameAndValue(self._tp.text('Invalid reference to {symbol} or external resource'),
+                                                exit_values.EXECUTION__VALIDATION_ERROR),
+                               ],
+                           )
                            ),
             docs.list_item(processing.STEP_EXECUTION.singular.capitalize(),
                            self._tp.fnap(EXECUTION_DESCRIPTION)
@@ -90,12 +102,13 @@ class ContentsConstructor(SectionContentsConstructor):
 
 
 def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
-    return [
-        concepts.PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
-        concepts.DIRECTIVE_CONCEPT_INFO.cross_reference_target,
-        concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
-        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
-    ]
+    return cross_reference_id_list([
+        concepts.PREPROCESSOR_CONCEPT_INFO,
+        concepts.DIRECTIVE_CONCEPT_INFO,
+        concepts.INSTRUCTION_CONCEPT_INFO,
+        concepts.ACTOR_CONCEPT_INFO,
+        concepts.SYMBOL_CONCEPT_INFO,
+    ])
 
 
 BEFORE_STEP_LIST = """\
@@ -108,9 +121,6 @@ where the actual execution of the test is the last step.
 
 
 The outcome is reported by {exit_code:a} and {exit_identifier:a} printed as a single line on {stdout}.
-
-
-If a step before {execution} fails, then the outcome is reported and the processing is halted.
 """
 
 PURPOSE_OF_PREPROCESSING = """\
@@ -141,7 +151,9 @@ or if a {directive} fails.
 
 PURPOSE_OF_VALIDATION = """\
 Checks references to {symbol:s} and external resources (files),
-and the syntax of the {act_phase:syntax} phase.
+
+and syntax of the {act_phase:syntax} phase
+(according to the configured {actor}).
 """
 
 FAILURE_CONDITION_OF_VALIDATION = """\

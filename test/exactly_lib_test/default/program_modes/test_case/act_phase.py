@@ -58,7 +58,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(SetupWithou
         ])
 
 
-class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHds(
+class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHdsAct(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
@@ -73,10 +73,9 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutabl
         return lines_content(['system-under-test'])
 
 
-class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(
-    SetupWithoutPreprocessorAndDefaultActor):
+class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
-        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR)
+        return process_result_for_exit_value(exit_values.EXECUTION__SYNTAX_ERROR)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
         return [
@@ -89,11 +88,24 @@ class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(
                               'system-under-test'])
 
 
+class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(
+    SetupWithoutPreprocessorAndDefaultActor):
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR)
+
+    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
+        return []
+
+    def test_case(self) -> str:
+        return lines_content(['system-under-test'])
+
+
 TESTS = [
     DefaultActorConfShouldSucceedWhenActPhaseIsEmpty(),
     DefaultActorConfShouldSucceedWhenActPhaseIsJustSpace(),
     DefaultActorConfShouldSucceedWhenActPhaseIsJustSpaceOrComments(),
-    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHds(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfNonExistingExeFile(),
+    DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHdsAct(),
     DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(),
 ]
 

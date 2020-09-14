@@ -43,7 +43,7 @@ class ActionToCheckParser:
                 return actor.parse(instructions)
             except ParseException as ex:
                 raise PhaseStepFailureException(failure_con.apply(
-                    ExecutionFailureStatus.VALIDATION_ERROR,
+                    ExecutionFailureStatus.SYNTAX_ERROR,
                     FailureDetails.new_message(
                         blocks.PrependFirstMinorBlockOfFirstMajorBlockR(
                             self._actor_info_lines(),

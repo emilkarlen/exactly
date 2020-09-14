@@ -10,8 +10,9 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 
 class FullExeResultStatus(Enum):
     """
-    Implementation notes: integer values must correspond to PartialExeResultStatus
+    Implementation notes: integer values must correspond to ExecutionFailureStatus
     """
+    SYNTAX_ERROR = 3
     PASS = 0
     VALIDATION_ERROR = 1
     FAIL = 2

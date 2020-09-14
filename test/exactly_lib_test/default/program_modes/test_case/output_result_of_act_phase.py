@@ -4,16 +4,21 @@ from typing import List
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import \
     OPTION_FOR_EXECUTING_ACT_PHASE
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.definitions.primitives import program
+from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.processing import exit_values
 from exactly_lib.util.file_utils.std import StdOutputFilesContents
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
-    SetupWithoutPreprocessorAndTestActor
+    SetupWithoutPreprocessorAndTestActor, SetupWithoutPreprocessorAndDefaultActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResultInfo, SubProcessResult
 from exactly_lib_test.test_resources.programs import py_programs
+from exactly_lib_test.test_resources.string_formatting import StringFormatter
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
     process_result_info_assertions as asrt_process_result_info, \
     process_result_assertions as asrt_process_result
@@ -23,6 +28,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 
 def suite_that_requires_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
     tests = [
+        WhenActorParsingDetectsSyntaxErrorThenOutputShouldBeAsWithoutActOptionButOnStderr(),
         WhenValidationFailsThenOutputShouldBeAsWithoutActOptionButOnStderr(),
         WhenParseFailsThenOutputShouldBeAsWithoutActOptionButOnStderr(),
         OutputAndExitCodeFromActPhaseIsEmittedWhenTestCaseExecutesSuccessfully(),
@@ -101,6 +107,37 @@ ignored action
     def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(exit_values.EXECUTION__VALIDATION_ERROR))
+
+
+class WhenActorParsingDetectsSyntaxErrorThenOutputShouldBeAsWithoutActOptionButOnStderr(
+    SetupWithoutPreprocessorAndDefaultActor):
+    def additional_arguments(self) -> List[str]:
+        return [OPTION_FOR_EXECUTING_ACT_PHASE]
+
+    def test_case(self) -> str:
+        test_case_source = """\
+{phase[conf]:syntax}
+
+{set_actor_instr} = {command_line_actor}
+
+{phase[act]:syntax}
+
+{system_program_token} system-program-name
+
+unexpected non-empty line causing syntax error
+"""
+        sf = StringFormatter({
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
+            'set_actor_instr': instruction_names.ACTOR_INSTRUCTION_NAME,
+            'command_line_actor': actor_utils.COMMAND_LINE_ACTOR_NAME,
+            'system_program_token': program.SYSTEM_PROGRAM_TOKEN,
+        })
+
+        return sf.format(test_case_source)
+
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
+        return asrt_process_result_info.assertion_on_process_result(
+            StdoutIsEmptyAndStderrIsExitIdentifierFollowedByErrorMessage(exit_values.EXECUTION__SYNTAX_ERROR))
 
 
 class WhenTimeoutThenOutputShouldOutputFromAtcFollowedByErrorReportingOnStderr(SetupWithoutPreprocessorAndTestActor):

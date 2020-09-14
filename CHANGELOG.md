@@ -22,6 +22,7 @@ with exception of a "0." prefix until version 1 is released.
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
+ - Exit codes - Syntax error in `[act]` - `VALIDATION_ERROR` -> `SYNTAX_ERROR`
  - Python compatibility: Increased to Python v 3.5.9
  - Instruction `conf`/`actor` - Remove "-" prefix from actor names
  - String transformer - Case converters - Replaces builtin symbols with primitives

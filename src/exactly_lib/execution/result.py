@@ -9,6 +9,7 @@ class ExecutionFailureStatus(Enum):
     """
     Implementation notes: integer values must correspond to FullExeResultStatus
     """
+    SYNTAX_ERROR = 3
     VALIDATION_ERROR = 1
     FAIL = 2
     HARD_ERROR = 99

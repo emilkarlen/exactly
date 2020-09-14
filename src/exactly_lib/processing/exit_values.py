@@ -35,6 +35,8 @@ def _for_full_result(result: FullExeResultStatus, color: ForegroundColor) -> Exi
 
 
 _FOR_FULL_RESULT = {
+    FullExeResultStatus.SYNTAX_ERROR: _for_full_result(FullExeResultStatus.SYNTAX_ERROR,
+                                                       NO_EXECUTION__SYNTAX_ERROR.color),
     FullExeResultStatus.PASS: _for_full_result(FullExeResultStatus.PASS, ForegroundColor.GREEN),
     FullExeResultStatus.VALIDATION_ERROR: _for_full_result(FullExeResultStatus.VALIDATION_ERROR,
                                                            ForegroundColor.YELLOW),
@@ -52,6 +54,7 @@ def from_full_result(status: FullExeResultStatus) -> ExitValue:
     return _FOR_FULL_RESULT[status]
 
 
+EXECUTION__SYNTAX_ERROR = from_full_result(FullExeResultStatus.SYNTAX_ERROR)
 EXECUTION__PASS = from_full_result(FullExeResultStatus.PASS)
 EXECUTION__VALIDATION_ERROR = from_full_result(FullExeResultStatus.VALIDATION_ERROR)
 EXECUTION__FAIL = from_full_result(FullExeResultStatus.FAIL)

@@ -123,7 +123,7 @@ class TestFailingScenarios(unittest.TestCase):
             ),
             expectation=
             asrt_proc_result.is_result_for_empty_stdout(
-                exit_values.EXECUTION__VALIDATION_ERROR.exit_code
+                exit_values.EXECUTION__SYNTAX_ERROR.exit_code
             )
         )
 

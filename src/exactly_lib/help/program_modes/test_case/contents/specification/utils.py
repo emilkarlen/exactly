@@ -1,9 +1,10 @@
-from typing import List, Tuple
+from typing import List
 
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs
@@ -37,10 +38,10 @@ def step_with_single_exit_value(purpose_paragraphs: List[ParagraphItem],
 
 def step_with_multiple_exit_values(purpose_paragraphs: List[ParagraphItem],
                                    failure_condition: List[ParagraphItem],
-                                   exit_value_on_errors: List[Tuple[str, ExitValue]]) -> List[ParagraphItem]:
-    def failure_item(header__exit_value: Tuple[str, ExitValue]) -> docs.lists.HeaderContentListItem:
-        return docs.list_item(header__exit_value[0],
-                              [singe_exit_value_display(header__exit_value[1])])
+                                   exit_value_on_errors: List[NameAndValue[ExitValue]]) -> List[ParagraphItem]:
+    def failure_item(header__exit_value: NameAndValue[ExitValue]) -> docs.lists.HeaderContentListItem:
+        return docs.list_item(header__exit_value.name,
+                              [singe_exit_value_display(header__exit_value.value)])
 
     outcome_on_error = docs.simple_list(map(failure_item, exit_value_on_errors),
                                         docs.lists.ListType.ITEMIZED_LIST)
