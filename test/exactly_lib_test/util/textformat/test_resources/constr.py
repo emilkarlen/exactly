@@ -38,9 +38,12 @@ class TitleOnlyCrossReferenceFormatter(CrossReferenceFormatter):
         return cross_reference.title_text.value
 
 
-def formatter_with_page_width(page_width: int) -> sut.Formatter:
+def formatter_with_page_width(page_width: int,
+                              literal_layout_indent: str = '') -> sut.Formatter:
     return sut.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
-                         sut.Wrapper(page_width=page_width))
+                         sut.Wrapper(page_width=page_width),
+                         literal_layout_indent=literal_layout_indent,
+                         )
 
 
 CROSS_REF_TITLE_ONLY_TEXT_FORMATTER = TextFormatter(TitleOnlyCrossReferenceFormatter())

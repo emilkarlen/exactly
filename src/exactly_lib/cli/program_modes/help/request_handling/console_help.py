@@ -44,8 +44,10 @@ def _formatter(page_width: int) -> section.Formatter:
     text_formatter = text.TextFormatter(HelpCrossReferenceFormatter())
     return section.Formatter(paragraph_item.Formatter(text_formatter,
                                                       Wrapper(page_width=page_width),
-                                                      list_formats=list_formats_with(indent_str='  ')),
-                             section_content_indent_str='   ')
+                                                      list_formats=list_formats_with(indent_str='  '),
+                                                      literal_layout_indent=' | '),
+                             section_content_indent_str='   ',
+                             )
 
 
 class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):

@@ -63,14 +63,14 @@ class TestIndent(unittest.TestCase):
 class TestIndentIncreaseContextManager(unittest.TestCase):
     def test(self):
         wrapper = sut.Wrapper(page_width=100)
-        with wrapper.indent_increase(sut.identical_indent('[INDENT]')):
+        with wrapper.indent_increase(sut.Indent.identical('[INDENT]')):
             lines = wrapper.wrap('text')
         self.assertEqual(['[INDENT]text'],
                          lines,
                          'Resulting lines')
         _check_indent(self,
                       wrapper,
-                      sut.identical_indent(''),
+                      sut.Indent.identical(''),
                       [])
 
 

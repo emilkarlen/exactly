@@ -8,6 +8,7 @@ from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents, \
     ArticleContents, empty_article_contents
+from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -294,6 +295,45 @@ class TestSection(unittest.TestCase):
                                   BLANK_LINE,
                                   BLANK_LINE,
                                   content_indent + 'Sub Section Header',
+                                  ],
+                                 actual)
+
+    def test_section_content_indent_w_literal_layout_indent(self):
+        ll_indent = 'LLI '
+        content_indent = 'CI '
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0,
+                                                            literal_layout_indent=ll_indent)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  section_content_indent_str=content_indent,
+                                  separation=sut.Separation(between_sections=1,
+                                                            between_header_and_content=2,
+                                                            between_initial_paragraphs_and_sub_sections=3))
+        header = text('Section Header')
+        contents = SectionContents([LiteralLayout('literal layout 1')],
+                                   [Section(text('Sub Section Header'),
+                                            SectionContents([LiteralLayout('literal layout 2')]))])
+        cases = [
+            ('section', Section(header, contents)),
+            ('article', Article(header, ArticleContents([], contents))),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section_item(section_item)
+                # ASSERT #
+                self.assertEqual(['Section Header',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  content_indent + ll_indent + 'literal layout 1',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  content_indent + 'Sub Section Header',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  content_indent * 2 + ll_indent + 'literal layout 2',
                                   ],
                                  actual)
 

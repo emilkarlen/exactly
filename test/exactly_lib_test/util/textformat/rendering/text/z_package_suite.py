@@ -1,9 +1,6 @@
 import unittest
 
-from exactly_lib_test.util.textformat.rendering.text import wrapper
-from . import lists
-from . import paragraph_item
-from . import section
+from exactly_lib_test.util.textformat.rendering.text import lists, paragraph_item, section, wrapper
 
 
 def suite() -> unittest.TestSuite:

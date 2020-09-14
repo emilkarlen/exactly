@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.rendering.text.lists import ListFormats, ListFo
     list_format_with_separations
 from exactly_lib.util.textformat.rendering.text.table.formatter import TableFormatter
 from exactly_lib.util.textformat.rendering.text.text import TextFormatter
-from exactly_lib.util.textformat.rendering.text.wrapper import Indent, Wrapper, identical_indent
+from exactly_lib.util.textformat.rendering.text.wrapper import Indent, Wrapper
 from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 from exactly_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
@@ -18,13 +18,16 @@ class Formatter:
                  text_formatter: TextFormatter,
                  wrapper: Wrapper = Wrapper(),
                  num_item_separator_lines: int = 1,
-                 list_formats: ListFormats = ListFormats()):
+                 list_formats: ListFormats = ListFormats(),
+                 literal_layout_indent: str = '',
+                 ):
         self.text_formatter = text_formatter
         self.list_formats = list_formats
         self.wrapper = wrapper
         self.num_item_separator_lines = num_item_separator_lines
         self.separator_lines = self.wrapper.blank_lines(num_item_separator_lines)
         self.text_item_formatter = _ParagraphItemFormatter(self)
+        self.literal_layout_indent = literal_layout_indent
 
     def format_paragraph_items(self, items: iter) -> List[str]:
         ret_val = []
@@ -52,7 +55,8 @@ class Formatter:
 
     def format_literal_layout(self, literal_layout: LiteralLayout) -> List[str]:
         lines = literal_layout.literal_text.splitlines()
-        return self.wrapper.no_word_wrap(lines)
+        with self.wrapper.indent_increase(Indent.identical(self.literal_layout_indent)):
+            return self.wrapper.no_word_wrap(lines)
 
     def format_header_content_list(self, the_list: HeaderContentList) -> List[str]:
         list_format = self.resolve_list_format(the_list.list_format)
@@ -111,7 +115,7 @@ class _ListFormatter:
 
     def apply(self) -> List[str]:
         ret_val = self.ret_val
-        with self.wrapper.indent_increase(identical_indent(self.list_format.indent_str)):
+        with self.wrapper.indent_increase(Indent.identical(self.list_format.indent_str)):
             for (item_number, item) in enumerate(self.items_list, start=1):
                 assert isinstance(item, HeaderContentListItem), (
                         'The list item is not a %s: %s' % (str(HeaderContentListItem),

@@ -9,6 +9,14 @@ class Indent(tuple):
                 following_lines: str):
         return tuple.__new__(cls, (first_line, following_lines))
 
+    @staticmethod
+    def identical(indent: str) -> 'Indent':
+        """
+        :return: Indent is identical for the first line
+        and following lines.
+        """
+        return Indent(indent, indent)
+
     @property
     def first_line(self) -> str:
         return self[0]
@@ -16,14 +24,6 @@ class Indent(tuple):
     @property
     def following_lines(self) -> str:
         return self[1]
-
-
-def identical_indent(indent: str) -> Indent:
-    """
-    :return: Indent is identical for the first line
-    and following lines.
-    """
-    return Indent(indent, indent)
 
 
 class Wrapper:
