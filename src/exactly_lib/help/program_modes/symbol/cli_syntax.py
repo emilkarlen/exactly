@@ -166,7 +166,7 @@ Reports usage of {symbol:s} in the test case or test suite {FILE}.
 """
 
 _DESCRIPTION_PARAGRAPHS_ALL = """\
-Reports all {symbol:s} defined in the case/suite.
+Reports all user defined {symbol:s} in the case/suite.
 
 
 Each symbol is reported on a separate line,

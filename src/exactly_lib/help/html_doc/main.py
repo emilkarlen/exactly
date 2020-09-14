@@ -33,7 +33,7 @@ _TEST_SUITES_HEADER = 'Test Suites'
 
 _TEST_CASES_HEADER = 'Test Cases'
 
-_SYMBOL_HEADER = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' Usages'
+_SYMBOL_HEADER = concepts.SYMBOL_CONCEPT_INFO.singular_name.capitalize() + ' Inspection'
 
 
 def generate_and_output(output_file,
