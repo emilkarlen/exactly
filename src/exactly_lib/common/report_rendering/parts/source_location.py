@@ -167,40 +167,27 @@ def location_blocks_renderer(source_location: Optional[SourceLocationPath],
     )
 
 
-def location_blocks_renderer__src(section_source: str,
-                                  section_name: str,
-                                  ) -> SequenceRenderer[MajorBlock]:
-    return comb.SingletonSequenceR(
-        comp_rend.MajorBlockR(
-            _location_minor_blocks_renderer(
-                comb.SingletonSequenceR(SourceLinesBlockRenderer(section_source.splitlines())),
-                section_name,
-                None,
-            )
-        )
-    )
+def source_str_renderer(source: str) -> SequenceRenderer[MinorBlock]:
+    return comb.SingletonSequenceR(SourceLinesBlockRenderer(source.splitlines()))
 
 
 def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath],
                                    section_name: Optional[str],
                                    description: Optional[str]) -> SequenceRenderer[MinorBlock]:
-    return _location_minor_blocks_renderer(
-        _location_path_and_source_blocks(source_location),
-        section_name,
-        description
-    )
+    return comb.ConcatenationR([
+        section_and_source(section_name,
+                           _location_path_and_source_blocks(source_location)),
+        _OptionalDescriptionRenderer(description),
+    ])
 
 
-def _location_minor_blocks_renderer(source_info: SequenceRenderer[MinorBlock],
-                                    section_name: Optional[str],
-                                    description: Optional[str]) -> SequenceRenderer[MinorBlock]:
+def section_and_source(section_name: Optional[str],
+                       source_info: SequenceRenderer[MinorBlock],
+                       ) -> SequenceRenderer[MinorBlock]:
     sequence_renderers = []
     if section_name is not None:
         sequence_renderers.append(blocks.MinorBlocksOfSingleLineObject(_InSectionHeaderRenderer(section_name)))
-    sequence_renderers += [
-        source_info,
-        _OptionalDescriptionRenderer(description),
-    ]
+    sequence_renderers.append(source_info)
     return comb.ConcatenationR(sequence_renderers)
 
 

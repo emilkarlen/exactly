@@ -1,3 +1,5 @@
+from typing import Callable
+
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor, \
     execute_action_and_catch_internal_error_exception, run_instructions_phase_step
@@ -18,11 +20,13 @@ class SymbolsValidator:
     def __init__(self,
                  initial_symbols: SymbolTable,
                  test_case: TestCase,
-                 action_to_check: ActionToCheck
+                 action_to_check: ActionToCheck,
+                 mk_atc_failure_con: Callable[[PhaseStep], PhaseStepFailureResultConstructor],
                  ):
         self._symbols = initial_symbols.copy()
         self._test_case = test_case
         self._action_to_check = action_to_check
+        self._mk_atc_failure_con = mk_atc_failure_con
 
         self._validation_executor = ValidateSymbolsExecutor(self._symbols)
 
@@ -51,7 +55,7 @@ class SymbolsValidator:
                        test_case.cleanup_phase)
 
     def _validate_atc(self):
-        failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS)
+        failure_con = self._mk_atc_failure_con(phase_step.ACT__VALIDATE_SYMBOLS)
 
         def action():
             res = self._validation_executor.apply(self._action_to_check)

@@ -1,6 +1,6 @@
 from typing import Optional, TypeVar, Callable
 
-from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo
+from exactly_lib.execution.failure_info import InstructionFailureInfo, ActPhaseFailureInfo
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     execute_element
@@ -99,18 +99,21 @@ def execute_phase_prim(phase_contents: SectionContents,
 class PhaseStepFailureResultConstructor:
     def __init__(self,
                  step: PhaseStep,
-                 phase_source: Optional[str] = None,
+                 actor_name: str,
+                 phase_source: str,
                  ):
-        self.step = step
-        self.phase_source = phase_source
+        self._step = step
+        self._actor_name = actor_name
+        self._phase_source = phase_source
 
     def apply(self,
               status: ExecutionFailureStatus,
               failure_details: FailureDetails) -> PhaseStepFailure:
         return PhaseStepFailure(status,
-                                PhaseFailureInfo(self.step,
-                                                 failure_details,
-                                                 self.phase_source))
+                                ActPhaseFailureInfo(self._step,
+                                                    failure_details,
+                                                    self._actor_name,
+                                                    self._phase_source))
 
     def internal_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,

@@ -2,7 +2,7 @@ import unittest
 from typing import Optional, Type
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.execution.failure_info import FailureInfo, InstructionFailureInfo, PhaseFailureInfo
+from exactly_lib.execution.failure_info import FailureInfo, InstructionFailureInfo, ActPhaseFailureInfo
 from exactly_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util import line_source
@@ -149,9 +149,9 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure):
                     actual: FailureInfo):
         unittest_case.assertIsNotNone(actual,
                                       'Failure info should be present')
-        unittest_case.assertIsInstance(actual, PhaseFailureInfo,
-                                       'The failure is expected to be a {}'.format(str(PhaseFailureInfo)))
-        assert isinstance(actual, PhaseFailureInfo)
+        unittest_case.assertIsInstance(actual, ActPhaseFailureInfo,
+                                       'The failure is expected to be a {}'.format(str(ActPhaseFailureInfo)))
+        assert isinstance(actual, ActPhaseFailureInfo)
         self.assertions_(unittest_case,
                          actual.phase_step.simple,
                          actual.failure_details)

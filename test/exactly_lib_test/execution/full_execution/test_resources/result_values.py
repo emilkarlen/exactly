@@ -1,5 +1,5 @@
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.failure_info import PhaseFailureInfo
+from exactly_lib.execution.failure_info import ActPhaseFailureInfo
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -12,9 +12,11 @@ def full_result_with_failure_info(status: FullExeResultStatus,
     return FullExeResult(status,
                          DUMMY_SDS,
                          None,
-                         PhaseFailureInfo(failure_phase_step,
-                                          FailureDetails.new_constant_message(
-                                              'failure message')))
+                         ActPhaseFailureInfo(failure_phase_step,
+                                             FailureDetails.new_constant_message(
+                                                 'failure message'),
+                                             'actor name',
+                                             'phase source'))
 
 
 def full_result_without_failure_info(status: FullExeResultStatus) -> FullExeResult:

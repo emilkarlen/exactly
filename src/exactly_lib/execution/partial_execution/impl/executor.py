@@ -6,13 +6,13 @@ from exactly_lib.execution import phase_file_space
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.impl import phase_step_executors
-from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor, \
-    run_instructions_phase_step, execute_action_and_catch_internal_error_exception
+from exactly_lib.execution.impl.phase_step_execution import run_instructions_phase_step, \
+    execute_action_and_catch_internal_error_exception
 from exactly_lib.execution.impl.phase_step_executors import InstructionEnvPostSdsGetter
 from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
+from exactly_lib.execution.partial_execution.impl.act_helper import ActHelper
 from exactly_lib.execution.partial_execution.impl.atc_execution import ActionToCheckExecutor
-from exactly_lib.execution.partial_execution.impl.atc_parsing import ActionToCheckParser
 from exactly_lib.execution.partial_execution.impl.symbol_validation import SymbolsValidator
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure, PhaseStepFailureException
@@ -67,10 +67,12 @@ def parse_atc_and_validate_symbols(actor: NameAndValue[Actor],
     """
     :raises PhaseStepFailureException
     """
-    action_to_check = ActionToCheckParser(actor).parse(test_case.act_phase)
+    act_helper = ActHelper(actor.name, test_case.act_phase)
+    action_to_check = act_helper.parse(actor.value)
     symbols_validator = SymbolsValidator(predefined_symbols,
                                          test_case,
-                                         action_to_check
+                                         action_to_check,
+                                         act_helper.failure_constructor,
                                          )
     symbols_validator.validate()
 
@@ -96,6 +98,8 @@ class _PartialExecutor:
         self.__sandbox_directory_structure = None
         self._action_to_check_outcome = None
         self._phase_tmp_space_factory = None
+        self._act_helper = ActHelper(conf.conf_phase_values.actor.name,
+                                     test_case.act_phase)
 
     def execute(self) -> PartialExeResult:
         try:
@@ -218,7 +222,8 @@ class _PartialExecutor:
     def _do_validate_symbols(self) -> SymbolTable:
         symbols_validator = SymbolsValidator(self.exe_conf.predefined_symbols,
                                              self._test_case,
-                                             self._action_to_check
+                                             self._action_to_check,
+                                             self._act_helper.failure_constructor,
                                              )
         symbols_validator.validate()
 
@@ -234,11 +239,10 @@ class _PartialExecutor:
         self._act_phase_executor = self._construct_act_phase_executor()
 
     def _act__parse_atc(self):
-        parser = ActionToCheckParser(self.conf_values.actor)
-        self._action_to_check = parser.parse(self._test_case.act_phase)
+        self._action_to_check = self._act_helper.parse(self.conf_values.actor.value)
 
     def _act__validate_pre_sds(self):
-        failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
+        failure_con = self._act_helper.failure_constructor(phase_step.ACT__VALIDATE_PRE_SDS)
 
         def action():
             res = self._action_to_check.validate_pre_sds(self._instruction_environment_pre_sds)
@@ -251,13 +255,13 @@ class _PartialExecutor:
         execute_action_and_catch_internal_error_exception(action, failure_con)
 
     def _act__validate_post_setup(self):
-        failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_POST_SETUP)
+        failure_con = self._act_helper.failure_constructor(phase_step.ACT__VALIDATE_POST_SETUP)
 
         execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.validate_post_setup(failure_con.apply), failure_con)
 
     def _act__prepare(self):
-        failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__PREPARE)
+        failure_con = self._act_helper.failure_constructor(phase_step.ACT__PREPARE)
 
         execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.prepare(failure_con.apply),
@@ -265,7 +269,7 @@ class _PartialExecutor:
         )
 
     def _act__execute(self):
-        failure_con = PhaseStepFailureResultConstructor(phase_step.ACT__EXECUTE)
+        failure_con = self._act_helper.failure_constructor(phase_step.ACT__EXECUTE)
 
         return execute_action_and_catch_internal_error_exception(
             self._act_phase_executor.execute(failure_con.apply), failure_con)

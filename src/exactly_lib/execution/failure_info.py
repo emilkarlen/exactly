@@ -14,7 +14,7 @@ class FailureInfoVisitor(Generic[RET], ABC):
         pass
 
     @abstractmethod
-    def visit_phase_failure(self, failure_info: 'PhaseFailureInfo') -> RET:
+    def visit_act_phase_failure(self, failure_info: 'ActPhaseFailureInfo') -> RET:
         pass
 
 
@@ -75,13 +75,15 @@ class InstructionFailureInfo(FailureInfo):
         return visitor.visit_instruction_failure(self)
 
 
-class PhaseFailureInfo(FailureInfo):
+class ActPhaseFailureInfo(FailureInfo):
     def __init__(self,
                  phase_step: PhaseStep,
                  failure_details: FailureDetails,
-                 phase_source: Optional[str] = None,
+                 actor_name: str,
+                 phase_source: str,
                  ):
         super().__init__(phase_step, failure_details)
+        self._actor_name = actor_name
         self._phase_source = phase_source
 
     @property
@@ -89,8 +91,12 @@ class PhaseFailureInfo(FailureInfo):
         return None
 
     @property
-    def phase_source(self) -> Optional[str]:
+    def actor_name(self) -> str:
+        return self._actor_name
+
+    @property
+    def phase_source(self) -> str:
         return self._phase_source
 
     def accept(self, visitor: FailureInfoVisitor[RET]) -> RET:
-        return visitor.visit_phase_failure(self)
+        return visitor.visit_act_phase_failure(self)
