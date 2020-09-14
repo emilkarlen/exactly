@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.program.test_resources import ConfigurationWithPythonProgramBase
 from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_file_rel_hds_act as single_file_rel_home, relativity_configurations
+    test_validation_for_single_file, relativity_configurations
 from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
@@ -33,7 +33,7 @@ def suite() -> unittest.TestSuite:
     configuration = TheConfiguration()
 
     ret_val.addTest(unittest.makeSuite(TestValidationErrorPreSds))
-    ret_val.addTest(single_file_rel_home.suite_for(configuration))
+    ret_val.addTest(test_validation_for_single_file.suite_for(configuration))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHdsActWithCommandLineArguments))
     ret_val.addTest(unittest.makeSuite(TestSymbolUsages))
     ret_val.addTest(suite_for_execution(configuration))

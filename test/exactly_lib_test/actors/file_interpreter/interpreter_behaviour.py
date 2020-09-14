@@ -8,8 +8,7 @@ from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase, \
     COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.actors.test_resources import integration_check
-from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_file_rel_hds_act as single_file_rel_home
+from exactly_lib_test.actors.test_resources import test_validation_for_single_file
 from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.execution.test_resources import eh_assertions
@@ -47,7 +46,7 @@ def suite() -> unittest.TestSuite:
 
 def suite_for(configuration: TheConfiguration) -> unittest.TestSuite:
     return unittest.TestSuite([
-        single_file_rel_home.suite_for(configuration),
+        test_validation_for_single_file.suite_for(configuration),
         TestFailWhenThereAreArgumentsButTheyAreInvalidlyQuoted(),
         TestFileReferenceCanBeQuoted(),
         TestArgumentsAreParsedAndPassedToExecutor(),

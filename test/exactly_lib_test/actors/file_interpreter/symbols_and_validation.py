@@ -21,7 +21,7 @@ from exactly_lib_test.actors.test_resources.integration_check import Arrangement
 from exactly_lib_test.actors.test_resources.integration_check import Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
-from exactly_lib_test.actors.test_resources.program_argument_validation import ARGUMENT_VALIDATION_CASES
+from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
@@ -317,7 +317,7 @@ class TestValidationOfArguments(unittest.TestCase):
             'program-name',
             py_programs.exit_with(0)
         )
-        for case in ARGUMENT_VALIDATION_CASES:
+        for case in VALIDATION_CASES:
             with self.subTest(case.name):
                 interpreter_arguments = arguments_sdvs.ref_to_path_that_must_exist(
                     path_sdvs.of_rel_option_with_const_file_name(case.path_relativity,
@@ -340,7 +340,7 @@ class TestValidationOfArguments(unittest.TestCase):
                             fs.DirContents([exe_file])
                         )
                     ),
-                    case.expectation,
+                    Expectation(validation=case.expectation),
                 )
 
     def test_arguments_of_program_file(self):
@@ -350,7 +350,7 @@ class TestValidationOfArguments(unittest.TestCase):
             py_programs.exit_with(0)
         )
         actor = sut.actor(COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE)
-        for case in ARGUMENT_VALIDATION_CASES:
+        for case in VALIDATION_CASES:
             with self.subTest(case.name):
                 act_contents = ab.sequence__r([
                     ab.singleton(exe_file.name),
@@ -370,7 +370,7 @@ class TestValidationOfArguments(unittest.TestCase):
                             fs.DirContents([exe_file])
                         )
                     ),
-                    case.expectation,
+                    Expectation(validation=case.expectation),
                 )
 
 

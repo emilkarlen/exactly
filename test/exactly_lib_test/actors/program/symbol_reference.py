@@ -12,6 +12,7 @@ from exactly_lib_test.actors.program.test_resources import ConfigurationWithPyth
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.action_to_check import suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation
+from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
@@ -20,7 +21,6 @@ from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecut
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
-from exactly_lib_test.test_case_utils.program.test_resources import validation_cases
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
@@ -82,18 +82,25 @@ class TestInvalidSyntax(unittest.TestCase):
 
 class TestFailingValidation(unittest.TestCase):
     def runTest(self):
-        for case in validation_cases.failing_validation_cases():
+        for case in VALIDATION_CASES:
             with self.subTest(case.name):
+                program_sdv = program_sdvs.ref_to_exe_file(
+                    path_sdvs.of_rel_option_with_const_file_name(case.path_relativity, 'non-existing')
+                )
+                program_symbol = ProgramSymbolContext.of_sdv(
+                    'PROGRAM_SYMBOL',
+                    program_sdv
+                )
                 integration_check.check_execution(
                     self,
                     sut.actor(),
-                    [instr([case.value.argument_elements.as_arguments.as_single_string])],
+                    [instr([args.symbol_ref_command_line(program_symbol.name).as_str])],
                     Arrangement(
-                        symbol_table=case.value.symbol_table,
+                        symbol_table=program_symbol.symbol_table,
                     ),
                     Expectation(
-                        symbol_usages=case.value.program_symbol_context.usages_assertion,
-                        validation=case.value.expectation__svh
+                        symbol_usages=program_symbol.usages_assertion,
+                        validation=case.expectation
                     ),
                 )
 

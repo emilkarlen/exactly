@@ -11,7 +11,7 @@ from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_
 from exactly_lib_test.actors.test_resources import relativity_configurations, integration_check
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
-from exactly_lib_test.actors.test_resources.program_argument_validation import ARGUMENT_VALIDATION_CASES
+from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -211,7 +211,7 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
 class TestValidationOfInterpreterArguments(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        for case in ARGUMENT_VALIDATION_CASES:
+        for case in VALIDATION_CASES:
             with self.subTest(case.name):
                 interpreter_arguments = arguments_sdvs.ref_to_path_that_must_exist(
                     path_sdvs.of_rel_option_with_const_file_name(case.path_relativity,
@@ -230,7 +230,7 @@ class TestValidationOfInterpreterArguments(unittest.TestCase):
                     actor,
                     [act_instruction],
                     Arrangement(),
-                    case.expectation,
+                    Expectation(validation=case.expectation),
                 )
 
 

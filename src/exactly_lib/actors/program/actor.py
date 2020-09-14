@@ -11,7 +11,7 @@ from exactly_lib.test_case_file_structure import ddv_validators
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.util.symbol_table import SymbolTable
 from . import execution
-from ..util.actor_from_parts.parts import ValidatorFromPreOrPostSdsValidator
+from ..util.actor_from_parts.parts import ValidatorWithHardErrorFromPostSdsValidation
 from ...definitions.test_case import actor as help_texts
 
 
@@ -34,7 +34,7 @@ class _TheValidatorConstructor(parts.ValidatorConstructor[ProgramToExecute]):
         def get_validator(symbols: SymbolTable) -> DdvValidator:
             return ddv_validators.all_of(executable_object.program.resolve(symbols).validators)
 
-        return ValidatorFromPreOrPostSdsValidator(
+        return ValidatorWithHardErrorFromPostSdsValidation(
             SdvValidatorFromDdvValidator(get_validator)
         )
 

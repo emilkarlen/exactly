@@ -7,13 +7,16 @@ from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import \
-    test_validation_for_single_line_source as single_line_source
+    test_validation_for_single_line_source as single_line_source, integration_check
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
+from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
+from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
+from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
@@ -29,6 +32,7 @@ def suite_for_additional(conf: Configuration) -> unittest.TestSuite:
     test_cases = [
         test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines,
         test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file_rel_hds,
+        test_fail_WHEN_file_does_not_exist,
         test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file__absolute_file_name,
         test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file_not_under_hds,
         test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file__and_arguments,
@@ -61,6 +65,26 @@ class test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_f
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
+
+
+class test_fail_WHEN_file_does_not_exist(unittest.TestCase):
+    def __init__(self, configuration: Configuration):
+        super().__init__()
+        self.conf = configuration
+
+    def runTest(self):
+        for case in VALIDATION_CASES:
+            with self.subTest(case.name):
+                rel_conf = relativity_options.conf_rel_any(case.path_relativity)
+                path_argument = rel_conf.path_argument_of_rel_name('name-of-non-existing-file')
+                act_phase_instructions = [instr([path_argument.as_str])]
+                integration_check.check_execution(
+                    self,
+                    self.conf.actor,
+                    act_phase_instructions,
+                    Arrangement(),
+                    Expectation(validation=case.expectation),
+                )
 
 
 class test_validate_pre_sds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file__absolute_file_name(
