@@ -143,10 +143,18 @@ class TestMultipleParagraphs(unittest.TestCase):
 
 
 class TestLiteral(unittest.TestCase):
-    def test_single_literal_block(self):
+    def test_single_literal_block_wo_class(self):
         check(self,
-              [sut.LiteralLayout(lines_content(['literal line']))],
+              [sut.LiteralLayout(lines_content(['literal line']), None)],
               sut.parse(['```',
+                         'literal line',
+                         '```',
+                         ]))
+
+    def test_single_literal_block_w_class(self):
+        check(self,
+              [sut.LiteralLayout(lines_content(['literal line']), 'the-class')],
+              sut.parse(['```:the-class',
                          'literal line',
                          '```',
                          ]))

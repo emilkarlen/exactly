@@ -6,6 +6,8 @@ INSTRUCTION = 'instruction'
 
 SYNTAX_TEXT = 'syntax-text'
 
+CONSOLE_TEXT = 'console'
+
 TEXT_AS_HEADER = 'header-text'
 
 ENUM_CONSTANT = 'enum-constant'

@@ -1,6 +1,6 @@
 import re
 import textwrap
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.textformat.structure import lists
@@ -88,8 +88,9 @@ class _Parser:
 
     def parse_paragraph_item(self) -> ParagraphItem:
         first_line = self.lines[0]
-        if self._marks_start_of_literal_block(first_line):
-            return self.parse_literal_layout_from_first_marker_line()
+        is_literal, class_ = self._marks_start_of_literal_block(first_line)
+        if is_literal:
+            return self.parse_literal_layout_from_first_marker_line(class_)
         list_paragraph = self._try_parse_list()
         if list_paragraph:
             return list_paragraph
@@ -105,7 +106,7 @@ class _Parser:
         self.consume_separator_lines()
         return Paragraph(texts)
 
-    def parse_literal_layout_from_first_marker_line(self) -> LiteralLayout:
+    def parse_literal_layout_from_first_marker_line(self, class_: str) -> LiteralLayout:
         del self.lines[0]
         lines = []
         while True:
@@ -115,7 +116,7 @@ class _Parser:
             if self._marks_end_of_literal_block(first_line):
                 del self.lines[0]
                 self.consume_separator_lines()
-                return LiteralLayout(lines_content(lines))
+                return LiteralLayout(lines_content(lines), class_)
             if first_line and first_line[0] == '\\':
                 self.lines[0] = first_line[1:]
             lines.append(self.lines[0])
@@ -211,8 +212,16 @@ class _Parser:
         return idx
 
     @staticmethod
-    def _marks_start_of_literal_block(line: str) -> bool:
-        return line == _LITERAL_TOKEN
+    def _marks_start_of_literal_block(line: str) -> Tuple[bool, Optional[str]]:
+        if line[:len(_LITERAL_TOKEN)] != _LITERAL_TOKEN:
+            return False, None
+        after = line[len(_LITERAL_TOKEN):]
+        if after == '':
+            return True, None
+        elif after[0] == ':':
+            return True, after[1:].strip()
+        else:
+            return False, None
 
     @staticmethod
     def _marks_end_of_literal_block(line: str) -> bool:

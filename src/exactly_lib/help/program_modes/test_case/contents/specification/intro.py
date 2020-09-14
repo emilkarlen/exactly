@@ -2,6 +2,7 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.help import std_tags
 from exactly_lib.processing import exit_values
 from exactly_lib.program_info import PROGRAM_NAME
 from exactly_lib.test_case_utils.condition import comparators
@@ -31,6 +32,7 @@ class Documentation(SectionContentsConstructor):
             'stdout_instruction': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
             'exit_code_instruction': instruction_names.EXIT_CODE_INSTRUCTION_NAME,
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
+            'console_style': std_tags.CONSOLE_TEXT,
         })
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
@@ -64,7 +66,7 @@ If the file "{test_case_file}" contains this test case,
 then {program_name} can execute it:
 
 
-```
+```:{console_style}
 > {EXECUTABLE_PROGRAM} {test_case_file}
 {PASS}
 ```

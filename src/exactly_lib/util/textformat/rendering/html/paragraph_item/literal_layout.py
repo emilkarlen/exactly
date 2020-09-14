@@ -8,6 +8,12 @@ def render(parent: Element,
     """
     :return: The added element.
     """
-    pre = SubElement(parent, 'pre')
+    attributes = (
+        dict()
+        if literal_layout.class_ is None
+        else
+        {'class': literal_layout.class_}
+    )
+    pre = SubElement(parent, 'pre', attrib=attributes)
     pre.text = literal_layout.literal_text
     return pre

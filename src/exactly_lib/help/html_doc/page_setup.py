@@ -14,6 +14,7 @@ _CSS_CLASSES = {
     'entity': std_tags.ENTITY,
     'section': std_tags.SECTION,
     'syntax_text': std_tags.SYNTAX_TEXT,
+    'console_class': std_tags.CONSOLE_TEXT,
     'enum_constant': std_tags.ENUM_CONSTANT,
     'text_as_header': std_tags.TEXT_AS_HEADER,
     'actor_entity': all_entity_types.ACTOR_ENTITY_TYPE_NAMES.identifier,
@@ -26,6 +27,11 @@ pre {{
   background-color : #EEFFCC;
   padding: 7px;
   border: 1px solid #cEdFaC;
+}}
+
+.{console_class} {{
+  background-color : #D8D8D8;
+  border: 1px solid #C8C8C8;
 }}
 
 .{syntax_text} {{

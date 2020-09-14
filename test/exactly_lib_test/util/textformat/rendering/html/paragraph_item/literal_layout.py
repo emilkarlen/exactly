@@ -7,10 +7,13 @@ from exactly_lib_test.util.textformat.rendering.html.test_resources import as_un
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestLiteralLayout)
+    return unittest.TestSuite([
+        TestLiteralLayoutWoClass(),
+        TestLiteralLayoutWClass(),
+    ])
 
 
-class TestLiteralLayout(unittest.TestCase):
+class TestLiteralLayoutWoClass(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         root = Element('root')
@@ -25,6 +28,21 @@ class TestLiteralLayout(unittest.TestCase):
                       ret_val)
 
 
+class TestLiteralLayoutWClass(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        root = Element('root')
+        ll = LiteralLayout(LITERAL_MULTI_LINE_TEXT, 'the-class')
+        # ACT #
+        ret_val = sut.render(root, ll)
+        # ASSERT #
+        xml_string = as_unicode_str(root)
+        self.assertEqual(LITERAL_MULTI_LINE_TEXT_RESULT_W_CLASS,
+                         xml_string)
+        self.assertIs(list(root)[0],
+                      ret_val)
+
+
 LITERAL_MULTI_LINE_TEXT = """\
 first line
 
@@ -33,6 +51,12 @@ second line
 
 LITERAL_MULTI_LINE_TEXT_RESULT = """\
 <root><pre>first line
+
+second line
+</pre></root>"""
+
+LITERAL_MULTI_LINE_TEXT_RESULT_W_CLASS = """\
+<root><pre class="the-class">first line
 
 second line
 </pre></root>"""

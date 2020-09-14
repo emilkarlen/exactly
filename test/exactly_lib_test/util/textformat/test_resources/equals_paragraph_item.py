@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
@@ -13,12 +14,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 
-def equals_paragraph_items(expected_items: list) -> ValueAssertion:
+def equals_paragraph_items(expected_items: Sequence[ParagraphItem]) -> ValueAssertion[Sequence[ParagraphItem]]:
     return asrt.equals_sequence(expected_items,
                                 equals_paragraph_item)
 
 
-def equals_paragraph_item(expected: ParagraphItem) -> ValueAssertion:
+def equals_paragraph_item(expected: ParagraphItem) -> ValueAssertion[ParagraphItem]:
     return _EqualsParagraphItem(expected)
 
 
@@ -146,9 +147,17 @@ class _EqualsParagraphItemVisitor(ParagraphItemVisitor):
     def visit_literal_layout(self, expected: LiteralLayout):
         self._assert_is_type(LiteralLayout)
         actual = self.actual
+        self.put.assertIsInstance(actual, LiteralLayout,
+                                  self.message_builder.apply('type'))
         assert isinstance(actual, LiteralLayout)
         self.put.assertEqual(expected.literal_text,
-                             actual.literal_text)
+                             actual.literal_text,
+                             self.message_builder.apply('text'),
+                             )
+        self.put.assertEqual(expected.class_,
+                             actual.class_,
+                             self.message_builder.apply('class'),
+                             )
 
     def visit_table(self, expected: Table):
         self.put.fail('Implementation error: tables not supported')
