@@ -1,4 +1,4 @@
-from exactly_lib.default.program_modes import test_suite
+from exactly_lib.cli_default.program_modes import test_suite
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR

@@ -31,7 +31,7 @@ def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestS
 
 
 def _run_complete_suite():
-    from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+    from exactly_lib_test.cli_default.test_resources.internal_main_program_runner import \
         main_program_runner_with_default_setup__in_same_process
 
     unittest.TextTestRunner().run(complete_suite_for(main_program_runner_with_default_setup__in_same_process()))

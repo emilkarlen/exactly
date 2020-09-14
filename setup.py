@@ -49,7 +49,7 @@ setup(
     python_requires='>={}'.format(program_info.PYTHON_VERSION__MIN),
     entry_points={
         'console_scripts': [
-            program_info.PROGRAM_NAME + ' = exactly_lib.default.default_main_program_setup:main',
+            program_info.PROGRAM_NAME + ' = exactly_lib.cli_default.default_main_program_setup:main',
         ]
     }
 )

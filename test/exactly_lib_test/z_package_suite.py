@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib_test.actors import z_package_suite as actors
+from exactly_lib_test.cli_default import z_package_suite as default
 from exactly_lib_test.common import z_package_suite as common
-from exactly_lib_test.default import z_package_suite as default
 from exactly_lib_test.definitions import z_package_suite as definitions
 from exactly_lib_test.execution import z_package_suite as execution
 from exactly_lib_test.help import z_package_suite as help
@@ -80,7 +80,7 @@ def just_with_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> 
 
 
 if __name__ == '__main__':
-    from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+    from exactly_lib_test.cli_default.test_resources.internal_main_program_runner import \
         main_program_runner_with_default_setup__in_same_process
 
     unittest.TextTestRunner().run(

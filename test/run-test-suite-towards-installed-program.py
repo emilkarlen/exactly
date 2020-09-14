@@ -5,7 +5,7 @@ import unittest
 
 import complete_test_suite
 from exactly_lib import program_info
-from exactly_lib_test.default.test_resources.installed_program_main_program_runner import \
+from exactly_lib_test.cli_default.test_resources.installed_program_main_program_runner import \
     RunInstalledProgramViaOsInSubProcess
 
 EXECUTABLE_NAME = program_info.PROGRAM_NAME

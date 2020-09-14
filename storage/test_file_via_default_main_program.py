@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.default.default_main_program_setup import default_main_program, default_output
+from exactly_lib.cli_default.default_main_program_setup import default_main_program, default_output
 
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 

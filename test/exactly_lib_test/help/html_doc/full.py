@@ -2,8 +2,8 @@ import io
 import unittest
 from typing import List, Sequence, Dict
 
-from exactly_lib.default.program_modes import test_suite as test_suite_default_setup
-from exactly_lib.default.program_modes.test_case import default_instructions_setup
+from exactly_lib.cli_default.program_modes import test_suite as test_suite_default_setup
+from exactly_lib.cli_default.program_modes.test_case import default_instructions_setup
 from exactly_lib.help.html_doc import main as sut
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from exactly_lib.help.the_application_help import new_application_help
