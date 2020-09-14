@@ -36,8 +36,8 @@ class TestNoLines(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT #
-                actual__as_lines = sut.all_source_code_lines(case.value)
-                actual__as_str = sut.all_source_code_lines_str(case.value)
+                actual__as_lines = sut.all_source_code_lines__std_syntax(case.value)
+                actual__as_str = sut.all_source_code_lines_str__std_syntax(case.value)
 
                 # ASSERT #
 
@@ -61,8 +61,8 @@ class TestOneOrMoreLines(unittest.TestCase):
                 with self.subTest(lines_combination=list(map(str, lines_combination)),
                                   the_instructions_variant=instructions_setup.instructions_as_lists):
                     # ACT #
-                    actual__as_lines = sut.all_source_code_lines(instructions_setup.instructions)
-                    actual__as_str = sut.all_source_code_lines_str(instructions_setup.instructions)
+                    actual__as_lines = sut.all_source_code_lines__std_syntax(instructions_setup.instructions)
+                    actual__as_str = sut.all_source_code_lines_str__std_syntax(instructions_setup.instructions)
 
                     # ASSERT #
 

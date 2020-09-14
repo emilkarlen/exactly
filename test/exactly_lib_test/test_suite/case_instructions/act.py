@@ -19,6 +19,7 @@ from exactly_lib_test.test_suite.case_instructions.test_resources.integration_te
     PhaseConfig, \
     InstructionsSequencing
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import Recording
+from exactly_lib_test.util.test_resources.line_source_assertions import ARBITRARY_LINE_SEQUENCE
 
 
 def suite() -> unittest.TestSuite:
@@ -83,7 +84,7 @@ class ActPhaseInstructionThatRecords(ActPhaseInstruction):
         self.recording = Recording(file_location_info_to_record, marker_to_record)
 
     def source_code(self) -> LineSequence:
-        raise NotImplementedError('should not be used')
+        return ARBITRARY_LINE_SEQUENCE
 
 
 class ActorThatRecordsInstructionData(Actor):

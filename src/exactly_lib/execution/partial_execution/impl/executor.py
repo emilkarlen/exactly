@@ -233,7 +233,7 @@ class _PartialExecutor:
     def _construct_and_set_act_phase_executor(self):
         self._act_phase_executor = self._construct_act_phase_executor()
 
-    def _act__parse_atc_executor(self):
+    def _act__parse_atc(self):
         parser = ActionToCheckParser(self.conf_values.actor)
         self._action_to_check = parser.parse(self._test_case.act_phase)
 

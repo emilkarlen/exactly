@@ -12,7 +12,6 @@ from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_utils.program.parse import parse_program
 from ..common import relativity_configuration_of_action_to_check
-from ...definitions import instruction_arguments
 
 
 class Parser(ExecutableObjectParser[ProgramToExecute]):
@@ -24,7 +23,7 @@ class Parser(ExecutableObjectParser[ProgramToExecute]):
         )
 
     def apply(self, instructions: Sequence[ActPhaseInstruction]) -> ProgramToExecute:
-        source_str = source_code_lines.all_source_code_lines_str(instructions)
+        source_str = source_code_lines.all_source_code_lines_str__std_syntax(instructions)
         parse_src = parse_source.ParseSource(source_str)
 
         program = self._parse_program(parse_src)

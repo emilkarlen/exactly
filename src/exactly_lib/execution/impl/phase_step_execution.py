@@ -97,15 +97,20 @@ def execute_phase_prim(phase_contents: SectionContents,
 
 
 class PhaseStepFailureResultConstructor:
-    def __init__(self, step: PhaseStep):
+    def __init__(self,
+                 step: PhaseStep,
+                 phase_source: Optional[str] = None,
+                 ):
         self.step = step
+        self.phase_source = phase_source
 
     def apply(self,
               status: ExecutionFailureStatus,
               failure_details: FailureDetails) -> PhaseStepFailure:
         return PhaseStepFailure(status,
                                 PhaseFailureInfo(self.step,
-                                                 failure_details))
+                                                 failure_details,
+                                                 self.phase_source))
 
     def internal_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,

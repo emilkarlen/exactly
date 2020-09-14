@@ -1,3 +1,6 @@
+from typing import List
+
+from exactly_lib.actors.util import source_code_lines
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.impl import phase_step_execution
@@ -11,6 +14,7 @@ from exactly_lib.util.render import combinators
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import component_renderers as comp_rend, blocks, line_objects
 from exactly_lib.util.simple_textstruct.structure import LineElement
+from exactly_lib.util.str_ import misc_formatting
 from exactly_lib.util.str_ import str_constructor
 
 
@@ -22,19 +26,18 @@ class ActionToCheckParser:
         """
         :raises PhaseStepFailureException
         """
-        failure_con = phase_step_execution.PhaseStepFailureResultConstructor(phase_step.ACT__PARSE)
 
-        instructions = []
-        for element in act_phase.elements:
-            if element.element_type is ElementType.INSTRUCTION:
-                instruction = element.instruction_info.instruction
-                if not isinstance(instruction, ActPhaseInstruction):
-                    msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
-                    raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
-                instructions.append(instruction)
-            else:
-                msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
-                raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
+        instructions = self._instructions_in(
+            act_phase,
+            phase_step_execution.PhaseStepFailureResultConstructor(phase_step.ACT__PARSE))
+
+        act_source_str = misc_formatting.lines_content(
+            source_code_lines.all_source_code_lines(instructions)
+        )
+        failure_con = phase_step_execution.PhaseStepFailureResultConstructor(
+            phase_step.ACT__PARSE,
+            act_source_str,
+        )
 
         actor = self._actor.value
 
@@ -53,6 +56,24 @@ class ActionToCheckParser:
                 )
 
         return phase_step_execution.execute_action_and_catch_internal_error_exception(parse_action, failure_con)
+
+    @staticmethod
+    def _instructions_in(act_phase: SectionContents,
+                         failure_con: phase_step_execution.PhaseStepFailureResultConstructor,
+                         ) -> List[ActPhaseInstruction]:
+        ret_val = []
+        for element in act_phase.elements:
+            if element.element_type is ElementType.INSTRUCTION:
+                instruction = element.instruction_info.instruction
+                if not isinstance(instruction, ActPhaseInstruction):
+                    msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
+                    raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
+                ret_val.append(instruction)
+            else:
+                msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
+                raise PhaseStepFailureException(failure_con.internal_error_msg(msg))
+
+        return ret_val
 
     def _actor_info_lines(self) -> SequenceRenderer[LineElement]:
         return combinators.SingletonSequenceR(

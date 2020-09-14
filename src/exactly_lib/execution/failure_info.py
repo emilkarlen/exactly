@@ -79,12 +79,18 @@ class PhaseFailureInfo(FailureInfo):
     def __init__(self,
                  phase_step: PhaseStep,
                  failure_details: FailureDetails,
+                 phase_source: Optional[str] = None,
                  ):
         super().__init__(phase_step, failure_details)
+        self._phase_source = phase_source
 
     @property
     def source_location(self) -> Optional[SourceLocationPath]:
         return None
+
+    @property
+    def phase_source(self) -> Optional[str]:
+        return self._phase_source
 
     def accept(self, visitor: FailureInfoVisitor[RET]) -> RET:
         return visitor.visit_phase_failure(self)

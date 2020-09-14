@@ -1,0 +1,7 @@
+[conf]
+
+actor = file % python
+
+[act]
+
+-rel-act-home file-that-does-not-exist

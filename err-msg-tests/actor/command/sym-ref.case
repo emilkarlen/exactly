@@ -1,0 +1,7 @@
+[conf]
+
+actor = command
+
+[act]
+
+@[UNDEFINED_SYMBOL]@

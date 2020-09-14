@@ -9,8 +9,7 @@ from exactly_lib.util.ansi_terminal_color import FontStyle
 from exactly_lib.util.render import combinators as comb
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure
-from exactly_lib.util.simple_textstruct.rendering import component_renderers as rend, \
-    blocks
+from exactly_lib.util.simple_textstruct.rendering import blocks, component_renderers as comp_rend
 from exactly_lib.util.simple_textstruct.rendering.components import LineObjectRenderer
 from exactly_lib.util.simple_textstruct.structure import StringLinesObject, LineElement, MinorBlock, StringLineObject, \
     MajorBlock, PreFormattedStringLineObject, LineObject
@@ -151,7 +150,7 @@ def _files_and_source_path_leading_to_final_source(referrer_location: Path,
 def location_block_renderer(source_location: Optional[SourceLocationPath],
                             section_name: Optional[str],
                             description: Optional[str]) -> Renderer[MajorBlock]:
-    return rend.MajorBlockR(
+    return comp_rend.MajorBlockR(
         location_minor_blocks_renderer(source_location,
                                        section_name,
                                        description)
@@ -168,18 +167,41 @@ def location_blocks_renderer(source_location: Optional[SourceLocationPath],
     )
 
 
+def location_blocks_renderer__src(section_source: str,
+                                  section_name: str,
+                                  ) -> SequenceRenderer[MajorBlock]:
+    return comb.SingletonSequenceR(
+        comp_rend.MajorBlockR(
+            _location_minor_blocks_renderer(
+                comb.SingletonSequenceR(SourceLinesBlockRenderer(section_source.splitlines())),
+                section_name,
+                None,
+            )
+        )
+    )
+
+
 def location_minor_blocks_renderer(source_location: Optional[SourceLocationPath],
                                    section_name: Optional[str],
                                    description: Optional[str]) -> SequenceRenderer[MinorBlock]:
-    minor_blocks_renderer = _location_path_and_source_blocks(source_location)
+    return _location_minor_blocks_renderer(
+        _location_path_and_source_blocks(source_location),
+        section_name,
+        description
+    )
+
+
+def _location_minor_blocks_renderer(source_info: SequenceRenderer[MinorBlock],
+                                    section_name: Optional[str],
+                                    description: Optional[str]) -> SequenceRenderer[MinorBlock]:
+    sequence_renderers = []
     if section_name is not None:
-        minor_blocks_renderer = blocks.PrependFirstMinorBlockR(
-            _InSectionNameRenderer(section_name),
-            minor_blocks_renderer)
-    return comb.ConcatenationR([
-        minor_blocks_renderer,
+        sequence_renderers.append(blocks.MinorBlocksOfSingleLineObject(_InSectionHeaderRenderer(section_name)))
+    sequence_renderers += [
+        source_info,
         _OptionalDescriptionRenderer(description),
-    ])
+    ]
+    return comb.ConcatenationR(sequence_renderers)
 
 
 def _location_path_and_source_blocks(source_location: Optional[SourceLocationPath]) -> SequenceRenderer[MinorBlock]:
@@ -195,7 +217,7 @@ def source_lines_in_section_block_renderer(section_name: str,
                                            source_lines: Sequence[str],
                                            ) -> SequenceRenderer[MinorBlock]:
     return comb.SequenceR([
-        rend.MinorBlockR(_InSectionNameRenderer(section_name)),
+        comp_rend.MinorBlockR(_InSectionNameRenderer(section_name)),
         SourceLinesBlockRenderer(source_lines),
     ])
 

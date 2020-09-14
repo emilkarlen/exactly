@@ -1,0 +1,7 @@
+[conf]
+
+actor = file % python
+
+[act]
+
+@[UNDEFINED_SYMBOL]@

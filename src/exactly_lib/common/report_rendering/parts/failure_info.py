@@ -22,10 +22,14 @@ class FailureInfoRenderer(SequenceRenderer[MajorBlock]):
 
 class _GetFailureInfoLocationRenderer(FailureInfoVisitor[SequenceRenderer[MajorBlock]]):
     def visit_phase_failure(self, failure_info: PhaseFailureInfo) -> SequenceRenderer[MajorBlock]:
-        return source_location.location_blocks_renderer(
-            None,
-            failure_info.phase_step.phase.identifier,
-            None
+        phase_identifier = failure_info.phase_step.phase.identifier
+        phase_source = failure_info.phase_source
+
+        return (
+            source_location.location_blocks_renderer(None, phase_identifier, None)
+            if phase_source is None
+            else
+            source_location.location_blocks_renderer__src(phase_source, phase_identifier)
         )
 
     def visit_instruction_failure(self, failure_info: InstructionFailureInfo) -> SequenceRenderer[MajorBlock]:

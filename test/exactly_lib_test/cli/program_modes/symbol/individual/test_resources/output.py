@@ -35,6 +35,7 @@ class Reference:
             []
             if self.position_in_file is None
             else [
+                '',
                 self.position_in_file.file_name + ', line ' + str(self.position_in_file.line_number)
             ]
         )
