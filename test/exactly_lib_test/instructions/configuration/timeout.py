@@ -12,26 +12,31 @@ from exactly_lib_test.test_case.actor.test_resources.actors import actor_that_ru
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check__consume_last_line
+from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFailingParse),
-        unittest.makeSuite(TestSetTimeout),
+        TestFailingParse(),
+        TestSetTimeout(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 
 class TestFailingParse(unittest.TestCase):
-    def test(self):
+    def runTest(self):
         cases = [
             '   ',
             'arg1 arg2',
             '= arg1 arg2',
             '= notAnInteger',
             '= -1',
+            '= 1-2',
+            '= "2"',
             '=5',
+            '= 5/2',
+            '= "hello"',
         ]
         for argument_str in cases:
             with self.subTest(argument_str):
@@ -55,13 +60,35 @@ class TestCaseBaseForParser(TestCaseBase):
 
 
 class TestSetTimeout(TestCaseBaseForParser):
-    def test_5(self):
-        self._run(expected=5,
-                  argument='= 5')
-
-    def test_75(self):
-        self._run(expected=75,
-                  argument='  = 75')
+    def runTest(self):
+        cases = [
+            NIE('constant 5',
+                5,
+                '5',
+                ),
+            NIE('constant 75',
+                75,
+                '75',
+                ),
+            NIE('python expr',
+                5,
+                '2+3',
+                ),
+            NIE('python expr with space',
+                7,
+                '2*3 + 1',
+                ),
+            NIE('python expr len',
+                11,
+                'len("hello world")',
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                self._run(
+                    expected=case.expected_value,
+                    argument='= ' + case.input_value
+                )
 
 
 if __name__ == '__main__':

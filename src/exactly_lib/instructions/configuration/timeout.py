@@ -15,9 +15,17 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
+from exactly_lib.test_case_utils.condition.integer import evaluate_integer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
+
+_INTEGER_DESCRIPTION = """\
+Timeout in seconds.
+
+
+An expression that evaluates to an integer (using Python syntax).
+"""
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -46,7 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def syntax_element_descriptions(self) -> List[ParagraphItem]:
         return [
             SyntaxElementDescription(_INTEGER_ARG_NAME.name,
-                                     self._tp.fnap('Timeout in seconds.'))
+                                     self._tp.fnap(_INTEGER_DESCRIPTION))
         ]
 
     def see_also_targets(self) -> list:
@@ -57,9 +65,11 @@ class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
         argument = extract_single_eq_argument_string(_INTEGER_ARG_NAME.name, rest_of_line)
         try:
-            value = int(argument)
-        except ValueError:
-            raise SingleInstructionInvalidArgumentException('Not an integer: `%s`' % argument)
+            value = evaluate_integer.python_evaluate(argument)
+        except evaluate_integer.NotAnIntegerException as ex:
+            raise SingleInstructionInvalidArgumentException(
+                'Not an integer: `{}`\n{}'.format(argument, ex.python_exception_message)
+            )
         if value < 0:
             raise SingleInstructionInvalidArgumentException('Timeout cannot be negative: `%s`' % argument)
         return _Instruction(value)

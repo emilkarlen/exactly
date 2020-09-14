@@ -1,6 +1,7 @@
 [suites]
 
 status
+timeout
 stdin
 exit-code
 change-dir
