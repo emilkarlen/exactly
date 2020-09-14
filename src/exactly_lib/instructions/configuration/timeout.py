@@ -27,7 +27,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
-    _INTEGER_ARG_NAME = a.Named('INTEGER')
 
     def __init__(self, name: str):
         super().__init__(name, {
@@ -42,11 +41,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._tp.section_contents(_NOTES)
 
     def invokation_variants(self) -> List[InvokationVariant]:
-        return single_eq_invokation_variants(self._INTEGER_ARG_NAME)
+        return single_eq_invokation_variants(_INTEGER_ARG_NAME)
 
     def syntax_element_descriptions(self) -> List[ParagraphItem]:
         return [
-            SyntaxElementDescription(self._INTEGER_ARG_NAME.name,
+            SyntaxElementDescription(_INTEGER_ARG_NAME.name,
                                      self._tp.fnap('Timeout in seconds.'))
         ]
 
@@ -56,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        argument = extract_single_eq_argument_string(rest_of_line)
+        argument = extract_single_eq_argument_string(_INTEGER_ARG_NAME.name, rest_of_line)
         try:
             value = int(argument)
         except ValueError:
@@ -75,6 +74,8 @@ class _Instruction(ConfigurationPhaseInstruction):
         configuration_builder.set_timeout_in_seconds(self.timeout)
         return sh.new_sh_success()
 
+
+_INTEGER_ARG_NAME = a.Named('INTEGER')
 
 _SINGLE_LINE_DESCRIPTION = """\
 Sets the timeout of sub processes executed by instructions and the {phase[act]} phase."""

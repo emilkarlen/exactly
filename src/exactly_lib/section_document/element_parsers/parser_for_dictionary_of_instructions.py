@@ -24,7 +24,7 @@ class _ErrMsgSourceConstructor:
         if num_chars < len(self._first_line.text):
             return line_sequence_from_line(self._first_line)
 
-        source__consumed = self._remaining__before[:num_chars]
+        source__consumed = self._remaining__before[:num_chars].rstrip()
         return LineSequence(self._first_line.line_number, source__consumed.split('\n'))
 
 

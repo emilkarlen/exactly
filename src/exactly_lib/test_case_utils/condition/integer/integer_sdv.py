@@ -66,7 +66,7 @@ class _ValidatorThatReportsViaExceptions(SvhPreSdsValidatorViaExceptions):
                 ''
                 if ex.python_exception_message is None
                 else
-                '\n\nPython exception:\n' + ex.python_exception_message
+                '\n\nPython evaluation error:\n' + ex.python_exception_message
             )
             msg = text_docs.single_pre_formatted_line_object(
                 str_constructor.FormatPositional(

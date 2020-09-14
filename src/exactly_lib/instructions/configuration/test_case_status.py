@@ -61,7 +61,7 @@ _ARG_NAME = formatting.syntax_element(conf_params.TEST_CASE_STATUS_CONF_PARAM_IN
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        status_element_arg = extract_single_eq_argument_string(rest_of_line)
+        status_element_arg = extract_single_eq_argument_string(_ARG_NAME, rest_of_line)
         argument = status_element_arg.upper()
         try:
             target = NAME_2_STATUS[argument]

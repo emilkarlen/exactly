@@ -1,4 +1,5 @@
 import shlex
+from typing import List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -33,7 +34,7 @@ def std_error_message_text_for_token_syntax_error(syntax_error_message: str) -> 
     return 'Invalid quoting of arguments: ' + syntax_error_message
 
 
-def split_arguments_list_string(arguments: str) -> list:
+def split_arguments_list_string(arguments: str) -> List[str]:
     """
     :raises SingleInstructionInvalidArgumentException: The arguments string cannot be parsed.
     """

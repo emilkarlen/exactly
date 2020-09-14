@@ -1,5 +1,6 @@
 [suites]
 
+status
 stdin
 exit-code
 change-dir

@@ -36,8 +36,10 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check__consume_last_line(self,
                                                                                                instruction_argument):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
                         parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
+                    self.assertIsInstance(cm.exception.error_message, str)
 
 
 class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):

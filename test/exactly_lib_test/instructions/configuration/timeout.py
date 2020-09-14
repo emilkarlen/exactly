@@ -28,8 +28,9 @@ class TestFailingParse(unittest.TestCase):
         cases = [
             '   ',
             'arg1 arg2',
-            'notAnInteger',
-            '-1',
+            '= arg1 arg2',
+            '= notAnInteger',
+            '= -1',
             '=5',
         ]
         for argument_str in cases:

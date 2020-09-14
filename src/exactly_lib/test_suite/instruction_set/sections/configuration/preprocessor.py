@@ -63,13 +63,14 @@ not in sub suites.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
-        command_and_arguments = extract_mandatory_arguments_after_eq(rest_of_line)
+        command_and_arguments = extract_mandatory_arguments_after_eq(misc_texts.SYSTEM_COMMAND_LINE.singular,
+                                                                     rest_of_line)
         return Instruction(command_and_arguments)
 
 
 class Instruction(ConfigurationSectionInstruction):
     def __init__(self,
-                 command_and_arguments: list):
+                 command_and_arguments: List[str]):
         self.command_and_arguments = command_and_arguments
 
     def execute(self,

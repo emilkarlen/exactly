@@ -1,9 +1,10 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -13,6 +14,7 @@ from exactly_lib.instructions.configuration.utils.single_arg_utils import single
     extract_single_eq_argument_string
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers.misc_utils import split_arguments_list_string
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
@@ -37,7 +39,7 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
     def single_line_description(self) -> str:
         return self._tp.format('Sets the {conf_param} directory')
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         return single_eq_invokation_variants(_DIR_ARG)
 
     def syntax_element_descriptions(self) -> list:
@@ -67,10 +69,13 @@ class Parser(InstructionParser):
               source: ParseSource) -> ConfigurationPhaseInstruction:
         rest_of_line = source.remaining_part_of_current_line
         source.consume_current_line()
-        path_argument_str = extract_single_eq_argument_string(rest_of_line)
+        argument = extract_single_eq_argument_string(_DIR_ARG.name, rest_of_line)
+        path_arguments = split_arguments_list_string(argument)
+        if len(path_arguments) > 1:
+            raise SingleInstructionInvalidArgumentException('Too many arguments: ' + argument)
 
         try:
-            path_argument = pathlib.Path(pathlib.PurePosixPath(path_argument_str))
+            path_argument = pathlib.Path(pathlib.PurePosixPath(path_arguments[0]))
         except ValueError as ex:
             raise SingleInstructionInvalidArgumentException('Invalid path syntax:\n' + str(ex))
 
