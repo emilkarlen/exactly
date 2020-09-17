@@ -1,9 +1,9 @@
 import os
 from typing import Tuple
 
-from exactly_lib.cli.main_program import builtin_symbol_of_custom_symbol, BuiltinSymbol
+from exactly_lib.cli.builtin_symbol import BuiltinSymbol
+from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.textformat.structure.document import SectionContents
 
@@ -13,7 +13,7 @@ TAB = 'TAB'
 
 def all_strings() -> Tuple[BuiltinSymbol, ...]:
     return (
-        builtin_symbol_of_custom_symbol(
+        BuiltinSymbol(
             LINE_SEP,
             ValueType.STRING,
             string_sdvs.str_constant(os.linesep),
@@ -22,7 +22,7 @@ def all_strings() -> Tuple[BuiltinSymbol, ...]:
                 SectionContents.empty(),
             ),
         ),
-        builtin_symbol_of_custom_symbol(
+        BuiltinSymbol(
             TAB,
             ValueType.STRING,
             string_sdvs.str_constant('\t'),

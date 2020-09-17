@@ -1,4 +1,5 @@
-from exactly_lib.cli.main_program import BuiltinSymbol
+from exactly_lib.cli.builtin_symbol import BuiltinSymbol
+from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.tcds_symbols import SYMBOL_DESCRIPTION
 from exactly_lib.symbol import sdv_structure
@@ -23,11 +24,15 @@ def _builtin(symbol_name: str, relativity: RelOptionType) -> BuiltinSymbol:
             )
     })
 
-    return BuiltinSymbol(symbol_name,
-                         ValueType.PATH,
-                         __sdv_of(relativity),
-                         SYMBOL_DESCRIPTION.as_single_line_description_str(symbol_name),
-                         tp.section_contents(_DESCRIPTION))
+    return BuiltinSymbol(
+        symbol_name,
+        ValueType.PATH,
+        __sdv_of(relativity),
+        CustomSymbolDocumentation(
+            SYMBOL_DESCRIPTION.as_single_line_description_str(symbol_name),
+            tp.section_contents(_DESCRIPTION),
+        ),
+    )
 
 
 _DESCRIPTION = """\

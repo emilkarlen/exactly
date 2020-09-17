@@ -1,121 +1,25 @@
 import os
-from typing import List, Dict, Callable, Sequence
+from typing import List, Callable
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.common.process_result_reporter import Environment, ProcessResultReporter
 from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
-from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
-from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing import exit_values
-from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.symbol.sdv_structure import container_of_builtin, SymbolContainer, \
-    SymbolDependentValue
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.test_case_utils.symbol.custom_symbol import CustomSymbolDocumentation
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib.util.textformat.structure.document import SectionContents
-
-
-class BuiltinSymbol:
-    def __init__(self,
-                 name: str,
-                 value_type: ValueType,
-                 sdv: SymbolDependentValue,
-                 single_line_description: str,
-                 documentation: SectionContents,
-                 see_also: Sequence[SeeAlsoTarget] = (),
-                 ):
-        self._name = name
-        self._value_type = value_type
-        self._sdv = sdv
-        self._single_line_description = single_line_description
-        self._documentation = documentation
-        self._see_also = see_also
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def container(self) -> SymbolContainer:
-        return container_of_builtin(self._value_type, self._sdv)
-
-    @property
-    def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._value_type,
-                                          self.name,
-                                          self._single_line_description,
-                                          self._documentation,
-                                          self._see_also)
-
-
-def builtin_symbol_of_custom_symbol(name: str,
-                                    value_type: ValueType,
-                                    sdv: SymbolDependentValue,
-                                    documentation: CustomSymbolDocumentation
-                                    ) -> BuiltinSymbol:
-    return BuiltinSymbol(
-        name,
-        value_type,
-        sdv,
-        documentation.single_line_description,
-        documentation.documentation,
-        documentation.see_also
-    )
-
-
-class TestCaseDefinitionForMainProgram:
-    """
-    Corresponds to TestCaseDefinition, but with
-    extra information about predefined symbols for the help system.
-    """
-
-    def __init__(self,
-                 test_case_parsing_setup: TestCaseParsingSetup,
-                 builtin_symbols: List[BuiltinSymbol]):
-        self.test_case_parsing_setup = test_case_parsing_setup
-        self.builtin_symbols = builtin_symbols
-
-
-class TestSuiteDefinition(tuple):
-    def __new__(cls,
-                configuration_section_instructions: Dict[str, SingleInstructionSetup],
-                configuration_section_parser: SectionElementParser,
-                get_sds_root_name_prefix: Callable[[], str] = lambda: ''):
-        return tuple.__new__(cls, (configuration_section_instructions,
-                                   configuration_section_parser,
-                                   get_sds_root_name_prefix))
-
-    @property
-    def configuration_section_instructions(self) -> Dict[str, SingleInstructionSetup]:
-        return self[0]
-
-    @property
-    def configuration_section_parser(self) -> SectionElementParser:
-        return self[1]
-
-    @property
-    def sandbox_root_dir_sdv(self) -> SandboxRootDirNameResolver:
-        return sandbox_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
-
-    @property
-    def __get_sds_root_name_prefix(self) -> Callable[[], str]:
-        return self[2]
 
 
 class MainProgram:

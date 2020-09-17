@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import List
 
 from exactly_lib.cli import main_program
-from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
-from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR

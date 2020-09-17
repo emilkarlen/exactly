@@ -1,7 +1,7 @@
 import datetime
 
 from exactly_lib import program_info
-from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.common import instruction_setup, instruction_name_and_argument_splitter
 from exactly_lib.definitions.test_suite import instruction_names
 from exactly_lib.section_document.element_parsers import section_element_parsers

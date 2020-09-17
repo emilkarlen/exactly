@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from typing import Optional
 
-from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup

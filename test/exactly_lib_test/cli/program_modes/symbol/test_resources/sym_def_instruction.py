@@ -1,7 +1,8 @@
 import itertools
 from typing import Callable, List, Sequence, Optional
 
-from exactly_lib.cli.main_program import BuiltinSymbol
+from exactly_lib.cli.builtin_symbol import BuiltinSymbol
+from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
@@ -231,6 +232,8 @@ def builtin_symbol(symbol: SymbolContext) -> BuiltinSymbol:
         symbol.name,
         symbol.value.value_type,
         symbol.sdv,
-        'the single line description',
-        document.empty_section_contents(),
+        CustomSymbolDocumentation(
+            'the single line description',
+            document.empty_section_contents(),
+        ),
     )

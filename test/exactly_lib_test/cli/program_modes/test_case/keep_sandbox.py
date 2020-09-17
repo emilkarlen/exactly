@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict
 
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.phase_step import STEP__MAIN, STEP__VALIDATE_POST_SETUP, \
     STEP__ACT__PREPARE, STEP__ACT__EXECUTE, STEP__ACT__PARSE, STEP__VALIDATE_PRE_SDS

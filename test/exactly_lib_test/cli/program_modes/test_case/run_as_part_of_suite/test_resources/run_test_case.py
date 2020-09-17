@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Optional, List
 
-from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
+from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.cli.program_modes.test_case.run_as_part_of_suite.test_resources import cli_args

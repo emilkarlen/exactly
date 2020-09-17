@@ -1,8 +1,9 @@
 from typing import List, Sequence
 
 from exactly_lib.cli import main_program
-from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, BuiltinSymbol
-from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.cli.builtin_symbol import BuiltinSymbol
+from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.common import instruction_setup, instruction_name_and_argument_splitter
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser

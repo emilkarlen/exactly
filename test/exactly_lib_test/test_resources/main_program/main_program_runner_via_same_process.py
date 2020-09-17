@@ -2,7 +2,7 @@ import types
 import unittest
 from typing import List
 
-from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.processing.test_resources.test_case_setup import test_case_handling_setup
