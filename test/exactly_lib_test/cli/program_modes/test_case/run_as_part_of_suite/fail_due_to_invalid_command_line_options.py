@@ -23,12 +23,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def suite_for(mpr: MainProgramRunner) -> unittest.TestSuite:
     tests_with_just_main_program_runner = [
-        WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeFileAccessError(),
+        WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeInvalidUsageError(),
     ]
 
     the_tests_for_setup_with_tmp_cwd = [
-        WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeFileAccessError(),
-        WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeFileAccessError(),
+        WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeInvalidUsageError(),
+        WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeInvalidUsageError(),
     ]
 
     ret_val = unittest.TestSuite()
@@ -57,7 +57,8 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
         return ''
 
 
-class WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeFileAccessError(mpr_check.SetupWithJustMainProgramRunner):
+class WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeInvalidUsageError(
+    mpr_check.SetupWithJustMainProgramRunner):
     def arguments(self) -> List[str]:
         return cli_args_for_explicit_suite('non-existing.suite', 'non-existing.case')
 
@@ -68,7 +69,7 @@ class WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeFileAccessError(mpr
         expectation.apply_without_message(put, actual_result)
 
 
-class WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeFileAccessError(mpr_check.SetupWithTmpCwdDirContents):
+class WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeInvalidUsageError(mpr_check.SetupWithTmpCwdDirContents):
     name_of_test_suite = 'test.suite'
     name_of_test_case = 'test.case'
 
@@ -86,7 +87,7 @@ class WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeFileAccessError(m
         expectation.apply_without_message(put, actual_result)
 
 
-class WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeFileAccessError(
+class WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeInvalidUsageError(
     mpr_check.SetupWithTmpCwdDirContents):
     name_of_test_suite = 'test.suite'
     name_of_test_case = 'test.case'

@@ -13,6 +13,7 @@ from exactly_lib.definitions.entity.concepts import SDS_CONCEPT_INFO, SHELL_SYNT
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_suite import file_names, instruction_names, section_infos
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
+from exactly_lib.help.program_modes.common import exit_invalid_usage
 from exactly_lib.help.program_modes.common.cli_syntax import PREPROCESSOR_OPTION, SUITE_OPTION, \
     FILES_DESCRIPTION_WITH_DEFAULT_SUITE, TEST_CASE_FILE_ARGUMENT
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome as case_outcome_help
@@ -69,6 +70,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         paragraphs = case_outcome_help.TEXT_PARSER.fnap(case_outcome_help.REPORTING)
         paragraphs += _TP.fnap(_OUTCOME_INITIAL_PARAGRAPHS_EXTRA)
+        paragraphs += exit_invalid_usage.paragraphs()
         return docs.section_contents(paragraphs,
                                      [docs.section(case_outcome_help.ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
                                                    [case_outcome_help.all_exit_values_summary_table()])])

@@ -15,7 +15,7 @@ class ArgumentParsingError(Exception):
 
 def resolve_existing_path(path_to_resolve: pathlib.Path) -> pathlib.Path:
     """
-    raises ArgumentParsingError: path_to_resolve is not an existing file
+    :raises ArgumentParsingException: path_to_resolve is not an existing file
     """
     try:
         resolved = path_to_resolve.resolve()
@@ -31,7 +31,7 @@ def parse_args__raise_exception_instead_of_exiting_on_error(parser: argparse.Arg
     """
     Corresponds to argparse.ArgumentParser.parse_args.
 
-    But instead of exiting on error, a ArgumentParsingException is raised.
+    :raises ArgumentParsingException: Invalid arguments
     """
 
     def do_parse() -> argparse.Namespace:
@@ -47,7 +47,7 @@ def parse_known_args__raise_exception_instead_of_exiting_on_error(
     """
     Corresponds to argparse.ArgumentParser.parse_known_args.
 
-    But instead of exiting on error, a ArgumentParsingException is raised.
+    :raises ArgumentParsingException: Invalid arguments
     """
 
     def do_parse() -> Tuple[argparse.Namespace, List[str]]:
