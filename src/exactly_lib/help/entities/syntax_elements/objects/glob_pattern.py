@@ -9,7 +9,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 _TP = TextParser()
 
 _HEADER = """\
-A file name, with ability to match multiple files.
+Unix shell-style wildcards.
 
 
 Patterns:
@@ -18,9 +18,6 @@ _DIRECTORY_SPECIFICATIONS_HEADER = 'Directory specifications:'
 
 _FOOTER = """\
 For a literal match, wrap the meta-characters in brackets. For example, '[?]' matches the character '?'.
-
-
-A patterns cannot denote an absolute path.
 """
 
 _PATTERNS = docs.simple_list_with_space_between_elements_and_content([
