@@ -13,6 +13,7 @@ with exception of a "0." prefix until version 1 is released.
  - Interpreter actors - interpreter `-python [PROGRAM-ARGUMENT]...`
  - Instruction `conf`/`actor` - Ability to set the "null" actor
  - Instruction `%`
+ - Type `file-matcher` - `path` - matches the absolute path of files
 
 ### Changed
 

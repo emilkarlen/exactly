@@ -117,6 +117,15 @@ class Name(FileMatcherArg):
         return [file_matcher.NAME_MATCHER_NAME] + self.name_matcher.elements
 
 
+class Path(FileMatcherArg):
+    def __init__(self, name_matcher: NameVariant):
+        self.name_matcher = name_matcher
+
+    @property
+    def elements(self) -> List:
+        return [file_matcher.PATH_MATCHER_NAME] + self.name_matcher.elements
+
+
 class FileContents(FileMatcherArg):
     def __init__(self, string_matcher: sm_args.StringMatcherArg):
         self.string_matcher = string_matcher

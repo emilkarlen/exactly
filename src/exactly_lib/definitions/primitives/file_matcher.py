@@ -2,6 +2,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from . import matcher
 
 NAME_MATCHER_NAME = 'name'
+PATH_MATCHER_NAME = 'path'
 TYPE_MATCHER_NAME = 'type'
 PROGRAM_MATCHER_NAME = matcher.RUN_PROGRAM
 

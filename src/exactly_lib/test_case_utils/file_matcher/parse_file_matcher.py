@@ -15,7 +15,10 @@ from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, f
 from exactly_lib.test_case_utils.file_matcher.impl import \
     regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
-from exactly_lib.test_case_utils.file_matcher.impl.name import glob_pattern, reg_ex
+from exactly_lib.test_case_utils.file_matcher.impl.name import \
+    glob_pattern as name__glob_pattern, reg_ex as name__reg_ex
+from exactly_lib.test_case_utils.file_matcher.impl.path import \
+    glob_pattern as path__glob_pattern, reg_ex as path__reg_ex
 from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as parse_run
 from exactly_lib.test_case_utils.file_matcher.impl.run_program.doc import RunSyntaxDescription
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -46,8 +49,14 @@ def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcher
 
 
 def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
-    return parser.parse_choice_of_optional_option(reg_ex.parse,
-                                                  glob_pattern.parse,
+    return parser.parse_choice_of_optional_option(name__reg_ex.parse,
+                                                  name__glob_pattern.parse,
+                                                  REG_EX_OPTION)
+
+
+def _parse_path_matcher(parser: TokenParser) -> FileMatcherSdv:
+    return parser.parse_choice_of_optional_option(path__reg_ex.parse,
+                                                  path__glob_pattern.parse,
                                                   REG_EX_OPTION)
 
 
@@ -113,6 +122,29 @@ class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntax
         ])
 
 
+class _PathSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
+    @property
+    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
+        return [
+            a.Choice(a.Multiplicity.MANDATORY,
+                     [
+                         syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
+                         REG_EX_ARGUMENT,
+                     ])
+        ]
+
+    @property
+    def description_rest(self) -> Sequence[ParagraphItem]:
+        return _TP.fnap(_PATH_MATCHER_SED_DESCRIPTION)
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
+            syntax_elements.REGEX_SYNTAX_ELEMENT,
+        ])
+
+
 class _TypeSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -140,6 +172,14 @@ GRAMMAR = standard_expression_grammar.new_grammar(
             grammar.Primitive(
                 _parse_name_matcher,
                 _NameSyntaxDescription()
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.PATH_MATCHER_NAME,
+            grammar.Primitive(
+                _parse_path_matcher,
+                _PathSyntaxDescription()
             )
         ),
 
@@ -200,6 +240,16 @@ Matches {MODEL:s} who's final path component (base name) matches
 
 
   * {GLOB_PATTERN_INFORMATIVE_NAME}, or
+  
+  
+  * {REG_EX_PATTERN_INFORMATIVE_NAME}
+"""
+
+_PATH_MATCHER_SED_DESCRIPTION = """\
+Matches {MODEL:s} who's absolute path matches
+
+
+  * {GLOB_PATTERN_INFORMATIVE_NAME}, that matches the last components of the path, or
   
   
   * {REG_EX_PATTERN_INFORMATIVE_NAME}
