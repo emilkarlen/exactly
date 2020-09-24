@@ -12,7 +12,7 @@ _HEADER = """\
 A file name, with ability to match multiple files.
 
 
-Pattern matchers:
+Patterns:
 """
 _DIRECTORY_SPECIFICATIONS_HEADER = 'Directory specifications:'
 
@@ -36,16 +36,13 @@ _PATTERNS = docs.simple_list_with_space_between_elements_and_content([
     docs.list_item(syntax_text('[CHARACTER-CHARACTER]'),
                    docs.paras('Matches a single character in the given range.')
                    ),
-    docs.list_item(syntax_text('[!CHARACTER-SET]'),
-                   docs.paras('Matches a single character NOT in CHARACTER-SET.')
+    docs.list_item(syntax_text('[!CHARACTERS]'),
+                   docs.paras('Matches a single character that is not listed in CHARACTERS.')
                    ),
 ],
     lists.ListType.ITEMIZED_LIST)
 
 _DIRECTORY_SPECIFICATIONS = docs.simple_list_with_space_between_elements_and_content([
-    docs.list_item(syntax_text('**'),
-                   docs.paras('The directory where the pattern is applied, and all subdirectories, recursively.')
-                   ),
     docs.list_item(syntax_text('/'),
                    docs.paras('Directory separator.')
                    ),

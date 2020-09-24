@@ -19,6 +19,7 @@ with exception of a "0." prefix until version 1 is released.
  - Syntax of type expressions in nested expressions - May not contain binary operators (unless inside parenthesis)
  - Syntax of type expressions - Precedences of `||` and `&&`
  - Type `files-matcher` - rename `-prune` -> `-with-pruned`
+ - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`

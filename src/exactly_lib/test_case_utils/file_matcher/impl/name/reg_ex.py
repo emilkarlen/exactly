@@ -25,13 +25,13 @@ def _sdv(regex: RegexSdv) -> FileMatcherSdv:
     return property_matcher.PropertyMatcherSdv(
         matches_regex.MatchesRegexSdv(regex, False),
         property_getters.sdv_of_constant_primitive(
-            _BaseNamePropertyGetter(),
+            _NamePropertyGetter(),
         ),
         property_matcher_describers.GetterWithMatcherAsDetail(),
     )
 
 
-class _BaseNamePropertyGetter(PropertyGetter[FileMatcherModel, str], WithCachedTreeStructureDescriptionBase):
+class _NamePropertyGetter(PropertyGetter[FileMatcherModel, str], WithCachedTreeStructureDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_PROPERTY_NAME)
 

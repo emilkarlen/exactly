@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_matcher, str_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -99,12 +101,13 @@ class _FileMatcherNameGlobPattern(FileMatcherImplBase):
         return self.new_structure_tree(details.String(str_constructor.Repr(self._glob_pattern)))
 
     def matches_w_trace(self, model: FileMatcherModel) -> MatchingResult:
+        base_name = model.path.primitive.name
         tb = self.__tb_with_expected().append_details(
             custom_details.actual(
-                custom_details.PathDdvAndPrimitiveIfRelHomeAsIndentedDetailsRenderer(model.path.describer)
-            )
+                custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(base_name))
         )
-        return tb.build_result(model.path.primitive.match(self._glob_pattern))
+        name_model = Path(base_name)
+        return tb.build_result(name_model.match(self._glob_pattern))
 
     def __tb_with_expected(self) -> TraceBuilder:
         return TraceBuilder(self.NAME).append_details(self._renderer_of_expected)

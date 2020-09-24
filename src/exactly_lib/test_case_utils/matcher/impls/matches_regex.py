@@ -1,11 +1,10 @@
-from typing import Optional, Pattern, Match, Set, Sequence
+from typing import Optional, Pattern, Match, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
@@ -96,9 +95,6 @@ class MatchesRegexDdv(MatcherDdv[str]):
                  ):
         self._regex = regex
         self._is_full_match = is_full_match
-
-    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
-        return self._regex.resolving_dependencies()
 
     def structure(self) -> StructureRenderer:
         return MatchesRegex.new_structure_tree(

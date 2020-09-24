@@ -13,8 +13,9 @@ from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, file_or_dir_contents_doc
 from exactly_lib.test_case_utils.file_matcher.impl import \
-    name_regex, name_glob_pattern, regular_file_contents, dir_contents, file_contents_utils
+    regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
+from exactly_lib.test_case_utils.file_matcher.impl.name import glob_pattern, reg_ex
 from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as parse_run
 from exactly_lib.test_case_utils.file_matcher.impl.run_program.doc import RunSyntaxDescription
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -45,8 +46,8 @@ def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcher
 
 
 def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
-    return parser.parse_choice_of_optional_option(name_regex.parse,
-                                                  name_glob_pattern.parse,
+    return parser.parse_choice_of_optional_option(reg_ex.parse,
+                                                  glob_pattern.parse,
                                                   REG_EX_OPTION)
 
 
@@ -186,8 +187,8 @@ _TP = TextParser({
     'MATCHER': types.FILE_MATCHER_TYPE_INFO.name.singular,
     'TYPE': TYPE_MATCHER_ARGUMENT.name,
     'SYMLINK_TYPE': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
-    'GLOB_PATTERN_INFORMATIVE_NAME': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
-    'REG_EX_PATTERN_INFORMATIVE_NAME': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
+    'GLOB_PATTERN_INFORMATIVE_NAME': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str,
+    'REG_EX_PATTERN_INFORMATIVE_NAME': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str,
     'MODEL': matcher_model.FILE_MATCHER_MODEL,
     'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
 })
@@ -195,13 +196,13 @@ _TP = TextParser({
 DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser()
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} who's ...
+Matches {MODEL:s} who's final path component (base name) matches
 
 
-  * name : matches {GLOB_PATTERN_INFORMATIVE_NAME}, or
+  * {GLOB_PATTERN_INFORMATIVE_NAME}, or
   
   
-  * base name : matches {REG_EX_PATTERN_INFORMATIVE_NAME}
+  * {REG_EX_PATTERN_INFORMATIVE_NAME}
 """
 
 

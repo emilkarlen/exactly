@@ -102,7 +102,8 @@ class MatcherArgComponent(ABC):
 class NameRegexComponent(MatcherArgComponent):
     def __init__(self,
                  regex: str,
-                 ignore_case: bool = False):
+                 ignore_case: bool = False,
+                 ):
         self.regex = regex
         self.ignore_case = ignore_case
 
