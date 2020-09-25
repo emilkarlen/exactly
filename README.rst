@@ -2,13 +2,16 @@ Tests a command line program by executing it in a temporary sandbox directory an
 
 Or tests properties of existing files, directories etc.
 
+A test may have setup and cleanup actions.
+Assertions are expressed in a declarative style, using a specialized type system.
+
 Supports individual test cases and test suites.
 
-Support for referencing predefined files and files created in the temporary sandbox.
+Supports easy referencing of predefined files and files created in the temporary sandbox.
 
 Exactly has a  built in help system,
 which can, among other things,
-generate this `Reference manual
+generate this `Reference Manual
 <https://emilkarlen.github.io/exactly/version/next/reference-manual.html>`_.
 
 
