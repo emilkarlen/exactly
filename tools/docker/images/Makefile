@@ -17,7 +17,7 @@ clean:
 dockerfiles: $(DOCKER_FILES)
 
 Dockerfile.35: Dockerfile.in
-	sed 's/__IMAGE_TAG__/3.5.9-alpine/g' < Dockerfile.in > $@
+	sed 's/__IMAGE_TAG__/3.5-alpine/g' < Dockerfile.in > $@
 
 Dockerfile.36: Dockerfile.in
 	sed 's/__IMAGE_TAG__/3.6-alpine/g' < Dockerfile.in > $@
