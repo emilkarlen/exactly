@@ -13,11 +13,11 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def parse(token_parser: TokenParser) -> StringMatcherSdv:
-    matcher = parse_integer_matcher.parse(
-        token_parser,
-        parse_integer_matcher.validator_for_non_negative,
-    )
+    matcher = _MATCHER_PARSER.parse(token_parser)
     return num_lines.sdv(matcher)
+
+
+_MATCHER_PARSER = parse_integer_matcher.IntegerMatcherParser(parse_integer_matcher.validator_for_non_negative)
 
 
 class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):

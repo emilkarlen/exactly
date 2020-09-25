@@ -1,5 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher import property_matcher
@@ -14,16 +14,25 @@ _NAME = ' '.join((config.NUM_FILES_CHECK_ARGUMENT,
                   syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
 
-def parse(token_parser: TokenParser) -> FilesMatcherSdv:
-    matcher = parse_integer_matcher.parse(
-        token_parser,
-        parse_integer_matcher.validator_for_non_negative,
+def parser() -> ParserFromTokens[FilesMatcherSdv]:
+    return _PARSER
+
+
+class _Parser(ParserFromTokens[FilesMatcherSdv]):
+    INTEGER_MATCHER_PARSER = parse_integer_matcher.IntegerMatcherParser(
+        parse_integer_matcher.validator_for_non_negative
     )
-    return property_matcher.PropertyMatcherSdv(
-        matcher,
-        property_getters.sdv_of_constant_primitive(_PropertyGetter()),
-        property_matcher_describers.GetterWithMatcherAsChild()
-    )
+
+    def parse(self, token_parser: TokenParser) -> FilesMatcherSdv:
+        matcher = self.INTEGER_MATCHER_PARSER.parse(token_parser)
+        return property_matcher.PropertyMatcherSdv(
+            matcher,
+            property_getters.sdv_of_constant_primitive(_PropertyGetter()),
+            property_matcher_describers.GetterWithMatcherAsChild()
+        )
+
+
+_PARSER = _Parser()
 
 
 class _PropertyGetter(PropertyGetter[FilesMatcherModel, int], WithCachedTreeStructureDescriptionBase):

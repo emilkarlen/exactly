@@ -1,0 +1,12 @@
+[setup]
+
+file 1
+file 2
+
+[assert]
+
+dir-contents . num-files == 2
+
+dir-contents .
+    num-files
+      == 2

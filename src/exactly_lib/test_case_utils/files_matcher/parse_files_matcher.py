@@ -29,10 +29,6 @@ def _parse_empty_check(parser: TokenParser) -> FilesMatcherSdv:
     return emptiness.emptiness_matcher()
 
 
-def _parse_num_files_check(parser: TokenParser) -> FilesMatcherSdv:
-    return num_files.parse(parser)
-
-
 def _parse_selection(parser: TokenParser) -> FilesMatcherSdv:
     element_matcher = _FILE_MATCHER_COMPONENT_PARSER.parse_from_token_parser(parser)
     matcher_on_selection = _FILES_MATCHER_COMPONENT_PARSER.parse_from_token_parser(parser)
@@ -82,7 +78,7 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[FilesMatche
     ret_val += [
         NameAndValue(
             config.NUM_FILES_CHECK_ARGUMENT,
-            grammar.Primitive(_parse_num_files_check,
+            grammar.Primitive(num_files.parser().parse,
                               documentation.NumFilesDoc())
         ),
         NameAndValue(

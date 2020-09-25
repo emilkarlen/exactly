@@ -12,6 +12,7 @@ from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher as s
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.util.description_tree import details
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
@@ -74,37 +75,34 @@ class ValidationCase:
 
 class TestParseIntegerMatcher(unittest.TestCase):
     def test_failing_parse(self):
+        parser = sut.IntegerMatcherParser(None)
         cases = [
-            (
+            NameAndValue(
                 'no arguments',
                 remaining_source(''),
             ),
-            (
-                'no arguments, but it appears on the following line',
-                remaining_source('',
-                                 [comparators.EQ.name + ' 1']),
-            ),
-            (
+            NameAndValue(
                 'invalid OPERATOR',
                 remaining_source('- 72'),
             ),
-            (
+            NameAndValue(
                 'quoted OPERATOR',
                 remaining_source('"{op}" 69'.format(op=comparators.EQ.name)),
             ),
-            (
+            NameAndValue(
                 'missing INTEGER',
                 remaining_source(comparators.EQ.name),
             ),
         ]
-        for name, source in cases:
-            with self.subTest(case_name=name):
+        for case in cases:
+            with self.subTest(case.name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    with from_parse_source(source) as parser:
-                        sut.parse(parser, None)
+                    with from_parse_source(case.value) as token_parser:
+                        parser.parse(token_parser)
 
     def test_successful_parse(self):
         # ARRANGE #
+        parser = sut.IntegerMatcherParser(None)
         tcds = fake_tcds()
         symbol_69 = StringSymbolContext.of_constant('SYMBOL_69', '69')
         cases = [
@@ -117,7 +115,30 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(-1),
                                              model_of(1),
                                              model_of(2),
-                                         ])),
+                                         ])
+                 ),
+            Case(comparators.EQ.name + ' plain integer, expr on new line',
+                 remaining_source('\n' + comparators.EQ.name + ' 1'),
+                 source_assertion=
+                 assert_source(is_at_eol=asrt.is_true),
+                 result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
+                                         [
+                                             model_of(-1),
+                                             model_of(1),
+                                             model_of(2),
+                                         ])
+                 ),
+            Case(comparators.EQ.name + ' plain integer, integer on new line',
+                 remaining_source(comparators.EQ.name + '\n' + ' 1'),
+                 source_assertion=
+                 assert_source(is_at_eol=asrt.is_true),
+                 result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
+                                         [
+                                             model_of(-1),
+                                             model_of(1),
+                                             model_of(2),
+                                         ])
+                 ),
             Case(comparators.NE.name,
                  remaining_source(comparators.NE.name + ' 1'),
                  source_assertion=
@@ -206,9 +227,9 @@ class TestParseIntegerMatcher(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                with from_parse_source(case.source) as parser:
+                with from_parse_source(case.source) as token_parser:
                     # ACT #
-                    actual_sdv = sut.parse(parser, None)
+                    actual_sdv = parser.parse(token_parser)
                     # ASSERT #
                     case.references.apply_with_message(self, actual_sdv.references, 'references')
 
@@ -229,6 +250,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
 
     def test_failing_validation(self):
         # ARRANGE #
+        parser = sut.IntegerMatcherParser(None)
         tcds = fake_tcds()
         is_text_renderer = asrt_renderer.is_renderer_of_major_blocks()
         symbol_not_an_int = StringSymbolContext.of_constant('SYMBOL_NOT_AN_INT', 'notAnInt')
@@ -261,9 +283,9 @@ class TestParseIntegerMatcher(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                with from_parse_source(case.source) as parser:
+                with from_parse_source(case.source) as token_parser:
                     # ACT #
-                    actual_sdv = sut.parse(parser, None)
+                    actual_sdv = parser.parse(token_parser)
                     actual_ddv = actual_sdv.resolve(case.symbols)
                     # ASSERT #
                     case.references.apply_with_message(self, actual_sdv.references, 'references')

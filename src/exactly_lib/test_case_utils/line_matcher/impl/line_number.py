@@ -15,15 +15,15 @@ _NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
-    matcher = parse_integer_matcher.parse(
-        parser,
-        parse_integer_matcher.validator_for_non_negative,
-    )
+    matcher = _MATCHER_PARSER.parse(parser)
     return property_matcher.PropertyMatcherSdv(
         matcher,
         _operand_from_model_sdv(),
         property_matcher_describers.GetterWithMatcherAsChild(),
     )
+
+
+_MATCHER_PARSER = parse_integer_matcher.IntegerMatcherParser(parse_integer_matcher.validator_for_non_negative)
 
 
 def _operand_from_model_sdv() -> PropertyGetterSdv[LineMatcherLine, int]:

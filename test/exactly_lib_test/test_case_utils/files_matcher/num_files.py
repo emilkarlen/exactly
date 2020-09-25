@@ -4,24 +4,30 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import string_m
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
+from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_case_bases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     NumFilesAssertionVariant, argument_constructor_for_num_files_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
+    ParseExpectation, ExecutionExpectation
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
@@ -167,6 +173,32 @@ class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
             non_default_relativity=RelOptionType.REL_TMP,
             main_result_for_positive_expectation=PassOrFail.PASS,
             contents_of_relativity_option_root=contents_of_relativity_option_root,
+        )
+
+    def test_integer_matcher_on_new_line(self):
+        # ARRANGE #
+        checked_dir_contents = DirContents([File.empty('1'), File.empty('2')])
+        checked_path = rel_opts.conf_rel_sds(RelSdsOptionType.REL_ACT)
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            args.NumFiles(
+                int_condition(comparators.EQ,
+                              len(checked_dir_contents.file_system_elements)),
+                int_expr_on_new_line=True,
+            ).as_remaining_source,
+            model.model_with_rel_root_as_source_path(checked_path),
+            arrangement_w_tcds(
+                tcds_contents=checked_path.populator_for_relativity_option_root(checked_dir_contents),
+            ),
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(2)
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(True)
+                ),
+            )
         )
 
 

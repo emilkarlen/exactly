@@ -84,10 +84,9 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         parser = new_token_parser(rest_of_line)
         expectation_type = parser.consume_optional_negation_operator()
 
-        matcher = parse_integer_matcher.parse(
-            parser,
-            _must_be_within_byte_range,
-        )
+        matcher_parser = parse_integer_matcher.IntegerMatcherParser(_must_be_within_byte_range)
+
+        matcher = matcher_parser.parse(parser)
         matcher = combinator_sdvs.optionally_negated(matcher, expectation_type)
 
         property_matcher = PropertyMatcherSdv(

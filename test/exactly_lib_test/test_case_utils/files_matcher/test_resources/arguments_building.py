@@ -51,15 +51,24 @@ class Empty(FilesMatcherArg):
 
 
 class NumFiles(FilesMatcherArg):
-    def __init__(self, int_expr: str):
+    def __init__(self,
+                 int_expr: str,
+                 int_expr_on_new_line: bool = False,
+                 ):
         self.int_expr = int_expr
+        self.int_expr_on_new_line = int_expr_on_new_line
 
     @property
     def elements(self) -> List:
-        return [
+        ret_val = [
             config.NUM_FILES_CHECK_ARGUMENT,
             self.int_expr,
         ]
+
+        if self.int_expr_on_new_line:
+            ret_val.insert(1, '\n')
+
+        return ret_val
 
 
 class Quantification(FilesMatcherArg):

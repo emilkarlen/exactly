@@ -8,10 +8,10 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.condition import parse as parse_condition
 from exactly_lib.test_case_utils.condition.integer import integer_sdv
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
-from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.parse.token import Token
@@ -26,16 +26,20 @@ class IntegerComparisonOperatorAndRightOperandSdv:
         self.operator = operator
 
 
-def parse_integer_comparison_operator_and_rhs(
-        parser: TokenParser,
-        custom_integer_restriction: Optional[CustomIntegerValidator] = None,
-) -> IntegerComparisonOperatorAndRightOperandSdv:
-    operator = parse_comparison_operator(parser)
-    integer_parser = MandatoryIntegerParser(custom_integer_restriction)
+class ComparisonOperatorAndRhsParser(ParserFromTokens[IntegerComparisonOperatorAndRightOperandSdv]):
+    """Parses an :class:`IntegerComparisonOperatorAndRightOperandSdv` on current or following line"""
 
-    sdv = integer_parser.parse(parser)
-    return IntegerComparisonOperatorAndRightOperandSdv(operator,
-                                                       sdv)
+    OPERATOR_PARSER = parse_condition.ComparisonOperatorParser()
+
+    def __init__(self,
+                 custom_integer_restriction: Optional[CustomIntegerValidator] = None,
+                 ):
+        self._integer_parser = MandatoryIntegerParser(custom_integer_restriction)
+
+    def parse(self, token_parser: TokenParser) -> IntegerComparisonOperatorAndRightOperandSdv:
+        operator = self.OPERATOR_PARSER.parse(token_parser)
+        integer = self._integer_parser.parse(token_parser)
+        return IntegerComparisonOperatorAndRightOperandSdv(operator, integer)
 
 
 class MandatoryIntegerParser(ParserFromTokens[IntegerSdv]):
