@@ -6,7 +6,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, syntax_elements
@@ -130,7 +130,8 @@ _DIR_ARGUMENT = syntax_elements.PATH_SYNTAX_ELEMENT.argument
 
 def relativity_options(is_after_act_phase: bool) -> RelOptionArgumentConfiguration:
     accepted = [RelOptionType.REL_ACT,
-                RelOptionType.REL_TMP]
+                RelOptionType.REL_TMP,
+                RelOptionType.REL_CWD]
     if is_after_act_phase:
         accepted.append(RelOptionType.REL_RESULT)
     variants = PathRelativityVariants(set(accepted), True)
