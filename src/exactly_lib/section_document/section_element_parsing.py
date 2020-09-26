@@ -1,4 +1,5 @@
-from typing import Optional
+from abc import ABC, abstractmethod
+from typing import Optional, TypeVar, Generic
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
@@ -71,7 +72,24 @@ def new_recognized_section_element_error_of_single_line(line: line_source.Line,
                                                message)
 
 
-class SectionElementParser:
+T = TypeVar('T')
+
+
+class LocationAwareParser(Generic[T], ABC):
+    @abstractmethod
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource,
+              ) -> T:
+        """
+        :param fs_location_info: Information about the location of the source file being parsed
+        :param source: Remaining source to parse
+        """
+        pass
+
+
+class SectionElementParser(LocationAwareParser[Optional[ParsedSectionElement]], ABC):
+    @abstractmethod
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
@@ -91,4 +109,4 @@ class SectionElementParser:
         have been consumed.
         :raises SectionElementError: The element cannot be parsed.
         """
-        raise NotImplementedError('abstract method')
+        pass

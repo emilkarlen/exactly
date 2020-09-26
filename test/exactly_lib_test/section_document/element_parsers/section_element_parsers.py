@@ -1,6 +1,4 @@
-import pathlib
 import unittest
-from unittest.mock import MagicMock
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import section_element_parsers as sut
@@ -8,7 +6,7 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedNonInstructionElement
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError, \
+from exactly_lib.section_document.section_element_parsing import SectionElementError, \
     UnrecognizedSectionElementSourceError, RecognizedSectionElementSourceError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
@@ -37,18 +35,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParserFromSequenceOfParsers(unittest.TestCase):
-    def test_arguments_are_propagated(self):
-        # ARRANGE #
-        mocked_parser = SectionElementParser()
-        mocked_parser.parse = MagicMock(return_value=None)
-        source_text = 'first line'
-        source = ParseSource(source_text)
-        path_relativity_root_dir = pathlib.Path()
-        # ACT #
-        mocked_parser.parse(path_relativity_root_dir, source)
-        # ASSERT #
-        mocked_parser.parse.assert_called_once_with(path_relativity_root_dir, source)
-
     def test_all_fail_None_SHOULD_be_returned_WHEN_all_parsers_return_None(self):
         # ARRANGE #
         source_text = 'first line'

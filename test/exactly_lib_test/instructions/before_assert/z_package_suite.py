@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.instructions.before_assert import \
-    define_symbol, change_dir, env, run, shell, new_file, new_dir, sys_cmd
+    define_symbol, change_dir, env, run, shell, new_file, copy, new_dir, sys_cmd
 from exactly_lib_test.instructions.before_assert.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.instructions.before_assert.utils import z_package_suite as utils
 
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         change_dir.suite(),
         new_file.suite(),
         new_dir.suite(),
+        copy.suite(),
         shell.suite(),
         sys_cmd.suite(),
         run.suite(),

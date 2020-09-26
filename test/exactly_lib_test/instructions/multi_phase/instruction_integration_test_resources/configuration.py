@@ -1,4 +1,5 @@
 import unittest
+from abc import ABC
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -10,6 +11,7 @@ from exactly_lib.test_case_utils.os_services.os_services_access import new_for_c
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
+from exactly_lib_test.instructions.test_resources import parse_checker
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
     sds_populator
@@ -53,6 +55,10 @@ class ConfigurationBase:
 
     def parser(self) -> InstructionParser:
         return self.instruction_setup()
+
+    @property
+    def parse_checker(self) -> parse_checker.Checker:
+        return parse_checker.Checker(self.parser())
 
     def documentation(self) -> InstructionDocumentation:
         return self.instruction_setup().documentation
@@ -108,6 +114,16 @@ class ConfigurationBase:
     def expect_failing_validation_post_setup(self,
                                              error_message: ValueAssertion[TextRenderer] = asrt.anything_goes()):
         raise NotImplementedError()
+
+
+class TestCaseWithConfiguration(unittest.TestCase, ABC):
+    def __init__(self, conf: ConfigurationBase):
+        super().__init__()
+        self.conf = conf
+
+    def shortDescription(self):
+        return '\n / '.join([str(type(self)),
+                             str(type(self.conf))])
 
 
 def suite_for_cases(configuration: ConfigurationBase,

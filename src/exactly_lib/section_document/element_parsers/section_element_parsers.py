@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Sequence, Callable, Optional
 
 from exactly_lib.section_document import model
@@ -7,7 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     new_comment_element, ParsedInstruction, ParsedNonInstructionElement
 from exactly_lib.section_document.section_element_parsing import SectionElementParser, \
-    UnrecognizedSectionElementSourceError
+    UnrecognizedSectionElementSourceError, LocationAwareParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 
@@ -28,20 +29,21 @@ class InstructionAndDescriptionParser(SectionElementParser):
         raise NotImplementedError()
 
 
-class InstructionParser:
+class InstructionParser(LocationAwareParser[model.Instruction], ABC):
     """
     Parses a single instruction.
 
     Raises an exception if the parse fails.
     """
 
+    @abstractmethod
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
-        raise NotImplementedError()
+        pass
 
 
 class InstructionParserWithoutSourceFileLocationInfo(InstructionParser):

@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.instructions.cleanup import define_symbol, change_dir, env, run, new_file, new_dir, shell, sys_cmd
+from exactly_lib_test.instructions.cleanup import define_symbol, change_dir, env, new_file, new_dir, copy, \
+    run, shell, sys_cmd
 from exactly_lib_test.instructions.cleanup.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.instructions.cleanup.utils import z_package_suite as utils
 
@@ -17,6 +18,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(new_file.suite())
     ret_val.addTest(new_dir.suite())
+    ret_val.addTest(copy.suite())
     return ret_val
 
 

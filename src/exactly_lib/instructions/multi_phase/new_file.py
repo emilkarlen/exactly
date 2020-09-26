@@ -6,7 +6,6 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.instructions.setup import \
-    change_dir, run, copy_, new_file, new_dir, shell, sys_cmd, stdin, env, define_symbol
+    change_dir, run, new_file, new_dir, copy, shell, sys_cmd, stdin, env, define_symbol
 from exactly_lib_test.instructions.setup.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.instructions.setup.utils import z_package_suite as utils
 
@@ -10,7 +10,6 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources_test.suite())
     ret_val.addTest(utils.suite())
-    ret_val.addTest(copy_.suite())
     ret_val.addTest(sys_cmd.suite())
     ret_val.addTest(shell.suite())
     ret_val.addTest(run.suite())
@@ -19,6 +18,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(new_file.suite())
     ret_val.addTest(new_dir.suite())
+    ret_val.addTest(copy.suite())
     ret_val.addTest(define_symbol.suite())
     return ret_val
 

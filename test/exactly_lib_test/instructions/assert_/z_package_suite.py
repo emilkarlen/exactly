@@ -6,6 +6,7 @@ from exactly_lib_test.instructions.assert_ import \
     exitcode, \
     new_file, \
     new_dir, \
+    copy, \
     shell, \
     sys_cmd, \
     env, \
@@ -32,6 +33,7 @@ def suite() -> unittest.TestSuite:
         existence_of_file.suite(),
         new_file.suite(),
         new_dir.suite(),
+        copy.suite(),
         change_dir.suite(),
         run.suite(),
         sys_cmd.suite(),

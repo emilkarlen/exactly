@@ -28,9 +28,9 @@ class FileContentsDocumentation:
             'TRANSFORMATION': string_transformer.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
-            'SRC_PATH_ARGUMENT': defs.SRC_PATH_ARGUMENT.name,
+            'SRC_PATH_ARGUMENT': self._src_rel_opt_arg_conf.argument.name,
             'Sym_refs_are_not_substituted': syntax_descriptions.symbols_are_not_substituted_in(
-                'the file ' + defs.SRC_PATH_ARGUMENT.name
+                'the file ' + self._src_rel_opt_arg_conf.argument.name
             ),
         })
 
@@ -71,7 +71,7 @@ class FileContentsDocumentation:
                                a.Option(defs.FILE_OPTION))
 
         src_file_arg = a.Single(a.Multiplicity.MANDATORY,
-                                defs.SRC_PATH_ARGUMENT)
+                                self._src_rel_opt_arg_conf.argument)
 
         invokation_variants = [
             invokation_variant_from_args([string_arg]),

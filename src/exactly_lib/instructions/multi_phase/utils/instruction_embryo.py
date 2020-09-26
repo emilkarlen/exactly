@@ -4,6 +4,7 @@ from typing import Sequence, TypeVar, Generic
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.section_element_parsing import LocationAwareParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
@@ -50,11 +51,12 @@ class InstructionEmbryo(Generic[T], MainStepExecutorEmbryo[T], ABC):
         return ConstantSuccessSdvValidator()
 
 
-class InstructionEmbryoParser(Generic[T]):
+class InstructionEmbryoParser(Generic[T], LocationAwareParser[InstructionEmbryo[T]], ABC):
+    @abstractmethod
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> InstructionEmbryo[T]:
-        raise NotImplementedError()
+        pass
 
 
 class InstructionEmbryoParserWoFileSystemLocationInfo(Generic[T], InstructionEmbryoParser[T]):

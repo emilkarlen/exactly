@@ -13,6 +13,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
@@ -79,15 +81,24 @@ class Expectation:
     """
 
     def __init__(self,
-                 pre_validation_result: ValueAssertion = svh_assertions.is_success(),
-                 main_result: ValueAssertion = sh_assertions.is_success(),
-                 post_validation_result: ValueAssertion = svh_assertions.is_success(),
-                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_tcds: ValueAssertion = asrt.anything_goes(),
-                 settings_builder: ValueAssertion = asrt.anything_goes(),
-                 source: ValueAssertion = asrt.anything_goes(),
-                 symbols_after_main: ValueAssertion = asrt.anything_goes(),
+                 pre_validation_result: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+                 = svh_assertions.is_success(),
+                 main_result: ValueAssertion[sh.SuccessOrHardError]
+                 = sh_assertions.is_success(),
+                 post_validation_result: ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+                 = svh_assertions.is_success(),
+                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
+                 = asrt.is_empty_sequence,
+                 main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure]
+                 = asrt.anything_goes(),
+                 main_side_effects_on_tcds: ValueAssertion[Tcds]
+                 = asrt.anything_goes(),
+                 settings_builder: ValueAssertion[SettingsBuilderAssertionModel]
+                 = asrt.anything_goes(),
+                 source: ValueAssertion[ParseSource]
+                 = asrt.anything_goes(),
+                 symbols_after_main: ValueAssertion[Sequence[SymbolUsage]]
+                 = asrt.anything_goes(),
                  ):
         self.pre_validation_result = pre_validation_result
         self.main_result = main_result

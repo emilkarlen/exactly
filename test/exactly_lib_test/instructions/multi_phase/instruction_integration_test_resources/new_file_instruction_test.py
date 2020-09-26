@@ -9,9 +9,10 @@ from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
+    configuration as tc_configuration
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
-    ConfigurationBase
+    ConfigurationBase, TestCaseWithConfiguration
 from exactly_lib_test.instructions.test_resources import parse_file_maker as parse_file_maker_tr
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -45,7 +46,7 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources.string
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    common_test_cases = [
+    test_case_constructors = [
         TestSymbolUsages,
         TestContentsFromExistingFile_Successfully,
 
@@ -55,31 +56,15 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
         TestHardError_DueTo_NonZeroExitCodeFromProgram,
         TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode,
     ]
-    suites = [tc(conf)
-              for tc in common_test_cases
-              ]
-
     if conf.phase_is_after_act():
-        suites.append(TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(conf))
+        test_case_constructors.append(TestParseShouldSucceedWhenRelativityOfSourceIsRelResult)
     else:
-        suites.append(TestParseShouldFailWhenRelativityOfSourceIsRelResult(conf))
+        test_case_constructors.append(TestParseShouldFailWhenRelativityOfSourceIsRelResult)
 
-    suites.append(suite_for_documentation_instance(conf.documentation()))
-
-    return unittest.TestSuite(suites)
+    return tc_configuration.suite_for_cases(conf, test_case_constructors)
 
 
-class TestCaseBase(unittest.TestCase):
-    def __init__(self, conf: ConfigurationBase):
-        super().__init__()
-        self.conf = conf
-
-    def shortDescription(self):
-        return '\n / '.join([str(type(self)),
-                             str(type(self.conf))])
-
-
-class TestSymbolUsages(TestCaseBase):
+class TestSymbolUsages(TestCaseWithConfiguration):
     def runTest(self):
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
                                             StringTransformerSdvConstantTestImpl(to_uppercase()))
@@ -133,7 +118,7 @@ class TestSymbolUsages(TestCaseBase):
                                                          instruction.symbol_usages())
 
 
-class TestParseShouldFailWhenRelativityOfSourceIsRelResult(TestCaseBase):
+class TestParseShouldFailWhenRelativityOfSourceIsRelResult(TestCaseWithConfiguration):
     def runTest(self):
         # ARRANGE #
         instruction_arguments = instruction_arguments_for_src_file_rel_result()
@@ -145,7 +130,7 @@ class TestParseShouldFailWhenRelativityOfSourceIsRelResult(TestCaseBase):
             self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseBase):
+class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseWithConfiguration):
     def runTest(self):
         # ARRANGE #
         instruction_arguments = instruction_arguments_for_src_file_rel_result()
@@ -170,7 +155,7 @@ def instruction_arguments_for_src_file_rel_result() -> str:
     )
 
 
-class TestContentsFromExistingFile_Successfully(TestCaseBase):
+class TestContentsFromExistingFile_Successfully(TestCaseWithConfiguration):
     def runTest(self):
         # ARRANGE #
 
@@ -218,7 +203,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
                 ))
 
 
-class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
+class TestContentsFromOutputOfShellCommand_Successfully(TestCaseWithConfiguration):
     def runTest(self):
         text_printed_by_shell_command = 'single line of output'
 
@@ -263,7 +248,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 ))
 
 
-class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(TestCaseBase):
+class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(TestCaseWithConfiguration):
     def runTest(self):
         non_zero_exit_code = 1
         text_printed_by_program = 'the output from the program'
@@ -326,7 +311,7 @@ class TestContentsFromOutputOfProgram_SuccessfullyWithIgnoredNonZeroExitCode(Tes
                 ))
 
 
-class TestHardError_DueTo_NonZeroExitCodeFromProgram(TestCaseBase):
+class TestHardError_DueTo_NonZeroExitCodeFromProgram(TestCaseWithConfiguration):
     def runTest(self):
         contents_arguments = parse_file_maker_tr.TransformableContentsConstructor(
             parse_file_maker_tr.output_from_program(
@@ -350,7 +335,7 @@ class TestHardError_DueTo_NonZeroExitCodeFromProgram(TestCaseBase):
             )
 
 
-class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
+class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseWithConfiguration):
     def runTest(self):
         # ARRANGE #
         dst_file = PathArgumentWithRelativity('dst-file.txt',
