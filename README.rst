@@ -142,7 +142,8 @@ appropriate directory::
     dir-contents output/bad   matches -full
         {
             b.txt : type file
-            sub   : type dir && dir-contents matches -full
+            sub   : type dir &&
+                    dir-contents matches -full
                     {
                         c.txt : type file
                     }
