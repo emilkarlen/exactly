@@ -25,6 +25,7 @@ class CommandLineSyntaxRenderer:
 
 class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
     CHOICE_SEPARATOR = '|'
+    CHOICE_ARGS_SEPARATOR = ' '
 
     def __init__(self):
         self._arg_renderer = ArgumentOnCommandLineRenderer()
@@ -43,7 +44,18 @@ class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
             raise ValueError('Invalid %s: %s' % (str(arg.Multiplicity), str(x.multiplicity)))
 
     def visit_choice(self, x: arg.Choice) -> str:
-        arg_str = self.CHOICE_SEPARATOR.join(map(self._arg_renderer, x.arguments))
+        choice_argument_lists = [
+            [
+                self._arg_renderer.visit(argument)
+                for argument in choice_arguments
+            ]
+            for choice_arguments in x.choices
+        ]
+        choices = [
+            self.CHOICE_ARGS_SEPARATOR.join(arguments)
+            for arguments in choice_argument_lists
+        ]
+        arg_str = self.CHOICE_SEPARATOR.join(choices)
         if x.multiplicity is arg.Multiplicity.OPTIONAL:
             return self._optional(arg_str)
         elif x.multiplicity is arg.Multiplicity.MANDATORY:

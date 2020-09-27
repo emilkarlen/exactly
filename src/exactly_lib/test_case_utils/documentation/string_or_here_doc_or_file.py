@@ -1,7 +1,6 @@
 from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_elements
@@ -39,10 +38,12 @@ class StringOrHereDocOrFile:
         return self._path_argument_configuration
 
     def argument_usage(self, multiplicity: a.Multiplicity) -> a.ArgumentUsage:
-        return a.Choice(multiplicity,
-                        [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                         syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument,
-                         self._expected_file_arg])
+        return a.Choice.of_single_argument_choices(
+            multiplicity,
+            [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+             syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument,
+             self._expected_file_arg],
+        )
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return path_elements(

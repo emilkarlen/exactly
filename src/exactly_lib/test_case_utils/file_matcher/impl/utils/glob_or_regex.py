@@ -15,11 +15,12 @@ REG_EX_OPERATOR = a.Named('~')
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
 
-GLOB_OR_REGEX__ARG_USAGE = a.Choice(a.Multiplicity.MANDATORY,
-                                    [
-                                        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
-                                        REG_EX_ARGUMENT,
-                                    ])
+GLOB_OR_REGEX__ARG_USAGE = a.Choice.of_single_argument_choices(
+    a.Multiplicity.MANDATORY,
+    [
+        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
+        REG_EX_ARGUMENT,
+    ])
 
 _SYNTAX_ELEM_STR = cl_syntax.cl_syntax_for_args((GLOB_OR_REGEX__ARG_USAGE,))
 

@@ -74,11 +74,12 @@ class _Documentation(SyntaxElementDocumentation):
     @staticmethod
     def _cl_arguments() -> list:
         return [
-            a.Choice(a.Multiplicity.ZERO_OR_MORE,
-                     [
-                         syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                         syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
-                     ]),
+            a.Choice.of_single_argument_choices(
+                a.Multiplicity.ZERO_OR_MORE,
+                [
+                    syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                    syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
+                ]),
         ]
 
 

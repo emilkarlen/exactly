@@ -203,16 +203,29 @@ class Choice(ArgumentUsage):
 
     def __init__(self,
                  multiplicity: Multiplicity,
-                 arguments: List[Argument]):
+                 choices: List[List[Argument]]):
         super().__init__(multiplicity)
-        self._arguments = arguments
+        self._choices = choices
+
+    @staticmethod
+    def of_single_argument_choices(
+            multiplicity: Multiplicity,
+            choices: List[Argument]) -> 'Choice':
+        return Choice(multiplicity,
+                      [[argument] for argument in choices])
+
+    @staticmethod
+    def of_multiple_argument_choices(
+            multiplicity: Multiplicity,
+            choices: List[List[Argument]]) -> 'Choice':
+        return Choice(multiplicity, choices)
 
     @property
-    def arguments(self) -> List[Argument]:
-        return self._arguments
+    def choices(self) -> List[List[Argument]]:
+        return self._choices
 
     def __str__(self):
-        return '{}(multiplicity={}, arguments={})'.format(type(self), repr(self._multiplicity), repr(self._arguments))
+        return '{}(multiplicity={}, arguments={})'.format(type(self), repr(self._multiplicity), repr(self._choices))
 
 
 class ArgumentVisitor:

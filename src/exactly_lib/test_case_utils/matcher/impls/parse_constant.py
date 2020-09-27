@@ -28,7 +28,7 @@ class _Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
-            a.Choice(
+            a.Choice.of_single_argument_choices(
                 a.Multiplicity.MANDATORY,
                 [a.Named(value) for value in logic.BOOLEANS.values()]
             )

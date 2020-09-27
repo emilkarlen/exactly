@@ -58,11 +58,12 @@ class FileContentsDocumentation:
         here_doc_arg = syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.single_mandatory
         string_arg = syntax_elements.STRING_SYNTAX_ELEMENT.single_mandatory
         program_token = syntax_elements.PROGRAM_SYNTAX_ELEMENT.single_mandatory
-        output_channel_token = a.Choice(a.Multiplicity.MANDATORY,
-                                        [a.Option(option_name)
-                                         for option_name in defs.PROGRAM_OUTPUT_OPTIONS.values()
-                                         ]
-                                        )
+        output_channel_token = a.Choice.of_single_argument_choices(
+            a.Multiplicity.MANDATORY,
+            [a.Option(option_name)
+             for option_name in defs.PROGRAM_OUTPUT_OPTIONS.values()
+             ]
+        )
 
         ignore_exit_code_token = a.Single(a.Multiplicity.OPTIONAL,
                                           a.Option(defs.IGNORE_EXIT_CODE))

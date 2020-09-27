@@ -2,7 +2,6 @@ from typing import List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args
-from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
@@ -61,11 +60,12 @@ class _Documentation(SyntaxElementDocumentation):
     @staticmethod
     def _cl_arguments() -> List[a.ArgumentUsage]:
         return [
-            a.Choice(a.Multiplicity.ZERO_OR_MORE,
-                     [
-                         syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                         syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
-                     ]),
+            a.Choice.of_single_argument_choices(
+                a.Multiplicity.ZERO_OR_MORE,
+                [
+                    syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                    syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
+                ]),
         ]
 
 

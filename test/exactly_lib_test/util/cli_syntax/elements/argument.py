@@ -58,11 +58,15 @@ class TestThatToStringDoesNotRaiseException(unittest.TestCase):
 
     def test_choice(self):
         test_cases = [
-            sut.Choice(sut.Multiplicity.OPTIONAL,
-                       [sut.Constant('constant')]),
-            sut.Choice(sut.Multiplicity.OPTIONAL,
-                       [sut.Constant('constant'),
-                        sut.Named('name')]),
+            sut.Choice.of_single_argument_choices(
+                sut.Multiplicity.OPTIONAL,
+                [sut.Constant('constant')]
+            ),
+            sut.Choice.of_single_argument_choices(
+                sut.Multiplicity.OPTIONAL,
+                [sut.Constant('constant'),
+                 sut.Named('name')]
+            ),
         ]
         for value in test_cases:
             with self.subTest():
@@ -141,9 +145,11 @@ class ArgumentUsageVisitorTest(unittest.TestCase):
                     sut.Single)
 
     def test_choice(self):
-        self._check(sut.Choice(sut.Multiplicity.MANDATORY,
-                               [sut.Named('arg1'), sut.Named('arg2')]),
-                    sut.Choice)
+        self._check(sut.Choice.of_single_argument_choices(
+            sut.Multiplicity.MANDATORY,
+            [sut.Named('arg1'), sut.Named('arg2')]),
+            sut.Choice,
+        )
 
     def test_visit_SHOULD_raise_TypeError_WHEN_argument_is_not_a_sub_class_of_argument(self):
         visitor = ArgumentRecordingArgumentUsageVisitor()

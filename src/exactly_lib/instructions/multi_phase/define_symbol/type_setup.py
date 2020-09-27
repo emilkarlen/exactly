@@ -34,9 +34,11 @@ TYPE_SETUPS_LIST = [
     TypeSetup(types.STRING_TYPE_INFO,
               type_parser.StringParser(),
               [
-                  a.Choice(a.Multiplicity.MANDATORY,
-                           [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                            syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument])
+                  a.Choice.of_single_argument_choices(
+                      a.Multiplicity.MANDATORY,
+                      [syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                       syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument],
+                  )
               ]),
     TypeSetup.new_with_std_syntax(types.LIST_TYPE_INFO,
                                   type_parser.ListParser()),
