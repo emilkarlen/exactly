@@ -78,7 +78,7 @@ A condition of existence of a file with a given name.
 """
 
 _FILE_NAME_WITH_MATCHER_DESCRIPTION_REST = """\
-A condition that includes matching of the named file by a {FILE_MATCHER}.
+A condition that includes matching of the named file by {FILE_MATCHER}.
 
 
 If there are multiple {FILE_MATCHER}s associated with a single file name
@@ -86,7 +86,7 @@ If there are multiple {FILE_MATCHER}s associated with a single file name
 then the matchers are combined using {CONJUNCTION}, in order of appearance. 
 
 
-The {FILE_MATCHER_SEPARATOR} before the {FILE_MATCHER}
+The {FILE_MATCHER_SEPARATOR} before {FILE_MATCHER}
 must appear on the same line as the file name.
 
 

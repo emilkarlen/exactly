@@ -238,7 +238,7 @@ that must have been defined as {concept_name:a}.
 """
 
 _SYMBOL_NAME_ADDITIONAL_DESCRIPTION = """\
-A string that is not the name of {concept_name:a}
+An unquoted string that is not the name of {concept_name:a}
 is interpreted as the name of {symbol_concept:a}.
 """
 

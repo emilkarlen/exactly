@@ -49,7 +49,7 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION = """\
-Matches if {REGEX} matches any part of the string.
+Matches iff {REGEX} matches any part of the string.
 
 
 If {full_regex_match} is given,

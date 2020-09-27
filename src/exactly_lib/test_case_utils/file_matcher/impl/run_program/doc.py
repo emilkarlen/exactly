@@ -43,7 +43,10 @@ class RunSyntaxDescription(documentation.SyntaxDescriptionBase):
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return self._tp().fnap(_MATCHER__DESCRIPTION)
+        from exactly_lib.test_case_utils.matcher import help_texts
+        return help_texts.run_program_matcher_description(
+            self._tp().fnap(_EXE_ENV_DESCRIPTION)
+        )
 
     def _tp(self) -> TextParser:
         if self.__tp is None:
@@ -64,16 +67,10 @@ class RunSyntaxDescription(documentation.SyntaxDescriptionBase):
         return self.__tp
 
 
-_MATCHER__DESCRIPTION = """\
-Runs {program:a}. Matches iff the {exit_code} is 0.
-
-
+_EXE_ENV_DESCRIPTION = """\
 The path of the {MODEL} to match is given as an argument
 according to {PATH_ARGUMENT_POSITION}, if given,
 or as the last argument, if {PATH_ARGUMENT_POSITION} is not given.
-
-
-Transformations of the output from {PROGRAM} are ignored.
 """
 
 _PATH_ARG_POS__DESCRIPTION = """\

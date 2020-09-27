@@ -91,6 +91,7 @@ _TP = TextParser({
     'FILE_MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
     'FILES_MATCHER': syntax_elements.FILES_MATCHER_SYNTAX_ELEMENT.singular_name,
     'FILES_CONDITION': syntax_elements.FILES_CONDITION_SYNTAX_ELEMENT.singular_name,
+    'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
     'model': matcher_model.FILES_MATCHER_MODEL,
     'element': matcher_model.FILE_MATCHER_MODEL,
     'NOTE': headers.NOTE_LINE_HEADER,
@@ -102,7 +103,7 @@ _TP = TextParser({
 })
 
 _MATCHES_DESCRIPTION = """\
-Tests that the set of files contains every file in {FILES_CONDITION}.
+Matches iff the set of files contains every file in {FILES_CONDITION}.
 
 
 If {matches_full_option} is given,
@@ -129,9 +130,9 @@ Excludes contents of directories matched by {FILE_MATCHER}.
 """
 
 _CHECKS_THAT_PATH_IS_AN_EMPTY_DIRECTORY = """\
-Tests that the {model} is empty.
+Matches iff the {model} is empty.
 """
 
 _CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES = """\
-Tests the number of {element:s}.
+Matches iff the number of {element:s} satisfies {INTEGER_MATCHER}.
 """

@@ -257,10 +257,20 @@ Matches {MODEL:s} who's absolute path matches
 
 
 def _type_matcher_sed_description() -> List[docs.ParagraphItem]:
-    return _TP.fnap(_TYPE_MATCHER_SED_DESCRIPTION) + [_file_types_table()]
+    return (
+            _TP.fnap(_TYPE_MATCHER__BEFORE_TYPE_LIST) +
+            [_file_types_table()] +
+            _TP.fnap(_TYPE_MATCHER__AFTER_TYPE_LIST)
+    )
 
 
-_TYPE_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} with the given type. {SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {SYMLINK_TYPE}).
+_TYPE_MATCHER__BEFORE_TYPE_LIST = """\
+Matches {MODEL:s} who's type is {TYPE}.
+
+
 {TYPE} is one of:
+"""
+
+_TYPE_MATCHER__AFTER_TYPE_LIST = """\
+{SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {SYMLINK_TYPE}).
 """

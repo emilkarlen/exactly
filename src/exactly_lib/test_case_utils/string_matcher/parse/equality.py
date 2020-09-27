@@ -73,7 +73,7 @@ _EXPECTED_PATH_NAME = 'PATH-OF-EXPECTED'
 _RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 _DESCRIPTION = """\
-Matches if the string is equal to a given
+Matches iff the string is equal to a given
 string, {HERE_DOCUMENT} or contents of a file.
 
 

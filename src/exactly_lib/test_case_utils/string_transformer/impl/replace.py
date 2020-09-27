@@ -193,7 +193,7 @@ _TEXT_PARSER = TextParser({
 })
 
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
-Every string matching regular expression {_REG_EX_} - on a single line - is replaced with {_STRING_}.
+Replaces every string matching {_REG_EX_} (on a single line) with {_STRING_}.
 
 
 Backslash escapes in {_STRING_} are processed.

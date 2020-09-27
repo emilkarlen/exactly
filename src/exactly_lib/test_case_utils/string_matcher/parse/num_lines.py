@@ -38,5 +38,5 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION = """\
-Matches if the number of lines of the string matches {INTEGER_MATCHER}.
+Matches iff the number of lines of the string matches {INTEGER_MATCHER}.
 """

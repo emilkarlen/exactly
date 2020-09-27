@@ -24,5 +24,5 @@ class Description(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
 
 _DESCRIPTION_OF_EMPTY = """\
-Matches if the string is empty.
+Matches iff the string is empty.
 """

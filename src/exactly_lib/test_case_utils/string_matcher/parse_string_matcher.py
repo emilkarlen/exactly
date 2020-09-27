@@ -47,7 +47,12 @@ class _OnTransformedDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyn
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        ret_val = TextParser().fnap(_DESCRIPTION__ON_TRANSFORMED)
+        tp = TextParser({
+            'MATCHER': syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
+            'TRANSFORMER': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+            'MODEL': matcher_model.STRING_MATCHER_MODEL,
+        })
+        ret_val = tp.fnap(_DESCRIPTION__ON_TRANSFORMED)
         ret_val += texts.type_expression_has_syntax_of_primitive([
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
             syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name,
@@ -92,17 +97,17 @@ def _simple_expressions() -> Sequence[NameAndValue[grammar.Primitive[StringMatch
                               num_lines.Description())
         ),
         NameAndValue(
-            option_syntax.option_syntax(
-                string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-            grammar.Primitive(_parse_on_transformed,
-                              _OnTransformedDescription())
-        ),
-        NameAndValue(
             matcher_options.RUN_PROGRAM_ARGUMENT,
             grammar.Primitive(
                 run_program.parse,
                 run_program.SyntaxDescription(),
             )
+        ),
+        NameAndValue(
+            option_syntax.option_syntax(
+                string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            grammar.Primitive(_parse_on_transformed,
+                              _OnTransformedDescription())
         ),
     ]
 
@@ -126,5 +131,5 @@ _STRING_TRANSFORMER_PARSER = parse_string_transformer.parsers().simple
 _STRING_MATCHER_COMPONENT_PARSER = parsers().simple
 
 _DESCRIPTION__ON_TRANSFORMED = """\
-Applies a matcher to a transformed variant of the string.
+Applies {MATCHER} to the {MODEL} transformed by {TRANSFORMER}.
 """

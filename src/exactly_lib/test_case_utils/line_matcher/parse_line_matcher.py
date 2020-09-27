@@ -16,29 +16,24 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-REPLACE_REGEX_ARGUMENT = syntax_elements.REGEX_SYNTAX_ELEMENT.argument
-
-REPLACE_REPLACEMENT_ARGUMENT = syntax_elements.STRING_SYNTAX_ELEMENT.argument
-
-_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
-
-LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
-
 
 def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[LineMatcherSdv]:
     return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
 
 
 _TP = TextParser({
-    'REG_EX': REPLACE_REGEX_ARGUMENT.name,
+    'REG_EX': syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name,
+    'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
     'FIRST_LINE_NUMBER': FIRST_LINE_NUMBER,
     'MODEL': matcher_model.LINE_MATCHER_MODEL,
 })
 
-_REGEX_MATCHER_SED_DESCRIPTION = """Matches {MODEL:s} that contains a given {REG_EX}."""
+_REGEX_MATCHER_SED_DESCRIPTION = """\
+Matches {MODEL:s} that contain a string that matches {REG_EX}.
+"""
 
 _LINE_NUMBER_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} with a given line number.
+Matches {MODEL:s} who's line number matches {INTEGER_MATCHER}.
 
 
 Line numbers start at {FIRST_LINE_NUMBER}.
@@ -49,8 +44,7 @@ class _RegexSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSynta
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
-            a.Single(a.Multiplicity.MANDATORY,
-                     REPLACE_REGEX_ARGUMENT),
+            syntax_elements.REGEX_SYNTAX_ELEMENT.single_mandatory,
         ]
 
     @property

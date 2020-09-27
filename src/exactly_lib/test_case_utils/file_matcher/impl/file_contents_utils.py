@@ -230,7 +230,7 @@ Matches {_file_type_:s} who's contents satisfies {_matcher_type_}.
 """
 
 MATCHER_FILE_HANDLING_DESCRIPTION = """\
-The result is {HARD_ERROR} for {MODEL:a} that is not {_file_type_:a}.
+The result is {HARD_ERROR} for {MODEL:s} are not {_file_type_:s}.
 
 {SYMBOLIC_LINKS_ARE_FOLLOWED}.
 """

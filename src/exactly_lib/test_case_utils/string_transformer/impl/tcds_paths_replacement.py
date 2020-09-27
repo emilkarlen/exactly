@@ -135,8 +135,8 @@ def _first_is(key_of_first_element: str, all_vars: dict) -> iter:
 
 
 _PROLOGUE = """\
-Every occurrence of a string that matches the absolute path of a {TCDS} directory
-is replaced with the name of the corresponding {builtin_symbol}.
+Replaces every occurrence of a string that equals the absolute path of a {TCDS} directory
+with the name of the corresponding {builtin_symbol}.
 
 
 Paths/{symbol:s} that are replaced:

@@ -4,6 +4,7 @@ from exactly_lib.definitions import logic
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.matcher.impls.quantifier_matchers import MODEL, ELEMENT
@@ -12,7 +13,6 @@ from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from exactly_lib.test_case_utils.documentation import texts
 
 
 def parse_after_quantifier_token(
@@ -113,5 +113,5 @@ class QuantificationDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
 
 
 _DESCRIPTION_OF_QUANTIFICATION = """\
-Tests that {quantifier_description} {element} satisfies the given {element_matcher}.
+Matches iff {quantifier_description} {element} satisfies {element_matcher}.
 """
