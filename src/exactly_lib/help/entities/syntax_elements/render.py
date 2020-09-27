@@ -12,6 +12,7 @@ from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.textformat import utils as text_utils
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
@@ -62,8 +63,10 @@ class IndividualSyntaxElementConstructor(ArticleContentsConstructor):
     def _sub_sections(self, environment: ConstructionEnvironment) -> List[doc.SectionItem]:
         ret_val = []
         append_section_if_contents_is_non_empty(ret_val,
-                                                'Description',
+                                                headers.DESCRIPTION__HEADER__CAPITALIZED,
                                                 self.syntax_element.main_description_rest())
+        ret_val += text_utils.maybe_section(headers.NOTES__HEADER__CAPITALIZED,
+                                            self.syntax_element.notes())
         ret_val += see_also_sections(self.syntax_element.see_also_targets(), environment,
                                      uppercase_title=False)
         return ret_val

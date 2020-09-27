@@ -79,7 +79,7 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             docs.section('Relativity',
                          self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY),
-                         [docs.section(headers.NOTES__HEADER__UPPERCASE,
+                         [docs.section(headers.NOTES__HEADER__CAPITALIZED,
                                        self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY_NOTE))]),
             path_type_path_rendering()
         ]

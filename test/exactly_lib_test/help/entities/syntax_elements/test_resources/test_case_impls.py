@@ -22,6 +22,7 @@ def suite_for_syntax_element_documentation(documentation: SyntaxElementDocumenta
         TestNameAndSingleLineDescription,
 
         TestMainDescriptionRest,
+        TestNotes,
         TestInvokationVariants,
 
         TestSeeAlso,
@@ -75,6 +76,12 @@ class TestMainDescriptionRest(WithSyntaxElementDocumentationBase):
     def runTest(self):
         actual = self.documentation.main_description_rest_paragraphs()
         struct_check.is_paragraph_item_list().apply_without_message(self, actual)
+
+
+class TestNotes(WithSyntaxElementDocumentationBase):
+    def runTest(self):
+        actual = self.documentation.notes()
+        struct_check.is_section_contents.apply_without_message(self, actual)
 
 
 class TestInvokationVariants(WithSyntaxElementDocumentationBase):

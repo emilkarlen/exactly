@@ -34,6 +34,9 @@ class SyntaxElementDocumentation(EntityDocumentation):
     def main_description_rest_sub_sections(self) -> List[SectionItem]:
         return []
 
+    def notes(self) -> SectionContents:
+        return SectionContents.empty()
+
     def invokation_variants(self) -> List[InvokationVariant]:
         raise NotImplementedError('abstract method')
 
@@ -53,12 +56,15 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                  main_description_rest: Sequence[ParagraphItem],
                  main_description_rest_sub_sections: Sequence[SectionItem],
+                 notes: SectionContents,
                  invokation_variants: List[InvokationVariant],
                  syntax_element_descriptions: List[SyntaxElementDescription],
-                 see_also_targets: List[SeeAlsoTarget]):
+                 see_also_targets: List[SeeAlsoTarget],
+                 ):
         super().__init__(type_category, name_and_cross_ref_target)
         self._main_description_rest = main_description_rest
         self._main_description_rest_sub_sections = main_description_rest_sub_sections
+        self._notes = notes
         self._invokation_variants = invokation_variants
         self._syntax_element_descriptions = syntax_element_descriptions
         self._see_also_targets = see_also_targets
@@ -68,6 +74,9 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
 
     def main_description_rest_sub_sections(self) -> List[SectionItem]:
         return list(self._main_description_rest_sub_sections)
+
+    def notes(self) -> SectionContents:
+        return self._notes
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._invokation_variants
@@ -85,11 +94,14 @@ def syntax_element_documentation(type_category: Optional[TypeCategory],
                                  main_description_rest_sub_sections: Sequence[SectionItem],
                                  invokation_variants: List[InvokationVariant],
                                  syntax_element_descriptions: List[SyntaxElementDescription],
-                                 see_also_targets: List[SeeAlsoTarget]) -> SyntaxElementDocumentation:
+                                 see_also_targets: List[SeeAlsoTarget],
+                                 notes: SectionContents = SectionContents.empty(),
+                                 ) -> SyntaxElementDocumentation:
     return SyntaxElementDocumentationWithConstantValues(type_category,
                                                         name_and_cross_ref_target,
                                                         main_description_rest,
                                                         main_description_rest_sub_sections,
+                                                        notes,
                                                         invokation_variants,
                                                         syntax_element_descriptions,
                                                         see_also_targets)
@@ -104,19 +116,20 @@ def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
                           grammar: Grammar) -> SyntaxElementDocumentation:
     syntax = Syntax(grammar)
 
-    description_sub_sections = []
-    description_sub_sections += _section_iff_has_paragraphs(_PRECEDENCES_HEADER, syntax.precedence_description())
-    description_sub_sections += _section_iff_has_paragraphs(_EVALUATION_HEADER, syntax.evaluation_description())
-    description_sub_sections += _section_iff_has_paragraphs(_SYNTAX_HEADER, syntax.syntax_description())
+    details_sections = []
+    details_sections += _section_iff_has_paragraphs(_PRECEDENCES_HEADER, syntax.precedence_description())
+    details_sections += _section_iff_has_paragraphs(_EVALUATION_HEADER, syntax.evaluation_description())
+    details_sections += _section_iff_has_paragraphs(_SYNTAX_HEADER, syntax.syntax_description())
 
     return syntax_element_documentation(
         TypeCategory.LOGIC,
         type_info,
         (),
-        description_sub_sections,
+        (),
         syntax.invokation_variants(),
         syntax.syntax_element_descriptions(),
         syntax.see_also_targets(),
+        SectionContents([], details_sections),
     )
 
 

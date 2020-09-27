@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
 from exactly_lib.help.render.see_also import see_also_sections
+from exactly_lib.util.textformat import utils as text_utils
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
@@ -51,23 +52,12 @@ class InstructionDocArticleContentsConstructor(ArticleContentsConstructor):
         return [section]
 
     def _outcome(self) -> List[docs.Section]:
-        return self._maybe_section(headers.OUTCOME__HEADER__UPPERCASE,
-                                   self.documentation.outcome())
+        return text_utils.maybe_section(headers.OUTCOME__HEADER__UPPERCASE,
+                                        self.documentation.outcome())
 
     def _notes(self) -> List[docs.Section]:
-        return self._maybe_section(headers.NOTES__HEADER__UPPERCASE,
-                                   self.documentation.notes())
-
-    @staticmethod
-    def _maybe_section(header: docs.Text,
-                       contents: docs.SectionContents,
-                       ) -> List[docs.Section]:
-        return (
-            []
-            if contents.is_empty
-            else
-            [docs.Section(header, contents)]
-        )
+        return text_utils.maybe_section(headers.NOTES__HEADER__UPPERCASE,
+                                        self.documentation.notes())
 
 
 def instruction_doc_section_contents_constructor(documentation: InstructionDocumentation) -> SectionContentsConstructor:

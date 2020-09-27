@@ -59,6 +59,14 @@ class TestIndividualSyntaxElement(unittest.TestCase):
                                           [docs.section('a section header', docs.paras('section contents'))],
                                           [], [], [])
              ),
+            ('with  main description rest, and notes',
+             syntax_element_documentation(None, nrt,
+                                          [],
+                                          [docs.section('a section header', docs.paras('section contents'))],
+                                          [], [], [],
+                                          docs.section_contents(docs.paras('notes section contents')),
+                                          )
+             ),
             ('with invokation variants',
              syntax_element_documentation(None, nrt, [], (),
                                           syntax_parts.INVOKATION_VARIANTS,
@@ -70,10 +78,10 @@ class TestIndividualSyntaxElement(unittest.TestCase):
                                           syntax_parts.SYNTAX_ELEMENT_DESCRIPTIONS,
                                           [])
              ),
-            ('see_also_specific',
-             syntax_element_documentation(None, nrt, [], (), [],
+            ('see also',
+             syntax_element_documentation(None, nrt, [], (), [], [],
                                           [CustomCrossReferenceId('custom-target-name')],
-                                          [])
+                                          )
              ),
             ('full',
              syntax_element_documentation(None, nrt,
@@ -82,7 +90,8 @@ class TestIndividualSyntaxElement(unittest.TestCase):
                                           [InvokationVariant('syntax',
                                                              [docs.para('a paragraph')])],
                                           syntax_parts.SYNTAX_ELEMENT_DESCRIPTIONS,
-                                          [CustomCrossReferenceId('custom-target-name')])
+                                          [CustomCrossReferenceId('custom-target-name')],
+                                          docs.section_contents(docs.paras('notes section contents')))
              ),
         ]
         for test_case_name, documentation in test_cases:
