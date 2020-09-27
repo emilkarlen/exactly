@@ -7,4 +7,4 @@ file a-file
 [assert]
 
 
-exists a-file : ! name -regex [ab]
+exists a-file : ! name ~ [ab]

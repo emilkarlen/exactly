@@ -7,4 +7,4 @@ file a-file
 [assert]
 
 
-exists a-file : path -regex [ab][ABC]
+exists a-file : path ~ [ab][ABC]

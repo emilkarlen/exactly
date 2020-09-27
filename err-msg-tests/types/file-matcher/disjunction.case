@@ -10,4 +10,4 @@ file actual.txt
 exists actual.txt :
   type dir ||
   name *.png ||
-  name -regex [A-Z]
+  name ~ [A-Z]

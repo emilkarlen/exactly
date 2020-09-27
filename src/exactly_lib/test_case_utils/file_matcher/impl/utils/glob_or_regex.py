@@ -8,21 +8,14 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token_matchers
 
-REG_EX_OPTION = a.OptionName(long_name='regex')
-
 REG_EX_OPERATOR = a.Named('~')
 
-REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
-                           syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
-
-GLOB_OR_REGEX__ARG_USAGE = a.Choice.of_single_argument_choices(
+GLOB_OR_REGEX__ARG_USAGE = a.Choice.of_multiple_argument_choices(
     a.Multiplicity.MANDATORY,
     [
-        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
-        REG_EX_ARGUMENT,
+        [syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument],
+        [REG_EX_OPERATOR, syntax_elements.REGEX_SYNTAX_ELEMENT.argument],
     ])
-
-_SYNTAX_ELEM_STR = cl_syntax.cl_syntax_for_args((GLOB_OR_REGEX__ARG_USAGE,))
 
 
 def parser(
@@ -33,9 +26,12 @@ def parser(
         _SYNTAX_ELEM_STR,
         [
             token_stream_parsing.TokenSyntaxSetup(
-                token_matchers.is_option(REG_EX_ARGUMENT.name),
+                token_matchers.is_unquoted_and_equals(REG_EX_OPERATOR.name),
                 regex_variant_parser,
             ),
         ],
         glob_variant_parser,
     )
+
+
+_SYNTAX_ELEM_STR = cl_syntax.cl_syntax_for_args((GLOB_OR_REGEX__ARG_USAGE,))

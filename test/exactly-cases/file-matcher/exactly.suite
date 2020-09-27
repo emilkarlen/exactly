@@ -2,6 +2,7 @@
 
 [suites]
 
+name
 path
 dir-contents
 run

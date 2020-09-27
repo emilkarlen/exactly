@@ -104,7 +104,7 @@ class NameRegexVariant(NameVariant):
 
     @property
     def elements(self) -> List:
-        regex_option_str = option_syntax.option_syntax(glob_or_regex.REG_EX_OPTION)
+        regex_option_str = glob_or_regex.REG_EX_OPERATOR.name
         return [regex_option_str] + self.regex.elements
 
 
