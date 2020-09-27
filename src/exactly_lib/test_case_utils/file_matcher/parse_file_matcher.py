@@ -33,31 +33,25 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from .impl.utils import glob_or_regex
 
 NAME_MATCHER_ARGUMENT = syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
-REG_EX_OPTION = a.OptionName(long_name='regex')
+_NAME_PARSER = glob_or_regex.parser(
+    name__glob_pattern.parse,
+    name__reg_ex.parse,
+)
 
-REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
-                           syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name)
+_PATH_PARSER = glob_or_regex.parser(
+    path__glob_pattern.parse,
+    path__reg_ex.parse,
+)
 
 
 def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcherSdv]:
     return _PARSERS_FOR_MUST_BE_ON_CURRENT_LINE[must_be_on_current_line]
-
-
-def _parse_name_matcher(parser: TokenParser) -> FileMatcherSdv:
-    return parser.parse_choice_of_optional_option(name__reg_ex.parse,
-                                                  name__glob_pattern.parse,
-                                                  REG_EX_OPTION)
-
-
-def _parse_path_matcher(parser: TokenParser) -> FileMatcherSdv:
-    return parser.parse_choice_of_optional_option(path__reg_ex.parse,
-                                                  path__glob_pattern.parse,
-                                                  REG_EX_OPTION)
 
 
 def _parse_type_matcher(parser: TokenParser) -> FileMatcherSdv:
@@ -102,13 +96,7 @@ def _file_types_table() -> docs.ParagraphItem:
 class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [
-            a.Choice(a.Multiplicity.MANDATORY,
-                     [
-                         syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
-                         REG_EX_ARGUMENT,
-                     ])
-        ]
+        return [glob_or_regex.GLOB_OR_REGEX__ARG_USAGE]
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
@@ -125,13 +113,7 @@ class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntax
 class _PathSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [
-            a.Choice(a.Multiplicity.MANDATORY,
-                     [
-                         syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument,
-                         REG_EX_ARGUMENT,
-                     ])
-        ]
+        return [glob_or_regex.GLOB_OR_REGEX__ARG_USAGE]
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
@@ -170,7 +152,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         NameAndValue(
             file_matcher.NAME_MATCHER_NAME,
             grammar.Primitive(
-                _parse_name_matcher,
+                _NAME_PARSER.parse,
                 _NameSyntaxDescription()
             )
         ),
@@ -178,7 +160,7 @@ GRAMMAR = standard_expression_grammar.new_grammar(
         NameAndValue(
             file_matcher.PATH_MATCHER_NAME,
             grammar.Primitive(
-                _parse_path_matcher,
+                _PATH_PARSER.parse,
                 _PathSyntaxDescription()
             )
         ),

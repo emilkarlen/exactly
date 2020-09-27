@@ -7,7 +7,7 @@ from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
+from exactly_lib.test_case_utils.file_matcher.impl.utils import glob_or_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
@@ -104,7 +104,7 @@ class NameRegexVariant(NameVariant):
 
     @property
     def elements(self) -> List:
-        regex_option_str = option_syntax.option_syntax(parse_file_matcher.REG_EX_OPTION)
+        regex_option_str = option_syntax.option_syntax(glob_or_regex.REG_EX_OPTION)
         return [regex_option_str] + self.regex.elements
 
 
