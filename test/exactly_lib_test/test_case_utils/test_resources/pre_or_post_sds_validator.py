@@ -5,9 +5,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.symbol.sdv_validation import SdvValidator
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationAssertions, \
@@ -48,9 +48,9 @@ def check(put: unittest.TestCase,
 
 def check_ddv(put: unittest.TestCase,
               validator: DdvValidator,
-              environment: Tcds,
+              environment: TestCaseDs,
               expectation: Expectation):
-    def _check(f: Callable[[Tcds], Optional[TextRenderer]],
+    def _check(f: Callable[[TestCaseDs], Optional[TextRenderer]],
                message: str,
                expect_none: bool,
                arg):
@@ -108,11 +108,11 @@ class DdvValidatorThat(DdvValidator):
         self.post_setup_action = post_setup_action
         self.pre_sds_action = pre_sds_action
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         self.pre_sds_action(hds)
         return self.pre_sds_return_value
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         self.post_setup_action(tcds)
         return self.post_setup_return_value
 
@@ -157,7 +157,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[SdvValidator]):
 class PreOrPostSdsValidationAssertion(ValueAssertionBase[SdvValidator]):
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  expectation: ValidationAssertions,
                  ):
         self.symbols = symbols
@@ -183,7 +183,7 @@ class PreOrPostSdsValidationAssertion(ValueAssertionBase[SdvValidator]):
 
 class PreOrPostSdsDdvValidationAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  expectation: ValidationAssertions,
                  ):
         self.tcds = tcds

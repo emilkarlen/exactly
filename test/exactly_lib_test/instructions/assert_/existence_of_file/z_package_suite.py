@@ -5,9 +5,9 @@ from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHdsOptionType
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
@@ -33,12 +33,12 @@ from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_mat
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
+from exactly_lib_test.tcfs.test_resources.path_arguments import symbol_path_argument, \
+    path_argument
+from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct, ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import symbol_path_argument, \
-    path_argument
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.validation_cases import failing_validation_cases__svh
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers

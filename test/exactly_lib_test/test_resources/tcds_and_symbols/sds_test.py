@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     sds_with_act_as_curr_dir
@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              sds: SandboxDirectoryStructure):
+              sds: SandboxDs):
         pass
 
 
@@ -73,7 +73,7 @@ class ResultFilesCheck(PostActionCheck):
         self.expected_stdout_contents = expected_stdout_contents
         self.expected_stderr_contents = expected_stderr_contents
 
-    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDs):
         fc = FileChecker(put, 'Result files: ')
         fc.assert_is_plain_file_with_contents(sds.result.exitcode_file,
                                               str(self.expected_exitcode))

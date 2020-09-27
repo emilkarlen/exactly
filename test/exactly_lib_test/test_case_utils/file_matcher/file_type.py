@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
+from exactly_lib_test.tcfs.test_resources import non_hds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \

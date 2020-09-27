@@ -9,10 +9,10 @@ from exactly_lib.instructions.multi_phase import change_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.test_case_file_structure.relativity_root import REL_SDS_RESOLVERS
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.tcfs.relativity_root import REL_SDS_RESOLVERS
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -21,11 +21,11 @@ from exactly_lib_test.instructions.multi_phase.test_resources import \
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.tcds_and_symbols import sds_test, sds_env_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -221,7 +221,7 @@ class ChangeDirTo(sds_env_utils.SdsAction):
 
 
 class CwdIsActDir(sds_test.PostActionCheck):
-    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDs):
         put.assertEqual(str(sds.act_dir),
                         os.getcwd(),
                         'Current Working Directory')
@@ -231,7 +231,7 @@ class CwdIsSubDirOfActDir(sds_test.PostActionCheck):
     def __init__(self, sub_dir_name: str):
         self.sub_dir_name = sub_dir_name
 
-    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDs):
         put.assertEqual(str(sds.act_dir / self.sub_dir_name),
                         os.getcwd(),
                         'Current Working Directory')
@@ -241,13 +241,13 @@ class CwdIs(sds_test.PostActionCheck):
     def __init__(self, sds2dir_fun):
         self.sds2dir_fun = sds2dir_fun
 
-    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDs):
         put.assertEqual(str(self.sds2dir_fun(sds)),
                         os.getcwd(),
                         'Current Working Directory')
 
 
-class CwdAssertion(ValueAssertionBase[Tcds]):
+class CwdAssertion(ValueAssertionBase[TestCaseDs]):
     def __init__(self,
                  expected_location: RelOptionType,
                  expected_base_name: str,
@@ -257,7 +257,7 @@ class CwdAssertion(ValueAssertionBase[Tcds]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: Tcds,
+               value: TestCaseDs,
                message_builder: MessageBuilder):
         expected = (
             paths.simple_of_rel_option(self.expected_location,
@@ -272,7 +272,7 @@ class CwdAssertion(ValueAssertionBase[Tcds]):
                         message_builder.apply('current directory'))
 
 
-class CwdSdsAssertion(ValueAssertionBase[SandboxDirectoryStructure]):
+class CwdSdsAssertion(ValueAssertionBase[SandboxDs]):
     def __init__(self,
                  expected_location: RelSdsOptionType,
                  expected_base_name: str,
@@ -282,7 +282,7 @@ class CwdSdsAssertion(ValueAssertionBase[SandboxDirectoryStructure]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: SandboxDirectoryStructure,
+               value: SandboxDs,
                message_builder: MessageBuilder):
         sds_root = REL_SDS_RESOLVERS[self.expected_location].from_sds(value)
         expected = sds_root / self.expected_base_name

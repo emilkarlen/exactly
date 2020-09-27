@@ -4,7 +4,7 @@ from typing import Callable
 from exactly_lib.instructions.assert_ import stderr as sut
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -16,8 +16,8 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     ProgramOutputInstructionConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromTcds2Str
+from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
@@ -41,7 +41,7 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
         return sut.parser('the-instruction-name')
 
     def arrangement_for_contents_from_fun(self,
-                                          tcds_2_str: Callable[[Tcds], str],
+                                          tcds_2_str: Callable[[TestCaseDs], str],
                                           tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,

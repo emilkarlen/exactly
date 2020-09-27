@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \

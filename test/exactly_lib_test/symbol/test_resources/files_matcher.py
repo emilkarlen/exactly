@@ -1,7 +1,7 @@
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherDdv, \
     FilesMatcherAdv
@@ -60,7 +60,7 @@ class FilesMatcherDdvConstantTestImpl(FilesMatcherDdvImplBase):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesMatcherAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> FilesMatcherAdv:
         return self._constant
 
 

@@ -8,8 +8,8 @@ from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.test_case_file_structure import tcds_symbols
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import tcds_symbols
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
@@ -67,7 +67,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
 class TcdsPathsReplacementStringTransformer(StringTransformerFromLinesTransformer):
     def __init__(self,
                  name: str,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._name = name
         self._name_and_value_list = _derive_name_and_value_list(tcds)
@@ -95,11 +95,11 @@ class _Ddv(StringTransformerDdv):
     def structure(self) -> StructureRenderer:
         return renderers.header_only(self._name)
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StringTransformerAdv:
         return advs.ConstantAdv(TcdsPathsReplacementStringTransformer(self._name, tcds))
 
 
-def replace(tcds: Tcds,
+def replace(tcds: TestCaseDs,
             contents: str) -> str:
     name_and_value_list = _derive_name_and_value_list(tcds)
     return _replace(name_and_value_list, contents)
@@ -112,7 +112,7 @@ def _replace(name_and_value_list: Iterable[Tuple[str, str]],
     return contents
 
 
-def _derive_name_and_value_list(tcds: Tcds) -> iter:
+def _derive_name_and_value_list(tcds: TestCaseDs) -> iter:
     hds = tcds.hds
     all_symbols = tcds_symbols.replaced(tcds)
     if hds.case_dir == hds.act_dir:

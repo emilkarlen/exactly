@@ -7,8 +7,8 @@ from exactly_lib.symbol.data.restrictions import error_messages
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip, ValueRestriction
 from exactly_lib.symbol.err_msg import error_messages as err_msg_for_any_type
 from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants
+from exactly_lib.tcfs.relativity_validation import is_satisfied_by
 from exactly_lib.type_system import value_type
 from exactly_lib.type_system.value_type import ValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable

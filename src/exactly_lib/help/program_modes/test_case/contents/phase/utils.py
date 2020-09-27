@@ -5,9 +5,9 @@ from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
+from exactly_lib.tcfs import sds as sds, tcds_symbols
+from exactly_lib.tcfs.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.test_case.test_case_status import NAME_SKIP
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, tcds_symbols
-from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.util.textformat.structure import structures as docs, table
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.table import TableCell

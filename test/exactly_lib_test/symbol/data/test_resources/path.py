@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import Referenc
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS

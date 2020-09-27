@@ -6,13 +6,13 @@ from typing import ContextManager
 
 from exactly_lib.definitions import path
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_file_structure import tcds_symbols
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import tcds_symbols
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement as sut
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
@@ -37,7 +37,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def _transform_string_to_string(tcds: Tcds, string_input: str) -> str:
+def _transform_string_to_string(tcds: TestCaseDs, string_input: str) -> str:
     transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
     model = string_models.of_string(string_input)
     output = transformer.transform(model)
@@ -102,9 +102,9 @@ class TestWhenRelHdsCaseIsEqualToRelHdsActThenVariableWithPrecedenceShouldBeUsed
         # ARRANGE #
         with sandbox_directory_structure() as sds:
             with _with_a_non_root_dir() as a_dir:
-                hds = HomeDirectoryStructure(case_dir=a_dir,
-                                             act_dir=a_dir)
-                tcds = Tcds(hds, sds)
+                hds = HomeDs(case_dir=a_dir,
+                             act_dir=a_dir)
+                tcds = TestCaseDs(hds, sds)
                 contents_before_replacement = str(a_dir)
                 # ACT #
                 actual = _transform_string_to_string(tcds, contents_before_replacement)
@@ -119,9 +119,9 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
         # ARRANGE #
         with sandbox_directory_structure() as sds:
             with _with_a_non_root_dir() as a_dir:
-                hds = HomeDirectoryStructure(case_dir=a_dir.parent,
-                                             act_dir=a_dir)
-                tcds = Tcds(hds, sds)
+                hds = HomeDs(case_dir=a_dir.parent,
+                             act_dir=a_dir)
+                tcds = TestCaseDs(hds, sds)
                 generator = ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
                     name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,
                     name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
@@ -137,9 +137,9 @@ class TestSubDirRelationshipBetweenHdsActAndHdsCase(unittest.TestCase):
         # ARRANGE #
         with sandbox_directory_structure() as sds:
             with _with_a_non_root_dir() as a_dir:
-                hds = HomeDirectoryStructure(case_dir=a_dir,
-                                             act_dir=a_dir.parent)
-                tcds = Tcds(hds, sds)
+                hds = HomeDs(case_dir=a_dir,
+                             act_dir=a_dir.parent)
+                tcds = TestCaseDs(hds, sds)
                 generator = ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase(
                     name_of_parent_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_ACT,
                     name_of_sub_dir__rel_hds_symbol=tcds_symbols.SYMBOL_HDS_CASE,

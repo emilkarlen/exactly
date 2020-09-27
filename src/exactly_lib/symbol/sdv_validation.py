@@ -5,9 +5,9 @@ from typing import Iterable, Sequence, Optional, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -192,7 +192,7 @@ class SdvValidatorFromDdvValidator(SdvValidator):
         return self._get_validator(environment.symbols).validate_pre_sds_if_applicable(environment.hds)
 
     def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[TextRenderer]:
-        tcds = Tcds(self._hds, environment.sds)
+        tcds = TestCaseDs(self._hds, environment.sds)
         return self._get_validator(environment.symbols).validate_post_sds_if_applicable(tcds)
 
     def _get_validator(self, symbols: SymbolTable) -> DdvValidator:

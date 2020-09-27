@@ -9,11 +9,11 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.string_sdvs import str_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants
+from exactly_lib.tcfs.relativity_root import RelOptionType
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
+from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 
 
 def symbol_table_with_values_matching_references(references: Sequence[SymbolReference]) -> SymbolTable:

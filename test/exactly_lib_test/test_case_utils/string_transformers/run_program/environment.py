@@ -1,7 +1,7 @@
 import unittest
 from typing import List, Dict
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext

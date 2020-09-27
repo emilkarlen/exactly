@@ -2,13 +2,13 @@ import os
 import pathlib
 import types
 
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
-def standard_phase_file_path_sds(sds: SandboxDirectoryStructure,
+def standard_phase_file_path_sds(sds: SandboxDs,
                                  phase: phase_identifier.PhaseEnum) -> pathlib.Path:
     return standard_phase_file_path(sds.act_dir, phase)
 

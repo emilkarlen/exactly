@@ -12,9 +12,9 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources.paths import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.actions import do_return
 

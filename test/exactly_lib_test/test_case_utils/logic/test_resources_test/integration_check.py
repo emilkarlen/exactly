@@ -9,12 +9,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
-from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator, DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import sds as sds
+from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator, DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -30,13 +30,13 @@ from exactly_lib_test.section_document.test_resources.parser_classes import Cons
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as asrt_sym
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_contents_check, \
+    hds_populators
+from exactly_lib_test.tcfs.test_resources import tcds_contents_assertions as asrt_tcds_contents
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
+    tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducerFromActResult
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_contents_check, \
-    hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
     Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant
@@ -392,7 +392,7 @@ class TestFailingExpectations(TestCaseBase):
 
 class TestPopulateDirectoriesAndCwd(TestCaseBase):
     def test_tcds_SHOULD_not_exist_WHEN_flag_for_not_creating_tcds_is_given(self):
-        def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
+        def make_primitive(tcds: TestCaseDs) -> MatcherWTrace[int]:
             return matchers.MatcherWithConstantResult(True)
 
         self._check___single_and_multi(
@@ -409,7 +409,7 @@ class TestPopulateDirectoriesAndCwd(TestCaseBase):
         )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
-        def make_primitive(tcds: Tcds) -> MatcherWTrace[int]:
+        def make_primitive(tcds: TestCaseDs) -> MatcherWTrace[int]:
             return MatcherThatAssertsThatCwdIsIsActDir(self, tcds)
 
         self._check___single_and_multi(
@@ -552,14 +552,14 @@ PARSER_THAT_GIVES_MATCHER_THAT_MATCHES_WO_SYMBOL_REFS_AND_SUCCESSFUL_VALIDATION 
 _MATCHER_THAT_MATCHES = matchers.sdv_from_primitive_value()
 
 
-def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[Tcds]:
+def dir_is_empty(tcds_dir: RelOptionType) -> ValueAssertion[TestCaseDs]:
     return asrt.sub_component(str(tcds_dir),
                               REL_OPTIONS_MAP[tcds_dir].root_resolver.from_tcds,
                               file_assertions.dir_is_empty())
 
 
 def parser_of_matcher_that_is_an_assertion_on_tcds(put: unittest.TestCase,
-                                                   assertion: ValueAssertion[Tcds],
+                                                   assertion: ValueAssertion[TestCaseDs],
                                                    ) -> Parser[MatcherSdv[int]]:
     return _constant_line_matcher_type_parser_of_matcher_ddv(
         _MatcherDdvThatIsAssertionOnTcds(put, assertion)
@@ -570,10 +570,10 @@ class ValidatorThatAssertsThatCwdIsIsActDirAtPostSdsValidation(DdvValidator):
     def __init__(self, put: unittest.TestCase):
         self._put = put
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         cwd = pathlib.Path.cwd()
         self._put.assertEqual(cwd, tcds.sds.act_dir, 'current directory at validation post-sds')
         return None
@@ -583,12 +583,12 @@ class ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(DdvValida
     def __init__(self, put: unittest.TestCase):
         self._put = put
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         self._put.assertFalse(hds.case_dir.exists())
         self._put.assertFalse(hds.act_dir.exists())
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         self._put.assertFalse(tcds.sds.root_dir.exists())
         return None
 
@@ -596,7 +596,7 @@ class ValidatorThatAssertsThatTcdsDirsDoesNotDenoteExistingDirectories(DdvValida
 class MatcherThatAssertsThatCwdIsIsActDir(MatcherTestImplBase[int]):
     def __init__(self,
                  put: unittest.TestCase,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._put = put
         self._tcds = tcds
@@ -616,7 +616,7 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
 
     def __init__(self,
                  put: unittest.TestCase,
-                 assertion: ValueAssertion[Tcds],
+                 assertion: ValueAssertion[TestCaseDs],
                  ):
         self._put = put
         self._assertion = assertion
@@ -624,7 +624,7 @@ class _MatcherDdvThatIsAssertionOnTcds(MatcherDdv[int]):
     def structure(self) -> StructureRenderer:
         return self.MATCHER.structure()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         self._assertion.apply_with_message(self._put, tcds, 'assertion on tcds')
         return advs.ConstantMatcherAdv(self.MATCHER)
 

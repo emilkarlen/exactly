@@ -1,7 +1,7 @@
 from exactly_lib.definitions import message_rendering
 from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
 from exactly_lib.type_system.value_type import DataValueType
 
@@ -12,7 +12,7 @@ def unsatisfied_path_relativity(symbol_name: str,
                                 actual_relativity: SpecificPathRelativity) -> str:
     from exactly_lib.definitions import path
     from exactly_lib.definitions.test_case.instructions import define_symbol
-    from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+    from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
     from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
     def option_description_row(rel_opt: RelOptionType) -> list:

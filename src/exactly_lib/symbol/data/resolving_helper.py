@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.symbol.data.list_sdv import ListSdv
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -11,13 +11,13 @@ from exactly_lib.util.symbol_table import SymbolTable
 class DataTypeResolvingHelper:
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._symbols = symbols
         self._tcds = tcds
 
     @property
-    def tcds(self) -> Tcds:
+    def tcds(self) -> TestCaseDs:
         return self._tcds
 
     @property

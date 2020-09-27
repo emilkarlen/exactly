@@ -2,13 +2,13 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_resources import actions
@@ -19,7 +19,7 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def validate_post_setup(self, tcds: Tcds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, tcds: TestCaseDs) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def prepare(self,

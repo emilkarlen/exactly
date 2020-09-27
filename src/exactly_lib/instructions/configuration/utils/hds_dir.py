@@ -18,9 +18,9 @@ from exactly_lib.section_document.element_parsers.misc_utils import split_argume
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.str_ import str_constructor
 
 _RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'

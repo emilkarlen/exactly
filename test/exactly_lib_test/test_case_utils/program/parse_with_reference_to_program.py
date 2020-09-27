@@ -7,9 +7,9 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import path_sdvs, list_sdvs, string_sdvs
 from exactly_lib.symbol.data.path_sdvs import constant
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
 from exactly_lib.type_system.data import paths
@@ -21,13 +21,13 @@ from exactly_lib_test.symbol.data.test_resources import symbol_reference_asserti
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
+from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+from exactly_lib_test.tcfs.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources.application_environment import \
     application_environment_for_test
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator, SdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
+from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator, SdsPopulator
+from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
@@ -269,7 +269,7 @@ class TestResolving(unittest.TestCase):
         def case(relativity: RelOptionType) -> ResolvingCase:
             exe_path = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
 
-            def program_assertion(tcds: Tcds) -> ValueAssertion[Program]:
+            def program_assertion(tcds: TestCaseDs) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
                         executable_file=exe_path.value_of_any_dependency__d(tcds),
@@ -279,7 +279,7 @@ class TestResolving(unittest.TestCase):
                     transformer=asrt_line_transformer.is_identity_transformer(True)
                 )
 
-            def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
+            def program_adv_assertion(tcds: TestCaseDs) -> ValueAssertion[ProgramAdv]:
                 def get_program(adv: ProgramAdv) -> Program:
                     return adv.primitive(application_environment_for_test())
 
@@ -303,7 +303,7 @@ class TestResolving(unittest.TestCase):
                                  ) -> Sequence[ResolvingCase]:
         the_executable_program = 'the executable program'
 
-        def program_assertion(tcds: Tcds) -> ValueAssertion[Program]:
+        def program_assertion(tcds: TestCaseDs) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=the_executable_program,
@@ -313,7 +313,7 @@ class TestResolving(unittest.TestCase):
                 transformer=asrt_line_transformer.is_identity_transformer(True)
             )
 
-        def program_adv_assertion(tcds: Tcds) -> ValueAssertion[ProgramAdv]:
+        def program_adv_assertion(tcds: TestCaseDs) -> ValueAssertion[ProgramAdv]:
             def get_program(adv: ProgramAdv) -> Program:
                 return adv.primitive(application_environment_for_test())
 

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.actors.program import actor as sut
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, PostSdsExpectation
@@ -12,9 +12,9 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.test_transformers_setup import \

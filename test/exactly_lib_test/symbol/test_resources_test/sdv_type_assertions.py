@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.test_resources import sdv_type_assertions as sut
 from exactly_lib_test.symbol.test_resources import string_matcher
 from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -125,7 +125,7 @@ ARBITRARY_STRING_MATCHER_SDV = string_matcher_sdv_constant_test_impl(constant.Ma
 def _matches_string_matcher_sdv(primitive_value: ValueAssertion[MatcherWTrace] = asrt.anything_goes(),
                                 references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                 symbols: SymbolTable = None,
-                                tcds: Tcds = fake_tcds(),
+                                tcds: TestCaseDs = fake_tcds(),
                                 ) -> ValueAssertion[SymbolDependentValue]:
     return sut.matches_matcher_sdv(primitive_value,
                                    references,

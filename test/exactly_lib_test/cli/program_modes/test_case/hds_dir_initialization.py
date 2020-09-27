@@ -8,9 +8,9 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import fail_if_test_case_does_not_pass
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup_for_parser

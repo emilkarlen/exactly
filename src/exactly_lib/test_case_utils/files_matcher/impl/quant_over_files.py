@@ -2,7 +2,7 @@ import contextlib
 from typing import Iterator
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
@@ -17,7 +17,7 @@ def _element_detail_renderer(element: FileMatcherModel) -> DetailsRenderer:
 
 
 @contextlib.contextmanager
-def _file_elements_from_model(tcds: Tcds,
+def _file_elements_from_model(tcds: TestCaseDs,
                               environment: ApplicationEnvironment,
                               model: FilesMatcherModel
                               ) -> Iterator[FileMatcherModel]:

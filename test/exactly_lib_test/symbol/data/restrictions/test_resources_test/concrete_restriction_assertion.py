@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.restriction import TypeCategoryRestriction
 from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_path, path_relativities
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.name_and_value import NameAndValue

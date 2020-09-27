@@ -3,7 +3,7 @@ from typing import Set, List, Sequence
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.instructions.utils.file_maker import defs
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType, RelSdsOptionType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg_lines

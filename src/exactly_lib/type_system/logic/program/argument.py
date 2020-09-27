@@ -1,8 +1,8 @@
 from typing import List, Sequence
 
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.list_ddv import ListDdv
 
 
@@ -21,5 +21,5 @@ class ArgumentsDdv(DirDependentValue[List[str]]):
     def validators(self) -> Sequence[DdvValidator]:
         return self._validators
 
-    def value_of_any_dependency(self, tcds: Tcds) -> List[str]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> List[str]:
         return self._arguments.value_of_any_dependency(tcds)

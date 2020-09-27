@@ -10,12 +10,12 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelSdsOptionType
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelSdsOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.symbol_table import SymbolTable
@@ -30,13 +30,13 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
+from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
+    act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.test_of_test_framework_utils import single_line_source
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    act_dir_contains_exactly, tmp_user_dir_contains_exactly, result_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
@@ -82,7 +82,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(),
-            sut.Expectation(main_side_effects_on_sds=asrt.IsInstance(SandboxDirectoryStructure)),
+            sut.Expectation(main_side_effects_on_sds=asrt.IsInstance(SandboxDs)),
         )
 
     def test_tcds(self):
@@ -90,7 +90,7 @@ class TestArgumentTypesGivenToAssertions(TestCaseBase):
             PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
             single_line_source(),
             ArrangementWithSds(),
-            sut.Expectation(side_effects_on_tcds=asrt.IsInstance(Tcds)),
+            sut.Expectation(side_effects_on_tcds=asrt.IsInstance(TestCaseDs)),
         )
 
     def test_hds(self):

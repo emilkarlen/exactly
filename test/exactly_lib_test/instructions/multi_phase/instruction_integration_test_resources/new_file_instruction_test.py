@@ -5,8 +5,8 @@ from exactly_lib.instructions.utils.file_maker import defs
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType, RelNonHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
@@ -25,7 +25,7 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerSdvConstantTestImpl
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line

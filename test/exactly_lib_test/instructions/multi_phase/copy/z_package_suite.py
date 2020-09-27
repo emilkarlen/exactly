@@ -4,8 +4,8 @@ from typing import List, Sequence, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase import copy as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelHdsOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelHdsOptionType
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -16,10 +16,10 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.instructions.test_resources import parse_checker
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator
+from exactly_lib_test.tcfs.test_resources.sds_check import sds_contents_check as sds_contents_check
+from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfigurationRelHds, \
@@ -591,7 +591,7 @@ def some_destination_relativity_options() -> List[RelativityOptionConfigurationF
     ]
 
 
-CWD_RESOLVER = SdsSubDirResolverFromSdsFun(SandboxDirectoryStructure.internal_tmp_dir.fget)
+CWD_RESOLVER = SdsSubDirResolverFromSdsFun(SandboxDs.internal_tmp_dir.fget)
 MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY = ChangeDirectoryToDirectory(CWD_RESOLVER)
 
 

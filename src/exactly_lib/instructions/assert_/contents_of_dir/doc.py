@@ -10,8 +10,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.processing import exit_values
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.test_case_utils.file_matcher import file_or_dir_contents_doc

@@ -2,9 +2,9 @@ from abc import ABC
 from typing import Generic, Sequence, Callable
 
 from exactly_lib.definitions import logic
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -77,7 +77,7 @@ class NegationDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._operand.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _NegationAdv(self._operand.value_of_any_dependency(tcds))
 
 
@@ -93,7 +93,7 @@ class _SequenceOfOperandsAdv(Generic[MODEL], MatcherAdv[MODEL]):
     def of(
             make_matcher: Callable[[Sequence[MatcherWTrace[MODEL]]], MatcherWTrace[MODEL]],
             operands: Sequence[MatcherDdv[MODEL]],
-            tcds: Tcds,
+            tcds: TestCaseDs,
     ) -> MatcherAdv[MODEL]:
         return _SequenceOfOperandsAdv(
             make_matcher,
@@ -162,7 +162,7 @@ class ConjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _SequenceOfOperandsAdv.of(Conjunction,
                                          self._operands,
                                          tcds)
@@ -224,7 +224,7 @@ class DisjunctionDdv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _SequenceOfOperandsAdv.of(Disjunction,
                                          self._operands,
                                          tcds)

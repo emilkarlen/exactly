@@ -3,9 +3,9 @@ from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.logic.description import DetailsDescription
 from exactly_lib.type_system.logic.impls.advs import ConstantAdv
@@ -40,13 +40,13 @@ class ConstantDdv(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE])
     def __init__(self, adv: ApplicationEnvironmentDependentValue[PRIMITIVE]):
         self._adv = adv
 
-    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         return self._adv
 
 
 class DdvFromParts(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE]):
     def __init__(self,
-                 make_adv: Callable[[Tcds], ApplicationEnvironmentDependentValue[PRIMITIVE]],
+                 make_adv: Callable[[TestCaseDs], ApplicationEnvironmentDependentValue[PRIMITIVE]],
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  describer: DetailsRenderer = details.empty(),
                  ):
@@ -62,7 +62,7 @@ class DdvFromParts(Generic[PRIMITIVE], LogicWithDetailsDescriptionDdv[PRIMITIVE]
     def describer(self) -> DetailsRenderer:
         return self._describer
 
-    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         return self._make_adv(tcds)
 
 

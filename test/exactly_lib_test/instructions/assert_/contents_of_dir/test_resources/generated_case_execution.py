@@ -10,11 +10,11 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation2, ParseExpectation, \
     ExecutionExpectation, SourceArrangement
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct, \
+    TcdsArrangement
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct, \
-    TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_executor import \
     ExecutorOfCaseGenerator
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \

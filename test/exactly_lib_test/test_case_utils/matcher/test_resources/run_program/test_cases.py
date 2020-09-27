@@ -1,6 +1,6 @@
 from typing import List, Dict, Sequence
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

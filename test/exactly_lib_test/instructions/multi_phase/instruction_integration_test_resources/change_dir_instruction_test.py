@@ -2,12 +2,12 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.multi_phase import change_dir as sut
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOf
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

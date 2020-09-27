@@ -2,16 +2,16 @@ from pathlib import Path
 from typing import Dict, Callable, Optional
 
 from exactly_lib.common import tmp_dir_file_spaces as std_file_spaces
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, TmpFileStorage
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatDoNotCreateFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds, fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 
@@ -37,8 +37,8 @@ def _default_get_tmp_space(root_dir: Path) -> DirFileSpace:
 
 class InstructionEnvironmentPostSdsBuilder:
     def __init__(self,
-                 hds: HomeDirectoryStructure = fake_hds(),
-                 sds: SandboxDirectoryStructure = fake_sds(),
+                 hds: HomeDs = fake_hds(),
+                 sds: SandboxDs = fake_sds(),
                  environ: Optional[Dict[str, str]] = None,
                  timeout_in_seconds: int = None,
                  symbols: SymbolTable = None,
@@ -54,9 +54,9 @@ class InstructionEnvironmentPostSdsBuilder:
         self.get_instr_tmp_file_space = lambda path: TmpFileStorage(path, get_paths_access_for_dir)
 
     @staticmethod
-    def new(hds: HomeDirectoryStructure = fake_hds(),
+    def new(hds: HomeDs = fake_hds(),
             environ: Dict[str, str] = None,
-            sds: SandboxDirectoryStructure = fake_sds(),
+            sds: SandboxDs = fake_sds(),
             timeout_in_seconds: int = None,
             symbols: SymbolTable = None
             ) -> 'InstructionEnvironmentPostSdsBuilder':
@@ -69,7 +69,7 @@ class InstructionEnvironmentPostSdsBuilder:
         )
 
     @staticmethod
-    def new_tcds(tcds: Tcds = fake_tcds(),
+    def new_tcds(tcds: TestCaseDs = fake_tcds(),
                  symbols: SymbolTable = None,
                  process_execution_settings: ProcessExecutionSettings = proc_exe_env_for_test(),
                  ) -> 'InstructionEnvironmentPostSdsBuilder':
@@ -84,7 +84,7 @@ class InstructionEnvironmentPostSdsBuilder:
     @staticmethod
     def new_from_pre_sds(
             environment: InstructionEnvironmentForPreSdsStep,
-            sds: SandboxDirectoryStructure = fake_sds(),
+            sds: SandboxDs = fake_sds(),
     ) -> 'InstructionEnvironmentPostSdsBuilder':
         return InstructionEnvironmentPostSdsBuilder(
             environment.hds,

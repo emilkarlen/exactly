@@ -1,7 +1,7 @@
 import unittest
 from typing import Callable, List
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.copy.test_resources import argument_syntax as args
 from exactly_lib_test.instructions.multi_phase.copy.test_resources import case_definitions
@@ -12,8 +12,8 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     ConfigurationBase, TestCaseWithConfiguration
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.sds_check import sds_contents_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

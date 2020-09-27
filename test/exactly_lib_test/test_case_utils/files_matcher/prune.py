@@ -5,8 +5,8 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs

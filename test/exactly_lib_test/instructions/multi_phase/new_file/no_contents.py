@@ -18,10 +18,10 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources.files import file_structure as fs

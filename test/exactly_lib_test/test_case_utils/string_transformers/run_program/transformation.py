@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \

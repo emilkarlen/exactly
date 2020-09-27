@@ -6,7 +6,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 

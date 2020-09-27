@@ -10,11 +10,11 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.tcfs.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.actor.test_resources.actors import dummy_actor
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

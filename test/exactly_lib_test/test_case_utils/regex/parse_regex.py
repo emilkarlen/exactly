@@ -7,8 +7,8 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex import parse_regex as sut
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
@@ -22,7 +22,7 @@ from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContex
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv
@@ -67,8 +67,8 @@ class Expectation:
 
     def matches_regex_sdv(self,
                           symbols: SymbolTable,
-                          tcds: Tcds) -> ValueAssertion[RegexSdv]:
-        def on_primitive_value(tcds: Tcds) -> ValueAssertion[Pattern]:
+                          tcds: TestCaseDs) -> ValueAssertion[RegexSdv]:
+        def on_primitive_value(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
             return self.pattern
 
         return matches_regex_sdv(primitive_value=on_primitive_value,
@@ -568,7 +568,7 @@ class TestResolvingOfSymbolReferences(unittest.TestCase):
                                                     matching_string: str,
                                                     non_matching_string: str,
                                                     symbols: SymbolTable):
-        def equals_expected_pattern_string(tcds: Tcds) -> ValueAssertion[Pattern]:
+        def equals_expected_pattern_string(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
             return _AssertPattern(
                 pattern_string=expected_pattern_string,
                 matching_strings=[matching_string],

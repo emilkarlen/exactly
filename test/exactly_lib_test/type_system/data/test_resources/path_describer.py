@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForPrimitive
 from exactly_lib.type_system.data.path_describer import PathDescriberForPrimitive
 from exactly_lib.util.render.combinators import ConstantR

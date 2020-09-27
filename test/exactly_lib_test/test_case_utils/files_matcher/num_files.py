@@ -4,7 +4,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import string_m
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut

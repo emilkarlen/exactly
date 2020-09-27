@@ -3,12 +3,12 @@ from abc import abstractmethod, ABC
 from pathlib import Path
 from typing import Optional, Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import Max1DependencyDdv
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
+from exactly_lib.tcfs.dir_dependent_value import Max1DependencyDdv
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
     DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
 from exactly_lib.type_system.data.path_part import PathPartDdv
 
@@ -76,10 +76,10 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         raise NotImplementedError()
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
         raise NotImplementedError()
 
     @abstractmethod
@@ -87,13 +87,13 @@ class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
         pass
 
     @abstractmethod
-    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPath:
+    def value_pre_sds__d(self, hds: HomeDs) -> DescribedPath:
         pass
 
     @abstractmethod
-    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPath:
+    def value_post_sds__d(self, sds: SandboxDs) -> DescribedPath:
         pass
 
     @abstractmethod
-    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPath:
+    def value_of_any_dependency__d(self, tcds: TestCaseDs) -> DescribedPath:
         pass

@@ -19,7 +19,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo

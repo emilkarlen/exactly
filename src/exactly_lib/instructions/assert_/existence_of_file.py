@@ -6,7 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
     invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
-from exactly_lib.definitions import instruction_arguments, logic
+from exactly_lib.definitions import logic
 from exactly_lib.definitions.argument_rendering import path_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -18,6 +18,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs import ddv_validation
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
@@ -25,7 +26,6 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case_file_structure import ddv_validation
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate, path_check
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs

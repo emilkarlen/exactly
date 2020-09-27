@@ -4,20 +4,20 @@ from exactly_lib.instructions.multi_phase import new_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check, path_name_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_contents_assertions as asrt_tcds_contents
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources import tcds_contents_assertions as asrt_tcds_contents
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import cwd_contents
+from exactly_lib_test.tcfs.test_resources.sds_populator import cwd_contents
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \

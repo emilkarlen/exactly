@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence, Optional
 
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase

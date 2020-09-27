@@ -26,14 +26,14 @@ from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
+from exactly_lib.tcfs import path_relativity
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.test_case_file_structure import path_relativity
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.parse import parse_path, rel_opts_configuration

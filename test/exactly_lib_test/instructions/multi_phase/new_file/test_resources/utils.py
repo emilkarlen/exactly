@@ -2,7 +2,7 @@ from enum import Enum
 
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHdsOptionType, \
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelNonHdsOptionType, \
     PathRelativityVariants
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

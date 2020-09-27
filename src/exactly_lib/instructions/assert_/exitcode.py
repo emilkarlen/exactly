@@ -15,10 +15,10 @@ from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg.header_rendering import unexpected_attribute__major_block
@@ -102,7 +102,7 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 
 class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescriptionBase):
-    def __init__(self, sds: SandboxDirectoryStructure):
+    def __init__(self, sds: SandboxDs):
         super().__init__()
         self._sds = sds
 
@@ -157,7 +157,7 @@ class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
     def structure(self) -> StructureRenderer:
         return _PROPERTY_GETTER_STRUCTURE
 
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetterAdv[None, int]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[None, int]:
         return PropertyGetterAdvConstant(_ExitCodeGetter(tcds.sds))
 
 

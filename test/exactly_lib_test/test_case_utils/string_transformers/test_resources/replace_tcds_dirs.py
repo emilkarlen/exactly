@@ -1,7 +1,7 @@
 import os
 
-from exactly_lib.test_case_file_structure import tcds_symbols
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import tcds_symbols
+from exactly_lib.tcfs.tcds import TestCaseDs
 
 
 class ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables:
@@ -17,17 +17,17 @@ class ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables:
     def __init__(self):
         self.sorted_symbol_keys = sorted(tcds_symbols.ALL_REPLACED_SYMBOLS)
 
-    def contents_before_replacement(self, tcds: Tcds) -> str:
+    def contents_before_replacement(self, tcds: TestCaseDs) -> str:
         symbols_dict = tcds_symbols.replaced(tcds)
         values_in_determined_order = list(map(symbols_dict.get, self.sorted_symbol_keys))
         return self._content_from_values(values_in_determined_order,
                                          tcds)
 
-    def expected_contents_after_replacement(self, tcds: Tcds) -> str:
+    def expected_contents_after_replacement(self, tcds: TestCaseDs) -> str:
         return self._content_from_values(self.sorted_symbol_keys,
                                          tcds)
 
-    def unexpected_contents_after_replacement(self, tcds: Tcds) -> str:
+    def unexpected_contents_after_replacement(self, tcds: TestCaseDs) -> str:
         """
         :return: Gives a variation of the expected result, that is not equal to the expected result.
         """
@@ -36,7 +36,7 @@ class ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables:
 
     @staticmethod
     def _content_from_values(values_in_determined_order: iter,
-                             tcds: Tcds) -> str:
+                             tcds: TestCaseDs) -> str:
         """
         Generates a string with a combination of values that should, and should not, be replaced.
         """
@@ -64,7 +64,7 @@ class ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
     is a sub directory of the other.
     """
 
-    def contents_before_replacement(self, tcds: Tcds) -> str:
+    def contents_before_replacement(self, tcds: TestCaseDs) -> str:
         symbols_dict = tcds_symbols.symbols_rel_hds(tcds.hds)
 
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
@@ -75,7 +75,7 @@ class ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
             symbols_dict[self.name_of_sub_dir__rel_hds_symbol], ])
         return ret_val
 
-    def expected_contents_after_replacement(self, tcds: Tcds) -> str:
+    def expected_contents_after_replacement(self, tcds: TestCaseDs) -> str:
         just_some_stuff_that_should_not_be_replaced = str(tcds.sds.root_dir)
 
         ret_val = '\n'.join([
@@ -85,7 +85,7 @@ class ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndC
         ])
         return ret_val
 
-    def unexpected_contents_after_replacement(self, tcds: Tcds) -> str:
+    def unexpected_contents_after_replacement(self, tcds: TestCaseDs) -> str:
         """
         :return: Gives a variation of the expected result, that is not equal to the expected result.
         """

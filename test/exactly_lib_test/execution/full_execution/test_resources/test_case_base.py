@@ -4,18 +4,18 @@ import shutil
 import unittest
 from typing import Dict, Optional
 
-from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 
 
@@ -95,7 +95,7 @@ class FullExecutionTestCaseBase:
         return self.__full_result
 
     @property
-    def sds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> SandboxDs:
         return self.__full_result.sds
 
     def assert_is_regular_file_with_contents(self,

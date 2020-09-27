@@ -2,7 +2,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_matcher, str_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherDdvImplBase, FileMatcherImplBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
@@ -51,7 +51,7 @@ class _Ddv(FileMatcherDdvImplBase):
             details.String(str_constructor.Repr(string_rendering.AsToStringObject(self._glob_pattern.describer())))
         )
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(_FileMatcherNameGlobPattern(self._glob_pattern.value_of_any_dependency(tcds)))
 
 

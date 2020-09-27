@@ -9,10 +9,10 @@ from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.documentation import texts
@@ -168,7 +168,7 @@ class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
     def validator(self) -> DdvValidator:
         return self._validators
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _FileContentsMatcherAdv(self._names,
                                        self._model_constructor.value_of_any_dependency(tcds),
                                        self._contents_matcher.value_of_any_dependency(tcds))

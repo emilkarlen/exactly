@@ -2,8 +2,8 @@ from typing import Sequence, Callable
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformerAdv
 from exactly_lib.util.symbol_table import SymbolTable
@@ -29,7 +29,7 @@ class Ddv(StringTransformerDdv):
     def __init__(self,
                  structure: StructureRenderer,
                  validator: DdvValidator,
-                 mk_adv: Callable[[Tcds], StringTransformerAdv],
+                 mk_adv: Callable[[TestCaseDs], StringTransformerAdv],
                  ):
         self._structure = structure
         self._validator = validator
@@ -42,5 +42,5 @@ class Ddv(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StringTransformerAdv:
         return self._mk_adv(tcds)

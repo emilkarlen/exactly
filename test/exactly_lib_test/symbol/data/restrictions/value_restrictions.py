@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
@@ -15,7 +15,7 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer import symb
 from exactly_lib_test.symbol.test_resources import file_matcher
 from exactly_lib_test.symbol.test_resources import string
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
-from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
+from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 
 
 def suite() -> unittest.TestSuite:

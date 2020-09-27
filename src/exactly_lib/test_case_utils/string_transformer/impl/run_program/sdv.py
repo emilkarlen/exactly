@@ -3,7 +3,7 @@ from typing import Callable
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.run_program import primitive
@@ -21,8 +21,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(ignore_exit_code: bool, program: ProgramSdv) -> StringTransformerSdv:
-    def get_mk_adv(program_ddv: ProgramDdv) -> Callable[[Tcds], StringTransformerAdv]:
-        def mk_adv(tcds: Tcds) -> StringTransformerAdv:
+    def get_mk_adv(program_ddv: ProgramDdv) -> Callable[[TestCaseDs], StringTransformerAdv]:
+        def mk_adv(tcds: TestCaseDs) -> StringTransformerAdv:
             return _RunProgramAdv(ignore_exit_code,
                                   program_ddv.value_of_any_dependency(tcds))
 

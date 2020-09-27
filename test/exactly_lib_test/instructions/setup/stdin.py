@@ -11,8 +11,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.data import path_ddv
@@ -29,8 +29,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
 from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext, StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf

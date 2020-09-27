@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_.contents_of_file import ACTUAL_RELATIVITY_CONFIGURATION
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \

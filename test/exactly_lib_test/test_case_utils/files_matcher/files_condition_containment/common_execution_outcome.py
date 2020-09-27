@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args

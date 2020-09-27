@@ -1,6 +1,6 @@
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 
 
 class TcDirInfo:

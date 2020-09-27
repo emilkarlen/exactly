@@ -1,7 +1,7 @@
 from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.test_case_utils.matcher.property_matcher import PROP_TYPE
@@ -27,7 +27,7 @@ class PropertyGetterDdvConstant(Generic[PROP_TYPE, T], PropertyGetterDdv[PROP_TY
     def structure(self) -> StructureRenderer:
         return self._constant.structure()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetterAdv[PROP_TYPE, T]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[PROP_TYPE, T]:
         return PropertyGetterAdvConstant(self._constant)
 
 

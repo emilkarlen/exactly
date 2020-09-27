@@ -3,12 +3,12 @@ import unittest
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.path_check import PathCheck
 from exactly_lib.type_system.data import paths
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -92,7 +92,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
             self.assertFalse(post_validate.is_success)
 
 
-def _env_from(sds: SandboxDirectoryStructure,
+def _env_from(sds: SandboxDs,
               environment: InstructionEnvironmentForPreSdsStep) -> InstructionEnvironmentForPostSdsStep:
     return InstructionEnvironmentPostSdsBuilder.new_from_pre_sds(
         environment,

@@ -6,7 +6,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
     SingleCaseGenerator, ExecutionResult, RESULT__MATCHES
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_type_tests

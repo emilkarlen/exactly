@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
@@ -17,9 +17,9 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import validation as validation_utils
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_hds

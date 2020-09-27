@@ -2,17 +2,17 @@ from typing import Callable
 
 from exactly_lib.instructions.assert_ import contents_of_file as sut
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds, \
+from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds, \
     sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
+from exactly_lib_test.test_case.test_resources.act_result import ActEnvironment, ActResultProducer
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -43,7 +43,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
         )
 
     def arrangement_for_contents_from_fun(self,
-                                          tcds_2_str: Callable[[Tcds], str],
+                                          tcds_2_str: Callable[[TestCaseDs], str],
                                           tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,
@@ -78,7 +78,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
 
 class _ActResultProducer(ActResultProducer):
     def __init__(self,
-                 tcds_2_str: Callable[[Tcds], str],
+                 tcds_2_str: Callable[[TestCaseDs], str],
                  file_name: str):
         self.tcds_2_str = tcds_2_str
         self.file_name = file_name

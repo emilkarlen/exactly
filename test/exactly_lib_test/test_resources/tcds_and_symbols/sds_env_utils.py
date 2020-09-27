@@ -4,11 +4,11 @@ from contextlib import contextmanager
 
 from exactly_lib import program_info
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds_module
+from exactly_lib.tcfs import sds as sds_module
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import \
+from exactly_lib_test.tcfs.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources.ds_action import \
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs, PlainSdsAction
 
 

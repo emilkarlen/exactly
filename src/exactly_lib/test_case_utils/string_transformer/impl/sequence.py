@@ -3,12 +3,11 @@ from typing import Sequence
 from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions, \
-    InfixOperatorDescriptionFromFunctions
+from exactly_lib.test_case_utils.expression.grammar_elements import InfixOperatorDescriptionFromFunctions
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
@@ -92,7 +91,7 @@ class _StringTransformerSequenceDdv(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StringTransformerAdv:
         return _StringTransformerSequenceAdv([
             transformer.value_of_any_dependency(tcds)
             for transformer in self._transformers

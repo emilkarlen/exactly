@@ -1,8 +1,8 @@
 from typing import List, Set, Sequence
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system import utils
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.util.render import combinators as rend_comb
@@ -37,7 +37,7 @@ class ListDdv(MultiDependenciesDdv[List[str]]):
         return [e.value_when_no_dir_dependencies()
                 for e in self._string_elements]
 
-    def value_of_any_dependency(self, tcds: Tcds) -> List[str]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> List[str]:
         """
         :rtype: List of `str`
         """

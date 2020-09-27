@@ -3,11 +3,11 @@ from typing import Sequence, Callable
 
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib_test.instructions.configuration.actor.test_resources import CheckHelper, \
     exe_file_in_interpreter_default_relativity_dir, is_exe_file_command_for_source
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -23,7 +23,7 @@ class TestSourceInterpreterActorForExecutableFile(unittest.TestCase):
             self,
             instruction_argument_source_template: str,
             symbol_usages: ValueAssertion[Sequence[SymbolUsage]],
-            expected_command: Callable[[Tcds], ValueAssertion[Command]],
+            expected_command: Callable[[TestCaseDs], ValueAssertion[Command]],
             hds_contents: hds_populators.HdsPopulator = hds_populators.empty(),
     ):
         self.helper.check_both_single_and_multiple_line_source(

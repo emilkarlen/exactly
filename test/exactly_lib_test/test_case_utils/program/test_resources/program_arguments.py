@@ -1,5 +1,5 @@
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
+from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.strings import WithToString

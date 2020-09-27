@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_matcher.parse.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -21,13 +21,13 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \

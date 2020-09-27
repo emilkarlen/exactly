@@ -20,8 +20,8 @@ from exactly_lib_test.actors.util.actor_from_parts.test_resources import ParserT
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.tcfs.test_resources.paths import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

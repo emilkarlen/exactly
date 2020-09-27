@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 
 
@@ -33,5 +33,5 @@ class StdinDataDdv(DirDependentValue[StdinData]):
     def fragments(self) -> Sequence[StringOrPathDdv]:
         return self._fragments
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StdinData:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StdinData:
         return StdinData([f.value_of_any_dependency(tcds) for f in self._fragments])

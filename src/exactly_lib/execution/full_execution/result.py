@@ -4,8 +4,8 @@ from typing import Optional
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome, ExecutionFailureStatus
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.test_case_status import TestCaseStatus
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class FullExeResultStatus(Enum):
@@ -28,7 +28,7 @@ class FullExeResult(ResultBase):
 
     def __init__(self,
                  status: FullExeResultStatus,
-                 sds: Optional[SandboxDirectoryStructure],
+                 sds: Optional[SandboxDs],
                  action_to_check_outcome: Optional[ActionToCheckOutcome],
                  failure_info: Optional[FailureInfo]):
         super().__init__(sds, action_to_check_outcome, failure_info)
@@ -46,7 +46,7 @@ def new_skipped() -> FullExeResult:
                          None)
 
 
-def new_pass(sds: SandboxDirectoryStructure,
+def new_pass(sds: SandboxDs,
              action_to_check_outcome: ActionToCheckOutcome) -> FullExeResult:
     return FullExeResult(FullExeResultStatus.PASS,
                          sds,

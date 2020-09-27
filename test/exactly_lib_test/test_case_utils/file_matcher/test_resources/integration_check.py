@@ -2,7 +2,7 @@ import pathlib
 from typing import Callable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import DescribedPath

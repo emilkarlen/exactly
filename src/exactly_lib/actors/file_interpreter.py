@@ -18,6 +18,8 @@ from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
@@ -27,8 +29,6 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck

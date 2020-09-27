@@ -3,7 +3,7 @@ from typing import Iterable, Set
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
 
 

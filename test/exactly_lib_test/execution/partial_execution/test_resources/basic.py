@@ -8,12 +8,12 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
@@ -37,17 +37,17 @@ class Result(tuple):
     """
 
     def __new__(cls,
-                hds: HomeDirectoryStructure,
+                hds: HomeDs,
                 partial_result: PartialExeResult):
         return tuple.__new__(cls, (hds,
                                    partial_result))
 
     @property
-    def hds(self) -> HomeDirectoryStructure:
+    def hds(self) -> HomeDs:
         return self[0]
 
     @property
-    def sds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> SandboxDs:
         return self.partial_result.sds
 
     @property
@@ -55,8 +55,8 @@ class Result(tuple):
         return self[1]
 
 
-def result_assertion(hds: ValueAssertion[HomeDirectoryStructure] = asrt.anything_goes(),
-                     sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+def result_assertion(hds: ValueAssertion[HomeDs] = asrt.anything_goes(),
+                     sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
                      partial_result: ValueAssertion[PartialExeResult] = asrt.anything_goes(),
                      ) -> ValueAssertion[Result]:
     return asrt.and_([
@@ -143,8 +143,8 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 class Arrangement:
     def __init__(self,
                  actor: Actor = dummy_actor(),
-                 hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
-                                                                      pathlib.Path().resolve()),
+                 hds: HomeDs = HomeDs(pathlib.Path().resolve(),
+                                      pathlib.Path().resolve()),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,

@@ -18,11 +18,11 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
+    tcds_populators, sds_populator
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
-    tcds_populators, sds_populator
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, tcds_with_act_as_curr_dir

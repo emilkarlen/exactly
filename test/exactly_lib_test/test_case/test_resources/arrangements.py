@@ -6,10 +6,10 @@ from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
+from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, PlainTcdsActionFromTcdsAction
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test

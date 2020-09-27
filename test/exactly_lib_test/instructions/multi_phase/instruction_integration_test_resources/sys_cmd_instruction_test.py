@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.actors.program.test_resources import tmp_dir_in_path_with_files
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     suite_for_cases
 from exactly_lib_test.instructions.multi_phase.test_resources import sys_cmd
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
+from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.program.test_resources import program_arguments

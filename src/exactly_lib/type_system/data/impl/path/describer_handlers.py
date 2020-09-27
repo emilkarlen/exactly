@@ -5,11 +5,11 @@ from pathlib import Path
 from typing import Optional
 
 from exactly_lib.definitions import path
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import RelOptionType, DirectoryStructurePartition, \
     SpecificPathRelativity
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.impl.path import described_w_handler
@@ -78,7 +78,7 @@ class PathDescriberHandlerForDdvWithDdv(PathDescriberHandlerForDdv):
             ),
         )
 
-    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+    def value_pre_sds(self, primitive: Path, hds: HomeDs) -> PathDescriberHandlerForPrimitive:
         return PathDescriberHandlerForPrimitiveWithPrimitive(
             primitive,
             PathManipulationFunctionalityForFixedValueForNotRelCwd(
@@ -87,16 +87,16 @@ class PathDescriberHandlerForDdvWithDdv(PathDescriberHandlerForDdv):
         )
 
     def value_post_sds__wo_hds(self, primitive: Path,
-                               sds: SandboxDirectoryStructure) -> PathDescriberHandlerForPrimitive:
-        return self.value_post_sds(primitive, Tcds(_DUMMY_HDS, sds))
+                               sds: SandboxDs) -> PathDescriberHandlerForPrimitive:
+        return self.value_post_sds(primitive, TestCaseDs(_DUMMY_HDS, sds))
 
-    def value_post_sds(self, primitive: Path, tcds: Tcds) -> PathDescriberHandlerForPrimitive:
+    def value_post_sds(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
         return PathDescriberHandlerForPrimitiveWithPrimitive(
             primitive,
             self._fixation(tcds),
         )
 
-    def value_of_any_dependency(self, primitive: Path, tcds: Tcds) -> PathDescriberHandlerForPrimitive:
+    def value_of_any_dependency(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
         return PathDescriberHandlerForPrimitiveWithPrimitive(
             primitive,
             self._fixation(tcds),
@@ -105,7 +105,7 @@ class PathDescriberHandlerForDdvWithDdv(PathDescriberHandlerForDdv):
     def _resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         return self._path_ddv.resolving_dependency()
 
-    def _fixation(self, tcds: Tcds) -> PathManipulationFunctionalityForFixedDdv:
+    def _fixation(self, tcds: TestCaseDs) -> PathManipulationFunctionalityForFixedDdv:
         if self._relativity_type is RelOptionType.REL_CWD:
             return PathManipulationFunctionalityForFixedValueForRelCwd(
                 self._path_ddv,
@@ -157,7 +157,7 @@ class PathManipulationFunctionalityForFixedValueForNotRelCwd(PathManipulationFun
 class PathManipulationFunctionalityForFixedValueForRelCwd(PathManipulationFunctionalityForFixedDdv):
     def __init__(self,
                  ddv: PathDdv,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  cwd: Optional[Path],
                  ):
         super().__init__(ddv)
@@ -236,10 +236,10 @@ class _ParentPathDdv(PathDdv):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self._get_ddv().value_when_no_dir_dependencies()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         return self._get_ddv().value_pre_sds(hds)
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
         return self._get_ddv().value_post_sds(sds)
 
     def describer(self) -> PathDescriberForDdv:
@@ -252,21 +252,21 @@ class _ParentPathDdv(PathDdv):
             self._describer_handler().value_when_no_dir_dependencies(primitive),
         )
 
-    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPath:
+    def value_pre_sds__d(self, hds: HomeDs) -> DescribedPath:
         primitive = self.value_pre_sds(hds)
         return described_w_handler.DescribedPathWHandler(
             primitive,
             self._describer_handler().value_pre_sds(primitive, hds),
         )
 
-    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPath:
+    def value_post_sds__d(self, sds: SandboxDs) -> DescribedPath:
         primitive = self.value_post_sds(sds)
         return described_w_handler.DescribedPathWHandler(
             primitive,
             self._describer_handler().value_post_sds__wo_hds(primitive, sds),
         )
 
-    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPath:
+    def value_of_any_dependency__d(self, tcds: TestCaseDs) -> DescribedPath:
         primitive = self.value_of_any_dependency(tcds)
         return described_w_handler.DescribedPathWHandler(
             primitive,
@@ -301,7 +301,7 @@ class _ParentPathDdv(PathDdv):
         return paths.constant_path_part(head)
 
 
-_DUMMY_HDS = HomeDirectoryStructure(
+_DUMMY_HDS = HomeDs(
     pathlib.Path(path.EXACTLY_DIR__REL_HDS_CASE),
     pathlib.Path(path.EXACTLY_DIR__REL_HDS_ACT),
 )

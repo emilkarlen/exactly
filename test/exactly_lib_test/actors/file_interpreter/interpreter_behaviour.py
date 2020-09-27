@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.file_interpreter.configuration import TheConfigurationBase, \
@@ -14,10 +14,10 @@ from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpe
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path

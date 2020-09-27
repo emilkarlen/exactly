@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import string_sdv as sut
 from exactly_lib.symbol.data.impl import string_sdv_impls as impl
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, is_any_data_type
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.data import concrete_strings as csv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su

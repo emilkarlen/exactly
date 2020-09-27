@@ -2,9 +2,9 @@ from typing import Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string_transformer
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -101,7 +101,7 @@ class ProgramDdv(LogicWithNodeDescriptionDdv[Program]):
     def validator(self) -> DdvValidator:
         return ddv_validators.all_of(self._validators)
 
-    def value_of_any_dependency(self, tcds: Tcds) -> ProgramAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> ProgramAdv:
         return ProgramAdv(self.command.value_of_any_dependency(tcds),
                           self.stdin.value_of_any_dependency(tcds),
                           self.transformation.value_of_any_dependency(tcds))

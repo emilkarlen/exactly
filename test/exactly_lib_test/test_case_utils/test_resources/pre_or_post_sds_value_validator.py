@@ -2,10 +2,10 @@ import unittest
 from typing import Optional, Callable, Any
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
+from exactly_lib.tcfs.ddv_validation import DdvValidator, \
     ConstantDdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationAssertions, \
     ValidationActual
@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 def check(put: unittest.TestCase,
           validator: DdvValidator,
-          tcds: Tcds,
+          tcds: TestCaseDs,
           expectation: Expectation):
     def _check(f: Callable[[Any], Optional[TextRenderer]],
                message: str,
@@ -50,9 +50,9 @@ def check(put: unittest.TestCase,
 
 class ValidatorThat(DdvValidator):
     def __init__(self,
-                 pre_sds_action: Callable[[HomeDirectoryStructure], None] = do_nothing,
+                 pre_sds_action: Callable[[HomeDs], None] = do_nothing,
                  pre_sds_return_value: Optional[TextRenderer] = None,
-                 post_setup_action: Callable[[Tcds], None] = do_nothing,
+                 post_setup_action: Callable[[TestCaseDs], None] = do_nothing,
                  post_setup_return_value: Optional[TextRenderer] = None,
                  ):
         self.post_setup_return_value = post_setup_return_value
@@ -60,11 +60,11 @@ class ValidatorThat(DdvValidator):
         self.post_setup_action = post_setup_action
         self.pre_sds_action = pre_sds_action
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         self.pre_sds_action(hds)
         return self.pre_sds_return_value
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         self.post_setup_action(tcds)
         return self.post_setup_return_value
 
@@ -79,7 +79,7 @@ def constant_validator(result: ValidationActual) -> DdvValidator:
 class PreOrPostSdsValidatorAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
                  expectation: ValidationAssertions,
-                 tcds: Tcds):
+                 tcds: TestCaseDs):
         self.expectation = expectation
         self.tcds = tcds
 
@@ -101,7 +101,7 @@ class PreOrPostSdsValidatorAssertion(ValueAssertionBase[DdvValidator]):
 
 class PreOrPostSdsValueValidationAssertion(ValueAssertionBase[DdvValidator]):
     def __init__(self,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  expectation: ValidationAssertions,
                  ):
         self.tcds = tcds

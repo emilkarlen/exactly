@@ -2,9 +2,9 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
+from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds
+from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer, ActResultProducerFromActResult
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction

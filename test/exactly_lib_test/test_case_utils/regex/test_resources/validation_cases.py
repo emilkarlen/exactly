@@ -2,7 +2,7 @@ from typing import List, Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext

@@ -14,10 +14,10 @@ from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import DirWithSubDirs
+from exactly_lib.tcfs import sds as sds
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType
+from exactly_lib.tcfs.relative_path_options import REL_SDS_OPTIONS_MAP
+from exactly_lib.tcfs.sds import DirWithSubDirs
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

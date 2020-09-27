@@ -13,8 +13,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
-from exactly_lib.test_case_file_structure import relative_path_options as rel_opts
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs import relative_path_options as rel_opts
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.parse.token import Token

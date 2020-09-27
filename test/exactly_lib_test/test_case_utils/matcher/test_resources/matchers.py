@@ -5,10 +5,10 @@ from typing import TypeVar, Sequence, List
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -20,9 +20,9 @@ from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test
-from exactly_lib_test.test_case_file_structure.test_resources.application_environment import \
+from exactly_lib_test.tcfs.test_resources.application_environment import \
     application_environment_for_test
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
 MODEL = TypeVar('MODEL')
@@ -65,10 +65,10 @@ def sdv_of_unconditionally_matching_matcher() -> MatcherSdv[MODEL]:
 
 def sdv_from_parts(references: Sequence[SymbolReference],
                    validator: DdvValidator,
-                   matcher: Callable[[SymbolTable, Tcds], MatcherWTrace[MODEL]],
+                   matcher: Callable[[SymbolTable, TestCaseDs], MatcherWTrace[MODEL]],
                    ) -> MatcherSdv[MODEL]:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
-        def make_primitive(tcds: Tcds) -> FileMatcher:
+        def make_primitive(tcds: TestCaseDs) -> FileMatcher:
             return matcher(symbols, tcds)
 
         return MatcherDdvFromPartsTestImpl(
@@ -103,7 +103,7 @@ class MatcherDdvOfConstantMatcherTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(self._primitive_value)
 
 
@@ -131,7 +131,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     APPLICATION_ENVIRONMENT = application_environment_for_test()
 
     def __init__(self,
-                 make_primitive: Callable[[Tcds], MatcherWTrace[MODEL]],
+                 make_primitive: Callable[[TestCaseDs], MatcherWTrace[MODEL]],
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
         self._make_primitive = make_primitive
@@ -148,7 +148,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(
             self._make_primitive(tcds)
         )
@@ -156,7 +156,7 @@ class MatcherDdvFromPartsTestImpl(Generic[MODEL], MatcherDdv[MODEL]):
 
 class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 make_adv: Callable[[Tcds], MatcherAdv[MODEL]],
+                 make_adv: Callable[[TestCaseDs], MatcherAdv[MODEL]],
                  structure_renderer: StructureRenderer,
                  validator: DdvValidator = ddv_validation.constant_success_validator(),
                  ):
@@ -171,7 +171,7 @@ class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return self._make_adv(tcds)
 
 

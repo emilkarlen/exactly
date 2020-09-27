@@ -3,17 +3,16 @@ from typing import Sequence, Set, Pattern, Optional, Tuple
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
@@ -97,14 +96,14 @@ class _ValidatorWhichCreatesRegex(DdvValidator):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self.string.resolving_dependencies()
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         if self.pattern is None:
             if not self.string.resolving_dependencies():
                 return self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
         else:
             return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         if self.pattern is None:
             return self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         else:
@@ -115,7 +114,7 @@ class _ValidatorWhichCreatesRegex(DdvValidator):
             self._compile_and_set_pattern(self.string.value_when_no_dir_dependencies())
         return self.pattern
 
-    def pattern_of_any_dependency(self, tcds: Tcds) -> Pattern:
+    def pattern_of_any_dependency(self, tcds: TestCaseDs) -> Pattern:
         if self.pattern is None:
             self._compile_and_set_pattern(self.string.value_of_any_dependency(tcds))
         return self.pattern
@@ -160,5 +159,5 @@ class _RegexDdv(RegexDdv):
     def value_when_no_dir_dependencies(self) -> Pattern:
         return self._validator.pattern_when_no_dir_dependencies()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> Pattern:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> Pattern:
         return self._validator.pattern_of_any_dependency(tcds)

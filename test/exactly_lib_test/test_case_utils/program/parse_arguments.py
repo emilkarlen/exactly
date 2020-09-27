@@ -8,9 +8,9 @@ from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
@@ -24,8 +24,8 @@ from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as ab_utils
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX

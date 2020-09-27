@@ -3,8 +3,8 @@ from typing import Optional, Sequence
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -36,8 +36,8 @@ class Expectation:
             is_hard_error: Optional[ValueAssertion[str]] = None,
 
             symbol_usages: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
-            main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-            main_side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
+            main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
+            main_side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
             source: ValueAssertion[ParseSource] = asrt.anything_goes(),
     ):
         self.validation_post_sds = validation_post_sds

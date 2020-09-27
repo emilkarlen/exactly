@@ -1,12 +1,12 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import TestCaseStatus
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 
 
@@ -39,9 +39,9 @@ class ConfigurationBuilder:
         return self.__hds_dirs[d]
 
     @property
-    def hds(self) -> HomeDirectoryStructure:
-        return HomeDirectoryStructure(case_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_CASE],
-                                      act_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_ACT])
+    def hds(self) -> HomeDs:
+        return HomeDs(case_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_CASE],
+                      act_dir=self.__hds_dirs[RelHdsOptionType.REL_HDS_ACT])
 
     @property
     def actor(self) -> NameAndValue[Actor]:

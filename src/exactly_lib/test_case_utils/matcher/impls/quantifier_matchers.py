@@ -4,8 +4,8 @@ from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequenc
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder
@@ -38,7 +38,8 @@ class ElementRendering(Generic[MODEL, ELEMENT]):
 class ElementSetup(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  rendering: ElementRendering[MODEL, ELEMENT],
-                 elements_getter: Callable[[Tcds, ApplicationEnvironment, MODEL], ContextManager[Iterator[ELEMENT]]],
+                 elements_getter: Callable[
+                     [TestCaseDs, ApplicationEnvironment, MODEL], ContextManager[Iterator[ELEMENT]]],
                  ):
         self.rendering = rendering
         self.elements_getter = elements_getter
@@ -59,7 +60,7 @@ class _ApplicationConf(Generic[MODEL, ELEMENT]):
     def __init__(self,
                  setup: ElementSetup[MODEL, ELEMENT],
                  predicate: MatcherWTrace[ELEMENT],
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  environment: ApplicationEnvironment,
                  ):
         self.setup = setup
@@ -241,7 +242,7 @@ class _QuantifierAdv(Generic[MODEL, ELEMENT], MatcherAdv[MODEL]):
                  quantifier: Quantifier,
                  setup: ElementSetup[MODEL, ELEMENT],
                  predicate: MatcherAdv[ELEMENT],
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._quantifier = quantifier
         self._element_setup = setup
@@ -275,7 +276,7 @@ class _QuantifierDdv(Generic[MODEL, ELEMENT], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._predicate.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _QuantifierAdv(self._quantifier,
                               self._element_setup,
                               self._predicate.value_of_any_dependency(tcds),

@@ -2,9 +2,9 @@ import pathlib
 import unittest
 
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source, integration_check
@@ -13,9 +13,9 @@ from exactly_lib_test.actors.test_resources.integration_check import Arrangement
 from exactly_lib_test.actors.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
+from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly

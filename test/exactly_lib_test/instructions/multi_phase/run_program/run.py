@@ -9,7 +9,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.util.process_execution.execution_elements import with_environ
@@ -18,11 +18,11 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
+from exactly_lib_test.tcfs.test_resources import path_arguments
+from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions

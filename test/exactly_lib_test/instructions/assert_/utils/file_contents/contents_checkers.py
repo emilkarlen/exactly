@@ -10,8 +10,8 @@ from exactly_lib.test_case_utils.pfh_exception import PfhHardErrorException
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.type_system.data.test_resources import described_path

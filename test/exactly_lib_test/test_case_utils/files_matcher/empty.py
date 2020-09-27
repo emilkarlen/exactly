@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_case_bases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \

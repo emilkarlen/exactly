@@ -7,9 +7,9 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
 from exactly_lib.type_system.data import paths
@@ -21,8 +21,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_program
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as cmd_line_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -87,7 +87,7 @@ class ArgumentsCase:
     def __init__(self,
                  name: str,
                  source_elements: List,
-                 expected_resolved_values: Callable[[Tcds], List[str]],
+                 expected_resolved_values: Callable[[TestCaseDs], List[str]],
                  expected_symbol_references: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source_elements = source_elements
@@ -179,7 +179,7 @@ def check_parsing_of_program(put: unittest.TestCase,
         expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
                                                               argument_case.expected_symbol_references)
 
-        def expected_program(tcds: Tcds) -> ValueAssertion[Program]:
+        def expected_program(tcds: TestCaseDs) -> ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_system_program_command(
                     program=program_case.expected_resolved_value,

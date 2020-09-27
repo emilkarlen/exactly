@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.data.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
@@ -37,20 +37,20 @@ class PathDescriberHandlerForDdv(ABC):
         pass
 
     @abstractmethod
-    def value_pre_sds(self, primitive: Path, hds: HomeDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+    def value_pre_sds(self, primitive: Path, hds: HomeDs) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
     def value_post_sds__wo_hds(self, primitive: Path,
-                               sds: SandboxDirectoryStructure) -> PathDescriberHandlerForPrimitive:
+                               sds: SandboxDs) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
-    def value_post_sds(self, primitive: Path, tcds: Tcds) -> PathDescriberHandlerForPrimitive:
+    def value_post_sds(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, primitive: Path, tcds: Tcds) -> PathDescriberHandlerForPrimitive:
+    def value_of_any_dependency(self, primitive: Path, tcds: TestCaseDs) -> PathDescriberHandlerForPrimitive:
         pass
 
 

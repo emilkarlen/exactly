@@ -1,10 +1,9 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher

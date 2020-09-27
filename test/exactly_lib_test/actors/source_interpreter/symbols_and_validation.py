@@ -4,7 +4,7 @@ import unittest
 
 from exactly_lib.actors.source_interpreter import actor as sut
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
 from exactly_lib.type_system.data import paths
 from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
@@ -14,8 +14,8 @@ from exactly_lib_test.actors.test_resources.integration_check import Arrangement
 from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr

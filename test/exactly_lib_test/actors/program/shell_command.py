@@ -19,8 +19,8 @@ from exactly_lib_test.actors.test_resources.action_to_check import Configuration
 from exactly_lib_test.actors.test_resources.integration_check import \
     check_execution, Arrangement, Expectation, PostSdsExpectation
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources.paths import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr

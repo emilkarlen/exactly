@@ -4,8 +4,8 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
@@ -106,7 +106,7 @@ class MatchesRegexDdv(MatcherDdv[str]):
     def validator(self) -> DdvValidator:
         return self._regex.validator()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(
             MatchesRegex(
                 self._is_full_match,

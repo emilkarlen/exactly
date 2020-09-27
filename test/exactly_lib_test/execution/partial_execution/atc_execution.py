@@ -13,6 +13,7 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import new_empty_section_contents
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import setup
@@ -21,7 +22,6 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdFiles
@@ -35,11 +35,11 @@ from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.execution_recording.action_to_check import \
     ActionToCheckWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatJustReturnsSuccess, ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
     ActorForConstantAtc
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
@@ -294,7 +294,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
         return new_eh_exit_code(0)
 
     @property
-    def actual_sds(self) -> SandboxDirectoryStructure:
+    def actual_sds(self) -> SandboxDs:
         return self._actual_sds
 
 

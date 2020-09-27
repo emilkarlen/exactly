@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_or_path
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration

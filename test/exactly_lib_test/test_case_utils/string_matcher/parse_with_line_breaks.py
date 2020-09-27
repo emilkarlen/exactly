@@ -3,12 +3,12 @@ import unittest
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import SB
-from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax

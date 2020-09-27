@@ -4,7 +4,7 @@ from typing import List, Optional
 from exactly_lib.definitions import logic
 from exactly_lib.instructions.assert_ import existence_of_file
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
+from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 

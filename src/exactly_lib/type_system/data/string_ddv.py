@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Set
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system import utils
 from exactly_lib.util.render import strings
 from exactly_lib.util.render.renderer import Renderer
@@ -46,7 +46,7 @@ class StringDdv(StringWithDirDependency):
                             for f in self._fragments]
         return ''.join(fragment_strings)
 
-    def value_of_any_dependency(self, tcds: Tcds) -> str:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> str:
         fragment_strings = [f.value_of_any_dependency(tcds)
                             for f in self._fragments]
         return ''.join(fragment_strings)

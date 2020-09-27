@@ -11,11 +11,11 @@ from exactly_lib_test.execution.full_execution.test_resources.test_case_base imp
 from exactly_lib_test.execution.test_resources.execution_recording import actor
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_assertions import is_sds_root_dir
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_assertions import is_sds_root_dir
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

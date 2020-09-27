@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, List, Callable
 
 from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.type_system.data import paths

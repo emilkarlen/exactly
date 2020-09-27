@@ -8,7 +8,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     PathRelativityRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -16,7 +16,7 @@ from exactly_lib_test.symbol.data.test_resources import concrete_value_assertion
 from exactly_lib_test.symbol.data.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.simple_path import PathDdvTestImpl
+from exactly_lib_test.tcfs.test_resources.simple_path import PathDdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

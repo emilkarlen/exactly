@@ -5,9 +5,9 @@ from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
     StringMatcherAdvImplBase
@@ -105,7 +105,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _StringMatcherWithTransformationAdv(
             self._transformer.value_of_any_dependency(tcds),
             self._on_transformed.value_of_any_dependency(tcds),

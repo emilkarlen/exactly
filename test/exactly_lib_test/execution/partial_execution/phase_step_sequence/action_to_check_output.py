@@ -33,9 +33,9 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.test_actions import execute_action_that_raises
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
 from exactly_lib_test.test_resources.programs import py_programs

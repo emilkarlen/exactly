@@ -5,6 +5,7 @@ from exactly_lib.actors.util.actor_from_parts.parts import EXECUTABLE_OBJECT, Va
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -12,7 +13,6 @@ from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, eh
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 
@@ -159,7 +159,7 @@ class ValidatorThatRecordsSteps(sut.Validator):
         self.recorder[phase_step.ACT__VALIDATE_PRE_SDS] = self.act_phase_source
         return svh.new_svh_success()
 
-    def validate_post_setup(self, tcds: Tcds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, tcds: TestCaseDs) -> svh.SuccessOrValidationErrorOrHardError:
         self.recorder[phase_step.ACT__VALIDATE_POST_SETUP] = self.act_phase_source
         return svh.new_svh_success()
 

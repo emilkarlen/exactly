@@ -3,10 +3,10 @@ from typing import Generic, TypeVar, Sequence, Set, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv, OperandDdv
 from exactly_lib.test_case_utils.matcher.object import ObjectSdv, ObjectDdv
 from exactly_lib.test_case_utils.svh_exception import SvhException
@@ -34,7 +34,7 @@ class ObjectValueOfOperandDdv(Generic[T], ObjectDdv[T]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> T:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> T:
         return self._operand.value_of_any_dependency(tcds)
 
 
@@ -61,11 +61,11 @@ class _Validator(DdvValidator):
         self._symbols = symbols
         self._operand = operand
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         try:
             self._operand.validate_pre_sds(PathResolvingEnvironmentPreSds(hds, self._symbols))
         except SvhException as ex:
             return ex.err_msg
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         pass

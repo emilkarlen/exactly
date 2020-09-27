@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 

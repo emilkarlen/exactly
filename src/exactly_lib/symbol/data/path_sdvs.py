@@ -7,8 +7,8 @@ from exactly_lib.symbol.data import path_part_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv, PathPartSdv
 from exactly_lib.symbol.data.path_sdv_impls import constant as _constant, path_rel_symbol as _with_symbol
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import relativity_root
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs import relativity_root
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv

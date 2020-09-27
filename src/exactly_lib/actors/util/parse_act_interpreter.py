@@ -1,10 +1,9 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, path_relativities
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.test_case_utils.program import syntax_elements as program_syntax_elements

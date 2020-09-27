@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_matcher.parse.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -10,6 +10,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
@@ -17,8 +19,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import conte
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
-from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.relativity_options import \
     suite_for__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
     TestWithRelativityOptionAndNegationBase

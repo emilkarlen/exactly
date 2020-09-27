@@ -3,9 +3,9 @@ from typing import TypeVar, Generic, Set
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -28,7 +28,7 @@ class OperandDdv(Generic[T], MultiDependenciesDdv[T], ABC):
         raise ValueError(str(type(self)) + ' do not support this short cut.')
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> T:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> T:
         """Gives the value, regardless of actual dependency."""
         pass
 

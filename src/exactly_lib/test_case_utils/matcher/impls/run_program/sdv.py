@@ -2,8 +2,8 @@ from typing import Generic
 
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -40,7 +40,7 @@ class _Ddv(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._program.validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         from . import adv
         return adv.Adv(self._run_conf,
                        self._program.value_of_any_dependency(tcds)

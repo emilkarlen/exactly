@@ -5,25 +5,25 @@ from typing import ContextManager
 
 from exactly_lib import program_info
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, hds_populators, \
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \
     tcds_populators, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
+from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAction, \
     mk_dir_and_change_to_it_inside_of_sds_but_outside_of_any_of_the_relativity_option_dirs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def sds_2_tcds_assertion(assertion_on_sds: ValueAssertion[SandboxDirectoryStructure]
-                         ) -> ValueAssertion[Tcds]:
+def sds_2_tcds_assertion(assertion_on_sds: ValueAssertion[SandboxDs]
+                         ) -> ValueAssertion[TestCaseDs]:
     return asrt.sub_component('sds',
-                              Tcds.sds.fget,
+                              TestCaseDs.sds.fget,
                               assertion_on_sds)
 
 
@@ -56,7 +56,7 @@ class PlainTcdsActionFromTcdsAction(PlainTcdsAction):
         self.symbols = symbols
         self.action = action
 
-    def apply(self, tcds: Tcds):
+    def apply(self, tcds: TestCaseDs):
         environment = PathResolvingEnvironmentPreOrPostSds(tcds, self.symbols)
         return self.action.apply(environment)
 
@@ -73,7 +73,7 @@ def tcds_with_act_as_curr_dir(
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with home_directory_structure(prefix=prefix + '-home') as hds:
         with sandbox_directory_structure(prefix=prefix + "-sds-") as sds:
-            tcds = Tcds(hds, sds)
+            tcds = TestCaseDs(hds, sds)
             ret_val = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
             with preserved_cwd():
                 os.chdir(str(sds.act_dir))

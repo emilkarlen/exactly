@@ -1,8 +1,8 @@
 from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
+from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.name_and_value import NameAndValue
 
 
@@ -11,7 +11,7 @@ class ConfPhaseValues(tuple):
 
     def __new__(cls,
                 actor: NameAndValue[Actor],
-                hds: HomeDirectoryStructure,
+                hds: HomeDs,
                 timeout_in_seconds: Optional[int] = None):
         """
         :param timeout_in_seconds: None if no timeout
@@ -26,7 +26,7 @@ class ConfPhaseValues(tuple):
         return self[0]
 
     @property
-    def hds(self) -> HomeDirectoryStructure:
+    def hds(self) -> HomeDs:
         return self[1]
 
     @property

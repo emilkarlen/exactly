@@ -18,7 +18,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.relative_path_options import REL_HDS_OPTIONS_MAP, \
+from exactly_lib.tcfs.relative_path_options import REL_HDS_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a

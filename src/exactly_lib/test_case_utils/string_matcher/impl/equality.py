@@ -5,9 +5,9 @@ from typing import Iterable
 
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
@@ -83,7 +83,7 @@ class EqualityStringMatcherDdv(MatcherDdv[StringModel]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return EqualityStringMatcherAdv(
             self._expected_contents.value_of_any_dependency(tcds),
             ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),

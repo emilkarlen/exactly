@@ -1,10 +1,10 @@
 import unittest
 
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, sds_populator
+from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction, \
     tcds_with_act_as_curr_dir
@@ -15,7 +15,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              tcds: Tcds):
+              tcds: TestCaseDs):
         pass
 
 

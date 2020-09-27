@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import path_description
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.render.renderer import Renderer
@@ -18,7 +18,7 @@ class PathValueRelCwd(Renderer[str]):
     def __init__(self,
                  path_ddv: PathDdv,
                  cwd: pathlib.Path,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._path_ddv = path_ddv
         self._cwd = cwd
@@ -45,7 +45,7 @@ class PathValueRelUnknownCwd(Renderer[str]):
 class PathValueAbsolute(Renderer[str]):
     def __init__(self,
                  path_ddv: PathDdv,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  ):
         self._path_ddv = path_ddv
         self._tcds = tcds

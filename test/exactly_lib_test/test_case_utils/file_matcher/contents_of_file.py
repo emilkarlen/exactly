@@ -4,7 +4,7 @@ from typing import List
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
@@ -12,8 +12,8 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHdsPopulator
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, tcds_populators
+from exactly_lib_test.tcfs.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax, integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc

@@ -1,12 +1,12 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure import relative_path_options as rpo
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import relative_path_options as rpo
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import paths, path_description as sut
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 
@@ -119,7 +119,7 @@ class TestPathValueWithRelativityNamePrefix(unittest.TestCase):
                                               expected_relativity_dir_name: str,
                                               expected_path_suffix: PathPartDdv,
                                               path_ddv_to_check: PathDdv,
-                                              tcds: Tcds,
+                                              tcds: TestCaseDs,
                                               ):
         with self.subTest(path_suffix=expected_path_suffix.value(),
                           expected_relativity_dir_name=str(expected_relativity_dir_name)):

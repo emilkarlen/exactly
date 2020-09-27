@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.type_system.value_type import ValueType, DataValueType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as \

@@ -1,6 +1,5 @@
-from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 

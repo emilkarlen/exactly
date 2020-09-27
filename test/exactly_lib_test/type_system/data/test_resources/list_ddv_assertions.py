@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
+from exactly_lib_test.tcfs.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.data.test_resources import string_ddv_assertions as asrt_sv
@@ -26,7 +26,7 @@ class _AssertListValueHasSpecifiedProperties(MultiDirDependentValueAssertion):
     def _check_custom_multi(self,
                             put: unittest.TestCase,
                             actual: MultiDependenciesDdv,
-                            tcds: Tcds,
+                            tcds: TestCaseDs,
                             message_builder: asrt.MessageBuilder):
         assert isinstance(actual, ListDdv)
         elements_assertion = asrt.matches_sequence(self._sequence_of_element_assertions)

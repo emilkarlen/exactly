@@ -3,9 +3,9 @@ from typing import Callable
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import sds as _sds
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -14,7 +14,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
-                 hds: HomeDirectoryStructure,
+                 hds: HomeDs,
                  proc_exe_settings: ProcessExecutionSettings,
                  symbols: SymbolTable = None):
         self.__hds = hds
@@ -22,7 +22,7 @@ class InstructionEnvironmentForPreSdsStep:
         self._proc_exe_settings = proc_exe_settings
 
     @property
-    def hds(self) -> HomeDirectoryStructure:
+    def hds(self) -> HomeDs:
         return self.__hds
 
     @property
@@ -66,9 +66,9 @@ class TmpFileStorage:
 
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
-                 hds: HomeDirectoryStructure,
+                 hds: HomeDs,
                  proc_exe_settings: ProcessExecutionSettings,
-                 sds: _sds.SandboxDirectoryStructure,
+                 sds: _sds.SandboxDs,
                  tmp_dir_space: TmpFileStorage,
                  symbols: SymbolTable = None,
                  ):
@@ -77,13 +77,13 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         self.__sds = sds
 
     @property
-    def sds(self) -> _sds.SandboxDirectoryStructure:
+    def sds(self) -> _sds.SandboxDs:
         return self.__sds
 
     @property
-    def tcds(self) -> Tcds:
-        return Tcds(self.hds,
-                    self.sds)
+    def tcds(self) -> TestCaseDs:
+        return TestCaseDs(self.hds,
+                          self.sds)
 
     @property
     def tmp_dir__path_access(self) -> TmpFileStorage:

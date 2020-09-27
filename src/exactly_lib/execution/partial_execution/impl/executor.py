@@ -16,6 +16,7 @@ from exactly_lib.execution.partial_execution.impl.atc_execution import ActionToC
 from exactly_lib.execution.partial_execution.impl.symbol_validation import SymbolsValidator
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus, PhaseStepFailure, PhaseStepFailureException
+from exactly_lib.tcfs.sds import SandboxDs, construct_at
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.actor import ActionToCheck, Actor
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -23,7 +24,6 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
 from exactly_lib.util.file_utils.misc_utils import resolved_path_name
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -197,7 +197,7 @@ class _PartialExecutor:
                 raise ex
 
     @property
-    def _sds(self) -> SandboxDirectoryStructure:
+    def _sds(self) -> SandboxDs:
         return self.__sandbox_directory_structure
 
     def _setup_pre_sds_environment(self,

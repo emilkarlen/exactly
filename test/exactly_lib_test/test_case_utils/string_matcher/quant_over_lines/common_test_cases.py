@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
+from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

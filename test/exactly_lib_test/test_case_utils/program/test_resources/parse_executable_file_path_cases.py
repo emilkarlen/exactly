@@ -7,11 +7,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_path
-from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
@@ -19,7 +18,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_case_utils.test_resources import validation
@@ -46,7 +45,7 @@ class RelativityConfiguration:
     def file_installation(self, file: File) -> TcdsPopulator:
         return self._rel_opt_conf.populator_for_relativity_option_root(DirContents([file]))
 
-    def installation_dir(self, tcds: Tcds) -> pathlib.Path:
+    def installation_dir(self, tcds: TestCaseDs) -> pathlib.Path:
         return self._rel_opt_conf.population_dir(tcds)
 
 

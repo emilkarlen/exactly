@@ -1,10 +1,10 @@
 from abc import abstractmethod, ABC
 from typing import TypeVar, Generic
 
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.description import LogicValueDescription, NodeDescription
@@ -32,7 +32,7 @@ class LogicDdv(Generic[VALUE_TYPE],
         pass
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[VALUE_TYPE]:
         pass
 
 

@@ -14,7 +14,7 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \

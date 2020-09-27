@@ -2,7 +2,7 @@ import unittest
 from typing import List
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

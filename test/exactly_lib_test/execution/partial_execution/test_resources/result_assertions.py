@@ -7,14 +7,14 @@ from typing import Optional
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib_test.execution.test_resources import result_assertions as asrt_atc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def is_pass(sds: ValueAssertion[Optional[SandboxDirectoryStructure]] =
-            asrt.is_instance(SandboxDirectoryStructure),
+def is_pass(sds: ValueAssertion[Optional[SandboxDs]] =
+            asrt.is_instance(SandboxDs),
             action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] =
             asrt.is_instance(ActionToCheckOutcome)
             ) -> ValueAssertion[PartialExeResult]:
@@ -29,7 +29,7 @@ def is_pass(sds: ValueAssertion[Optional[SandboxDirectoryStructure]] =
 
 def is_failure(status: ExecutionFailureStatus,
                failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.is_instance(FailureInfo),
-               sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+               sds: ValueAssertion[Optional[SandboxDs]] = asrt.anything_goes(),
                has_sds: ValueAssertion[bool] = asrt.anything_goes(),
                action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
                has_action_to_check_outcome: ValueAssertion[bool] = asrt.anything_goes(),
@@ -53,11 +53,11 @@ def has_no_sds() -> ValueAssertion[PartialExeResult]:
     )
 
 
-def has_sds(sds: ValueAssertion[SandboxDirectoryStructure] =
-            asrt.is_instance(SandboxDirectoryStructure)) -> ValueAssertion[PartialExeResult]:
+def has_sds(sds: ValueAssertion[SandboxDs] =
+            asrt.is_instance(SandboxDs)) -> ValueAssertion[PartialExeResult]:
     return matches(
         has_sds=asrt.equals(True),
-        sds=asrt.is_instance_with(SandboxDirectoryStructure, sds),
+        sds=asrt.is_instance_with(SandboxDs, sds),
     )
 
 
@@ -96,7 +96,7 @@ def matches2(status: Optional[ExecutionFailureStatus],
 def matches(
         status: ValueAssertion[Optional[ExecutionFailureStatus]] = asrt.anything_goes(),
         has_sds: ValueAssertion[bool] = asrt.anything_goes(),
-        sds: ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+        sds: ValueAssertion[Optional[SandboxDs]] = asrt.anything_goes(),
         has_action_to_check_outcome: ValueAssertion[bool] = asrt.anything_goes(),
         action_to_check_outcome: ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
         failure_info: ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes(),

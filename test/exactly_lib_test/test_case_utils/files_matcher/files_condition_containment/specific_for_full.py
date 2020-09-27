@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
     MATCHES_FULL__STRUCTURE_NAME
 from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher

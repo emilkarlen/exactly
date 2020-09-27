@@ -4,8 +4,8 @@ from exactly_lib.definitions.primitives import program as program_primitives
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
@@ -13,8 +13,8 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
+from exactly_lib_test.tcfs.test_resources import path_arguments
+from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args

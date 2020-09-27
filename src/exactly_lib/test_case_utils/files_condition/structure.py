@@ -7,10 +7,10 @@ from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition import syntax
@@ -74,7 +74,7 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> FilesConditionAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> FilesConditionAdv:
         def val_of_any_dep(matcher: FileMatcherDdv) -> FileMatcherAdv:
             return matcher.value_of_any_dependency(tcds)
 
@@ -94,7 +94,7 @@ class _IsRelativePosixPath(DdvValidator):
     def __init__(self, path_str: str):
         self.path_str = path_str
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         if self.path_str == '':
             return text_docs.single_line(_EMPTY_FILE_NAME)
 
@@ -111,7 +111,7 @@ class _IsRelativePosixPath(DdvValidator):
             )
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         return None
 
 

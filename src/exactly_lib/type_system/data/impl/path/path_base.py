@@ -2,12 +2,12 @@ import pathlib
 from abc import ABC
 from typing import Optional
 
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
+from exactly_lib.tcfs.dir_dependent_value import DirDependencyError
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType, RESOLVING_DEPENDENCY_OF, DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.impl.path import described_w_handler
 from exactly_lib.type_system.data.impl.path import describer_handlers
 from exactly_lib.type_system.data.impl.path.described_w_handler import PathDescriberHandlerForDdv
@@ -27,21 +27,21 @@ class PathDdvWithDescriptionBase(PathDdv, ABC):
             self._describer_handler().value_when_no_dir_dependencies(primitive),
         )
 
-    def value_pre_sds__d(self, hds: HomeDirectoryStructure) -> DescribedPath:
+    def value_pre_sds__d(self, hds: HomeDs) -> DescribedPath:
         primitive = self.value_pre_sds(hds)
         return described_w_handler.DescribedPathWHandler(
             primitive,
             self._describer_handler().value_pre_sds(primitive, hds),
         )
 
-    def value_post_sds__d(self, sds: SandboxDirectoryStructure) -> DescribedPath:
+    def value_post_sds__d(self, sds: SandboxDs) -> DescribedPath:
         primitive = self.value_post_sds(sds)
         return described_w_handler.DescribedPathWHandler(
             primitive,
             self._describer_handler().value_post_sds__wo_hds(primitive, sds),
         )
 
-    def value_of_any_dependency__d(self, tcds: Tcds) -> DescribedPath:
+    def value_of_any_dependency__d(self, tcds: TestCaseDs) -> DescribedPath:
         primitive = self.value_of_any_dependency(tcds)
         return described_w_handler.DescribedPathWHandler(
             primitive,

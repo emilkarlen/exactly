@@ -7,14 +7,14 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
-from exactly_lib.test_case_file_structure import path_relativity
-from exactly_lib.test_case_file_structure import relative_path_options
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+from exactly_lib.tcfs import path_relativity
+from exactly_lib.tcfs import relative_path_options
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelNonHdsOptionType, RelHdsOptionType, DirectoryStructurePartition, rel_any_from_rel_sds
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HDS_OPTIONS_MAP
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP, REL_NON_HDS_OPTIONS_MAP
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
 from exactly_lib.type_system.data.path_part import PathPartDdv
@@ -26,14 +26,14 @@ from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContex
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments as path_args, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.non_hds_populator import NonHdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+from exactly_lib_test.tcfs.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources import non_hds_populator
+from exactly_lib_test.tcfs.test_resources import path_arguments as path_args, sds_populator
+from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
+from exactly_lib_test.tcfs.test_resources.non_hds_populator import NonHdsPopulator
+from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
+from exactly_lib_test.tcfs.test_resources.sds_check import sds_contents_check
+from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator, \
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import argument_renderer
@@ -213,7 +213,7 @@ class RelativityOptionConfiguration(ABC):
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         raise NotImplementedError()
 
-    def population_dir(self, tds: Tcds) -> pathlib.Path:
+    def population_dir(self, tds: TestCaseDs) -> pathlib.Path:
         raise NotImplementedError()
 
     @property
@@ -263,7 +263,7 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         return TcdsPopulatorForRelOptionType(self.relativity, contents)
 
-    def population_dir(self, tds: Tcds) -> pathlib.Path:
+    def population_dir(self, tds: TestCaseDs) -> pathlib.Path:
         return REL_OPTIONS_MAP[self.relativity].root_resolver.from_tcds(tds)
 
 
@@ -286,7 +286,7 @@ class RelativityOptionConfigurationRelHds(RelativityOptionConfigurationForRelOpt
     def relativity_option_rel_hds(self) -> RelHdsOptionType:
         return self._relativity_hds
 
-    def root_dir__hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def root_dir__hds(self, hds: HomeDs) -> pathlib.Path:
         return self._resolver_hds.from_hds(hds)
 
     def populator_for_relativity_option_root__hds(self, contents: DirContents) -> HdsPopulator:
@@ -308,14 +308,14 @@ class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration):
     def directory_structure_partition(self) -> DirectoryStructurePartition:
         return DirectoryStructurePartition.NON_HDS
 
-    def root_dir__non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__non_hds(self, sds: SandboxDs) -> pathlib.Path:
         raise NotImplementedError()
 
     def populator_for_relativity_option_root__non_hds(self, contents: DirContents) -> NonHdsPopulator:
         raise NotImplementedError()
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
-    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__sds(self, sds: SandboxDs) -> pathlib.Path:
         raise NotImplementedError()
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
@@ -347,14 +347,14 @@ class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfiguratio
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         return TcdsPopulatorForRelOptionType(self.relativity, contents)
 
-    def root_dir__non_hds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__non_hds(self, sds: SandboxDs) -> pathlib.Path:
         return self.resolver_non_hds.from_non_hds(sds)
 
     def populator_for_relativity_option_root__non_hds(self, contents: DirContents) -> NonHdsPopulator:
         return non_hds_populator.rel_option(self.relativity_non_hds, contents)
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
-    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__sds(self, sds: SandboxDs) -> pathlib.Path:
         return self.resolver_non_hds.from_non_hds(sds)
 
     # TODO ska inte finnas i denna klass - finns pga felaktig design
@@ -369,7 +369,7 @@ class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfiguratio
         return sds_contents_check.non_hds_dir_contains_exactly(self.root_dir__non_hds,
                                                                contents)
 
-    def population_dir(self, tds: Tcds) -> pathlib.Path:
+    def population_dir(self, tds: TestCaseDs) -> pathlib.Path:
         return REL_NON_HDS_OPTIONS_MAP[self.relativity_non_hds].root_resolver.from_tcds(tds)
 
 
@@ -384,7 +384,7 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
         self.relativity_sds = relativity
         self.resolver_sds = relative_path_options.REL_SDS_OPTIONS_MAP[relativity].root_resolver
 
-    def root_dir__sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_dir__sds(self, sds: SandboxDs) -> pathlib.Path:
         return self.resolver_sds.from_sds(sds)
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:

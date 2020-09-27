@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts, conf_params
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, tcds_symbols
+from exactly_lib.tcfs import sds as sds, tcds_symbols
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

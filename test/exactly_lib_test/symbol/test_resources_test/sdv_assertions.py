@@ -6,8 +6,8 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.concrete_strings import ConstantFragmentDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -23,7 +23,7 @@ from exactly_lib_test.symbol.data.test_resources.path_sdvs import PathSdvTestImp
 from exactly_lib_test.symbol.test_resources import sdv_assertions as sut
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolValueContext
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

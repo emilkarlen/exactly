@@ -6,8 +6,8 @@ from exactly_lib_test.instructions.multi_phase import new_dir
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line

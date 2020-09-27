@@ -16,8 +16,8 @@ from exactly_lib.symbol.data import string_sdvs, path_sdvs
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
@@ -27,7 +27,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test_command_sdvs
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.process import SubProcessResult

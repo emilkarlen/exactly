@@ -2,8 +2,8 @@ from typing import Sequence, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.string_matcher import StringMatcher, StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel

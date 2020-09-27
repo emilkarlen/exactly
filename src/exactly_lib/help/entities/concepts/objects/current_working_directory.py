@@ -11,7 +11,7 @@ from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
+from exactly_lib.tcfs.sds import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents

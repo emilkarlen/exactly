@@ -2,9 +2,9 @@ from typing import Sequence, Iterator
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator, \
+from exactly_lib.tcfs.ddv_validation import DdvValidator, \
     constant_success_validator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv, \
@@ -33,7 +33,7 @@ class StringTransformerDdvTestImpl(StringTransformerDdv):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> StringTransformerAdv:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StringTransformerAdv:
         return advs.ConstantAdv(self._primitive_value)
 
 

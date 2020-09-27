@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType, \
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType, \
     RelSdsOptionType
 from exactly_lib.test_case_utils.string_transformer import names as str_trans_names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer

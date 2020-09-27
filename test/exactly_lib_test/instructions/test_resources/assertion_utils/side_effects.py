@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 
@@ -16,7 +16,7 @@ class AssertCwdIsSubDirOf(ValueAssertionBase):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: Tcds,
+               value: TestCaseDs,
                message_builder: asrt.MessageBuilder):
         relativity_root = REL_OPTIONS_MAP[self.relativity].root_resolver.from_tcds(value)
         put.assertEqual(relativity_root / self.expected_sub_dir_of_act_dir,

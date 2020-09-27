@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
@@ -21,12 +21,12 @@ from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContex
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

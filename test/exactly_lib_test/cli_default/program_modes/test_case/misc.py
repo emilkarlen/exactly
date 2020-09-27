@@ -6,8 +6,8 @@ from exactly_lib.cli.definitions.program_modes.test_case.command_line_options im
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.tcfs import sds, tcds_symbols
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case_file_structure import sandbox_directory_structure, tcds_symbols
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.cli_default.program_modes.test_case.test_resources.utils import remove_if_is_directory, \
     get_printed_sds_or_fail
@@ -93,13 +93,13 @@ class ExpectedTestPathSymbolsAreSetCorrectlyVa(ValueAssertionBase[SubProcessResu
                value: SubProcessResultInfo,
                message_builder: asrt.MessageBuilder):
         actual_sds_directory = get_printed_sds_or_fail(put, value.sub_process_result)
-        sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_sds_directory)
-        actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()
+        the_sds = sds.SandboxDs(actual_sds_directory)
+        actually_printed_variables = _get_act_output_to_stdout(the_sds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (tcds_symbols.SYMBOL_HDS_CASE, str(value.file_argument.parent)),
             '%s=%s' % (tcds_symbols.SYMBOL_HDS_ACT, str(value.file_argument.parent)),
-            '%s=%s' % (tcds_symbols.SYMBOL_ACT, str(sds.act_dir)),
-            '%s=%s' % (tcds_symbols.SYMBOL_TMP, str(sds.user_tmp_dir)),
+            '%s=%s' % (tcds_symbols.SYMBOL_ACT, str(the_sds.act_dir)),
+            '%s=%s' % (tcds_symbols.SYMBOL_TMP, str(the_sds.user_tmp_dir)),
         ]
         put.assertEqual(expected_printed_variables,
                         actually_printed_variables,
@@ -111,7 +111,7 @@ def _print_symbol_name__equals__symbol_value(variable_name: str) -> str:
     return 'print("%s=" + "%s")' % (variable_name, symbol_reference_syntax_for_name(variable_name))
 
 
-def _get_act_output_to_stdout(sds: sandbox_directory_structure.SandboxDirectoryStructure) -> str:
+def _get_act_output_to_stdout(sds: sds.SandboxDs) -> str:
     return contents_of_file(sds.result.stdout_file)
 
 

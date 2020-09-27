@@ -1,14 +1,14 @@
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.test_resources.process import SubProcessResult
 
 
 class ActEnvironment(tuple):
     def __new__(cls,
-                tcds: Tcds):
+                tcds: TestCaseDs):
         return tuple.__new__(cls, (tcds,))
 
     @property
-    def tcds(self) -> Tcds:
+    def tcds(self) -> TestCaseDs:
         return self[0]
 
 

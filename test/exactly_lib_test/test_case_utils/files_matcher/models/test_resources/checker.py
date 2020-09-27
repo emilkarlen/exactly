@@ -3,14 +3,14 @@ import unittest
 from typing import Callable, Sequence, List
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.util import symbol_table
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import \
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.ds_action import \
     MK_DIR_AND_CHANGE_TO_IT_INSIDE_OF_SDS_BUT_OUTSIDE_OF_ANY_OF_THE_RELATIVITY_OPTION_DIRS
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement, \
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement, \
     tcds_with_act_as_curr_dir_3
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
     FilesMatcherModelContentsAssertion

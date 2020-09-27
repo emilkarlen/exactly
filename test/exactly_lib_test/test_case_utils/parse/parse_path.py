@@ -14,8 +14,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_path as sut
 from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -46,7 +46,7 @@ from exactly_lib_test.symbol.test_resources import file_matcher, program
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
+from exactly_lib_test.tcfs.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

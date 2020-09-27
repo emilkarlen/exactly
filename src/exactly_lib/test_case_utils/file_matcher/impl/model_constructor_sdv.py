@@ -1,7 +1,7 @@
 from typing import Callable
 
 from exactly_lib.common import tmp_dir_file_spaces
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.impls import advs
@@ -20,7 +20,7 @@ def with_string_model_construction(make_constructor: Callable[[RootStringModelFa
         )
         return make_constructor(factory)
 
-    def make_adv(tcds: Tcds) -> ApplicationEnvironmentDependentValue[ModelConstructor[MODEL]]:
+    def make_adv(tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[ModelConstructor[MODEL]]:
         return advs.AdvFromFunction(make_primitive)
 
     def make_ddv(symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[ModelConstructor[MODEL]]:

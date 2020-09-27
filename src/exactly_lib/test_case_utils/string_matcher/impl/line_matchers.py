@@ -2,7 +2,7 @@ import contextlib
 from typing import ContextManager, Iterator
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
@@ -25,7 +25,7 @@ def sdv(quantifier: Quantifier, line_matcher_sdv: LineMatcherSdv) -> StringMatch
 
 
 @contextlib.contextmanager
-def _get_line_elements(tcds: Tcds,
+def _get_line_elements(tcds: TestCaseDs,
                        environment: ApplicationEnvironment,
                        string_matcher_model: StringModel
                        ) -> ContextManager[Iterator[LineMatcherLine]]:

@@ -1,6 +1,6 @@
 from typing import Sequence, Set
 
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType, RelSdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelSdsOptionType, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 

@@ -5,8 +5,8 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import lookups
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher

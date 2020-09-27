@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.tcfs.sds import SandboxDs
 
 
 class ExecutionFailureStatus(Enum):
@@ -28,7 +28,7 @@ class ActionToCheckOutcome(tuple):
 
 class ResultBase:
     def __init__(self,
-                 sds: Optional[SandboxDirectoryStructure],
+                 sds: Optional[SandboxDs],
                  action_to_check_outcome: Optional[ActionToCheckOutcome],
                  failure_info: Optional[FailureInfo]):
         self.__sds = sds
@@ -40,7 +40,7 @@ class ResultBase:
         return self.__sds is not None
 
     @property
-    def sds(self) -> Optional[SandboxDirectoryStructure]:
+    def sds(self) -> Optional[SandboxDs]:
         return self.__sds
 
     @property

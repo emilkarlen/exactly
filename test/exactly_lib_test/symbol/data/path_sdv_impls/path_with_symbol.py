@@ -10,9 +10,9 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
     PathRelativityRestriction
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.symbol.data.restrictions.test_resources import \
     concrete_restriction_assertion as restrictions
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as vr_tr
@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathD
 from exactly_lib_test.symbol.data.test_resources.string_sdvs import string_sdv_of_single_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -171,7 +171,7 @@ def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVar
     return PathRelativityVariants({accepted}, False)
 
 
-def _root_path_of_option(rel_option: RelOptionType, tcds: Tcds) -> pathlib.Path:
+def _root_path_of_option(rel_option: RelOptionType, tcds: TestCaseDs) -> pathlib.Path:
     resolver = REL_OPTIONS_MAP[rel_option].root_resolver
     return resolver.from_tcds(tcds)
 

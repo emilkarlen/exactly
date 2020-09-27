@@ -5,7 +5,7 @@ from exactly_lib.definitions import path as path_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -30,9 +30,9 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
+from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg

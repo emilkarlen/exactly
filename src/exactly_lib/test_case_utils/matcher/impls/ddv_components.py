@@ -1,9 +1,9 @@
 from typing import Generic, Callable
 
 from exactly_lib.symbol.logic.matcher import MODEL
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.impls.advs import ConstantMatcherAdv
@@ -26,13 +26,13 @@ class MatcherDdvFromConstantPrimitive(Generic[MODEL], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(self._primitive_value)
 
 
 class MatcherDdvFromPartsWConstantAdv(Generic[MODEL], MatcherDdv[MODEL]):
     def __init__(self,
-                 make_matcher: Callable[[Tcds], MatcherWTrace[MODEL]],
+                 make_matcher: Callable[[TestCaseDs], MatcherWTrace[MODEL]],
                  structure: StructureRenderer,
                  ):
         self._make_matcher = make_matcher
@@ -41,5 +41,5 @@ class MatcherDdvFromPartsWConstantAdv(Generic[MODEL], MatcherDdv[MODEL]):
     def structure(self) -> StructureRenderer:
         return self._structure
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return ConstantMatcherAdv(self._make_matcher(tcds))

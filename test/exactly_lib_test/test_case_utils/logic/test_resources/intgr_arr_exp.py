@@ -3,14 +3,14 @@ from typing import Optional, Sequence, Generic, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.tcfs.test_resources import tcds_populators, hds_populators, non_hds_populator
+from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case.test_resources.act_result import ActResultProducer
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators, hds_populators, non_hds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import OUTPUT, PRIMITIVE
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -93,7 +93,7 @@ class ExecutionExpectation(Generic[OUTPUT]):
 
 class AssertionResolvingEnvironment:
     def __init__(self,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  app_env: ApplicationEnvironment,
                  ):
         self.tcds = tcds

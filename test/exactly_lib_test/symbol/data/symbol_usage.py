@@ -4,7 +4,7 @@ from exactly_lib.symbol import sdv_structure as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
 
 

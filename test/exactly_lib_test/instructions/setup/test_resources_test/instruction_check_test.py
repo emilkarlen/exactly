@@ -17,11 +17,11 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
+    act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.test_case_file_structure.test_resources import non_hds_populator, sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.symbol_table_check_help import \
     do_fail_if_symbol_table_does_not_equal, \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \

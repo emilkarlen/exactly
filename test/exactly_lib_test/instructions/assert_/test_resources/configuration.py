@@ -11,10 +11,10 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import check, Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
+from exactly_lib_test.tcfs.test_resources import hds_populators, tcds_populators, \
+    sds_populator
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, tcds_populators, \
-    sds_populator
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     TcdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

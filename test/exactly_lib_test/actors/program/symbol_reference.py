@@ -4,8 +4,8 @@ from typing import List, ContextManager
 
 from exactly_lib.actors.program import actor as sut
 from exactly_lib.symbol.data import path_sdvs, string_sdvs
+from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.program.test_resources import ConfigurationWithPythonProgramBase, \
     valid_source_variants, tmp_dir_in_path_with_files, invalid_source_variants
@@ -16,9 +16,9 @@ from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VA
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_resources.files import file_structure as fs

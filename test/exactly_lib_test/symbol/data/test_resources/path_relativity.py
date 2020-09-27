@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 

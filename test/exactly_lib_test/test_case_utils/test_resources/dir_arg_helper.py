@@ -3,10 +3,10 @@ from typing import List
 
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import TcdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, FileSystemElement
 
 

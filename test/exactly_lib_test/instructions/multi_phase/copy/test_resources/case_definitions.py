@@ -1,11 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.test_case_file_structure.path_relativity import DEPENDENCY_DICT, DirectoryStructurePartition, \
+from exactly_lib.tcfs.path_relativity import DEPENDENCY_DICT, DirectoryStructurePartition, \
     RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.copy.test_resources import argument_syntax as args
 from exactly_lib_test.instructions.multi_phase.copy.test_resources import defs
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 
 INVALI_SYNTAX_CASES = [

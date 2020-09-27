@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Optional
 
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.render.renderer import Renderer
 
 

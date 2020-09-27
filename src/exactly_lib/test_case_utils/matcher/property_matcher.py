@@ -2,9 +2,9 @@ from typing import Generic, TypeVar, Sequence
 
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -105,7 +105,7 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds) -> MatcherAdv[MODEL]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return _PropertyMatcherAdv(
             self._matcher.value_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),

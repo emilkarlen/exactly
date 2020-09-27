@@ -5,8 +5,8 @@ from typing import Sequence, List, Callable
 from exactly_lib.actors.util import parse_act_interpreter as sut
 from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
@@ -17,9 +17,9 @@ from exactly_lib_test.symbol.test_resources.sdv_assertions import matches_sdv
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_file_structure.test_resources.dir_dep_value_assertions import \
+from exactly_lib_test.tcfs.test_resources.dir_dep_value_assertions import \
     matches_dir_dependent_value
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_for_consume_until_end_of_last_line2
@@ -141,7 +141,7 @@ class Case:
     def __init__(self,
                  name: str,
                  source: ArgumentElementsRenderer,
-                 expected_command_driver: Callable[[Tcds], ValueAssertion[CommandDriver]],
+                 expected_command_driver: Callable[[TestCaseDs], ValueAssertion[CommandDriver]],
                  symbols: Sequence[SymbolContext] = (),
                  ):
         self.name = name
@@ -150,7 +150,7 @@ class Case:
         self.expected_command_driver = expected_command_driver
 
     def sdv_assertion(self,
-                      tcds: Tcds,
+                      tcds: TestCaseDs,
                       arguments: ValueAssertion[Sequence[str]],
                       arguments_symbols: Sequence[SymbolContext] = (),
                       ) -> ValueAssertion[SymbolDependentValue]:
@@ -253,8 +253,9 @@ class ArgumentsCase:
         self.symbols = symbols
 
 
-def constant_assertion(constant: ValueAssertion[CommandDriver]) -> Callable[[Tcds], ValueAssertion[CommandDriver]]:
-    def ret_val(tcds: Tcds) -> ValueAssertion[CommandDriver]:
+def constant_assertion(constant: ValueAssertion[CommandDriver]) -> Callable[
+    [TestCaseDs], ValueAssertion[CommandDriver]]:
+    def ret_val(tcds: TestCaseDs) -> ValueAssertion[CommandDriver]:
         return constant
 
     return ret_val

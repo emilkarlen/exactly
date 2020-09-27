@@ -5,7 +5,7 @@ from exactly_lib_test.section_document.test_resources.source_location import sin
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as sut
 from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
-from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
+from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 

@@ -6,7 +6,7 @@ from exactly_lib.definitions.path import REL_HDS_CASE_OPTION
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
@@ -19,10 +19,10 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import hds_case_dir_contents
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import \
+from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     multiple, TcdsPopulatorForRelOptionType
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args, result_assertions

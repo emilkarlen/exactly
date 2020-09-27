@@ -11,7 +11,7 @@ from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInf
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -99,7 +99,7 @@ class _HdsConcept(ConceptDocumentation):
                     docs.text_cell(value_str_or_text),
                     ]
 
-        from exactly_lib.test_case_file_structure.relative_path_options import REL_HDS_OPTIONS_MAP
+        from exactly_lib.tcfs.relative_path_options import REL_HDS_OPTIONS_MAP
         properties_table = docs.first_column_is_header_table(
             [
                 prop_row('Default value',

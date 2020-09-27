@@ -1,10 +1,10 @@
 import pathlib
 from typing import Optional
 
-from exactly_lib.test_case_file_structure import path_relativity as pr
-from exactly_lib.test_case_file_structure import relative_path_options as rpo
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import path_relativity as pr
+from exactly_lib.tcfs import relative_path_options as rpo
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.path_ddv import PathDdv
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
@@ -39,7 +39,7 @@ def path_ddv_with_relativity_name_prefix__rel_tcds_dir(path_ddv: PathDdv) -> str
 
 
 def path_ddv_with_relativity_name_prefix(path_ddv: PathDdv,
-                                         tcds: Tcds,
+                                         tcds: TestCaseDs,
                                          cwd: Optional[pathlib.Path]) -> str:
     def absolute() -> str:
         return str(path_ddv.value_when_no_dir_dependencies())

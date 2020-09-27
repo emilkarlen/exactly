@@ -8,12 +8,12 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import Instru
     InstructionEmbryo, T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions
@@ -32,7 +32,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              tcds: Tcds):
+              tcds: TestCaseDs):
         pass
 
 
@@ -61,8 +61,8 @@ class Expectation(Generic[T]):
                  main_raises_hard_error: bool = False,
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                  symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
-                 main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-                 side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
+                 main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
+                 side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
                  side_effects_on_hds: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
                  source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                  main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),
@@ -88,8 +88,8 @@ def expectation(validation: ValidationAssertions = validation_utils.all_validati
                 main_raises_hard_error: bool = False,
                 symbol_usages: ValueAssertion[Sequence[SymbolUsage]] = asrt.is_empty_sequence,
                 symbols_after_main: ValueAssertion[SymbolTable] = asrt.anything_goes(),
-                main_side_effects_on_sds: ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
-                side_effects_on_tcds: ValueAssertion[Tcds] = asrt.anything_goes(),
+                main_side_effects_on_sds: ValueAssertion[SandboxDs] = asrt.anything_goes(),
+                side_effects_on_tcds: ValueAssertion[TestCaseDs] = asrt.anything_goes(),
                 side_effects_on_home: ValueAssertion[pathlib.Path] = asrt.anything_goes(),
                 source: ValueAssertion[ParseSource] = asrt.anything_goes(),
                 main_side_effect_on_environment_variables: ValueAssertion[Dict[str, str]] = asrt.anything_goes(),

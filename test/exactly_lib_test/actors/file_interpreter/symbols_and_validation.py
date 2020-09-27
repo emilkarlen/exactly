@@ -4,9 +4,9 @@ import unittest
 
 from exactly_lib.actors import file_interpreter as sut
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelHdsOptionType
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
 from exactly_lib.type_system.data import paths
@@ -28,11 +28,11 @@ from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbol
 from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import hds_populators, path_arguments
+from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators, path_arguments
-from exactly_lib_test.test_case_file_structure.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import program_arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab, relativity_options
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
@@ -399,7 +399,7 @@ class TestArgumentsAreProgramArguments(unittest.TestCase):
             program_arguments.remaining_part_of_current_line_as_literal(text_until_end_of_line),
         ])
 
-        def get_command_assertion(tcds: Tcds) -> ValueAssertion[Command]:
+        def get_command_assertion(tcds: TestCaseDs) -> ValueAssertion[Command]:
             symbols = SymbolTable.empty()
             return asrt_command.matches_command(
                 asrt.anything_goes(),
@@ -476,7 +476,7 @@ class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
             )
         )
 
-        def get_command_assertion(tcds: Tcds) -> ValueAssertion[Command]:
+        def get_command_assertion(tcds: TestCaseDs) -> ValueAssertion[Command]:
             symbols = SymbolTable.empty()
             return asrt_command.matches_command(
                 asrt.anything_goes(),

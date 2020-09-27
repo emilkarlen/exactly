@@ -3,20 +3,20 @@ import pathlib
 import shutil
 import unittest
 
-from exactly_lib_test.actors.test_resources import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 
 
 class PartialExecutionTestCaseBase:
@@ -74,7 +74,7 @@ class PartialExecutionTestCaseBase:
         return self.__partial_result
 
     @property
-    def sds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> SandboxDs:
         return self.__partial_result.sds
 
     def assert_is_regular_file_with_contents(self,

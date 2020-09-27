@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure import ddv_validation
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validation
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
@@ -34,7 +34,7 @@ class PropertyGetterDdv(Generic[MODEL, T], WithTreeStructureDescription, ABC):
         return ddv_validation.constant_success_validator()
 
     @abstractmethod
-    def value_of_any_dependency(self, tcds: Tcds) -> PropertyGetterAdv[MODEL, T]:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[MODEL, T]:
         pass
 
 

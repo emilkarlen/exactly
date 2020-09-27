@@ -1,6 +1,6 @@
 from typing import Sequence, List
 
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
@@ -113,7 +113,7 @@ def failing_validation_cases__multi_exe(symbol_name: str = 'files_matcher_symbol
 
 
 def _successful_matcher_with_validation(the_validation: ValidationActual) -> FileMatcherSdv:
-    def get_matcher(symbols: SymbolTable, tcds: Tcds) -> FileMatcher:
+    def get_matcher(symbols: SymbolTable, tcds: TestCaseDs) -> FileMatcher:
         return constant.MatcherWithConstantResult(True)
 
     return matchers.sdv_from_parts(

@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import files_matcher_integration
@@ -22,12 +22,12 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import tcds_populators
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import \
     files_matcher_integration as fm_tr
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type

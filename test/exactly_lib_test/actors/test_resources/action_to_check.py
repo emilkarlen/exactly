@@ -5,10 +5,10 @@ from abc import ABC, abstractmethod
 from typing import List, ContextManager, Mapping, Optional, Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelHdsOptionType
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHdsOptionType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.actors.test_resources import integration_check
@@ -17,12 +17,12 @@ from exactly_lib_test.actors.test_resources.integration_check import \
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.multi_phase.change_dir import CwdSdsAssertion
+from exactly_lib_test.tcfs.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
+from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -238,7 +238,7 @@ class TestCwdOfAtcIsCurrentDirCurrentDirIsNotChangedByTheActor(TestBase):
     def runTest(self):
         cwd_sub_dir_of_act = 'the-sub-dir-that-should-be-cwd'
 
-        def check_that_stdout_is_expected_cwd(sds: SandboxDirectoryStructure) -> PostSdsExpectation:
+        def check_that_stdout_is_expected_cwd(sds: SandboxDs) -> PostSdsExpectation:
             return PostSdsExpectation(
                 sub_process_result_from_execute=asrt_proc_result.matches_proc_result(
                     stdout=asrt.equals(

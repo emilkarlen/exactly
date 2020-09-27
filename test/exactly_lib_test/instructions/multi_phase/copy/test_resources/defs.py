@@ -1,4 +1,4 @@
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, DEPENDENCY_DICT, \
+from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants, DEPENDENCY_DICT, \
     DirectoryStructurePartition, RelHdsOptionType, RelNonHdsOptionType
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 

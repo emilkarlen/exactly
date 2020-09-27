@@ -2,7 +2,7 @@ from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, PRIMITIVE
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -19,7 +19,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 class LogicTypeResolvingHelper:
     def __init__(self,
                  symbols: SymbolTable,
-                 tcds: Tcds,
+                 tcds: TestCaseDs,
                  application_environment: ApplicationEnvironment,
                  ):
         self._symbols = symbols
@@ -31,7 +31,7 @@ class LogicTypeResolvingHelper:
         return self._application_environment
 
     @property
-    def tcds(self) -> Tcds:
+    def tcds(self) -> TestCaseDs:
         return self._tcds
 
     @property

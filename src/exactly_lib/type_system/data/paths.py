@@ -1,12 +1,12 @@
 import pathlib
 from abc import ABC
 
-from exactly_lib.test_case_file_structure import relativity_root, relative_path_options
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
+from exactly_lib.tcfs import relativity_root, relative_path_options
+from exactly_lib.tcfs.dir_dependent_value import DirDependencyError
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import RelOptionType, SpecificPathRelativity, \
     SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_hds
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsNothing
 from exactly_lib.type_system.data.impl.path.path_base import PathDdvWithPathSuffixBase, \
@@ -117,12 +117,12 @@ class _PathDdvFromRelRootResolver(_PathDdvWithConstantLocationBase):
     def has_dir_dependency(self) -> bool:
         return True
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         suffix = self.path_suffix_path()
         root = self._rel_root_resolver.from_hds(hds)
         return root / suffix
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure):
+    def value_post_sds(self, sds: SandboxDs):
         suffix = self.path_suffix_path()
         root = self._rel_root_resolver.from_non_hds(sds)
         return root / suffix
@@ -141,10 +141,10 @@ class _PathDdvAbsolute(PathDdvWithPathSuffixBase):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.path_suffix_path()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         return self.value_when_no_dir_dependencies()
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
         return self.value_when_no_dir_dependencies()
 
 
@@ -161,12 +161,12 @@ class _PathDdvRelHds(_PathDdvWithConstantLocationBase):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         raise DirDependencyError({DirectoryStructurePartition.HDS})
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         suffix = self.path_suffix_path()
         root = relative_path_options.REL_HDS_OPTIONS_MAP[self._rel_option].root_resolver.from_hds(hds)
         return root / suffix
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
         raise DirDependencyError({DirectoryStructurePartition.HDS},
                                  'This file exists pre-SDS')
 
@@ -201,10 +201,10 @@ class _StackedPathDdv(PathDdvWithDescriptionBase):
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
         return self.base_path.value_when_no_dir_dependencies() / self._stacked_path_suffix_path()
 
-    def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
+    def value_pre_sds(self, hds: HomeDs) -> pathlib.Path:
         return self.base_path.value_pre_sds(hds) / self._stacked_path_suffix_path()
 
-    def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def value_post_sds(self, sds: SandboxDs) -> pathlib.Path:
         return self.base_path.value_post_sds(sds) / self._stacked_path_suffix_path()
 
     @staticmethod

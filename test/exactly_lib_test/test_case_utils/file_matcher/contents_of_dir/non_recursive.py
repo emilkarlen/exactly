@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
-from exactly_lib_test.test_case_file_structure.test_resources import sds_populator, tcds_populators
+from exactly_lib_test.tcfs.test_resources import sds_populator, tcds_populators
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
     files_matcher_integration, executor_for_dir_contents
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.cases import file_type

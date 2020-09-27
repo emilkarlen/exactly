@@ -3,13 +3,13 @@ from typing import List, Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources import tcds_populators as tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__multi_line
@@ -45,7 +45,7 @@ class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfigurati
         return self.arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
     def arrangement_for_contents_from_fun(self,
-                                          tcds_2_str: Callable[[Tcds], str],
+                                          tcds_2_str: Callable[[TestCaseDs], str],
                                           tcds_contents: tcds.TcdsPopulator = tcds.empty(),
                                           post_sds_population_action: TcdsAction = TcdsAction(),
                                           symbols: SymbolTable = None,

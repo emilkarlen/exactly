@@ -4,9 +4,9 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
-from exactly_lib.test_case_file_structure import ddv_validators
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs import ddv_validators
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils import file_properties, described_dep_val
 from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
@@ -123,7 +123,7 @@ class _RecursiveModelConstructorDdv(LogicWithDetailsDescriptionDdv[ModelConstruc
     def validator(self) -> DdvValidator:
         return self._validator
 
-    def value_of_any_dependency(self, tcds: Tcds
+    def value_of_any_dependency(self, tcds: TestCaseDs
                                 ) -> ApplicationEnvironmentDependentValue[ModelConstructor[FilesMatcherModel]]:
         def get_int_value(x: IntegerDdv) -> int:
             return x.value_of_any_dependency(tcds)

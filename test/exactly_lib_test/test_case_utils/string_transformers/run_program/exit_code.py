@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.file_utils.std import StdOutputFilesContents
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

@@ -2,10 +2,10 @@ from typing import Callable, Optional, Set
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandDdv
 from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
 from exactly_lib.type_system.data.string_ddv import StringDdv
@@ -37,7 +37,7 @@ class IntegerDdv(OperandDdv[int]):
     def value_when_no_dir_dependencies(self) -> int:
         return self._primitive_value_computer.value_when_no_dir_dependencies()
 
-    def value_of_any_dependency(self, tcds: Tcds) -> int:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> int:
         return self._primitive_value_computer.value_of_any_dependency(tcds)
 
 
@@ -57,7 +57,7 @@ class _PrimitiveValueComputer:
 
         return self._primitive_value
 
-    def value_of_any_dependency(self, tcds: Tcds) -> int:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> int:
         if self._primitive_value is None:
             self._get_primitive_value(self._int_expression.value_of_any_dependency(tcds))
 
@@ -82,7 +82,7 @@ class _IntegerDdvValidator(DdvValidator):
                                   lambda x: None)
         self._has_dir_dependencies = bool(self._value_computer.resolving_dependencies())
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         if not self._has_dir_dependencies:
             try:
                 x = self._value_computer.value_when_no_dir_dependencies()
@@ -92,7 +92,7 @@ class _IntegerDdvValidator(DdvValidator):
 
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         if self._has_dir_dependencies:
             try:
                 x = self._value_computer.value_of_any_dependency(tcds)

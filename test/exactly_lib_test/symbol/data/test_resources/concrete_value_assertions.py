@@ -13,7 +13,7 @@ from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.symbol.test_resources import sdv_type_assertions
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.type_system.data.test_resources.path_assertions import equals_path

@@ -16,8 +16,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test

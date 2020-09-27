@@ -6,9 +6,9 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.sdv_validation import SdvValidator
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.data.path_ddv import DescribedPath, PathDdv
 
 
@@ -54,13 +54,13 @@ class PathDdvValidatorBase(DdvValidator, ABC):
         """
         pass
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         p = self._path_ddv
         if p.exists_pre_sds():
             return self._validate_path(p.value_pre_sds__d(hds))
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         p = self._path_ddv
         if not p.exists_pre_sds():
             return self._validate_path(p.value_post_sds__d(tcds.sds))

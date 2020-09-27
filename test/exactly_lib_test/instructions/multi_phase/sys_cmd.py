@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase import sys_cmd as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
@@ -26,10 +26,10 @@ from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_re
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
     CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.program.test_resources import result_assertions, program_arguments

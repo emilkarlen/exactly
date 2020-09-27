@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import list_sdvs
 from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_path
 from exactly_lib.test_case_utils.parse import rel_opts_configuration

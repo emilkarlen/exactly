@@ -1,15 +1,15 @@
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
+from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
+from exactly_lib_test.tcfs.test_resources import path_arguments as args
+from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct2
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments as args
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import DdvValidatorThat

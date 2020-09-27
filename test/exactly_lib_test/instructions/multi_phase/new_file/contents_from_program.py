@@ -4,7 +4,7 @@ from typing import List, Callable, Dict, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
@@ -29,11 +29,11 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_cont
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext, NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import path_arguments
-from exactly_lib_test.test_case_file_structure.test_resources.path_arguments import RelOptPathArgument
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+from exactly_lib_test.tcfs.test_resources import path_arguments
+from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args

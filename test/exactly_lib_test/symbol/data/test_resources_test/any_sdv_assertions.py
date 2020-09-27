@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.string_sdvs import str_constant
 from exactly_lib_test.symbol.data.test_resources import any_sdv_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.visitor import UnknownDataTypeSdvClass
-from exactly_lib_test.test_case_file_structure.test_resources.simple_path import path_test_impl
+from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
 

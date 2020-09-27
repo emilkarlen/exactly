@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.data.path_ddv import PathDdv
@@ -25,7 +25,7 @@ class CommandDriverDdvForShell(CommandDriverDdv):
             _arguments_as_to_string_objects(arguments)
         )
 
-    def value_of_any_dependency(self, tcds: Tcds) -> CommandDriver:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
         return commands.CommandDriverForShell(self._command_line.value_of_any_dependency(tcds))
 
 
@@ -44,7 +44,7 @@ class CommandDriverDdvForExecutableFile(CommandDriverDdv):
     def validators(self) -> Sequence[DdvValidator]:
         return self._validators
 
-    def value_of_any_dependency(self, tcds: Tcds) -> CommandDriver:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
         return commands.CommandDriverForExecutableFile(self._exe_file.value_of_any_dependency__d(tcds))
 
 
@@ -58,7 +58,7 @@ class CommandDriverDdvForSystemProgram(CommandDriverDdv):
             _arguments_as_to_string_objects(arguments),
         )
 
-    def value_of_any_dependency(self, tcds: Tcds) -> CommandDriver:
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
         return commands.CommandDriverForSystemProgram(self._program.value_of_any_dependency(tcds))
 
 

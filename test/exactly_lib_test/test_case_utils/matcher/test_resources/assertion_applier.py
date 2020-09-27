@@ -4,9 +4,9 @@ from typing import Callable, TypeVar, Generic, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.hds import HomeDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls.sdv_components import MatcherSdvFromParts
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
@@ -29,7 +29,8 @@ MODEL = TypeVar('MODEL')
 
 class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
     @abstractmethod
-    def get_assertion(self, symbols: SymbolTable, tcds: Tcds, env: ApplicationEnvironment) -> ValueAssertion[ACTUAL]:
+    def get_assertion(self, symbols: SymbolTable, tcds: TestCaseDs, env: ApplicationEnvironment) -> ValueAssertion[
+        ACTUAL]:
         pass
 
     @abstractmethod
@@ -39,38 +40,38 @@ class ApplicationAssertionSetup(Generic[MODEL, ACTUAL], ABC):
 
 class ValidationAssertionSetup(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SDS], ABC):
     @abstractmethod
-    def get_pre_sds_assertion(self, hds: HomeDirectoryStructure) -> ValueAssertion[ACTUAL_PRE_SDS]:
+    def get_pre_sds_assertion(self, hds: HomeDs) -> ValueAssertion[ACTUAL_PRE_SDS]:
         pass
 
     @abstractmethod
-    def get_pre_sds_actual(self, hds: HomeDirectoryStructure) -> ACTUAL_PRE_SDS:
+    def get_pre_sds_actual(self, hds: HomeDs) -> ACTUAL_PRE_SDS:
         pass
 
     @abstractmethod
-    def get_post_sds_assertion(self, tcds: Tcds) -> ValueAssertion[ACTUAL_POST_SDS]:
+    def get_post_sds_assertion(self, tcds: TestCaseDs) -> ValueAssertion[ACTUAL_POST_SDS]:
         pass
 
     @abstractmethod
-    def get_post_sds_actual(self, tcds: Tcds) -> ACTUAL_POST_SDS:
+    def get_post_sds_actual(self, tcds: TestCaseDs) -> ACTUAL_POST_SDS:
         pass
 
 
 class UnconditionallyPassValidationAssertionSetup(ValidationAssertionSetup):
-    def get_pre_sds_assertion(self, hds: HomeDirectoryStructure) -> ValueAssertion:
+    def get_pre_sds_assertion(self, hds: HomeDs) -> ValueAssertion:
         return asrt.anything_goes()
 
-    def get_pre_sds_actual(self, hds: HomeDirectoryStructure):
+    def get_pre_sds_actual(self, hds: HomeDs):
         return None
 
-    def get_post_sds_assertion(self, tcds: Tcds) -> ValueAssertion:
+    def get_post_sds_assertion(self, tcds: TestCaseDs) -> ValueAssertion:
         return asrt.anything_goes()
 
-    def get_post_sds_actual(self, tcds: Tcds):
+    def get_post_sds_actual(self, tcds: TestCaseDs):
         return None
 
 
 class UnconditionallyPassApplicationAssertionSetup(ApplicationAssertionSetup):
-    def get_assertion(self, symbols: SymbolTable, tcds: Tcds, env: ApplicationEnvironment) -> ValueAssertion:
+    def get_assertion(self, symbols: SymbolTable, tcds: TestCaseDs, env: ApplicationEnvironment) -> ValueAssertion:
         return asrt.anything_goes()
 
     def get_actual(self, model: MODEL):
@@ -88,7 +89,7 @@ def matcher(put: unittest.TestCase,
             matching_result: bool = True,
             ) -> MatcherSdv[MODEL]:
     def make_ddv(symbols: SymbolTable) -> MatcherDdv[MODEL]:
-        def make_adv(tcds: Tcds) -> MatcherAdv[MODEL]:
+        def make_adv(tcds: TestCaseDs) -> MatcherAdv[MODEL]:
             def make_matcher(environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
                 return MatcherThatAppliesValueAssertion(
                     put,
@@ -122,7 +123,7 @@ class ValidatorThatAppliesValueAssertions(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SD
         self._setup = setup
         self._message_builder = message_builder
 
-    def validate_pre_sds_if_applicable(self, hds: HomeDirectoryStructure) -> Optional[TextRenderer]:
+    def validate_pre_sds_if_applicable(self, hds: HomeDs) -> Optional[TextRenderer]:
         self._setup.get_pre_sds_assertion(hds).apply(
             self._put,
             self._setup.get_pre_sds_actual(hds),
@@ -131,7 +132,7 @@ class ValidatorThatAppliesValueAssertions(Generic[ACTUAL_PRE_SDS, ACTUAL_POST_SD
 
         return None
 
-    def validate_post_sds_if_applicable(self, tcds: Tcds) -> Optional[TextRenderer]:
+    def validate_post_sds_if_applicable(self, tcds: TestCaseDs) -> Optional[TextRenderer]:
         self._setup.get_post_sds_assertion(tcds).apply(
             self._put,
             self._setup.get_post_sds_actual(tcds),

@@ -4,16 +4,16 @@ import types
 import unittest
 from typing import Callable
 
-from exactly_lib.test_case_file_structure import relative_path_options as rpo
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
+from exactly_lib.tcfs import relative_path_options as rpo
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RESOLVING_DEPENDENCY_OF, RelHdsOptionType, RelSdsOptionType
-from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
+from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system.data import paths as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.path_part import PathPartDdv
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_utils import NEA

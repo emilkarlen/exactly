@@ -1,15 +1,15 @@
 import unittest
 from typing import Callable, TypeVar
 
-from exactly_lib.test_case_file_structure.ddv_validation import DdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.logic.description import LogicValueDescription, DescriptionVisitor, DetailsDescription, \
     NodeDescription
 from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherWTrace
-from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_ddv
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as asrt_ddv
+from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
@@ -19,8 +19,8 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
 PRIMITIVE = TypeVar('PRIMITIVE')
 
 
-def matches_logic_ddv(primitive_value: Callable[[Tcds], ValueAssertion],
-                      tcds: Tcds = fake_tcds()
+def matches_logic_ddv(primitive_value: Callable[[TestCaseDs], ValueAssertion],
+                      tcds: TestCaseDs = fake_tcds()
                       ) -> ValueAssertion[DirDependentValue]:
     return asrt.is_instance_with__many(
         LogicDdv,
@@ -31,10 +31,10 @@ def matches_logic_ddv(primitive_value: Callable[[Tcds], ValueAssertion],
         ])
 
 
-def matches_matcher_ddv(primitive_value: Callable[[Tcds], ValueAssertion[MatcherWTrace]],
-                        tcds: Tcds = fake_tcds()
+def matches_matcher_ddv(primitive_value: Callable[[TestCaseDs], ValueAssertion[MatcherWTrace]],
+                        tcds: TestCaseDs = fake_tcds()
                         ) -> ValueAssertion[DirDependentValue]:
-    def get_primitive_value_assertion(tcds_: Tcds) -> ValueAssertion:
+    def get_primitive_value_assertion(tcds_: TestCaseDs) -> ValueAssertion:
         return asrt.is_instance_with(MatcherWTrace, primitive_value(tcds_))
 
     return asrt.is_instance_with__many(

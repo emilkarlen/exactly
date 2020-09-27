@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.path_sdv import PathSdv, PathPartSdv
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.data.visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.util.symbol_table import SymbolTable

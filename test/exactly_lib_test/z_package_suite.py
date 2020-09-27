@@ -10,8 +10,8 @@ from exactly_lib_test.instructions import z_package_suite as instructions
 from exactly_lib_test.processing import z_package_suite as processing
 from exactly_lib_test.section_document import z_package_suite as section_document
 from exactly_lib_test.symbol import z_package_suite as symbol
+from exactly_lib_test.tcfs import z_package_suite as test_case_file_structure
 from exactly_lib_test.test_case import z_package_suite as test_case
-from exactly_lib_test.test_case_file_structure import z_package_suite as test_case_file_structure
 from exactly_lib_test.test_case_utils import z_package_suite as test_case_utils
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources_test import z_package_suite as test_resources_test

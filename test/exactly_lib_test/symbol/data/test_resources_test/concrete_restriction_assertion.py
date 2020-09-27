@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     PathRelativityRestriction
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 

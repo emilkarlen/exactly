@@ -8,15 +8,15 @@ from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.test_case_file_structure.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
+from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
+    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.integration_check import ModelConstructor
-from exactly_lib_test.test_case_file_structure.test_resources.sub_dir_of_sds_act import \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \

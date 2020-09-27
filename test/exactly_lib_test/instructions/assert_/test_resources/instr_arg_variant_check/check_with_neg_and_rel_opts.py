@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -11,8 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
+from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf

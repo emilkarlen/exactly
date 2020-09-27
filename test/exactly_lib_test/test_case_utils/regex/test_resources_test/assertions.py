@@ -4,10 +4,10 @@ from typing import Sequence, Pattern
 
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_file_structure.ddv_validation import ConstantDdvValidator
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
-from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.test_case_file_structure.tcds import Tcds
+from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator
+from exactly_lib.tcfs.dir_dependent_value import DirDependencies
+from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.util.name_and_value import NameAndValue
@@ -268,7 +268,7 @@ def arbitrary_sdv_with_references(references: Sequence[SymbolReference]) -> Rege
                                     references)
 
 
-def check_of_primitive_value_fails_expectedly(tcds: Tcds) -> ValueAssertion[Pattern]:
+def check_of_primitive_value_fails_expectedly(tcds: TestCaseDs) -> ValueAssertion[Pattern]:
     return asrt.fail('unconditional failure')
 
 

@@ -12,9 +12,9 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.processing import exit_values
+from exactly_lib.tcfs import sds as sds
+from exactly_lib.tcfs.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.test_case.phases.assert_ import AssertPhasePurpose, WithAssertPhasePurpose
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
-from exactly_lib.test_case_file_structure.tcds_symbols import SYMBOL_RESULT
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

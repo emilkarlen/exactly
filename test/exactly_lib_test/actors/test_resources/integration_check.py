@@ -6,6 +6,8 @@ from typing import List, Optional, Sequence, ContextManager, Callable
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.actor import Actor, ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -14,21 +16,19 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_file_structure.tcds import Tcds
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh
+from exactly_lib_test.tcfs.test_resources import hds_populators
+from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
+from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.result.test_resources import failure_details_assertions as asrt_failure_details, \
     sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
-from exactly_lib_test.test_case_file_structure.test_resources import hds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.ds_action import PlainTcdsAction
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, \
     all_validations_passes__svh
 from exactly_lib_test.test_resources.process import capture_process_executor_result, SubProcessResult, ProcessExecutor
@@ -69,9 +69,9 @@ class Arrangement:
 
 class PostSdsExpectation:
     def __init__(self,
-                 side_effects_on_files_after_prepare: ValueAssertion[SandboxDirectoryStructure]
+                 side_effects_on_files_after_prepare: ValueAssertion[SandboxDs]
                  = asrt.anything_goes(),
-                 side_effects_on_files_after_execute: ValueAssertion[SandboxDirectoryStructure]
+                 side_effects_on_files_after_execute: ValueAssertion[SandboxDs]
                  = asrt.anything_goes(),
                  sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
                  ):
@@ -81,13 +81,13 @@ class PostSdsExpectation:
 
     @staticmethod
     def constant(
-            side_effects_on_files_after_prepare: ValueAssertion[SandboxDirectoryStructure]
+            side_effects_on_files_after_prepare: ValueAssertion[SandboxDs]
             = asrt.anything_goes(),
-            side_effects_on_files_after_execute: ValueAssertion[SandboxDirectoryStructure]
+            side_effects_on_files_after_execute: ValueAssertion[SandboxDs]
             = asrt.anything_goes(),
             sub_process_result_from_execute: ValueAssertion[SubProcessResult] = asrt.anything_goes(),
-    ) -> Callable[[SandboxDirectoryStructure], 'PostSdsExpectation']:
-        def ret_val(sds: SandboxDirectoryStructure) -> 'PostSdsExpectation':
+    ) -> Callable[[SandboxDs], 'PostSdsExpectation']:
+        def ret_val(sds: SandboxDs) -> 'PostSdsExpectation':
             return PostSdsExpectation(
                 side_effects_on_files_after_prepare,
                 side_effects_on_files_after_execute,
@@ -107,9 +107,9 @@ class Expectation:
                  = asrt_eh.is_any_exit_code,
                  symbol_usages: ValueAssertion[Sequence[SymbolUsage]]
                  = asrt.is_empty_sequence,
-                 post_sds: Callable[[SandboxDirectoryStructure], PostSdsExpectation] =
+                 post_sds: Callable[[SandboxDs], PostSdsExpectation] =
                  lambda sds: PostSdsExpectation(),
-                 after_execution: ValueAssertion[Tcds] =
+                 after_execution: ValueAssertion[TestCaseDs] =
                  asrt.anything_goes(),
                  ):
         self.symbol_usages = symbol_usages
