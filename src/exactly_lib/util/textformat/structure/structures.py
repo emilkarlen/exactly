@@ -120,18 +120,18 @@ def literal_layout(s: str) -> ParagraphItem:
     return LiteralLayout(s)
 
 
-def first_column_is_header_table(rows_iterable,
+def first_column_is_header_table(rows: List[List[TableCell]],
                                  column_separator: str = '  ') -> ParagraphItem:
     return table.Table(table.TableFormat(column_separator,
                                          first_column_is_header=True),
-                       rows_iterable)
+                       rows)
 
 
-def first_row_is_header_table(rows_iterable,
+def first_row_is_header_table(rows: List[List[TableCell]],
                               column_separator: str = '  ') -> ParagraphItem:
     return table.Table(table.TableFormat(column_separator,
                                          first_row_is_header=True),
-                       rows_iterable)
+                       rows)
 
 
 def plain_table(rows: List[List[TableCell]],

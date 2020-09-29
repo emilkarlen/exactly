@@ -1,4 +1,7 @@
-def distribute_width(column_content_widths: list, available_width: int) -> list:
+from typing import List, Tuple
+
+
+def distribute_width(column_content_widths: List[int], available_width: int) -> List[int]:
     """
     Distributes the given width among the given columns.
 
@@ -11,7 +14,6 @@ def distribute_width(column_content_widths: list, available_width: int) -> list:
 
     :param column_content_widths: The maximum needed with for each column.
     :param available_width: Total available width for all columns.
-    :returns [int]
     """
     distribution = _initial_distribution(column_content_widths, available_width)
     superfluous_width, unsatisfied_columns = _shrink_and_get_superfluous_width(distribution)
@@ -43,7 +45,7 @@ class _ColumnInfo:
         self.assigned_width += width
 
 
-def _shrink_and_get_superfluous_width(column_infos: list) -> (int, list):
+def _shrink_and_get_superfluous_width(column_infos: List[_ColumnInfo]) -> Tuple[int, List[_ColumnInfo]]:
     superfluous_width = 0
     unsatisfied_columns = []
     for ci in column_infos:
@@ -53,7 +55,7 @@ def _shrink_and_get_superfluous_width(column_infos: list) -> (int, list):
     return superfluous_width, unsatisfied_columns
 
 
-def _widen_by_distributing_superfluous_width(superfluous_width: int, accepting_columns: list):
+def _widen_by_distributing_superfluous_width(superfluous_width: int, accepting_columns: List[_ColumnInfo]):
     num_cols = len(accepting_columns)
     base_growth, num_cols_that_will_grow_one_more = divmod(superfluous_width, num_cols)
     growth_distribution = ((num_cols_that_will_grow_one_more * [base_growth + 1]) +
@@ -62,7 +64,7 @@ def _widen_by_distributing_superfluous_width(superfluous_width: int, accepting_c
         col.grow(growth)
 
 
-def _initial_distribution(column_content_widths: list, available_width: int) -> list:
+def _initial_distribution(column_content_widths: List[int], available_width: int) -> List[_ColumnInfo]:
     base, remainder = divmod(available_width, len(column_content_widths))
     ret_val = []
     for content_width in column_content_widths:

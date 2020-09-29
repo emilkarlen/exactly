@@ -1,5 +1,10 @@
-def extend_each_sub_list_to_max_sub_list_length(list_of_lists: list,
-                                                fill_value) -> list:
+from typing import TypeVar, List
+
+T = TypeVar('T')
+
+
+def extend_each_sub_list_to_max_sub_list_length(list_of_lists: List[List[T]],
+                                                fill_value: T) -> List[List[T]]:
     max_num_elements = max([len(element_list) for element_list in list_of_lists])
     ret_val = []
     for elements in list_of_lists:
@@ -8,7 +13,7 @@ def extend_each_sub_list_to_max_sub_list_length(list_of_lists: list,
     return ret_val
 
 
-def transpose(rows: list) -> list:
+def transpose(rows: List[List[T]]) -> List[List[T]]:
     if not rows:
         return []
     ret_val = []

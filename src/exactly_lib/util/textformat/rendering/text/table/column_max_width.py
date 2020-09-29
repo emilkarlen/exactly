@@ -1,13 +1,13 @@
-import types
+from typing import List, Callable, TypeVar
+
+CELL_AS_LINES = List[str]
+CELL = TypeVar('CELL')
 
 
-def derive_column_max_widths(cell_formatter_for_given_width: types.FunctionType,
+def derive_column_max_widths(cell_formatter_for_given_width: Callable[[int], Callable[[CELL], CELL_AS_LINES]],
                              available_width: int,
-                             columns_with_cell_content: list) -> list:
-    """
-    :type columns_with_cell_content:[[cell]]
-    :return: [int]
-    """
+                             columns_with_cell_content: List[List[CELL]],
+                             ) -> List[int]:
     cell_formatter = cell_formatter_for_given_width(
         available_width + _ADDITIONAL_WIDTH_TO_MAKE_WIDTH_LESS_LIKELY_TO_DEPEND_ON_WORD_WRAP)
     columns_with_cell_lines_str = [

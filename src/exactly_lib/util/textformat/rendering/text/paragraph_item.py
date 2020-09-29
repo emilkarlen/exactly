@@ -1,7 +1,8 @@
-from typing import List, Iterable
+from typing import List, Iterable, Callable
 
 from exactly_lib.util.textformat.rendering.text.lists import ListFormats, ListFormat, list_format_with_indent_str, \
     list_format_with_separations
+from exactly_lib.util.textformat.rendering.text.table.column_max_width import CELL_AS_LINES
 from exactly_lib.util.textformat.rendering.text.table.formatter import TableFormatter
 from exactly_lib.util.textformat.rendering.text.text import TextFormatter
 from exactly_lib.util.textformat.rendering.text.wrapper import Indent, Wrapper
@@ -9,7 +10,7 @@ from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 from exactly_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
-from exactly_lib.util.textformat.structure.table import Table
+from exactly_lib.util.textformat.structure.table import Table, TableCell
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 
 
@@ -29,7 +30,7 @@ class Formatter:
         self.text_item_formatter = _ParagraphItemFormatter(self)
         self.literal_layout_indent = literal_layout_indent
 
-    def format_paragraph_items(self, items: iter) -> List[str]:
+    def format_paragraph_items(self, items: List[ParagraphItem]) -> List[str]:
         ret_val = []
         for item in items:
             if ret_val:
@@ -88,7 +89,8 @@ class Formatter:
         un_indented_lines = formatter.apply()
         return [first_line_indent + line for line in un_indented_lines]
 
-    def _paragraph_items_formatter_for_given_width_for_table_formatter(self, width: int):
+    def _paragraph_items_formatter_for_given_width_for_table_formatter(self, width: int,
+                                                                       ) -> Callable[[TableCell], CELL_AS_LINES]:
         formatter = Formatter(self.text_formatter,
                               Wrapper(page_width=width),
                               num_item_separator_lines=self.num_item_separator_lines,
@@ -100,7 +102,8 @@ class _ListFormatter:
     def __init__(self,
                  formatter: Formatter,
                  list_format: ListFormat,
-                 items: iter):
+                 items: Iterable[HeaderContentListItem],
+                 ):
         self.formatter = formatter
         self.wrapper = formatter.wrapper
         self.list_format = list_format
@@ -117,16 +120,13 @@ class _ListFormatter:
         ret_val = self.ret_val
         with self.wrapper.indent_increase(Indent.identical(self.list_format.indent_str)):
             for (item_number, item) in enumerate(self.items_list, start=1):
-                assert isinstance(item, HeaderContentListItem), (
-                        'The list item is not a %s: %s' % (str(HeaderContentListItem),
-                                                           str(item)))
                 if item_number > 1:
                     ret_val.extend(self.blank_lines_between_elements)
                 self._format_header(item, item_number)
                 self._format_content(item, item_number)
         return ret_val
 
-    def _format_header(self, item, item_number):
+    def _format_header(self, item: HeaderContentListItem, item_number: int):
         header_string = self.list_format.header_format.header_text(item_number,
                                                                    self.num_items,
                                                                    self.formatter.text_formatter,
@@ -134,19 +134,19 @@ class _ListFormatter:
         with self.wrapper.indent_increase(self.header_indent(item_number)):
             self.ret_val.extend(self.formatter.format_str(header_string))
 
-    def _format_content(self, item, item_number):
+    def _format_content(self, item: HeaderContentListItem, item_number: int):
         content_items_list = list(item.content_paragraph_items)
         if content_items_list:
             self.ret_val.extend(self.blank_lines_between_header_and_content)
             with self.wrapper.indent_increase(self.content_indent(item_number)):
                 self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
 
-    def header_indent(self, item_number) -> Indent:
+    def header_indent(self, item_number: int) -> Indent:
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
                                                                                               self.num_items)
         return Indent('', following_lines_indent)
 
-    def content_indent(self, item_number) -> Indent:
+    def content_indent(self, item_number: int) -> Indent:
         indent_str = self.list_format.header_format.contents_indent(self.num_items)
         return Indent(indent_str, indent_str)
 
