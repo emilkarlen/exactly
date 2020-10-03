@@ -36,7 +36,7 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
         self._is_full_match = is_full_match
         self._pattern = pattern
         self._pattern_renderer = custom_details.PatternRenderer(pattern)
-        self._expected_detail_renderer = custom_details.expected(
+        self._renderer_of_expected = custom_details.expected(
             custom_details.regex_with_config_renderer(
                 is_full_match,
                 self._pattern_renderer,
@@ -85,7 +85,7 @@ class MatchesRegex(WithCachedTreeStructureDescriptionBase,
             return self._pattern.search(model)
 
     def _new_tb_with_expected(self) -> TraceBuilder:
-        return TraceBuilder(self.NAME).append_details(self._expected_detail_renderer)
+        return TraceBuilder(self.NAME).append_details(self._renderer_of_expected)
 
 
 class MatchesRegexDdv(MatcherDdv[str]):

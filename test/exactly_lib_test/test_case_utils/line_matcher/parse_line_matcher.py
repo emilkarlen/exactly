@@ -15,10 +15,10 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
+from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
+    import remaining_source
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
-    import remaining_source
 from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

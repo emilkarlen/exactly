@@ -10,8 +10,19 @@ def file-matcher DIR_CONTENTS_R_LIMITED = dir-contents -recursive -min-depth 1 -
 
 def file-matcher NAME_GLOB   = name *.txt
 def file-matcher NAME_REGEX  = name ~ [a-z]+
+
+def file-matcher STEM_GLOB   = stem first-*
+def file-matcher STEM_REGEX  = stem ~ [a-z]+
+
+def file-matcher SUFFIXES_GLOB  = suffixes .tar.tz
+def file-matcher SUFFIXES_REGEX = suffixes ~ [a-z]+
+
+def file-matcher SUFFIX_GLOB   = suffix .gz
+def file-matcher SUFFIX_REGEX  = suffix ~ [a-z]+
+
 def file-matcher PATH_GLOB   = path *.txt
 def file-matcher PATH_REGEX  = path ~ [a-z]+
+
 def file-matcher TYPE        = type file
 def file-matcher SYM_REF     = TYPE
 

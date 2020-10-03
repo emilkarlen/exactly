@@ -15,6 +15,9 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `%`
  - Instruction `copy` - Available in all phases
  - Type `file-matcher` - `path` - matches the absolute path of files
+ - Type `file-matcher` - `stem` - matches the "stem" part of file names
+ - Type `file-matcher` - `suffixes` - matches the "suffixes" part of file names
+ - Type `file-matcher` - `suffix` - matches the "suffix" part of file names
 
 ### Changed
 

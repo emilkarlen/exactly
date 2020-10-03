@@ -1,0 +1,9 @@
+[setup]
+
+file archive.tar.gz
+
+[assert]
+
+exists archive.tar.gz : suffix ~ .(gz)+
+
+exists archive.tar.gz : suffix ~ ^\.gz$

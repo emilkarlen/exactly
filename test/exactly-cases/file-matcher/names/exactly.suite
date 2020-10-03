@@ -1,0 +1,9 @@
+*.case
+
+[suites]
+
+path
+name
+stem
+suffixes
+suffix

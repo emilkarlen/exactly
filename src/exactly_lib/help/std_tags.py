@@ -5,6 +5,7 @@ SECTION = 'section'
 INSTRUCTION = 'instruction'
 
 SYNTAX_TEXT = 'syntax-text'
+LITERAL_TEXT = 'syntax-text'
 
 CONSOLE_TEXT = 'console'
 

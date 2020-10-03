@@ -9,6 +9,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class ElementDescriptionBase(ABC):
@@ -127,8 +128,10 @@ class Grammar(Generic[EXPR]):
                  prefix_operators: Sequence[NameAndValue[PrefixOperator[EXPR]]],
                  infix_operators_in_order_of_increasing_precedence:
                  Sequence[Sequence[NameAndValue[InfixOperator[EXPR]]]],
+                 description: Callable[[], SectionContents] = SectionContents.empty
                  ):
         self.concept = concept
+        self.description = description
         self.mk_reference = mk_reference
         self.primitives__seq = primitives
         self.primitives = name_and_value.to_dict(primitives)
@@ -139,3 +142,4 @@ class Grammar(Generic[EXPR]):
             name_and_value.to_dict(infix_ops_of_precedence)
             for infix_ops_of_precedence in infix_operators_in_order_of_increasing_precedence
         ]
+

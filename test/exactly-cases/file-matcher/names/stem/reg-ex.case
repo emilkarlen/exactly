@@ -1,0 +1,9 @@
+[setup]
+
+file archive.tar.gz
+
+[assert]
+
+exists archive.tar.gz : stem ~ ^archive$
+
+exists archive.tar.gz : stem ~ [a]rch.*

@@ -1,0 +1,15 @@
+[setup]
+
+file archive.tar.gz
+file dot-suffix.
+file stem
+
+[assert]
+
+exists archive.tar.gz : suffixes .tar.gz
+
+exists archive.tar.gz : suffixes *.gz
+
+exists dot-suffix.    : suffix .
+
+exists stem           : suffixes ''

@@ -14,18 +14,18 @@ from exactly_lib.test_case_utils.regex import parse_regex as sut
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
+    import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
-    import remaining_source, remaining_source_lines
 from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
-from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv
+from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv, \
+    is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -590,10 +590,6 @@ OPTION_CASES = [
 ]
 
 IGNORE_CASE_OPTION_FOLLOWED_BY_SPACE = parse_regex.IGNORE_CASE_OPTION + ' '
-
-
-def is_reference_to_valid_regex_string_part(symbol_name: str) -> ValueAssertion[SymbolReference]:
-    return is_reference_to_data_type_symbol(symbol_name)
 
 
 def check_many(put: unittest.TestCase,

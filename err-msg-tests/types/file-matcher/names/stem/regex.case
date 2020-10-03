@@ -1,0 +1,10 @@
+[setup]
+
+
+file a-file.txt
+
+
+[assert]
+
+
+exists a-file.txt : stem ~ ^[ab]-[a-z]{2}$

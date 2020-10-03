@@ -2,12 +2,15 @@ import re
 from typing import Pattern, Callable, Sequence
 
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.dir_dependent_value import DirDependencies
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.util import symbol_table
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    is_any_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.tcfs.test_resources.dir_dep_value_assertions import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
@@ -77,3 +80,11 @@ def matches_regex_sdv(
 
 
 RE_PATTERN_TYPE = type(re.compile(''))
+
+
+def is_reference_to_valid_regex_string_part(symbol_name: str) -> ValueAssertion[SymbolReference]:
+    return is_reference_to_data_type_symbol(symbol_name)
+
+
+def is_regex_reference_restrictions() -> ValueAssertion[ReferenceRestrictions]:
+    return is_any_data_type_reference_restrictions()

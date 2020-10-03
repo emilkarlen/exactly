@@ -1,0 +1,9 @@
+[setup]
+
+
+file a-file.txt
+
+[assert]
+
+
+exists a-file.txt : stem a-*-

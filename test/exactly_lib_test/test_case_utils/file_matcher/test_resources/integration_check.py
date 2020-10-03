@@ -29,6 +29,13 @@ def constant_relative_file_name(file_name: str) -> ModelConstructor:
     return ret_val
 
 
+def constant_relative_path(path: pathlib.Path) -> ModelConstructor:
+    def ret_val(environment: FullResolvingEnvironment) -> FileMatcherModel:
+        return file_matcher_models.new_model(path)
+
+    return ret_val
+
+
 def current_directory() -> ModelConstructor:
     def ret_val(environment: FullResolvingEnvironment) -> FileMatcherModel:
         return file_matcher_models.new_model(pathlib.Path('.'))

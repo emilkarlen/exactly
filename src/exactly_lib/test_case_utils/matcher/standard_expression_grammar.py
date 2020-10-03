@@ -1,4 +1,4 @@
-from typing import Sequence, TypeVar
+from typing import Sequence, TypeVar, Callable
 
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -9,6 +9,7 @@ from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_re
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 MODEL = TypeVar('MODEL')
@@ -18,6 +19,7 @@ def new_grammar(concept: grammar.Concept,
                 model: NameWithGenderWithFormatting,
                 value_type: ValueType,
                 simple_expressions: Sequence[NameAndValue[grammar.Primitive[MatcherSdv[MODEL]]]],
+                description: Callable[[], SectionContents] = SectionContents.empty
                 ) -> grammar.Grammar[MatcherSdv[MODEL]]:
     tp = TextParser({
         'model': model,
@@ -30,6 +32,7 @@ def new_grammar(concept: grammar.Concept,
 
     return grammar.Grammar(
         concept,
+        description=description,
         mk_reference=mk_reference,
         primitives=all_simple_expressions,
         prefix_operators=[

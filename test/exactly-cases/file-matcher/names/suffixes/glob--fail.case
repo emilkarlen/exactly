@@ -1,0 +1,11 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+file archive.tar.gz
+
+[assert]
+
+exists archive.tar.gz : suffixes .gz

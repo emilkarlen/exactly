@@ -1,8 +1,6 @@
 from typing import List, Sequence
 
 from exactly_lib.definitions import doc_format, matcher_model, misc_texts
-from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.test_case import file_check_properties
@@ -15,10 +13,6 @@ from exactly_lib.test_case_utils.file_matcher import parse_dir_contents_model, f
 from exactly_lib.test_case_utils.file_matcher.impl import \
     regular_file_contents, dir_contents, file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.file_type import FileMatcherType
-from exactly_lib.test_case_utils.file_matcher.impl.name import \
-    glob_pattern as name__glob_pattern, reg_ex as name__reg_ex
-from exactly_lib.test_case_utils.file_matcher.impl.path import \
-    glob_pattern as path__glob_pattern, reg_ex as path__reg_ex
 from exactly_lib.test_case_utils.file_matcher.impl.run_program import parse as parse_run
 from exactly_lib.test_case_utils.file_matcher.impl.run_program.doc import RunSyntaxDescription
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -33,21 +27,12 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.table import TableCell
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from .impl.utils import glob_or_regex
+from .impl.names import parsers as names_parsers, doc as names_doc
+from ...util.textformat.structure.document import SectionContents
 
 NAME_MATCHER_ARGUMENT = syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.argument
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
-
-_NAME_PARSER = glob_or_regex.parser(
-    name__glob_pattern.parse,
-    name__reg_ex.parse,
-)
-
-_PATH_PARSER = glob_or_regex.parser(
-    path__glob_pattern.parse,
-    path__reg_ex.parse,
-)
 
 
 def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FileMatcherSdv]:
@@ -93,40 +78,6 @@ def _file_types_table() -> docs.ParagraphItem:
     ])
 
 
-class _NameSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
-    @property
-    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [glob_or_regex.GLOB_OR_REGEX__ARG_USAGE]
-
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_NAME_MATCHER_SED_DESCRIPTION)
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return cross_reference_id_list([
-            syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
-            syntax_elements.REGEX_SYNTAX_ELEMENT,
-        ])
-
-
-class _PathSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
-    @property
-    def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
-        return [glob_or_regex.GLOB_OR_REGEX__ARG_USAGE]
-
-    @property
-    def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_PATH_MATCHER_SED_DESCRIPTION)
-
-    @property
-    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
-        return cross_reference_id_list([
-            syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
-            syntax_elements.REGEX_SYNTAX_ELEMENT,
-        ])
-
-
 class _TypeSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
@@ -140,30 +91,23 @@ class _TypeSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntax
         return _type_matcher_sed_description()
 
 
+def _description() -> SectionContents:
+    return SectionContents(
+        [],
+        [names_doc.name_parts_description()],
+    )
+
+
 GRAMMAR = standard_expression_grammar.new_grammar(
     concept=grammar.Concept(
         name=types.FILE_MATCHER_TYPE_INFO.name,
         type_system_type_name=types.FILE_MATCHER_TYPE_INFO.identifier,
         syntax_element_name=syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.argument,
     ),
+    description=_description,
     model=matcher_model.FILE_MATCHER_MODEL,
     value_type=ValueType.FILE_MATCHER,
     simple_expressions=(
-        NameAndValue(
-            file_matcher.NAME_MATCHER_NAME,
-            grammar.Primitive(
-                _NAME_PARSER.parse,
-                _NameSyntaxDescription()
-            )
-        ),
-
-        NameAndValue(
-            file_matcher.PATH_MATCHER_NAME,
-            grammar.Primitive(
-                _PATH_PARSER.parse,
-                _PathSyntaxDescription()
-            )
-        ),
 
         NameAndValue(
             file_matcher.TYPE_MATCHER_NAME,
@@ -200,6 +144,46 @@ GRAMMAR = standard_expression_grammar.new_grammar(
                 RunSyntaxDescription(),
             )
         ),
+
+        NameAndValue(
+            file_matcher.WHOLE_PATH_MATCHER_NAME,
+            grammar.Primitive(
+                names_parsers.WHOLE_PATH_PARSER.parse,
+                names_doc.whole_path_syntax_description()
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.NAME_MATCHER_NAME,
+            grammar.Primitive(
+                names_parsers.NAME_PARSER.parse,
+                names_doc.name_syntax_description()
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.STEM_MATCHER_NAME,
+            grammar.Primitive(
+                names_parsers.STEM_PARSER.parse,
+                names_doc.stem_syntax_description(file_matcher.STEM_MATCHER_NAME)
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.SUFFIXES_MATCHER_NAME,
+            grammar.Primitive(
+                names_parsers.SUFFIXES_PARSER.parse,
+                names_doc.suffixes_syntax_description(file_matcher.SUFFIXES_MATCHER_NAME)
+            )
+        ),
+
+        NameAndValue(
+            file_matcher.SUFFIX_MATCHER_NAME,
+            grammar.Primitive(
+                names_parsers.SUFFIX_PARSER.parse,
+                names_doc.suffix_syntax_description(file_matcher.SUFFIX_MATCHER_NAME)
+            )
+        ),
     ),
 )
 
@@ -216,26 +200,6 @@ _TP = TextParser({
 })
 
 DIR_CONTENTS_MODEL_PARSER = parse_dir_contents_model.Parser()
-
-_NAME_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} who's final path component (base name) matches
-
-
-  * {GLOB_PATTERN_INFORMATIVE_NAME}, or
-  
-  
-  * {REG_EX_PATTERN_INFORMATIVE_NAME}
-"""
-
-_PATH_MATCHER_SED_DESCRIPTION = """\
-Matches {MODEL:s} who's absolute path matches
-
-
-  * {GLOB_PATTERN_INFORMATIVE_NAME}, that matches the last components of the path, or
-  
-  
-  * {REG_EX_PATTERN_INFORMATIVE_NAME}
-"""
 
 
 def _type_matcher_sed_description() -> List[docs.ParagraphItem]:

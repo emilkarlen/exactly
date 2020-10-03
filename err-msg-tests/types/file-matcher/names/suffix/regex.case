@@ -1,0 +1,9 @@
+[setup]
+
+
+file a.b.c
+
+
+[assert]
+
+exists a.b.c : suffix ~ ^.b

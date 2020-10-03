@@ -2,7 +2,6 @@
 
 [suites]
 
-name
-path
+names
 dir-contents
 run

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Sequence
 
+import exactly_lib.test_case_utils.file_matcher.impl.names.defs
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_matcher.impl.utils import glob_or_regex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import ExpectationType
@@ -102,9 +102,17 @@ class NameRegexVariant(NameVariant):
     def __init__(self, regex: matcher_argument.NameRegexComponent):
         self.regex = regex
 
+    @staticmethod
+    def of(regex: str,
+           ignore_case: bool = False,
+           ) -> 'NameRegexVariant':
+        return NameRegexVariant(
+            matcher_argument.NameRegexComponent(regex, ignore_case)
+        )
+
     @property
     def elements(self) -> List:
-        regex_option_str = glob_or_regex.REG_EX_OPERATOR.name
+        regex_option_str = exactly_lib.test_case_utils.file_matcher.impl.names.defs.REG_EX_OPERATOR.name
         return [regex_option_str] + self.regex.elements
 
 
@@ -117,13 +125,40 @@ class Name(FileMatcherArg):
         return [file_matcher.NAME_MATCHER_NAME] + self.name_matcher.elements
 
 
+class Stem(FileMatcherArg):
+    def __init__(self, name_matcher: NameVariant):
+        self.name_matcher = name_matcher
+
+    @property
+    def elements(self) -> List:
+        return [file_matcher.STEM_MATCHER_NAME] + self.name_matcher.elements
+
+
+class Suffix(FileMatcherArg):
+    def __init__(self, name_matcher: NameVariant):
+        self.name_matcher = name_matcher
+
+    @property
+    def elements(self) -> List:
+        return [file_matcher.SUFFIX_MATCHER_NAME] + self.name_matcher.elements
+
+
+class Suffixes(FileMatcherArg):
+    def __init__(self, name_matcher: NameVariant):
+        self.name_matcher = name_matcher
+
+    @property
+    def elements(self) -> List:
+        return [file_matcher.SUFFIXES_MATCHER_NAME] + self.name_matcher.elements
+
+
 class Path(FileMatcherArg):
     def __init__(self, name_matcher: NameVariant):
         self.name_matcher = name_matcher
 
     @property
     def elements(self) -> List:
-        return [file_matcher.PATH_MATCHER_NAME] + self.name_matcher.elements
+        return [file_matcher.WHOLE_PATH_MATCHER_NAME] + self.name_matcher.elements
 
 
 class FileContents(FileMatcherArg):

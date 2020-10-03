@@ -120,12 +120,13 @@ def for_type_with_grammar(type_info: SingularNameAndCrossReferenceId,
     details_sections += _section_iff_has_paragraphs(_PRECEDENCES_HEADER, syntax.precedence_description())
     details_sections += _section_iff_has_paragraphs(_EVALUATION_HEADER, syntax.evaluation_description())
     details_sections += _section_iff_has_paragraphs(_SYNTAX_HEADER, syntax.syntax_description())
+    description = grammar.description()
 
     return syntax_element_documentation(
         TypeCategory.LOGIC,
         type_info,
-        (),
-        (),
+        description.initial_paragraphs,
+        description.sections,
         syntax.invokation_variants(),
         syntax.syntax_element_descriptions(),
         syntax.see_also_targets(),
