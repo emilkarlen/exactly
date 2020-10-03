@@ -21,6 +21,10 @@ class MessageBuilder:
     def new_empty() -> 'MessageBuilder':
         return MessageBuilder('')
 
+    @staticmethod
+    def new(message_header_or_none: str = None) -> 'MessageBuilder':
+        return MessageBuilder('' if message_header_or_none is None else message_header_or_none)
+
     def apply(self, tail: str) -> str:
         msg_head = self.head
         if msg_head:

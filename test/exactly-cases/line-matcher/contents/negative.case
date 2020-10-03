@@ -1,0 +1,16 @@
+[conf]
+
+status = FAIL
+
+[setup]
+
+file f.txt = <<-
+Hello
+World
+-
+
+[assert]
+
+contents f.txt
+
+    every line : contents equals 'Hello'

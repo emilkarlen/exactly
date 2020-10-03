@@ -5,6 +5,8 @@ def line-matcher CONSTANT = constant false
 def line-matcher REGEX    = matches [a-z]+b?c
 def line-matcher REGEX_IC = matches -ignore-case [a-z]+b?c
 
+def line-matcher CONTENTS = contents equals 'Expected'
+
 def line-matcher LINE_NUM = line-num > 2
 
 def line-matcher NOT      = ! LINE_NUM

@@ -8,6 +8,7 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.expression import grammar, parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher.impl import matches_regex, line_number
+from exactly_lib.test_case_utils.line_matcher.impl.contents import parse as contents_parse, doc as contents_doc
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
@@ -84,14 +85,19 @@ GRAMMAR = standard_expression_grammar.new_grammar(
     value_type=ValueType.LINE_MATCHER,
     simple_expressions=(
         NameAndValue(
-            line_matcher.REGEX_MATCHER_NAME,
-            grammar.Primitive(matches_regex.parse,
-                              _RegexSyntaxDescription())
-        ),
-        NameAndValue(
             line_matcher.LINE_NUMBER_MATCHER_NAME,
             grammar.Primitive(line_number.parse_line_number,
                               _LineNumberSyntaxDescription())
+        ),
+        NameAndValue(
+            line_matcher.CONTENTS_MATCHER_NAME,
+            grammar.Primitive(contents_parse.PARSER.parse,
+                              contents_doc.SyntaxDescription())
+        ),
+        NameAndValue(
+            line_matcher.REGEX_MATCHER_NAME,
+            grammar.Primitive(matches_regex.parse,
+                              _RegexSyntaxDescription())
         ),
     ),
 )

@@ -10,7 +10,7 @@ FIRST_LINE_NUMBER = 1
 
 LineMatcher = MatcherWTrace[LineMatcherLine]
 
-LineMatcherAdv = ApplicationEnvironmentDependentValue[LineMatcher]
+LineMatcherAdv = ApplicationEnvironmentDependentValue[LineMatcherLine]
 
 LineMatcherDdv = MatcherDdv[LineMatcherLine]
 

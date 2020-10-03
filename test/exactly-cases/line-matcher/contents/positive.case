@@ -1,0 +1,14 @@
+[setup]
+
+file f.txt = <<-
+Hello
+World
+-
+
+def string A_LINE = 'Hello'
+
+[assert]
+
+contents f.txt
+
+    any line : contents equals @[A_LINE]@

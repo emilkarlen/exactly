@@ -1,0 +1,15 @@
+[setup]
+
+file f.txt = <<-
+Hello
+World
+-
+
+[assert]
+
+contents f.txt
+
+    any line :
+      contents
+        -transformed-by to-upper-case
+        equals 'HELLO'

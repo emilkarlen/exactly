@@ -28,6 +28,12 @@ CHECKER = integration_check.IntegrationChecker(
     False,
 )
 
+CHECKER__PARSE_SIMPLE = integration_check.IntegrationChecker(
+    parse_line_matcher.parsers(True).simple,
+    MatcherPropertiesConfiguration(),
+    False,
+)
+
 
 def check(put: unittest.TestCase,
           source: ParseSource,

@@ -6,6 +6,7 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.test_resources import matcher_argument
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 
 
@@ -51,6 +52,15 @@ class LineNum(LineMatcherArg):
         return [line_matcher.LINE_NUMBER_MATCHER_NAME,
                 self._int_condition,
                 ]
+
+
+class Contents(LineMatcherArg):
+    def __init__(self, string_matcher: ArgumentElementsRenderer):
+        self.string_matcher = string_matcher
+
+    @property
+    def elements(self) -> List:
+        return [line_matcher.CONTENTS_MATCHER_NAME] + self.string_matcher.elements
 
 
 class Matches(LineMatcherArg):

@@ -18,6 +18,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - `stem` - matches the "stem" part of file names
  - Type `file-matcher` - `suffixes` - matches the "suffixes" part of file names
  - Type `file-matcher` - `suffix` - matches the "suffix" part of file names
+ - Type `line-matcher` - `contents` - matches text contents using a `string-matcher`
 
 ### Changed
 
