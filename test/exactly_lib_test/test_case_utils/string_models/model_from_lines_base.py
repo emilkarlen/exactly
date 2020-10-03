@@ -1,14 +1,13 @@
 import unittest
 from contextlib import contextmanager
-from typing import ContextManager, Sequence, Callable
+from typing import ContextManager, Sequence
 
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+from exactly_lib_test.test_case_utils.string_models.test_resources.dir_file_space_getter import \
+    dir_file_space_for_single_usage_getter
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
-from exactly_lib_test.test_resources.files import tmp_dir
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
-from exactly_lib_test.util.file_utils.test_resources.tmp_file_spaces import TmpFileSpaceThatAllowsSinglePathGeneration
 
 
 def suite() -> unittest.TestSuite:
@@ -31,23 +30,10 @@ class TestModelFromLinesBase(unittest.TestCase):
             self,
             model_constructor,
             expectation,
-            _dir_file_space_for_single_usage_getter(self),
+            dir_file_space_for_single_usage_getter(self),
         )
         # ACT & ASSERT #
         checker.check()
-
-
-def _dir_file_space_for_single_usage_getter(put: unittest.TestCase) -> Callable[[], ContextManager[DirFileSpace]]:
-    @contextmanager
-    def ret_val() -> ContextManager[DirFileSpace]:
-        with tmp_dir.tmp_dir() as storage_dir:
-            yield TmpFileSpaceThatAllowsSinglePathGeneration(
-                put,
-                storage_dir,
-                'path-name',
-            )
-
-    return ret_val
 
 
 class _ModelConstructor(model_checker.ModelConstructor):
