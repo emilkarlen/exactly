@@ -13,7 +13,7 @@ from exactly_lib_test.instructions.multi_phase.copy.test_resources import argume
 from exactly_lib_test.instructions.multi_phase.copy.test_resources import case_definitions, defs
 from exactly_lib_test.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, expectation
-from exactly_lib_test.instructions.test_resources import parse_checker
+from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators, sds_populator

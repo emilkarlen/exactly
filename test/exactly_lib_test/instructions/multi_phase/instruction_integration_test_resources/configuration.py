@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.os_services.os_services_access import new_for_c
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.instructions.test_resources import parse_checker
+from exactly_lib_test.section_document.test_resources import parse_checker
 from exactly_lib_test.tcfs.test_resources import hds_populators, tcds_populators, \
     sds_populator
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementBase

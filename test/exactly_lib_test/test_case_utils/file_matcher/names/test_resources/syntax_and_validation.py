@@ -5,7 +5,7 @@ from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.names.test_resources import configuration
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_checker
+from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import NameGlobPatternVariant, \
     NameRegexVariant
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.integration_check import ARBITRARY_MODEL
@@ -14,28 +14,35 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import is_regex_reference_restrictions
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import glob_pattern
+from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import NameRegexComponent
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class TestSyntax(configuration.TestCaseBase, ABC):
-    def test_missing_argument(self):
-        parse_checker.PARSE_CHECKER__SIMPLE.check_invalid_arguments(
+    def test_glob_pattern(self):
+        def make_arguments(pattern: str) -> ArgumentElementsRenderer:
+            return self.conf.arguments(
+                NameGlobPatternVariant(pattern)
+            )
+
+        parse_check.PARSE_CHECKER__SIMPLE.check_invalid_syntax_cases_for_expected_valid_token(
             self,
-            self.conf.arguments(
-                NameGlobPatternVariant('')
-            ).as_remaining_source
+            make_arguments,
         )
 
-    def test_missing_reg_ex(self):
+    def test_regex(self):
         for ignore_case in [False, True]:
             with self.subTest(ignore_case=ignore_case):
-                parse_checker.PARSE_CHECKER__SIMPLE.check_invalid_arguments(
+                def make_arguments(pattern: str) -> ArgumentElementsRenderer:
+                    return self.conf.arguments(
+                        NameRegexVariant(NameRegexComponent(pattern, ignore_case))
+                    )
+
+                parse_check.PARSE_CHECKER__SIMPLE.check_invalid_syntax_cases_for_expected_valid_token(
                     self,
-                    self.conf.arguments(
-                        NameRegexVariant(NameRegexComponent('', ignore_case))
-                    ).as_remaining_source
+                    make_arguments,
                 )
 
 
