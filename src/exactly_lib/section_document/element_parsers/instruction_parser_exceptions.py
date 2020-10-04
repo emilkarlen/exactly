@@ -53,8 +53,7 @@ class InvalidInstructionArgumentException(RecognizedSectionElementSourceError):
                  source: line_source.LineSequence,
                  instruction_name: str,
                  error_message: str):
-        super().__init__(source,
-                         'Invalid argument for %s:\n%s' % (instruction_name, error_message))
+        super().__init__(source, error_message)
         self.instruction_name = instruction_name
         self.error_message = error_message
 
