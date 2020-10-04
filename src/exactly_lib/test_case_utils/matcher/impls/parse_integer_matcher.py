@@ -1,6 +1,7 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition
@@ -22,6 +23,7 @@ class IntegerMatcherParser(ParserFromTokens[MatcherSdv[int]]):
     def parse(self, token_parser: TokenParser) -> MatcherSdv[int]:
         op_and_rhs = self._op_and_rhs_parser.parse(token_parser)
         return ComparisonMatcherSdv(
+            syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
             op_and_rhs.operator,
             ObjectSdvOfOperandSdv(op_and_rhs.rhs_operand),
             lambda x: details.String(x),

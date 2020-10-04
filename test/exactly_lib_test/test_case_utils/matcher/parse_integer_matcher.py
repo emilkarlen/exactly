@@ -1,6 +1,7 @@
 import unittest
 from typing import Sequence, List
 
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
@@ -303,7 +304,8 @@ def model_of(rhs: int) -> ModelInfo:
 
 def matcher_of(operator: comparators.ComparisonOperator,
                constant_rhs: int) -> MatcherWTrace[int]:
-    return ComparisonMatcher(operator,
+    return ComparisonMatcher(syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
+                             operator,
                              constant_rhs,
                              details.String,
                              )

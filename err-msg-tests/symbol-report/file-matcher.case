@@ -2,7 +2,8 @@
 
 def file-matcher CONSTANT = constant true
 
-def file-matcher CONTENTS       = contents equals 'expected'
+def file-matcher CONTENTS             = contents equals 'expected'
+def file-matcher CONTENTS_INT_MATCHER = contents num-lines > 10
 
 def file-matcher DIR_CONTENTS   = dir-contents num-files == 1
 def file-matcher DIR_CONTENTS_R = dir-contents -recursive num-files == 2

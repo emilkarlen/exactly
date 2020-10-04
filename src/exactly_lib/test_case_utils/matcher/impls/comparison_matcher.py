@@ -20,18 +20,22 @@ T = TypeVar('T')
 
 class ComparisonMatcher(Generic[T], MatcherWTrace[T]):
     def __init__(self,
+                 rhs_syntax_element: str,
                  operator: comparators.ComparisonOperator,
                  rhs: T,
                  model_renderer: Callable[[T], DetailsRenderer],
                  ):
+        self._operator = operator
+        self._rhs_syntax_element = rhs_syntax_element
         self._model_renderer = model_renderer
         self._rhs = rhs
-        self._operator = operator
 
     @staticmethod
-    def new_structure_tree(op: comparators.ComparisonOperator,
+    def new_structure_tree(rhs_syntax_element: str,
+                           op: comparators.ComparisonOperator,
                            rhs: DetailsRenderer) -> StructureRenderer:
         return _StructureRenderer(
+            rhs_syntax_element,
             op,
             rhs,
             None,
@@ -44,6 +48,7 @@ class ComparisonMatcher(Generic[T], MatcherWTrace[T]):
 
     def structure(self) -> StructureRenderer:
         return self.new_structure_tree(
+            self._rhs_syntax_element,
             self._operator,
             self._model_renderer(self._rhs),
         )
@@ -55,6 +60,7 @@ class ComparisonMatcher(Generic[T], MatcherWTrace[T]):
         return MatchingResult(
             condition_is_satisfied,
             _StructureRenderer(
+                self._rhs_syntax_element,
                 self._operator,
                 self._model_renderer(self._rhs),
                 condition_is_satisfied,
@@ -65,23 +71,25 @@ class ComparisonMatcher(Generic[T], MatcherWTrace[T]):
 
 class _StructureRenderer(Generic[T], NodeRenderer[T]):
     def __init__(self,
+                 rhs_syntax_element: str,
                  op: comparators.ComparisonOperator,
                  rhs: DetailsRenderer,
                  data: T,
                  actual_lhs: Optional[DetailsRenderer],
                  ):
+        self._rhs_syntax_element = rhs_syntax_element
         self._op = op
         self._rhs = rhs
         self._data = data
         self._actual_lhs = actual_lhs
 
     def render(self) -> Node[None]:
-        ds = list(custom_details.rhs(self._rhs).render())
+        ds = list(custom_details.expected_rhs(self._rhs).render())
         if self._actual_lhs is not None:
             ds += custom_details.actual_lhs(self._actual_lhs).render()
 
         return Node(
-            self._op.name,
+            ' '.join((self._op.name, self._rhs_syntax_element)),
             self._data,
             ds,
             ()
@@ -90,16 +98,19 @@ class _StructureRenderer(Generic[T], NodeRenderer[T]):
 
 class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
     def __init__(self,
+                 rhs_syntax_element: str,
                  op: comparators.ComparisonOperator,
                  rhs: ObjectDdv[T],
                  model_renderer: Callable[[T], DetailsRenderer],
                  ):
-        self._rhs = rhs
+        self._rhs_syntax_element = rhs_syntax_element
         self._operator = op
+        self._rhs = rhs
         self._model_renderer = model_renderer
 
     def structure(self) -> StructureRenderer:
         return ComparisonMatcher.new_structure_tree(
+            self._rhs_syntax_element,
             self._operator,
             self._rhs.describer(),
         )
@@ -111,6 +122,7 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
     def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         return advs.ConstantMatcherAdv(
             ComparisonMatcher(
+                self._rhs_syntax_element,
                 self._operator,
                 self._rhs.value_of_any_dependency(tcds),
                 self._model_renderer,
@@ -120,12 +132,14 @@ class ComparisonMatcherDdv(Generic[T], MatcherDdv[T]):
 
 class ComparisonMatcherSdv(Generic[T], MatcherSdv[T]):
     def __init__(self,
+                 rhs_syntax_element: str,
                  op: comparators.ComparisonOperator,
                  rhs: ObjectSdv[T],
                  model_renderer: Callable[[T], DetailsRenderer],
                  ):
-        self._rhs = rhs
+        self._rhs_syntax_element = rhs_syntax_element
         self._operator = op
+        self._rhs = rhs
         self._model_renderer = model_renderer
 
     @property
@@ -134,6 +148,7 @@ class ComparisonMatcherSdv(Generic[T], MatcherSdv[T]):
 
     def resolve(self, symbols: SymbolTable) -> MatcherDdv[T]:
         return ComparisonMatcherDdv(
+            self._rhs_syntax_element,
             self._operator,
             self._rhs.resolve(symbols),
             self._model_renderer,

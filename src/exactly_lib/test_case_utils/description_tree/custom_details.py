@@ -40,10 +40,6 @@ def expected(value: DetailsRenderer) -> DetailsRenderer:
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
-def rhs(value: DetailsRenderer) -> DetailsRenderer:
-    return HeaderAndValue(_RHS, value)
-
-
 def actual(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_ACTUAL, value,
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
@@ -51,6 +47,11 @@ def actual(value: DetailsRenderer) -> DetailsRenderer:
 
 def actual__custom(header: ToStringObject, value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(header, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
+
+
+def expected_rhs(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_RHS, value,
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
