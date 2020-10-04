@@ -60,7 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                                 FileType.REGULAR)
 
     def notes(self) -> SectionContents:
-        return file_or_dir_contents_doc.notes()
+        return SectionContents(file_or_dir_contents_doc.notes())
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return self._help_parts.invokation_variants__file(self.actual_file_arg)

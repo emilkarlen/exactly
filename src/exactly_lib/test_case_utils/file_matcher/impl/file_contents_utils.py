@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, Sequence, Callable, TypeVar
+from typing import Generic, Sequence, Callable, TypeVar, Optional
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions import matcher_model, misc_texts
@@ -59,10 +59,12 @@ class DocumentationSetup:
                  names: NamesSetup,
                  options: Sequence[a.ArgumentUsage],
                  get_syntax_elements: Callable[[], Sequence[SyntaxElementDescription]] = _empty_sed_list,
+                 additional_description: Optional[Callable[[], Sequence[ParagraphItem]]] = None,
                  ):
         self.names = names
         self.options = options
         self.get_syntax_elements = get_syntax_elements
+        self.additional_description = additional_description
 
 
 CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
@@ -198,6 +200,8 @@ class FileContentsSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitia
         })
 
         ret_val = tp.fnap(_FILE_CONTENTS_MATCHER_HEADER_DESCRIPTION)
+        if self._documentation.additional_description is not None:
+            ret_val += self._documentation.additional_description()
         ret_val += tp.fnap(MATCHER_FILE_HANDLING_DESCRIPTION)
         ret_val += texts.type_expression_has_syntax_of_primitive([matcher_type])
 

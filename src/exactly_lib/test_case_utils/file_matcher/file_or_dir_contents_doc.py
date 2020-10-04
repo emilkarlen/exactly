@@ -29,11 +29,8 @@ def outcome(
     return tp.section_contents(_ERROR_WHEN_INVALID_FILE__OUTCOME)
 
 
-def notes() -> SectionContents:
-    tp = TextParser({
-        'SYMBOLIC_LINKS_ARE_FOLLOWED': misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED,
-    })
-    return tp.section_contents(_NOTES)
+def notes() -> List[ParagraphItem]:
+    return TextParser().fnap(misc_texts.SYMBOLIC_LINKS_ARE_FOLLOWED)
 
 
 _TP = TextParser({
@@ -83,10 +80,15 @@ REGULAR_FILE_DOCUMENTATION_SETUP = file_contents_utils.DocumentationSetup(
     ()
 )
 
+SPECIAL_DIR_ENTRIES = """\
+The '.' and '..' directory entries are not included in the set of matched files.
+"""
+
 DIR_DOCUMENTATION = file_contents_utils.DocumentationSetup(
     dir_contents.NAMES,
     TRAVERSAL_OPTION_USAGES,
     get_dir_syntax_descriptions,
+    _TP.fnap__fun(SPECIAL_DIR_ENTRIES)
 )
 
 _ERROR_WHEN_INVALID_FILE__OUTCOME = """\

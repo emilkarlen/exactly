@@ -49,7 +49,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                                                 FileType.DIRECTORY)
 
     def notes(self) -> SectionContents:
-        return file_or_dir_contents_doc.notes()
+        paragraphs = []
+        paragraphs += self._tp.fnap(file_or_dir_contents_doc.SPECIAL_DIR_ENTRIES)
+        paragraphs += file_or_dir_contents_doc.notes()
+
+        return SectionContents(paragraphs)
 
     def invokation_variants(self) -> List[InvokationVariant]:
         files_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
