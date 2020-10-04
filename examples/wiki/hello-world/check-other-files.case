@@ -5,6 +5,6 @@ hello-world -o output.txt
 [assert]
 
 contents output.txt
-         every line : matches 'Hello'
+         every line : contents matches 'Hello'
 
 stderr empty

@@ -10,7 +10,7 @@ EOF
 
 
 contents checked-file ! any line : (
-                      matches 'contents'
+                      contents matches 'contents'
                       &&
                       line-num == 1
                       )

@@ -1,19 +1,18 @@
-import exactly_lib.definitions.primitives.line_matcher
 from exactly_lib.definitions import logic
+from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 
 
 def syntax_for_regex_matcher(regex_token_str: str) -> str:
-    return ' '.join([
-        exactly_lib.definitions.primitives.line_matcher.REGEX_MATCHER_NAME,
-        regex_token_str,
-    ])
+    return lm_args.Contents(sm_args.Matches(regex_token_str)).as_str
 
 
 def syntax_for_line_number_matcher(comparator: comparators.ComparisonOperator,
                                    integer_argument: str) -> str:
     return ' '.join([
-        exactly_lib.definitions.primitives.line_matcher.LINE_NUMBER_MATCHER_NAME,
+        line_matcher.LINE_NUMBER_MATCHER_NAME,
         comparator.name,
         integer_argument
     ])

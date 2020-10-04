@@ -12,7 +12,7 @@ def file-matcher IS_VALID_MAKEFILE =
     type file &&
     contents
       -transformed-by
-        filter matches '^all:'
+        filter contents matches '^all:'
         num-lines == 1
 
 

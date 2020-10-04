@@ -12,7 +12,7 @@ file transformed-output.txt = -file
 [assert]
 
 contents transformed-output.txt
-         every line : matches ^WORLD!$
+         every line : contents matches ^WORLD!$
 
 contents transformed-output.txt
          num-lines == 1

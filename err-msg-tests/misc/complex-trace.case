@@ -13,5 +13,5 @@ dir-contents the-dir every file :
                          contents
                              -transformed-by to-upper-case
                                  ! any line :
-                                     ( matches 'CONTENTS' &&
+                                     ( contents matches 'CONTENTS' &&
                                      ! line-num == 72 )

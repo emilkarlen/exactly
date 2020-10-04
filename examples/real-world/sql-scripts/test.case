@@ -29,7 +29,9 @@ def file-matcher FILE_NAME_HAS_EXPECTED_STRUCTURE =
     stem ~ ^[0-9]{3}-.*-(DDL|DML)-[0-9]{3}$
 
 
-def line-matcher IS_DDL_STATEMENT_LINE = matches -ignore-case '^\s*(CREATE|ALTER|DROP)\b'
+def line-matcher IS_DDL_STATEMENT_LINE =
+
+    contents matches -ignore-case '^\s*(CREATE|ALTER|DROP)\b'
 
 
 [assert]

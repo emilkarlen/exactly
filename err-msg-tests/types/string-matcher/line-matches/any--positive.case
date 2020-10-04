@@ -9,4 +9,4 @@ EOF
 [assert]
 
 
-contents checked-file any line : matches 'expected line'
+contents checked-file any line : contents matches 'expected line'

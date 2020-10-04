@@ -79,6 +79,18 @@ class Equals(StringMatcherArg):
         return [matcher_options.EQUALS_ARGUMENT, self._string_argument]
 
 
+class Matches(StringMatcherArg):
+    def __init__(self, regex: str):
+        """
+        :param string_argument: Must be a single token.
+        """
+        self._regex = regex
+
+    @property
+    def elements(self) -> List[WithToString]:
+        return [matcher_options.MATCHES_ARGUMENT, self._regex]
+
+
 class Quantification(StringMatcherArg):
     def __init__(self,
                  quantifier: Quantifier,

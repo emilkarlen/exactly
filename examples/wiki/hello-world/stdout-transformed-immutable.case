@@ -5,7 +5,7 @@ hello-world
 [assert]
 
 stdout -transformed-by ( to-upper-case | replace '^HELLO, ' '' )
-       every line : matches ^WORLD!$
+       every line : contents matches ^WORLD!$
 
 stdout equals <<EOF
 Hello, World!

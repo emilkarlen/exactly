@@ -63,17 +63,6 @@ class Contents(LineMatcherArg):
         return [line_matcher.CONTENTS_MATCHER_NAME] + self.string_matcher.elements
 
 
-class Matches(LineMatcherArg):
-    def __init__(self, regex: str):
-        self.regex = regex
-
-    @property
-    def elements(self) -> List:
-        return [line_matcher.REGEX_MATCHER_NAME,
-                self.regex,
-                ]
-
-
 class Not(LineMatcherArg):
     def __init__(self, matcher: LineMatcherArg):
         self.matcher = matcher

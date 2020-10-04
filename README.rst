@@ -178,7 +178,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [setup]
 
-    def line-matcher       IS_TIMING_LINE     = matches ^timing
+    def line-matcher       IS_TIMING_LINE     = contents matches ^timing
 
     def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
@@ -327,7 +327,7 @@ and must contain a 'Makefile' with a target 'all'::
         type file &&
         contents
           -transformed-by
-            filter matches '^all:'
+            filter contents matches '^all:'
             num-lines == 1
 
 

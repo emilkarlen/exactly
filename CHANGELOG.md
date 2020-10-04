@@ -39,6 +39,7 @@ with exception of a "0." prefix until version 1 is released.
 ### Removed
 
  - Interpreter actors - interpreter `$ SHELL-COMMAND`
+ - Type `line-matcher` - `matches` - replaced by `contents`
 
 ### Fixed
 

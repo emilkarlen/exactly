@@ -125,7 +125,7 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
         cases = [
             NameAndValue(
                 'single quoted argument',
-                str(surrounded_by_hard_quotes(line_matcher.REGEX_MATCHER_NAME)),
+                str(surrounded_by_hard_quotes(line_matcher.CONTENTS_MATCHER_NAME)),
             ),
             NameAndValue(
                 'non-transformer name that is not a valid symbol name',

@@ -11,6 +11,6 @@ def string HEAD_AT_BEGINNING_REGEX = "^head"
 [assert]
 
 
-contents string.txt every line : matches "@[HEAD]@.*"
+contents string.txt every line : contents matches "@[HEAD]@.*"
 
-contents string.txt any   line : matches "@[HEAD_AT_BEGINNING_REGEX]@.*"
+contents string.txt any   line : contents matches "@[HEAD_AT_BEGINNING_REGEX]@.*"

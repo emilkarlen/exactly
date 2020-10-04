@@ -15,12 +15,12 @@ from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
     model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
@@ -106,7 +106,7 @@ class TestFiltering(unittest.TestCase):
             'line_matcher_symbol',
             False,
         )
-        line_matcher_arg = lm_arg.SymbolReference(matcher.name)
+        line_matcher_arg = lm_args.SymbolReference(matcher.name)
 
         arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 
@@ -133,7 +133,7 @@ class TestFiltering(unittest.TestCase):
             'line_matcher_symbol',
             sub_string_line_matcher('MATCH'),
         )
-        line_matcher_arg = lm_arg.SymbolReference(matcher.name)
+        line_matcher_arg = lm_args.SymbolReference(matcher.name)
         cases = [
             NEA('no lines',
                 [],
@@ -223,7 +223,7 @@ class TestFiltering(unittest.TestCase):
             ),
         ]
         line_matcher_name = 'the_line_matcher_symbol_name'
-        line_matcher_arg = lm_arg.SymbolReference(line_matcher_name)
+        line_matcher_arg = lm_args.SymbolReference(line_matcher_name)
         arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 
         for case in cases:
@@ -255,7 +255,9 @@ class TestLineMatcherPrimitive(unittest.TestCase):
         # ARRANGE #
 
         reg_ex_pattern = 'const_pattern'
-        arguments = st_args.syntax_for_filter_transformer(str(lm_arg.Matches(reg_ex_pattern)))
+        arguments = st_args.syntax_for_filter_transformer(str(
+            lm_args.Contents(sm_args.Matches(reg_ex_pattern)))
+        )
 
         lines = [
             reg_ex_pattern,
@@ -284,7 +286,7 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
         # ARRANGE #
         for case in validation_cases.failing_validation_cases():
             line_matcher_symbol_context = case.value.symbol_context
-            line_matcher_arg = lm_arg.SymbolReference(line_matcher_symbol_context.name)
+            line_matcher_arg = lm_args.SymbolReference(line_matcher_symbol_context.name)
 
             arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
 

@@ -9,4 +9,4 @@ EOF
 [assert]
 
 
-contents checked-file ! any line : matches -ignore-case 'e[a-z]+d'
+contents checked-file ! any line : contents matches -ignore-case 'e[a-z]+d'

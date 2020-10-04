@@ -2,4 +2,4 @@
 
 stdout -from
        print-args.py arg1 arg2
-       any line : matches 'expected'
+       any line : contents matches 'expected'
