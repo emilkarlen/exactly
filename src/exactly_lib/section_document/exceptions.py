@@ -5,8 +5,23 @@ from typing import Sequence, Optional, TypeVar, Generic
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationInfo
 from exactly_lib.util.line_source import LineSequence
 
+T = TypeVar('T')
 
-class ParseError(ABC, Exception):
+
+class ParseErrorVisitor(Generic[T], ABC):
+    def visit(self):
+        pass
+
+    @abstractmethod
+    def visit_file_source_error(self, ex: 'FileSourceError') -> T:
+        pass
+
+    @abstractmethod
+    def visit_file_access_error(self, ex: 'FileAccessError') -> T:
+        pass
+
+
+class ParseError(Exception, ABC):
     """
     An exception from a document parser.
     """
@@ -29,6 +44,10 @@ class ParseError(ABC, Exception):
     @property
     def message(self) -> str:
         return self._message
+
+    @abstractmethod
+    def accept(self, visitor: ParseErrorVisitor[T]) -> T:
+        pass
 
 
 class FileSourceError(ParseError):
@@ -61,6 +80,9 @@ class FileSourceError(ParseError):
     def source_location_info(self) -> SourceLocationInfo:
         return self._source_location_info
 
+    def accept(self, visitor: ParseErrorVisitor[T]) -> T:
+        return visitor.visit_file_source_error(self)
+
 
 class FileAccessError(ParseError):
     def __init__(self,
@@ -81,26 +103,5 @@ class FileAccessError(ParseError):
     def erroneous_path(self) -> Path:
         return self._erroneous_path
 
-
-T = TypeVar('T')
-
-
-class ParseErrorVisitor(ABC, Generic[T]):
-    def visit(self, element: ParseError) -> T:
-        """
-        :return: Return value from _visit... method
-        """
-        if isinstance(element, FileSourceError):
-            return self.visit_file_source_error(element)
-        elif isinstance(element, FileAccessError):
-            return self.visit_file_access_error(element)
-        else:
-            raise TypeError('Unknown {}: {}'.format(ParseError, str(element)))
-
-    @abstractmethod
-    def visit_file_source_error(self, ex: FileSourceError) -> T:
-        pass
-
-    @abstractmethod
-    def visit_file_access_error(self, ex: FileAccessError) -> T:
-        pass
+    def accept(self, visitor: ParseErrorVisitor[T]) -> T:
+        return visitor.visit_file_access_error(self)

@@ -156,7 +156,7 @@ class _Parser(processing_utils.Parser):
         try:
             return file_parser.apply(test_case, source)
         except exceptions.ParseError as ex:
-            _ParseErrorHandler().visit(ex)
+            ex.accept(_ParseErrorHandler())
 
 
 class _ParseErrorHandler(exceptions.ParseErrorVisitor[None]):

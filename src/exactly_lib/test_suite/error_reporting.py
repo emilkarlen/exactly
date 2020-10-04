@@ -20,7 +20,7 @@ def report_suite_parse_error(ex: SuiteParseError,
                              stdout_printer: FilePrinter,
                              stderr_printer: FilePrinter,
                              ) -> int:
-    exit_value = _GetParseErrorExitValue().visit(ex.document_parser_exception)
+    exit_value = ex.document_parser_exception.accept(_GetParseErrorExitValue())
     stdout_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
     stdout_printer.file.flush()
 
@@ -58,7 +58,7 @@ def _suite_read_error_renderer(ex: SuiteReadError) -> SequenceRenderer[MajorBloc
 
 
 def _error_message_blocks__parse_error(ex: SuiteParseError) -> SequenceRenderer[MajorBlock]:
-    return _GetParseErrorErrorMessageLinesRenderer().visit(ex.document_parser_exception)
+    return ex.document_parser_exception.accept(_GetParseErrorErrorMessageLinesRenderer())
 
 
 def _error_message_blocks__read_error(ex: SuiteReadError) -> SequenceRenderer[MajorBlock]:
@@ -87,7 +87,7 @@ class _GetParseErrorErrorMessageLinesRenderer(sec_doc_exceptions.ParseErrorVisit
 
 class _GetReadErrorMessageLinesRenderer(SuiteReadErrorVisitor[TextRenderer]):
     def visit_parse_error(self, ex: suite_exception.SuiteParseError) -> TextRenderer:
-        return _GetParseErrorErrorMessageLinesRenderer().visit(ex.document_parser_exception)
+        return ex.document_parser_exception.accept(_GetParseErrorErrorMessageLinesRenderer())
 
     def visit_double_inclusion_error(self, ex: suite_exception.SuiteDoubleInclusion) -> TextRenderer:
         return majors.of_pre_formatted_message(_SUITE_FILE_INCLUSION_CYCLE)
