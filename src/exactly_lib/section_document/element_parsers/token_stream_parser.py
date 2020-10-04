@@ -16,6 +16,7 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
+from exactly_lib.util.str_ import english_text
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.str_constructor import ToStringObject, StringConstructor
 
@@ -198,7 +199,7 @@ class TokenParser:
         """
 
         def constants_list() -> str:
-            return ' or '.join(['"' + constant + '"' for constant in expected_constants])
+            return english_text.or_sequence(['"' + constant + '"' for constant in expected_constants])
 
         if self.token_stream.is_null:
             return self.error(error_message_header_template + ': Missing {__CONSTANTS__}',
