@@ -92,7 +92,7 @@ HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
 )
 
 REGEX_SYNTAX_ELEMENT = name_and_ref_target(
-    'REG-EX',
+    'REGEX',
     'A regular expression, using Python syntax'
 )
 
