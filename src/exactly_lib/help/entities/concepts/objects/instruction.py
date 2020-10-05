@@ -126,7 +126,7 @@ stdout empty
 
 
 In all other phases, and also for some of the {instruction:s} in {assert:syntax},
-the purpose of {instruction:a} is it's side effects for
+the purpose of {instruction:a} is its side effects for
 setting up the execution environment of {act:syntax}, {assert:syntax},
 or cleaning up after the test ({cleanup:syntax}).
 
@@ -143,7 +143,7 @@ _SYNTAX = """\
 followed by arguments.
 
 
-Each {instruction} has it's own syntax for arguments.
+Each {instruction} has its own syntax for arguments.
 
 Most common syntax is that of options and arguments resembling the
 Unix {shell_command_line} interface.

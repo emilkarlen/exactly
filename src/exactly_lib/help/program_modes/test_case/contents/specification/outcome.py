@@ -4,7 +4,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
-from exactly_lib.definitions.entity import conf_params, directives
+from exactly_lib.definitions.entity import conf_params, directives, concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.help.program_modes.test_case.contents.specification.processing import \
@@ -75,6 +75,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
 TEXT_PARSER = TextParser({
     'program_name': formatting.program_name(program_info.PROGRAM_NAME),
     'phase': phase_names.PHASE_NAME_DICTIONARY,
+    'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
     'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
     'default_status': test_case_status.NAME_DEFAULT,
     'error_in_source': formatting.misc_name_with_formatting(misc_texts.SYNTAX_ERROR_NAME),
@@ -273,7 +274,7 @@ def all_exit_values_summary_table() -> ParagraphItem:
 _FAILURE_CONDITION_OF_INTERNAL_ERROR = 'An error in the implementation of {program_name}, or similar, is detected.'
 
 _FAILURE_CONDITION_OF_HARD_ERROR = """\
-An instruction fails to do it's job.
+{instruction:a/u} fails to do its job.
 E.g. an instruction in the {phase[setup]} phase fails to create a file."""
 
 OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = """\

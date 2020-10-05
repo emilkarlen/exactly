@@ -126,7 +126,7 @@ _SYMBOL_REFERENCE_DESCRIPTION = """\
 A reference to a symbol of type {to_string_types}.
 
 
-{path_type:a/u} {symbol} gives a single argument that is it's absolute path.
+{path_type:a/u} {symbol} gives a single argument that is its absolute path.
 
 
 {list_type:a/u} {symbol} gives a list of arguments.

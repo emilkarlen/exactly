@@ -106,7 +106,7 @@ class SuitesExecutor:
 
     def _process_single_sub_suite(self, suite: structure.TestSuiteHierarchy):
         """
-        Executes a single suite (i.e. not it's sub suites).
+        Executes a single suite (i.e. not its sub suites).
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
         sub_suite_reporter.progress_reporter.suite_begin()

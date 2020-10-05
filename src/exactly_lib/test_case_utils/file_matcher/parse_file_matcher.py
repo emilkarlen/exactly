@@ -218,5 +218,5 @@ Matches {MODEL:s} who's type is {TYPE}.
 """
 
 _TYPE_MATCHER__AFTER_TYPE_LIST = """\
-{SYMBOLIC_LINKS_ARE_FOLLOWED} (unless matched type is {SYMLINK_TYPE}).
+{SYMBOLIC_LINKS_ARE_FOLLOWED} (unless {TYPE} is {SYMLINK_TYPE}).
 """

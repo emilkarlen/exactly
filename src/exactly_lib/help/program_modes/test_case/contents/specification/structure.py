@@ -25,6 +25,7 @@ def root(header: str, test_case_help: TestCaseHelp) -> generator.SectionHierarch
         'act': phase_infos.ACT.name,
         'assert': phase_infos.ASSERT.name,
         'action_to_check': concepts.ACTION_TO_CHECK_CONCEPT_INFO.name,
+        'instruction': concepts.INSTRUCTION_CONCEPT_INFO.name,
         'ATC': concepts.ACTION_TO_CHECK_CONCEPT_INFO.acronym,
         'actor': concepts.ACTOR_CONCEPT_INFO.name,
         'os_process': misc_texts.OS_PROCESS_NAME,
@@ -78,7 +79,7 @@ def root(header: str, test_case_help: TestCaseHelp) -> generator.SectionHierarch
                     )
                     ),
             h.child('instructions',
-                    h.leaf('Instructions',
+                    h.leaf(tp.text('{instruction:s/u}'),
                            instructions_contents)
                     ),
             h.child('suites',
@@ -138,7 +139,7 @@ def _suite_see_also_targets() -> List[see_also.SeeAlsoTarget]:
 _PHASES_INTRO = """\
 A test case is a sequence of "phases".
 
-Executing a test case means executing all of it's phases.
+Executing a test case means executing all of its phases.
 
 
 All phases are optional.
@@ -207,18 +208,18 @@ $ echo 'This is a' {shell_command_line} > &2
 """
 
 _INSTRUCTIONS = """\
-All phases except {act:syntax} is a sequence of instructions, zero or more.
+All phases except {act:syntax} is a sequence of {instruction:s}, zero or more.
 
 
-Executing a phase with instructions means executing all it's instructions,
+Executing a phase with {instruction:s} means executing all of its {instruction:s},
 in the order they appear in the test case.
 
 
-Instructions in different phases serve different purposes.
+{instruction:s/u} in different phases serve different purposes.
 
 
-For example, the instruction set for the {assert:syntax} phase
-contains instructions that serve as assertions.
+For example, the {instruction} set of the {assert:syntax} phase
+contains {instruction:s} that serve as assertions.
 """
 
 _SUITE_CONTENTS_INCLUSION = """\

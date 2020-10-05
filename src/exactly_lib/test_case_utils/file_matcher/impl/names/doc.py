@@ -183,7 +183,7 @@ _TP = TextParser({
 })
 
 _NAME_PART_DESCRIPTION = """\
-Matches {MODEL:s} who's "{part}" part of it's {name} matches the given pattern.
+Matches {MODEL:s} who's "{part}" part of its {name} matches the given pattern.
 
 
 E.g., the {part} of '{example_name}' is '{example_part}'.

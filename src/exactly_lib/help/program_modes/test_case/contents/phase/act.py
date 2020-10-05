@@ -121,7 +121,7 @@ Contains the {action_to_check}; executes it and stores the outcome for later ins
 REST_OF_DESCRIPTION = """\
 Executes the {action_to_check:/q} as {os_process:a}.
 
-It's outcome is stored as files in the {result_dir} directory of the {sandbox}:
+Its outcome is stored as files in the {result_dir} directory of the {sandbox}:
 """
 
 _RELATION_TO_ACTOR__TO_BE_SEPARATE_SECTION = """\
@@ -133,7 +133,7 @@ Default {actor} is: {default_actor}
 
 
 If the {act} phase is not specified,
-or if it's contents is empty,
+or if its contents is empty,
 then the {null_actor} {actor} is used.
 """
 

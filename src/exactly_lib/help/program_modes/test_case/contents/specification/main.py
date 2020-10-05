@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.as_section_contents im
     SectionContentsConstructorFromHierarchyGenerator
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 
-ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
+ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks its result."
 
 
 def root(header: str,

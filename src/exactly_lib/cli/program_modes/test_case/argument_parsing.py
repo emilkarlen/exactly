@@ -185,7 +185,7 @@ If an error occurs, the normal error information is emitted to stderr
 
 KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
 Runs the test case as normal, but the {sandbox} is preserved,
-and it's root directory is the only output on stdout.
+and its root directory is the only output on stdout.
 
 If execution of the test case cannot be started (due to invalid syntax, e.g.),
 then nothing is output on stdout.

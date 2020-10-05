@@ -36,7 +36,7 @@ class DescribedPath(ABC):
 
 class PathDdv(Max1DependencyDdv[pathlib.Path], ABC):
     """
-    A reference to a file (any kind of file), with functionality to resolve it's path,
+    A reference to a file (any kind of file), with functionality to resolve its path,
     and information about whether it exists pre SDS or not.
     """
 

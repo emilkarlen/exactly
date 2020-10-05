@@ -22,7 +22,7 @@ COMMON_CASE_CONTENTS_AND_CONFIG_HEADER = 'Common test case contents and configur
 
 ADDITIONAL_TEST_CASE_CONFIG_HEADER = 'Additional test case configuration'
 
-ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
+ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks its result."
 
 
 def root(header: str, suite_help: TestSuiteHelp) -> SectionHierarchyGenerator:
