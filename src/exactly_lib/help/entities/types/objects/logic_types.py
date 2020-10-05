@@ -16,9 +16,17 @@ _TP = TextParser({
     'test_case_spec_title': misc_texts.TEST_CASE_SPEC_TITLE,
 })
 
+_LINE_MATCHER_DESCRIPTION = """\
+The line separator depends on the current OS ('\\n', '\\r\\n', e.g.).
+
+
+Line separator are not included in the line contents.
+"""
+
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
-    syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT)
+    syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
+    _TP.section_contents(_LINE_MATCHER_DESCRIPTION))
 
 FILE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.FILE_MATCHER_TYPE_INFO,

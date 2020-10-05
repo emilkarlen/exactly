@@ -62,11 +62,12 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  corresponding_syntax_element: SyntaxElementInfo,
+                 description: SectionContents = SectionContents.empty(),
                  ):
         super().__init__(TypeCategory.LOGIC,
                          name_and_cross_ref_target,
                          corresponding_syntax_element,
-                         SectionContents.empty())
+                         description)
 
     """
     Documents a type of the type system.

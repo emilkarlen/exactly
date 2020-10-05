@@ -85,7 +85,7 @@ PATH_TYPE_INFO = name_and_ref_target(
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
     a_name_with_plural_s('line matcher'),
-    'Matches individual text lines.'
+    'Matches individual text lines of a string.'
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
