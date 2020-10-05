@@ -5,9 +5,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers import token_stream_parser
@@ -48,11 +48,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         super().__init__(name, {
             'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.argument.name,
             'EXIT_CODE': _PROPERTY_NAME,
+            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'PASS': exit_values.EXECUTION__PASS.exit_identifier,
         })
 
     def single_line_description(self) -> str:
-        return 'Tests the ' + _PROPERTY_NAME
+        return self._tp.format('Tests the {EXIT_CODE} of the {action_to_check}')
 
     def outcome(self) -> SectionContents:
         return self._tp.section_contents(_OUTCOME)
@@ -158,7 +159,7 @@ class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
 _PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)
 
 _OUTCOME = """\
-{PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_MATCHER}.
+{PASS} if, and only if, the {EXIT_CODE} of the {action_to_check} satisfies {INTEGER_MATCHER}.
 """
 
 _FAILED_TO_READ_CONTENTS_FROM = 'Failed to read contents from '
