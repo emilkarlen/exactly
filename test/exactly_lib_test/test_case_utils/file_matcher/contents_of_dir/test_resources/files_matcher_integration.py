@@ -8,11 +8,11 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.tcfs.test_resources import sds_populator
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, DirContents, File

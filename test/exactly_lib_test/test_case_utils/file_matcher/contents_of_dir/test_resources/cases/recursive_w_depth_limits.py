@@ -15,8 +15,6 @@ from exactly_lib_test.symbol.test_resources.arguments_building import SymbolRefe
 from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
-    failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
     SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
     MultipleExecutionCasesGenerator, FullExecutionResult
@@ -30,6 +28,8 @@ from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases import \
+    failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File

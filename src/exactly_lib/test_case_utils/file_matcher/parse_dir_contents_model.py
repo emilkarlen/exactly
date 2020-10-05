@@ -1,16 +1,15 @@
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
-from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import MandatoryIntegerParser
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv
 from exactly_lib.test_case_utils.file_matcher.impl import \
     dir_contents
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
-from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher
+from exactly_lib.test_case_utils.integer import parse_integer
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 
 
 class Parser(ParserFromTokens[LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]]]):
-    DEPTH_INTEGER_PARSER = MandatoryIntegerParser(parse_integer_matcher.validator_for_non_negative)
+    DEPTH_INTEGER_PARSER = parse_integer.MandatoryIntegerParser(parse_integer.validator_for_non_negative)
 
     def parse(self,
               token_parser: TokenParser,

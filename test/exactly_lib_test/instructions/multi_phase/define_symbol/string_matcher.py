@@ -28,7 +28,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher
     StringMatcherSymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as arg_syntax, \
     model_construction
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \

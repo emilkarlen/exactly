@@ -9,7 +9,6 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as svh_asrt
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -50,21 +49,6 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                 source,
                                 arrangement,
                                 expectation)
-
-    def test_invalid_integer_argument_according_to_custom_validation(self):
-        for invalid_integer_value in self._conf().invalid_integers_according_to_custom_validation:
-            with self.subTest(invalid_integer_value=str(invalid_integer_value)):
-                condition_str = int_condition(comparators.EQ, invalid_integer_value)
-                instr_arg = self._conf().arguments_constructor.apply(condition_str)
-                for source in equivalent_source_variants__with_source_check__consume_last_line(self, instr_arg):
-                    self._check(
-                        source,
-                        ArrangementPostAct(),
-                        Expectation(
-                            validation_pre_sds=svh_asrt.is_validation_error(),
-                            symbol_usages=asrt.is_empty_sequence,
-                        ),
-                    )
 
     def test_invalid_arguments_without_symbol_references(self):
         test_cases = [

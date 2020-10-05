@@ -5,7 +5,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
+from exactly_lib_test.test_case_utils.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, Expectation

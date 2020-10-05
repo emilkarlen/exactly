@@ -1,0 +1,8 @@
+[setup]
+
+def integer-matcher IM_EQ  = == 69
+def integer-matcher IM_NE  = != 69
+def integer-matcher IM_LT  = <  69
+def integer-matcher IM_LTE = <= 69
+def integer-matcher IM_GT  = >  69
+def integer-matcher IM_GTE = >= 69

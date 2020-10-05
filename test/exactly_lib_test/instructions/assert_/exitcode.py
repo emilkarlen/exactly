@@ -14,9 +14,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check, expression
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation, is_pass
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
+from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
@@ -24,6 +25,7 @@ from exactly_lib_test.test_case.test_resources.act_result import ActResultProduc
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check__consume_last_line
+from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -39,28 +41,6 @@ def suite() -> unittest.TestSuite:
 
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
-
-
-class TestParse(unittest.TestCase):
-    def test_invalid_syntax(self):
-        test_cases = [
-            ' <> 1',
-            '',
-            'a b c',
-        ]
-        parser = sut.Parser()
-        for instruction_argument in test_cases:
-            with self.subTest(msg=instruction_argument):
-                for source in equivalent_source_variants(self, instruction_argument):
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-
-    def test_valid_syntax(self):
-        parser = sut.Parser()
-        actual_instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO,
-                                          remaining_source('{op} 1'.format(op=comparators.EQ.name)))
-        self.assertIsInstance(actual_instruction,
-                              AssertPhaseInstruction)
 
 
 class TestBase(instruction_check.TestCaseBase):
@@ -82,6 +62,54 @@ class TheInstructionArgumentsVariantConstructor(expression.InstructionArgumentsV
         return condition_str
 
 
+class TestParse(TestBase):
+    def test_invalid_syntax(self):
+        test_cases = [
+            ' <> 1',
+            '',
+            'a b c',
+        ]
+        parser = sut.Parser()
+        for instruction_argument in test_cases:
+            with self.subTest(msg=instruction_argument):
+                for source in equivalent_source_variants(self, instruction_argument):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+
+    def test_valid_syntax(self):
+        parser = sut.Parser()
+        actual_instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO,
+                                          remaining_source('{op} 1'.format(op=comparators.EQ.name)))
+        self.assertIsInstance(actual_instruction,
+                              AssertPhaseInstruction)
+
+    def test_matcher_should_be_parsed_as_full_expr(self):
+        lhs = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'lhs',
+            False,
+        )
+        rhs = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'rhs',
+            True,
+        )
+        symbols = [lhs, rhs]
+
+        disjunction_args = args.disjunction([lhs.argument, rhs.argument])
+
+        self._run(
+            disjunction_args.as_remaining_source,
+            ArrangementPostAct(
+                act_result_producer=act_result_of(0),
+                symbols=SymbolContext.symbol_table_of_contexts(symbols),
+            ),
+            Expectation(
+                source=asrt_source.source_is_at_end,
+                main_result=pfh_assertions.is_pass(),
+                symbol_usages=SymbolContext.usages_assertion_of_contexts(symbols),
+            ),
+        )
+
+
 class TestFailingValidationPreSds(expression.TestFailingValidationPreSdsAbstract):
     def _conf(self) -> expression.Configuration:
         return expression.Configuration(
@@ -91,6 +119,24 @@ class TestFailingValidationPreSds(expression.TestFailingValidationPreSdsAbstract
 
 
 class TestArgumentWithSymbolReferences(TestBase):
+    def test_matcher_reference(self):
+        matcher_symbol = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'SYMBOL',
+            True,
+        )
+        self._run(
+            remaining_source(matcher_symbol.name__sym_ref_syntax),
+            ArrangementPostAct(
+                act_result_producer=act_result_of(0),
+                symbols=matcher_symbol.symbol_table,
+            ),
+            Expectation(
+                source=asrt_source.source_is_at_end,
+                main_result=pfh_assertions.is_pass(),
+                symbol_usages=matcher_symbol.references_assertion,
+            ),
+        )
+
     def test_with_symbol_references(self):
         symbol_1_name = 'symbol_1_name'
         symbol_2_name = 'symbol_2_name'
@@ -132,7 +178,7 @@ class TestArgumentWithSymbolReferences(TestBase):
                             symbols=case.symbol_table,
                         ),
                         Expectation(
-                            source=is_at_beginning_of_line(2),
+                            source=asrt_source.is_at_beginning_of_line(2),
                             main_result=result_expectation,
                             symbol_usages=asrt.matches_sequence(
                                 case.reference_assertions__string_made_up_of_just_strings)

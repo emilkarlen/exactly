@@ -6,7 +6,8 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import list_
 from exactly_lib_test.symbol.data.test_resources import path
 from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
-from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, program, files_condition
+from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, program, files_condition, \
+    integer_matcher
 from exactly_lib_test.symbol.test_resources import string
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolValueContext
 from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext
@@ -79,6 +80,9 @@ class TestValueTypeRestriction(unittest.TestCase):
         ValueType.PATH:
             path.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
+        ValueType.INTEGER_MATCHER:
+            integer_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
+
         ValueType.LINE_MATCHER:
             line_matcher.ARBITRARY_SYMBOL_VALUE_CONTEXT,
 
@@ -120,13 +124,14 @@ class TestValueTypeRestriction(unittest.TestCase):
         cases = {
             ValueType.STRING: ValueType.LIST,
             ValueType.LIST: ValueType.PATH,
-            ValueType.PATH: ValueType.FILE_MATCHER,
-            ValueType.FILE_MATCHER: ValueType.STRING_TRANSFORMER,
-            ValueType.FILES_MATCHER: ValueType.FILE_MATCHER,
+            ValueType.PATH: ValueType.INTEGER_MATCHER,
+            ValueType.INTEGER_MATCHER: ValueType.FILE_MATCHER,
+            ValueType.FILE_MATCHER: ValueType.FILES_MATCHER,
+            ValueType.FILES_MATCHER: ValueType.STRING_MATCHER,
             ValueType.STRING_MATCHER: ValueType.STRING_TRANSFORMER,
-            ValueType.STRING_TRANSFORMER: ValueType.STRING,
-            ValueType.PROGRAM: ValueType.STRING_TRANSFORMER,
-            ValueType.FILES_CONDITION: ValueType.PROGRAM,
+            ValueType.STRING_TRANSFORMER: ValueType.PROGRAM,
+            ValueType.PROGRAM: ValueType.FILES_CONDITION,
+            ValueType.FILES_CONDITION: ValueType.STRING,
         }
 
         symbols = empty_symbol_table()

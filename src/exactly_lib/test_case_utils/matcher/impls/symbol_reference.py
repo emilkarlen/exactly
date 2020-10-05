@@ -14,6 +14,7 @@ class MatcherReferenceSdv(MatcherSdv[MODEL]):
     A :class:`MatcherSdv` that is a reference to a symbol
     """
     _TYPE_LOOKUP = {
+        ValueType.INTEGER_MATCHER: lookups.lookup_integer_matcher,
         ValueType.LINE_MATCHER: lookups.lookup_line_matcher,
         ValueType.FILE_MATCHER: lookups.lookup_file_matcher,
         ValueType.FILES_MATCHER: lookups.lookup_files_matcher,

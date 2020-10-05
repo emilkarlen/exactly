@@ -19,6 +19,8 @@ from exactly_lib_test.symbol.test_resources import symbol_reference_assertions a
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbols_setup import DataTypeSymbolContext, \
     DataSymbolValueContext, ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
+from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -185,6 +187,10 @@ class StringSymbolContext(DataTypeSymbolContext[StringSdv]):
     @property
     def value(self) -> StringSymbolValueContext:
         return self._value
+
+    @property
+    def argument(self) -> StringMatcherArg:
+        return args.SymbolReferenceWReferenceSyntax(self.name)
 
     def reference__path_or_string(self, accepted_relativities: PathRelativityVariants) -> SymbolReference:
         return SymbolReference(self.name,

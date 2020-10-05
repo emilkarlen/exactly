@@ -1,0 +1,11 @@
+[setup]
+
+
+def integer-matcher EQ       = == 72
+def integer-matcher EQ__EXPR = == 69+2
+
+def integer-matcher CONSTANT = constant true
+
+def integer-matcher NEGATION    = ! == 72
+def integer-matcher CONJUNCTION = >= 69 && <= 72
+def integer-matcher DISJUNCTION = == 69 || == 72

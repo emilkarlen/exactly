@@ -6,7 +6,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
-    a_name_with_plural_s
+    a_name_with_plural_s, an_name_with_plural_s
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
@@ -82,6 +82,12 @@ PATH_TYPE_INFO = name_and_ref_target(
         concepts.TCDS_CONCEPT_INFO),
 )
 
+INTEGER_MATCHER_TYPE_INFO = name_and_ref_target(
+    ValueType.INTEGER_MATCHER,
+    an_name_with_plural_s('integer matcher'),
+    'Matches an integer.'
+)
+
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
     a_name_with_plural_s('line matcher'),
@@ -130,6 +136,7 @@ ALL_TYPES_INFO_TUPLE = (
     STRING_TYPE_INFO,
     LIST_TYPE_INFO,
     PATH_TYPE_INFO,
+    INTEGER_MATCHER_TYPE_INFO,
     LINE_MATCHER_TYPE_INFO,
     FILE_MATCHER_TYPE_INFO,
     FILES_MATCHER_TYPE_INFO,

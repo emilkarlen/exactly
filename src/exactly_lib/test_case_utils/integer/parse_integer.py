@@ -1,6 +1,7 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
@@ -9,11 +10,12 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import string_m
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition import parse as parse_condition
-from exactly_lib.test_case_utils.condition.integer import integer_sdv
-from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator
-from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
+from exactly_lib.test_case_utils.integer import integer_sdv
+from exactly_lib.test_case_utils.integer.integer_ddv import CustomIntegerValidator
+from exactly_lib.test_case_utils.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.str_ import str_constructor
 
@@ -83,3 +85,13 @@ _REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
         )
     )
 )
+
+
+def validator_for_non_negative(actual: int) -> Optional[TextRenderer]:
+    if actual < 0:
+        return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
+                                               str(actual))
+    return None
+
+
+_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'

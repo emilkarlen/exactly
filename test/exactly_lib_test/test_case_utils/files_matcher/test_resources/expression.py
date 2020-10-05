@@ -6,7 +6,6 @@ from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import model
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
@@ -53,27 +52,6 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                                                     model.arbitrary_model(),
                                                     arrangement,
                                                     expectation)
-
-    def test_invalid_integer_argument_according_to_custom_validation(self):
-        for invalid_integer_value in self._conf().invalid_integers_according_to_custom_validation:
-            with self.subTest(invalid_integer_value=str(invalid_integer_value)):
-                condition_str = int_condition(comparators.EQ, invalid_integer_value)
-                instr_arg = self._conf().arguments_constructor.apply(condition_str)
-                for source in equivalent_source_variants__with_source_check__for_expression_parser(
-                        self,
-                        Arguments(instr_arg)):
-                    self._check(
-                        source,
-                        Arrangement(),
-                        Expectation(
-                            ParseExpectation(
-                                symbol_references=asrt.is_empty_sequence,
-                            ),
-                            ExecutionExpectation(
-                                validation=asrt_validation.pre_sds_validation_fails__w_any_msg(),
-                            ),
-                        ),
-                    )
 
     def test_invalid_arguments_without_symbol_references(self):
         test_cases = [

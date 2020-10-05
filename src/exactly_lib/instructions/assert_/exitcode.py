@@ -1,39 +1,36 @@
-from typing import List, Sequence, Optional
+from typing import List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
-    SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.processing import exit_values
-from exactly_lib.section_document.element_parsers.instruction_parsers import \
-    InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
-from exactly_lib.test_case_utils import negation_of_predicate, pfh_exception
+from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.err_msg.header_rendering import unexpected_attribute__major_block
-from exactly_lib.test_case_utils.matcher.impls import property_getters, parse_integer_matcher, combinator_sdvs
+from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
+from exactly_lib.test_case_utils.matcher.impls import property_getters
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.impls.property_getters import PropertyGetterAdvConstant
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter, PropertyGetterAdv
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers
-from exactly_lib.util.messages import expected_found
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.document import SectionContents
-
-_OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -63,14 +60,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
             invokation_variant_from_args([
-                negation_of_predicate.optional_negation_argument_usage(),
                 syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.single_mandatory,
             ]),
-        ]
-
-    def syntax_element_descriptions(self) -> Sequence[SyntaxElementDescription]:
-        return [
-            negation_of_predicate.assertion_syntax_element_description(),
         ]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
@@ -79,26 +70,29 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         ]
 
 
-class Parser(InstructionParserThatConsumesCurrentLine):
-    def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        parser = new_token_parser(rest_of_line)
-        expectation_type = parser.consume_optional_negation_operator()
+class Parser(InstructionParser):
+    def __init__(self):
+        self._matcher_parser = parse_integer_matcher.parsers(False).full
 
-        matcher_parser = parse_integer_matcher.IntegerMatcherParser(_must_be_within_byte_range)
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> AssertPhaseInstruction:
+        with token_stream_parser.from_parse_source(source,
+                                                   consume_last_line_if_is_at_eol_after_parse=True) as token_parser:
+            matcher = self._matcher_parser.parse_from_token_parser(token_parser)
 
-        matcher = matcher_parser.parse(parser)
-        matcher = combinator_sdvs.optionally_negated(matcher, expectation_type)
+            property_matcher = PropertyMatcherSdv(
+                matcher,
+                property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),
+                property_matcher_describers.IdenticalToMatcher()
+            )
 
-        property_matcher = PropertyMatcherSdv(
-            matcher,
-            property_getters.PropertyGetterSdvConstant(_ExitCodeGetterDdv()),
-            property_matcher_describers.IdenticalToMatcher()
-        )
-        parser.report_superfluous_arguments_if_not_at_eol()
-        return instruction_of_matcher.Instruction(
-            property_matcher,
-            unexpected_attribute__major_block(misc_texts.EXIT_CODE.singular),
-        )
+            token_parser.report_superfluous_arguments_if_not_at_eol()
+
+            return instruction_of_matcher.Instruction(
+                property_matcher,
+                unexpected_attribute__major_block(misc_texts.EXIT_CODE.singular),
+            )
 
 
 class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescriptionBase):
@@ -159,13 +153,6 @@ class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> PropertyGetterAdv[None, int]:
         return PropertyGetterAdvConstant(_ExitCodeGetter(tcds.sds))
-
-
-def _must_be_within_byte_range(actual: int) -> Optional[TextRenderer]:
-    if actual < 0 or actual > 255:
-        return expected_found.unexpected_lines(_OPERAND_DESCRIPTION,
-                                               str(actual))
-    return None
 
 
 _PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)

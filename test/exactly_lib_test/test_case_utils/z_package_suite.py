@@ -2,11 +2,12 @@ import unittest
 
 from exactly_lib_test.test_case_utils import file_properties
 from exactly_lib_test.test_case_utils import pfh_exception, svh_exception
-from exactly_lib_test.test_case_utils.condition import z_package_suite as condition
 from exactly_lib_test.test_case_utils.expression import z_package_suite as expression
 from exactly_lib_test.test_case_utils.file_matcher import z_package_suite as file_matcher
 from exactly_lib_test.test_case_utils.files_condition import z_package_suite as files_condition
 from exactly_lib_test.test_case_utils.files_matcher import z_package_suite as files_matcher
+from exactly_lib_test.test_case_utils.integer import z_package_suite as integer
+from exactly_lib_test.test_case_utils.integer_matcher import z_package_suite as integer_matcher
 from exactly_lib_test.test_case_utils.line_matcher import z_package_suite as line_matcher
 from exactly_lib_test.test_case_utils.logic import z_package_suite as logic
 from exactly_lib_test.test_case_utils.matcher import z_package_suite as matcher
@@ -23,13 +24,14 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(pfh_exception.suite())
     ret_val.addTest(svh_exception.suite())
+    ret_val.addTest(file_properties.suite())
+    ret_val.addTest(integer.suite())
+    ret_val.addTest(regex.suite())
     ret_val.addTest(expression.suite())
-    ret_val.addTest(condition.suite())
     ret_val.addTest(logic.suite())
     ret_val.addTest(files_condition.suite())
     ret_val.addTest(matcher.suite())
-    ret_val.addTest(regex.suite())
-    ret_val.addTest(file_properties.suite())
+    ret_val.addTest(integer_matcher.suite())
     ret_val.addTest(string_models.suite())
     ret_val.addTest(line_matcher.suite())
     ret_val.addTest(string_matcher.suite())

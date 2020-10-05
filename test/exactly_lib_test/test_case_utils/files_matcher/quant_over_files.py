@@ -18,7 +18,6 @@ from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions 
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, is_reference_to_file_matcher, \
     FileMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
     integration_check
@@ -34,6 +33,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.model import 
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.arguments import file_contents_arg2
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.quant_over_files.misc import \
     FileMatcherThatMatchesAnyFileWhosNameStartsWith
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_arg

@@ -23,6 +23,10 @@ The line separator depends on the current OS ('\\n', '\\r\\n', e.g.).
 Line separator are not included in the line contents.
 """
 
+INTEGER_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+    types.INTEGER_MATCHER_TYPE_INFO,
+    syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT)
+
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
     syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,

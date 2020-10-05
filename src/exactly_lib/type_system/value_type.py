@@ -21,9 +21,10 @@ class LogicValueType(Enum):
     FILE_MATCHER = 2
     FILES_MATCHER = 3
     STRING_MATCHER = 4
-    STRING_TRANSFORMER = 5
-    PROGRAM = 6
-    FILES_CONDITION = 7
+    INTEGER_MATCHER = 5
+    STRING_TRANSFORMER = 6
+    PROGRAM = 7
+    FILES_CONDITION = 8
 
 
 @enum.unique
@@ -36,9 +37,10 @@ class ValueType(Enum):
     FILE_MATCHER = 4
     FILES_MATCHER = 5
     STRING_MATCHER = 6
-    STRING_TRANSFORMER = 7
-    PROGRAM = 8
-    FILES_CONDITION = 9
+    INTEGER_MATCHER = 7
+    STRING_TRANSFORMER = 8
+    PROGRAM = 9
+    FILES_CONDITION = 10
 
 
 VALUE_TYPE_2_TYPE_CATEGORY = {
@@ -46,6 +48,7 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
     ValueType.PATH: TypeCategory.DATA,
     ValueType.LIST: TypeCategory.DATA,
 
+    ValueType.INTEGER_MATCHER: TypeCategory.LOGIC,
     ValueType.FILE_MATCHER: TypeCategory.LOGIC,
     ValueType.FILES_MATCHER: TypeCategory.LOGIC,
     ValueType.LINE_MATCHER: TypeCategory.LOGIC,
@@ -67,6 +70,7 @@ VALUE_TYPE_2_DATA_TYPE = {
 }
 
 LOGIC_TYPE_2_VALUE_TYPE = {
+    LogicValueType.INTEGER_MATCHER: ValueType.INTEGER_MATCHER,
     LogicValueType.LINE_MATCHER: ValueType.LINE_MATCHER,
     LogicValueType.FILE_MATCHER: ValueType.FILE_MATCHER,
     LogicValueType.FILES_MATCHER: ValueType.FILES_MATCHER,

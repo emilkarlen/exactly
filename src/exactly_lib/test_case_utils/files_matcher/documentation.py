@@ -31,7 +31,16 @@ class NumFilesDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES)
+        return (
+                _TP.fnap(_CHECKS_THAT_DIRECTORY_CONTAINS_SPECIFIED_NUMBER_OF_FILES) +
+                texts.type_expression_has_syntax_of_primitive([
+                    syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
+                ])
+        )
+
+    @property
+    def see_also_targets(self) -> Sequence[SeeAlsoTarget]:
+        return syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.cross_reference_target,
 
 
 class SelectionDoc(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):

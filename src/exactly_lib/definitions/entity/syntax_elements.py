@@ -56,6 +56,8 @@ LIST_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LIST_TYPE_INFO)
 
 PATH_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PATH_TYPE_INFO)
 
+INTEGER_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.INTEGER_MATCHER_TYPE_INFO)
+
 FILE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILE_MATCHER_TYPE_INFO)
 
 LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TYPE_INFO)
@@ -104,11 +106,6 @@ GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
 INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
     'INTEGER',
     'An integer expression'
-)
-
-INTEGER_MATCHER_SYNTAX_ELEMENT = name_and_ref_target(
-    'INTEGER-MATCHER',
-    'Matches an integer'
 )
 
 PROGRAM_ARGUMENT_SYNTAX_ELEMENT = name_and_ref_target(

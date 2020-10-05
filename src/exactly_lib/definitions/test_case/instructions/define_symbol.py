@@ -114,6 +114,9 @@ ANY_TYPE_INFO_DICT = {
     ValueType.LIST:
         DATA_TYPE_INFO_DICT[DataValueType.LIST],
 
+    ValueType.INTEGER_MATCHER:
+        _logic_type_info(types.INTEGER_MATCHER_TYPE_INFO),
+
     ValueType.LINE_MATCHER:
         _logic_type_info(types.LINE_MATCHER_TYPE_INFO),
 

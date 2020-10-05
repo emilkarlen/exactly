@@ -2,14 +2,10 @@ import unittest
 from typing import Sequence, List
 
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.matcher.impls import parse_integer_matcher as sut
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.util.description_tree import details
@@ -18,13 +14,19 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.logic.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.test_case_utils.integer_matcher.test_resources import parse_check, integration_check
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
+    ExecutionExpectation
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
-from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 def suite() -> unittest.TestSuite:
@@ -46,15 +48,13 @@ class EquivalenceCheck:
 class Case:
     def __init__(self,
                  name: str,
-                 source: ParseSource,
-                 source_assertion: ValueAssertion[ParseSource],
+                 source: str,
                  result: EquivalenceCheck,
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  symbols: SymbolTable = empty_symbol_table(),
                  ):
         self.name = name
         self.source = source
-        self.source_assertion = source_assertion
         self.result = result
         self.references = references
         self.symbols = symbols
@@ -70,47 +70,44 @@ class ValidationCase:
                  ):
         self.name = name
         self.source = source
+        self.source_assertion = source_assertion
         self.references = references
         self.symbols = symbols
 
 
 class TestParseIntegerMatcher(unittest.TestCase):
     def test_failing_parse(self):
-        parser = sut.IntegerMatcherParser(None)
         cases = [
             NameAndValue(
                 'no arguments',
-                remaining_source(''),
+                '',
             ),
             NameAndValue(
                 'invalid OPERATOR',
-                remaining_source('- 72'),
+                '- 72',
             ),
             NameAndValue(
                 'quoted OPERATOR',
-                remaining_source('"{op}" 69'.format(op=comparators.EQ.name)),
+                '"{op}" 69'.format(op=comparators.EQ.name),
             ),
             NameAndValue(
                 'missing INTEGER',
-                remaining_source(comparators.EQ.name),
+                comparators.EQ.name,
             ),
         ]
         for case in cases:
-            with self.subTest(case.name):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    with from_parse_source(case.value) as token_parser:
-                        parser.parse(token_parser)
+            for parser_case in parse_check.PARSE_CHECKERS:
+                with self.subTest(sourc_case=case.name,
+                                  parser=parser_case.name):
+                    parser_case.value.check_invalid_arguments(self,
+                                                              remaining_source(case.value))
 
     def test_successful_parse(self):
         # ARRANGE #
-        parser = sut.IntegerMatcherParser(None)
-        tcds = fake_tcds()
         symbol_69 = StringSymbolContext.of_constant('SYMBOL_69', '69')
         cases = [
             Case(comparators.EQ.name + ' plain integer',
-                 remaining_source(comparators.EQ.name + ' 1'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.EQ.name + ' 1',
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -119,9 +116,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])
                  ),
             Case(comparators.EQ.name + ' plain integer, expr on new line',
-                 remaining_source('\n' + comparators.EQ.name + ' 1'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 '\n' + comparators.EQ.name + ' 1',
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -130,9 +125,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])
                  ),
             Case(comparators.EQ.name + ' plain integer, integer on new line',
-                 remaining_source(comparators.EQ.name + '\n' + ' 1'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.EQ.name + '\n' + ' 1',
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -141,9 +134,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])
                  ),
             Case(comparators.NE.name,
-                 remaining_source(comparators.NE.name + ' 1'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.NE.name + ' 1',
                  result=EquivalenceCheck(matcher_of(comparators.NE, 1),
                                          [
                                              model_of(-1),
@@ -151,9 +142,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(2),
                                          ])),
             Case(comparators.LT.name,
-                 remaining_source(comparators.LT.name + ' 69'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.LT.name + ' 69',
                  result=EquivalenceCheck(matcher_of(comparators.LT, 69),
                                          [
                                              model_of(60),
@@ -161,9 +150,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(72),
                                          ])),
             Case(comparators.LTE.name,
-                 remaining_source(comparators.LTE.name + '  69'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.LTE.name + '  69',
                  result=EquivalenceCheck(matcher_of(comparators.LTE, 69),
                                          [
                                              model_of(60),
@@ -171,9 +158,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(72),
                                          ])),
             Case(comparators.GT.name,
-                 remaining_source(comparators.GT.name + ' 69'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.GT.name + ' 69',
                  result=EquivalenceCheck(matcher_of(comparators.GT, 69),
                                          [
                                              model_of(60),
@@ -181,29 +166,15 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(72),
                                          ])),
             Case(comparators.GTE.name,
-                 remaining_source(comparators.GTE.name + ' 69'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 comparators.GTE.name + ' 69',
                  result=EquivalenceCheck(matcher_of(comparators.GTE, 69),
                                          [
                                              model_of(60),
                                              model_of(69),
                                              model_of(72),
                                          ])),
-            Case(comparators.GTE.name + ' following content on line',
-                 remaining_source(comparators.GTE.name + ' 72 next'),
-                 source_assertion=
-                 assert_source(remaining_part_of_current_line=asrt.equals('next')),
-                 result=EquivalenceCheck(matcher_of(comparators.GTE, 72),
-                                         [
-                                             model_of(69),
-                                             model_of(72),
-                                             model_of(80),
-                                         ])),
             Case(comparators.EQ.name + ' integer expression',
-                 remaining_source('== "69+72"'),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 '== "69+72"',
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 69 + 72),
                                          [
                                              model_of(69 + 72 - 1),
@@ -211,9 +182,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                              model_of(69 + 72 + 1),
                                          ])),
             Case(comparators.EQ.name + ' with symbol references',
-                 remaining_source('== "{}+72"'.format(symbol_reference_syntax_for_name(symbol_69.name))),
-                 source_assertion=
-                 assert_source(is_at_eol=asrt.is_true),
+                 '== "{}+72"'.format(symbol_reference_syntax_for_name(symbol_69.name)),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 69 + 72),
                                          [
                                              model_of(69 + 72 - 1),
@@ -227,33 +196,34 @@ class TestParseIntegerMatcher(unittest.TestCase):
                  ),
         ]
         for case in cases:
-            with self.subTest(name=case.name):
-                with from_parse_source(case.source) as token_parser:
-                    # ACT #
-                    actual_sdv = parser.parse(token_parser)
-                    # ASSERT #
-                    case.references.apply_with_message(self, actual_sdv.references, 'references')
-
-                    actual_ddv = actual_sdv.resolve(case.symbols)
-
-                    validator = actual_ddv.validator
-
-                    mb_validation_failure = validator.validate_pre_sds_if_applicable(tcds.hds)
-                    self.assertIsNone(mb_validation_failure, 'pre sds validation')
-
-                    mb_validation_failure = validator.validate_post_sds_if_applicable(tcds)
-                    self.assertIsNone(mb_validation_failure, 'post sds validation')
-
-                    actual = resolving_helper(case.symbols).resolve_matcher(actual_sdv)
-
-                case.source_assertion.apply_with_message(self, case.source, 'source')
-                case.result.assertion().apply_with_message(self, actual, 'parsed value')
+            for model_info in case.result.models:
+                expected_result = case.result.equivalent.matches_w_trace(model_info.model)
+                with self.subTest(case=case.name,
+                                  model=model_info.description_of_model):
+                    integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+                        self,
+                        Arguments.of_preformatted(case.source),
+                        input_=integration_check.constant(model_info.model),
+                        arrangement=arrangement_wo_tcds(
+                            symbols=case.symbols,
+                        ),
+                        expectation=Expectation(
+                            ParseExpectation(
+                                symbol_references=case.references,
+                            ),
+                            ExecutionExpectation(
+                                main_result=asrt_matching_result.matches(
+                                    value=asrt.equals(expected_result.value),
+                                    trace=asrt_trace_rendering.matches_node_renderer(
+                                        asrt_d_tree.equals_node(expected_result.trace.render()),
+                                    )
+                                )
+                            )
+                        )
+                    )
 
     def test_failing_validation(self):
         # ARRANGE #
-        parser = sut.IntegerMatcherParser(None)
-        tcds = fake_tcds()
-        is_text_renderer = asrt_renderer.is_renderer_of_major_blocks()
         symbol_not_an_int = StringSymbolContext.of_constant('SYMBOL_NOT_AN_INT', 'notAnInt')
         cases = [
             ValidationCase(comparators.EQ.name + ' not a number',
@@ -283,19 +253,24 @@ class TestParseIntegerMatcher(unittest.TestCase):
                            ),
         ]
         for case in cases:
-            with self.subTest(name=case.name):
-                with from_parse_source(case.source) as token_parser:
-                    # ACT #
-                    actual_sdv = parser.parse(token_parser)
-                    actual_ddv = actual_sdv.resolve(case.symbols)
-                    # ASSERT #
-                    case.references.apply_with_message(self, actual_sdv.references, 'references')
-
-                    mb_validation_failure = actual_ddv.validator.validate_pre_sds_if_applicable(tcds.hds)
-
-                    self.assertIsNotNone(mb_validation_failure, 'pre sds validation')
-
-                    is_text_renderer.apply_with_message(self, mb_validation_failure, 'error message')
+            with self.subTest(case.name):
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    case.source,
+                    input_=integration_check.ARBITRARY_MODEL,
+                    arrangement=arrangement_wo_tcds(
+                        symbols=case.symbols,
+                    ),
+                    expectation=Expectation(
+                        ParseExpectation(
+                            source=case.source_assertion,
+                            symbol_references=case.references,
+                        ),
+                        ExecutionExpectation(
+                            validation=validation.pre_sds_validation_fails__w_any_msg(),
+                        )
+                    )
+                )
 
 
 def model_of(rhs: int) -> ModelInfo:

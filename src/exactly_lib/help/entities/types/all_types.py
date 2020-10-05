@@ -10,6 +10,7 @@ def all_types() -> List[TypeDocumentation]:
         data_types.STRING_DOCUMENTATION,
         data_types.LIST_DOCUMENTATION,
         data_types.PATH_DOCUMENTATION,
+        logic_types.INTEGER_MATCHER_DOCUMENTATION,
         logic_types.LINE_MATCHER_DOCUMENTATION,
         logic_types.FILE_MATCHER_DOCUMENTATION,
         logic_types.FILES_MATCHER_DOCUMENTATION,

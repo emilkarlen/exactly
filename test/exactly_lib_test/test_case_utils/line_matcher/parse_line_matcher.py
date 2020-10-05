@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
@@ -28,8 +28,8 @@ from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import
 
 class Expectation:
     def __init__(self,
-                 sdv: ValueAssertion[LogicSdv],
-                 token_stream: ValueAssertion[TokenParser] = asrt.anything_goes()):
+                 sdv: ValueAssertion[SymbolDependentValue],
+                 token_stream: ValueAssertion[TokenStream] = asrt.anything_goes()):
         self.sdv = sdv
         self.token_stream = token_stream
 
@@ -179,4 +179,4 @@ class _ComparisonMatcherForEquivalenceChecks:
         self._operator = operator
 
     def matches(self, model: int) -> bool:
-        return self._operator.operator_fun(model, self._constant_rhs)
+        return self._operator.operator_fun(model, self._constant_rhs) != 0

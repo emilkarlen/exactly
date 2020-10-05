@@ -7,6 +7,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVarian
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
+from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path, parse_path, parse_list
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
@@ -54,6 +55,14 @@ class ListParser(TypeValueParser):
               token_parser: TokenParser,
               ) -> SymbolDependentValue:
         return parse_list.parse_list_from_token_parser(token_parser)
+
+
+class IntegerMatcherParser(TypeValueParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              token_parser: TokenParser,
+              ) -> SymbolDependentValue:
+        return parse_integer_matcher.parsers(False).full.parse_from_token_parser(token_parser)
 
 
 class LineMatcherParser(TypeValueParser):

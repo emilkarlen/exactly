@@ -25,11 +25,11 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success

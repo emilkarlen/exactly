@@ -1,0 +1,7 @@
+[setup]
+
+def integer-matcher NEGATION    = ! == 72
+def integer-matcher CONJUNCTION = == 72 && == 69
+def integer-matcher DISJUNCTION = == 72 || == 69
+
+def integer-matcher PARENTHESIS = ( ( == 72 ) || ( == 69 ) )

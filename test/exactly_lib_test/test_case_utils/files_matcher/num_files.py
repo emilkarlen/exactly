@@ -1,18 +1,13 @@
 import unittest
 
-from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.definitions import logic
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
+from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
@@ -21,11 +16,14 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import test_c
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import \
     NumFilesAssertionVariant, argument_constructor_for_num_files_check, \
     FilesMatcherArgumentsSetup, files_matcher_setup_without_references
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
+from exactly_lib_test.test_case_utils.integer_matcher.test_resources import argument_building as im_args
+from exactly_lib_test.test_case_utils.integer_matcher.test_resources import symbol_reference
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
-    PassOrFail, expectation_type_config__non_is_success
+    PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -79,40 +77,105 @@ class TestSymbolReferences(test_case_bases.TestCommonSymbolReferencesBase,
                            TestWithAssertionVariantForNumFiles):
     def test_symbols_from_comparison_SHOULD_be_reported(self):
         # ARRANGE #
+        checked_dir_contents = DirContents([File.empty('1'), File.empty('2')])
+        checked_path = rel_opts.conf_rel_sds(RelSdsOptionType.REL_ACT)
 
-        operand_sym_ref = SymbolReference('operand_symbol_name',
-                                          string_made_up_by_just_strings())
-
-        condition_str = '{operator} {symbol_reference}'.format(
-            operator=comparators.EQ.name,
-            symbol_reference=symbol_reference_syntax_for_name(operand_sym_ref.name)
+        operand_sym_ref = StringIntConstantSymbolContext(
+            'operand_symbol_name',
+            len(checked_dir_contents.file_system_elements),
+            default_restrictions=symbol_reference.is_integer_expression_string(),
         )
-        arguments_constructor = args.complete_arguments_constructor(
-            NumFilesAssertionVariant(condition_str))
 
-        argument = arguments_constructor.apply(expectation_type_config__non_is_success(ExpectationType.NEGATIVE))
+        matcher_arguments = im_args.comparison(comparators.EQ,
+                                               operand_sym_ref.argument)
 
-        source = remaining_source(argument)
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            args.NumFiles(
+                matcher_arguments.as_str,
+                int_expr_on_new_line=True,
+            ).as_remaining_source,
+            model.model_with_rel_root_as_source_path(checked_path),
+            arrangement_w_tcds(
+                symbols=operand_sym_ref.symbol_table,
+                tcds_contents=checked_path.populator_for_relativity_option_root(checked_dir_contents),
+            ),
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(2),
+                    symbol_references=operand_sym_ref.references_assertion,
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(True)
+                ),
+            )
+        )
 
-        # ACT #
+    def test_matcher_symbol_should_be_reported(self):
+        # ARRANGE #
+        matcher_symbol = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER_SYMBOL',
+            True,
+        )
 
-        actual_matcher = sut.parsers().full.parse(source)
-
-        assert isinstance(actual_matcher, MatcherSdv)
-
-        actual_symbol_references = actual_matcher.references
-
-        # ASSERT #
-
-        expected_symbol_references = [
-            operand_sym_ref,
-        ]
-        assertion = equals_data_type_symbol_references(expected_symbol_references)
-
-        assertion.apply_without_message(self, actual_symbol_references)
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            args.NumFiles(
+                matcher_symbol.name__sym_ref_syntax,
+                int_expr_on_new_line=True,
+            ).as_remaining_source,
+            model.arbitrary_model(),
+            arrangement_w_tcds(
+                symbols=matcher_symbol.symbol_table,
+            ),
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_end_of_line(2),
+                    symbol_references=matcher_symbol.references_assertion,
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(matcher_symbol.result_value)
+                ),
+            )
+        )
 
 
 class TestDifferentSourceVariants(test_case_bases.TestCaseBaseForParser):
+    def test_integer_transformer_should_be_parsed_as_simple_expression(self):
+        # ARRANGE #
+        after_lhs_expression = logic.AND_OPERATOR_NAME + ' after bin op'
+        matcher_symbol = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER_SYMBOL',
+            True,
+        )
+        complex_expression = ' '.join((matcher_symbol.name__sym_ref_syntax,
+                                       after_lhs_expression))
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            args.NumFiles(
+                complex_expression,
+            ).as_remaining_source,
+            model.arbitrary_model(),
+            arrangement_w_tcds(
+                symbols=matcher_symbol.symbol_table,
+            ),
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_line(
+                        current_line_number=1,
+                        remaining_part_of_current_line=after_lhs_expression,
+                    ),
+                    symbol_references=matcher_symbol.references_assertion,
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(matcher_symbol.result_value)
+                ),
+            )
+        )
+
     def test_file_is_directory_that_has_expected_number_of_files(self):
         directory_with_one_file = Dir('name-of-dir', [File.empty('a-file-in-checked-dir')])
 

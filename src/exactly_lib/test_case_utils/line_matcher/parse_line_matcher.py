@@ -5,6 +5,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import line_matcher
+from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar, parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
@@ -45,7 +46,12 @@ class _LineNumberSyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitial
 
     @property
     def description_rest(self) -> Sequence[ParagraphItem]:
-        return _TP.fnap(_LINE_NUMBER_MATCHER_SED_DESCRIPTION)
+        return (
+                _TP.fnap(_LINE_NUMBER_MATCHER_SED_DESCRIPTION) +
+                texts.type_expression_has_syntax_of_primitive([
+                    syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
+                ])
+        )
 
     @property
     def see_also_targets(self) -> Sequence[SeeAlsoTarget]:

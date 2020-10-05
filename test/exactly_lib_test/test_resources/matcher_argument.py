@@ -45,6 +45,7 @@ class SymbolReferenceWReferenceSyntax(MatcherArgument):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
 
+    @property
     def elements(self) -> List:
         return [symbol_syntax.symbol_reference_syntax_for_name(self.symbol_name)]
 

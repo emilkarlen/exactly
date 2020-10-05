@@ -88,7 +88,7 @@ def _invalid_type_header_lines(expected: List[ValueType],
     return ret_val
 
 
-def _invalid_type_how_to_fix_lines(expected_value_types: list) -> List[str]:
+def _invalid_type_how_to_fix_lines(expected_value_types: Sequence[ValueType]) -> List[str]:
     from exactly_lib.definitions.test_case.instructions import define_symbol
     from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.definitions.formatting import InstructionName

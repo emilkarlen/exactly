@@ -1,7 +1,6 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
@@ -57,7 +56,8 @@ class FilesMatcherConfiguration(MatcherConfiguration[FilesMatcherModel]):
         return parse_files_matcher.parsers()
 
     def checker_for_parser_of_full_expr(self) -> IntegrationChecker[MatcherWTrace[FilesMatcherModel],
-                                                                    Callable[[FullResolvingEnvironment], FilesMatcherModel],
+                                                                    Callable[
+                                                                        [FullResolvingEnvironment], FilesMatcherModel],
                                                                     MatchingResult]:
         return integration_check.CHECKER__PARSE_FULL
 

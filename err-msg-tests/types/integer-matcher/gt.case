@@ -1,0 +1,9 @@
+[setup]
+
+file f.txt
+
+[assert]
+
+contents f.txt
+
+    num-lines > 1

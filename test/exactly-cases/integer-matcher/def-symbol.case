@@ -1,0 +1,15 @@
+[setup]
+
+def integer-matcher IM_S = == 10
+
+[before-assert]
+
+def integer-matcher IM_BA = < 10+1
+
+[assert]
+
+def integer-matcher IM_A = == 10 || == 11
+
+[cleanup]
+
+def integer-matcher IM_C = ! > 10

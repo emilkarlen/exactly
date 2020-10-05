@@ -10,6 +10,8 @@ string-transformer
 
 string-matcher
 
+integer-matcher
+
 line-matcher
 
 file-matcher

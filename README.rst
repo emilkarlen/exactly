@@ -699,7 +699,6 @@ Including (but not limited to):
 * Separate sets of environment variables for "action to check" and other processes
 * Improved string character escaping
 * Type `REG-EX`
-* Type `INTEGER-MATCHER`
 * Support for non-terminating programs (e.g. as ``string-transformer``)
 * Symbol substitution in files
 * Dynamic symbol values - e.g. contents of dir, current date

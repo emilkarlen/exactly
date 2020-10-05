@@ -1,31 +1,37 @@
 import unittest
 from typing import List
 
+from exactly_lib.definitions import logic
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name, SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, StringIntConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition__expr
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.integer_sdv import \
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition__expr
+from exactly_lib_test.test_case_utils.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.validation_cases import \
+from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases import \
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
-    Expectation
+    Expectation, arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertions import main_result_is_success, \
     main_result_is_failure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         _SymbolReferencesInOperandShouldBeReported(),
+        _IntegerMatcherSymbolReferencesShouldBeReported(),
+        _IntegerMatcherShouldBeParsedAsSimpleExpression(),
         _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInteger(),
         _ParseAndMatchTest(),
     ])
@@ -110,7 +116,70 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
                     ]),
                 ),
             )
+        )
 
+
+class _IntegerMatcherSymbolReferencesShouldBeReported(unittest.TestCase):
+    def runTest(self):
+        matcher_symbol = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER_SYMBOL',
+            True,
+        )
+
+        arguments = arg.LineNum(matcher_symbol.name__sym_ref_syntax)
+
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=
+            arguments.as_remaining_source,
+            input_=integration_check.ARBITRARY_MODEL,
+            arrangement=arrangement_wo_tcds(
+                symbols=matcher_symbol.symbol_table,
+            ),
+            expectation=
+            Expectation(
+                ParseExpectation(
+                    symbol_references=matcher_symbol.references_assertion,
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(matcher_symbol.result_value)
+                )
+            )
+        )
+
+
+class _IntegerMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+    def runTest(self):
+        after_lhs_expression = logic.AND_OPERATOR_NAME + ' after bin op'
+        matcher_symbol = IntegerMatcherSymbolContextOfPrimitiveConstant(
+            'MATCHER_SYMBOL',
+            True,
+        )
+        complex_expression = ' '.join((matcher_symbol.name__sym_ref_syntax,
+                                       after_lhs_expression))
+        arguments = arg.LineNum(complex_expression)
+
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=
+            arguments.as_remaining_source,
+            input_=integration_check.ARBITRARY_MODEL,
+            arrangement=arrangement_wo_tcds(
+                symbols=matcher_symbol.symbol_table,
+            ),
+            expectation=
+            Expectation(
+                ParseExpectation(
+                    source=asrt_source.is_at_line(
+                        current_line_number=1,
+                        remaining_part_of_current_line=after_lhs_expression,
+                    ),
+                    symbol_references=matcher_symbol.references_assertion,
+                ),
+                ExecutionExpectation(
+                    main_result=asrt_matching_result.matches_value(matcher_symbol.result_value)
+                )
+            )
         )
 
 

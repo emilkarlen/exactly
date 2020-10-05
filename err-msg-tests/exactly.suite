@@ -1,7 +1,6 @@
 [suites]
 
 instructions
-integer-cmp
 integer-symbol-value
 misc
 path-presentation

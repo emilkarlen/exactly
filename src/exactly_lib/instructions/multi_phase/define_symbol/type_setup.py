@@ -44,6 +44,8 @@ TYPE_SETUPS_LIST = [
                                   type_parser.ListParser()),
     TypeSetup.new_with_std_syntax(types.PATH_TYPE_INFO,
                                   type_parser.PathParser()),
+    TypeSetup.new_with_std_syntax(types.INTEGER_MATCHER_TYPE_INFO,
+                                  type_parser.IntegerMatcherParser()),
     TypeSetup.new_with_std_syntax(types.LINE_MATCHER_TYPE_INFO,
                                   type_parser.LineMatcherParser()),
     TypeSetup.new_with_std_syntax(types.FILE_MATCHER_TYPE_INFO,

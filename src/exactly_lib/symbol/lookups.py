@@ -11,6 +11,7 @@ from exactly_lib.type_system.data.path_ddv import PathDdv
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.type_system.logic.integer_matcher import IntegerMatcherSdv
 from exactly_lib.type_system.logic.line_matcher import LineMatcherSdv
 from exactly_lib.type_system.logic.program.program import ProgramDdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
@@ -49,6 +50,13 @@ def lookup_path(symbols: SymbolTable, name: str) -> PathSdv:
 
 def lookup_and_resolve_path(symbols: SymbolTable, name: str) -> PathDdv:
     return lookup_path(symbols, name).resolve(symbols)
+
+
+def lookup_integer_matcher(symbols: SymbolTable, name: str) -> IntegerMatcherSdv:
+    container = lookup_container(symbols, name)
+    ret_val = container.sdv
+    assert isinstance(ret_val, MatcherSdv), 'Referenced symbol must be MatcherSdv'
+    return ret_val
 
 
 def lookup_line_matcher(symbols: SymbolTable, name: str) -> LineMatcherSdv:

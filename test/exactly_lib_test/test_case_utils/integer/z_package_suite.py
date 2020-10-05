@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.condition.integer import integer_sdv
+from exactly_lib_test.test_case_utils.integer import integer_sdv
 
 
 def suite() -> unittest.TestSuite:

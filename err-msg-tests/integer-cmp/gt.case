@@ -1,7 +1,0 @@
-[act]
-
-$ exit 0
-
-[assert]
-
-exit-code > 10

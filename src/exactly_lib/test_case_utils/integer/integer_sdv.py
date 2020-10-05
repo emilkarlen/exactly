@@ -6,8 +6,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv
-from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
-from exactly_lib.test_case_utils.condition.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
+from exactly_lib.test_case_utils.integer.evaluate_integer import NotAnIntegerException, python_evaluate
+from exactly_lib.test_case_utils.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable

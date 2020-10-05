@@ -18,7 +18,6 @@ from exactly_lib_test.symbol.test_resources import files_matcher as files_matche
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.condition.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
@@ -32,6 +31,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources.integration_c
     IntegrationCheckHelper
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.parsers import TOP_LEVEL_PARSER_CASES
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     PrimAndExeExpectation, Expectation, arrangement_w_tcds, ExecutionExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import assertion_applier

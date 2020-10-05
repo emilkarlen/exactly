@@ -13,7 +13,6 @@ from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_
     FileMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
-from exactly_lib_test.test_case_utils.condition.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args2, validation_cases
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args, \
@@ -21,6 +20,7 @@ from exactly_lib_test.test_case_utils.files_matcher.test_resources import argume
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fsm_args, model
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.parsers import TOP_LEVEL_PARSER_CASES
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
+from exactly_lib_test.test_case_utils.integer.test_resources import arguments_building as int_args
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_confs, matcher_assertions

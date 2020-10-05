@@ -9,18 +9,19 @@ class Arguments:
     """Instruction arguments, in the form of a first line and following lines."""
 
     def __init__(self,
-                 first_line,
-                 following_lines: Sequence = ()):
-        """
-        :param first_line: rendered using __str__
-        :param following_lines: Every element is rendered using __str__
-        """
+                 first_line: WithToString,
+                 following_lines: Sequence[WithToString] = ()):
         self.first_line = str(first_line)
         self.following_lines = list(map(str, following_lines))
 
     @staticmethod
     def empty() -> 'Arguments':
         return Arguments('', ())
+
+    @staticmethod
+    def of_preformatted(arguments: str) -> 'Arguments':
+        lines = arguments.splitlines()
+        return Arguments(lines[0], lines[1:])
 
     @property
     def is_empty(self) -> bool:

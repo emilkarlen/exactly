@@ -8,13 +8,13 @@ from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils import file_properties, described_dep_val
-from exactly_lib.test_case_utils.condition.integer.integer_ddv import IntegerDdv
-from exactly_lib.test_case_utils.condition.integer.integer_sdv import IntegerSdv
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, sdv_of_constant_primitive, \
     LogicWithDetailsDescriptionDdv
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.files_matcher import models
+from exactly_lib.test_case_utils.integer.integer_ddv import IntegerDdv
+from exactly_lib.test_case_utils.integer.integer_sdv import IntegerSdv
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
 from exactly_lib.type_system.logic.impls import advs
