@@ -9,6 +9,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.multi_phase.utils import \
     instruction_from_parts_for_executing_program as spe_parts
+from exactly_lib.instructions.multi_phase.utils import run_assertions
 from exactly_lib.instructions.multi_phase.utils.assert_phase_info import \
     IsBothAssertionAndHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser
@@ -35,10 +36,8 @@ def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
 _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS = \
     "Executes a command using the current operating system's shell"
 
-SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = (
-    "Executes a command using the current operating system's shell,"
-    " and PASS iff its {} is 0".format(
-        misc_texts.EXIT_CODE)
+SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = run_assertions.single_line_description_as_assertion(
+    _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS
 )
 
 
@@ -53,6 +52,7 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithSplittedPartsF
             'PASS': exit_values.EXECUTION__PASS.exit_identifier,
             'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
+            'EXIT_CODE': misc_texts.EXIT_CODE.singular,
         })
         self.__single_line_description = single_line_description
 

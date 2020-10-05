@@ -13,8 +13,7 @@ class InstructionDocumentation:
     à la man page.
     """
 
-    def __init__(self,
-                 instruction_name: str):
+    def __init__(self, instruction_name: str):
         self._instruction_name = instruction_name
 
     def instruction_name(self) -> str:

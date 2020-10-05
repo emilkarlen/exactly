@@ -159,7 +159,7 @@ class _ExitCodeGetterDdv(PropertyGetterDdv[None, int]):
 _PROPERTY_GETTER_STRUCTURE = renderers.header_only(_PROPERTY_NAME)
 
 _OUTCOME = """\
-{PASS} if, and only if, the {EXIT_CODE} of the {action_to_check} satisfies {INTEGER_MATCHER}.
+{PASS} iff the {EXIT_CODE} of the {action_to_check} satisfies {INTEGER_MATCHER}.
 """
 
 _FAILED_TO_READ_CONTENTS_FROM = 'Failed to read contents from '

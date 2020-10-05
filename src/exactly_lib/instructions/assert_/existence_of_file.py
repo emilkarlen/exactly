@@ -337,14 +337,14 @@ Symbolic links are not followed in the test of existence
 _OUTCOME = """\
   * When not negated
   
-    {PASS} if, and only if:
+    {PASS} iff:
 
     {PATH} exists, and has the given properties.
 
 
   * When negated
 
-    {PASS} if, and only if:
+    {PASS} iff:
 
     {PATH} does not exist, or {PATH} does not have the given properties.
 """

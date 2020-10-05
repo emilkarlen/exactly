@@ -5,6 +5,7 @@ from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types
 from exactly_lib.instructions.assert_.utils import instruction_from_parts
 from exactly_lib.instructions.multi_phase import run
+from exactly_lib.instructions.multi_phase.utils import run_assertions
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -35,7 +36,7 @@ _TP = TextParser({
     'ignore_exit_code_option': formatting.argument_option(run.IGNORE_EXIT_CODE_OPTION_NAME),
 })
 
-_SINGLE_LINE_DESCRIPTION = 'Runs {program_type:a/q}, and {PASS} or {FAIL} depending on its {exit_code}'
+_SINGLE_LINE_DESCRIPTION = run_assertions.single_line_description_as_assertion('Runs {program_type:a/q}')
 
 _OUTCOME = """\
 {PASS} if the {exit_code} is zero,

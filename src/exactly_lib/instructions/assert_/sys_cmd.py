@@ -25,5 +25,5 @@ class TheDocumentation(TheInstructionDocumentationBase, WithAssertPhasePurpose):
 
 
 _OUTCOME = """\
-{PASS} if, and only if, the exit code from the program is 0.
+{PASS} iff the {EXIT_CODE} from the program is 0.
 """
