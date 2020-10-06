@@ -16,9 +16,11 @@ from exactly_lib_test.symbol.test_resources import symbol_syntax
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.line_matchers import LineMatcherThatCollectsModels
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
-    ParseExpectation, ExecutionExpectation
+    ParseExpectation, ExecutionExpectation, arrangement_wo_tcds, prim_asrt__any
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
@@ -38,6 +40,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInvalidSyntax),
         TestFilesMatcherShouldBeParsedAsSimpleExpression(),
         unittest.makeSuite(TestFiltering),
+        _TestLineMatcherModelsGivenToLineMatcher(),
         unittest.makeSuite(TestLineMatcherPrimitive),
         ValidatorShouldValidateLineMatcher(),
     ])
@@ -254,6 +257,48 @@ class TestFiltering(unittest.TestCase):
                 )
 
 
+class _TestLineMatcherModelsGivenToLineMatcher(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        input_lines = [
+            '1st',
+            '2nd',
+            '3rd',
+        ]
+        expected_line_matcher_models = line_matcher_models.models_for_lines__validated(input_lines)
+        string_transformer_model = model_constructor.of_lines_wo_nl(self, input_lines)
+
+        models_output = []
+        line_matcher = LineMatcherSymbolContext.of_primitive(
+            'MATCHER',
+            LineMatcherThatCollectsModels(models_output, True),
+        )
+
+        line_matcher_arg = lm_args.SymbolReference(line_matcher.name)
+        arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
+        # ACT & ASSERT #
+        integration_check.CHECKER__PARSE_SIMPLE.check(
+            self,
+            source=remaining_source(arguments),
+            input_=string_transformer_model,
+            arrangement=arrangement_w_tcds(
+                symbols=line_matcher.symbol_table,
+            ),
+            expectation=Expectation(
+                ParseExpectation(
+                    symbol_references=line_matcher.references_assertion
+                ),
+                ExecutionExpectation(
+                    main_result=asrt.anything_goes(),
+                ),
+                prim_asrt__any
+            ),
+        )
+        self.assertEqual(expected_line_matcher_models,
+                         models_output,
+                         'models given to line matcher')
+
+
 class TestLineMatcherPrimitive(unittest.TestCase):
     def test(self):
         # ARRANGE #
@@ -300,7 +345,7 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
                     self,
                     Arguments(arguments),
                     model_constructor.of_lines(self, []),
-                    arrangement_w_tcds(
+                    arrangement_wo_tcds(
                         symbols=line_matcher_symbol_context.symbol_table
                     ),
                     Expectation(
