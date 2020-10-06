@@ -182,7 +182,7 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             '123\n',
         ]
         additional_transformer = string_transformers.count_num_uppercase_characters()
-        expected = '120'
+        expected = '1\n2\n0\n'
 
         for ignore_exit_code in [False, True]:
             model_constructor = _ToUpperProgramModelConstructor(
@@ -209,7 +209,7 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             '123\n',
         ]
         additional_transformer = string_transformers.count_num_uppercase_characters()
-        expected = '120'
+        expected = '1\n2\n0\n'
         expectation = model_checker.Expectation.equals(expected)
 
         model_constructor = _ToUpperProgramModelConstructor(

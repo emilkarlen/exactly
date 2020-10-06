@@ -7,11 +7,10 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     MultiSourceExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    model_construction
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
@@ -56,7 +55,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                         program_args.symbol_ref_command_elements(program_symbol.name),
                         ignore_exit_code=with_ignored_exit_code,
                     ),
-                    model_construction.of_lines(input_model_lines),
+                    model_constructor.of_lines(self, input_model_lines),
                     arrangement_w_tcds(
                         tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
                             DirContents([py_file])

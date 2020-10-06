@@ -335,7 +335,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  execution: ExecutionExpectation[OUTPUT],
                  applier: Applier[PRIMITIVE, INPUT, OUTPUT],
                  common_properties:
-                 CommonExecutionPropertiesChecker[PRIMITIVE],
+                 CommonExecutionPropertiesChecker[PRIMITIVE, OUTPUT],
                  check_application_result_with_tcds: bool,
                  ):
         self.put = put
@@ -483,6 +483,11 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             if self.execution.is_hard_error is not None:
                 self.put.fail(message_builder.apply('HARD_ERROR not reported (raised)'))
 
+            self.common_properties.check_application_output(
+                self.put,
+                result,
+                message_builder.for_sub_component('common properties of output')
+            )
             return _ValueAssertionApplier(
                 self.execution.main_result,
                 result,

@@ -6,9 +6,9 @@ from exactly_lib.util import symbol_table
 from exactly_lib_test.tcfs.test_resources.application_environment import \
     application_environment_for_test
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformer_checker, model_construction
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformer_checker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources.string_models import StringModelThatMustNotBeUsed
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 
 
@@ -35,7 +35,7 @@ class TestApplier(unittest.TestCase):
                 asrt.MessageBuilder.new_empty(),
                 transformer_that_raises,
                 resolving_env,
-                model_construction.constant(StringModelThatMustNotBeUsed()),
+                model_constructor.must_not_be_used,
             )
 
 

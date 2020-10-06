@@ -47,7 +47,8 @@ def _transform_string_to_string(tcds: TestCaseDs, string_input: str) -> str:
 class TestIntegration(unittest.TestCase):
     def runTest(self):
         def model(environment: FullResolvingEnvironment) -> string_models.StringModel:
-            return string_models.StringModelFromLines(
+            return string_models.of_lines__w_check_for_validity(
+                self,
                 with_appended_new_lines([
                     str(environment.tcds.hds.case_dir),
                     str(environment.tcds.hds.act_dir),

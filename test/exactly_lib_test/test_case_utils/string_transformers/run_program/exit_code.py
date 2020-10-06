@@ -9,11 +9,10 @@ from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args, program_sdvs
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    model_construction
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
@@ -85,7 +84,7 @@ class TestExitCodeInterpretation(unittest.TestCase):
                         program_args.symbol_ref_command_elements(program_symbol.name),
                         ignore_exit_code=ignore_exit_code,
                     ).as_remaining_source,
-                    model_construction.arbitrary_model_constructor(),
+                    model_constructor.arbitrary(self),
                     arrangement_w_tcds(
                         symbols=program_symbol.symbol_table,
                         tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(

@@ -8,6 +8,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 
 
 def suite() -> unittest.TestSuite:
@@ -24,7 +25,7 @@ class TestHardError(unittest.TestCase):
             args.RunProgram(
                 program_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM)
             ).as_remaining_source,
-            integration_check.arbitrary_model(),
+            model_constructor.arbitrary(self),
             arrangement_w_tcds(),
             Expectation(
                 ParseExpectation(

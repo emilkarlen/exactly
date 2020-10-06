@@ -8,9 +8,9 @@ from exactly_lib.type_system.description.tree_structured import WithTreeStructur
 from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv, LogicDdv
 from exactly_lib_test.test_case_utils.logic.test_resources import assertions as asrt_logic
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
-    CommonSdvPropertiesChecker, PRIMITIVE, CommonExecutionPropertiesChecker
+    CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.logic_structure_assertions import has_valid_description
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
@@ -35,13 +35,17 @@ class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
         self._is_valid_sdv.apply(put, actual, message_builder)
 
 
-class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesChecker[WithTreeStructureDescription]):
+class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
+                                                  CommonExecutionPropertiesChecker[
+                                                      WithTreeStructureDescription, OUTPUT]):
     def __init__(self,
                  expected_ddv_object_type: Type[LogicWithNodeDescriptionDdv],
                  expected_primitive_object_type: Type[WithTreeStructureDescription],
+                 application_output: ValueAssertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
         self._expected_primitive_object_type = expected_primitive_object_type
+        self._application_output = application_output
         self._structure_tree_of_ddv = None
 
     def check_ddv(self,
@@ -80,6 +84,12 @@ class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesCheck
 
         self._check_structure_of_primitive(put, actual, message_builder)
 
+    def check_application_output(self,
+                                 put: unittest.TestCase,
+                                 actual: OUTPUT,
+                                 message_builder: MessageBuilder):
+        self._application_output.apply(put, actual, message_builder)
+
     def _check_structure_of_primitive(self,
                                       put: unittest.TestCase,
                                       actual: WithTreeStructureDescription,
@@ -102,13 +112,17 @@ class WithTreeStructureExecutionPropertiesChecker(CommonExecutionPropertiesCheck
         )
 
 
-class WithDetailsDescriptionExecutionPropertiesChecker(CommonExecutionPropertiesChecker[WithDetailsDescription]):
+class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
+                                                       CommonExecutionPropertiesChecker[
+                                                           WithDetailsDescription, OUTPUT]):
     def __init__(self,
                  expected_ddv_object_type: Type[WithDetailsDescription],
                  expected_primitive_object_type: Type[WithDetailsDescription],
+                 application_output: ValueAssertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
         self._expected_primitive_object_type = expected_primitive_object_type
+        self._application_output = application_output
 
     def check_ddv(self,
                   put: unittest.TestCase,
@@ -139,6 +153,12 @@ class WithDetailsDescriptionExecutionPropertiesChecker(CommonExecutionProperties
         )
 
         self._check_sanity_of_details_renderer(put, message_builder, actual)
+
+    def check_application_output(self,
+                                 put: unittest.TestCase,
+                                 actual: OUTPUT,
+                                 message_builder: MessageBuilder):
+        self._application_output.apply(put, actual, message_builder)
 
     @staticmethod
     def _check_sanity_of_details_renderer(put: unittest.TestCase,

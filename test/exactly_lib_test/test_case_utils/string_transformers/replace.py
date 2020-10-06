@@ -15,8 +15,9 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
-    model_construction, integration_check
+    integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import StExpectation
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.model_assertions import \
     model_lines_lists_matches
@@ -131,7 +132,7 @@ class Test(unittest.TestCase):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(source),
-            model_construction.of_lines(input_lines),
+            model_constructor.of_lines(self, input_lines),
             arrangement_w_tcds(),
             expectation_of_successful_replace_execution(
                 output_lines=expected_lines
@@ -157,7 +158,7 @@ class Test(unittest.TestCase):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(source),
-            model_construction.of_lines(input_lines),
+            model_constructor.of_lines(self, input_lines),
             arrangement_w_tcds(),
             expectation_of_successful_replace_execution(
                 output_lines=expected_lines
@@ -176,7 +177,7 @@ class Test(unittest.TestCase):
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
-                    model_construction.of_lines(lines_for(source_case.actual)),
+                    model_constructor.of_lines(self, lines_for(source_case.actual)),
                     arrangement_w_tcds(),
                     expectation_of_successful_replace_execution(
                         output_lines=lines_for(source_case.expected)
@@ -195,7 +196,7 @@ class Test(unittest.TestCase):
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
-                    model_construction.of_lines(lines_for(source_case.regex)),
+                    model_constructor.of_lines(self, lines_for(source_case.regex)),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
@@ -241,7 +242,7 @@ class ReferencedSymbolsShouldBeReportedAndUsed(unittest.TestCase):
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
-                    model_construction.of_lines(input_lines),
+                    model_constructor.of_lines(self, input_lines),
                     arrangement_w_tcds(
                         symbols=SymbolContext.symbol_table_of_contexts([
                             symbol_in_regex,
@@ -268,7 +269,7 @@ class ValidationShouldFailWhenRegexIsInvalid(unittest.TestCase):
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(source),
-                    model_construction.arbitrary_model_constructor(),
+                    model_constructor.arbitrary(self),
                     arrangement_w_tcds(
                         symbols=regex_case.symbol_table
                     ),

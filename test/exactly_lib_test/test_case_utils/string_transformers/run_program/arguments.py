@@ -13,11 +13,10 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args, program_sdvs
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    model_construction
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -114,7 +113,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                             is_reference_to_data_type_symbol(command_line_arg_list_symbol_name),
                         ]),
                     ),
-                    model_construction.arbitrary_model_constructor(),
+                    model_constructor.arbitrary(self),
                     [
                         arguments_case(command_line_arguments)
                         for command_line_arguments in command_line_arguments_cases

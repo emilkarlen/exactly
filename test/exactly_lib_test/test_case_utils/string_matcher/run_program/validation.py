@@ -7,6 +7,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -35,7 +36,7 @@ class TestValidation(unittest.TestCase):
                     is_reference_to_program(program_symbol_name),
                 ]),
             ),
-            integration_check.arbitrary_model(),
+            model_constructor.arbitrary(self),
             [
                 validation_cases.validation_exe_case(validation_case)
                 for validation_case in validation_cases.failing_validation_cases(program_symbol_name,

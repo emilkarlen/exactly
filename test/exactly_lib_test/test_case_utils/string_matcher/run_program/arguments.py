@@ -7,6 +7,7 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import 
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -39,7 +40,7 @@ class TestPathOfModelFileShouldBeGivenAsLastArgument(unittest.TestCase):
                     arguments=[symbol_reference_syntax_for_name(command_line_arg_list_symbol_name)],
                 )
             ).as_arguments,
-            integration_check.arbitrary_model(),
+            model_constructor.arbitrary(self),
             symbol_references=asrt.matches_sequence([
                 is_reference_to_program(program_symbol_name),
                 is_reference_to_data_type_symbol(command_line_arg_list_symbol_name),

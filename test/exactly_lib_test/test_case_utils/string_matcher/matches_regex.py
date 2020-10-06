@@ -9,12 +9,13 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     ParseExpectation, ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
     here_document_as_elements
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args, \
     FULL_MATCH_ARGUMENT
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -49,7 +50,7 @@ class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
                         args('{transformer_option} {maybe_not} {matches} .',
                              transformer_option=case.value.transformer_arguments_string,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.empty_model(),
+                    model_constructor.empty(self),
                     Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
@@ -76,7 +77,7 @@ class ValidationShouldFailPreWhenHardCodedRegexIsInvalid(tc.TestWithNegationArgu
                                  maybe_with_transformer_option=maybe_with_transformer_option,
                                  maybe_full_match=maybe_full_match,
                                  maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                        integration_check.empty_model(),
+                        model_constructor.empty(self),
                         Arrangement(),
                         Expectation(
                             execution=ExecutionExpectation(
@@ -116,7 +117,7 @@ class FullMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
                                  maybe_with_transformer_option=maybe_with_transformer_option,
                                  maybe_full_match=maybe_full_match,
                                  maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                        integration_check.model_of(actual_contents),
+                        model_constructor.of_str(self, actual_contents),
                         arrangement_w_tcds(),
                         Expectation(
                             execution=ExecutionExpectation(
@@ -136,7 +137,7 @@ class PartialMatchSingleLineWoNewline(tc.TestWithNegationArgumentBase):
                         args('{maybe_with_transformer_option} {maybe_not} {matches} 1.3',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.model_of(actual_contents),
+                    model_constructor.of_str(self, actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         execution=ExecutionExpectation(
@@ -156,7 +157,7 @@ class FullMatchDoNotAcceptPartialMatchSingleLineWoNewline(tc.TestWithNegationArg
                         args('{maybe_with_transformer_option} {maybe_not} {matches} {full_match} 1.3',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.model_of(actual_contents),
+                    model_constructor.of_str(self, actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         execution=ExecutionExpectation(
@@ -178,7 +179,7 @@ class FullMatchSingleLineWNewline(tc.TestWithNegationArgumentBase):
                                                      ).followed_by(here_doc)
                 self._check(
                     argument_elements.as_remaining_source,
-                    integration_check.model_of(actual_contents),
+                    model_constructor.of_str(self, actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(
@@ -207,7 +208,7 @@ class FullMatchTwoLinesWNewline(tc.TestWithNegationArgumentBase):
                                                          ).followed_by(here_doc)
                     self._check(
                         argument_elements.as_remaining_source,
-                        integration_check.model_of(actual_contents),
+                        model_constructor.of_str(self, actual_contents),
                         arrangement_w_tcds(),
                         Expectation(
                             ParseExpectation(
@@ -246,7 +247,7 @@ class PartialMatchAcceptsExtraLinesBeforeOrAfterMatchingLines(tc.TestWithNegatio
                                                          ).followed_by(here_doc)
                     self._check(
                         argument_elements.as_remaining_source,
-                        integration_check.model_of(actual_contents),
+                        model_constructor.of_str(self, actual_contents),
                         arrangement_w_tcds(),
                         Expectation(
                             ParseExpectation(
@@ -276,7 +277,7 @@ class FullMatchDoNotAcceptExtraLineAfterMatchingLines(tc.TestWithNegationArgumen
                                                      ).followed_by(here_doc_of_reg_ex)
                 self._check(
                     argument_elements.as_remaining_source,
-                    integration_check.model_of(actual_contents),
+                    model_constructor.of_str(self, actual_contents),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(

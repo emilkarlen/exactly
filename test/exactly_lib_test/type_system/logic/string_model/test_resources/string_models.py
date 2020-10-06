@@ -9,6 +9,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.common.test_resources import text_doc_assertions
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 
 
 class StringModelThatMustNotBeUsed(StringModel):
@@ -53,65 +54,6 @@ class StringModelThatRaisesHardErrorException(StringModel):
         )
 
 
-class StringModelThatThatChecksLines(StringModel):
-    def __init__(self,
-                 put: unittest.TestCase,
-                 checked: StringModel,
-                 ):
-        self._put = put
-        self._checked = checked
-
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self._checked._tmp_file_space
-
-    @property
-    def as_file(self) -> Path:
-        return self._checked.as_file
-
-    @property
-    @contextmanager
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        with self._checked.as_lines as lines:
-            yield self._check_and_return_iterator(lines)
-
-    def write_to(self, output: IO):
-        self._checked.write_to(output)
-
-    def _check_and_return_iterator(self, lines: Iterator[str]) -> Iterator[str]:
-        for line in lines:
-            current_line = line
-            self._check_any_line(current_line)
-            yield current_line
-            break
-        else:
-            return
-
-        for next_line in lines:
-            self._check_non_last_line(current_line)
-            current_line = next_line
-            self._check_any_line(current_line)
-            yield current_line
-
-    def _check_any_line(self, line: str):
-        if line == '':
-            return
-        match_idx = line.find('\n\n')
-        if match_idx != -1:
-            self._put.fail('Multiple new-lines: ' + repr(line))
-        match_idx = line.find('\n')
-        if match_idx != -1:
-            if match_idx != len(line) - 1:
-                self._put.fail('New-line is not final char: ' + repr(line))
-
-    def _check_non_last_line(self, line: str):
-        if line == '':
-            self._put.fail('Non-last line: is empty')
-        last_char = line[-1]
-        if last_char != '\n':
-            self._put.fail('Non-last line: last char is not new-line: ' + repr(line))
-
-
 class StringModelFromLines(StringModelFromLinesBase):
     def __init__(self,
                  value: Sequence[str],
@@ -131,14 +73,18 @@ class StringModelFromLines(StringModelFromLinesBase):
         yield iter(self._value)
 
 
-def of_lines(
+def of_lines__w_check_for_validity(
+        put: unittest.TestCase,
         lines: Sequence[str],
         tmp_file_space: DirFileSpace = DirFileSpaceThatMustNoBeUsed(),
 ) -> StringModel:
-    return StringModelFromLines(
-        lines,
-        tmp_file_space,
+    ret_val = StringModelFromLines(lines, tmp_file_space)
+    asrt_string_model.StringModelLinesAreValidAssertion().apply_with_message(
+        put,
+        ret_val,
+        'model lines validity'
     )
+    return ret_val
 
 
 def of_string(
@@ -151,8 +97,11 @@ def of_string(
     )
 
 
-def as_lines_list(model: StringModel) -> List[str]:
-    with model.as_lines as lines:
+def as_lines_list__w_lines_validation(put: unittest.TestCase,
+                                      model: StringModel,
+                                      ) -> List[str]:
+    checker_model = asrt_string_model.StringModelThatThatChecksLines(put, model)
+    with checker_model.as_lines as lines:
         return list(lines)
 
 

@@ -19,6 +19,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import conte
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import string_matchers
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import \
     validation_cases as string_matcher_failing_validation_cases
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases \
     as string_transformer_failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -76,7 +77,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
             asrt.matches_singleton_sequence(
                 is_reference_to_string_transformer(_TRANSFORMER_SYMBOL_NAME)
             ),
-            integration_check.model_of(original_model_contents),
+            model_constructor.of_str(self, original_model_contents),
             [
                 NExArr(
                     case.name,
@@ -128,7 +129,7 @@ class TestStringTransformerShouldBeParsedAsSimpleExpression(unittest.TestCase):
 class TestStringMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
     def runTest(self):
         model__original = 'the model text'
-        model_constructor = integration_check.model_of(model__original)
+        the_model_constructor = model_constructor.of_str(self, model__original)
 
         string_transformer = StringTransformerSymbolContext.of_primitive(
             'THE_STRING_TRANSFORMER',
@@ -155,7 +156,7 @@ class TestStringMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
         integration_check.CHECKER__PARSE_SIMPLE.check(
             self,
             source=arguments.as_remaining_source,
-            input_=model_constructor,
+            input_=the_model_constructor,
             arrangement=arrangement_w_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(symbol),
             ),
@@ -189,7 +190,7 @@ class TestValidationShouldFailWhenValidationOfStringMatcherFails(unittest.TestCa
                         string_transformer.name,
                         args2.SymbolReference(symbol_context.name)
                     ).as_arguments,
-                    integration_check.model_that_must_not_be_used,
+                    model_constructor.must_not_be_used,
                     Arrangement(
                         symbols=SymbolContext.symbol_table_of_contexts([
                             string_transformer,
@@ -220,7 +221,7 @@ class TestValidationShouldFailWhenValidationOfStringTransformerFails(unittest.Te
                         case.value.symbol_context.name,
                         args2.Empty()
                     ).as_arguments,
-                    integration_check.model_that_must_not_be_used,
+                    model_constructor.must_not_be_used,
                     Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),
@@ -258,7 +259,7 @@ class TestWithBinaryOperators(unittest.TestCase):
                     ])
                 )
             ).as_arguments,
-            integration_check.model_of(model.original),
+            model_constructor.of_str(self, model.original),
             arrangement_w_tcds(
                 symbols=to_upper_transformer.symbol_table
             ),
@@ -296,7 +297,7 @@ class TestWithBinaryOperators(unittest.TestCase):
                 ),
                 args2.Equals(model.original),
             ]).as_arguments,
-            integration_check.model_of(model.original),
+            model_constructor.of_str(self, model.original),
             arrangement_w_tcds(
                 symbols=to_upper_transformer.symbol_table
             ),
@@ -371,7 +372,7 @@ class TestWithBinaryOperators(unittest.TestCase):
                     ])
                 )
             ).as_arguments,
-            integration_check.model_of(model__original),
+            model_constructor.of_str(self, model__original),
             arrangement_w_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
             ),

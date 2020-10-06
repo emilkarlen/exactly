@@ -9,11 +9,12 @@ from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, Expectation
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
@@ -41,7 +42,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.empty_model(),
+                    model_constructor.empty(self),
                     arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     Expectation(
@@ -61,7 +62,7 @@ class ActualFileIsNonEmpty(tc.TestWithNegationArgumentBase):
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.model_of('contents that makes the file non-empty'),
+                    model_constructor.of_str(self, 'contents that makes the file non-empty'),
                     arrangement_w_tcds(
                         post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
                     Expectation(
@@ -95,7 +96,7 @@ class ActualFileIsEmptyAfterTransformation(tc.TestWithNegationArgumentBase):
                 args('{transform_option} {the_transformer} {maybe_not} {empty}',
                      the_transformer=named_transformer.name,
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-            integration_check.model_of(original_file_contents),
+            model_constructor.of_str(self, original_file_contents),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbols),
@@ -118,7 +119,7 @@ class StringTransformerShouldBeValidated(tc.TestWithNegationArgumentBase):
                         args('{transformer_option} {maybe_not} {empty}',
                              transformer_option=case.value.transformer_arguments_string,
                              maybe_not=maybe_not.nothing__if_positive__not_option__if_negative)),
-                    integration_check.empty_model(),
+                    model_constructor.empty(self),
                     Arrangement(
                         symbols=case.value.symbol_context.symbol_table
                     ),

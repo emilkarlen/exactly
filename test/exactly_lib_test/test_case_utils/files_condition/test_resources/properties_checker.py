@@ -25,8 +25,11 @@ class FilesConditionPropertiesConfiguration(
     def new_sdv_checker(self) -> CommonSdvPropertiesChecker[FilesCondition]:
         return _SdvPropertiesChecker()
 
-    def new_execution_checker(self) -> WithDetailsDescriptionExecutionPropertiesChecker:
-        return WithDetailsDescriptionExecutionPropertiesChecker(FilesConditionDdv, FilesCondition)
+    def new_execution_checker(self) -> WithDetailsDescriptionExecutionPropertiesChecker[None]:
+        return WithDetailsDescriptionExecutionPropertiesChecker(
+            FilesConditionDdv,
+            FilesCondition, asrt.anything_goes(),
+        )
 
 
 class _SdvPropertiesChecker(CommonSdvPropertiesChecker[FilesCondition]):

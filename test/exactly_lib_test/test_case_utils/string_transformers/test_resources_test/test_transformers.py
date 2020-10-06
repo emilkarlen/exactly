@@ -23,7 +23,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
         transformer = string_transformers.delete_everything()
 
         input_lines = []
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -31,7 +31,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual([], actual_as_list)
 
@@ -43,7 +43,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
             'something\n',
             ''
         ]
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -51,7 +51,7 @@ class TestDeleteEverythingTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         self.assertEqual([], actual_as_list)
 
 
@@ -66,7 +66,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
         transformer = string_transformers.duplicate_words()
 
         input_lines = []
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -74,7 +74,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         self.assertEqual([], actual_as_list)
 
     def test_empty_lines(self):
@@ -84,14 +84,12 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
         input_lines = [
             '\n',
             '  \n',
-            '  ',
             ''
         ]
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
         expected = [
             '\n',
             '\n',
-            '',
             '',
         ]
 
@@ -101,7 +99,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         self.assertEqual(expected, actual_as_list)
 
     def test_lines_with_words(self):
@@ -111,7 +109,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
         input_lines = [' a\n',
                        ' first second \n',
                        '%']
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -119,7 +117,7 @@ class TestDuplicateWordsTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         expected = ['a a\n',
                     'first first second second\n',
                     '% %']
@@ -138,7 +136,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
         transformer = string_transformers.delete_initial_word()
 
         input_lines = []
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -146,7 +144,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         self.assertEqual([], actual_as_list)
 
     def test_empty_lines(self):
@@ -155,12 +153,10 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
         transformer = string_transformers.delete_initial_word()
         input_lines = ['\n',
                        '  \n',
-                       '  ',
                        '']
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
         expected = ['\n',
                     '\n',
-                    '',
                     '']
 
         # ACT #
@@ -169,7 +165,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         self.assertEqual(expected, actual_as_list)
 
     def test_lines_with_words(self):
@@ -179,7 +175,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
         input_lines = [' a\n',
                        ' first second \n',
                        '%']
-        model = string_models.of_lines(input_lines)
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -187,7 +183,7 @@ class TestDeleteInitialWordTransformer(unittest.TestCase):
 
         # ASSERT #
 
-        actual_as_list = string_models.as_lines_list(actual)
+        actual_as_list = string_models.as_lines_list__w_lines_validation(self, actual)
         expected = ['\n',
                     'second\n',
                     '']

@@ -26,7 +26,7 @@ class CommonSdvPropertiesChecker(Generic[PRIMITIVE], ABC):
         pass
 
 
-class CommonExecutionPropertiesChecker(Generic[PRIMITIVE], ABC):
+class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
     """
     Checks common properties of DDV and primitive objects.
 
@@ -48,6 +48,15 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE], ABC):
                         message_builder: MessageBuilder,
                         ):
         """Checks the primitive before application."""
+        pass
+
+    @abstractmethod
+    def check_application_output(self,
+                                 put: unittest.TestCase,
+                                 actual: OUTPUT,
+                                 message_builder: MessageBuilder,
+                                 ):
+        """Checks the output from application."""
         pass
 
 
@@ -79,5 +88,5 @@ class CommonPropertiesConfiguration(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
         pass
 
     @abstractmethod
-    def new_execution_checker(self) -> CommonExecutionPropertiesChecker[PRIMITIVE]:
+    def new_execution_checker(self) -> CommonExecutionPropertiesChecker[PRIMITIVE, OUTPUT]:
         pass

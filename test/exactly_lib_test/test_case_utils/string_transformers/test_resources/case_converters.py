@@ -5,8 +5,8 @@ from typing import Callable
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -31,7 +31,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(self.config.name),
-            model_construction.of_lines([]),
+            model_constructor.of_lines(self, []),
             arrangement_w_tcds(),
             expectation_of_successful_execution(
                 symbol_references=asrt.is_empty_sequence,
@@ -56,7 +56,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
             Arguments(self.config.name),
-            model_construction.of_lines(with_appended_new_lines(input_lines)),
+            model_constructor.of_lines_wo_nl(self, input_lines),
             arrangement_w_tcds(),
             expectation_of_successful_execution(
                 symbol_references=asrt.is_empty_sequence,

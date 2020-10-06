@@ -11,6 +11,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 
@@ -51,7 +52,7 @@ class TestStdinShouldBeEmpty(unittest.TestCase):
                     arguments=[],
                 )
             ).as_remaining_source,
-            integration_check.model_of(model_contents),
+            model_constructor.of_str(self, model_contents),
             arrangement_w_tcds(
                 tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
                     DirContents([py_file])

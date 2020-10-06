@@ -10,11 +10,10 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
     model_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    model_construction
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.test_utils import NExArr
@@ -67,7 +66,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                         source=asrt_source.is_at_end_of_line(1),
                         symbol_references=program_symbol.references_assertion,
                     ),
-                    model_construction.arbitrary_model_constructor(),
+                    model_constructor.arbitrary(self),
                     [
                         NExArr(
                             'Environment: {}'.format(repr(environment)),

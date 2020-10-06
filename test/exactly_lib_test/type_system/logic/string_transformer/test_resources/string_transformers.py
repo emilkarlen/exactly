@@ -128,7 +128,10 @@ def to_uppercase() -> StringTransformer:
 def count_num_uppercase_characters() -> StringTransformer:
     return StringTransformerFromLinesTransformation(
         'count-num-uppercase-characters',
-        lambda lines: map(get_number_of_uppercase_characters, lines)
+        lambda lines: (
+            get_number_of_uppercase_characters(line) + '\n'
+            for line in lines
+        )
     )
 
 

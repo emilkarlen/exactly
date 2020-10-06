@@ -40,6 +40,8 @@ from exactly_lib_test.test_case.test_resources.act_result import ActResultProduc
 from exactly_lib_test.test_case_utils.logic.test_resources import integration_check as sut
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
     Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant
+from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import \
+    WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.test_case_utils.matcher.test_resources.integration_check import \
@@ -57,11 +59,13 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tc
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestDefault),
+        unittest.makeSuite(TestFailingCommonProperties),
         unittest.makeSuite(TestFailingExpectations),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestHardError),
@@ -73,6 +77,20 @@ EXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.LINE_MATCHER
 UNEXPECTED_LOGIC_TYPE_FOR_TEST = LogicValueType.FILE_MATCHER
 
 CONFIGURATION = MatcherPropertiesConfiguration()
+
+
+class _CustomMatcherPropertiesConfiguration(MatcherPropertiesConfiguration):
+    def __init__(self, application_output: ValueAssertion[MatchingResult]):
+        super().__init__()
+        self._application_output = application_output
+
+    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[MatchingResult]:
+        return WithTreeStructureExecutionPropertiesChecker(
+            MatcherDdv,
+            MatcherWTrace,
+            self._application_output,
+        )
+
 
 EXPECTED_VALUE_TYPE_FOR_TEST = ValueType.LINE_MATCHER
 UNEXPECTED_VALUE_TYPE_FOR_TEST = ValueType.FILE_MATCHER
@@ -108,13 +126,13 @@ class TestCaseBase(unittest.TestCase):
     def setUp(self):
         self.tc = utils.TestCaseWithTestErrorAsFailureException()
 
-    def __check(self,
-                source: ParseSource,
-                model: int,
-                checker: IntegrationCheckerForTest,
-                arrangement: Arrangement,
-                expectation: Expectation,
-                ):
+    def _check(self,
+               source: ParseSource,
+               model: int,
+               checker: IntegrationCheckerForTest,
+               arrangement: Arrangement,
+               expectation: Expectation,
+               ):
         checker.check(self.tc,
                       source,
                       constant_model(model),
@@ -122,12 +140,12 @@ class TestCaseBase(unittest.TestCase):
                       expectation,
                       )
 
-    def __check___multi(self,
-                        arguments: Arguments,
-                        model: int,
-                        checker: IntegrationCheckerForTest,
-                        arrangement: Arrangement,
-                        expectation: Expectation):
+    def _check___multi(self,
+                       arguments: Arguments,
+                       model: int,
+                       checker: IntegrationCheckerForTest,
+                       arrangement: Arrangement,
+                       expectation: Expectation):
         checker.check_single_multi_execution_setup__for_test_of_test_resources(
             self.tc,
             arguments,
@@ -175,7 +193,7 @@ class TestCaseBase(unittest.TestCase):
                                   check_application_result_with_tcds=check_application_result_with_tcds,
                                   execution_variant='single execution'):
                     with self.assertRaises(utils.TestError):
-                        self.__check(
+                        self._check(
                             utils.single_line_source(),
                             ARBITRARY_MODEL,
                             checker,
@@ -187,7 +205,7 @@ class TestCaseBase(unittest.TestCase):
                                   check_application_result_with_tcds=check_application_result_with_tcds,
                                   execution_variant='multiple execution'):
                     with self.assertRaises(utils.TestError):
-                        self.__check___multi(
+                        self._check___multi(
                             utils.single_line_arguments(),
                             ARBITRARY_MODEL,
                             checker,
@@ -347,6 +365,46 @@ class TestDefault(TestCaseBase):
             ),
             arrangement_w_tcds(),
             is_expectation_of_execution_result_of(True))
+
+
+class TestFailingCommonProperties(TestCaseBase):
+    def test_fail_due_to_unsatisfied_assertion_on_output_from_application(self):
+        matcher_result_value = True
+        for check_application_result_with_tcds in [False, True]:
+            parser = _constant_line_matcher_type_parser_of_matcher_sdv(
+                matchers.sdv_from_primitive_value(matchers.MatcherWithConstantResult(matcher_result_value))
+            )
+            checker = sut.IntegrationChecker(
+                parser,
+                _CustomMatcherPropertiesConfiguration(asrt_matching_result.matches_value(not matcher_result_value)),
+                check_application_result_with_tcds,
+            )
+
+            expectation = is_expectation_of_execution_result_of(matcher_result_value)
+            for arrangement in _EMPTY_ARRANGEMENT_W_WO_TCDS:
+                with self.subTest(arrangement.name,
+                                  check_application_result_with_tcds=check_application_result_with_tcds,
+                                  execution_variant='single execution'):
+                    with self.assertRaises(utils.TestError):
+                        self._check(
+                            utils.single_line_source(),
+                            ARBITRARY_MODEL,
+                            checker,
+                            arrangement.value,
+                            expectation,
+                        )
+
+                with self.subTest(arrangement.name,
+                                  check_application_result_with_tcds=check_application_result_with_tcds,
+                                  execution_variant='multiple execution'):
+                    with self.assertRaises(utils.TestError):
+                        self._check___multi(
+                            utils.single_line_arguments(),
+                            ARBITRARY_MODEL,
+                            checker,
+                            arrangement.value,
+                            expectation,
+                        )
 
 
 class TestFailingExpectations(TestCaseBase):

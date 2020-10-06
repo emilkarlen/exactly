@@ -6,10 +6,9 @@ from exactly_lib_test.symbol.test_resources.program import NON_EXISTING_SYSTEM_P
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
-    model_construction
 
 
 def suite() -> unittest.TestSuite:
@@ -30,7 +29,7 @@ class TestUnableToExecute(unittest.TestCase):
                         program_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM),
                         ignore_exit_code=with_ignored_exit_code,
                     ).as_remaining_source,
-                    model_construction.arbitrary_model_constructor(),
+                    model_constructor.arbitrary(self),
                     arrangement_w_tcds(),
                     Expectation(
                         ParseExpectation(

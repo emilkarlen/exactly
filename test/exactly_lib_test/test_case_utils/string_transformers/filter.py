@@ -21,8 +21,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     ParseExpectation, ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as sm_args
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args, \
-    model_construction
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution, StExpectation
@@ -82,7 +82,7 @@ class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
         integration_check.CHECKER__PARSE_SIMPLE.check(
             self,
             source=remaining_source(arguments),
-            input_=model_construction.of_lines(model),
+            input_=model_constructor.of_lines(self, model),
             arrangement=arrangement_w_tcds(
                 symbols=line_matcher__constant_false.symbol_table,
             ),
@@ -112,10 +112,10 @@ class TestFiltering(unittest.TestCase):
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
             self,
             Arguments(arguments),
-            model_construction.of_lines([]),
+            model_constructor.of_lines(self, []),
             arrangement_w_tcds(
                 symbols=matcher.symbol_table
             ),
@@ -143,6 +143,10 @@ class TestFiltering(unittest.TestCase):
                 ['a MATCH'],
                 ['a MATCH'],
                 ),
+            NEA('single line that matches, ended by new-line',
+                ['a MATCH\n'],
+                ['a MATCH\n'],
+                ),
             NEA('single line that does not match',
                 actual=['not a match'],
                 expected=[],
@@ -163,10 +167,10 @@ class TestFiltering(unittest.TestCase):
         for case in cases:
             with self.subTest(case_name=case.name):
                 arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
-                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
+                integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
                     self,
                     Arguments(arguments),
-                    model_construction.of_lines(case.actual),
+                    model_constructor.of_lines(self, case.actual),
                     arrangement_w_tcds(
                         symbols=matcher.symbol_table
                     ),
@@ -231,10 +235,10 @@ class TestFiltering(unittest.TestCase):
             with self.subTest(case_name=case.name):
                 # ACT & ASSERT #
 
-                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
+                integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
                     self,
                     Arguments(arguments),
-                    model_construction.of_lines(input_lines),
+                    model_constructor.of_lines(self, input_lines),
                     arrangement_w_tcds(
                         symbols=LineMatcherSymbolContext.of_primitive(
                             line_matcher_name,
@@ -260,19 +264,19 @@ class TestLineMatcherPrimitive(unittest.TestCase):
         )
 
         lines = [
-            reg_ex_pattern,
+            reg_ex_pattern + '\n',
             'non matching line',
         ]
         expected_lines = [
-            reg_ex_pattern,
+            reg_ex_pattern + '\n',
         ]
 
         # ACT & ASSERT #
 
-        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
             self,
             Arguments(arguments),
-            model_construction.of_lines(lines),
+            model_constructor.of_lines(self, lines),
             arrangement_w_tcds(),
             expectation_of_successful_filter_execution(
                 output_lines=expected_lines,
@@ -292,10 +296,10 @@ class ValidatorShouldValidateLineMatcher(unittest.TestCase):
 
             with self.subTest(case.name):
                 # ACT & ASSERT #
-                integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
+                integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
                     self,
                     Arguments(arguments),
-                    model_construction.of_lines([]),
+                    model_constructor.of_lines(self, []),
                     arrangement_w_tcds(
                         symbols=line_matcher_symbol_context.symbol_table
                     ),

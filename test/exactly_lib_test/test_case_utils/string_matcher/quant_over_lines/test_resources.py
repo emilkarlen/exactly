@@ -13,6 +13,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_in
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, arguments_building, \
     test_configuration
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -104,7 +105,7 @@ class TestCaseBase(unittest.TestCase):
                     integration_check.CHECKER__PARSE_FULL.check(
                         self,
                         source,
-                        integration_check.model_of(actual_file_contents),
+                        model_constructor.of_str(self, actual_file_contents),
                         Arrangement(
                             tcds=TcdsArrangement(
                                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY

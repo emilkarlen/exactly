@@ -29,10 +29,10 @@ from exactly_lib_test.symbol.test_resources.string_matcher import string_matcher
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as arg_syntax, \
-    model_construction
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources import matcher_assertions
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -181,7 +181,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     expected_container,
                 ),
                 assertion_on_instruction_environment=
-                AssertApplicationOfMatcherInSymbolTable(defined_name,
+                AssertApplicationOfMatcherInSymbolTable(self,
+                                                        defined_name,
                                                         actual_model_contents=case.actual,
                                                         expected_matcher_result=case.expected),
             )
@@ -232,11 +233,13 @@ class TestUnsuccessfulScenarios(unittest.TestCase):
 
 class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationOfMatcherInSymbolTable):
     def __init__(self,
+                 put: unittest.TestCase,
                  matcher_symbol_name: str,
                  actual_model_contents: str,
                  expected_matcher_result: ValueAssertion[MatchingResult]):
         super().__init__(matcher_symbol_name,
                          expected_matcher_result)
+        self.put = put
         self.actual_model_contents = actual_model_contents
 
     def _apply_matcher(self,
@@ -252,8 +255,8 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         return resolver.resolve_matcher(matcher_sdv)
 
     def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> StringModel:
-        model_builder = model_construction.model_of(self.actual_model_contents)
-        return model_construction.ModelFromBuilder(model_builder, environment.sds).construct()
+        the_model_constructor = model_constructor.of_str(self.put, self.actual_model_contents)
+        return the_model_constructor(model_constructor.resolving_env_w_custom_dir_space(environment.sds))
 
 
 ARBITRARY_SDV = string_matcher_sdv_constant_test_impl(MatcherWithConstantResult(True))

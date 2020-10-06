@@ -15,9 +15,10 @@ from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_t
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check, test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as str_trans_syntax
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -42,7 +43,7 @@ class ActualFileIsEmpty(tc.TestWithNegationArgumentBase):
                                                  string_to_prepend,
                                                  initial_model_contents])
 
-        initial_model = integration_check.model_of(initial_model_contents)
+        initial_model = model_constructor.of_str(self, initial_model_contents)
 
         equals_expected_matcher = StringMatcherSymbolContext.of_primitive(
             'EQUALS_EXPECTED',

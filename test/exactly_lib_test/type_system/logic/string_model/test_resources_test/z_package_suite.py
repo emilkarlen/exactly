@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.type_system.logic.string_model.test_resources_test import string_models
+from exactly_lib_test.type_system.logic.string_model.test_resources_test import assertions
 
 
 def suite() -> unittest.TestSuite:
-    return string_models.suite()
+    return assertions.suite()
 
 
 if __name__ == '__main__':

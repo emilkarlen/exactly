@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources im
     InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -82,7 +83,7 @@ class _TestReferenceToIntegerMatcher(unittest.TestCase):
         integration_check.CHECKER__PARSE_SIMPLE.check(
             self,
             args.NumLines(integer_matcher.name__sym_ref_syntax).as_remaining_source,
-            integration_check.model_of(lines_content(lines)),
+            model_constructor.of_str(self, lines_content(lines)),
             arrangement_w_tcds(
                 symbols=integer_matcher.symbol_table,
             ),
@@ -110,7 +111,7 @@ class _TestIntegerMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
         integration_check.CHECKER__PARSE_SIMPLE.check(
             self,
             args.NumLines(complex_expression).as_remaining_source,
-            integration_check.arbitrary_model(),
+            model_constructor.arbitrary(self),
             arrangement_w_tcds(
                 symbols=integer_matcher.symbol_table,
             ),
@@ -188,7 +189,7 @@ class _ValidationPreSdsShouldFailWhenOperandIsNotExpressionThatEvaluatesToAnInte
                 self._check_single_expression_type(
                     args_variant_constructor,
                     ExpectationType.POSITIVE,
-                    integration_check.arbitrary_model(),
+                    model_constructor.arbitrary(self),
                     arrangement=
                     Arrangement(
                         symbols=case.symbol_table

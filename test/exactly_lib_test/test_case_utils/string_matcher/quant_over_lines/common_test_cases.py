@@ -28,6 +28,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_bu
     CommonArgumentsConstructor
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
@@ -138,7 +139,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                                       quantifier=quantifier):
                         self._check(
                             source=source,
-                            model=integration_check.arbitrary_model(),
+                            model=model_constructor.arbitrary(self),
                             arrangement=Arrangement(
                                 symbols=symbols
                             ),
@@ -149,7 +150,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
 class _TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        model = integration_check.model_of('string with at least one line')
+        model = model_constructor.of_str(self, 'string with at least one line')
 
         line_matcher = LineMatcherSymbolContextOfPrimitiveConstant(
             'MATCHER',
@@ -219,7 +220,7 @@ class _TestStringTransformerValidatorIsApplied(TestCaseBase):
                                       quantifier=quantifier):
                         self._check(
                             source=source,
-                            model=integration_check.arbitrary_model(),
+                            model=model_constructor.arbitrary(self),
                             arrangement=Arrangement(
                                 symbols=symbols
                             ),

@@ -14,8 +14,7 @@ from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
-    test_configuration
+from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, test_configuration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
@@ -24,6 +23,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.relativity_o
     TestWithRelativityOptionAndNegationBase
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestWithNegationArgumentBase
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -81,7 +81,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithRelativityOptionAndNegationBase
                 args('{maybe_not} {equals} {file_option} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            integration_check.empty_model(),
+            model_constructor.empty(self),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -97,7 +97,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithRelativityOptionAndNegationBase
                 args('{maybe_not} {equals} {file_option} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            integration_check.empty_model(),
+            model_constructor.empty(self),
             arrangement_w_tcds(
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([Dir.empty('dir')])),
@@ -115,7 +115,7 @@ class _ContentsDiffer(TestWithRelativityOptionAndNegationBase):
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            integration_check.model_of('actual'),
+            model_constructor.of_str(self, 'actual'),
             arrangement_w_tcds(
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
@@ -140,7 +140,7 @@ class _ContentsEquals(TestWithRelativityOptionAndNegationBase):
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
-            integration_check.model_of('expected'),
+            model_constructor.of_str(self, 'expected'),
             arrangement_w_tcds(
                 self.rel_opt.populator_for_relativity_option_root(
                     DirContents([File('expected.txt', 'expected')])),
@@ -166,7 +166,7 @@ class _ContentsEqualsAHereDocument(TestWithNegationArgumentBase):
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
                 ['expected content line',
                  'EOF']),
-            integration_check.model_of(lines_content(['expected content line'])),
+            model_constructor.of_str(self, lines_content(['expected content line'])),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
@@ -189,7 +189,7 @@ class _ContentsEqualsAString(TestWithNegationArgumentBase):
                      expected_contents=surrounded_by_hard_quotes_str(expected_contents),
                      maybe_not=maybe_not.nothing__if_positive__not_option__if_negative),
             ),
-            integration_check.model_of(expected_contents),
+            model_constructor.of_str(self, expected_contents),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
@@ -215,7 +215,7 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithNegationArgumentB
                 [expected_content(symbol.name__sym_ref_syntax),
                  'EOF',
                  'following line']),
-            integration_check.model_of(lines_content([expected_content(symbol.str_value)])),
+            model_constructor.of_str(self, lines_content([expected_content(symbol.str_value)])),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=symbol.symbol_table),
@@ -242,7 +242,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithNegationArgumentBase):
                 ['expected content line',
                  'EOF',
                  'the following line']),
-            integration_check.model_of(lines_content(['actual contents that is not equal to expected contents'])),
+            model_constructor.of_lines_wo_nl(self, ['actual contents that is not equal to expected contents']),
             arrangement_w_tcds(
                 post_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY),
             Expectation(
@@ -288,7 +288,7 @@ class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCon
                     transformer=named_transformer.name,
                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                     relativity_option=self.rel_opt.option_argument)),
-            integration_check.model_of(contents_generator.original),
+            model_constructor.of_str(self, contents_generator.original),
             arrangement_w_tcds(
                 tcds_contents=self.rel_opt.populator_for_relativity_option_root(DirContents([
                     File('expected.txt', contents_generator.transformed)

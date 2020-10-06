@@ -11,6 +11,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 MODEL = TypeVar('MODEL')
 
@@ -34,8 +35,10 @@ class MatcherPropertiesConfiguration(
     def new_sdv_checker(self) -> LogicSdvPropertiesChecker[MatcherWTrace[MODEL]]:
         return self._sdv_checker
 
-    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker:
-        return WithTreeStructureExecutionPropertiesChecker(MatcherDdv, MatcherWTrace)
+    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[MatchingResult]:
+        return WithTreeStructureExecutionPropertiesChecker(MatcherDdv,
+                                                           MatcherWTrace,
+                                                           asrt_matching_result.matches())
 
 
 class _MatcherApplier(

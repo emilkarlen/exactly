@@ -15,6 +15,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.integration_check imp
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MatcherConfiguration
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 
 
 def suite() -> unittest.TestSuite:
@@ -59,7 +60,7 @@ class StringMatcherConfiguration(MatcherConfiguration[StringModel]):
         return integration_check.CHECKER__PARSE_FULL
 
     def arbitrary_model(self, environment: FullResolvingEnvironment) -> StringModel:
-        return integration_check.MODEL_THAT_MUST_NOT_BE_USED
+        return model_constructor.must_not_be_used(environment)
 
 
 _STRING_MATCHER_CONFIGURATION = StringMatcherConfiguration()

@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
@@ -11,9 +12,9 @@ from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_construction
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import validation_cases
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
@@ -86,7 +87,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                 integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                     self,
                     Arguments(arguments),
-                    model_construction.of_lines(initial_model_lines),
+                    model_constructor.of_lines(self, initial_model_lines),
                     arrangement_w_tcds(
                         symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
                     ),
@@ -131,7 +132,7 @@ class ValidatorShouldValidateSequencedTransformers(unittest.TestCase):
                     integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
                         self,
                         Arguments(arguments),
-                        model_construction.of_lines([]),
+                        model_constructor.of_lines(self, []),
                         arrangement_w_tcds(
                             symbols=symbols
                         ),
@@ -184,14 +185,16 @@ class TestPrimitiveValue(unittest.TestCase):
         # ARRANGE #
         transformer = SequenceStringTransformer([])
 
-        input_lines = ['first',
-                       'second',
-                       'third']
-        model = string_models.of_lines(input_lines)
+        input_lines = with_appended_new_lines([
+            'first',
+            'second',
+            'third',
+        ])
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
         # ACT #
         actual = transformer.transform(model)
         # ASSERT #
-        actual_lines = string_models.as_lines_list(actual)
+        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(input_lines,
                          actual_lines)
@@ -203,10 +206,12 @@ class TestPrimitiveValue(unittest.TestCase):
 
         transformer = SequenceStringTransformer([to_upper_t])
 
-        input_lines = ['first',
-                       'second',
-                       'third']
-        model = string_models.of_lines(input_lines)
+        input_lines = with_appended_new_lines([
+            'first',
+            'second',
+            'third',
+        ])
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -214,11 +219,13 @@ class TestPrimitiveValue(unittest.TestCase):
 
         # ASSERT #
 
-        expected_output_lines = ['FIRST',
-                                 'SECOND',
-                                 'THIRD']
+        expected_output_lines = with_appended_new_lines([
+            'FIRST',
+            'SECOND',
+            'THIRD',
+        ])
 
-        actual_lines = string_models.as_lines_list(actual)
+        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(expected_output_lines,
                          actual_lines)
@@ -232,10 +239,12 @@ class TestPrimitiveValue(unittest.TestCase):
         transformer = SequenceStringTransformer([to_upper_t,
                                                  count_num_upper])
 
-        input_lines = ['this is',
-                       'the',
-                       'input']
-        model = string_models.of_lines(input_lines)
+        input_lines = with_appended_new_lines([
+            'this is',
+            'the',
+            'input',
+        ])
+        model = string_models.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -243,11 +252,13 @@ class TestPrimitiveValue(unittest.TestCase):
 
         # ASSERT #
 
-        expected_output_lines = ['6',
-                                 '3',
-                                 '5']
+        expected_output_lines = with_appended_new_lines([
+            '6',
+            '3',
+            '5',
+        ])
 
-        actual_lines = string_models.as_lines_list(actual)
+        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(expected_output_lines,
                          actual_lines)

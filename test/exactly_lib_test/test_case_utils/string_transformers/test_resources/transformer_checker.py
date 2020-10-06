@@ -1,5 +1,4 @@
 import unittest
-from typing import Callable
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -9,9 +8,9 @@ from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_che
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
     WithTreeStructureExecutionPropertiesChecker
+from exactly_lib_test.test_case_utils.string_models.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-
-ModelConstructor = Callable[[FullResolvingEnvironment], StringModel]
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 
 
 class StringTransformerPropertiesConfiguration(
@@ -27,8 +26,12 @@ class StringTransformerPropertiesConfiguration(
     def new_sdv_checker(self) -> LogicSdvPropertiesChecker[StringTransformer]:
         return LogicSdvPropertiesChecker(StringTransformerSdv)
 
-    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker:
-        return WithTreeStructureExecutionPropertiesChecker(StringTransformerDdv, StringTransformer)
+    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[StringModel]:
+        return WithTreeStructureExecutionPropertiesChecker(
+            StringTransformerDdv,
+            StringTransformer,
+            asrt_string_model.StringModelLinesAreValidAssertion(),
+        )
 
 
 class _Applier(Applier[StringTransformer, ModelConstructor, StringModel]):

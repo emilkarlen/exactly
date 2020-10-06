@@ -15,6 +15,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.tcfs.test_resources import application_environment
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 ContentsGetter = Callable[[StringModel], str]
@@ -74,6 +75,7 @@ class Checker:
                         app_env,
                         case.value,
                     )
+        self._check_line_sequence_is_valid()
 
     def check_with_first_access_is_not_write_to(self):
         for case in contents_cases__first_access_is_not_write_to():
@@ -83,6 +85,18 @@ class Checker:
                         app_env,
                         case.value,
                     )
+        self._check_line_sequence_is_valid()
+
+    def _check_line_sequence_is_valid(self):
+        if self.expectation.hard_error is not None:
+            return
+        # ARRANGE #
+        with self.put.subTest('check line sequence is valid'):
+            with self._app_env() as app_env:
+                with self.model_constructor.new_with(app_env) as model_to_check:
+                    assertion = asrt_string_model.StringModelLinesAreValidAssertion()
+                    # ACT & ASSERT #
+                    assertion.apply_with_message(self.put, model_to_check, 'line sequence')
 
     @contextmanager
     def _app_env(self) -> ContextManager[ApplicationEnvironment]:

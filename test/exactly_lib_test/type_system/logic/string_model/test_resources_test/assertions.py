@@ -4,14 +4,14 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Sequence, ContextManager, Iterator, IO, Callable
 
-from exactly_lib.type_system.logic.impls import transformed_string_models as sut
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.actions import do_return, do_raise
-from exactly_lib_test.type_system.logic.string_model.test_resources import string_models as sut
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as sut
+from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
 
 
 def suite() -> unittest.TestSuite:
@@ -161,7 +161,7 @@ class TestModelChecker(unittest.TestCase):
     def _model_with_checker(self, input_lines: Sequence[str]) -> sut.StringModelThatThatChecksLines:
         return sut.StringModelThatThatChecksLines(
             self.put,
-            sut.StringModelFromLines(
+            string_models.StringModelFromLines(
                 input_lines,
                 DirFileSpaceThatMustNoBeUsed(),
             )
