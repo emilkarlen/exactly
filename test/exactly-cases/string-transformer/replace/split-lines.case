@@ -1,0 +1,17 @@
+[setup]
+
+file input.txt =
+<<-
+aPb
+-
+
+def string-transformer SPLIT_ON_P = replace P @[LINE_SEP]@
+
+[assert]
+
+contents input.txt
+    num-lines == 1
+
+contents input.txt
+    -transformed-by SPLIT_ON_P
+    num-lines == 2

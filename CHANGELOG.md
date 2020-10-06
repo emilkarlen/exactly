@@ -28,6 +28,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` - rename `-prune` -> `-with-pruned`
  - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
  - Type `file-matcher` - `name` / `path` - Use `~` for regex matching
+ - Type `string-transformer` - `replace` - Include new-lines in processed lines
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
@@ -49,6 +50,7 @@ with exception of a "0." prefix until version 1 is released.
  - CLI case:  `--preprocessor` - Detection of invalid argument syntax
  - CLI case:  `--actor`        - Detection of invalid argument syntax
  - CLI suite: `--actor`        - Detection of invalid argument syntax
+ - Type `string-transformer` - `replace` - handling of new-lines in replacement string
 
 ## [0.12.3] - 2020-08-18
 

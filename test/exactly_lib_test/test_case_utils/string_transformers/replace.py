@@ -8,11 +8,13 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.regex.test_resources import assertions as asrt_regex
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
 from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
@@ -26,13 +28,12 @@ from exactly_lib_test.type_system.logic.string_model.test_resources.assertions i
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 from exactly_lib_test.util.test_resources import quoting
-from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidSyntax),
-        unittest.makeSuite(Test),
+        unittest.makeSuite(TestApplication),
         ReferencedSymbolsShouldBeReportedAndUsed(),
         ValidationShouldFailWhenRegexIsInvalid(),
     ])
@@ -71,7 +72,7 @@ class TestInvalidSyntax(unittest.TestCase):
                     sut.parsers(True).full.parse(case.value.as_remaining_source)
 
 
-class Test(unittest.TestCase):
+class TestApplication(unittest.TestCase):
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         def lines(pattern_matching_string: str) -> List[str]:
@@ -138,19 +139,24 @@ class Test(unittest.TestCase):
             )
         )
 
-    def test_newline_ends_SHOULD_not_be_included_in_the_transformation(self):
+    def test_newline_ends_SHOULD_not_be_included_in_the_matched_line_contents(self):
         # ARRANGE #
         input_lines = [
-            ' 1 2 \n',
-            ' 3 4 ',
+            '1\n',
+            '2',
         ]
         expected_lines = [
-            '12\n',
-            '34',
+            '1\n',
+            '2',
         ]
 
-        source = arg.syntax_for_replace_transformer(str(surrounded_by_hard_quotes('\\s')),
-                                                    '""')
+        nl_string_symbol = StringConstantSymbolContext(
+            'NL',
+            '\n',
+            default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+        )
+        source = arg.syntax_for_replace_transformer(nl_string_symbol.name__sym_ref_syntax,
+                                                    'NL')
 
         # ACT & ASSERT #
 
@@ -158,11 +164,69 @@ class Test(unittest.TestCase):
             self,
             Arguments(source),
             model_constructor.of_lines(self, input_lines),
-            arrangement_w_tcds(),
+            arrangement_w_tcds(
+                symbols=nl_string_symbol.symbol_table
+            ),
             expectation_of_successful_replace_execution(
-                output_lines=expected_lines
+                output_lines=expected_lines,
+                symbol_references=nl_string_symbol.references_assertion
             )
         )
+
+    def test_insertion_of_new_line_into_a_line_SHOULD_split_that_line(self):
+        # ARRANGE #
+        input_lines = [
+            'P\n',
+            '---\n',
+            'aPbPc\n',
+            '---\n',
+            'P',
+        ]
+        expected_lines = [
+            '\n',
+            '\n',
+            '---\n',
+            'a\n',
+            'b\n',
+            'c\n',
+            '---\n',
+            '\n',
+        ]
+        cases = [
+            NameAndValue(
+                'literate new line',
+                '\n',
+            ),
+            NameAndValue(
+                'new line escape sequence, as interpreted by Python replace',
+                '\\n',
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                nl_string_symbol = StringConstantSymbolContext(
+                    'NL',
+                    case.value,
+                    default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+                )
+                source = arg.syntax_for_replace_transformer('P',
+                                                            nl_string_symbol.name__sym_ref_syntax,
+                                                            )
+
+                # ACT & ASSERT #
+
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    remaining_source(source),
+                    model_constructor.of_lines(self, input_lines),
+                    arrangement_w_tcds(
+                        symbols=nl_string_symbol.symbol_table
+                    ),
+                    expectation_of_successful_replace_execution(
+                        output_lines=expected_lines,
+                        symbol_references=nl_string_symbol.references_assertion
+                    )
+                )
 
     def _check_lines(self,
                      lines_for: Callable[[str], List[str]],
