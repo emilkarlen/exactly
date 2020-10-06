@@ -13,7 +13,9 @@ from exactly_lib_test.symbol.test_resources.line_matcher import successful_match
     LineMatcherSymbolContext, is_reference_to_line_matcher, \
     LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.line_matchers import LineMatcherThatCollectsModels
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_matcher.quant_over_lines import test_resources as tr
@@ -41,6 +43,8 @@ def suite() -> unittest.TestSuite:
         _TestLineMatcherValidatorIsApplied(),
 
         _TestSymbolReferenceForLineMatcherIsReported(),
+
+        _TestLineMatcherModelsGivenToLineMatcher(),
     ])
 
 
@@ -176,6 +180,58 @@ class _TestLineMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
                         )
                     ),
                 )
+
+
+class _TestLineMatcherModelsGivenToLineMatcher(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        input_lines = [
+            '1st',
+            '2nd',
+            '3rd',
+        ]
+        expected_line_matcher_models = line_matcher_models.models_for_lines__validated(input_lines)
+        string_matcher_model = model_constructor.of_lines_wo_nl(self, input_lines)
+
+        cases = [
+            (
+                Quantifier.ALL,
+                True,
+            ),
+            (
+                Quantifier.EXISTS,
+                False,
+            ),
+        ]
+        for case in cases:
+            models_output = []
+            line_matcher = LineMatcherSymbolContext.of_primitive(
+                'MATCHER',
+                LineMatcherThatCollectsModels(models_output, case[1]),
+            )
+
+            arguments = args2.Quantification(case[0], line_matcher.name__sym_ref_syntax)
+            with self.subTest(case[0]):
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    source=arguments.as_remaining_source,
+                    input_=string_matcher_model,
+                    arrangement=arrangement_w_tcds(
+                        symbols=line_matcher.symbol_table,
+                    ),
+                    expectation=Expectation(
+                        ParseExpectation(
+                            symbol_references=line_matcher.references_assertion
+                        ),
+                        ExecutionExpectation(
+                            main_result=asrt_matching_result.matches_value(case[1])
+                        )
+                    ),
+                )
+                self.assertEqual(expected_line_matcher_models,
+                                 models_output,
+                                 'models given to line matcher')
 
 
 class _TestSymbolReferencesBase(_TestCaseBase):
