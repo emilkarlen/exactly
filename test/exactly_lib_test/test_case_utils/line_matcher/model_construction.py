@@ -1,6 +1,8 @@
 import unittest
+from typing import List
 
 from exactly_lib.test_case_utils.line_matcher import model_construction as sut
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 
 
 def suite() -> unittest.TestSuite:
@@ -10,8 +12,9 @@ def suite() -> unittest.TestSuite:
 class Case:
     def __init__(self,
                  name: str,
-                 input_source_lines: iter,
-                 expected: list):
+                 input_source_lines: List[str],
+                 expected: List[LineMatcherLine],
+                 ):
         self.name = name
         self.input_source_lines = input_source_lines
         self.expected = expected

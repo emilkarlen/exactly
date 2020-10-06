@@ -17,7 +17,8 @@ from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases im
     failing_integer_validation_cases
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.integration_check import ARBITRARY_MODEL
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import models
+from exactly_lib_test.test_case_utils.line_matcher.test_resources.models import ARBITRARY_MODEL
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
     Expectation, arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.matcher.test_resources.assertions import main_result_is_success, \
@@ -99,7 +100,7 @@ class _SymbolReferencesInOperandShouldBeReported(unittest.TestCase):
         arguments = arg.LineNum(int_condition__expr(comparators.EQ,
                                                     symbol_reference_syntax_for_name(int_string_symbol.name)))
 
-        model_that_matches = integration_check.constant_model((int_string_symbol.int_value, 'the line'))
+        model_that_matches = models.constant((int_string_symbol.int_value, 'the line'))
 
         integration_check.check(
             self,
@@ -132,7 +133,7 @@ class _IntegerMatcherSymbolReferencesShouldBeReported(unittest.TestCase):
             self,
             source=
             arguments.as_remaining_source,
-            input_=integration_check.ARBITRARY_MODEL,
+            input_=models.ARBITRARY_MODEL,
             arrangement=arrangement_wo_tcds(
                 symbols=matcher_symbol.symbol_table,
             ),
@@ -163,7 +164,7 @@ class _IntegerMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
             self,
             source=
             arguments.as_remaining_source,
-            input_=integration_check.ARBITRARY_MODEL,
+            input_=models.ARBITRARY_MODEL,
             arrangement=arrangement_wo_tcds(
                 symbols=matcher_symbol.symbol_table,
             ),
@@ -249,7 +250,7 @@ class _ParseAndMatchTest(unittest.TestCase):
                 integration_check.check(
                     self,
                     remaining_source(str(arguments)),
-                    integration_check.constant_model((case.line_num_of_model, 'ignored line text')),
+                    models.constant((case.line_num_of_model, 'ignored line text')),
                     SymbolContext.symbol_table_of_contexts(case.symbols),
                     Expectation(
                         ParseExpectation(

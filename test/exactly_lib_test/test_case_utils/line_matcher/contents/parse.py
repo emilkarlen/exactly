@@ -11,6 +11,7 @@ from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherS
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import integration_check
+from exactly_lib_test.test_case_utils.line_matcher.test_resources import models
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import parse_check
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_wo_tcds
@@ -70,7 +71,7 @@ class TestStringMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
                     sm_args2.Custom(after_bin_op),
                 ]),
             ).as_remaining_source,
-            input_=integration_check.ARBITRARY_MODEL,
+            input_=models.ARBITRARY_MODEL,
             arrangement=arrangement_wo_tcds(
                 symbols=string_matcher.symbol_table,
             ),
@@ -106,7 +107,7 @@ class TestResultShouldBeResultOfStringMatcher(unittest.TestCase):
                     arguments=lm_args.Contents(
                         sm_args2.SymbolReferenceWReferenceSyntax(string_matcher.name),
                     ).as_arguments,
-                    input_=integration_check.ARBITRARY_MODEL,
+                    input_=models.ARBITRARY_MODEL,
                     arrangement=arrangement_wo_tcds(
                         symbols=string_matcher.symbol_table,
                     ),
@@ -152,7 +153,7 @@ class TestTrace(unittest.TestCase):
                     arguments=lm_args.Contents(
                         sm_args2.SymbolReferenceWReferenceSyntax(string_matcher.name),
                     ).as_arguments,
-                    input_=integration_check.ARBITRARY_MODEL,
+                    input_=models.ARBITRARY_MODEL,
                     arrangement=arrangement_wo_tcds(
                         symbols=string_matcher.symbol_table,
                     ),
@@ -198,7 +199,7 @@ class TestModelOfAppliedStringMatcherShouldBeLineModelContents(unittest.TestCase
             arguments=lm_args.Contents(
                 sm_args2.SymbolReferenceWReferenceSyntax(string_matcher.name),
             ).as_arguments,
-            input_=integration_check.constant_model((1, line_contents)),
+            input_=models.constant((1, line_contents)),
             arrangement=arrangement_wo_tcds(
                 symbols=string_matcher.symbol_table,
             ),
@@ -228,7 +229,7 @@ class StringMatcherShouldBeValidated(tc.TestCaseBase):
                         sm_args2.SymbolReferenceWReferenceSyntax(symbol_context.name)
                     ).as_arguments,
                     input_=
-                    integration_check.ARBITRARY_MODEL,
+                    models.ARBITRARY_MODEL,
                     arrangement=
                     arrangement_w_tcds(
                         symbols=symbol_context.symbol_table,
