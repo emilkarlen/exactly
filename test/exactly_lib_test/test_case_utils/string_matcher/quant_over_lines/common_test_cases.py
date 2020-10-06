@@ -9,14 +9,10 @@ from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer
-from exactly_lib_test.symbol.test_resources.line_matcher import is_reference_to_line_matcher__usage, \
-    successful_matcher_with_validation, LineMatcherSymbolContext, is_reference_to_line_matcher, \
+from exactly_lib_test.symbol.test_resources.line_matcher import successful_matcher_with_validation, \
+    LineMatcherSymbolContext, is_reference_to_line_matcher, \
     LineMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, Expectation, arrangement_w_tcds
@@ -29,8 +25,6 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_bu
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.test_configuration import \
     TestCaseBase
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -42,12 +36,10 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         _ParseWithMissingLineMatcherArgument(),
         _ParseWithInvalidLineMatcher(),
-        _TestFilesMatcherShouldBeParsedAsSimpleExpression(),
+        _TestLineMatcherShouldBeParsedAsSimpleExpression(),
 
         _TestLineMatcherValidatorIsApplied(),
-        _TestStringTransformerValidatorIsApplied(),
 
-        _TestSymbolReferenceForStringTransformerIsReported(),
         _TestSymbolReferenceForLineMatcherIsReported(),
     ])
 
@@ -147,7 +139,7 @@ class _TestLineMatcherValidatorIsApplied(TestCaseBase):
                         )
 
 
-class _TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
+class _TestLineMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         model = model_constructor.of_str(self, 'string with at least one line')
@@ -186,55 +178,6 @@ class _TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
                 )
 
 
-class _TestStringTransformerValidatorIsApplied(TestCaseBase):
-    def runTest(self):
-        line_matcher_symbol = LineMatcherSymbolContext.of_primitive_constant(
-            'valid_line_matcher',
-            True)
-
-        for case in failing_validation_cases():
-            symbol_context = case.value.symbol_context
-
-            symbols = SymbolContext.symbol_table_of_contexts([
-                line_matcher_symbol,
-                symbol_context,
-            ])
-
-            expected_symbol_references = asrt.matches_sequence([
-                symbol_context.reference_assertion,
-                is_reference_to_line_matcher__usage(line_matcher_symbol.name)
-            ])
-
-            for quantifier in Quantifier:
-
-                arguments_constructor = arguments_building.ImplicitActualFileArgumentsConstructor(
-                    CommonArgumentsConstructor(symbol_context.name),
-                    arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
-                                                                                line_matcher_symbol.name)
-                )
-                for expectation_type in ExpectationType:
-                    arguments = arguments_constructor.apply(expectation_type)
-                    source = test_configuration.arguments_for(arguments).as_remaining_source
-                    with self.subTest(case=case.name,
-                                      expectation_type=expectation_type,
-                                      quantifier=quantifier):
-                        self._check(
-                            source=source,
-                            model=model_constructor.arbitrary(self),
-                            arrangement=Arrangement(
-                                symbols=symbols
-                            ),
-                            expectation=Expectation(
-                                ParseExpectation(
-                                    symbol_references=expected_symbol_references,
-                                ),
-                                ExecutionExpectation(
-                                    validation=case.value.expectation,
-                                ),
-                            )
-                        )
-
-
 class _TestSymbolReferencesBase(_TestCaseBase):
     def _check_expectation_variants(self,
                                     common_arguments: CommonArgumentsConstructor,
@@ -255,25 +198,6 @@ class _TestSymbolReferencesBase(_TestCaseBase):
                     sdv = parser.parse(source)
                     assert isinstance(sdv, MatcherSdv)  # Sanity check
                     expected_symbols.apply_without_message(self, sdv.references)
-
-
-class _TestSymbolReferenceForStringTransformerIsReported(_TestSymbolReferencesBase):
-    def runTest(self):
-        # ARRANGE #
-        lines_transformer_name = 'the_transformer'
-
-        common_arguments = arguments_building.CommonArgumentsConstructor(lines_transformer_name)
-        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(lines_transformer_name)
-
-        expected_symbol_references = asrt.matches_sequence([
-            expected_symbol_reference_to_transformer
-        ])
-
-        line_matcher = syntax_for_regex_matcher('regex')
-
-        # ACT & ASSERT #
-
-        self._check_expectation_variants(common_arguments, line_matcher, expected_symbol_references)
 
 
 class _TestSymbolReferenceForLineMatcherIsReported(_TestSymbolReferencesBase):
