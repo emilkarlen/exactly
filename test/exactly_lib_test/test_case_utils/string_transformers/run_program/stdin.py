@@ -8,13 +8,13 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
-    model_assertions
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
@@ -65,7 +65,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                     MultiSourceExpectation(
                         program_symbol.references_assertion,
                         ExecutionExpectation(
-                            main_result=model_assertions.model_lines_lists_matches(
+                            main_result=asrt_string_model.model_lines_lists_matches(
                                 asrt.equals(input_model_lines)
                             )
                         ),

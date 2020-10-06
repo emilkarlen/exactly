@@ -1,11 +1,13 @@
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO
+from typing import ContextManager, Iterator, IO, List, Sequence
 
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
+    ValueAssertion
 
 
 class StringModelLinesAreValidAssertion(ValueAssertionBase[StringModel]):
@@ -81,3 +83,76 @@ class StringModelThatThatChecksLines(StringModel):
         last_char = line[-1]
         if last_char != '\n':
             self._put.fail('Non-last line: last char is not new-line: ' + repr(line))
+
+
+def model_lines_lists_matches(expected: ValueAssertion[List[str]]) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'as_lines',
+            _line_list_from_as_lines,
+            expected,
+        ),
+        asrt.sub_component(
+            'as_file',
+            _line_list_from_as_file,
+            expected,
+        ),
+    ])
+
+
+def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]]) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'as_lines',
+            _line_sequence_from_as_lines,
+            expected,
+        ),
+        asrt.sub_component(
+            'as_file',
+            _line_sequence_from_as_file,
+            expected,
+        ),
+    ])
+
+
+def model_string_matches(expected: ValueAssertion[str]) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'as_lines',
+            _str_from_as_lines,
+            expected,
+        ),
+        asrt.sub_component(
+            'as_file',
+            _str_from_as_file,
+            expected,
+        ),
+    ])
+
+
+def _line_list_from_as_lines(model: StringModel) -> List[str]:
+    with model.as_lines as lines:
+        return list(lines)
+
+
+def _line_sequence_from_as_lines(model: StringModel) -> Sequence[str]:
+    return _line_list_from_as_lines(model)
+
+
+def _str_from_as_lines(model: StringModel) -> str:
+    with model.as_lines as lines:
+        return ''.join(lines)
+
+
+def _line_list_from_as_file(model: StringModel) -> List[str]:
+    with model.as_file.open() as f:
+        return list(f.readlines())
+
+
+def _line_sequence_from_as_file(model: StringModel) -> Sequence[str]:
+    return _line_list_from_as_file(model)
+
+
+def _str_from_as_file(model: StringModel) -> str:
+    with model.as_file.open() as f:
+        return f.read()

@@ -6,8 +6,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import model_assertions as asrt_model
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 
@@ -37,7 +37,9 @@ class Test(unittest.TestCase):
                     symbol_references=asrt.is_empty_sequence,
                 ),
                 ExecutionExpectation(
-                    main_result=asrt_model.model_lines_lists_matches(asrt.equals(model_content_lines))
+                    main_result=asrt_string_model.model_lines_lists_matches(
+                        asrt.equals(model_content_lines)
+                    )
                 ),
                 prim_asrt__constant(is_identity_transformer(True))
             )
