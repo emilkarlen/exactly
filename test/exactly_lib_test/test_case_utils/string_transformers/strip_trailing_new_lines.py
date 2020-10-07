@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
         TestNoLeadingOrTrailingSpace(),
         TestOnlyLeadingSpace(),
         TestTrailingNewLinesWLeadingSpace(),
-        TestNoLeadingOrTrailingSpace(),
+        TestDoNotStripTrailingNonNewLineSpace(),
     ])
 
 
@@ -60,7 +60,7 @@ class TestTrailingNewLinesWLeadingSpace(unittest.TestCase):
                        case.expected_value)
 
 
-class TestTrailingSpace(unittest.TestCase):
+class TestDoNotStripTrailingNonNewLineSpace(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         cases = [
@@ -98,7 +98,7 @@ def _check(put: unittest.TestCase,
            ):
     integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
         put,
-        Arguments(args.strip_trailing_space()),
+        Arguments(args.strip_trailing_new_lines()),
         model_constructor.of_lines(put, input_lines),
         arrangement_w_tcds(),
         expectation_of_successful_execution(

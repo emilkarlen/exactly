@@ -9,8 +9,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.strip_space import \
-    no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
-from exactly_lib_test.test_resources.test_utils import ArrEx
+    no_leading_or_trailing_space_cases
+from exactly_lib_test.test_resources.test_utils import ArrEx, NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -39,25 +39,95 @@ class TestNoLeadingOrTrailingSpace(unittest.TestCase):
 class TestOnlyLeadingSpace(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        for case in only_leading_space_cases():
+        cases = [
+            NArrEx(
+                'single empty line',
+                ['\n', 'end'],
+                ['end'],
+            ),
+            NArrEx(
+                'single line with space',
+                ['  \n', 'end'],
+                ['end'],
+            ),
+            NArrEx(
+                'single line with space (tab)',
+                ['\t\n', 'end'],
+                ['end'],
+            ),
+            NArrEx(
+                'multiple empty lines',
+                ['\n', '\n', '\n', 'end'],
+                ['end'],
+            ),
+            NArrEx(
+                'leading just-space lines and just-space lines in the middle',
+                ['\n', '  \n', 'middle\n', '\n', ' \n', 'end'],
+                ['middle\n', '\n', ' \n', 'end'],
+            ),
+        ]
+        for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
                 _check(
                     self,
-                    case.value,
-                    case.value,
+                    case.arrangement,
+                    case.expectation,
                 )
 
 
 class TestTrailingNewLinesWLeadingSpace(unittest.TestCase):
     def runTest(self):
+        cases = [
+            NArrEx(
+                'single line (non-empty) ended by new-line',
+                ['last\n'],
+                ['last'],
+            ),
+            NArrEx(
+                'single line (empty) ended by new-line',
+                ['\n'],
+                [],
+            ),
+            NArrEx(
+                'non-empty and empty line',
+                ['1\n', '\n'],
+                ['1'],
+            ),
+            NArrEx(
+                'multiple lines - first non-empty',
+                ['1\n', '\n', '\n'],
+                ['1'],
+            ),
+            NArrEx(
+                'multiple lines - every line empty',
+                ['\n', '\n', '\n'],
+                [],
+            ),
+            NArrEx(
+                'multiple lines - empty sequence before non-empty contents - ended by new-line',
+                ['\n', '\n', 'non-empty\n'],
+                ['non-empty'],
+            ),
+            NArrEx(
+                'multiple lines - empty sequence before non-empty contents - ended sequence of empty lines',
+                ['\n', '\n', 'non-empty\n', '\n', '\n'],
+                ['non-empty'],
+            ),
+            NArrEx(
+                'multiple lines - empty before and after, non-empty-line has space around',
+                ['\n', '\n', '  non-empty  \n', '\n', '\n'],
+                ['non-empty'],
+            ),
+        ]
+
         # ARRANGE #
-        for case in trailing_new_lines_cases_w_leading_space():
+        for case in cases:
             with self.subTest(case.name):
                 # ACT & ASSERT #
                 _check(self,
-                       case.input_value,
-                       case.expected_value)
+                       case.arrangement,
+                       case.expectation)
 
 
 class TestTrailingSpace(unittest.TestCase):
@@ -77,7 +147,7 @@ class TestTrailingSpace(unittest.TestCase):
                   ['1'],
                   ),
             ArrEx(['\n', '2\n', ' '],
-                  ['\n', '2'],
+                  ['2'],
                   ),
             ArrEx(['\n', '\n', ' \n'],
                   [],
@@ -89,7 +159,7 @@ class TestTrailingSpace(unittest.TestCase):
                   ['1\n', '\n', ' \n', '2\n', ' 3'],
                   ),
             ArrEx(['\n', '2\n', ' \n'],
-                  ['\n', '2'],
+                  ['2'],
                   ),
         ]
         # ACT & ASSERT #
@@ -107,7 +177,7 @@ def _check(put: unittest.TestCase,
            ):
     integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
         put,
-        Arguments(args.strip_trailing_space()),
+        Arguments(args.strip_space()),
         model_constructor.of_lines(put, input_lines),
         arrangement_w_tcds(),
         expectation_of_successful_execution(

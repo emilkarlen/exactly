@@ -22,3 +22,4 @@ def string-transformer TO_UPPER_CASE = to-upper-case
 
 def string-transformer STRIP_TRAILING_NL = strip-trailing-new-lines
 def string-transformer STRIP_TRAILING_WS = strip-trailing-space
+def string-transformer STRIP_WS          = strip-space

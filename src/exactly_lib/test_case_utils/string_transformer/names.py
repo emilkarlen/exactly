@@ -8,6 +8,7 @@ TO_UPPER_CASE = 'to-upper-case'
 TO_LOWER_CASE = 'to-lower-case'
 STRIP_TRAILING_NEW_LINES = 'strip-trailing-new-lines'
 STRIP_TRAILING_SPACE = 'strip-trailing-space'
+STRIP_SPACE = 'strip-space'
 TCDS_PATH_REPLACEMENT = 'replace-test-case-dirs'
 SEQUENCE_OPERATOR_NAME = '|'
 RUN_PROGRAM_TRANSFORMER_NAME = program.RUN_PROGRAM_PRIMITIVE
