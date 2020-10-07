@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.test_case_utils.string_transformers import \
     parse_string_transformer
 from exactly_lib_test.test_case_utils.string_transformers import tcds_paths_replacement, replace, \
-    filter, case_converters, sequence, identity, strip_trailing_new_lines
+    filter, case_converters, sequence, identity, strip_trailing_new_lines, strip_trailing_space
 from exactly_lib_test.test_case_utils.string_transformers.models import \
     z_package_suite as models
 from exactly_lib_test.test_case_utils.string_transformers.run_program import \
@@ -24,6 +24,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(parse_string_transformer.suite())
     ret_val.addTest(case_converters.suite())
     ret_val.addTest(strip_trailing_new_lines.suite())
+    ret_val.addTest(strip_trailing_space.suite())
     ret_val.addTest(tcds_paths_replacement.suite())
     return ret_val
 

@@ -1,6 +1,5 @@
 from typing import Iterable, Sequence
 
-from exactly_lib.common.help import headers
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
@@ -19,7 +18,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 def parse(token_parser: TokenParser) -> StringTransformerSdv:
     return sdvs.StringTransformerSdvConstant(
-        _StripTrailingNewLines(),
+        _StripTrailingWhiteSpace(),
     )
 
 
@@ -33,14 +32,13 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         tp = TextParser({
             'NL': misc_texts.NEW_LINE_STRING_CONSTANT,
             'string': types.STRING_TYPE_INFO.singular_name,
-            'Note': headers.NOTE_LINE_HEADER,
-            'LINES_ARE_SEPARATED_BY_NEW_LINE': misc_texts.LINES_ARE_SEPARATED_BY_NEW_LINE,
+            'white_space': misc_texts.WHITESPACE,
         })
         return tp.fnap(_DESCRIPTION)
 
 
-class _StripTrailingNewLines(StringTransformerFromLinesTransformer):
-    NAME = names.STRIP_TRAILING_NEW_LINES
+class _StripTrailingWhiteSpace(StringTransformerFromLinesTransformer):
+    NAME = names.STRIP_TRAILING_SPACE
 
     def __init__(self):
         self._structure = renderers.header_only(self.NAME)
@@ -57,35 +55,28 @@ class _StripTrailingNewLines(StringTransformerFromLinesTransformer):
         return False
 
     def _transform(self, lines: Iterable[str]) -> Iterable[str]:
-        num_empty_lines_skipped = 0
+        empty_lines_skipped = []
 
-        for line_before_counted_empty_lines in lines:
+        for line_before_empty_lines_list in lines:
             break
         else:
             return
 
         for next_line in lines:
-            if next_line == '\n':
-                num_empty_lines_skipped += 1
+            if next_line.isspace():
+                empty_lines_skipped.append(next_line)
             else:
-                yield line_before_counted_empty_lines
-                while num_empty_lines_skipped != 0:
-                    yield '\n'
-                    num_empty_lines_skipped -= 1
-                line_before_counted_empty_lines = next_line
+                yield line_before_empty_lines_list
+                for empty_line in empty_lines_skipped:
+                    yield empty_line
+                empty_lines_skipped = []
+                line_before_empty_lines_list = next_line
 
-        if line_before_counted_empty_lines[-1] == '\n':
-            last_line = line_before_counted_empty_lines[:-1]
-        else:
-            last_line = line_before_counted_empty_lines
-        if last_line != '':
-            yield last_line
+        mb_last = line_before_empty_lines_list.rstrip()
+        if mb_last != '':
+            yield mb_last
 
 
 _DESCRIPTION = """\
-Removes every occurrence of {NL} at the end of the {string}.
-
-
-{Note}
-{LINES_ARE_SEPARATED_BY_NEW_LINE}
+Removes all {white_space} at the end of the {string}.
 """

@@ -20,6 +20,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - `suffix` - matches the "suffix" part of file names
  - Type `line-matcher` - `contents` - matches text contents using a `string-matcher`
  - Type `string-transformer` - `strip-trailing-new-lines`
+ - Type `string-transformer` - `strip-trailing-space`
  - Type `integer-matcher`
 
 ### Changed

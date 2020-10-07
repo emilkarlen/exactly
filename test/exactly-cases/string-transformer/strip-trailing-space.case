@@ -1,0 +1,11 @@
+[setup]
+
+file f.txt = "abc@[TAB]@
+@[TAB]@
+"
+
+[assert]
+
+contents f.txt
+  -transformed-by strip-trailing-space
+    equals 'abc'

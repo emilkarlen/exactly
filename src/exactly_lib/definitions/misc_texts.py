@@ -27,8 +27,10 @@ OS_PROCESS_NAME = misc_name_with_formatting(
 
 CURRENT_OS = 'current OS'
 
+NEW_LINE_STRING_CONSTANT = formatting.string_constant('\\n')
+
 LINES_ARE_SEPARATED_BY_NEW_LINE = 'Lines are separated by {}, regardless of the {}.'.format(
-    formatting.string_constant('\\n'),
+    NEW_LINE_STRING_CONSTANT,
     CURRENT_OS,
 )
 

@@ -82,5 +82,9 @@ def strip_trailing_new_lines() -> str:
     return names.STRIP_TRAILING_NEW_LINES
 
 
+def strip_trailing_space() -> str:
+    return names.STRIP_TRAILING_SPACE
+
+
 def tcds_path_replacement() -> str:
     return names.TCDS_PATH_REPLACEMENT
