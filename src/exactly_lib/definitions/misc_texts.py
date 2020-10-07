@@ -1,3 +1,4 @@
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.formatting import misc_name_with_formatting
 from exactly_lib.util.str_ import name
@@ -25,6 +26,11 @@ OS_PROCESS_NAME = misc_name_with_formatting(
                            'OS processes')))
 
 CURRENT_OS = 'current OS'
+
+LINES_ARE_SEPARATED_BY_NEW_LINE = 'Lines are separated by {}, regardless of the {}.'.format(
+    formatting.string_constant('\\n'),
+    CURRENT_OS,
+)
 
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
 EXTERNAL_PROGRAM = misc_name_with_formatting(name.an_name(name.name_with_plural_s('external program')))

@@ -239,6 +239,12 @@ The following case shows some examples, but *doesn't make sense* tough::
           -transformed-by
               run my-string-transformer-program
 
+    file interesting-pgm-output.txt =
+         -stdout-from
+          -python @[EXACTLY_HOME]@/my-text-generating-program.py
+          -transformed-by
+              strip-trailing-new-lines
+
     run  -ignore-exit-code  % stat optional-file.txt
 
     [act]

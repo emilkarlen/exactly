@@ -67,5 +67,9 @@ def to_upper_case() -> str:
     return names.TO_UPPER_CASE
 
 
+def strip_trailing_new_lines() -> str:
+    return names.STRIP_TRAILING_NEW_LINES
+
+
 def tcds_path_replacement() -> str:
     return names.TCDS_PATH_REPLACEMENT

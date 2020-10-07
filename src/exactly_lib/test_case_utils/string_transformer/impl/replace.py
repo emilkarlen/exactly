@@ -219,7 +219,7 @@ _TEXT_PARSER = TextParser({
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
     'Note': headers.NOTE_LINE_HEADER,
     'NL': formatting.string_constant('\\n'),
-    'current_OS': misc_texts.CURRENT_OS,
+    'LINES_ARE_SEPARATED_BY_NEW_LINE': misc_texts.LINES_ARE_SEPARATED_BY_NEW_LINE,
 })
 
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
@@ -237,7 +237,7 @@ Back-references, such as \\6, are replaced with the substring matched by group 6
 
 
 {Note}
-Lines are separated by {NL}, regardless of the {current_OS}.
+{LINES_ARE_SEPARATED_BY_NEW_LINE}
 
 
 {Note}
