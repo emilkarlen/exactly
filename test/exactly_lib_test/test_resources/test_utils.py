@@ -34,8 +34,8 @@ class NEA(Generic[EXPECTED, ACTUAL]):
         return NEA(name, expected, expected)
 
 
-class NExArr(Generic[EXPECTED, ACTUAL]):
-    """A name, one expected value and one actual value."""
+class NExArr(Generic[EXPECTED, ARRANGEMENT]):
+    """A name, one expected value and an arrangement."""
 
     def __init__(self,
                  name: str,
@@ -56,8 +56,8 @@ class NExArr(Generic[EXPECTED, ACTUAL]):
         )
 
 
-class NArrEx(Generic[ACTUAL, EXPECTED]):
-    """A name, one expected value and one actual value."""
+class NArrEx(Generic[ARRANGEMENT, EXPECTED]):
+    """A name, one expected value and an arrangement."""
 
     def __init__(self,
                  name: str,
@@ -65,6 +65,17 @@ class NArrEx(Generic[ACTUAL, EXPECTED]):
                  expectation: EXPECTED,
                  ):
         self.name = name
+        self.arrangement = arrangement
+        self.expectation = expectation
+
+
+class ArrEx(Generic[ARRANGEMENT, EXPECTED]):
+    """An expected value and an arrangement."""
+
+    def __init__(self,
+                 arrangement: ARRANGEMENT,
+                 expectation: EXPECTED,
+                 ):
         self.arrangement = arrangement
         self.expectation = expectation
 
