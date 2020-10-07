@@ -1,5 +1,4 @@
-import itertools
-from typing import Pattern, Sequence, Iterator, List
+from typing import Pattern, Sequence, Iterator
 
 from exactly_lib.common.help import headers
 from exactly_lib.definitions import formatting, misc_texts
@@ -173,22 +172,6 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
         rest = ''.join(segments)
         if rest != '':
             yield rest
-
-    def _transform2(self, lines: Iterator[str]) -> Iterator[str]:
-        iter_of_output_lines_from_input_line = (
-            self._process_line_w_potential_split(line) for line in lines
-        )
-        return itertools.chain.from_iterable(iter_of_output_lines_from_input_line)
-
-    def _process_line_w_potential_split(self, line: str) -> List[str]:
-        output = self._process_line(line)
-        return output.splitlines(keepends=True)
-
-    def _process_line(self, line: str) -> str:
-        if line and line[-1] == '\n':
-            return self._compiled_regular_expression.sub(self._replacement, line[:-1]) + '\n'
-        else:
-            return self._compiled_regular_expression.sub(self._replacement, line)
 
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
