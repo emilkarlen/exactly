@@ -456,10 +456,7 @@ class TokenParser:
          :param argument_parser: Is given this parser object as argument, after the option token has been consumed.
          The return value from this function is returned if the option matches the head token
         """
-        if self.token_stream.is_null:
-            return return_value_if_no_match
-        elif matches(option_name, self.token_stream.head.source_string):
-            self.token_stream.consume()
+        if self.consume_optional_option(option_name):
             return argument_parser(self)
         else:
             return return_value_if_no_match
