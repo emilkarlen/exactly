@@ -144,18 +144,30 @@ class EqualityStringMatcher(StringMatcherImplBase):
                     .build_result(True)
             )
         else:
-            diff_description = _file_diff_description(actual_file_path,
-                                                      expected_file_path)
             return (
                 self._new_tb_with_expected()
-                    .append_details(
-                    custom_details.actual__custom(
-                        'Diff',
-                        details.PreFormattedString(_DiffString(diff_description), True)
-                    )
-                )
+                    .append_details(self._actual_file_contents_detail(actual_file_path))
+                    .append_details(self._diff_detail(actual_file_path, expected_file_path))
                     .build_result(False)
             )
+
+    @staticmethod
+    def _actual_file_contents_detail(actual: pathlib.Path) -> DetailsRenderer:
+        with actual.open() as f:
+            contents = f.read(custom_details.StringAsSingleLineWithMaxLenDetailsRenderer.DEFAULT_DISPLAY_LEN + 1)
+
+        return custom_details.actual(
+            custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(contents)
+        )
+
+    @staticmethod
+    def _diff_detail(actual: pathlib.Path, expected: pathlib.Path) -> DetailsRenderer:
+        diff_description = _file_diff_description(actual,
+                                                  expected)
+        return custom_details.diff(
+            details.PreFormattedString(
+                _DiffString(diff_description), True)
+        )
 
     def _file_path_for_file_with_expected_contents(self, tmp_file_space: DirFileSpace) -> pathlib.Path:
         if self._expected_contents.is_path:
@@ -198,4 +210,4 @@ class _DiffString(StringConstructor):
         self._lines = lines
 
     def __str__(self) -> str:
-        return '\n'.join(self._lines)
+        return ''.join(self._lines)

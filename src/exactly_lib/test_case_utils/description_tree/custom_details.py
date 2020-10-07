@@ -26,6 +26,7 @@ HAS_MORE_DATA_MARKER = '...'
 _EXPECTED = 'Expected'
 _ACTUAL = 'Actual'
 _MATCH = 'Match'
+_DIFF = 'Diff'
 
 _RHS = 'RHS'
 _ACTUAL_LHS = 'Actual LHS'
@@ -57,6 +58,11 @@ def expected_rhs(value: DetailsRenderer) -> DetailsRenderer:
 
 def actual_lhs(value: DetailsRenderer) -> DetailsRenderer:
     return HeaderAndValue(_ACTUAL_LHS, value,
+                          layout__detail.STANDARD_HEADER_TEXT_STYLE)
+
+
+def diff(value: DetailsRenderer) -> DetailsRenderer:
+    return HeaderAndValue(_DIFF, value,
                           layout__detail.STANDARD_HEADER_TEXT_STYLE)
 
 
@@ -263,7 +269,9 @@ class OfTextRenderer(DetailsRenderer):
 
 
 class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
-    def __init__(self, value: str, max_chars_to_print: int = 100):
+    DEFAULT_DISPLAY_LEN = 100
+
+    def __init__(self, value: str, max_chars_to_print: int = DEFAULT_DISPLAY_LEN):
         self._value = value
         self._max_chars_to_print = max_chars_to_print
 
