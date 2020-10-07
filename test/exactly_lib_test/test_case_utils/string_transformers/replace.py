@@ -21,13 +21,14 @@ from exactly_lib_test.test_case_utils.string_models.test_resources import model_
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
     integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import StExpectation
-from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_model.test_resources.assertions import model_lines_lists_matches
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 from exactly_lib_test.util.test_resources import quoting
+from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 
 def suite() -> unittest.TestSuite:
@@ -139,40 +140,6 @@ class TestApplication(unittest.TestCase):
             )
         )
 
-    def test_newline_ends_SHOULD_not_be_included_in_the_matched_line_contents(self):
-        # ARRANGE #
-        input_lines = [
-            '1\n',
-            '2',
-        ]
-        expected_lines = [
-            '1\n',
-            '2',
-        ]
-
-        nl_string_symbol = StringConstantSymbolContext(
-            'NL',
-            '\n',
-            default_restrictions=asrt_regex.is_regex_reference_restrictions(),
-        )
-        source = arg.syntax_for_replace_transformer(nl_string_symbol.name__sym_ref_syntax,
-                                                    'NL')
-
-        # ACT & ASSERT #
-
-        integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
-            self,
-            Arguments(source),
-            model_constructor.of_lines(self, input_lines),
-            arrangement_w_tcds(
-                symbols=nl_string_symbol.symbol_table
-            ),
-            expectation_of_successful_replace_execution(
-                output_lines=expected_lines,
-                symbol_references=nl_string_symbol.references_assertion
-            )
-        )
-
     def test_insertion_of_new_line_into_a_line_SHOULD_split_that_line(self):
         # ARRANGE #
         input_lines = [
@@ -224,6 +191,55 @@ class TestApplication(unittest.TestCase):
                     ),
                     expectation_of_successful_replace_execution(
                         output_lines=expected_lines,
+                        symbol_references=nl_string_symbol.references_assertion
+                    )
+                )
+
+    def test_removal_of_new_lines_SHOULD_join_lines(self):
+        # ARRANGE #
+        cases = [
+            NIE('final line not ended by new-line',
+                input_value=[
+                    '1\n',
+                    '2\n',
+                    '3',
+                ],
+                expected_value=[
+                    '123',
+                ]
+                ),
+            NIE('final line ended by new-line',
+                input_value=[
+                    '1\n',
+                    '2\n',
+                    '3\n',
+                ],
+                expected_value=[
+                    '123',
+                ]
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                nl_string_symbol = StringConstantSymbolContext(
+                    'NL',
+                    '\n',
+                    default_restrictions=asrt_regex.is_regex_reference_restrictions(),
+                )
+                source = arg.syntax_for_replace_transformer(nl_string_symbol.name__sym_ref_syntax,
+                                                            surrounded_by_hard_quotes_str(''),
+                                                            )
+
+                # ACT & ASSERT #
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    remaining_source(source),
+                    model_constructor.of_lines(self, case.input_value),
+                    arrangement_w_tcds(
+                        symbols=nl_string_symbol.symbol_table
+                    ),
+                    expectation_of_successful_replace_execution(
+                        output_lines=case.expected_value,
                         symbol_references=nl_string_symbol.references_assertion
                     )
                 )

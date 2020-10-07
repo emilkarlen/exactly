@@ -1,0 +1,25 @@
+[setup]
+
+file input.txt =
+<<-
+1
+2
+-
+
+def string-transformer REMOVE_NEW_LINE = replace @[LINE_SEP]@ ''
+
+[assert]
+
+contents input.txt
+    num-lines == 2
+
+contents input.txt
+    -transformed-by REMOVE_NEW_LINE
+    num-lines == 1
+
+file transformed.txt =
+    -file input.txt
+    -transformed-by REMOVE_NEW_LINE
+
+contents transformed.txt
+    equals '12'

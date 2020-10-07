@@ -1,6 +1,8 @@
 import itertools
 from typing import Pattern, Sequence, Iterator, List
 
+from exactly_lib.common.help import headers
+from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
@@ -153,6 +155,26 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
         return self._replacement
 
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+        re = self._compiled_regular_expression
+        replacement = self._replacement
+
+        segments = []
+        for line in lines:
+            sub_l = re.sub(replacement, line)
+            nli = sub_l.find('\n')
+            while nli != -1:
+                segments.append(sub_l[:nli + 1])
+                yield ''.join(segments)
+                segments = []
+                sub_l = sub_l[nli + 1:]
+                nli = sub_l.find('\n')
+            if sub_l != '':
+                segments.append(sub_l)
+        rest = ''.join(segments)
+        if rest != '':
+            yield rest
+
+    def _transform2(self, lines: Iterator[str]) -> Iterator[str]:
         iter_of_output_lines_from_input_line = (
             self._process_line_w_potential_split(line) for line in lines
         )
@@ -195,6 +217,9 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
 _TEXT_PARSER = TextParser({
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
+    'Note': headers.NOTE_LINE_HEADER,
+    'NL': formatting.string_constant('\\n'),
+    'current_OS': misc_texts.CURRENT_OS,
 })
 
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
@@ -209,4 +234,13 @@ Unknown escapes such as \\& are left alone.
 
 
 Back-references, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
+
+
+{Note}
+Lines are separated by {NL}, regardless of the {current_OS}.
+
+
+{Note}
+Every line ends with {NL},
+except the last line, which may or may not end with {NL}.
 """

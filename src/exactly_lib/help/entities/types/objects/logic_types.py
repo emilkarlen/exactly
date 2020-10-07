@@ -14,10 +14,11 @@ _TP = TextParser({
     'timeout_conf_param': formatting.conf_param_(conf_params.TIMEOUT_CONF_PARAM_INFO),
     'os_proc_env_section_header': misc_texts.OS_PROCESS_ENVIRONMENT_SECTION_HEADER,
     'test_case_spec_title': misc_texts.TEST_CASE_SPEC_TITLE,
+    'current_OS': misc_texts.CURRENT_OS,
 })
 
 _LINE_MATCHER_DESCRIPTION = """\
-The line separator depends on the current OS ('\\n', '\\r\\n', e.g.).
+The line separator depends on the {current_OS} ('\\n', '\\r\\n', e.g.).
 
 
 Line separator are not included in the line contents.

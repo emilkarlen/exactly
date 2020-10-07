@@ -12,7 +12,4 @@ file transformed.txt = -file original.txt
 
 [assert]
 
-contents transformed.txt equals
-<<-
-12
--
+contents transformed.txt equals '12'

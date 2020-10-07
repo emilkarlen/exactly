@@ -24,6 +24,8 @@ OS_PROCESS_NAME = misc_name_with_formatting(
     name.an_name(name.Name('OS process',
                            'OS processes')))
 
+CURRENT_OS = 'current OS'
+
 EXECUTABLE_FILE = name.an_name(name.name_with_plural_s('executable file'))
 EXTERNAL_PROGRAM = misc_name_with_formatting(name.an_name(name.name_with_plural_s('external program')))
 SHELL_COMMAND = name.a_name(name.name_with_plural_s('shell command'))

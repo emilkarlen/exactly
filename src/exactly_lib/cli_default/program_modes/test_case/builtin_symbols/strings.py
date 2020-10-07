@@ -3,6 +3,7 @@ from typing import Tuple
 
 from exactly_lib.cli.builtin_symbol import BuiltinSymbol
 from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
+from exactly_lib.definitions import misc_texts
 from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -18,7 +19,9 @@ def all_strings() -> Tuple[BuiltinSymbol, ...]:
             ValueType.STRING,
             string_sdvs.str_constant(os.linesep),
             CustomSymbolDocumentation(
-                "The string that separates text lines on the current OS ('\\n', '\\r\\n', e.g.)",
+                "The string that separates text lines on the {} ('\\n', '\\r\\n', e.g.)".format(
+                    misc_texts.CURRENT_OS
+                ),
                 SectionContents.empty(),
             ),
         ),
