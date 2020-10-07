@@ -25,7 +25,7 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
                          cross_reference_target)
         self._value_type = value_type
         self._name = formatting.type_name_with_formatting(name)
-        self._single_string_type_name = self._name.singular.replace(' ', '-')
+        self._single_string_type_name = self._name.singular
 
     @property
     def value_type(self) -> ValueType:
@@ -84,37 +84,37 @@ PATH_TYPE_INFO = name_and_ref_target(
 
 INTEGER_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.INTEGER_MATCHER,
-    an_name_with_plural_s('integer matcher'),
+    an_name_with_plural_s('integer-matcher'),
     'Matches an integer.'
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.LINE_MATCHER,
-    a_name_with_plural_s('line matcher'),
+    a_name_with_plural_s('line-matcher'),
     'Matches individual text lines of a string.'
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILE_MATCHER,
-    a_name_with_plural_s('file matcher'),
+    a_name_with_plural_s('file-matcher'),
     'Matches properties of an existing file - type, name and contents.'
 )
 
 FILES_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_MATCHER,
-    a_name_with_plural_s('files matcher'),
+    a_name_with_plural_s('files-matcher'),
     'Matches a set of files (e.g. the contents of a directory).'
 )
 
 STRING_MATCHER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_MATCHER,
-    a_name_with_plural_s('string matcher'),
+    a_name_with_plural_s('string-matcher'),
     'Matches a string (a sequence of new-line separated text lines).',
 )
 
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
-    a_name_with_plural_s('string transformer'),
+    a_name_with_plural_s('string-transformer'),
     'Transforms a string (a sequence of new-line separated text lines).',
 )
 
@@ -128,7 +128,7 @@ PROGRAM_TYPE_INFO = name_and_ref_target(
 
 FILES_CONDITION_TYPE_INFO = name_and_ref_target(
     ValueType.FILES_CONDITION,
-    a_name_with_plural_s('files condition'),
+    a_name_with_plural_s('files-condition'),
     'A condition of existence of a set of named files',
 )
 
