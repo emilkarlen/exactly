@@ -68,7 +68,7 @@ class Checker:
         self.get_dir_file_space = get_dir_file_space
 
     def check(self):
-        for case in contents_cases():
+        for case in contents_cases(self.put):
             with self._app_env() as app_env:
                 with self.put.subTest(case.name):
                     self._check_getters_sequence(
@@ -78,7 +78,7 @@ class Checker:
         self._check_line_sequence_is_valid()
 
     def check_with_first_access_is_not_write_to(self):
-        for case in contents_cases__first_access_is_not_write_to():
+        for case in contents_cases__first_access_is_not_write_to(self.put):
             with self._app_env() as app_env:
                 with self.put.subTest(case.name):
                     self._check_getters_sequence(
@@ -128,12 +128,26 @@ class Checker:
                         # ASSERT #
                 self.expectation.expected.apply_with_message(self.put,
                                                              actual,
-                                                             'contents')
+                                                             'contents - ' + case.name)
 
 
 def _get_contents_from_lines(model: StringModel) -> str:
     with model.as_lines as lines:
         return ''.join(lines)
+
+
+class _GetContentsFromLinesWIteratorCheck:
+    def __init__(self, put: unittest.TestCase):
+        self._put = put
+
+    def get_contents(self, model: StringModel) -> str:
+        with model.as_lines as lines_iterator:
+            lines = list(lines_iterator)
+
+            lines_after_first_iteration = list(lines_iterator)
+            self._put.assertEqual([], lines_after_first_iteration,
+                                  'as_lines: lines after first iteration should be empty')
+            return ''.join(lines)
 
 
 def _get_contents_from_file(model: StringModel) -> str:
@@ -148,8 +162,8 @@ def _get_contents_via_write_to(model: StringModel) -> str:
         return output_file.read()
 
 
-def _case__from_lines() -> NameAndValue:
-    return NameAndValue('as_lines', _get_contents_from_lines)
+def _case__from_lines(put: unittest.TestCase) -> NameAndValue:
+    return NameAndValue('as_lines', _GetContentsFromLinesWIteratorCheck(put).get_contents)
 
 
 def _case__from_file() -> NameAndValue:
@@ -160,13 +174,15 @@ def _case__from_write_to() -> NameAndValue:
     return NameAndValue('write_to', _get_contents_via_write_to)
 
 
-def contents_cases__first_access_is_not_write_to() -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+def contents_cases__first_access_is_not_write_to(put: unittest.TestCase,
+                                                 ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+    case__from_lines = _case__from_lines(put)
     return [
         NameAndValue(
             'file, lines, write_to',
             [
                 _case__from_file(),
-                _case__from_lines(),
+                case__from_lines,
                 _case__from_write_to(),
             ],
         ),
@@ -175,13 +191,13 @@ def contents_cases__first_access_is_not_write_to() -> List[NameAndValue[List[Nam
             [
                 _case__from_file(),
                 _case__from_write_to(),
-                _case__from_lines(),
+                case__from_lines,
             ],
         ),
         NameAndValue(
             'lines, file, write_to',
             [
-                _case__from_lines(),
+                case__from_lines,
                 _case__from_file(),
                 _case__from_write_to(),
             ],
@@ -189,7 +205,7 @@ def contents_cases__first_access_is_not_write_to() -> List[NameAndValue[List[Nam
         NameAndValue(
             'lines, write_to, file',
             [
-                _case__from_lines(),
+                case__from_lines,
                 _case__from_write_to(),
                 _case__from_file(),
             ],
@@ -197,13 +213,15 @@ def contents_cases__first_access_is_not_write_to() -> List[NameAndValue[List[Nam
     ]
 
 
-def contents_cases() -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+def contents_cases(put: unittest.TestCase,
+                   ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+    case__from_lines = _case__from_lines(put)
     first_access_is__write_to = [
         NameAndValue(
             'write_to, lines, file',
             [
                 _case__from_write_to(),
-                _case__from_lines(),
+                case__from_lines,
                 _case__from_file(),
             ],
         ),
@@ -212,8 +230,8 @@ def contents_cases() -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
             [
                 _case__from_write_to(),
                 _case__from_file(),
-                _case__from_lines(),
+                case__from_lines,
             ],
         ),
     ]
-    return contents_cases__first_access_is_not_write_to() + first_access_is__write_to
+    return contents_cases__first_access_is_not_write_to(put) + first_access_is__write_to

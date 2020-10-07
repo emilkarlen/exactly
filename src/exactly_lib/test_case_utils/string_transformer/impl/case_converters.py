@@ -1,4 +1,4 @@
-from typing import Iterable, Sequence, Callable
+from typing import Sequence, Callable, Iterator
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -71,7 +71,7 @@ class _CaseConverter(StringTransformerFromLinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def _transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return map(self._converter, lines)
 
 

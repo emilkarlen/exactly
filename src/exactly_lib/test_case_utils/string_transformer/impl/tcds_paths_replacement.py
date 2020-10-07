@@ -1,5 +1,5 @@
 import pathlib
-from typing import Iterable, Sequence, Tuple
+from typing import Iterable, Sequence, Tuple, Iterator
 
 from exactly_lib import program_info
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -80,7 +80,7 @@ class TcdsPathsReplacementStringTransformer(StringTransformerFromLinesTransforme
     def structure(self) -> StructureRenderer:
         return self._structure
 
-    def _transform(self, lines: Iterable[str]) -> Iterable[str]:
+    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (_replace(self._name_and_value_list, line) for line in lines)
 
 
