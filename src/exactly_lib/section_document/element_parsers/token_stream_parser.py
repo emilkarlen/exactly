@@ -425,6 +425,19 @@ class TokenParser:
         else:
             return False
 
+    def consume_optional_option(self, option_name: OptionName) -> bool:
+        """
+        :param option_name: Option to match
+        :returns Whether the option was present (and consumed) or not.
+        """
+        if self.token_stream.is_null:
+            return False
+        elif matches(option_name, self.token_stream.head.source_string):
+            self.token_stream.consume()
+            return True
+        else:
+            return False
+
     def consume_and_handle_optional_option(self,
                                            return_value_if_no_match: T,
                                            argument_parser: Callable[['TokenParser'], T],

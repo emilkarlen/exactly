@@ -1,7 +1,10 @@
 [setup]
 
 def string-transformer IDENTITY = identity
-def string-transformer REPLACE  = replace abc ABC
+
+def string-transformer REPLACE            = replace abc ABC
+def string-transformer REPLACE__PRESERVE  = replace -preserve-new-lines abc ABC
+
 def string-transformer SELECT   = filter line-num == 3
 def string-transformer SEQUENCE = REPLACE | SELECT
 

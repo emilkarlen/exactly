@@ -1,4 +1,4 @@
-from typing import Pattern, Sequence, Iterator
+from typing import Pattern, Sequence, Iterator, Callable
 
 from exactly_lib.common.help import headers
 from exactly_lib.definitions import formatting, misc_texts
@@ -44,21 +44,25 @@ _PARSE_REPLACEMENT_CONFIGURATION = parse_string.Configuration('REPLACEMENT')
 
 def parse_replace(token_parser: TokenParser) -> StringTransformerSdv:
     token_parser.require_has_valid_head_token(REPLACE_REGEX_ARGUMENT.name)
+    preserve_new_lines = token_parser.consume_optional_option(names.PRESERVE_NEW_LINES_OPTION_NAME)
     source_type, regex_sdv = parse_regex.parse_regex2(token_parser,
                                                       must_be_on_same_line=True)
     token_parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
 
     replacement = parse_string.parse_string_from_token_parser(token_parser, _PARSE_REPLACEMENT_CONFIGURATION)
 
-    return _Sdv(regex_sdv,
+    return _Sdv(preserve_new_lines,
+                regex_sdv,
                 replacement)
 
 
 class _Sdv(StringTransformerSdv):
     def __init__(self,
+                 preserve_new_lines: bool,
                  regex: RegexSdv,
-                 replacement: StringSdv
+                 replacement: StringSdv,
                  ):
+        self._preserve_new_lines = preserve_new_lines
         self._regex = regex
         self._replacement = replacement
         self._references = references_from_objects_with_symbol_references([
@@ -71,31 +75,40 @@ class _Sdv(StringTransformerSdv):
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        return _Ddv(self._regex.resolve(symbols),
+        return _Ddv(self._preserve_new_lines,
+                    self._regex.resolve(symbols),
                     self._replacement.resolve(symbols))
 
 
 class _Adv(ApplicationEnvironmentDependentValue[StringTransformer]):
     def __init__(self,
+                 preserve_new_lines: bool,
                  regex: Pattern,
-                 replacement: str):
+                 replacement: str,
+                 ):
+        self._preserve_new_lines = preserve_new_lines
         self._regex = regex
         self._replacement = replacement
 
     def primitive(self, environment: ApplicationEnvironment) -> StringTransformer:
-        return _ReplaceStringTransformer(self._regex,
+        return _ReplaceStringTransformer(self._preserve_new_lines,
+                                         self._regex,
                                          self._replacement)
 
 
 class _Ddv(StringTransformerDdv):
     def __init__(self,
+                 preserve_new_lines: bool,
                  regex: RegexDdv,
-                 replacement: StringDdv):
+                 replacement: StringDdv,
+                 ):
+        self._preserve_new_lines = preserve_new_lines
         self._regex = regex
         self._replacement = replacement
 
     def structure(self) -> StructureRenderer:
         return _ReplaceStringTransformer.new_structure_tree(
+            self._preserve_new_lines,
             self._regex.describer(),
             details.String(strings.AsToStringObject(self._replacement.describer())),
         )
@@ -105,7 +118,8 @@ class _Ddv(StringTransformerDdv):
         return self._regex.validator()
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> StringTransformerAdv:
-        return _Adv(self._regex.value_of_any_dependency(tcds),
+        return _Adv(self._preserve_new_lines,
+                    self._regex.value_of_any_dependency(tcds),
                     self._replacement.value_of_any_dependency(tcds))
 
 
@@ -114,19 +128,24 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     _REPLACEMENT_HEADER = 'replacement ' + syntax_elements.STRING_SYNTAX_ELEMENT.singular_name
 
     def __init__(self,
+                 preserve_new_lines: bool,
                  compiled_regular_expression: Pattern[str],
-                 replacement: str):
+                 replacement: str,
+                 ):
         super().__init__()
-        self._compiled_regular_expression = compiled_regular_expression
+        self._preserve_new_lines = preserve_new_lines
+        self._compiled_regex = compiled_regular_expression
         self._replacement = replacement
 
     @staticmethod
-    def new_structure_tree(pattern: DetailsRenderer,
+    def new_structure_tree(preserve_new_lines: bool,
+                           pattern: DetailsRenderer,
                            replacement: DetailsRenderer) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             names.REPLACE_TRANSFORMER_NAME,
             None,
             (
+                custom_details.optional_option(names.PRESERVE_NEW_LINES_OPTION_NAME, preserve_new_lines),
                 details.HeaderAndValue(_ReplaceStringTransformer._PATTERN_HEADER,
                                        pattern),
                 details.HeaderAndValue(_ReplaceStringTransformer._REPLACEMENT_HEADER,
@@ -141,25 +160,34 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
 
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree(
-            custom_details.PatternRenderer(self._compiled_regular_expression),
+            self._preserve_new_lines,
+            custom_details.PatternRenderer(self._compiled_regex),
             details.String(self._replacement),
         )
 
     @property
     def regex_pattern_string(self) -> str:
-        return self._compiled_regular_expression.pattern
+        return self._compiled_regex.pattern
 
     @property
     def replacement(self) -> str:
         return self._replacement
 
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
-        re = self._compiled_regular_expression
-        replacement = self._replacement
+        return (
+            self._iterator(self._replace_excluding_new_lines, lines)
+            if self._preserve_new_lines
+            else
+            self._iterator(self._replace_including_new_lines, lines)
+        )
 
+    @staticmethod
+    def _iterator(replacer: Callable[[str], str],
+                  lines: Iterator[str],
+                  ) -> Iterator[str]:
         segments = []
         for line in lines:
-            sub_l = re.sub(replacement, line)
+            sub_l = replacer(line)
             nli = sub_l.find('\n')
             while nli != -1:
                 segments.append(sub_l[:nli + 1])
@@ -173,15 +201,26 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
         if rest != '':
             yield rest
 
+    def _replace_including_new_lines(self, line: str) -> str:
+        return self._compiled_regex.sub(self._replacement, line)
+
+    def _replace_excluding_new_lines(self, line: str) -> str:
+        if line[-1] == '\n':
+            return self._replace_including_new_lines(line[:-1]) + '\n'
+        else:
+            return self._replace_including_new_lines(line)
+
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
-                               str(self._compiled_regular_expression))
+                               str(self._compiled_regex))
 
 
 class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken):
     @property
     def argument_usage_list(self) -> Sequence[a.ArgumentUsage]:
         return [
+            a.Single(a.Multiplicity.OPTIONAL,
+                     names.PRESERVE_NEW_LINES_OPTION),
             a.Single(a.Multiplicity.MANDATORY,
                      REPLACE_REGEX_ARGUMENT),
             a.Single(a.Multiplicity.MANDATORY,
@@ -198,6 +237,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
 
 
 _TEXT_PARSER = TextParser({
+    'preserve_new_lines_option': formatting.argument_option(names.PRESERVE_NEW_LINES_OPTION_NAME),
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
     'Note': headers.NOTE_LINE_HEADER,
@@ -219,11 +259,13 @@ Unknown escapes such as \\& are left alone.
 Back-references, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
 
 
-{Note}
-{LINES_ARE_SEPARATED_BY_NEW_LINE}
-
-
-{Note}
 Every line ends with {NL},
 except the last line, which may or may not end with {NL}.
+
+If {preserve_new_lines_option} is given,
+this {NL} is excluded from the replacement.
+
+
+{Note}
+{LINES_ARE_SEPARATED_BY_NEW_LINE}
 """

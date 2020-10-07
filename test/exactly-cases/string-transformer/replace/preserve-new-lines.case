@@ -1,0 +1,17 @@
+[setup]
+
+file original.txt =
+<<-
+ 1 2
+-
+
+def string-transformer REMOVE_SPACE_BUT_NOT_NEW_LINES = replace -preserve-new-lines '\s' ''
+
+file transformed.txt = -file original.txt
+                       -transformed-by REMOVE_SPACE_BUT_NOT_NEW_LINES
+
+[assert]
+
+contents transformed.txt equals <<-
+12
+-

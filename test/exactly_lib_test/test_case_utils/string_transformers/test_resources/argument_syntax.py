@@ -21,16 +21,27 @@ def arguments_for_transformer_option(transformer_expression: str) -> List[str]:
 
 
 def syntax_for_replace_transformer(regex_token_str: str,
-                                   replacement_token_str: str) -> str:
-    return ' '.join([
-        names.REPLACE_TRANSFORMER_NAME,
-        regex_token_str,
-        replacement_token_str,
-    ])
+                                   replacement_token_str: str,
+                                   preserve_new_lines: bool = False) -> str:
+    matcher = [names.REPLACE_TRANSFORMER_NAME]
+    if preserve_new_lines:
+        matcher.append(option_syntax(names.PRESERVE_NEW_LINES_OPTION_NAME))
+
+    return ' '.join(
+        matcher + [
+            regex_token_str,
+            replacement_token_str,
+        ])
 
 
-def syntax_for_replace_transformer__custom(arguments: Arguments) -> Arguments:
-    return Arguments(names.REPLACE_TRANSFORMER_NAME).followed_by(arguments)
+def syntax_for_replace_transformer__custom(arguments: Arguments,
+                                           preserve_new_lines: bool = False) -> Arguments:
+    matcher = names.REPLACE_TRANSFORMER_NAME
+    if preserve_new_lines:
+        matcher = ' '.join((matcher,
+                            option_syntax(names.PRESERVE_NEW_LINES_OPTION_NAME)))
+
+    return Arguments(matcher).followed_by(arguments)
 
 
 def syntax_for_run(program: ArgumentElements, ignore_exit_code: bool = False) -> Arguments:

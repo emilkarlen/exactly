@@ -29,7 +29,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `files-matcher` - rename `-prune` -> `-with-pruned`
  - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
  - Type `file-matcher` - `name` / `path` - Use `~` for regex matching
- - Type `string-transformer` - `replace` - Include new-lines in processed lines
+ - Type `string-transformer` - `replace` - Include new-lines in processed lines, unless `-preserve-new-lines` is given
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`

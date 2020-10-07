@@ -1,0 +1,10 @@
+[setup]
+
+file original.txt = 'a b c'
+
+[assert]
+
+contents original.txt
+    -transformed-by
+      replace 'a' 'A'
+      equals 'A B C'
