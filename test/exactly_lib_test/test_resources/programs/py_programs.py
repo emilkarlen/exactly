@@ -64,12 +64,19 @@ sys.stdout.write(os.linesep)
 """
 
 
+def py_pgm_that_writes_new_line_to_stdout() -> str:
+    return """\
+import sys
+
+sys.stdout.write('\\n')
+"""
+
+
 def py_pgm_that_writes_tab_character_to_stdout() -> str:
     return """\
 import sys
-import os
 
-sys.stdout.write('\t')
+sys.stdout.write('\\t')
 """
 
 

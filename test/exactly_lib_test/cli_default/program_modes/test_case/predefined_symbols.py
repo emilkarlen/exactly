@@ -109,7 +109,13 @@ class TestStringValueEqualsBuiltinBase(SetupWithoutPreprocessorAndDefaultActor, 
 class TestLineSepStringValue(TestStringValueEqualsBuiltinBase):
     def __init__(self):
         super().__init__(py_programs.py_pgm_that_writes_os_linesep_to_stdout(),
-                         strings.LINE_SEP)
+                         strings.OS_LINE_SEP)
+
+
+class TestNewLineStringValue(TestStringValueEqualsBuiltinBase):
+    def __init__(self):
+        super().__init__(py_programs.py_pgm_that_writes_new_line_to_stdout(),
+                         strings.NEW_LINE)
 
 
 class TestTabCharacterStringValue(TestStringValueEqualsBuiltinBase):
@@ -122,6 +128,7 @@ _TESTS = [
     AllBuiltinStringSymbolsShouldBeAvailableInTheSetupPhase(),
     AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(),
     TestLineSepStringValue(),
+    TestNewLineStringValue(),
     TestTabCharacterStringValue(),
 ]
 

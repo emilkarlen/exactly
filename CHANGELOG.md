@@ -23,6 +23,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `string-transformer` - `strip-trailing-space`
  - Type `string-transformer` - `strip-space`
  - Type `integer-matcher`
+ - Builtin symbol - string `NEW_LINE`
 
 ### Changed
 
@@ -40,7 +41,8 @@ with exception of a "0." prefix until version 1 is released.
  - Instruction `conf`/`actor` - Remove "-" prefix from actor names
  - String transformer - Case converters - Replaces builtin symbols with primitives
  - String transformer - TCDS dir replacement - Replaces builtin symbol with primitive
- 
+  - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP` 
+
 ### Removed
 
  - Interpreter actors - interpreter `$ SHELL-COMMAND`
