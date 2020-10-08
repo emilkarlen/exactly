@@ -12,13 +12,8 @@ class EqualsConstant(StringMatcherImplBase):
         self._expected = expected
 
     def matches_w_trace(self, model: StringModel) -> MatchingResult:
-        actual = self._as_string(model)
+        actual = model.as_str
         return TraceBuilder(self.name).build_result(self._expected == actual)
-
-    @staticmethod
-    def _as_string(model: StringModel) -> str:
-        with model.as_lines as lines_iter:
-            return ''.join(lines_iter)
 
     @property
     def name(self) -> str:

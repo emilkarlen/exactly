@@ -179,8 +179,7 @@ class TestModelOfAppliedStringMatcherShouldBeLineModelContents(unittest.TestCase
         line_contents = 'the line contents'
 
         def get_string_matcher_model_as_single_string(model: StringModel) -> str:
-            with model.as_lines as lines:
-                return '\n'.join(lines)
+            return model.as_str
 
         matching_result = True
         string_matcher = StringMatcherSymbolContext.of_primitive(

@@ -32,5 +32,4 @@ class _PropertyGetter(PropertyGetter[StringModel, str], WithCachedTreeStructureD
         return renderers.header_only('contents')
 
     def get_from(self, model: StringModel) -> str:
-        with model.as_lines as lines:
-            return ''.join(lines)
+        return model.as_str

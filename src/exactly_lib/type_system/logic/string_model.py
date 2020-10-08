@@ -24,6 +24,14 @@ class StringModel(ABC):
         pass
 
     @property
+    def as_str(self) -> str:
+        """
+        :raises HardErrorException: Detected error
+        """
+        with self.as_lines as lines:
+            return ''.join(lines)
+
+    @property
     @abstractmethod
     def as_file(self) -> Path:
         """

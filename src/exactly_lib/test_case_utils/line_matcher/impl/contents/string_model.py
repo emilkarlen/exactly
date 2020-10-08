@@ -19,6 +19,10 @@ class StringModel(StringModelFromLinesBase):
         return self.__tmp_file_space
 
     @property
+    def as_str(self) -> str:
+        return self._contents
+
+    @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
         yield iter([self._contents])

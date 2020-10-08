@@ -1,3 +1,4 @@
+import itertools
 import tempfile
 import unittest
 from abc import ABC, abstractmethod
@@ -68,7 +69,8 @@ class Checker:
         self.get_dir_file_space = get_dir_file_space
 
     def check(self):
-        for case in contents_cases(self.put):
+        cases = contents_cases(self.put)
+        for case in cases:
             with self._app_env() as app_env:
                 with self.put.subTest(case.name):
                     self._check_getters_sequence(
@@ -78,7 +80,8 @@ class Checker:
         self._check_line_sequence_is_valid()
 
     def check_with_first_access_is_not_write_to(self):
-        for case in contents_cases__first_access_is_not_write_to(self.put):
+        cases = contents_cases__first_access_is_not_write_to(self.put)
+        for case in cases:
             with self._app_env() as app_env:
                 with self.put.subTest(case.name):
                     self._check_getters_sequence(
@@ -131,11 +134,6 @@ class Checker:
                                                              'contents - ' + case.name)
 
 
-def _get_contents_from_lines(model: StringModel) -> str:
-    with model.as_lines as lines:
-        return ''.join(lines)
-
-
 class _GetContentsFromLinesWIteratorCheck:
     def __init__(self, put: unittest.TestCase):
         self._put = put
@@ -155,6 +153,10 @@ def _get_contents_from_file(model: StringModel) -> str:
         return model_file.read()
 
 
+def _get_contents_from_str(model: StringModel) -> str:
+    return model.as_str
+
+
 def _get_contents_via_write_to(model: StringModel) -> str:
     with tempfile.SpooledTemporaryFile(mode='r+') as output_file:
         model.write_to(output_file)
@@ -164,6 +166,10 @@ def _get_contents_via_write_to(model: StringModel) -> str:
 
 def _case__from_lines(put: unittest.TestCase) -> NameAndValue:
     return NameAndValue('as_lines', _GetContentsFromLinesWIteratorCheck(put).get_contents)
+
+
+def _case__from_str() -> NameAndValue:
+    return NameAndValue('as_str', _get_contents_from_str)
 
 
 def _case__from_file() -> NameAndValue:
@@ -176,62 +182,74 @@ def _case__from_write_to() -> NameAndValue:
 
 def contents_cases__first_access_is_not_write_to(put: unittest.TestCase,
                                                  ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
-    case__from_lines = _case__from_lines(put)
-    return [
-        NameAndValue(
-            'file, lines, write_to',
-            [
-                _case__from_file(),
-                case__from_lines,
-                _case__from_write_to(),
-            ],
-        ),
-        NameAndValue(
-            'file, write_to, lines',
-            [
-                _case__from_file(),
-                _case__from_write_to(),
-                case__from_lines,
-            ],
-        ),
-        NameAndValue(
-            'lines, file, write_to',
-            [
-                case__from_lines,
-                _case__from_file(),
-                _case__from_write_to(),
-            ],
-        ),
-        NameAndValue(
-            'lines, write_to, file',
-            [
-                case__from_lines,
-                _case__from_write_to(),
-                _case__from_file(),
-            ],
-        ),
+    alternative_str = _case__from_str()
+    alternative_lines = _case__from_lines(put)
+    alternative_file = _case__from_file()
+    alternative_write_to = _case__from_write_to()
+
+    alternatives_after_str = [
+        alternative_lines,
+        alternative_file,
+        alternative_write_to,
     ]
+
+    alternatives_after_lines = [
+        alternative_str,
+        alternative_file,
+        alternative_write_to,
+    ]
+
+    alternatives_after_file = [
+        alternative_str,
+        alternative_lines,
+        alternative_write_to,
+    ]
+
+    return (
+            _sequences_for_alternatives_w_initial(alternative_str, alternatives_after_str) +
+            _sequences_for_alternatives_w_initial(alternative_lines, alternatives_after_lines) +
+            _sequences_for_alternatives_w_initial(alternative_file, alternatives_after_file)
+    )
 
 
 def contents_cases(put: unittest.TestCase,
                    ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
-    case__from_lines = _case__from_lines(put)
-    first_access_is__write_to = [
-        NameAndValue(
-            'write_to, lines, file',
-            [
-                _case__from_write_to(),
-                case__from_lines,
-                _case__from_file(),
-            ],
-        ),
-        NameAndValue(
-            'write_to, file, lines',
-            [
-                _case__from_write_to(),
-                _case__from_file(),
-                case__from_lines,
-            ],
-        ),
+    return _sequences_for_alternatives([
+        _case__from_str(),
+        _case__from_lines(put),
+        _case__from_file(),
+        _case__from_write_to(),
+    ])
+
+
+def _sequence_from_getters(sequence: List[NameAndValue[ContentsGetter]],
+                           ) -> NameAndValue[List[NameAndValue[ContentsGetter]]]:
+    name = ', '.join([
+        nav.name
+        for nav in sequence
+    ])
+
+    return NameAndValue(
+        name,
+        sequence,
+    )
+
+
+def _sequences_for_alternatives_w_initial(initial: NameAndValue[ContentsGetter],
+                                          following_alternatives: List[NameAndValue[ContentsGetter]],
+                                          ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+    following_variants = itertools.permutations(following_alternatives)
+
+    variants = [
+        [initial] + list(following_variant)
+        for following_variant in following_variants
     ]
-    return contents_cases__first_access_is_not_write_to(put) + first_access_is__write_to
+
+    return list(map(_sequence_from_getters, variants))
+
+
+def _sequences_for_alternatives(alternatives: List[NameAndValue[ContentsGetter]],
+                                ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+    variants = itertools.permutations(alternatives)
+
+    return list(map(_sequence_from_getters, variants))

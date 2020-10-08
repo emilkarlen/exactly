@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, io
+from typing import ContextManager, Iterator
 
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -22,16 +22,16 @@ class StringModelOfFile(StringModel):
         return self.__tmp_file_space
 
     @property
+    def as_str(self) -> str:
+        with self._file.open() as f:
+            return f.read()
+
+    @property
     def as_file(self) -> Path:
         return self._file
 
     @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
-        with self._file.open() as f:
-            yield self._iterator(f)
-
-    @staticmethod
-    def _iterator(f: io.TextIO) -> Iterator[str]:
-        for line in f.readlines():
-            yield line
+        with self.as_file.open() as lines:
+            yield lines

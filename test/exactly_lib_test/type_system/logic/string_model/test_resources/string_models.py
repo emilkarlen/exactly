@@ -18,6 +18,10 @@ class StringModelThatMustNotBeUsed(StringModel):
         raise ValueError('unsupported')
 
     @property
+    def as_str(self) -> str:
+        raise ValueError('unsupported')
+
+    @property
     def as_file(self) -> Path:
         raise ValueError('unsupported')
 
@@ -36,6 +40,10 @@ class StringModelThatRaisesHardErrorException(StringModel):
     @property
     def _tmp_file_space(self) -> DirFileSpace:
         raise ValueError('unsupported')
+
+    @property
+    def as_str(self) -> str:
+        return self._raise_hard_error()
 
     @property
     def as_file(self) -> Path:
@@ -103,8 +111,3 @@ def as_lines_list__w_lines_validation(put: unittest.TestCase,
     checker_model = asrt_string_model.StringModelThatThatChecksLines(put, model)
     with checker_model.as_lines as lines:
         return list(lines)
-
-
-def as_string(model: StringModel) -> str:
-    with model.as_lines as lines:
-        return ''.join(lines)

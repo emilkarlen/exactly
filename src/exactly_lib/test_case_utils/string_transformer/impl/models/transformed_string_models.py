@@ -38,6 +38,11 @@ class TransformedStringModelFromWriter(TransformedStringModelBase):
         return self._file_created_on_demand
 
     @property
+    def as_str(self) -> str:
+        with self.as_file.open() as f:
+            return f.read()
+
+    @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
         with self.as_file.open() as lines:

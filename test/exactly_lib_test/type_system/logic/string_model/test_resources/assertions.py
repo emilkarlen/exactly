@@ -39,6 +39,10 @@ class StringModelThatThatChecksLines(StringModel):
         return self._checked._tmp_file_space
 
     @property
+    def as_str(self) -> str:
+        return self._checked.as_str
+
+    @property
     def as_file(self) -> Path:
         return self._checked.as_file
 
@@ -93,6 +97,11 @@ def model_lines_lists_matches(expected: ValueAssertion[List[str]]) -> ValueAsser
             expected,
         ),
         asrt.sub_component(
+            'as_str',
+            _line_sequence_from_as_str,
+            expected,
+        ),
+        asrt.sub_component(
             'as_file',
             _line_list_from_as_file,
             expected,
@@ -105,6 +114,11 @@ def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]]) -> Val
         asrt.sub_component(
             'as_lines',
             _line_sequence_from_as_lines,
+            expected,
+        ),
+        asrt.sub_component(
+            'as_str',
+            _line_sequence_from_as_str,
             expected,
         ),
         asrt.sub_component(
@@ -123,11 +137,20 @@ def model_string_matches(expected: ValueAssertion[str]) -> ValueAssertion[String
             expected,
         ),
         asrt.sub_component(
+            'as_str',
+            _str_from_as_str,
+            expected,
+        ),
+        asrt.sub_component(
             'as_file',
             _str_from_as_file,
             expected,
         ),
     ])
+
+
+def _line_list_from_as_str(model: StringModel) -> List[str]:
+    return model.as_str.splitlines(keepends=True)
 
 
 def _line_list_from_as_lines(model: StringModel) -> List[str]:
@@ -137,6 +160,14 @@ def _line_list_from_as_lines(model: StringModel) -> List[str]:
 
 def _line_sequence_from_as_lines(model: StringModel) -> Sequence[str]:
     return _line_list_from_as_lines(model)
+
+
+def _line_sequence_from_as_str(model: StringModel) -> Sequence[str]:
+    return _line_list_from_as_str(model)
+
+
+def _str_from_as_str(model: StringModel) -> str:
+    return model.as_str
 
 
 def _str_from_as_lines(model: StringModel) -> str:

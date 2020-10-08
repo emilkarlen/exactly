@@ -115,7 +115,7 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
         return matcher_options.EQUALS_ARGUMENT
 
     def matches_w_trace(self, model: StringModel) -> MatchingResult:
-        actual = self._as_single_string(model)
+        actual = model.as_str
         if self.expected == actual:
             return self._new_tb().build_result(True)
         else:
@@ -125,8 +125,3 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
                     .append_details(details.String(err_msg))
                     .build_result(False)
             )
-
-    @staticmethod
-    def _as_single_string(model: StringModel) -> str:
-        with model.as_lines as lines:
-            return ''.join(lines)
