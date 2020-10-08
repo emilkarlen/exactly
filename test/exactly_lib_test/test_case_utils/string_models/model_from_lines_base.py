@@ -7,6 +7,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.string_models.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
 
 
@@ -24,7 +25,10 @@ class TestModelFromLinesBase(unittest.TestCase):
             '2nd\n',
         ]
         )
-        expectation = model_checker.Expectation.equals(''.join(model_constructor.lines))
+        expectation = model_checker.Expectation.equals(
+            ''.join(model_constructor.lines),
+            may_depend_on_external_resources=asrt.anything_goes(),
+        )
 
         checker = model_checker.Checker(
             self,

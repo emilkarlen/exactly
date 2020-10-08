@@ -22,6 +22,10 @@ class StringModelOfFile(StringModel):
         return self.__tmp_file_space
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return True
+
+    @property
     def as_str(self) -> str:
         with self._file.open() as f:
             return f.read()

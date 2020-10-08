@@ -43,7 +43,42 @@ def suite() -> unittest.TestSuite:
         _TestLineMatcherModelsGivenToLineMatcher(),
         unittest.makeSuite(TestLineMatcherPrimitive),
         ValidatorShouldValidateLineMatcher(),
+        TestMayDependOnExternalResourcesShouldBeFalseRegardlessOfSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldBeFalseRegardlessOfSourceModel(unittest.TestCase):
+    # ... since the applied LineMatcher may have external dependencies (e.g. "run")
+
+    def runTest(self):
+        # ARRANGE #
+
+        matcher = LineMatcherSymbolContext.of_primitive_constant(
+            'line_matcher_symbol',
+            False,
+        )
+        line_matcher_arg = lm_args.SymbolReference(matcher.name)
+
+        arguments = st_args.syntax_for_filter_transformer(str(line_matcher_arg))
+
+        # ACT & ASSERT #
+        for may_depend_on_external_resources in [False, True]:
+            with self.subTest(may_depend_on_external_resources=may_depend_on_external_resources):
+                integration_check.CHECKER__PARSE_SIMPLE.check(
+                    self,
+                    remaining_source(arguments),
+                    model_constructor.empty(self,
+                                            may_depend_on_external_resources=may_depend_on_external_resources),
+                    arrangement_w_tcds(
+                        symbols=matcher.symbol_table
+                    ),
+                    expectation_of_successful_filter_execution(
+                        symbol_references=asrt.matches_singleton_sequence(
+                            matcher.reference_assertion
+                        ),
+                        output_lines=[],
+                    )
+                )
 
 
 class TestInvalidSyntax(unittest.TestCase):
@@ -96,6 +131,7 @@ class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
                 ),
                 symbol_references=line_matcher__constant_false.references_assertion,
                 output_lines=[],
+                may_depend_on_external_resources=True,
                 is_identity_transformer=False,
             )
         )
@@ -122,12 +158,11 @@ class TestFiltering(unittest.TestCase):
             arrangement_w_tcds(
                 symbols=matcher.symbol_table
             ),
-            expectation_of_successful_execution(
+            expectation_of_successful_filter_execution(
                 symbol_references=asrt.matches_singleton_sequence(
                     matcher.reference_assertion
                 ),
                 output_lines=[],
-                is_identity_transformer=False,
             )
         )
 
@@ -368,6 +403,7 @@ def expectation_of_successful_filter_execution(output_lines: List[str],
                                                ) -> StExpectation:
     return integration_check.expectation_of_successful_execution(
         output_lines,
+        True,
         symbol_references,
         False,
     )

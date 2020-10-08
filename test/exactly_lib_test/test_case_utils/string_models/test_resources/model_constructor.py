@@ -17,32 +17,44 @@ from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import 
 ModelConstructor = Callable[[FullResolvingEnvironment], StringModel]
 
 
-def empty(put: unittest.TestCase) -> ModelConstructor:
-    return of_str(put, '')
+def empty(put: unittest.TestCase,
+          may_depend_on_external_resources: bool = False,
+          ) -> ModelConstructor:
+    return of_str(put, '', may_depend_on_external_resources)
 
 
-def of_str(put: unittest.TestCase, contents: str) -> ModelConstructor:
-    return _ModelOfString(put, contents).construct
+def of_str(put: unittest.TestCase, contents: str,
+           may_depend_on_external_resources: bool = False,
+           ) -> ModelConstructor:
+    return _ModelOfString(put, contents, may_depend_on_external_resources).construct
 
 
-def of_str(put: unittest.TestCase, contents: str) -> ModelConstructor:
-    return _ModelOfString(put, contents).construct
+def of_str(put: unittest.TestCase, contents: str,
+           may_depend_on_external_resources: bool = False,
+           ) -> ModelConstructor:
+    return _ModelOfString(put, contents, may_depend_on_external_resources).construct
 
 
-def of_lines(put: unittest.TestCase, lines: List[str]) -> ModelConstructor:
-    return _ModelOfLines(put, lines).construct
+def of_lines(put: unittest.TestCase, lines: List[str],
+             may_depend_on_external_resources: bool = False,
+             ) -> ModelConstructor:
+    return _ModelOfLines(put, lines, may_depend_on_external_resources).construct
 
 
-def of_lines_wo_nl(put: unittest.TestCase, lines: List[str]) -> ModelConstructor:
-    return _ModelOfLines(put, with_appended_new_lines(lines)).construct
+def of_lines_wo_nl(put: unittest.TestCase, lines: List[str],
+                   may_depend_on_external_resources: bool = False,
+                   ) -> ModelConstructor:
+    return _ModelOfLines(put, with_appended_new_lines(lines),
+                         may_depend_on_external_resources).construct
 
 
 def must_not_be_used(environment: FullResolvingEnvironment) -> StringModel:
     return MODEL_THAT_MUST_NOT_BE_USED
 
 
-def arbitrary(put: unittest.TestCase) -> ModelConstructor:
-    return empty(put)
+def arbitrary(put: unittest.TestCase,
+              may_depend_on_external_resources: bool = True) -> ModelConstructor:
+    return empty(put, may_depend_on_external_resources)
 
 
 def resolving_env_w_custom_dir_space(sds: SandboxDs) -> FullResolvingEnvironment:
@@ -59,16 +71,18 @@ def resolving_env_w_custom_dir_space(sds: SandboxDs) -> FullResolvingEnvironment
     )
 
 
-MODEL_THAT_MUST_NOT_BE_USED = string_models.StringModelThatMustNotBeUsed()
+MODEL_THAT_MUST_NOT_BE_USED = string_models.string_model_that_must_not_be_used()
 
 
 class _ModelOfString:
     def __init__(self,
                  put: unittest.TestCase,
                  contents: str,
+                 may_depend_on_external_resources: bool = False,
                  ):
         self.put = put
         self.contents = contents
+        self.may_depend_on_external_resources = may_depend_on_external_resources
 
     def construct(self, environment: FullResolvingEnvironment) -> StringModel:
         return StringModelThatThatChecksLines(
@@ -76,6 +90,7 @@ class _ModelOfString:
             string_models.of_string(
                 self.contents,
                 environment.application_environment.tmp_files_space.sub_dir_space(),
+                self.may_depend_on_external_resources,
             )
         )
 
@@ -84,9 +99,11 @@ class _ModelOfLines:
     def __init__(self,
                  put: unittest.TestCase,
                  lines: Sequence[str],
+                 may_depend_on_external_resources: bool = False,
                  ):
         self.put = put
         self.lines = lines
+        self.may_depend_on_external_resources = may_depend_on_external_resources
 
     def construct(self, environment: FullResolvingEnvironment) -> StringModel:
         return StringModelThatThatChecksLines(
@@ -94,5 +111,6 @@ class _ModelOfLines:
             string_models.StringModelFromLines(
                 self.lines,
                 environment.application_environment.tmp_files_space.sub_dir_space(),
+                self.may_depend_on_external_resources,
             )
         )

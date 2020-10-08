@@ -1,17 +1,15 @@
 import io
 import unittest
-from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Sequence, ContextManager, Iterator, IO, Callable
+from typing import List, Sequence, IO
 
-from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources import test_of_test_resources_util
-from exactly_lib_test.test_resources.actions import do_return, do_raise
+from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as sut
 from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
+from exactly_lib_test.type_system.logic.string_model.test_resources.string_models import StringModelThat
 
 
 def suite() -> unittest.TestSuite:
@@ -113,31 +111,39 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         value_from_wrapped_method = DirFileSpaceThatMustNoBeUsed()
 
-        wrapped_with_only_tmp_file_space_method = _StringModelThat(
+        wrapped = StringModelThat.new_w_defaults_of_not_impl(
             tmp_file_space=do_return(value_from_wrapped_method),
-            as_str=do_raise(ValueError('should not be called')),
-            as_file=do_raise(ValueError('should not be called')),
-            write_to=do_raise(ValueError('should not be called')),
         )
 
-        model = sut.StringModelThatThatChecksLines(self, wrapped_with_only_tmp_file_space_method)
+        model = sut.StringModelThatThatChecksLines(self, wrapped)
         # ACT #
         actual = model._tmp_file_space
         # ASSERT #
         self.assertIs(actual, value_from_wrapped_method)
 
+    def test_may_depend_on_external_resources_should_call_wrapped_method(self):
+        # ARRANGE #
+        for value_from_wrapped_method in [False, True]:
+            with self.subTest(value_from_wrapped_method=value_from_wrapped_method):
+                wrapped = StringModelThat.new_w_defaults_of_not_impl(
+                    may_depend_on_external_resources=do_return(value_from_wrapped_method),
+                )
+
+                model = sut.StringModelThatThatChecksLines(self, wrapped)
+                # ACT #
+                actual = model.may_depend_on_external_resources
+                # ASSERT #
+                self.assertIs(actual, value_from_wrapped_method)
+
     def test_as_str_should_call_wrapped_method(self):
         # ARRANGE #
         value_from_wrapped_method = 'the str'
 
-        wrapped_with_only_tmp_file_space_method = _StringModelThat(
-            tmp_file_space=do_raise(ValueError('should not be called')),
+        wrapped = StringModelThat.new_w_defaults_of_not_impl(
             as_str=do_return(value_from_wrapped_method),
-            as_file=do_raise(ValueError('should not be called')),
-            write_to=do_raise(ValueError('should not be called')),
         )
 
-        model = sut.StringModelThatThatChecksLines(self, wrapped_with_only_tmp_file_space_method)
+        model = sut.StringModelThatThatChecksLines(self, wrapped)
         # ACT #
         actual = model.as_str
         # ASSERT #
@@ -147,14 +153,11 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         value_from_wrapped_method = Path('the path')
 
-        wrapped_with_only_tmp_file_space_method = _StringModelThat(
-            tmp_file_space=do_raise(ValueError('should not be called')),
-            as_str=do_raise(ValueError('should not be called')),
+        wrapped = StringModelThat.new_w_defaults_of_not_impl(
             as_file=do_return(value_from_wrapped_method),
-            write_to=do_raise(ValueError('should not be called')),
         )
 
-        model = sut.StringModelThatThatChecksLines(self, wrapped_with_only_tmp_file_space_method)
+        model = sut.StringModelThatThatChecksLines(self, wrapped)
         # ACT #
         actual = model.as_file
         # ASSERT #
@@ -167,14 +170,11 @@ class TestModelChecker(unittest.TestCase):
         def write_to_of_wrapped(f: IO):
             self.assertIs(f, io_passed_to_wrapper)
 
-        wrapped_with_only_tmp_file_space_method = _StringModelThat(
-            tmp_file_space=do_raise(ValueError('should not be called')),
-            as_str=do_raise(ValueError('should not be called')),
-            as_file=do_raise(ValueError('should not be called')),
+        wrapped = StringModelThat.new_w_defaults_of_not_impl(
             write_to=write_to_of_wrapped,
         )
 
-        model = sut.StringModelThatThatChecksLines(self, wrapped_with_only_tmp_file_space_method)
+        model = sut.StringModelThatThatChecksLines(self, wrapped)
         # ACT & ASSERT #
         model.write_to(io_passed_to_wrapper)
 
@@ -186,39 +186,6 @@ class TestModelChecker(unittest.TestCase):
                 DirFileSpaceThatMustNoBeUsed(),
             )
         )
-
-
-class _StringModelThat(StringModel):
-    def __init__(self,
-                 tmp_file_space: Callable[[], DirFileSpace],
-                 as_str: Callable[[], str],
-                 as_file: Callable[[], Path],
-                 write_to: Callable[[IO], None],
-                 ):
-        self.__tmp_file_space = tmp_file_space
-        self._as_str = as_str
-        self._as_file = as_file
-        self._write_to = write_to
-
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self.__tmp_file_space()
-
-    @property
-    def as_str(self) -> str:
-        return self._as_str()
-
-    @property
-    def as_file(self) -> Path:
-        return self._as_file()
-
-    @property
-    @contextmanager
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        raise NotImplementedError('unsupported')
-
-    def write_to(self, output: IO):
-        self._write_to(output)
 
 
 def _get_all_lines(model: sut.StringModelThatThatChecksLines) -> List[str]:

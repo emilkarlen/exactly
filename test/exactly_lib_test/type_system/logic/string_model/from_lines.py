@@ -6,6 +6,7 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.impls import transformed_string_models as sut
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
 
 
@@ -18,33 +19,40 @@ def suite() -> unittest.TestSuite:
 class TestTransformedStringModelFromLines(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        model_constructor = _ToUpperModelConstructor(
-            _transformer_function,
-            [
-                '1st\n',
-                '2nd\n',
-            ]
-        )
-        expectation = model_checker.Expectation.equals(
-            ''.join(_transformer_function(model_constructor.lines))
-        )
+        for transformation_may_depend_on_external_resources in [False, True]:
+            with self.subTest(transformation_may_depend_on_external_resources=
+                              transformation_may_depend_on_external_resources):
+                model_constructor = _ToUpperModelConstructor(
+                    _transformer_function,
+                    [
+                        '1st\n',
+                        '2nd\n',
+                    ],
+                    transformation_may_depend_on_external_resources,
+                )
+                expectation = model_checker.Expectation.equals(
+                    ''.join(_transformer_function(model_constructor.lines)),
+                    may_depend_on_external_resources=asrt.equals(transformation_may_depend_on_external_resources)
+                )
 
-        checker = model_checker.Checker(
-            self,
-            model_constructor,
-            expectation,
-        )
-        # ACT & ASSERT #
-        checker.check()
+                checker = model_checker.Checker(
+                    self,
+                    model_constructor,
+                    expectation,
+                )
+                # ACT & ASSERT #
+                checker.check()
 
 
 class _ToUpperModelConstructor(model_checker.ModelConstructor):
     def __init__(self,
                  transformation: sut.StringTransFun,
                  lines: Sequence[str],
+                 transformation_may_depend_on_external_resources: bool,
                  ):
         self.transformation = transformation
         self.lines = lines
+        self.transformation_may_depend_on_external_resources = transformation_may_depend_on_external_resources
 
     @contextmanager
     def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringModel]:
@@ -56,6 +64,7 @@ class _ToUpperModelConstructor(model_checker.ModelConstructor):
         yield sut.TransformedStringModelFromLines(
             self.transformation,
             source_model,
+            self.transformation_may_depend_on_external_resources,
         )
 
 

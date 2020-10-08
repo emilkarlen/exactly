@@ -4,6 +4,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.identity import Identit
 from exactly_lib.test_case_utils.string_transformer.impl.sequence import SequenceStringTransformer
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
@@ -32,7 +33,60 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestPrimitiveValue),
         ResultShouldBeCompositionOfSequencedTransformers(),
         ValidatorShouldValidateSequencedTransformers(),
+        TestMayDependOnExternalResourcesShouldDependOnSequencedTransformersAndSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldDependOnSequencedTransformersAndSourceModel(unittest.TestCase):
+    def runTest(self):
+        # ARRANGE #
+        for may_dep__src_model in [False, True]:
+            for may_dep__t1 in [False, True]:
+                for may_dep__t2 in [False, True]:
+                    dependencies = [may_dep__src_model, may_dep__t1, may_dep__t2]
+                    resulting_model_may_dep = any(dependencies)
+
+                    with self.subTest(dependencies):
+                        trans_1 = self._sym_ctx_of('trans_1', may_dep__t1)
+                        trans_2 = self._sym_ctx_of('trans_2', may_dep__t2)
+
+                        symbol_contexts = [
+                            trans_1,
+                            trans_2
+                        ]
+                        arguments = st_args.syntax_for_sequence_of_transformers([
+                            trans.name__sym_ref_syntax
+                            for trans in symbol_contexts
+                        ])
+                        # ACT & ASSERT #
+
+                        integration_check.CHECKER__PARSE_FULL.check(
+                            self,
+                            remaining_source(arguments),
+                            model_constructor.empty(self,
+                                                    may_depend_on_external_resources=may_dep__src_model),
+                            arrangement_w_tcds(
+                                symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
+                            ),
+                            expectation_of_successful_execution(
+                                output_lines=[],
+                                symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
+                                may_depend_on_external_resources=resulting_model_may_dep,
+                                is_identity_transformer=False,
+                            )
+                        )
+
+    @staticmethod
+    def _sym_ctx_of(name: str, may_dep: bool) -> SymbolContext:
+        return StringTransformerSymbolContext.of_primitive(
+            name,
+            string_transformers.StringTransformerFromLinesTransformation(
+                name,
+                lambda x: x,
+                is_identity=False,
+                transformation_may_depend_on_external_resources=may_dep,
+            )
+        )
 
 
 class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
@@ -94,6 +148,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     expectation_of_successful_execution(
                         output_lines=expected_output_lines,
                         symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
+                        may_depend_on_external_resources=False,
                         is_identity_transformer=False,
                     )
                 )

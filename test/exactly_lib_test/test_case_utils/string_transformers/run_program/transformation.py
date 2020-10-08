@@ -69,7 +69,8 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
                         symbol_references=program_symbol.references_assertion,
                         execution=ExecutionExpectation(
                             main_result=asrt_string_model.model_lines_lists_matches(
-                                asrt.equals(expected_output_model_lines)
+                                asrt.equals(expected_output_model_lines),
+                                may_depend_on_external_resources=asrt.equals(True),
                             )
                         ),
                         primitive=prim_asrt__constant(
@@ -130,7 +131,8 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
                         program_symbol.references_assertion,
                         ExecutionExpectation(
                             main_result=asrt_string_model.model_lines_lists_matches(
-                                asrt.equals(expected_output_model_lines)
+                                asrt.equals(expected_output_model_lines),
+                                may_depend_on_external_resources=asrt.equals(True),
                             )
                         ),
                         prim_asrt__constant(

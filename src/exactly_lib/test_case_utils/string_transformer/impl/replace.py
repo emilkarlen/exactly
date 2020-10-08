@@ -173,6 +173,9 @@ class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def replacement(self) -> str:
         return self._replacement
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return False
+
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (
             self._iterator(self._replace_excluding_new_lines, lines)

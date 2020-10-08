@@ -16,6 +16,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
@@ -73,7 +74,8 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                             PrimAndExeExpectation(
                                 ExecutionExpectation(
                                     main_result=asrt_string_model.model_lines_lists_matches(
-                                        _AssertLinesRepresentSubSetOfDict(environment)
+                                        _AssertLinesRepresentSubSetOfDict(environment),
+                                        may_depend_on_external_resources=asrt.equals(True),
                                     )
                                 ),
                                 prim_asrt__constant(

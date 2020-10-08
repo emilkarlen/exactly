@@ -20,6 +20,7 @@ from exactly_lib_test.test_case_utils.regex.test_resources.validation_cases impo
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as arg, \
     integration_check
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import StExpectation
 from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -37,7 +38,17 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestApplication),
         ReferencedSymbolsShouldBeReportedAndUsed(),
         ValidationShouldFailWhenRegexIsInvalid(),
+        TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
+    may_dep_on_ext_resources.TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase):
+    def argument_cases(self) -> List[str]:
+        return [
+            arg.syntax_for_replace_transformer('regex', 'replacement', False),
+            arg.syntax_for_replace_transformer('regex', 'replacement', True),
+        ]
 
 
 class TransformationCase:
@@ -337,7 +348,8 @@ class TestApplication(unittest.TestCase):
                         ),
                         ExecutionExpectation(
                             main_result=model_lines_lists_matches(
-                                asrt.equals(lines_for(source_case.replacement))
+                                asrt.equals(lines_for(source_case.replacement)),
+                                may_depend_on_external_resources=asrt.equals(False),
                             )
                         )
                     )
@@ -366,7 +378,8 @@ class TestApplication(unittest.TestCase):
                             ),
                             ExecutionExpectation(
                                 main_result=model_lines_lists_matches(
-                                    asrt.equals(lines_for(source_case.replacement))
+                                    asrt.equals(lines_for(source_case.replacement)),
+                                    may_depend_on_external_resources=asrt.equals(False),
                                 )
                             )
                         )
@@ -461,6 +474,7 @@ def expectation_of_successful_replace_execution(
 ) -> StExpectation:
     return integration_check.expectation_of_successful_execution(
         output_lines,
+        False,
         symbol_references,
         False,
     )

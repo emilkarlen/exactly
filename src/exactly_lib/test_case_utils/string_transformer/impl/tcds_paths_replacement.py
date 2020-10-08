@@ -80,6 +80,9 @@ class TcdsPathsReplacementStringTransformer(StringTransformerFromLinesTransforme
     def structure(self) -> StructureRenderer:
         return self._structure
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return False
+
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (_replace(self._name_and_value_list, line) for line in lines)
 

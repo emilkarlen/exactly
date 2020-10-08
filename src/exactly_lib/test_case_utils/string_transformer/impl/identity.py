@@ -30,6 +30,9 @@ class IdentityStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(names.IDENTITY_TRANSFORMER_NAME)
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return False
+
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return lines
 

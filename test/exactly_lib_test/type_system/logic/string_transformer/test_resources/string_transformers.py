@@ -15,10 +15,12 @@ class StringTransformerFromLinesTransformation(StringTransformer):
     def __init__(self,
                  name: str,
                  transformation: StringTransFun,
-                 is_identity: bool = False
+                 is_identity: bool = False,
+                 transformation_may_depend_on_external_resources: bool = False,
                  ):
         self._name = name
         self._transformation = transformation
+        self._transformation_may_depend_on_external_resources = transformation_may_depend_on_external_resources
         self._is_identity = is_identity
 
     @property
@@ -32,7 +34,8 @@ class StringTransformerFromLinesTransformation(StringTransformer):
     def transform(self, model: StringModel) -> StringModel:
         return transformed_string_models.TransformedStringModelFromLines(
             self._transformation,
-            model
+            model,
+            self._transformation_may_depend_on_external_resources,
         )
 
     def structure(self) -> StructureRenderer:

@@ -1,11 +1,13 @@
 import unittest
+from typing import List
 
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check, \
+    may_dep_on_ext_resources
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
@@ -15,7 +17,17 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources.string
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         Test(),
+        TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
+    may_dep_on_ext_resources.TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase):
+    def argument_cases(self) -> List[str]:
+        return [names.IDENTITY_TRANSFORMER_NAME]
+
+    def is_identity_transformer(self) -> bool:
+        return True
 
 
 class Test(unittest.TestCase):
@@ -38,7 +50,8 @@ class Test(unittest.TestCase):
                 ),
                 ExecutionExpectation(
                     main_result=asrt_string_model.model_lines_lists_matches(
-                        asrt.equals(model_content_lines)
+                        asrt.equals(model_content_lines),
+                        may_depend_on_external_resources=asrt.equals(False),
                     )
                 ),
                 prim_asrt__constant(is_identity_transformer(True))

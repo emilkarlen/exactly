@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 import unittest
 from contextlib import contextmanager
-from typing import ContextManager
+from typing import ContextManager, List
 
 from exactly_lib.definitions import path
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -15,7 +15,8 @@ from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args, \
+    may_dep_on_ext_resources
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
@@ -34,7 +35,14 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSubDirRelationshipBetweenHdsActAndHdsCase),
         unittest.makeSuite(TestWhenRelHdsCaseIsEqualToRelHdsActThenVariableWithPrecedenceShouldBeUsed),
         TestIntegration(),
+        TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
+    may_dep_on_ext_resources.TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase):
+    def argument_cases(self) -> List[str]:
+        return [args.tcds_path_replacement()]
 
 
 def _transform_string_to_string(tcds: TestCaseDs, string_input: str) -> str:
@@ -73,6 +81,7 @@ class TestIntegration(unittest.TestCase):
             expectation_of_successful_execution(
                 symbol_references=asrt.is_empty_sequence,
                 output_lines=expected,
+                may_depend_on_external_resources=False,
                 is_identity_transformer=False,
             )
         )

@@ -36,6 +36,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
             expectation_of_successful_execution(
                 symbol_references=asrt.is_empty_sequence,
                 output_lines=[],
+                may_depend_on_external_resources=False,
                 is_identity_transformer=False,
             )
         )
@@ -61,6 +62,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
             expectation_of_successful_execution(
                 symbol_references=asrt.is_empty_sequence,
                 output_lines=with_appended_new_lines(expected_lines),
+                may_depend_on_external_resources=False,
                 is_identity_transformer=False,
             )
         )

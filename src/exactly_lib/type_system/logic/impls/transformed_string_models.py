@@ -25,10 +25,17 @@ class TransformedStringModelFromLines(StringModelFromLinesBase, TransformedStrin
     def __init__(self,
                  transformation: StringTransFun,
                  transformed: StringModel,
+                 transformation_may_depend_on_external_resources: bool,
                  ):
         StringModelFromLinesBase.__init__(self)
         TransformedStringModelBase.__init__(self, transformed)
         self._transformation = transformation
+        self._transformation_may_depend_on_external_resources = transformation_may_depend_on_external_resources
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return (self._transformation_may_depend_on_external_resources or
+                self._transformed.may_depend_on_external_resources)
 
     @property
     @contextmanager

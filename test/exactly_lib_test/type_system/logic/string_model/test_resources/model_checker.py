@@ -36,22 +36,30 @@ def _get_dir_file_space_with_existing_dir() -> ContextManager[DirFileSpace]:
 
 class Expectation:
     def __init__(self,
-                 expected: ValueAssertion[str],
+                 contents: ValueAssertion[str],
+                 may_depend_on_external_resources: ValueAssertion[bool] = asrt_text_doc.is_any_text(),
                  hard_error: Optional[ValueAssertion[TextRenderer]] = None
                  ):
-        self.expected = expected
+        self.contents = contents
+        self.may_depend_on_external_resources = may_depend_on_external_resources
         self.hard_error = hard_error
 
     @staticmethod
-    def equals(expected: str) -> 'Expectation':
+    def equals(contents: str,
+               may_depend_on_external_resources: ValueAssertion[bool],
+               ) -> 'Expectation':
         return Expectation(
-            expected=asrt.equals(expected)
+            contents=asrt.equals(contents),
+            may_depend_on_external_resources=may_depend_on_external_resources
         )
 
     @staticmethod
-    def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()) -> 'Expectation':
+    def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
+                   may_depend_on_external_resources: ValueAssertion[bool] = asrt.anything_goes(),
+                   ) -> 'Expectation':
         return Expectation(
-            expected=asrt.fail('contents should not be accessed due to HARD_ERROR'),
+            contents=asrt.fail('contents should not be accessed due to HARD_ERROR'),
+            may_depend_on_external_resources=may_depend_on_external_resources,
             hard_error=asrt.is_not_none_and(expected)
         )
 
@@ -69,6 +77,8 @@ class Checker:
         self.get_dir_file_space = get_dir_file_space
 
     def check(self):
+        self._check_may_depend_on_external_resources()
+
         cases = contents_cases(self.put)
         for case in cases:
             with self._app_env() as app_env:
@@ -77,9 +87,12 @@ class Checker:
                         app_env,
                         case.value,
                     )
+
         self._check_line_sequence_is_valid()
 
     def check_with_first_access_is_not_write_to(self):
+        self._check_may_depend_on_external_resources()
+
         cases = contents_cases__first_access_is_not_write_to(self.put)
         for case in cases:
             with self._app_env() as app_env:
@@ -88,7 +101,18 @@ class Checker:
                         app_env,
                         case.value,
                     )
+
         self._check_line_sequence_is_valid()
+
+    def _check_may_depend_on_external_resources(self):
+        # ARRANGE #
+        with self.put.subTest('may_depend_on_external_resources'):
+            with self._app_env() as app_env:
+                with self.model_constructor.new_with(app_env) as model_to_check:
+                    self.expectation.may_depend_on_external_resources.apply_without_message(
+                        self.put,
+                        model_to_check.may_depend_on_external_resources,
+                    )
 
     def _check_line_sequence_is_valid(self):
         if self.expectation.hard_error is not None:
@@ -129,7 +153,7 @@ class Checker:
                         return
 
                         # ASSERT #
-                self.expectation.expected.apply_with_message(self.put,
+                self.expectation.contents.apply_with_message(self.put,
                                                              actual,
                                                              'contents - ' + case.name)
 

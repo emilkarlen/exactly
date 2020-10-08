@@ -7,6 +7,7 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.impls.transformed_string_models import StringTransFun
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
 
 
@@ -28,7 +29,8 @@ class TestTransformedByWriter(unittest.TestCase):
             ]
         )
         expectation = model_checker.Expectation.equals(
-            ''.join(_transformer_function(model_constructor.raw_lines))
+            ''.join(_transformer_function(model_constructor.raw_lines)),
+            may_depend_on_external_resources=asrt.equals(True),
         )
 
         checker = model_checker.Checker(
@@ -51,7 +53,8 @@ class TestTransformedByWriter(unittest.TestCase):
             ]
         )
         expectation = model_checker.Expectation.equals(
-            ''.join(_transformer_function(model_constructor.raw_lines))
+            ''.join(_transformer_function(model_constructor.raw_lines)),
+            may_depend_on_external_resources=asrt.equals(True),
         )
 
         checker = model_checker.Checker(

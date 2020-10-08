@@ -125,6 +125,9 @@ class _CaseConverter(StringTransformerFromLinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return False
+
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return map(self._converter, lines)
 

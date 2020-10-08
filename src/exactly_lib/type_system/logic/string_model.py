@@ -24,8 +24,32 @@ class StringModel(ABC):
         pass
 
     @property
+    @abstractmethod
+    def may_depend_on_external_resources(self) -> bool:
+        """
+        Tells if the model probably depends on (heavy) resources such as
+         - files
+         - program execution
+
+        If this method gives False - it should be relatively cheap to
+        access it using func:`as_str`, for example.
+
+        The return value is allowed to vary over time - model may become
+        independent on external resources by caching, e.g.
+
+        The name is intentionally vague, so that an implementation
+        can give True, even if it cannot guarantee that there are
+        such dependencies.
+        The idea is that an implementation should give False iff
+        it can guarantee that there are no (heavy) external resources.
+        """
+        pass
+
+    @property
     def as_str(self) -> str:
         """
+        See also :func:`may_depend_on_external_resources`
+
         :raises HardErrorException: Detected error
         """
         with self.as_lines as lines:

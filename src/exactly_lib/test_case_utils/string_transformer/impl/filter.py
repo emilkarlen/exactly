@@ -105,6 +105,9 @@ class _SelectStringTransformer(WithCachedTreeStructureDescriptionBase, StringTra
     def line_matcher(self) -> LineMatcher:
         return self._line_matcher
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return True
+
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (
             line

@@ -14,10 +14,15 @@ class StringTransformerFromLinesTransformer(StringTransformer, ABC):
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         pass
 
+    @abstractmethod
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        pass
+
     def transform(self, model: StringModel) -> StringModel:
         return transformed_string_models.TransformedStringModelFromLines(
             self._transform,
             model,
+            self._transformation_may_depend_on_external_resources()
         )
 
 
@@ -29,6 +34,10 @@ class TransformedStringModelFromWriter(TransformedStringModelBase):
         super().__init__(transformed)
         self._write = write
         self._file_created_on_demand = None
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return True
 
     @property
     def as_file(self) -> Path:

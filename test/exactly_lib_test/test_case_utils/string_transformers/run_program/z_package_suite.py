@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.test_case_utils.string_transformers.run_program import validation, unable_to_execute, arguments, \
     stdin, \
-    transformation, environment, exit_code
+    transformation, environment, exit_code, model_dep_on_ext_resources
 
 
 def suite() -> unittest.TestSuite:
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
         stdin.suite(),
         transformation.suite(),
         exit_code.suite(),
+        model_dep_on_ext_resources.suite(),
     ])
 
 

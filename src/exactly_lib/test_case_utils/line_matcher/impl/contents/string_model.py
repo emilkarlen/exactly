@@ -19,6 +19,10 @@ class StringModel(StringModelFromLinesBase):
         return self.__tmp_file_space
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return False
+
+    @property
     def as_str(self) -> str:
         return self._contents
 

@@ -32,6 +32,7 @@ CHECKER__PARSE_SIMPLE = logic_integration_check.IntegrationChecker(
 
 
 def expectation_of_successful_execution(output_lines: List[str],
+                                        may_depend_on_external_resources: bool,
                                         symbol_references: ValueAssertion[Sequence[SymbolReference]],
                                         is_identity_transformer: bool = False,
                                         source: ValueAssertion[ParseSource] = asrt.anything_goes()) -> StExpectation:
@@ -41,7 +42,10 @@ def expectation_of_successful_execution(output_lines: List[str],
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=model_lines_lists_matches(asrt.equals(output_lines))
+            main_result=model_lines_lists_matches(
+                asrt.equals(output_lines),
+                may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
+            ),
         ),
         prim_asrt__constant(
             asrt_string_transformer.is_identity_transformer(is_identity_transformer)

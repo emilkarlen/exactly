@@ -16,6 +16,7 @@ from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
@@ -45,7 +46,8 @@ class TestTransformedByCommand(unittest.TestCase):
                 exit_code=0
             )
             expectation = model_checker.Expectation.equals(
-                model_constructor.contents.upper()
+                model_constructor.contents.upper(),
+                may_depend_on_external_resources=asrt.equals(True),
             )
             with self.subTest(ignore_exit_code=ignore_exit_code):
                 checker = model_checker.Checker(
@@ -68,7 +70,8 @@ class TestTransformedByCommand(unittest.TestCase):
             exit_code=1
         )
         expectation = model_checker.Expectation.equals(
-            model_constructor.contents.upper()
+            model_constructor.contents.upper(),
+            may_depend_on_external_resources=asrt.equals(True),
         )
 
         checker = model_checker.Checker(
@@ -117,7 +120,8 @@ class TestTransformedByProgramWoTransformation(unittest.TestCase):
                 exit_code=0
             )
             expectation = model_checker.Expectation.equals(
-                model_constructor.contents.upper()
+                model_constructor.contents.upper(),
+                may_depend_on_external_resources=asrt.equals(True),
             )
             with self.subTest(ignore_exit_code=ignore_exit_code):
                 checker = model_checker.Checker(
@@ -140,7 +144,8 @@ class TestTransformedByProgramWoTransformation(unittest.TestCase):
             exit_code=1
         )
         expectation = model_checker.Expectation.equals(
-            model_constructor.contents.upper()
+            model_constructor.contents.upper(),
+            may_depend_on_external_resources=asrt.equals(True),
         )
 
         checker = model_checker.Checker(
@@ -191,7 +196,10 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
                 exit_code=0,
                 transformation_of_program=additional_transformer
             )
-            expectation = model_checker.Expectation.equals(expected)
+            expectation = model_checker.Expectation.equals(
+                expected,
+                may_depend_on_external_resources=asrt.equals(True),
+            )
             with self.subTest(ignore_exit_code=ignore_exit_code):
                 checker = model_checker.Checker(
                     self,
@@ -210,7 +218,10 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
         ]
         additional_transformer = string_transformers.count_num_uppercase_characters()
         expected = '1\n2\n0\n'
-        expectation = model_checker.Expectation.equals(expected)
+        expectation = model_checker.Expectation.equals(
+            expected,
+            may_depend_on_external_resources=asrt.equals(True),
+        )
 
         model_constructor = _ToUpperProgramModelConstructor(
             input_raw_lines,

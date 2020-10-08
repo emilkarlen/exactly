@@ -22,6 +22,10 @@ class ModelFromLinesTestImpl(model_from_lines.StringModelFromLinesBase):
         return self.tmp_file_space
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return False
+
+    @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
         yield iter(self.lines)

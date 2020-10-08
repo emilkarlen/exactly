@@ -78,7 +78,8 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                 PrimAndExeExpectation(
                     ExecutionExpectation(
                         main_result=asrt_string_model.model_lines_sequence_matches(
-                            expected_lines_on_stdout
+                            expected_lines_on_stdout,
+                            may_depend_on_external_resources=asrt.equals(True),
                         )
                     ),
                     prim_asrt__constant(

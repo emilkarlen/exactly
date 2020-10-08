@@ -140,6 +140,9 @@ class _StripWhiteSpaceTransformer(StringTransformerFromLinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
+    def _transformation_may_depend_on_external_resources(self) -> bool:
+        return False
+
     def _transform(self, lines: Iterable[str]) -> Iterable[str]:
         return self._transformer(lines)
 

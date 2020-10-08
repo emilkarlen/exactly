@@ -39,6 +39,10 @@ class StringModelThatThatChecksLines(StringModel):
         return self._checked._tmp_file_space
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return self._checked.may_depend_on_external_resources
+
+    @property
     def as_str(self) -> str:
         return self._checked.as_str
 
@@ -89,8 +93,15 @@ class StringModelThatThatChecksLines(StringModel):
             self._put.fail('Non-last line: last char is not new-line: ' + repr(line))
 
 
-def model_lines_lists_matches(expected: ValueAssertion[List[str]]) -> ValueAssertion[StringModel]:
+def model_lines_lists_matches(expected: ValueAssertion[List[str]],
+                              may_depend_on_external_resources: ValueAssertion[bool],
+                              ) -> ValueAssertion[StringModel]:
     return asrt.and_([
+        asrt.sub_component(
+            'may_depend_on_external_resources',
+            _may_depend_on_external_resources,
+            may_depend_on_external_resources,
+        ),
         asrt.sub_component(
             'as_lines',
             _line_list_from_as_lines,
@@ -109,8 +120,15 @@ def model_lines_lists_matches(expected: ValueAssertion[List[str]]) -> ValueAsser
     ])
 
 
-def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]]) -> ValueAssertion[StringModel]:
+def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]],
+                                 may_depend_on_external_resources: ValueAssertion[bool],
+                                 ) -> ValueAssertion[StringModel]:
     return asrt.and_([
+        asrt.sub_component(
+            'may_depend_on_external_resources',
+            _may_depend_on_external_resources,
+            may_depend_on_external_resources,
+        ),
         asrt.sub_component(
             'as_lines',
             _line_sequence_from_as_lines,
@@ -129,8 +147,15 @@ def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]]) -> Val
     ])
 
 
-def model_string_matches(expected: ValueAssertion[str]) -> ValueAssertion[StringModel]:
+def model_string_matches(expected: ValueAssertion[str],
+                         may_depend_on_external_resources: ValueAssertion[bool],
+                         ) -> ValueAssertion[StringModel]:
     return asrt.and_([
+        asrt.sub_component(
+            'may_depend_on_external_resources',
+            _may_depend_on_external_resources,
+            may_depend_on_external_resources,
+        ),
         asrt.sub_component(
             'as_lines',
             _str_from_as_lines,
@@ -147,6 +172,10 @@ def model_string_matches(expected: ValueAssertion[str]) -> ValueAssertion[String
             expected,
         ),
     ])
+
+
+def _may_depend_on_external_resources(model: StringModel) -> bool:
+    return model.may_depend_on_external_resources
 
 
 def _line_list_from_as_str(model: StringModel) -> List[str]:

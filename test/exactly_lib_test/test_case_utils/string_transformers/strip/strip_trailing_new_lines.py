@@ -8,6 +8,7 @@ from exactly_lib_test.test_case_utils.string_transformers.strip.test_resources i
     no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_resources.test_utils import ArrEx
@@ -20,7 +21,14 @@ def suite() -> unittest.TestSuite:
         TestOnlyLeadingSpace(),
         TestTrailingNewLinesWLeadingSpace(),
         TestDoNotStripTrailingNonNewLineSpace(),
+        TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(),
     ])
+
+
+class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
+    may_dep_on_ext_resources.TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase):
+    def argument_cases(self) -> List[str]:
+        return [args.strip_trailing_new_lines()]
 
 
 class TestNoLeadingOrTrailingSpace(unittest.TestCase):
@@ -104,6 +112,7 @@ def _check(put: unittest.TestCase,
         expectation_of_successful_execution(
             symbol_references=asrt.is_empty_sequence,
             output_lines=expected_lines,
+            may_depend_on_external_resources=False,
             is_identity_transformer=False,
         )
     )
