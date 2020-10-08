@@ -6,6 +6,7 @@ from exactly_lib.util.str_ import english_text as sut
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         TestOrSequence(),
+        TestAndSequence(),
     ])
 
 
@@ -41,6 +42,43 @@ class TestOrSequence(unittest.TestCase):
             with self.subTest(case[0]):
                 # ACT #
                 actual = sut.or_sequence(case[0])
+                # ASSERT #
+                self.assertEqual(case[1],
+                                 actual)
+
+
+class TestAndSequence(unittest.TestCase):
+    def runTest(self):
+        cases = [
+            (
+                [],
+                ''
+            ),
+            (
+                ['a'],
+                'a'
+            ),
+            (
+                ['a'],
+                'a'
+            ),
+            (
+                ['a', 'b'],
+                'a and b'
+            ),
+            (
+                ['a', 'b', 'c'],
+                'a, b and c'
+            ),
+            (
+                ['a', 'b', 'c', 'd'],
+                'a, b, c and d'
+            ),
+        ]
+        for case in cases:
+            with self.subTest(case[0]):
+                # ACT #
+                actual = sut.and_sequence(case[0])
                 # ASSERT #
                 self.assertEqual(case[1],
                                  actual)

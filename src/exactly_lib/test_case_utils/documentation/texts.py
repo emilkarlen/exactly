@@ -5,6 +5,7 @@ from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.primitives import program
 from exactly_lib.processing import exit_values
+from exactly_lib.util.str_ import english_text
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -53,7 +54,7 @@ unless {ignore_exit_code_option} is given.
 
 
 def type_expression_has_syntax_of_primitive(type_names: Sequence[str]) -> List[ParagraphItem]:
-    types_list = ', '.join(type_names)
+    types_list = english_text.and_sequence(type_names)
     return TextParser({'TYPES': types_list, 'Note': headers.NOTE_LINE_HEADER}).fnap(
         _TYPE_EXPRESSION_HAS_SYNTAX_OF_PRIMITIVE
     )
