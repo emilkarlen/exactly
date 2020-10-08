@@ -130,19 +130,40 @@ class EqualityStringMatcher(StringMatcherImplBase):
                     .build_result(False)
             )
 
-        return self._positive_matcher_application(model)
+        return self._matcher_application(model)
 
-    def _positive_matcher_application(self, model: StringModel) -> MatchingResult:
+    def _matcher_application(self, model: StringModel) -> MatchingResult:
+        return (
+            self._matcher_application__via_memory(self._expected_contents.string_value, model)
+            if self._expected_contents.string_value and not model.may_depend_on_external_resources
+            else
+            self._matcher_application__via_files(model)
+        )
+
+    def _matcher_application__via_memory(self, expected: str, model: StringModel) -> MatchingResult:
+        actual = model.as_str
+        files_are_equal = expected == actual
+
+        if files_are_equal:
+            return self._result_for_match()
+        else:
+            return (
+                self._new_tb_with_expected()
+                    .append_details(
+                    custom_details.actual(
+                        custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual)
+                    ))
+                    .build_result(False)
+            )
+
+    def _matcher_application__via_files(self, model: StringModel) -> MatchingResult:
         expected_file_path = self._file_path_for_file_with_expected_contents(self._tmp_file_space)
         actual_file_path = model.as_file
 
         files_are_equal = self._do_compare(expected_file_path, actual_file_path)
 
         if files_are_equal:
-            return (
-                self._new_tb_with_expected()
-                    .build_result(True)
-            )
+            return self._result_for_match()
         else:
             return (
                 self._new_tb_with_expected()
@@ -150,6 +171,9 @@ class EqualityStringMatcher(StringMatcherImplBase):
                     .append_details(self._diff_detail(actual_file_path, expected_file_path))
                     .build_result(False)
             )
+
+    def _result_for_match(self) -> MatchingResult:
+        return self._new_tb_with_expected().build_result(True)
 
     @staticmethod
     def _actual_file_contents_detail(actual: pathlib.Path) -> DetailsRenderer:

@@ -1,1 +1,6 @@
 *.case
+
+[suites]
+
+contents
+line-num
