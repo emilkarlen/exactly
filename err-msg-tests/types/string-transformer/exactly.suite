@@ -1,8 +1,5 @@
-[cases]
-
-*.case
-
 [suites]
 
+strip
 replace
 run

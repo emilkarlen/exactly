@@ -19,9 +19,7 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - `suffixes` - matches the "suffixes" part of file names
  - Type `file-matcher` - `suffix` - matches the "suffix" part of file names
  - Type `line-matcher` - `contents` - matches text contents using a `string-matcher`
- - Type `string-transformer` - `strip-trailing-new-lines`
- - Type `string-transformer` - `strip-trailing-space`
- - Type `string-transformer` - `strip-space`
+ - Type `string-transformer` - `strip`
  - Type `integer-matcher`
  - Builtin symbol - string `NEW_LINE`
 

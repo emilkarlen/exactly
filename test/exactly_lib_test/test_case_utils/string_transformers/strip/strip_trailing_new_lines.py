@@ -4,12 +4,12 @@ from typing import List
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
+from exactly_lib_test.test_case_utils.string_transformers.strip.test_resources import \
+    no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
-from exactly_lib_test.test_case_utils.string_transformers.test_resources.strip_space import \
-    no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

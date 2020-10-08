@@ -7,7 +7,7 @@ file f.txt = 'abc@[TAB]@
 [assert]
 
 contents f.txt
-  -transformed-by strip-trailing-space
+  -transformed-by strip -trailing-space
   equals 'abc@[TAB]@
 
 '

@@ -79,11 +79,17 @@ def to_upper_case() -> str:
 
 
 def strip_trailing_new_lines() -> str:
-    return names.STRIP_TRAILING_NEW_LINES
+    return ' '.join((
+        names.STRIP_SPACE,
+        option_syntax(names.STRIP_TRAILING_NEW_LINES_OPTION_NAME),
+    ))
 
 
 def strip_trailing_space() -> str:
-    return names.STRIP_TRAILING_SPACE
+    return ' '.join((
+        names.STRIP_SPACE,
+        option_syntax(names.STRIP_TRAILING_SPACE_OPTION_NAME),
+    ))
 
 
 def strip_space() -> str:

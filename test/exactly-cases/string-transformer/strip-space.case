@@ -8,5 +8,5 @@ abc@[TAB]@
 [assert]
 
 contents f.txt
-  -transformed-by strip-space
+  -transformed-by strip
     equals 'abc'
