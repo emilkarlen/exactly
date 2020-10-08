@@ -55,7 +55,7 @@ def parser_for_name_part(
 def _parser(parse_matcher_of_regex: Callable[[TokenParser], FileMatcherSdv],
             parse_matcher_of_glob_pattern: Callable[[TokenParser], FileMatcherSdv],
             ) -> ParserFromTokens[FileMatcherSdv]:
-    return token_stream_parsing.ParserWithDefault(
+    return token_stream_parsing.ParserOfMandatoryChoiceWithDefault(
         _SYNTAX_ELEM_STR,
         [
             token_stream_parsing.TokenSyntaxSetup(

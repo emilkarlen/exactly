@@ -68,6 +68,9 @@ class TokenParser:
             self.error('Missing ' + syntax_element_name)
         self.require_head_token_has_valid_syntax(syntax_element_name)
 
+    def report_missing(self, syntax_element_name: str) -> T:
+        return self.error('Missing ' + syntax_element_name)
+
     def require_head_is_unquoted_and_equals(self, expected: str, error_message: ErrorMessageGenerator):
         if not self.head_is_unquoted_and_equals(expected):
             self.consume_head__if_exists_and_is_valid_token()
@@ -79,6 +82,9 @@ class TokenParser:
                 or
                 self._lookahead_token_has_invalid_syntax()
         )
+
+    def has_valid_head_token_on_current_line(self) -> bool:
+        return not self.is_at_eol and self.has_valid_head_token()
 
     @property
     def head(self) -> Token:
