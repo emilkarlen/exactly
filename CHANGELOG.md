@@ -37,7 +37,7 @@ with exception of a "0." prefix until version 1 is released.
  - Exit codes - Syntax error in `[act]` - `VALIDATION_ERROR` -> `SYNTAX_ERROR`
  - Exit codes - Values of all non-zero exit codes
  - Instruction `conf`/`actor` - Remove "-" prefix from actor names
- - String transformer - Case converters - Replaces builtin symbols with primitives
+ - String transformer - Case converters - Replaces builtin symbols with primitive
  - String transformer - TCDS dir replacement - Replaces builtin symbol with primitive
   - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP` 
 

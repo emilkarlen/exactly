@@ -4,7 +4,7 @@ file string.txt = "some contents"
 
 file transformed.txt = -file -rel-act string.txt
                        -transformed-by
-                          to-upper-case
+                          char-case -to-upper
 
 [assert]
 

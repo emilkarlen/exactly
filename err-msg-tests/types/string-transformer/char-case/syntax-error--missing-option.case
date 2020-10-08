@@ -1,0 +1,3 @@
+[setup]
+
+def string-transformer ST = char-case

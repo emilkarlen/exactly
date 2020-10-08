@@ -1,5 +1,6 @@
 [suites]
 
 strip
+char-case
 replace
 run

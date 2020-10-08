@@ -71,11 +71,17 @@ def arbitrary_value_on_single_line() -> str:
 
 
 def to_lower_case() -> str:
-    return names.TO_LOWER_CASE
+    return ' '.join((
+        names.CHARACTER_CASE,
+        option_syntax(names.CHARACTER_CASE_TO_LOWER_OPTION_NAME),
+    ))
 
 
 def to_upper_case() -> str:
-    return names.TO_UPPER_CASE
+    return ' '.join((
+        names.CHARACTER_CASE,
+        option_syntax(names.CHARACTER_CASE_TO_UPPER_OPTION_NAME),
+    ))
 
 
 def strip_trailing_new_lines() -> str:

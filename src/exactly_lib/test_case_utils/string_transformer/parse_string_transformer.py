@@ -43,14 +43,9 @@ GRAMMAR = grammar.Grammar(
                               replace.SyntaxDescription())
         ),
         NameAndValue(
-            names.TO_LOWER_CASE,
-            grammar.Primitive(case_converters.parse_to_lower_case,
-                              case_converters.to_lower_case__documentation())
-        ),
-        NameAndValue(
-            names.TO_UPPER_CASE,
-            grammar.Primitive(case_converters.parse_to_upper_case,
-                              case_converters.to_upper_case__documentation())
+            names.CHARACTER_CASE,
+            grammar.Primitive(case_converters.Parser().parse,
+                              case_converters.SyntaxDescription())
         ),
         NameAndValue(
             names.STRIP_SPACE,

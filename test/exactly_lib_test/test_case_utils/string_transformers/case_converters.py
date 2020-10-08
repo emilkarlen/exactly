@@ -28,3 +28,7 @@ class TestToUpper(tr.CaseConverterTestBase):
             args.to_upper_case(),
             str.upper,
         )
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

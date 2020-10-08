@@ -14,10 +14,10 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class CaseConverterConfig:
     def __init__(self,
-                 name: str,
+                 arguments: str,
                  str_transformer: Callable[[str], str],
                  ):
-        self.name = name
+        self.arguments = arguments
         self.str_transformer = str_transformer
 
 
@@ -30,7 +30,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
     def test_no_lines(self):
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
-            Arguments(self.config.name),
+            Arguments(self.config.arguments),
             model_constructor.of_lines(self, []),
             arrangement_w_tcds(),
             expectation_of_successful_execution(
@@ -55,7 +55,7 @@ class CaseConverterTestBase(unittest.TestCase, ABC):
         # ACT & ASSERT #
         integration_check.CHECKER__PARSE_FULL.check__w_source_variants(
             self,
-            Arguments(self.config.name),
+            Arguments(self.config.arguments),
             model_constructor.of_lines_wo_nl(self, input_lines),
             arrangement_w_tcds(),
             expectation_of_successful_execution(

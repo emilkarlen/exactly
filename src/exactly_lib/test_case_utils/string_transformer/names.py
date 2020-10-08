@@ -4,8 +4,10 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 IDENTITY_TRANSFORMER_NAME = 'identity'
 REPLACE_TRANSFORMER_NAME = 'replace'
 FILTER_TRANSFORMER_NAME = 'filter'
-TO_UPPER_CASE = 'to-upper-case'
-TO_LOWER_CASE = 'to-lower-case'
+
+CHARACTER_CASE = 'char-case'
+CHARACTER_CASE_TO_LOWER_OPTION_NAME = a.OptionName(long_name='to-lower')
+CHARACTER_CASE_TO_UPPER_OPTION_NAME = a.OptionName(long_name='to-upper')
 
 STRIP_SPACE = 'strip'
 STRIP_TRAILING_SPACE_OPTION_NAME = a.OptionName(long_name='trailing-space')

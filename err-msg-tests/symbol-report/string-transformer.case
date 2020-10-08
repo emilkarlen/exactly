@@ -12,13 +12,12 @@ def string-transformer RUN__INTERPRET_EXIT_CODE = run % my-program arg1 "arg 2"
 def string-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-program arg1 "arg 2"
 
 def string-transformer RUN__W_TRANSFORMER = run -ignore-exit-code % my-program arg1 "arg 2"
-                                            -transformed-by to-lower-case
+                                            -transformed-by char-case -to-lower
 
 def string-transformer REPLACE_TCDS_DIRS  = replace-test-case-dirs
 
-def string-transformer TO_LOWER_CASE = to-lower-case
-
-def string-transformer TO_UPPER_CASE = to-upper-case
+def string-transformer TO_LOWER_CASE = char-case -to-lower
+def string-transformer TO_UPPER_CASE = char-case -to-upper
 
 def string-transformer STRIP_TRAILING_NL = strip -trailing-new-lines
 def string-transformer STRIP_TRAILING_WS = strip -trailing-space

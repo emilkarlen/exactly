@@ -7,7 +7,7 @@ Elephant!"
 [assert]
 
 contents f.txt
-     -transformed-by to-upper-case
+     -transformed-by char-case -to-upper
      equals "
 AN
 ELEPHANT!"
