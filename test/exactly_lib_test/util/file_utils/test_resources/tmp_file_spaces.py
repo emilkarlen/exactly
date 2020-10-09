@@ -33,11 +33,13 @@ class TmpFileSpaceThatAllowsSinglePathGeneration(DirFileSpaceThatMustNoBeUsed):
         self.put = put
         self.storage_dir = storage_dir
         self.path_name = path_name
-        self._generated_path = None
+        self._path_has_been_generated = False
 
     def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
-        if self._generated_path is not None:
+        if self._path_has_been_generated:
             self.put.fail('The path has already been generated')
+
+        self._path_has_been_generated = True
 
         name = self.path_name
         if name_suffix is not None:
