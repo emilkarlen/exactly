@@ -1,0 +1,13 @@
+[setup]
+
+
+file large.txt =
+  -stdout-from
+  -python -c 'for i in range(1000): print("a long long long long long long long line")'
+
+
+[assert]
+
+
+contents large.txt
+  equals 'expected'

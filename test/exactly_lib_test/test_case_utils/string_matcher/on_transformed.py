@@ -72,7 +72,7 @@ class TestWhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformed
             self,
             args2.Transformed(
                 _TRANSFORMER_SYMBOL_NAME,
-                args2.Equals(surrounded_by_hard_quotes_str(expected_model_contents))
+                args2.Equals.eq_string(surrounded_by_hard_quotes_str(expected_model_contents))
             ).as_arguments,
             asrt.matches_singleton_sequence(
                 is_reference_to_string_transformer(_TRANSFORMER_SYMBOL_NAME)
@@ -254,8 +254,8 @@ class TestWithBinaryOperators(unittest.TestCase):
                 to_upper_transformer.name,
                 args2.Parenthesis(
                     args2.conjunction([
-                        args2.Equals(model.transformed),
-                        args2.Equals(model.original),
+                        args2.Equals.eq_string(model.transformed),
+                        args2.Equals.eq_string(model.original),
                     ])
                 )
             ).as_arguments,
@@ -292,10 +292,10 @@ class TestWithBinaryOperators(unittest.TestCase):
                 args2.Parenthesis(
                     args2.Transformed(
                         to_upper_transformer.name,
-                        args2.Equals(model.transformed)
+                        args2.Equals.eq_string(model.transformed)
                     ),
                 ),
-                args2.Equals(model.original),
+                args2.Equals.eq_string(model.original),
             ]).as_arguments,
             model_constructor.of_str(self, model.original),
             arrangement_w_tcds(

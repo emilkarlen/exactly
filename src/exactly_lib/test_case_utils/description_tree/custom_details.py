@@ -21,6 +21,9 @@ from exactly_lib.util.description_tree.tree import Detail
 from exactly_lib.util.render.renderer import Renderer
 from exactly_lib.util.str_.str_constructor import ToStringObject
 
+STRING__DEFAULT_DISPLAY_LEN = 100
+STRING__EXTRA_TO_READ_FOR_ERROR_MESSAGES = STRING__DEFAULT_DISPLAY_LEN
+
 HAS_MORE_DATA_MARKER = '...'
 
 _EXPECTED = 'Expected'
@@ -269,9 +272,7 @@ class OfTextRenderer(DetailsRenderer):
 
 
 class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
-    DEFAULT_DISPLAY_LEN = 100
-
-    def __init__(self, value: str, max_chars_to_print: int = DEFAULT_DISPLAY_LEN):
+    def __init__(self, value: str, max_chars_to_print: int = STRING__DEFAULT_DISPLAY_LEN):
         self._value = value
         self._max_chars_to_print = max_chars_to_print
 
@@ -284,6 +285,26 @@ class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
         return [
             tree.StringDetail(sr)
         ]
+
+
+class StringPrefixAsSingleLineContinuationMarkerRenderer(DetailsRenderer):
+    def __init__(self, value: str):
+        self._value = value
+
+    def render(self) -> Sequence[Detail]:
+        sr = repr(self._value) + HAS_MORE_DATA_MARKER
+        return [
+            tree.StringDetail(sr)
+        ]
+
+
+def string__maybe_longer(value: str, is_longer: bool) -> DetailsRenderer:
+    return (
+        StringPrefixAsSingleLineContinuationMarkerRenderer(value)
+        if is_longer
+        else
+        StringAsSingleLineWithMaxLenDetailsRenderer(value)
+    )
 
 
 class ComparatorExpression(DetailsRenderer):

@@ -1,0 +1,7 @@
+[assert]
+
+contents -rel-act-home input-file-w-ints.txt
+
+  every line :
+    contents
+      equals -file expected.txt

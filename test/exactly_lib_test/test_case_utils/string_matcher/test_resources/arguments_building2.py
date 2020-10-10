@@ -7,8 +7,11 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
+from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.argument_renderer import elements_for_binary_operator_arg
+from exactly_lib_test.test_resources.argument_renderers import FileOrString, FileOrStringAsString, FileOrStringAsFile, \
+    FileOrStringAsHereDoc, HereDocument
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.test_resources.strings import WithToString
 
@@ -68,15 +71,26 @@ class NumLines(StringMatcherArg):
 
 
 class Equals(StringMatcherArg):
-    def __init__(self, string_argument: str):
-        """
-        :param string_argument: Must be a single token.
-        """
-        self._string_argument = string_argument
+    def __init__(self, contents: FileOrString):
+        self.contents = contents
+
+    @staticmethod
+    def eq_string(string: str) -> 'Equals':
+        return Equals(FileOrStringAsString(string))
+
+    @staticmethod
+    def eq_file(file: PathArgument) -> 'Equals':
+        return Equals(FileOrStringAsFile(file))
+
+    @staticmethod
+    def eq_here_doc(separator: str, contents_ended_w_new_line: str) -> 'Equals':
+        return Equals(FileOrStringAsHereDoc(
+            HereDocument(separator, contents_ended_w_new_line)
+        ))
 
     @property
     def elements(self) -> List[WithToString]:
-        return [matcher_options.EQUALS_ARGUMENT, self._string_argument]
+        return [matcher_options.EQUALS_ARGUMENT] + self.contents.elements
 
 
 class Matches(StringMatcherArg):

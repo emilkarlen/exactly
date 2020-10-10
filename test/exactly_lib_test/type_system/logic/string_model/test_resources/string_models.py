@@ -55,7 +55,7 @@ class StringModelThat(StringModel):
                  tmp_file_space: Callable[[], DirFileSpace],
                  may_depend_on_external_resources: Callable[[], bool],
                  as_str: Callable[[], str],
-                 as_lines: Callable[[], ContextManager[Iterator[str]]],
+                 as_lines: Callable[[], Iterator[str]],
                  as_file: Callable[[], Path],
                  write_to: Callable[[IO], None],
                  ):
@@ -71,7 +71,7 @@ class StringModelThat(StringModel):
             tmp_file_space: Callable[[], DirFileSpace] = do_raise(ValueError('should not be called')),
             may_depend_on_external_resources: Callable[[], bool] = do_raise(ValueError('should not be called')),
             as_str: Callable[[], str] = do_raise(ValueError('should not be called')),
-            as_lines: Callable[[], ContextManager[Iterator[str]]] = do_raise(ValueError('should not be called')),
+            as_lines: Callable[[], Iterator[str]] = do_raise(ValueError('should not be called')),
             as_file: Callable[[], Path] = do_raise(ValueError('should not be called')),
             write_to: Callable[[IO], None] = do_raise(ValueError('should not be called')),
     ) -> StringModel:
@@ -103,7 +103,7 @@ class StringModelThat(StringModel):
     @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
-        return self._as_lines()
+        yield self._as_lines()
 
     def write_to(self, output: IO):
         self._write_to(output)

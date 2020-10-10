@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ContextManager, Iterator, IO
+from typing import ContextManager, Iterator, IO, Tuple
 
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+from exactly_lib.util.str_ import read_lines
 
 
 class StringModel(ABC):
@@ -90,3 +91,11 @@ class StringModel(ABC):
         """
         with self.as_lines as lines:
             output.writelines(lines)
+
+
+def read_lines_as_str__w_minimum_num_chars(min_num_chars_to_read: int, model: StringModel) -> Tuple[str, bool]:
+    """
+    :return: string read, source-may-have-more-contents
+    """
+    with model.as_lines as lines:
+        return read_lines.read_lines_as_str__w_minimum_num_chars(min_num_chars_to_read, lines)

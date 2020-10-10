@@ -92,7 +92,7 @@ class TestStringValueEqualsBuiltinBase(SetupWithoutPreprocessorAndDefaultActor, 
         ]
 
     def test_case(self) -> str:
-        equals_builtin_symbol_value_matcher = str_matcher_args.Equals(
+        equals_builtin_symbol_value_matcher = str_matcher_args.Equals.eq_string(
             symbol_reference_syntax_for_name(self._name_of_checked_symbol)
         ).as_arguments.as_single_string
 

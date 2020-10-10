@@ -89,7 +89,7 @@ class _ModelOfString:
             self.put,
             string_models.of_string(
                 self.contents,
-                environment.application_environment.tmp_files_space.sub_dir_space(),
+                environment.application_environment.tmp_files_space,
                 self.may_depend_on_external_resources,
             )
         )

@@ -1,8 +1,9 @@
 import difflib
 import filecmp
 import pathlib
-from typing import Iterable
+from typing import Iterable, Sequence, Callable, Tuple
 
+import exactly_lib.util.str_.read_lines
 from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
 from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.tcfs import ddv_validators
@@ -16,16 +17,15 @@ from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMat
 from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.type_system.logic import string_model
+from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcher, \
-    StringMatcherSdv
+from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils
-from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.str_.str_constructor import StringConstructor
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -34,33 +34,12 @@ def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
     def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringModel]:
         expected_contents_ddv = expected_contents.resolve(symbols)
 
-        return ddv(expected_contents_ddv)
+        return EqualityStringMatcherDdv(
+            expected_contents_ddv,
+            _validator_of_expected(expected_contents_ddv),
+        )
 
     return sdv_components.MatcherSdvFromParts(expected_contents.references, get_ddv)
-
-
-def ddv(expected_contents: StringOrPathDdv) -> StringMatcherDdv:
-    return EqualityStringMatcherDdv(
-        expected_contents,
-        _validator_of_expected(expected_contents),
-    )
-
-
-class EqualityStringMatcherAdv(MatcherAdv[StringModel]):
-    def __init__(self,
-                 expected_contents: StringOrPath,
-                 validator: PreOrPostSdsValidatorPrimitive,
-                 ):
-        super().__init__()
-        self._expected_contents = expected_contents
-        self._validator = validator
-
-    def primitive(self, environment: ApplicationEnvironment) -> StringMatcher:
-        return EqualityStringMatcher(
-            self._expected_contents,
-            self._validator,
-            environment.tmp_files_space,
-        )
 
 
 class EqualityStringMatcherDdv(MatcherDdv[StringModel]):
@@ -84,9 +63,11 @@ class EqualityStringMatcherDdv(MatcherDdv[StringModel]):
         return self._validator
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
-        return EqualityStringMatcherAdv(
-            self._expected_contents.value_of_any_dependency(tcds),
-            ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
+        return advs.ConstantMatcherAdv(
+            EqualityStringMatcher(
+                self._expected_contents.value_of_any_dependency(tcds),
+                ddv_validators.FixedPreOrPostSdsValidator(tcds, self._validator),
+            )
         )
 
 
@@ -103,14 +84,24 @@ class EqualityStringMatcher(StringMatcherImplBase):
     def __init__(self,
                  expected_contents: StringOrPath,
                  validator: PreOrPostSdsValidatorPrimitive,
-                 tmp_file_space: DirFileSpace,
                  ):
         super().__init__()
         self._expected_contents = expected_contents
         self._validator = validator
-        self._renderer_of_expected_value = custom_details.StringOrPath(expected_contents)
-        self._expected_detail_renderer = custom_details.expected(self._renderer_of_expected_value)
-        self._tmp_file_space = tmp_file_space
+        self._expected_detail_renderer = custom_details.expected(
+            custom_details.StringOrPath(expected_contents)
+        )
+        result_of_match = self._new_tb_with_expected().build_result(True)
+        self._applier = (
+            _ApplierForExpectedOfPath(result_of_match,
+                                      self._result_for_no_match,
+                                      expected_contents.path_value.primitive)
+            if expected_contents.is_path
+            else
+            _ApplierForExpectedOfString(result_of_match,
+                                        self._result_for_no_match,
+                                        expected_contents.string_value)
+        )
 
     @property
     def name(self) -> str:
@@ -130,88 +121,145 @@ class EqualityStringMatcher(StringMatcherImplBase):
                     .build_result(False)
             )
 
-        return self._matcher_application(model)
+        return self._applier.match(model)
 
-    def _matcher_application(self, model: StringModel) -> MatchingResult:
+    def _new_tb_with_expected(self) -> TraceBuilder:
+        return self._new_tb().append_details(self._expected_detail_renderer)
+
+    def _result_for_no_match(self, actual: Sequence[DetailsRenderer]) -> MatchingResult:
         return (
-            self._matcher_application__via_memory(self._expected_contents.string_value, model)
-            if self._expected_contents.string_value and not model.may_depend_on_external_resources
-            else
-            self._matcher_application__via_files(model)
+            TraceBuilder(matcher_options.EQUALS_ARGUMENT)
+                .append_details(self._expected_detail_renderer)
+                .extend_details(actual)
+                .build_result(False)
         )
 
-    def _matcher_application__via_memory(self, expected: str, model: StringModel) -> MatchingResult:
+
+class _Applier:
+    def match(self, model: StringModel) -> MatchingResult:
+        return (
+            self._ext_deps(model)
+            if model.may_depend_on_external_resources
+            else
+            self._no_ext_deps(model)
+        )
+
+    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
+        raise NotImplementedError('abstract method')
+
+    def _ext_deps(self, model: StringModel) -> MatchingResult:
+        raise NotImplementedError('abstract method')
+
+
+class _ApplierForExpectedOfString(_Applier):
+    def __init__(self,
+                 result_for_match: MatchingResult,
+                 build_result_for_no_match: Callable[[Sequence[DetailsRenderer]], MatchingResult],
+                 expected: str,
+                 ):
+        self._build_result_for_no_match = build_result_for_no_match
+        self._result_for_match = result_for_match
+        self._expected = expected
+
+    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
         actual = model.as_str
-        files_are_equal = expected == actual
+        files_are_equal = self._expected == actual
 
         if files_are_equal:
-            return self._result_for_match()
+            return self._result_for_match
         else:
-            return (
-                self._new_tb_with_expected()
-                    .append_details(
-                    custom_details.actual(
-                        custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual)
-                    ))
-                    .build_result(False)
-            )
+            return self._build_result_for_no_match([
+                custom_details.actual(
+                    custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual))
+            ])
 
-    def _matcher_application__via_files(self, model: StringModel) -> MatchingResult:
-        expected_file_path = self._file_path_for_file_with_expected_contents(self._tmp_file_space)
+    def _ext_deps(self, model: StringModel) -> MatchingResult:
+        actual_header, actual_may_be_longer = string_model.read_lines_as_str__w_minimum_num_chars(
+            _min_num_chars_to_read(self._expected),
+            model,
+        )
+        files_are_equal = self._expected == actual_header
+
+        if files_are_equal:
+            return self._result_for_match
+        else:
+            return self._build_result_for_no_match([
+                custom_details.actual(
+                    custom_details.string__maybe_longer(actual_header, actual_may_be_longer))
+            ])
+
+
+class _ApplierForExpectedOfPath(_Applier):
+    def __init__(self,
+                 result_for_match: MatchingResult,
+                 build_result_for_no_match: Callable[[Sequence[DetailsRenderer]], MatchingResult],
+                 expected: pathlib.Path,
+                 ):
+        self._result_for_match = result_for_match
+        self._build_result_for_no_match = build_result_for_no_match
+        self._expected = expected
+
+    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
+        actual = model.as_str
+
+        expected_header, expected_may_be_longer = self._read_expected_header(_min_num_chars_to_read(actual))
+
+        files_are_equal = expected_header == actual
+
+        if files_are_equal:
+            return self._result_for_match
+        else:
+            return self._build_result_for_no_match([
+                custom_details.actual(
+                    custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual))
+            ])
+
+    def _ext_deps(self, model: StringModel) -> MatchingResult:
         actual_file_path = model.as_file
 
-        files_are_equal = self._do_compare(expected_file_path, actual_file_path)
+        files_are_equal = self._do_compare(actual_file_path)
 
         if files_are_equal:
-            return self._result_for_match()
+            return self._result_for_match
         else:
-            return (
-                self._new_tb_with_expected()
-                    .append_details(self._actual_file_contents_detail(actual_file_path))
-                    .append_details(self._diff_detail(actual_file_path, expected_file_path))
-                    .build_result(False)
+            return self._build_result_for_no_match([
+                self._actual_file_contents_detail(actual_file_path),
+                self._diff_detail(actual_file_path),
+            ])
+
+    def _read_expected_header(self, min_num_chars: int) -> Tuple[str, bool]:
+        with self._expected.open() as lines:
+            return exactly_lib.util.str_.read_lines.read_lines_as_str__w_minimum_num_chars(
+                min_num_chars,
+                lines,
             )
 
-    def _result_for_match(self) -> MatchingResult:
-        return self._new_tb_with_expected().build_result(True)
+    def _do_compare(self,
+                    processed_actual_file_path: pathlib.Path) -> bool:
+        actual_file_name = str(processed_actual_file_path)
+        expected_file_name = str(self._expected)
+        return filecmp.cmp(actual_file_name, expected_file_name, shallow=False)
 
     @staticmethod
     def _actual_file_contents_detail(actual: pathlib.Path) -> DetailsRenderer:
         with actual.open() as f:
-            contents = f.read(custom_details.StringAsSingleLineWithMaxLenDetailsRenderer.DEFAULT_DISPLAY_LEN + 1)
+            contents = f.read(custom_details.STRING__DEFAULT_DISPLAY_LEN + 1)
 
         return custom_details.actual(
             custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(contents)
         )
 
-    @staticmethod
-    def _diff_detail(actual: pathlib.Path, expected: pathlib.Path) -> DetailsRenderer:
+    def _diff_detail(self, actual: pathlib.Path) -> DetailsRenderer:
         diff_description = _file_diff_description(actual,
-                                                  expected)
+                                                  self._expected)
         return custom_details.diff(
             details.PreFormattedString(
                 _DiffString(diff_description), True)
         )
 
-    def _file_path_for_file_with_expected_contents(self, tmp_file_space: DirFileSpace) -> pathlib.Path:
-        if self._expected_contents.is_path:
-            return self._expected_contents.path_value.primitive
-        else:
-            path = tmp_file_space.new_path('expected')
-            with path.open('w') as f:
-                f.write(self._expected_contents.string_value)
 
-            return path
-
-    @staticmethod
-    def _do_compare(expected_file_path: pathlib.Path,
-                    processed_actual_file_path: pathlib.Path) -> bool:
-        actual_file_name = str(processed_actual_file_path)
-        expected_file_name = str(expected_file_path)
-        return filecmp.cmp(actual_file_name, expected_file_name, shallow=False)
-
-    def _new_tb_with_expected(self) -> TraceBuilder:
-        return self._new_tb().append_details(self._expected_detail_renderer)
+def _min_num_chars_to_read(operand: str) -> int:
+    return len(operand) + 1 + custom_details.STRING__EXTRA_TO_READ_FOR_ERROR_MESSAGES
 
 
 def _validator_of_expected(expected_contents: StringOrPathDdv) -> DdvValidator:

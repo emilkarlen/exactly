@@ -37,7 +37,10 @@ class TmpFileSpaceThatAllowsSinglePathGeneration(DirFileSpaceThatMustNoBeUsed):
 
     def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         if self._path_has_been_generated:
-            self.put.fail('The path has already been generated')
+            self.put.fail('The path has already been generated: {} (suffix "{}")'.format(
+                self.path_name,
+                name_suffix,
+            ))
 
         self._path_has_been_generated = True
 

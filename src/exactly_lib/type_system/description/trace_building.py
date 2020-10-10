@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree.renderer import NodeRenderer, DetailsRenderer, NODE_DATA
@@ -18,6 +18,10 @@ class TraceBuilder:
 
     def append_details(self, detail: DetailsRenderer) -> 'TraceBuilder':
         self._details.append(detail)
+        return self
+
+    def extend_details(self, details: Sequence[DetailsRenderer]) -> 'TraceBuilder':
+        self._details += details
         return self
 
     @property

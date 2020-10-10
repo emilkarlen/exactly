@@ -234,7 +234,7 @@ class TestHardErrorWhenContentsOfAFileThatIsNotARegularFileIsTested(unittest.Tes
     file_content_assertion_variants = [
         sm_arg.Empty(),
         sm_arg.NumLines(int_condition(comparators.NE, 0)),
-        sm_arg.Equals('expected'),
+        sm_arg.Equals.eq_string('expected'),
     ]
 
     def test_hard_error_when_there_is_a_single_file_that_is_not_a_regular_file(self):
@@ -460,7 +460,7 @@ class TestOnlyFilesSelectedByTheFileMatcherShouldBeChecked(unittest.TestCase):
     file_content_assertion_variants_that_pass_iff_file_is_empty = [
         sm_arg.Empty(),
         sm_arg.NumLines(int_condition(comparators.EQ, 0)),
-        sm_arg.Equals(shlex.quote('')),
+        sm_arg.Equals.eq_string(shlex.quote('')),
     ]
 
     def test__all__SHOULD_consider_only_files_matched_by_the_file_matcher(self):
@@ -625,7 +625,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             FileQuantificationAssertionVariant(
                 Quantifier.ALL,
                 file_contents_arg2(sm_arg.Transformed(transform_to_uppercase.name,
-                                                      sm_arg.Equals(expected_transformer_contents)))
+                                                      sm_arg.Equals.eq_string(expected_transformer_contents)))
                 ,
             ))
         relativity_root_conf = AN_ACCEPTED_SDS_REL_OPT_CONFIG
