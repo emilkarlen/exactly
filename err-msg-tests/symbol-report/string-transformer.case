@@ -5,8 +5,16 @@ def string-transformer IDENTITY = identity
 def string-transformer REPLACE            = replace abc ABC
 def string-transformer REPLACE__PRESERVE  = replace -preserve-new-lines abc ABC
 
-def string-transformer SELECT   = filter line-num == 3
-def string-transformer SEQUENCE = REPLACE | SELECT
+def string-transformer FILTER = filter line-num == 3
+
+def string LIMIT_UL_STR = '1+2:3-4'
+
+def string-transformer FILTER_LINE_NUM__SINGLE = filter -line-nums 70+2
+def string-transformer FILTER_LINE_NUM__UPPER  = filter -line-nums :70+2
+def string-transformer FILTER_LINE_NUM__LOWER  = filter -line-nums 70+2:
+def string-transformer FILTER_LINE_NUM__LU     = filter -line-nums @[LIMIT_UL_STR]@
+
+def string-transformer SEQUENCE = REPLACE | FILTER
 
 def string-transformer RUN__INTERPRET_EXIT_CODE = run % my-program arg1 "arg 2"
 def string-transformer RUN__IGNORE_EXIT_CODE    = run -ignore-exit-code % my-program arg1 "arg 2"

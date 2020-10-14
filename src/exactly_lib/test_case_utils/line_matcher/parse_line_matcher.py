@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.common.help import headers
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
@@ -11,7 +12,7 @@ from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.impl.contents import parse as contents_parse, doc as contents_doc
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER, LineMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER_DESCRIPTION, LineMatcherSdv
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
@@ -25,15 +26,16 @@ def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[LineMatcher
 
 _TP = TextParser({
     'INTEGER_MATCHER': syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name,
-    'FIRST_LINE_NUMBER': FIRST_LINE_NUMBER,
     'MODEL': matcher_model.LINE_MATCHER_MODEL,
+    'FIRST_LINE_NUMBER_DESCRIPTION': FIRST_LINE_NUMBER_DESCRIPTION,
+    'Note': headers.NOTE_LINE_HEADER,
 })
 
 _LINE_NUMBER_MATCHER_SED_DESCRIPTION = """\
 Matches {MODEL:s} who's line number matches {INTEGER_MATCHER}.
 
 
-Line numbers start at {FIRST_LINE_NUMBER}.
+{Note} {FIRST_LINE_NUMBER_DESCRIPTION}
 """
 
 

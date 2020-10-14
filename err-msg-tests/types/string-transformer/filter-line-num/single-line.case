@@ -1,0 +1,6 @@
+[assert]
+
+stdout
+  -transformed-by
+    filter -line-nums 70+2
+    equals 'expected'

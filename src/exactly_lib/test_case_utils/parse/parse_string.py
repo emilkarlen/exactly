@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import string_sdvs
@@ -25,6 +25,14 @@ class Configuration:
 
 DEFAULT_CONFIGURATION = Configuration(types.STRING_TYPE_INFO.identifier,
                                       reference_restrictions=None)
+
+
+class StringFromTokensParser(ParserFromTokens[StringSdv]):
+    def __init__(self, conf: Configuration):
+        self._conf = conf
+
+    def parse(self, token_parser: TokenParser) -> StringSdv:
+        return parse_string_from_token_parser(token_parser, self._conf)
 
 
 def parse_string_sdv_from_parse_source(source: ParseSource,

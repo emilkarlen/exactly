@@ -21,7 +21,7 @@ def suite() -> unittest.TestSuite:
 class TestApplier(unittest.TestCase):
     def test_model_SHOULD_be_evaluated_so_that_failures_from_evaluation_are_detected(self):
         # ARRANGE #
-        sut = transformer_checker._Applier()
+        sut = transformer_checker._Applier(force_evaluation_of_model=True)
         resolving_env = FullResolvingEnvironment(
             symbol_table.empty_symbol_table(),
             fake_tcds(),

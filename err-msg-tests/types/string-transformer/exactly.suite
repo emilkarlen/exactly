@@ -2,5 +2,6 @@
 
 strip
 char-case
+filter-line-num
 replace
 run

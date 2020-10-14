@@ -1,0 +1,6 @@
+[assert]
+
+stdout
+  -transformed-by
+    filter line-num == 1
+    num-lines == 2

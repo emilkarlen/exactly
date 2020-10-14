@@ -1,0 +1,32 @@
+[setup]
+
+file f.txt = <<-
+1
+2
+3
+4
+-
+
+[assert]
+
+contents f.txt
+  -transformed-by
+    filter -line-nums -5:4
+    equals
+      -file -rel-act f.txt
+
+contents f.txt
+  -transformed-by
+    filter -line-nums -5:-1
+    equals
+      -file -rel-act f.txt
+
+contents f.txt
+  -transformed-by
+    filter -line-nums -5:2
+    equals
+<<-
+1
+2
+-
+

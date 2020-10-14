@@ -120,6 +120,17 @@ def model_lines_lists_matches(expected: ValueAssertion[List[str]],
     ])
 
 
+def model_lines_lists_matches__check_just_as_lines(expected: List[str],
+                                                   ) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'as_lines',
+            _line_list_from_as_lines,
+            asrt.equals(expected),
+        ),
+    ])
+
+
 def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]],
                                  may_depend_on_external_resources: ValueAssertion[bool],
                                  ) -> ValueAssertion[StringModel]:

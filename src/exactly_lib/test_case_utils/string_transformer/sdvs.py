@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -27,6 +27,22 @@ class StringTransformerSdvConstant(StringTransformerSdv):
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._value) + '\''
+
+
+class SdvFromParts(StringTransformerSdv):
+    def __init__(self,
+                 make_ddv: Callable[[SymbolTable], StringTransformerDdv],
+                 symbol_references: Sequence[SymbolReference] = (),
+                 ):
+        self._make_ddv = make_ddv
+        self._symbol_references = symbol_references
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._symbol_references
+
+    def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
+        return self._make_ddv(symbols)
 
 
 class StringTransformerSdvConstantOfDdv(StringTransformerSdv):

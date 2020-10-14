@@ -1,5 +1,5 @@
 import unittest
-from typing import Callable, List, Sequence
+from typing import Callable, List, Sequence, Iterator
 
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.tcfs.sds import SandboxDs
@@ -39,6 +39,22 @@ def of_lines(put: unittest.TestCase, lines: List[str],
              may_depend_on_external_resources: bool = False,
              ) -> ModelConstructor:
     return _ModelOfLines(put, lines, may_depend_on_external_resources).construct
+
+
+def of_lines__w_max_1_invocation(put: unittest.TestCase, lines: List[str],
+                                 ) -> ModelConstructor:
+    return _ModelOfOnlyAsLinesWithMax1Invocation(put, lines).construct
+
+
+def of_lines__w_max_1_invocation__w_max_lines_from_iter(put: unittest.TestCase,
+                                                        lines: List[str],
+                                                        max_num_lines_from_iter: int,
+                                                        ) -> ModelConstructor:
+    return _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter(
+        put,
+        lines,
+        max_num_lines_from_iter,
+    ).construct
 
 
 def of_lines_wo_nl(put: unittest.TestCase, lines: List[str],
@@ -112,5 +128,60 @@ class _ModelOfLines:
                 self.lines,
                 environment.application_environment.tmp_files_space.sub_dir_space(),
                 self.may_depend_on_external_resources,
+            )
+        )
+
+
+class _ModelOfOnlyAsLinesWithMax1Invocation:
+    def __init__(self,
+                 put: unittest.TestCase,
+                 lines: Sequence[str],
+                 ):
+        self.put = put
+        self.lines = lines
+        self._as_lines_has_been_invoked = False
+
+    def get_lines(self) -> Iterator[str]:
+        if self._as_lines_has_been_invoked:
+            self.put.fail('as_lines has already been invoked')
+
+        self._as_lines_has_been_invoked = True
+
+        return iter(self.lines)
+
+    def construct(self, environment: FullResolvingEnvironment) -> StringModel:
+        return StringModelThatThatChecksLines(
+            self.put,
+            string_models.StringModelThat.new_w_defaults_of_not_impl(
+                as_lines=self.get_lines,
+            )
+        )
+
+
+class _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter:
+    def __init__(self,
+                 put: unittest.TestCase,
+                 lines: Sequence[str],
+                 max_num_lines_from_iter: int,
+                 ):
+        self.put = put
+        self.lines = lines
+        self._as_lines_has_been_invoked = False
+        self.max_num_lines_from_iter = max_num_lines_from_iter
+
+    def get_lines(self) -> Iterator[str]:
+        if self._as_lines_has_been_invoked:
+            self.put.fail('as_lines has already been invoked')
+
+        for line_num, line_contents in enumerate(self.lines):
+            if line_num == self.max_num_lines_from_iter:
+                self.put.fail('Max num lines from iter exceeded, for line num ' + str(line_num + 1))
+            yield line_contents
+
+    def construct(self, environment: FullResolvingEnvironment) -> StringModel:
+        return StringModelThatThatChecksLines(
+            self.put,
+            string_models.StringModelThat.new_w_defaults_of_not_impl(
+                as_lines=self.get_lines,
             )
         )

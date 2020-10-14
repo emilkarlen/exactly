@@ -90,3 +90,14 @@ class NIE(Generic[INPUT, EXPECTED]):
         self.name = name
         self.expected_value = expected_value
         self.input_value = input_value
+
+
+class InpExp(Generic[INPUT, EXPECTED]):
+    """An input value and an expected value."""
+
+    def __init__(self,
+                 input_: INPUT,
+                 expected: EXPECTED,
+                 ):
+        self.expected = expected
+        self.input = input_

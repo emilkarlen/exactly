@@ -1,0 +1,17 @@
+[setup]
+
+file f.txt = <<-
+1
+2
+3
+-
+
+[assert]
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 1+1
+    equals
+<<-
+2
+-

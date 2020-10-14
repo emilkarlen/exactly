@@ -20,13 +20,19 @@ StExpectation = Expectation[StringTransformer, StringModel]
 
 CHECKER__PARSE_FULL = logic_integration_check.IntegrationChecker(
     parse_string_transformer.parsers(True).full,
-    StringTransformerPropertiesConfiguration(),
+    StringTransformerPropertiesConfiguration(avoid_model_evaluation=False),
     True,
 )
 
 CHECKER__PARSE_SIMPLE = logic_integration_check.IntegrationChecker(
     parse_string_transformer.parsers(True).simple,
-    StringTransformerPropertiesConfiguration(),
+    StringTransformerPropertiesConfiguration(avoid_model_evaluation=False),
+    True,
+)
+
+CHECKER__PARSE_SIMPLE__WO_IMPLICIT_MODEL_EVALUATION = logic_integration_check.IntegrationChecker(
+    parse_string_transformer.parsers(True).simple,
+    StringTransformerPropertiesConfiguration(avoid_model_evaluation=True),
     True,
 )
 
