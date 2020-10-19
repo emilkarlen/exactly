@@ -1,0 +1,73 @@
+[setup]
+
+file f.txt = <<-
+1
+2
+3
+4
+5
+-
+
+[assert]
+
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 1 4
+    equals
+<<-
+1
+4
+-
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 2 3 5
+    equals
+<<-
+2
+3
+5
+-
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 1 3:4
+    equals
+<<-
+1
+3
+4
+-
+
+contents f.txt
+  -transformed-by
+    filter -line-nums :2 4:
+    equals
+<<-
+1
+2
+4
+5
+-
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 3: 5:
+    equals
+<<-
+3
+4
+5
+-
+
+contents f.txt
+  -transformed-by
+    filter -line-nums 1:3 2:4
+    equals
+<<-
+1
+2
+3
+4
+-

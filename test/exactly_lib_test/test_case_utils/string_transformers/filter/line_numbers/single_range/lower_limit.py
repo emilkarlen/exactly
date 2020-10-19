@@ -15,12 +15,12 @@ Test cases
 """
 import unittest
 
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, \
-    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers import test_resources as tr
-from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.test_resources import InputAndExpected
+from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.test_resources import InputAndExpected, \
+    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -31,6 +31,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+
         TestSymbolReferences(),
 
         unittest.makeSuite(TestEmptyModel),
@@ -46,7 +47,7 @@ def suite() -> unittest.TestSuite:
 
 
 def single_line_arguments(int_expr: WithToString) -> ArgumentElementsRenderer:
-    return args.filter_line_nums(args.SingleLineRange(str(int_expr)))
+    return args.filter_line_nums(args.LowerLimitRange(str(int_expr)))
 
 
 class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
@@ -54,10 +55,10 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
         input_lines = ['1st\n', '2nd\n', '3rd\n']
         range_expr = '1+1'
         evaluated_expr = 2
-        expected_output_lines = [input_lines[evaluated_expr - 1]]
+        expected_output_lines = input_lines[evaluated_expr - 1:]
 
         arguments = single_line_arguments(range_expr)
-        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
             arguments.as_arguments,
             model_constructor.of_lines(
@@ -79,13 +80,13 @@ class TestSymbolReferences(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         input_lines = ['1\n', '2\n', '3\n']
-        expected_output_lines = input_lines[0:1]
+        expected_output_lines = input_lines[1:]
         range_expr = StringSymbolContext.of_constant(
             'RANGE_SYMBOL',
-            '1',
-            default_restrictions=IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION,
+            '2',
+            default_restrictions=IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS,
         )
-        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
             single_line_arguments(range_expr.name__sym_ref_syntax).as_arguments,
             model_constructor.of_lines(self, input_lines,
@@ -131,7 +132,7 @@ class TestPositiveIntOnNonModelWSingleLine(unittest.TestCase):
         NArrEx(
             '0',
             0,
-            [],
+            INPUT_LINES,
         ),
         NArrEx(
             'in range',
@@ -139,7 +140,7 @@ class TestPositiveIntOnNonModelWSingleLine(unittest.TestCase):
             INPUT_LINES,
         ),
         NArrEx(
-            'too large',
+            'above actual num lines',
             2,
             [],
         ),
@@ -148,7 +149,7 @@ class TestPositiveIntOnNonModelWSingleLine(unittest.TestCase):
     def test_with_model_access__only_as_lines_is_used(self):
         for case in self.CASES:
             with self.subTest(case.name, range=case.arrangement):
-                _check_int_arg__w_max_lines_from_iter(
+                _check_int_arg__wo_max_lines_from_iter(
                     self,
                     case.arrangement,
                     InpExp(self.INPUT_LINES, case.expectation),
@@ -173,25 +174,25 @@ class TestPositiveIntOnNonModelWMultipleLines(unittest.TestCase):
         NArrEx(
             'outside range - too small',
             0,
-            [],
+            INPUT_LINES,
         ),
         NArrEx(
             'in range - 1st',
             1,
-            [ACTUAL_1],
+            INPUT_LINES[1 - 1:],
         ),
         NArrEx(
             'in range - in middle',
             2,
-            [ACTUAL_2],
+            INPUT_LINES[2 - 1:],
         ),
         NArrEx(
             'in range - last',
             3,
-            [ACTUAL_3],
+            INPUT_LINES[3 - 1:],
         ),
         NArrEx(
-            'outside range - too large',
+            'above actual num lines',
             4,
             [],
         ),
@@ -200,7 +201,7 @@ class TestPositiveIntOnNonModelWMultipleLines(unittest.TestCase):
     def test_with_model_access__only_as_lines_is_used(self):
         for case in self.CASES:
             with self.subTest(case.name, range=case.arrangement):
-                _check_int_arg__w_max_lines_from_iter(
+                _check_int_arg__wo_max_lines_from_iter(
                     self,
                     case.arrangement,
                     InpExp(self.INPUT_LINES, case.expectation),
@@ -225,9 +226,9 @@ class TestNegativeIntOnNonModelWSingleLine(unittest.TestCase):
             INPUT_LINES,
         ),
         NArrEx(
-            'too small',
+            'before first line',
             -2,
-            [],
+            INPUT_LINES,
         ),
     ]
 
@@ -259,22 +260,22 @@ class TestNegativeIntOnNonModelWMultipleLines(unittest.TestCase):
         NArrEx(
             'in range - last',
             -1,
-            [actual_3],
+            INPUT_LINES[3 - 1:],
         ),
         NArrEx(
             'in range - in middle',
             -2,
-            [actual_2],
+            INPUT_LINES[3 - 2:],
         ),
         NArrEx(
             'in range - first',
             -3,
-            [actual_1],
+            INPUT_LINES[3 - 3:],
         ),
         NArrEx(
-            'outside range - too small',
+            'outside range - before first line',
             -4,
-            [],
+            INPUT_LINES,
         ),
     ]
 
@@ -297,25 +298,13 @@ class TestNegativeIntOnNonModelWMultipleLines(unittest.TestCase):
                 )
 
 
-def _check_int_arg__w_max_lines_from_iter(put: unittest.TestCase,
-                                          arg: int,
-                                          input_and_expected: InputAndExpected,
-                                          ):
-    return tr.check_int_arg__w_max_lines_from_iter(
-        put,
-        args.SingleLineRange(str(arg)),
-        arg,
-        input_and_expected,
-    )
-
-
 def _check_int_arg__wo_max_lines_from_iter(put: unittest.TestCase,
                                            range_expr: int,
                                            input_and_expected: InputAndExpected,
                                            ):
-    tr.check_int_arg__wo_max_lines_from_iter(
+    tr.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
         put,
-        args.SingleLineRange(str(range_expr)),
+        [args.LowerLimitRange(str(range_expr))],
         input_and_expected
     )
 
@@ -324,9 +313,9 @@ def _check_int_arg__w_access_of_all_model_properties(put: unittest.TestCase,
                                                      range_expr: int,
                                                      input_and_expected: InputAndExpected,
                                                      ):
-    tr.check_int_arg__w_access_of_all_model_properties(
+    tr.check__w_access_of_all_model_properties(
         put,
-        args.SingleLineRange(str(range_expr)),
+        [args.LowerLimitRange(str(range_expr))],
         input_and_expected,
     )
 

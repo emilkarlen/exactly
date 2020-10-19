@@ -1,5 +1,8 @@
-from typing import Iterator, List
+from collections import deque
+from typing import Iterator, List, Optional, Deque, Callable
 
+from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums import range_merge
+from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
 from exactly_lib.type_system.logic.impls.transformed_string_models import TransformedStringModelFromLines
 from exactly_lib.type_system.logic.string_model import StringModel
 
@@ -60,7 +63,7 @@ class SingleNegIntModel(TransformedStringModelFromLines):
             return
 
         for next_line in lines:
-            del pocket[0]
+            pocket.popleft()
             pocket.append(next_line)
 
         yield pocket[0]
@@ -111,7 +114,7 @@ class UpperNegLimitModel(TransformedStringModelFromLines):
         yield pocket[0]
 
         for next_line in lines:
-            del pocket[0]
+            pocket.popleft()
             pocket.append(next_line)
 
             yield pocket[0]
@@ -153,7 +156,7 @@ class LowerNegLimitModel(TransformedStringModelFromLines):
         pocket = _filled_pocket(pocket_size, lines)
 
         for next_line in lines:
-            del pocket[0]
+            pocket.popleft()
             pocket.append(next_line)
 
         for line in pocket:
@@ -209,15 +212,15 @@ class LowerNonNegUpperNegModel(TransformedStringModelFromLines):
 
         yield pocket[0]
         for line in lines:
-            del pocket[0]
+            pocket.popleft()
             pocket.append(line)
             yield pocket[0]
 
-    def _forward_pocket_to_lower_limit(self, pocket: List[str], lines: Iterator[str]) -> bool:
+    def _forward_pocket_to_lower_limit(self, pocket: Deque[str], lines: Iterator[str]) -> bool:
         left_to_consume = self._zero_based_lower_limit
 
         for next_line in _limited(lines, left_to_consume):
-            del pocket[0]
+            pocket.popleft()
             pocket.append(next_line)
             left_to_consume -= 1
 
@@ -246,7 +249,7 @@ class LowerNegUpperNonNegModel(TransformedStringModelFromLines):
 
         pocket_1st_idx = 0
         for line in lines:
-            del pocket[0]
+            pocket.popleft()
             pocket.append(line)
 
             pocket_1st_idx += 1
@@ -304,6 +307,136 @@ class LowerNegUpperNegModel(TransformedStringModelFromLines):
             num_to_produce -= 1
 
 
+class SegmentsWithPositiveIncreasingValues:
+    def __init__(self,
+                 head: Optional[int],
+                 body: List[FromTo],
+                 tail: Optional[int],
+                 ):
+        self.head = head
+        self.body = body
+        self.tail = tail
+
+
+class _TransformMethodOfSegments:
+    def __init__(self,
+                 segments: SegmentsWithPositiveIncreasingValues,
+                 ):
+        self._segments = segments
+
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
+        segments = self._segments
+        line_num = 0
+
+        if segments.head is not None:
+            end = segments.head
+            for line in lines:
+                line_num += 1
+                yield line
+                if line_num == end:
+                    break
+
+        for body_segment in segments.body:
+            start_m1 = body_segment[0] - 1
+            end = body_segment[1]
+
+            for _ in lines:
+                line_num += 1
+                if line_num == start_m1:
+                    break
+
+            for line in lines:
+                line_num += 1
+                yield line
+                if line_num == end:
+                    break
+
+        if segments.tail is not None:
+            start_m1 = segments.tail - 1
+            for _ in lines:
+                line_num += 1
+                if line_num == start_m1:
+                    break
+
+            for line in lines:
+                yield line
+
+
+class SegmentsModel(TransformedStringModelFromLines):
+    def __init__(self,
+                 transformed: StringModel,
+                 segments: SegmentsWithPositiveIncreasingValues,
+                 ):
+        super().__init__(
+            _TransformMethodOfSegments(segments).transform,
+            transformed,
+            False,
+        )
+        self._segments = segments
+
+
+class MultipleRangesWNegativeValues(TransformedStringModelFromLines):
+    def __init__(self,
+                 transformed: StringModel,
+                 negatives: List[Range],
+                 partial_partitioning: range_merge.Partitioning,
+                 ):
+        super().__init__(
+            self._transform,
+            transformed,
+            False,
+        )
+        self._transformed_model = transformed
+        self._partial_partitioning = partial_partitioning
+        self._negatives = negatives
+        self._transform_impl = self._transform__with_unknown_num_lines
+
+    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+        return self._transform_impl(lines)
+
+    def _transform__with_unknown_num_lines(self, lines: Iterator[str]) -> Iterator[str]:
+        num_lines = self._num_lines_of_transformed_model()
+        translated_negatives = range_merge.translate_neg_to_non_neg(self._negatives, num_lines)
+        range_merge.partition(translated_negatives, self._partial_partitioning)
+        merged_ranges = range_merge.merge(self._partial_partitioning)
+
+        self._transform_impl = self._transform_method_for(merged_ranges)
+
+        return self._transform_impl(lines)
+
+    def _transform_method_for(self, merged_ranges: range_merge.MergedRanges,
+                              ) -> Callable[[Iterator[str]], Iterator[str]]:
+        if merged_ranges.is_empty:
+            return self._transform__empty
+        elif merged_ranges.is_everything():
+            return self._transform__everything
+        else:
+            segments = SegmentsWithPositiveIncreasingValues(
+                merged_ranges.head,
+                merged_ranges.body,
+                merged_ranges.tail,
+            )
+
+            return _TransformMethodOfSegments(segments).transform
+
+    def _num_lines_of_transformed_model(self) -> int:
+        n = 0
+
+        with self._transformed_model.as_lines as lines:
+            for _ in lines:
+                n += 1
+
+        return n
+
+    @staticmethod
+    def _transform__empty(lines: Iterator[str]) -> Iterator[str]:
+        return iter(())
+
+    @staticmethod
+    def _transform__everything(lines: Iterator[str]) -> Iterator[str]:
+        return lines
+
+
 def _limited(iterator: Iterator[str], size: int) -> Iterator[str]:
     if size == 0:
         return
@@ -319,15 +452,5 @@ def _skip(num_lines: int, lines: Iterator[str]):
         pass
 
 
-def _filled_pocket(size: int, lines: Iterator[str]) -> List[str]:
-    if size == 0:
-        return []
-
-    ret_val = []
-
-    for line in lines:
-        ret_val.append(line)
-        if len(ret_val) == size:
-            break
-
-    return ret_val
+def _filled_pocket(size: int, lines: Iterator[str]) -> Deque[str]:
+    return deque(_limited(lines, size))

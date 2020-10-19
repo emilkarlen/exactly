@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib_test.test_resources import argument_renderer as arg_rend
@@ -32,9 +32,7 @@ class SingleLineRange(Range):
 
 
 class LowerLimitRange(Range):
-    def __init__(self,
-                 lower_limit: str,
-                 ):
+    def __init__(self, lower_limit: str):
         self.lower_limit = lower_limit
 
     def __str__(self) -> str:
@@ -42,9 +40,7 @@ class LowerLimitRange(Range):
 
 
 class UpperLimitRange(Range):
-    def __init__(self,
-                 upper_limit: str,
-                 ):
+    def __init__(self, upper_limit: str):
         self.upper_limit = upper_limit
 
     def __str__(self) -> str:
@@ -63,6 +59,22 @@ class LowerAndUpperLimitRange(Range):
         return self.lower_limit + self.LIMIT_TOKEN + self.upper_limit
 
 
+def single(n: int) -> Range:
+    return SingleLineRange(str(n))
+
+
+def from_(n: int) -> Range:
+    return LowerLimitRange(str(n))
+
+
+def to_(n: int) -> Range:
+    return UpperLimitRange(str(n))
+
+
+def from_to(m: int, n: int) -> Range:
+    return LowerAndUpperLimitRange(str(m), str(n))
+
+
 class FilterVariant(ArgumentElementsRenderer, ABC):
     pass
 
@@ -77,14 +89,14 @@ class FilterLineMatcherVariant(FilterVariant):
 
 
 class FilterLineNumbersVariant(FilterVariant):
-    def __init__(self, range_expr: Range):
+    def __init__(self, range_expr: Sequence[Range]):
         self.range_expr = range_expr
 
     @property
     def elements(self) -> List[WithToString]:
         return (
                 arg_rend.OptionArgument(names.LINE_NUMBERS_FILTER_OPTION.name).elements +
-                [str(self.range_expr)]
+                [str(r) for r in self.range_expr]
         )
 
 
@@ -98,4 +110,8 @@ class Filter(ArgumentElementsRenderer):
 
 
 def filter_line_nums(range_expr: Range) -> ArgumentElementsRenderer:
+    return Filter(FilterLineNumbersVariant([range_expr]))
+
+
+def filter_line_nums__multi(range_expr: Sequence[Range]) -> ArgumentElementsRenderer:
     return Filter(FilterLineNumbersVariant(range_expr))

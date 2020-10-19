@@ -41,19 +41,23 @@ def of_lines(put: unittest.TestCase, lines: List[str],
     return _ModelOfLines(put, lines, may_depend_on_external_resources).construct
 
 
-def of_lines__w_max_1_invocation(put: unittest.TestCase, lines: List[str],
-                                 ) -> ModelConstructor:
-    return _ModelOfOnlyAsLinesWithMax1Invocation(put, lines).construct
+def of_lines__w_max_invocations(put: unittest.TestCase,
+                                lines: List[str],
+                                max_as_lines_invocations: int = 1,
+                                ) -> ModelConstructor:
+    return _ModelOfOnlyAsLinesWithMaxInvocations(put, lines, max_as_lines_invocations).construct
 
 
-def of_lines__w_max_1_invocation__w_max_lines_from_iter(put: unittest.TestCase,
-                                                        lines: List[str],
-                                                        max_num_lines_from_iter: int,
-                                                        ) -> ModelConstructor:
+def of_lines__w_max_invocations__w_max_lines_from_iter(put: unittest.TestCase,
+                                                       lines: List[str],
+                                                       max_num_lines_from_iter: int,
+                                                       max_as_lines_invocations: int = 1,
+                                                       ) -> ModelConstructor:
     return _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter(
         put,
         lines,
         max_num_lines_from_iter,
+        max_as_lines_invocations,
     ).construct
 
 
@@ -132,20 +136,22 @@ class _ModelOfLines:
         )
 
 
-class _ModelOfOnlyAsLinesWithMax1Invocation:
+class _ModelOfOnlyAsLinesWithMaxInvocations:
     def __init__(self,
                  put: unittest.TestCase,
                  lines: Sequence[str],
+                 max_as_lines_invocations: int,
                  ):
         self.put = put
         self.lines = lines
-        self._as_lines_has_been_invoked = False
+        self._max_as_lines_invocations = max_as_lines_invocations
+        self._num_as_lines_invocations_left = max_as_lines_invocations
 
     def get_lines(self) -> Iterator[str]:
-        if self._as_lines_has_been_invoked:
-            self.put.fail('as_lines has already been invoked')
+        if self._num_as_lines_invocations_left == 0:
+            self.put.fail('as_lines has already been invoked {} times'.format(self._max_as_lines_invocations))
 
-        self._as_lines_has_been_invoked = True
+        self._num_as_lines_invocations_left -= 1
 
         return iter(self.lines)
 
@@ -163,15 +169,20 @@ class _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter:
                  put: unittest.TestCase,
                  lines: Sequence[str],
                  max_num_lines_from_iter: int,
+                 max_as_lines_invocations: int = 1,
                  ):
         self.put = put
         self.lines = lines
         self._as_lines_has_been_invoked = False
+        self.max_as_lines_invocations = max_as_lines_invocations
+        self.as_lines_invocations_left = max_as_lines_invocations
         self.max_num_lines_from_iter = max_num_lines_from_iter
 
     def get_lines(self) -> Iterator[str]:
-        if self._as_lines_has_been_invoked:
-            self.put.fail('as_lines has already been invoked')
+        if self.as_lines_invocations_left == 0:
+            self.put.fail('as_lines has already been invoked {} times'.format(self.max_as_lines_invocations))
+        else:
+            self.as_lines_invocations_left -= 1
 
         for line_num, line_contents in enumerate(self.lines):
             if line_num == self.max_num_lines_from_iter:

@@ -87,6 +87,25 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                 put, arguments):
             self.check(put, source, input_, arrangement, expectation)
 
+    def check__w_source_variants_for_full_line_parser_2(self,
+                                                        put: unittest.TestCase,
+                                                        arguments: Arguments,
+                                                        input_: INPUT,
+                                                        arrangement: Arrangement,
+                                                        expectation: Expectation[PRIMITIVE, OUTPUT],
+                                                        ):
+        self.check__w_source_variants_for_full_line_parser(
+            put,
+            arguments,
+            input_,
+            arrangement,
+            MultiSourceExpectation(
+                expectation.parse.symbol_references,
+                expectation.execution,
+                expectation.primitive,
+            )
+        )
+
     def check__w_source_variants_for_full_line_parser(self,
                                                       put: unittest.TestCase,
                                                       arguments: Arguments,

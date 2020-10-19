@@ -25,9 +25,9 @@ from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
-from . import line_nums, line_matcher
+from . import line_matcher
+from .line_nums import resolvers as line_nums_resolvers
 from ... import names
-from ...names import RANGE_EXPR_SED_NAME
 
 
 class Parser(ParserFromTokens[StringTransformerSdv]):
@@ -43,7 +43,7 @@ class Parser(ParserFromTokens[StringTransformerSdv]):
         ))
 
         self._range_expr_parser = parse_string.StringFromTokensParser(
-            parse_string.Configuration(RANGE_EXPR_SED_NAME,
+            parse_string.Configuration(names.RANGE_EXPR_SED_NAME,
                                        _RANGE_EXPR_REFERENCE_RESTRICTIONS)
         )
 
@@ -69,11 +69,16 @@ class Parser(ParserFromTokens[StringTransformerSdv]):
         return line_matcher.sdv(self._name__line_matcher, line_matcher_)
 
     def _parse_line_nums_variant(self, token_parser: TokenParser) -> StringTransformerSdv:
-        range_expr = self._range_expr_parser.parse(token_parser)
-        return line_nums.sdv(self._name__line_nums, range_expr)
+        range_expr_list = [self._range_expr_parser.parse(token_parser)]
+        while not token_parser.is_at_eol:
+            range_expr_list.append(self._range_expr_parser.parse(token_parser))
+
+        return line_nums_resolvers.sdv(self._name__line_nums, range_expr_list)
 
 
-_ARGUMENTS__LINE_NUMS = a.Single(a.Multiplicity.MANDATORY, names.LINE_NUMBERS_FILTER_OPTION),
+_ARGUMENTS__LINE_NUMS = [a.Single(a.Multiplicity.MANDATORY, names.LINE_NUMBERS_FILTER_OPTION),
+                         a.Single(a.Multiplicity.ONE_OR_MORE, a.Named(names.RANGE_EXPR_SED_NAME))]
+
 _MATCHER_ARGUMENT = a.Named('MATCHER')
 
 _RANGE_LIMIT_SEPARATOR = ':'
@@ -83,7 +88,7 @@ _RANGE_EXPR_REFERENCE_RESTRICTIONS = string_made_up_by_just_strings(
         str_constructor.FormatMap(
             'A {RANGE} must be made up of just {string_type} values.',
             {
-                'RANGE': RANGE_EXPR_SED_NAME,
+                'RANGE': names.RANGE_EXPR_SED_NAME,
                 'string_type': help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].identifier
             }
         )
@@ -98,7 +103,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
             '_LINE_MATCHER_': syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.singular_name,
             'FIRST_LINE_NUMBER': line_matcher_type.FIRST_LINE_NUMBER,
             'FIRST_LINE_NUMBER_DESCRIPTION': line_matcher_type.FIRST_LINE_NUMBER_DESCRIPTION,
-            'RANGE': RANGE_EXPR_SED_NAME,
+            'RANGE': names.RANGE_EXPR_SED_NAME,
             'INT': syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
             'RANGE_LIMIT_SEPARATOR': formatting.string_constant(_RANGE_LIMIT_SEPARATOR),
             'Note': headers.NOTE_LINE_HEADER,
@@ -117,9 +122,9 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     def _variants_table(self) -> ParagraphItem:
         return docs.simple_list_with_space_between_elements_and_content(
             [
-                self._item(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.argument,
+                self._item([syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT.single_mandatory],
                            _DESCRIPTION__LINE_MATCHER),
-                self._item(names.LINE_NUMBERS_FILTER_OPTION,
+                self._item(_ARGUMENTS__LINE_NUMS,
                            _DESCRIPTION__LINE_NUMS),
             ],
             lists.ListType.VARIABLE_LIST,
@@ -139,7 +144,7 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
     def _range_expr_sed(self) -> SyntaxElementDescription:
         int_val = syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name
         return SyntaxElementDescription(
-            RANGE_EXPR_SED_NAME,
+            names.RANGE_EXPR_SED_NAME,
             self._tp.fnap(_RANGE_EXPR__DESCRIPTION),
             [
                 invokation_variant_from_string(
@@ -163,13 +168,11 @@ class SyntaxDescription(grammar.PrimitiveDescriptionWithNameAsInitialSyntaxToken
         )
 
     def _item(self,
-              argument: a.Argument,
+              arguments: Sequence[a.ArgumentUsage],
               description_template: str,
               ) -> lists.HeaderContentListItem:
         return docs.list_item(
-            doc_format.syntax_text(cl_syntax.cl_syntax_for_args([
-                a.Single(a.Multiplicity.MANDATORY, argument),
-            ])),
+            doc_format.syntax_text(cl_syntax.cl_syntax_for_args(arguments)),
             self._tp.fnap(description_template)
         )
 
@@ -187,7 +190,7 @@ Applies a {_LINE_MATCHER_}.
 """
 
 _DESCRIPTION__LINE_NUMS = """\
-Matches the line number against {RANGE}.
+A line matches iff it's line number matches any {RANGE}.
 """
 
 _RANGE_EXPR__DESCRIPTION = """\

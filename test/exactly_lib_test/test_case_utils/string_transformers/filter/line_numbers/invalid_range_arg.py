@@ -1,13 +1,14 @@
 import unittest
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, \
-    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases import \
     failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
+from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.test_resources import \
+    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import parse_check
@@ -72,7 +73,7 @@ class TestValidationPreSdsShouldFailWhenRangeExprHasNotExpectedParts(unittest.Te
                 range_expr_symbol = StringSymbolContext.of_constant(
                     'RANGE_SYMBOL',
                     case.value,
-                    default_restrictions=IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION,
+                    default_restrictions=IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS,
                 )
                 arguments = args.filter_line_nums(args.CustomRange(range_expr_symbol.name__sym_ref_syntax))
                 integration_check.CHECKER__PARSE_SIMPLE.check(

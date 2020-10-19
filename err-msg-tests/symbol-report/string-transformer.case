@@ -13,6 +13,7 @@ def string-transformer FILTER_LINE_NUM__SINGLE = filter -line-nums 70+2
 def string-transformer FILTER_LINE_NUM__UPPER  = filter -line-nums :70+2
 def string-transformer FILTER_LINE_NUM__LOWER  = filter -line-nums 70+2:
 def string-transformer FILTER_LINE_NUM__LU     = filter -line-nums @[LIMIT_UL_STR]@
+def string-transformer FILTER_LINE_NUM__MULTI  = filter -line-nums 1 2 4: :5 6:7
 
 def string-transformer SEQUENCE = REPLACE | FILTER
 

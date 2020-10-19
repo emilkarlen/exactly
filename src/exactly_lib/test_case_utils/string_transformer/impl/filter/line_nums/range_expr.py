@@ -1,4 +1,8 @@
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Tuple
+
+from .... import names
+
+FromTo = Tuple[int, int]
 
 RET = TypeVar('RET')
 
@@ -29,6 +33,9 @@ class SingleLineRange(Range):
     def accept(self, visitor: RangeVisitor[RET]) -> RET:
         return visitor.visit_single_line(self)
 
+    def __str__(self) -> str:
+        return str(self.line_number)
+
 
 class LowerLimitRange(Range):
     def __init__(self, lower_limit: int):
@@ -37,6 +44,9 @@ class LowerLimitRange(Range):
     def accept(self, visitor: RangeVisitor[RET]) -> RET:
         return visitor.visit_lower_limit(self)
 
+    def __str__(self) -> str:
+        return str(self.lower_limit) + names.LINE_NUMBERS_FILTER__LIMIT_SEPARATOR
+
 
 class UpperLimitRange(Range):
     def __init__(self, upper_limit: int):
@@ -44,6 +54,9 @@ class UpperLimitRange(Range):
 
     def accept(self, visitor: RangeVisitor[RET]) -> RET:
         return visitor.visit_upper_limit(self)
+
+    def __str__(self) -> str:
+        return names.LINE_NUMBERS_FILTER__LIMIT_SEPARATOR + str(self.upper_limit)
 
 
 class LowerAndUpperLimitRange(Range):
@@ -56,3 +69,7 @@ class LowerAndUpperLimitRange(Range):
 
     def accept(self, visitor: RangeVisitor[RET]) -> RET:
         return visitor.visit_lower_and_upper_limit(self)
+
+    def __str__(self) -> str:
+        return names.LINE_NUMBERS_FILTER__LIMIT_SEPARATOR.join((str(self.lower_limit),
+                                                                str(self.upper_limit)))

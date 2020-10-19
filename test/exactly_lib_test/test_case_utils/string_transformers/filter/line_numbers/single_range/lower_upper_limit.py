@@ -16,13 +16,13 @@ Test cases
 import unittest
 from typing import List
 
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, \
-    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers import test_resources as tr
-from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.test_resources import InputAndExpected
+from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.test_resources import InputAndExpected, \
+    IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
@@ -71,7 +71,7 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
         expected_output_lines = input_lines[2 - 1:3]
 
         arguments = single_line_arguments(lower_expr, upper_expr)
-        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
             arguments.as_arguments,
             model_constructor.of_lines(
@@ -98,16 +98,16 @@ class TestSymbolReferences(unittest.TestCase):
         range_lim_l = StringSymbolContext.of_constant(
             'LIMIT__LOWER',
             '1',
-            default_restrictions=IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION,
+            default_restrictions=IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS,
         )
         range_lim_u = StringSymbolContext.of_constant(
             'LIMIT__UPPER',
             '2',
-            default_restrictions=IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION,
+            default_restrictions=IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS,
         )
         symbols = [range_lim_l, range_lim_u]
 
-        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants(
+        integration_check.CHECKER__PARSE_SIMPLE.check__w_source_variants_for_full_line_parser_2(
             self,
             single_line_arguments(
                 range_lim_l.name__sym_ref_syntax,
@@ -329,10 +329,11 @@ def _check_int_arg__w_max_lines_from_iter(put: unittest.TestCase,
                                           max_lines_accessed: int,
                                           input_and_expected: InputAndExpected,
                                           ):
-    return tr.check_int_arg__w_max_lines_from_iter(
+    return tr.check__w_max_lines_from_iter(
         put,
-        args.LowerAndUpperLimitRange(str(limits.lower),
-                                     str(limits.upper)),
+        [
+            args.LowerAndUpperLimitRange(str(limits.lower),
+                                         str(limits.upper))],
         max_lines_accessed,
         input_and_expected,
     )
@@ -342,10 +343,12 @@ def _check_int_arg__wo_max_lines_from_iter(put: unittest.TestCase,
                                            limits: Limits,
                                            input_and_expected: InputAndExpected,
                                            ):
-    tr.check_int_arg__wo_max_lines_from_iter(
+    tr.check__w_max_as_lines_invocations__wo_max_lines_from_iter(
         put,
-        args.LowerAndUpperLimitRange(str(limits.lower),
-                                     str(limits.upper)),
+        [
+            args.LowerAndUpperLimitRange(str(limits.lower),
+                                         str(limits.upper))
+        ],
         input_and_expected
     )
 
@@ -354,10 +357,12 @@ def _check_int_arg__w_access_of_all_model_properties(put: unittest.TestCase,
                                                      limits: Limits,
                                                      input_and_expected: InputAndExpected,
                                                      ):
-    tr.check_int_arg__w_access_of_all_model_properties(
+    tr.check__w_access_of_all_model_properties(
         put,
-        args.LowerAndUpperLimitRange(str(limits.lower),
-                                     str(limits.upper)),
+        [
+            args.LowerAndUpperLimitRange(str(limits.lower),
+                                         str(limits.upper))
+        ],
         input_and_expected,
     )
 
