@@ -1,0 +1,43 @@
+[setup]
+
+file f.txt = <<-
+1
+2
+3
+-
+
+[assert]
+
+contents f.txt
+  -transformed-by
+    filter ! ( contents equals '2' && line-num > 1 )
+    equals
+<<-
+1
+3
+-
+
+contents f.txt
+  -transformed-by
+    filter ! ( contents equals '2' || line-num > 10 )
+    equals
+<<-
+1
+3
+-
+
+contents f.txt
+  -transformed-by
+    filter ! ( contents equals '2' || line-num > 2 )
+    equals
+<<-
+1
+-
+
+contents f.txt
+  -transformed-by
+    filter ( contents equals '2' && contents equals '2' )
+    equals
+<<-
+2
+-

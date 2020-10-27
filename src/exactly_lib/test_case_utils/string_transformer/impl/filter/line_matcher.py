@@ -1,17 +1,18 @@
-from typing import Iterator
+from typing import Iterator, Tuple
 
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
-from exactly_lib.test_case_utils.line_matcher.model_construction import original_and_model_iter_from_file_line_iter
+from exactly_lib.test_case_utils.line_matcher import line_nums_interval
+from exactly_lib.test_case_utils.line_matcher import model_construction
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
-    LineMatcherSdv
+    LineMatcherSdv, LineMatcherLine
 from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerAdv
@@ -105,10 +106,14 @@ class _FilterByLineMatcher(WithCachedTreeStructureDescriptionBase, StringTransfo
     def _transform(self, lines: Iterator[str]) -> Iterator[str]:
         return (
             line
-            for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)
+            for line, line_matcher_model in self._line_and_line_matcher_models(lines)
             if self._line_matcher.matches_w_trace(line_matcher_model).value
         )
 
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
                                str(self._line_matcher))
+
+    def _line_and_line_matcher_models(self, lines: Iterator[str]) -> Iterator[Tuple[str, LineMatcherLine]]:
+        line_nums_to_process = line_nums_interval.interval_of_matcher(self._line_matcher)
+        return model_construction.original_and_model_iter_from_file_line_iter__interval(line_nums_to_process, lines)

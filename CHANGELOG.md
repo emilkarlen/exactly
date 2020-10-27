@@ -32,15 +32,16 @@ with exception of a "0." prefix until version 1 is released.
  - Type `file-matcher` - `name` - match base name (also for the GLOB-PATTERN variant)
  - Type `file-matcher` - `name` / `path` - Use `~` for regex matching
  - Type `string-transformer` - `replace` - Include new-lines in processed lines, unless `-preserve-new-lines` is given
+ - Type `string-transformer` - `filter`/`LINE-MATCHER` - Optimize by deriving interval of applicable lines
+ - Type `string-transformer` - Case converters - Replaces builtin symbols with primitive
+ - Type `string-transformer` - TCDS dir replacement - Replaces builtin symbol with primitive
  - Interpreter actors - interpreter `EXECUTABLE [ARGUMENT]...` requires `EXECUTABLE` to be a file
  - Actor - `file interpreter` - arguments to source file are `PROGRAM-ARGUMENT`
  - Exit codes - rename `IMPLEMENTATION_ERROR` -> `INTERNAL_ERROR`
  - Exit codes - Syntax error in `[act]` - `VALIDATION_ERROR` -> `SYNTAX_ERROR`
  - Exit codes - Values of all non-zero exit codes
  - Instruction `conf`/`actor` - Remove "-" prefix from actor names
- - String transformer - Case converters - Replaces builtin symbols with primitive
- - String transformer - TCDS dir replacement - Replaces builtin symbol with primitive
-  - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP` 
+ - Builtin symbol - string `LINE_SEP` -> Rename to `OS_LINE_SEP` 
 
 ### Removed
 
