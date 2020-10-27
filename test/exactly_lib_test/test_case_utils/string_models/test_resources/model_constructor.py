@@ -29,12 +29,6 @@ def of_str(put: unittest.TestCase, contents: str,
     return _ModelOfString(put, contents, may_depend_on_external_resources).construct
 
 
-def of_str(put: unittest.TestCase, contents: str,
-           may_depend_on_external_resources: bool = False,
-           ) -> ModelConstructor:
-    return _ModelOfString(put, contents, may_depend_on_external_resources).construct
-
-
 def of_lines(put: unittest.TestCase, lines: List[str],
              may_depend_on_external_resources: bool = False,
              ) -> ModelConstructor:
@@ -186,7 +180,10 @@ class _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter:
 
         for line_num, line_contents in enumerate(self.lines):
             if line_num == self.max_num_lines_from_iter:
-                self.put.fail('Max num lines from iter exceeded, for line num ' + str(line_num + 1))
+                self.put.fail('Max num lines from iter ({}) exceeded, for line num {}'.format(
+                    self.max_num_lines_from_iter,
+                    line_num + 1)
+                )
             yield line_contents
 
     def construct(self, environment: FullResolvingEnvironment) -> StringModel:

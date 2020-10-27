@@ -54,6 +54,15 @@ class LineNum(LineMatcherArg):
                 ]
 
 
+class LineNum2(LineMatcherArg):
+    def __init__(self, int_condition: ArgumentElementsRenderer):
+        self._int_condition = int_condition
+
+    @property
+    def elements(self) -> List:
+        return [line_matcher.LINE_NUMBER_MATCHER_NAME] + self._int_condition.elements
+
+
 class Contents(LineMatcherArg):
     def __init__(self, string_matcher: ArgumentElementsRenderer):
         self.string_matcher = string_matcher

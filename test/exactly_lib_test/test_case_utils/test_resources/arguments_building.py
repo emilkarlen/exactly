@@ -30,6 +30,14 @@ def sequence__r(arguments: Sequence[ArgumentElementsRenderer]) -> ArgumentElemen
     return arg_r.SequenceOfArguments(arguments)
 
 
+def within_paren(expression: ArgumentElementsRenderer) -> ArgumentElementsRenderer:
+    return arg_r.SequenceOfArguments([
+        arg_r.Singleton('('),
+        expression,
+        arg_r.Singleton(')'),
+    ])
+
+
 def quoted_string(string_value: str,
                   quote_type: QuoteType = QuoteType.HARD) -> QuotedStringArgument:
     return QuotedStringArgument(string_value, quote_type)
@@ -58,11 +66,20 @@ def binary_operator(operator: str, operands: Sequence[ArgumentElementsRenderer])
 
 
 def conjunction(operands: Sequence[ArgumentElementsRenderer]) -> BinaryOperator:
+    if len(operands) < 2:
+        raise ValueError('conjunction: expects at least 2 operands')
     return BinaryOperator(logic.AND_OPERATOR_NAME, operands)
 
 
 def disjunction(operands: Sequence[ArgumentElementsRenderer]) -> BinaryOperator:
+    if len(operands) < 2:
+        raise ValueError('disjunction: expects at least 2 operands')
     return BinaryOperator(logic.OR_OPERATOR_NAME, operands)
+
+
+def constant(value: bool) -> ArgumentElementsRenderer:
+    return arg_r.SequenceOfElements([logic.CONSTANT_MATCHER,
+                                     logic.BOOLEANS[value]])
 
 
 def symbol_reference(symbol_name: str) -> ArgumentElementsRenderer:

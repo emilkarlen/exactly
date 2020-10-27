@@ -1,10 +1,11 @@
-from typing import Generic, TypeVar, Sequence
+from typing import Generic, TypeVar, Sequence, Callable, Optional
 
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case_utils.interval.with_interval import WithIntInterval
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
@@ -12,6 +13,7 @@ from exactly_lib.type_system.logic.application_environment import ApplicationEnv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, \
     MatcherAdv
 from exactly_lib.type_system.logic.matching_result import TraceRenderer, MatchingResult
+from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.symbol_table import SymbolTable
 
 PROP_TYPE = TypeVar('PROP_TYPE')
@@ -65,21 +67,46 @@ class PropertyMatcher(Generic[MODEL, PROP_TYPE], MatcherWTrace[MODEL]):
         )
 
 
+class PropertyMatcherWithIntInterval(Generic[MODEL, PROP_TYPE],
+                                     PropertyMatcher[MODEL, PROP_TYPE],
+                                     WithIntInterval):
+    """Matches a property of a model"""
+
+    def __init__(self,
+                 matcher: MatcherWTrace[PROP_TYPE],
+                 property_getter: PropertyGetter[MODEL, PROP_TYPE],
+                 describer: PropertyMatcherDescriber,
+                 get_int_interval_of_prop_matcher: Callable[[MatcherWTrace[PROP_TYPE]], IntIntervalWInversion],
+                 ):
+        super().__init__(matcher, property_getter, describer)
+        self._get_int_interval_of_prop_matcher = get_int_interval_of_prop_matcher
+
+    @property
+    def interval(self) -> IntIntervalWInversion:
+        return self._get_int_interval_of_prop_matcher(self._matcher)
+
+
 class _PropertyMatcherAdv(Generic[MODEL, PROP_TYPE], MatcherAdv[MODEL]):
     def __init__(self,
                  matcher: MatcherAdv[PROP_TYPE],
                  property_getter: PropertyGetterAdv[MODEL, PROP_TYPE],
                  describer: PropertyMatcherDescriber,
+                 get_int_interval_of_prop_matcher: Callable[[MatcherWTrace[PROP_TYPE]], IntIntervalWInversion],
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
         self._describer = describer
+        self._get_int_interval_of_prop_matcher = get_int_interval_of_prop_matcher
 
     def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
-        return PropertyMatcher(
-            self._matcher.primitive(environment),
-            self._property_getter.applier(environment),
-            self._describer,
+        prop_matcher = self._matcher.primitive(environment)
+        prop_getter = self._property_getter.applier(environment)
+        return (
+            PropertyMatcher(prop_matcher, prop_getter, self._describer)
+            if self._get_int_interval_of_prop_matcher is None
+            else
+            PropertyMatcherWithIntInterval(prop_matcher, prop_getter, self._describer,
+                                           self._get_int_interval_of_prop_matcher)
         )
 
 
@@ -88,10 +115,13 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
                  matcher: MatcherDdv[PROP_TYPE],
                  property_getter: PropertyGetterDdv[MODEL, PROP_TYPE],
                  describer: PropertyMatcherDescriber,
+                 get_int_interval_of_prop_matcher:
+                 Optional[Callable[[MatcherWTrace[PROP_TYPE]], IntIntervalWInversion]] = None,
                  ):
         self._matcher = matcher
         self._property_getter = property_getter
         self._describer = describer
+        self._get_int_interval_of_prop_matcher = get_int_interval_of_prop_matcher
         self._validator = ddv_validators.all_of([
             self._matcher.validator,
             self._property_getter.validator,
@@ -110,6 +140,7 @@ class PropertyMatcherDdv(Generic[MODEL, PROP_TYPE], MatcherDdv[MODEL]):
             self._matcher.value_of_any_dependency(tcds),
             self._property_getter.value_of_any_dependency(tcds),
             self._describer,
+            self._get_int_interval_of_prop_matcher,
         )
 
 
@@ -118,10 +149,16 @@ class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
                  matcher: MatcherSdv[PROP_TYPE],
                  property_getter: PropertyGetterSdv[MODEL, PROP_TYPE],
                  describer: PropertyMatcherDescriber,
+                 get_int_interval_of_prop_matcher:
+                 Optional[Callable[[MatcherWTrace[PROP_TYPE]], IntIntervalWInversion]] = None,
                  ):
+        """
+        :param get_int_interval_of_prop_matcher: If not None - the matcher will implement class:`WithIntInterval` 
+        """
         self._matcher = matcher
         self._property_getter = property_getter
         self._describer = describer
+        self._get_int_interval_of_prop_matcher = get_int_interval_of_prop_matcher
         self._references = list(property_getter.references) + list(matcher.references)
 
     @property
@@ -133,4 +170,5 @@ class PropertyMatcherSdv(Generic[MODEL, PROP_TYPE], MatcherSdv[MODEL]):
             self._matcher.resolve(symbols),
             self._property_getter.resolve(symbols),
             self._describer,
+            self._get_int_interval_of_prop_matcher,
         )

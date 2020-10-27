@@ -3,24 +3,29 @@ from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
+from exactly_lib.test_case_utils.interval import matcher_interval
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, \
     property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_system.logic.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdv
 from exactly_lib.util.description_tree import renderers
+from exactly_lib.util.interval.w_inversion import intervals
+from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 
 _NAME = ' '.join((line_matcher.LINE_NUMBER_MATCHER_NAME,
                   syntax_elements.INTEGER_MATCHER_SYNTAX_ELEMENT.singular_name))
 
 
 def parse_line_number(parser: TokenParser) -> LineMatcherSdv:
-    matcher = _MATCHER_PARSER.parse_from_token_parser(parser)
+    integer_matcher = _MATCHER_PARSER.parse_from_token_parser(parser)
     return property_matcher.PropertyMatcherSdv(
-        matcher,
+        integer_matcher,
         _operand_from_model_sdv(),
         property_matcher_describers.GetterWithMatcherAsChild(),
+        _get_int_interval_of_int_matcher,
     )
 
 
@@ -41,3 +46,12 @@ class _PropertyGetter(property_getters.PropertyGetter[LineMatcherLine, int], Wit
 
     def get_from(self, model: LineMatcherLine) -> int:
         return model[0]
+
+
+def _get_int_interval_of_int_matcher(matcher: IntegerMatcher) -> IntIntervalWInversion:
+    return matcher_interval.interval_of__w_inversion(matcher,
+                                                     _INTERVAL_OF_UNKNOWN_INT_MATCHER,
+                                                     matcher_interval.no_adaption)
+
+
+_INTERVAL_OF_UNKNOWN_INT_MATCHER = intervals.unlimited_with_unlimited_inversion()

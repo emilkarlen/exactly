@@ -408,6 +408,21 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
+def elem_at_index(element_name: str,
+                  element_index: int,
+                  element_assertion: ValueAssertion[U],
+                  element_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
+    """
+    Short cut for creating a SubComponentValueAssertion
+    """
+    return sub_component(
+        element_name,
+        lambda x: x[element_index],
+        element_assertion,
+        element_separator,
+    )
+
+
 def named(name: str,
           assertion: ValueAssertion[T]) -> ValueAssertion[T]:
     return sub_component(name,
