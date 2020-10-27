@@ -6,9 +6,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcher
+from exactly_lib.test_case_utils.matcher.impls import comparison_matcher
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.util.description_tree import details
+from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -16,7 +17,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.integer_matcher.test_resources import parse_check, integration_check
-from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation
+from exactly_lib_test.test_case_utils.interval.test_resources import with_interval as asrt_w_interval
+from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     ExecutionExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -27,6 +29,8 @@ from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.util.interval.test_resources.interval_assertion import PosNeg, is_interval_for_eq, \
+    is_interval_for_ne, is_interval_for_lt, is_interval_for_lte, is_interval_for_gt, is_interval_for_gte
 
 
 def suite() -> unittest.TestSuite:
@@ -50,12 +54,14 @@ class Case:
                  name: str,
                  source: str,
                  result: EquivalenceCheck,
+                 interval: PosNeg[ValueAssertion[IntIntervalWInversion]],
                  references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                  symbols: SymbolTable = empty_symbol_table(),
                  ):
         self.name = name
         self.source = source
         self.result = result
+        self.interval = interval
         self.references = references
         self.symbols = symbols
 
@@ -108,6 +114,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
         cases = [
             Case(comparators.EQ.name + ' plain integer',
                  comparators.EQ.name + ' 1',
+                 interval=is_interval_for_eq(1),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -117,6 +124,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                  ),
             Case(comparators.EQ.name + ' plain integer, expr on new line',
                  '\n' + comparators.EQ.name + ' 1',
+                 interval=is_interval_for_eq(1),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -126,6 +134,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                  ),
             Case(comparators.EQ.name + ' plain integer, integer on new line',
                  comparators.EQ.name + '\n' + ' 1',
+                 interval=is_interval_for_eq(1),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 1),
                                          [
                                              model_of(-1),
@@ -135,6 +144,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                  ),
             Case(comparators.NE.name,
                  comparators.NE.name + ' 1',
+                 interval=is_interval_for_ne(1),
                  result=EquivalenceCheck(matcher_of(comparators.NE, 1),
                                          [
                                              model_of(-1),
@@ -143,6 +153,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.LT.name,
                  comparators.LT.name + ' 69',
+                 interval=is_interval_for_lt(69),
                  result=EquivalenceCheck(matcher_of(comparators.LT, 69),
                                          [
                                              model_of(60),
@@ -151,6 +162,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.LTE.name,
                  comparators.LTE.name + '  69',
+                 interval=is_interval_for_lte(69),
                  result=EquivalenceCheck(matcher_of(comparators.LTE, 69),
                                          [
                                              model_of(60),
@@ -159,6 +171,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.GT.name,
                  comparators.GT.name + ' 69',
+                 interval=is_interval_for_gt(69),
                  result=EquivalenceCheck(matcher_of(comparators.GT, 69),
                                          [
                                              model_of(60),
@@ -167,6 +180,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.GTE.name,
                  comparators.GTE.name + ' 69',
+                 interval=is_interval_for_gte(69),
                  result=EquivalenceCheck(matcher_of(comparators.GTE, 69),
                                          [
                                              model_of(60),
@@ -175,6 +189,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.EQ.name + ' integer expression',
                  '== "69+72"',
+                 interval=is_interval_for_eq(69 + 72),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 69 + 72),
                                          [
                                              model_of(69 + 72 - 1),
@@ -183,6 +198,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                          ])),
             Case(comparators.EQ.name + ' with symbol references',
                  '== "{}+72"'.format(symbol_reference_syntax_for_name(symbol_69.name)),
+                 interval=is_interval_for_eq(69 + 72),
                  result=EquivalenceCheck(matcher_of(comparators.EQ, 69 + 72),
                                          [
                                              model_of(69 + 72 - 1),
@@ -218,7 +234,13 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                         asrt_d_tree.equals_node(expected_result.trace.render()),
                                     )
                                 )
-                            )
+                            ),
+                            prim_asrt__constant(
+                                asrt_w_interval.is_with_interval(
+                                    case.interval.pos,
+                                    case.interval.neg,
+                                )
+                            ),
                         )
                     )
 
@@ -268,7 +290,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
                         ),
                         ExecutionExpectation(
                             validation=validation.pre_sds_validation_fails__w_any_msg(),
-                        )
+                        ),
                     )
                 )
 
@@ -279,8 +301,14 @@ def model_of(rhs: int) -> ModelInfo:
 
 def matcher_of(operator: comparators.ComparisonOperator,
                constant_rhs: int) -> MatcherWTrace[int]:
-    return ComparisonMatcher(syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
-                             operator,
-                             constant_rhs,
-                             details.String,
-                             )
+    return comparison_matcher.ComparisonMatcher(_comparison_matcher_config(operator),
+                                                constant_rhs,
+                                                )
+
+
+def _comparison_matcher_config(operator: comparators.ComparisonOperator) -> comparison_matcher.Config:
+    return comparison_matcher.Config(
+        syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
+        operator,
+        details.String,
+    )

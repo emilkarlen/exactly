@@ -6,9 +6,18 @@ IntegerMatcherArg = ArgumentElementsRenderer
 
 
 def comparison(comparator: ComparisonOperator,
-               lhs: IntegerMatcherArg,
+               rhs: IntegerMatcherArg,
                ) -> IntegerMatcherArg:
     return args.SequenceOfArguments([
         args.Singleton(comparator.name),
-        lhs,
+        rhs,
+    ])
+
+
+def comparison2(comparator: ComparisonOperator,
+                rhs: int,
+                ) -> IntegerMatcherArg:
+    return args.SequenceOfArguments([
+        args.Singleton(comparator.name),
+        args.Singleton(str(rhs)),
     ])

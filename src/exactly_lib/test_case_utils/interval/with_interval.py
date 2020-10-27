@@ -7,4 +7,7 @@ class WithIntInterval(ABC):
     @property
     @abstractmethod
     def interval(self) -> IntIntervalWInversion:
+        """
+        Gives the interval that this object "applies to"
+        """
         pass

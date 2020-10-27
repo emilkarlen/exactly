@@ -7,9 +7,11 @@ from exactly_lib.util.description_tree import details
 
 def matcher(comparator: comparators.ComparisonOperator,
             rhs: int) -> IntegerMatcher:
-    return comparison_matcher.ComparisonMatcher(
-        syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
-        comparator,
+    return comparison_matcher.IntComparisonMatcher(
+        comparison_matcher.Config(
+            syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
+            comparator,
+            lambda x: details.String(x),
+        ),
         rhs,
-        lambda x: details.String(x),
     )

@@ -11,6 +11,7 @@ from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.integer import parse_integer
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
+from exactly_lib.test_case_utils.matcher.impls import comparison_matcher
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcherSdv
 from exactly_lib.test_case_utils.matcher.impls.operand_object import ObjectSdvOfOperandSdv
 from exactly_lib.type_system.logic.integer_matcher import IntegerMatcherSdv
@@ -31,15 +32,19 @@ _INTEGER_PARSER = parse_integer.MandatoryIntegerParser()
 
 class _ComparisonParser(ParserFromTokens[IntegerMatcherSdv]):
     def __init__(self, operator: ComparisonOperator):
-        self._operator = operator
+        self._config = comparison_matcher.IntModelConstructionConfig(
+            comparison_matcher.Config(
+                syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
+                operator,
+                lambda x: details.String(x),
+            )
+        )
 
     def parse(self, token_parser: TokenParser) -> IntegerMatcherSdv:
         rhs = _INTEGER_PARSER.parse(token_parser)
         return ComparisonMatcherSdv(
-            syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
-            self._operator,
+            self._config,
             ObjectSdvOfOperandSdv(rhs),
-            lambda x: details.String(x),
         )
 
 
