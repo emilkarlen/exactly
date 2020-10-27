@@ -10,7 +10,8 @@ from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MODEL, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MODEL, MatcherAdv, T, \
+    MatcherStdTypeVisitor
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers
 
@@ -53,6 +54,9 @@ class Negation(_CombinatorBase[MODEL]):
                 .append_child(result_to_negate.trace)
                 .build_result(not result_to_negate.value)
         )
+
+    def accept(self, visitor: MatcherStdTypeVisitor[MODEL, T]) -> T:
+        return visitor.visit_negation(self._negated)
 
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
         return self._negated,
@@ -143,6 +147,9 @@ class Conjunction(_CombinatorBase[MODEL]):
 
         return tb.build_result(True)
 
+    def accept(self, visitor: MatcherStdTypeVisitor[MODEL, T]) -> T:
+        return visitor.visit_conjunction(self._parts)
+
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
         return self._parts
 
@@ -204,6 +211,9 @@ class Disjunction(_CombinatorBase[MODEL]):
                 return tb.build_result(True)
 
         return tb.build_result(False)
+
+    def accept(self, visitor: MatcherStdTypeVisitor[MODEL, T]) -> T:
+        return visitor.visit_disjunction(self._parts)
 
     def _children(self) -> Sequence[MatcherWTrace[MODEL]]:
         return self._parts

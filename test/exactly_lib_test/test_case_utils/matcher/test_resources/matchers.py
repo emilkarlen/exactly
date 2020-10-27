@@ -15,7 +15,7 @@ from exactly_lib.type_system.description.tree_structured import StructureRendere
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
 from exactly_lib.type_system.logic.impls import advs
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
-    MatcherWTrace
+    MatcherWTrace, MatcherStdTypeVisitor
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
@@ -26,6 +26,8 @@ from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.util.render.test_resources import renderers as renderers_tr
 
 MODEL = TypeVar('MODEL')
+
+T = TypeVar('T')
 
 
 class MatcherTestImplBase(Generic[MODEL],
@@ -175,11 +177,20 @@ class MatcherDdvFromParts2TestImpl(Generic[MODEL], MatcherDdv[MODEL]):
         return self._make_adv(tcds)
 
 
-class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTrace[MODEL]):
+class ConstantMatcherTestImplBase(Generic[MODEL], MatcherWTrace[MODEL], ABC):
+    def __init__(self, result: bool):
+        self._result = result
+
+    def accept(self, visitor: MatcherStdTypeVisitor[MODEL, T]) -> T:
+        return visitor.visit_constant(self._result)
+
+
+class ConstantMatcherWithCustomName(Generic[MODEL], ConstantMatcherTestImplBase[MODEL]):
     def __init__(self,
                  name: str,
                  result: bool,
                  ):
+        super().__init__(result)
         self._name = name
 
         self._trace_tree = tree.Node(name,
@@ -208,14 +219,12 @@ class ConstantMatcherWithCustomName(Generic[MODEL], MatcherWTrace[MODEL]):
         return self._matching_result
 
 
-T = TypeVar('T')
-
-
-class ConstantMatcherWithCustomTrace(Generic[MODEL], MatcherWTrace[MODEL]):
+class ConstantMatcherWithCustomTrace(Generic[MODEL], ConstantMatcherTestImplBase[MODEL]):
     def __init__(self,
                  mk_trace: Callable[[T], tree.Node[T]],
                  result: bool,
                  ):
+        super().__init__(result)
         self._mk_trace = mk_trace
 
         self._matching_result = MatchingResult(

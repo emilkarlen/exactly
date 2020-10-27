@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.matcher import constant
+from exactly_lib_test.test_case_utils.matcher import constant, combinator_matchers
 
 
 def suite() -> unittest.TestSuite:
-    return constant.suite()
+    return unittest.TestSuite([
+        constant.suite(),
+        combinator_matchers.suite(),
+    ])
 
 
 if __name__ == '__main__':
