@@ -1,4 +1,3 @@
-import types
 from typing import TypeVar, Optional, Callable, List, Sequence
 
 T = TypeVar('T')
@@ -18,7 +17,7 @@ class Composition:
         return self.g(self.f(arg))
 
 
-def and_predicate(predicates: List[Callable[[T], bool]]) -> types.FunctionType:
+def and_predicate(predicates: List[Callable[[T], bool]]) -> Callable[[T], bool]:
     if not predicates:
         return lambda x: True
     if len(predicates) == 1:
@@ -52,6 +51,15 @@ def reduce_optional(f: Callable[[T], U], value_if_none: U, x: Optional[T]) -> U:
         if x is None
         else
         f(x)
+    )
+
+
+def reduce_optional_2(x: Optional[T], value_if_none: T) -> U:
+    return (
+        value_if_none
+        if x is None
+        else
+        x
     )
 
 
