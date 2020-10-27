@@ -8,6 +8,7 @@ from exactly_lib_test.test_case_utils.files_condition import z_package_suite as 
 from exactly_lib_test.test_case_utils.files_matcher import z_package_suite as files_matcher
 from exactly_lib_test.test_case_utils.integer import z_package_suite as integer
 from exactly_lib_test.test_case_utils.integer_matcher import z_package_suite as integer_matcher
+from exactly_lib_test.test_case_utils.interval import z_package_suite as interval
 from exactly_lib_test.test_case_utils.line_matcher import z_package_suite as line_matcher
 from exactly_lib_test.test_case_utils.logic import z_package_suite as logic
 from exactly_lib_test.test_case_utils.matcher import z_package_suite as matcher
@@ -28,6 +29,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(integer.suite())
     ret_val.addTest(regex.suite())
     ret_val.addTest(expression.suite())
+    ret_val.addTest(interval.suite())
     ret_val.addTest(logic.suite())
     ret_val.addTest(files_condition.suite())
     ret_val.addTest(matcher.suite())
