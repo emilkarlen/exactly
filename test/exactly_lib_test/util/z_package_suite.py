@@ -5,6 +5,7 @@ from exactly_lib_test.util import functional, tables, \
 from exactly_lib_test.util.cli_syntax import z_package_suite as cli_syntax
 from exactly_lib_test.util.description_tree import z_package_suite as description_tree
 from exactly_lib_test.util.file_utils import z_package_suite as file_utils
+from exactly_lib_test.util.interval import z_package_suite as interval
 from exactly_lib_test.util.process_execution import z_package_suite as process_execution
 from exactly_lib_test.util.render import z_package_suite as render
 from exactly_lib_test.util.simple_textstruct import z_package_suite as simple_textstruct
@@ -20,6 +21,7 @@ def suite() -> unittest.TestSuite:
         str_.suite(),
         symbol_table.suite(),
         test_resources_test.suite(),  # These tests depend on symbol_table,
+        interval.suite(),
         tables.suite(),
         render.suite(),
         simple_textstruct.suite(),
