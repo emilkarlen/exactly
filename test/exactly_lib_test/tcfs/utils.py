@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.tcfs import utils as sut
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system import utils as sut
 from exactly_lib_test.tcfs.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 
 

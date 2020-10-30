@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Set
 
+from exactly_lib.tcfs import utils
 from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system import utils
 from exactly_lib.util.render import strings
 from exactly_lib.util.render.renderer import Renderer
 
