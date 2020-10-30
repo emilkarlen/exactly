@@ -5,9 +5,9 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Sequence, ContextManager
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.models import transformed_by_program as sut
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForExecutableFile
 from exactly_lib.type_system.logic.program.program import Program

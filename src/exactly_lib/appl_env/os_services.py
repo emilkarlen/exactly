@@ -1,9 +1,7 @@
 import pathlib
 from abc import ABC, abstractmethod
 
-from exactly_lib.test_case import exception_detection
-from exactly_lib.test_case.command_executor import CommandExecutor
-from exactly_lib.test_case.result import sh
+from exactly_lib.appl_env.command_executor import CommandExecutor
 
 
 class OsServices(ABC):
@@ -43,13 +41,3 @@ class OsServices(ABC):
         :raises DetectedException
         """
         raise NotImplementedError()
-
-    def copy_file_preserve_as_much_as_possible(self, src: str, dst: str) -> sh.SuccessOrHardError:
-        return exception_detection.return_success_or_hard_error(
-            self.copy_file_preserve_as_much_as_possible__detect_ex,
-            src, dst)
-
-    def copy_tree_preserve_as_much_as_possible(self, src: str, dst: str) -> sh.SuccessOrHardError:
-        return exception_detection.return_success_or_hard_error(
-            self.copy_tree_preserve_as_much_as_possible__detect_ex,
-            src, dst)

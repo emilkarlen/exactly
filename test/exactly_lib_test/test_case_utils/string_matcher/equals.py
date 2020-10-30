@@ -3,12 +3,12 @@ import unittest
 from abc import ABC
 from typing import Sequence
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_matcher.parse.equality import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source

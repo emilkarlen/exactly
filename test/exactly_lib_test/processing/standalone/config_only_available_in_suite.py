@@ -2,6 +2,7 @@ import unittest
 from pathlib import Path
 from typing import Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import file_names
@@ -11,7 +12,6 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing.test_case_processing import Preprocessor
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh
@@ -20,6 +20,7 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
@@ -28,7 +29,6 @@ from exactly_lib_test.processing.standalone.test_resources.run_processor import 
 from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_prints_single_string_on_stdout
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd

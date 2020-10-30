@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
@@ -10,7 +11,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_ob
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
 from exactly_lib.test_case_utils import path_check

@@ -6,7 +6,7 @@ The translation depends on the platform.
 import os
 from typing import List
 
-from exactly_lib.test_case.executable_factory import ExecutableFactory
+from exactly_lib.appl_env.executable_factory import ExecutableFactory
 from exactly_lib.type_system.logic.program.process_execution import commands
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.process_execution.execution_elements import Executable

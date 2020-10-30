@@ -1,10 +1,10 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.actor import ActionToCheck
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh

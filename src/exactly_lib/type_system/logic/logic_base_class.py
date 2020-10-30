@@ -1,23 +1,13 @@
 from abc import abstractmethod, ABC
-from typing import TypeVar, Generic
+from typing import Generic
 
+from exactly_lib.appl_env.app_env_dep_val import VALUE_TYPE, ApplicationEnvironmentDependentValue
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.description import LogicValueDescription, NodeDescription
-
-VALUE_TYPE = TypeVar('VALUE_TYPE')
-
-
-class ApplicationEnvironmentDependentValue(Generic[VALUE_TYPE], ABC):
-    """A value that may depend on :class:`ApplicationEnvironment`"""
-
-    @abstractmethod
-    def primitive(self, environment: ApplicationEnvironment) -> VALUE_TYPE:
-        pass
 
 
 class LogicDdv(Generic[VALUE_TYPE],

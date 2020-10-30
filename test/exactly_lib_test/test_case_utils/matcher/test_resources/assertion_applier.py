@@ -2,6 +2,7 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import Callable, TypeVar, Generic, Optional
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
@@ -9,7 +10,6 @@ from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls.sdv_components import MatcherSdvFromParts
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.impls.advs import MatcherAdvFromFunction
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, \

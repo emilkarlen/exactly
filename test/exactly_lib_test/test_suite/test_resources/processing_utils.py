@@ -11,12 +11,12 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite import structure
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.execution.full_execution.test_resources.result_values import DUMMY_SDS, \
     full_result_with_failure_info
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:

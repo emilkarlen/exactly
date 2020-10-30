@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Generic, Sequence, Callable, TypeVar, Optional
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions import matcher_model, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -22,9 +24,7 @@ from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcher
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcherModel, FileMatcherSdv
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
     MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult

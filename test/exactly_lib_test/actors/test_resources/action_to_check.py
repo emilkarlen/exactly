@@ -14,6 +14,7 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 from exactly_lib_test.actors.test_resources import integration_check
 from exactly_lib_test.actors.test_resources.integration_check import \
     Expectation, Arrangement, PostSdsExpectation
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.multi_phase.change_dir import CwdSdsAssertion
@@ -22,7 +23,6 @@ from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

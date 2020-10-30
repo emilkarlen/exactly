@@ -1,10 +1,10 @@
 from typing import Optional, Sequence, Generic, Callable
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.tcfs.test_resources import tcds_populators, hds_populators, non_hds_populator
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction

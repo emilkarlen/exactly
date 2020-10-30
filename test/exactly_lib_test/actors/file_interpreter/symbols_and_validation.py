@@ -22,6 +22,7 @@ from exactly_lib_test.actors.test_resources.integration_check import Expectation
     check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
 from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
@@ -32,7 +33,6 @@ from exactly_lib_test.tcfs.test_resources import hds_populators, path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_case_utils.program.test_resources import program_arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab, relativity_options
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh

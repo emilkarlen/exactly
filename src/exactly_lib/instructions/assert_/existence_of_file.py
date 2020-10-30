@@ -1,5 +1,6 @@
 from typing import Sequence, List, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -20,7 +21,6 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \

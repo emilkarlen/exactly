@@ -11,10 +11,10 @@ from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.str_.misc_formatting import lines_content
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_only_assert_phase_instructions, setup_with_null_act_phase_and_null_preprocessing
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value

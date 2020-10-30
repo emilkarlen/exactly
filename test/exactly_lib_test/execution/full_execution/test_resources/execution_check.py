@@ -1,11 +1,11 @@
 import os
 import unittest
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_utils.os_services import os_services_access

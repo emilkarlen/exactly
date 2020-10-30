@@ -1,5 +1,7 @@
 from typing import Sequence
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.tcfs import ddv_validators
@@ -7,9 +9,7 @@ from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
-    LogicWithNodeDescriptionDdv
+from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv
 from exactly_lib.type_system.logic.program.command import CommandDdv
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.stdin_data import StdinDataDdv, StdinData

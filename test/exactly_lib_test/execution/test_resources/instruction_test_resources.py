@@ -1,8 +1,8 @@
 from typing import Sequence, Callable, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction

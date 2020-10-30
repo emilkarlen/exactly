@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.actor import ActionToCheck, Actor
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \

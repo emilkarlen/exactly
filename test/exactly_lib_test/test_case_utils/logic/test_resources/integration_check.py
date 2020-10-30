@@ -10,6 +10,8 @@ import unittest
 from contextlib import contextmanager
 from typing import Sequence, Generic, ContextManager, Callable, TypeVar
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
@@ -17,8 +19,7 @@ from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironm
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import LogicDdv, ApplicationEnvironmentDependentValue
+from exactly_lib.type_system.logic.logic_base_class import LogicDdv
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \

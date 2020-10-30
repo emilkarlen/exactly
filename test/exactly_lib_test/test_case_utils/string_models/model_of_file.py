@@ -4,8 +4,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.test_case_utils.string_models import file_model as sut
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed

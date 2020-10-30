@@ -1,6 +1,7 @@
 import os
 from typing import Sequence, List, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -19,7 +20,6 @@ from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.test_case_utils.err_msg import path_err_msgs

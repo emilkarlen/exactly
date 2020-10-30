@@ -1,7 +1,7 @@
 import pathlib
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper

@@ -2,6 +2,7 @@ import pathlib
 from typing import Optional
 
 from exactly_lib import program_info
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
@@ -21,7 +22,6 @@ from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.name_and_value import NameAndValue

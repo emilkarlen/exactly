@@ -1,3 +1,4 @@
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.symbol.logic.matcher import MODEL, MatcherSdv
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
@@ -5,7 +6,6 @@ from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, PRIMITIVE
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherSdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult

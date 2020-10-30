@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.actors.util.actor_from_parts import parts
 from exactly_lib.actors.util.actor_from_parts.parts import ExecutableObjectParser
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \

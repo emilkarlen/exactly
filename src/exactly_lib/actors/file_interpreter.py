@@ -3,6 +3,7 @@ from typing import Sequence, TypeVar, Callable
 from exactly_lib.actors.common import relativity_configuration_of_action_to_check
 from exactly_lib.actors.util.actor_from_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.instructions.utils.logic_type_resolving_helper import full_resolving_env_for_instruction_env
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -22,7 +23,6 @@ from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

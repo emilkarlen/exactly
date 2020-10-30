@@ -1,5 +1,6 @@
 from typing import Sequence, Callable
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -10,7 +11,6 @@ from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSd
     PropertyGetterAdv, PropertyGetter
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher, FileMatcherAdv, \
     FileMatcherSdv
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv

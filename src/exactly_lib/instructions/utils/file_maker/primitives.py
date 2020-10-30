@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol import sdv_validation
@@ -12,7 +13,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator, \
     ValidationStep
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import path_check, file_properties, file_creation
 from exactly_lib.test_case_utils.file_creation import FileTransformerHelper

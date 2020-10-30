@@ -1,5 +1,5 @@
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 
 

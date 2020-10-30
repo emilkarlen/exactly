@@ -1,6 +1,7 @@
 import re
 from typing import Sequence, Dict, List
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
@@ -21,7 +22,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.str_.formatter import StringFormatter

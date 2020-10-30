@@ -1,11 +1,11 @@
 import unittest
 from typing import TypeVar, Callable, Set, Optional, Generic
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.tcfs.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
     MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib_test.tcfs.test_resources.application_environment import \
     application_environment_for_test
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds

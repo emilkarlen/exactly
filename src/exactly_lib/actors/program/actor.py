@@ -2,11 +2,11 @@ from exactly_lib.actors.common import relativity_configuration_of_action_to_chec
 from exactly_lib.actors.program.executable_object import ProgramToExecute
 from exactly_lib.actors.program.parse import Parser
 from exactly_lib.actors.util.actor_from_parts import parts
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.symbol.sdv_validation import SdvValidatorFromDdvValidator
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.symbol_table import SymbolTable

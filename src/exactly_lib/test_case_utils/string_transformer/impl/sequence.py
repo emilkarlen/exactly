@@ -1,5 +1,7 @@
 from typing import Sequence
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
@@ -11,8 +13,6 @@ from exactly_lib.test_case_utils.expression.grammar_elements import InfixOperato
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerAdv, \
     StringTransformerDdv

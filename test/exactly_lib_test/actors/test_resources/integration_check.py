@@ -3,13 +3,13 @@ import unittest
 from contextlib import contextmanager
 from typing import List, Optional, Sequence, ContextManager, Callable
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.actor import Actor, ActionToCheck
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

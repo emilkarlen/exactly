@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.test_case_utils.os_services import os_services_access
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \

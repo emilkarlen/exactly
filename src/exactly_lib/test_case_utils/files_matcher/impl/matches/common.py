@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import PurePath
 from typing import Callable, Sequence
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -13,7 +14,6 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
     FilesMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \

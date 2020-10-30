@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.symbol.sdv_with_validation import ObjectWithSymbolReferencesAndSdvValidation
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case_utils.err_msg import file_or_dir_contents_headers, path_rendering, header_rendering
 from exactly_lib.type_system.data.path_ddv import DescribedPath

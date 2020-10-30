@@ -2,8 +2,8 @@ import unittest
 from contextlib import contextmanager
 from typing import Iterator, Sequence, IO, Callable, ContextManager
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.test_case_utils.string_transformer.impl.models import transformed_string_models as sut
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.impls.transformed_string_models import StringTransFun
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl

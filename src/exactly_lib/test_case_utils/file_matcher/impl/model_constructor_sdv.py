@@ -1,11 +1,11 @@
 from typing import Callable
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common import tmp_dir_file_spaces
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
 from ... import described_dep_val

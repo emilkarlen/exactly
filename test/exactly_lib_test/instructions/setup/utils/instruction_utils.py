@@ -1,10 +1,10 @@
 import unittest
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder

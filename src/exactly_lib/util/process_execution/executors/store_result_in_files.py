@@ -1,7 +1,7 @@
 import pathlib
 from typing import ContextManager
 
-from exactly_lib.test_case.command_executor import CommandExecutor
+from exactly_lib.appl_env.command_executor import CommandExecutor
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.util.file_utils import ensure_file_existence

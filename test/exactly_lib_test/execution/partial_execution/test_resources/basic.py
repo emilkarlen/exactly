@@ -4,6 +4,7 @@ import types
 import unittest
 from typing import Callable, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
@@ -11,7 +12,6 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_utils.os_services import os_services_access

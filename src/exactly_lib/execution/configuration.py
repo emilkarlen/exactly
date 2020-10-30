@@ -1,7 +1,7 @@
 from typing import Optional, Dict
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 

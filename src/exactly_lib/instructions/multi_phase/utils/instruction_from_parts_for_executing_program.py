@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import \
@@ -16,7 +17,6 @@ from exactly_lib.symbol import sdv_validation
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering

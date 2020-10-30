@@ -1,12 +1,12 @@
 import unittest
 from abc import ABC
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.os_services.os_services_access import new_for_current_os
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance

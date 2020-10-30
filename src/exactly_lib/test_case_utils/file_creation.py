@@ -1,12 +1,12 @@
 import pathlib
 from typing import Optional, Any, Callable, TextIO
 
+from exactly_lib.appl_env.exception_detection import DetectedException
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.test_case.exception_detection import DetectedException
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
 from exactly_lib.type_system.data.path_ddv import DescribedPath

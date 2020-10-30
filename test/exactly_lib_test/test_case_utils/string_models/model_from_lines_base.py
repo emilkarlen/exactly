@@ -2,7 +2,7 @@ import unittest
 from contextlib import contextmanager
 from typing import ContextManager, Sequence
 
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib_test.test_case_utils.string_models.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter

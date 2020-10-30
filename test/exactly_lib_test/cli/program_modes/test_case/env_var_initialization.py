@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 from typing import Dict
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.cli.test_case_def import TestCaseDefinitionForMainProgram
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -10,7 +11,6 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh

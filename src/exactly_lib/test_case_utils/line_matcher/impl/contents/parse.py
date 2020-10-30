@@ -1,3 +1,4 @@
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
@@ -8,7 +9,6 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdv, LineMatcherDdv
 from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, MatcherWTrace, MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult

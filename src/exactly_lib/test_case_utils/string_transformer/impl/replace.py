@@ -1,5 +1,7 @@
 from typing import Pattern, Sequence, Iterator, Callable
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.help import headers
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -22,8 +24,6 @@ from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_stri
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv
 from exactly_lib.util.cli_syntax.elements import argument as a

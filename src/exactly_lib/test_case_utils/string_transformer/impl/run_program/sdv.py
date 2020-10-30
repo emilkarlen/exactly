@@ -1,5 +1,7 @@
 from typing import Callable
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
@@ -9,8 +11,6 @@ from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.run_program import primitive
 from exactly_lib.test_case_utils.string_transformer.impl.utils import from_parts
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.program.program import ProgramDdv, ProgramAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerAdv
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv

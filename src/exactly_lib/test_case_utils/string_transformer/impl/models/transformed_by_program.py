@@ -1,8 +1,8 @@
 from typing import IO
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.test_case_utils.program_execution import command_processors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.program.process_execution.command import Command
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_system.logic.string_model import StringModel

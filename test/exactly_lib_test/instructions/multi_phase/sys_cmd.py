@@ -12,6 +12,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.actors.program.test_resources import tmp_dir_in_path_with_files
+from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
+    CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
@@ -28,8 +30,6 @@ from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolCo
 from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
-    CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_utils.program.test_resources import result_assertions, program_arguments

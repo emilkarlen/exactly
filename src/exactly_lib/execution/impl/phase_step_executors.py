@@ -1,8 +1,8 @@
 from typing import Optional, Iterator
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as instr_env
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction

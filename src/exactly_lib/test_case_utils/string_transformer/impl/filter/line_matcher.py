@@ -1,5 +1,7 @@
 from typing import Iterator, Tuple
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -10,10 +12,8 @@ from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
     LineMatcherSdv, LineMatcherLine
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
     StringTransformerAdv
 from exactly_lib.util.description_tree import renderers

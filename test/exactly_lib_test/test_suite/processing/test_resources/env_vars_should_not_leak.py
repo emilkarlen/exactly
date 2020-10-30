@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh

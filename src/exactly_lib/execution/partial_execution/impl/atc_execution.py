@@ -3,12 +3,12 @@ import subprocess
 from contextlib import contextmanager
 from typing import Optional, Callable
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
 from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure, \
     PhaseStepFailureException
 from exactly_lib.tcfs.sds import stdin_contents_file
 from exactly_lib.test_case.actor import ActionToCheck
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error

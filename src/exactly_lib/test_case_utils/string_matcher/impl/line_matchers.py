@@ -1,13 +1,13 @@
 import contextlib
 from typing import ContextManager, Iterator
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.line_matcher.model_construction import model_iter_from_file_line_iter
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, LineMatcherSdv
 from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequence
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions import logic
 from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
@@ -10,7 +11,6 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MatcherAdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.description_tree import details, renderers

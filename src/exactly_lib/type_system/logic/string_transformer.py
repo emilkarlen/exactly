@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
-    LogicWithNodeDescriptionDdv
+from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv
 from exactly_lib.type_system.logic.string_model import StringModel
 
 

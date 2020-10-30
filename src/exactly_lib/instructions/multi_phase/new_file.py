@@ -1,6 +1,7 @@
 import os.path
 from typing import Sequence, List, Optional
 
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
@@ -29,7 +30,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.symbol.sdv_validation import SdvValidator
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs

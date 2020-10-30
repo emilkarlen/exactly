@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Sequence
 
+from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
-from exactly_lib.type_system.logic.logic_base_class import ApplicationEnvironmentDependentValue, \
-    LogicWithNodeDescriptionDdv
+from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 
 MODEL = TypeVar('MODEL')

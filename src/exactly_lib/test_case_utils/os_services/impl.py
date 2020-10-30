@@ -1,10 +1,10 @@
 import pathlib
 import shutil
 
+from exactly_lib.appl_env.command_executor import CommandExecutor
+from exactly_lib.appl_env.exception_detection import DetectedException
+from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.test_case.command_executor import CommandExecutor
-from exactly_lib.test_case.exception_detection import DetectedException
-from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.str_ import str_constructor
 

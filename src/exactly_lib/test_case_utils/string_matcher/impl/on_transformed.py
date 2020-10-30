@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.symbol.logic.matcher import MatcherSdv
@@ -12,7 +13,6 @@ from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase, StringMatcherDdvImplBase, \
     StringMatcherAdvImplBase
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherAdv, MatcherDdv, \
     MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
