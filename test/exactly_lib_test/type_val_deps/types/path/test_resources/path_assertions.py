@@ -1,13 +1,13 @@
 import unittest
 
-from exactly_lib.tcfs.dir_dependent_value import Max1DependencyDdv
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Max1DependencyDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib_test.tcfs.test_resources.dir_dependent_value import \
-    SingleDirDependentValueAssertion
 from exactly_lib_test.tcfs.test_resources.path_relativity import equals_path_relativity
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
+    SingleDirDependentValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part
 
 

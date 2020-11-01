@@ -12,7 +12,7 @@ from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEn
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions  as asrt_source
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement

@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Arrangement, test__va
 from exactly_lib_test.execution.test_resources.execution_recording import phase_step_recordings as psr
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.tcfs.test_resources.paths import fake_hds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

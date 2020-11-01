@@ -2,11 +2,11 @@ import pathlib
 from abc import ABC
 
 from exactly_lib.tcfs import relativity_root, relative_path_options
-from exactly_lib.tcfs.dir_dependent_value import DirDependencyError
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelOptionType, SpecificPathRelativity, \
     SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_hds
 from exactly_lib.tcfs.sds import SandboxDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencyError
 from exactly_lib.type_val_deps.types.path import path_part_ddvs
 from exactly_lib.type_val_deps.types.path.impl.path_base import PathDdvWithPathSuffixBase, \
     PathDdvWithPathSuffixAndIsNotAbsoluteBase, PathDdvWithDescriptionBase

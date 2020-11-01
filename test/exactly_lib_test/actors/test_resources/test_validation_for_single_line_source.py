@@ -7,9 +7,9 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.tcfs.test_resources.paths import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly

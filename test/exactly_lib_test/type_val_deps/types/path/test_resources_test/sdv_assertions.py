@@ -10,7 +10,6 @@ from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.tcfs.test_resources.simple_path import PathDdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
@@ -18,6 +17,7 @@ from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_asserti
 from exactly_lib_test.type_val_deps.types.path.test_resources import sdv_assertions as sut
 from exactly_lib_test.type_val_deps.types.path.test_resources.path_sdvs import \
     PathSdvTestImplWithConstantPathAndSymbolReferences
+from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import PathDdvTestImpl
 
 
 def suite() -> unittest.TestSuite:

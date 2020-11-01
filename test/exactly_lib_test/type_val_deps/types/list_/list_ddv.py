@@ -7,10 +7,10 @@ from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsNot
 from exactly_lib.type_val_deps.types.string import strings_ddvs as sv
 from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.tcfs.test_resources.dir_dependent_value import \
-    matches_multi_dir_dependent_value
-from exactly_lib_test.tcfs.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
+    matches_multi_dir_dependent_value
+from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 
 
 def suite() -> unittest.TestSuite:

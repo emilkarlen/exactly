@@ -1,16 +1,16 @@
 import unittest
 from typing import TypeVar, Callable, Set, Optional, Generic
 
-from exactly_lib.tcfs.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
-    MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib_test.tcfs.test_resources.application_environment import \
-    application_environment_for_test
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
+    MultiDependenciesDdv, DirDependencies, resolving_dependencies_from_dir_dependencies, DirDependentValue
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.application_environment import \
+    application_environment_for_test
 
 T = TypeVar('T')
 

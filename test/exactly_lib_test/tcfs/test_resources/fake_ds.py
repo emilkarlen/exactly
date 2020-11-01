@@ -16,5 +16,4 @@ def fake_sds() -> SandboxDs:
 
 
 def fake_tcds() -> TestCaseDs:
-    return TestCaseDs(fake_hds(),
-                      fake_sds())
+    return TestCaseDs(fake_hds(), fake_sds())

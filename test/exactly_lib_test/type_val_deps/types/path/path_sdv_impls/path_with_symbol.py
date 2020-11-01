@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelati
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol as sut
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as vr_tr, \
     concrete_restriction_assertion as restrictions

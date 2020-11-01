@@ -3,8 +3,6 @@ from typing import Optional, Sequence, List
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.integer import validation as int_validation
@@ -14,6 +12,8 @@ from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums import
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import Range
 from exactly_lib.test_case_utils.validation_error_exception import ValidationErrorException
 from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

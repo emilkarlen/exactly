@@ -12,7 +12,7 @@ from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdvs import str_constant
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
+from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 
 
 def symbol_table_with_values_matching_references(references: Sequence[SymbolReference]) -> SymbolTable:

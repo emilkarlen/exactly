@@ -3,12 +3,12 @@ import unittest
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util import symbol_table
-from exactly_lib_test.tcfs.test_resources.application_environment import \
-    application_environment_for_test
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformer_checker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 

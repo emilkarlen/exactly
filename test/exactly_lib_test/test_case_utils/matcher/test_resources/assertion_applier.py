@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 from typing import Callable, TypeVar, Generic, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls.sdv_components import MatcherSdvFromParts
 from exactly_lib.type_val_deps.dep_variants.adv.advs import MatcherAdvFromFunction
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

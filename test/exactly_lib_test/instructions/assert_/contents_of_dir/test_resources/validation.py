@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.tcfs.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument

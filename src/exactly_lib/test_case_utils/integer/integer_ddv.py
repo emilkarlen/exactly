@@ -2,12 +2,12 @@ from typing import Callable, Optional, Set
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandDdv
 from exactly_lib.test_case_utils.integer.evaluate_integer import python_evaluate, NotAnIntegerException
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

@@ -1,12 +1,12 @@
 from typing import Pattern, Sequence, Set, Optional
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator, \
-    ConstantDdvValidator
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, \
+    ConstantDdvValidator
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 

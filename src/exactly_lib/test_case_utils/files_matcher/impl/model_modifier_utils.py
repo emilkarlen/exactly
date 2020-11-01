@@ -1,7 +1,6 @@
 from typing import Sequence, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher import property_matcher
@@ -9,6 +8,7 @@ from exactly_lib.test_case_utils.matcher.impls import property_matcher_describer
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv, PropertyGetterDdv, MODEL, T, \
     PropertyGetterAdv, PropertyGetter
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv, FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_prims.description.structure_building import StructureBuilder

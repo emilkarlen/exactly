@@ -4,8 +4,6 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils import file_properties, described_dep_val
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, sdv_of_constant_primitive, \
@@ -17,6 +15,8 @@ from exactly_lib.test_case_utils.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.integer.integer_sdv import IntegerSdv
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel

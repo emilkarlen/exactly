@@ -1,6 +1,5 @@
 from typing import Iterator, Tuple
 
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.line_matcher import line_nums_interval
@@ -10,6 +9,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_stri
     StringTransformerFromLinesTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherAdv, LineMatcherDdv, LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

@@ -8,8 +8,6 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol_references
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils import file_properties, path_check
@@ -23,6 +21,8 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue, \
     ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv, FileMatcherSdv

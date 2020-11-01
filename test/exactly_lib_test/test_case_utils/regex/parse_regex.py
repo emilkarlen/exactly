@@ -19,7 +19,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.regex.test_resources.assertions import matches_regex_sdv, \

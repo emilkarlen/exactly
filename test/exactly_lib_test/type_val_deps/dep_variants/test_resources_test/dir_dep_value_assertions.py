@@ -1,19 +1,19 @@
 import unittest
 from typing import Set, Callable, Optional, Any
 
-from exactly_lib.tcfs.dir_dependent_value import Max1DependencyDdv, \
-    MultiDependenciesDdv, DirDependencies
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import Max1DependencyDdv, \
+    MultiDependenciesDdv, DirDependencies
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as sut
 from exactly_lib_test.test_resources.actions import do_raise, do_return
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dep_value_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

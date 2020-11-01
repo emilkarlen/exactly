@@ -1,7 +1,7 @@
 from typing import Iterable, Set, TypeVar
 
-from exactly_lib.tcfs.dir_dependent_value import WithDirDependenciesReporting
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import WithDirDependenciesReporting
 
 
 def resolving_dependencies_from_sequence(dir_dependent_values: Iterable[WithDirDependenciesReporting]

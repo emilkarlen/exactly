@@ -2,8 +2,6 @@ from typing import Sequence
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.expression.grammar_elements import InfixOperatorDescriptionFromFunctions
@@ -11,6 +9,8 @@ from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddvs import StringTransformerConstantDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

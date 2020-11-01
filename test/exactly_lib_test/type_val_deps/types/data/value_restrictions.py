@@ -9,10 +9,10 @@ from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueR
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolValueContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context

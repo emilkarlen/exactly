@@ -2,12 +2,12 @@ import pathlib
 from abc import ABC
 from typing import Optional
 
-from exactly_lib.tcfs.dir_dependent_value import DirDependencyError
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
     RelOptionType, RESOLVING_DEPENDENCY_OF, DirectoryStructurePartition
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencyError
 from exactly_lib.type_val_deps.types.path.impl import describer_handlers, described_w_handler
 from exactly_lib.type_val_deps.types.path.impl.described_w_handler import PathDescriberHandlerForDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv, DescribedPath

@@ -4,11 +4,11 @@ from typing import List, Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
@@ -20,11 +20,8 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
-    sds_populator
 from exactly_lib_test.tcfs.test_resources import hds_populators
-from exactly_lib_test.tcfs.test_resources.application_environment import \
-    application_environment_for_test
+from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator, SdsPopulator
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_2
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
@@ -39,6 +36,9 @@ from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.application_environment import \
+    application_environment_for_test
 from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \

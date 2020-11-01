@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.tcfs import tcds as sut
-from exactly_lib_test.tcfs.test_resources.paths import fake_sds, fake_hds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_sds, fake_hds
 
 
 def suite() -> unittest.TestSuite:

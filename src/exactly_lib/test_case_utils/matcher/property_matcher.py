@@ -1,14 +1,14 @@
 from typing import Generic, TypeVar, Sequence, Callable, Optional
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.interval.with_interval import WithIntInterval
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter, PropertyGetterDdv, \
     PropertyGetterSdv, PropertyGetterAdv
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MODEL, MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

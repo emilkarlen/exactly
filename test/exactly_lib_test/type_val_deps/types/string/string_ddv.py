@@ -8,11 +8,11 @@ from exactly_lib.type_val_deps.types.string import string_ddv as sut, strings_dd
 from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string, \
     string_ddv_of_single_path
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.tcfs.test_resources.dir_dependent_value import \
-    matches_multi_dir_dependent_value
-from exactly_lib_test.tcfs.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
+    matches_multi_dir_dependent_value
+from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 
 
 def suite() -> unittest.TestSuite:

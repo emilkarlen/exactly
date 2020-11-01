@@ -6,8 +6,6 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pfh_exception as pfh_ex_method
@@ -17,6 +15,8 @@ from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_conte
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath

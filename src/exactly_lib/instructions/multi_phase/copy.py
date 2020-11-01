@@ -26,7 +26,6 @@ from exactly_lib.section_document.model import SectionContents
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs import path_relativity
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh
@@ -36,6 +35,7 @@ from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.parse import parse_path, rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RelOptionArgumentConfiguration
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv

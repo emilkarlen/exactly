@@ -9,12 +9,12 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_path import path_relativity_restriction
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_path as sut
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs

@@ -1,11 +1,11 @@
 from typing import Generic, Callable
 
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.advs import ConstantMatcherAdv
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MODEL
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

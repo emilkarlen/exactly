@@ -9,7 +9,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType, LogicValueType
 from exactly_lib.tcfs import sds as sds
-from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator, DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
@@ -17,6 +16,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator, DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment

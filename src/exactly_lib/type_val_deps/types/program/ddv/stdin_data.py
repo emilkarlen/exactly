@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
 from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPathDdv
 from exactly_lib.type_val_prims.program.stdin import StdinData
 

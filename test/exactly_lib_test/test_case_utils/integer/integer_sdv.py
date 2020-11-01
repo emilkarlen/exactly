@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.svh_exception import SvhValidationException
 from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources.paths import fake_hds, fake_sds, fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_utils.test_resources import validation

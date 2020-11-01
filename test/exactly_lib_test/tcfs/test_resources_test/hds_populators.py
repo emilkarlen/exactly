@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib_test.tcfs.test_resources import hds_populators as sut
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_sds
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.tcfs.test_resources.paths import fake_sds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 

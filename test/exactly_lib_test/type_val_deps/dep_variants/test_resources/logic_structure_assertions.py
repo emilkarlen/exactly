@@ -1,20 +1,20 @@
 import unittest
 from typing import Callable, TypeVar
 
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_prims.description.logic_description import LogicValueDescription, DescriptionVisitor, \
     DetailsDescription, \
     NodeDescription
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
-from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as asrt_ddv
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dep_value_assertions as asrt_ddv
 from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions
 

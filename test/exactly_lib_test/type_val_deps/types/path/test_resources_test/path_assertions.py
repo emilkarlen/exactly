@@ -4,11 +4,11 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVarian
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib_test.tcfs.test_resources.simple_path import \
-    PathDdvTestImpl
 from exactly_lib_test.test_resources.test_of_test_resources_util import \
     test_case_with_failure_exception_set_to_test_exception, TestException
 from exactly_lib_test.type_val_deps.types.path.test_resources import path_assertions as sut
+from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import \
+    PathDdvTestImpl
 
 
 def suite() -> unittest.TestSuite:

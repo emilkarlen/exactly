@@ -2,12 +2,12 @@ import enum
 from typing import Optional, Set
 
 from exactly_lib.symbol.value_type import DataValueType
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath, PathDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 

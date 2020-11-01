@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.type_val_deps.types.string import strings_ddvs as csv
-from exactly_lib_test.tcfs.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.type_val_deps.types.string.test_resources import ddv_assertions as sut
 
 

@@ -1,11 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicWithNodeDescriptionDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.program.ddv.stdin_data import StdinDataDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv

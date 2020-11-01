@@ -1,15 +1,15 @@
 import unittest
 from typing import Set, Generic, Callable, Optional, Any
 
-from exactly_lib.tcfs.dir_dependent_value import DirDependencies, \
-    dir_dependency_of_resolving_dependencies, RESOLVED_TYPE
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib_test.tcfs.test_resources import dir_dependent_value as sut
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies, \
+    dir_dependency_of_resolving_dependencies, RESOLVED_TYPE
 from exactly_lib_test.test_resources.actions import do_raise, do_return
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dependent_value as sut
 
 
 def suite() -> unittest.TestSuite:

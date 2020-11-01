@@ -7,7 +7,7 @@ from exactly_lib.type_val_deps.types.string.string_sdv import StringFragmentSdv,
 from exactly_lib.type_val_deps.types.string.string_sdv_impls import ConstantStringFragmentSdv, \
     SymbolStringFragmentSdv
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.type_val_deps.data.test_resources.assertion_utils import \

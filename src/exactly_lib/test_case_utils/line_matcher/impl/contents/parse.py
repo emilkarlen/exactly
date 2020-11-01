@@ -1,13 +1,13 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.line_matcher.impl.contents.string_model import StringModel
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherDdv, LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherAdv, StringMatcherDdv, StringMatcherSdv

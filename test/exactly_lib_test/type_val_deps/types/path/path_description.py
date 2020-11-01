@@ -7,7 +7,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path import path_description as sut
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 

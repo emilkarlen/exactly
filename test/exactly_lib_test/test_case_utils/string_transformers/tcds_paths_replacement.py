@@ -11,7 +11,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement as sut
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments

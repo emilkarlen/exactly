@@ -23,7 +23,7 @@ from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import logic_structure_assertions as asrt_logic

@@ -1,7 +1,7 @@
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.path_check import PathCheckDdvValidator, PathCheckDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv

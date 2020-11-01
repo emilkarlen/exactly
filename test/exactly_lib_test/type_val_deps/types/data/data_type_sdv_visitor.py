@@ -3,8 +3,8 @@ from typing import List
 from typing import Type
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.type_val_deps.dep_variants.data import sdv_visitor as sut
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DependenciesAwareDdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_sdvs
 from exactly_lib_test.type_val_deps.types.path.test_resources import path_sdvs

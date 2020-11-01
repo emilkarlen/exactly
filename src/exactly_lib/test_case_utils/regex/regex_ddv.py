@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Set, Pattern
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 

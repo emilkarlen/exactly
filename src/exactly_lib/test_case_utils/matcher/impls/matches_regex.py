@@ -3,13 +3,13 @@ from typing import Optional, Pattern, Match, Sequence
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder

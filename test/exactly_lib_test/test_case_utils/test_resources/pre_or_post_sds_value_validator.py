@@ -2,10 +2,10 @@ import unittest
 from typing import Optional, Callable, Any
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs.ddv_validation import DdvValidator, \
-    ConstantDdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, \
+    ConstantDdvValidator
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_case_utils.test_resources.validation import Expectation, ValidationAssertions, \
     ValidationActual

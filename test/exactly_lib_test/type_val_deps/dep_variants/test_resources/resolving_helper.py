@@ -10,7 +10,7 @@ from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBe
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 
 
 def resolving_helper(

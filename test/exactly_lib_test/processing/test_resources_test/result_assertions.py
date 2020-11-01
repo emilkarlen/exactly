@@ -10,7 +10,7 @@ from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_full_exe_result
 from exactly_lib_test.processing.test_resources import result_assertions as sut
 from exactly_lib_test.section_document.test_resources.source_elements import ARBITRARY_SOURCE_LOCATION_PATH
-from exactly_lib_test.tcfs.test_resources.paths import fake_sds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_sds
 from exactly_lib_test.test_case.test_resources import error_description_assertions as asrt_err_descr
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NIE, NEA

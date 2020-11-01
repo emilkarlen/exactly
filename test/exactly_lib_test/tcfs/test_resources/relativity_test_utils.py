@@ -6,7 +6,7 @@ from exactly_lib.tcfs import relativity_root
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds, fake_hds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds, fake_hds
 
 
 class HdsRelativityResolverHelper:

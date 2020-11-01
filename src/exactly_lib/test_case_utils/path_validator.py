@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds

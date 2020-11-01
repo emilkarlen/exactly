@@ -2,13 +2,13 @@ from typing import Generic, TypeVar, Sequence, Set, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv, OperandDdv
 from exactly_lib.test_case_utils.matcher.object import ObjectSdv, ObjectDdv
 from exactly_lib.test_case_utils.svh_exception import SvhException
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable

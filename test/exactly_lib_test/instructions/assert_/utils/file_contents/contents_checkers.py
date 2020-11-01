@@ -10,7 +10,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir

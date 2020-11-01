@@ -7,8 +7,6 @@ from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, LogicWithDetailsDescriptionDdv
@@ -17,6 +15,8 @@ from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription

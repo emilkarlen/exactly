@@ -1,10 +1,10 @@
 from typing import Sequence, Iterator
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator, \
-    constant_success_validator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator, \
+    constant_success_validator
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddvs import StringTransformerConstantDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

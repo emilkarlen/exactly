@@ -7,7 +7,6 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
@@ -20,6 +19,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_stri
     StringTransformerFromLinesTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv

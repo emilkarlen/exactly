@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.advs import ConstantAdv
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
 from exactly_lib.type_val_prims.description.logic_description import DetailsDescription

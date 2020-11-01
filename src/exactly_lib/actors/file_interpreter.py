@@ -13,8 +13,6 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.tcfs import ddv_validators
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -27,6 +25,8 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.test_case_utils.program.parse import parse_arguments
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment

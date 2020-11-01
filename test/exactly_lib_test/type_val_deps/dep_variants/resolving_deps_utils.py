@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.tcfs import utils as sut
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib_test.tcfs.test_resources_test.dir_dependent_value import AMultiDirDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv import resolving_deps_utils as sut
+from exactly_lib_test.type_val_deps.dep_variants.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 
 
 def suite() -> unittest.TestSuite:

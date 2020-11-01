@@ -15,7 +15,7 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

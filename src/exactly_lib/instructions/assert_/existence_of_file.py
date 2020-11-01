@@ -18,7 +18,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.tcfs import ddv_validation
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
@@ -36,6 +35,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs
 from exactly_lib.test_case_utils.parse import parse_path, path_relativities
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult

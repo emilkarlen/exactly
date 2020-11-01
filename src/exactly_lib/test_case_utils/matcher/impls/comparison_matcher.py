@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional, Sequence, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.description_tree import custom_details
@@ -10,6 +9,7 @@ from exactly_lib.test_case_utils.interval.with_interval import WithIntInterval
 from exactly_lib.test_case_utils.matcher.object import ObjectDdv, ObjectSdv
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

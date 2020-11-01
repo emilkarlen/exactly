@@ -3,9 +3,9 @@ from enum import Enum
 from typing import Iterable, Sequence, Optional, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironment
 from exactly_lib.util.symbol_table import SymbolTable

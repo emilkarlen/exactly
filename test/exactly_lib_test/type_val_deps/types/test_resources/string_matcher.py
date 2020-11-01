@@ -3,9 +3,9 @@ from typing import Sequence, Optional
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
+from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
 from exactly_lib.type_val_prims.string_model import StringModel

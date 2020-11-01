@@ -3,9 +3,9 @@ from typing import Sequence, Callable, TypeVar
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
@@ -17,7 +17,7 @@ from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransfo
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils

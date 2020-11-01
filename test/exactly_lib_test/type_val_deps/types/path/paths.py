@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsFixedPath
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_utils import NEA

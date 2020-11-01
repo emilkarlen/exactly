@@ -11,7 +11,7 @@ from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatDoNotCreateFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.tcfs.test_resources.paths import fake_hds, fake_sds, fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds, fake_sds, fake_tcds
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 

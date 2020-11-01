@@ -1,12 +1,13 @@
 import unittest
 
-from exactly_lib.tcfs.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib_test.tcfs.test_resources.dir_dependent_value import MultiDirDependentValueAssertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \
+    MultiDirDependentValueAssertion
 from exactly_lib_test.type_val_deps.types.string.test_resources import ddv_assertions as asrt_sv
 
 

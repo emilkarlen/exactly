@@ -21,7 +21,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \

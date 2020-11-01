@@ -1,10 +1,10 @@
 import unittest
 from typing import TypeVar, Callable
 
-from exactly_lib.tcfs.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
-    MultiDependenciesDdv
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
+from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DependenciesAwareDdv, Max1DependencyDdv, \
+    MultiDependenciesDdv
+from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 

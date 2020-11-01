@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib_test.section_document.test_resources.source_location import single_line_sequence
-from exactly_lib_test.tcfs.test_resources.simple_path import path_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_structure_assertions as sut
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolValueContext
 
 
