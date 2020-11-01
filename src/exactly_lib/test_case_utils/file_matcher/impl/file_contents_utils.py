@@ -20,16 +20,16 @@ from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcher
     FileMatcherAdvImplBase
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue, \
     ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv, FileMatcherSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

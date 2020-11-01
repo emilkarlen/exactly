@@ -1,6 +1,6 @@
 from typing import Iterator, Tuple, Callable
 
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
 from exactly_lib.util.functional import map_optional
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib.util.interval.w_inversion import intervals

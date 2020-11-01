@@ -6,9 +6,9 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers

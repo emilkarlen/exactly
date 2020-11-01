@@ -20,8 +20,6 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolValueCon
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    to_uppercase
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
@@ -30,6 +28,8 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources impo
 from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, files_condition, line_matcher, program, \
     string_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    to_uppercase
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_text_struct
 
 

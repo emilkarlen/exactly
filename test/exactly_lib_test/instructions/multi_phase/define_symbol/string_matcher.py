@@ -8,10 +8,10 @@ from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
-from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import lines_content

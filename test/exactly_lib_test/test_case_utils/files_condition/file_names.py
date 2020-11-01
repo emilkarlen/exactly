@@ -3,7 +3,7 @@ from pathlib import PurePosixPath
 from typing import Mapping, Optional
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER

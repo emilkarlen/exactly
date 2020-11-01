@@ -4,10 +4,10 @@ from typing import Callable
 from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.test_case_utils.integer_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr import test_cases

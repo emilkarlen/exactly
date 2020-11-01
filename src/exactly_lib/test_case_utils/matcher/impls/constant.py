@@ -1,9 +1,9 @@
 from typing import Generic
 
 from exactly_lib.definitions import logic
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherWTrace, T, MatcherStdTypeVisitor
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace, T, MatcherStdTypeVisitor
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 
 

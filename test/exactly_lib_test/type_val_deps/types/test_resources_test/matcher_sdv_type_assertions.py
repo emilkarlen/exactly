@@ -4,8 +4,8 @@ from typing import Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds

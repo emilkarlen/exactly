@@ -2,15 +2,15 @@ import unittest
 from typing import Callable, List, Sequence, Iterator
 
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.appl_env.test_resources.os_services_that_raises import OsServicesThatRaises
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
-from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
-from exactly_lib_test.type_system.logic.string_model.test_resources.assertions import StringModelThatThatChecksLines
+from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_model.test_resources.assertions import StringModelThatThatChecksLines
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 

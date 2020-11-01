@@ -4,9 +4,9 @@ from typing import Any, Sequence, Callable
 from exactly_lib.test_case_utils.interval import matcher_interval as sut
 from exactly_lib.test_case_utils.interval.with_interval import WithIntInterval
 from exactly_lib.test_case_utils.matcher.impls.combinator_matchers import Negation, Conjunction, Disjunction
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, T, MatcherStdTypeVisitor
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace, T, MatcherStdTypeVisitor
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.interval.w_inversion.intervals import point, Empty, UpperLimit, LowerLimit, Finite, \

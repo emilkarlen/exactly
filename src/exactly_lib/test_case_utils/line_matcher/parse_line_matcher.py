@@ -13,8 +13,8 @@ from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
 from exactly_lib.test_case_utils.line_matcher.impl.contents import parse as contents_parse, doc as contents_doc
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER_DESCRIPTION
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
+from exactly_lib.type_val_prims.matcher.line_matcher import FIRST_LINE_NUMBER_DESCRIPTION
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure.core import ParagraphItem

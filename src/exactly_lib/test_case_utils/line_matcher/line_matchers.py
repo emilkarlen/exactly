@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
 
 
 def negation(matcher: LineMatcher) -> LineMatcher:

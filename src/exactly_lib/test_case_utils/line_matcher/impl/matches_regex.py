@@ -5,9 +5,9 @@ from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_ge
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
 from exactly_lib.util.description_tree import renderers
 
 

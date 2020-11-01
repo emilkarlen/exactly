@@ -3,7 +3,7 @@ from typing import Optional, List, Sequence
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import LowerAndUpperLimitRange, \
     Range, RangeVisitor, UpperLimitRange, LowerLimitRange, \
     SingleLineRange, FromTo
-from exactly_lib.type_system.logic.line_matcher import FIRST_LINE_NUMBER
+from exactly_lib.type_val_prims.matcher.line_matcher import FIRST_LINE_NUMBER
 
 
 class MergedRanges:

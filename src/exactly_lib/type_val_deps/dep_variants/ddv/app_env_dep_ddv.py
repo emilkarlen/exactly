@@ -5,9 +5,9 @@ from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
-from exactly_lib.type_system.logic.description import LogicValueDescription, NodeDescription
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import VALUE_TYPE, ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_prims.description.logic_description import LogicValueDescription, NodeDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 
 
 class LogicDdv(Generic[VALUE_TYPE],

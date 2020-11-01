@@ -4,7 +4,7 @@ from typing import Optional, ContextManager
 
 from exactly_lib.appl_env.command_executor import CommandExecutor
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
-from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.process_execution.result_files import ResultFile, DirWithResultFiles

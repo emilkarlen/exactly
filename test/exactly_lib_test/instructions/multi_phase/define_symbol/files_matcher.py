@@ -9,9 +9,9 @@ from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel, FilesMatcher
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers

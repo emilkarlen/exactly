@@ -5,11 +5,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def is_arbitrary_matching_failure() -> ValueAssertion[MatchingResult]:

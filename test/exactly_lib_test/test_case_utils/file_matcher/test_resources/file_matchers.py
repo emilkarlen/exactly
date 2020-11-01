@@ -1,10 +1,10 @@
 from exactly_lib.test_case_utils.file_matcher.impl.base_class import FileMatcherImplBase
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.type_system.logic.test_resources import matching_result
+from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 
 class FileMatcherTestImplBase(FileMatcherImplBase):

@@ -3,8 +3,8 @@ from typing import Sequence
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 
 
 def file_matcher_constant_sdv(primitive: FileMatcher) -> FileMatcherSdv:

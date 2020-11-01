@@ -10,10 +10,10 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher.impl import line_number
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace, MODEL
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
     import remaining_source
@@ -22,8 +22,8 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import matches_sdv_of_line_matcher
+from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 
 
 class Expectation:

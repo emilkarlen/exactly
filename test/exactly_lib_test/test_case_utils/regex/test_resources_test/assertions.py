@@ -19,10 +19,10 @@ from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_v
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_prims.test_resources.primitives import FileMatcherTestImpl
 
 
 def suite() -> unittest.TestSuite:

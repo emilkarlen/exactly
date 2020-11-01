@@ -3,8 +3,8 @@ from typing import List
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
@@ -17,13 +17,13 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     is_reference_to_data_type_symbol
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_string_transformer
 
 
 def suite() -> unittest.TestSuite:

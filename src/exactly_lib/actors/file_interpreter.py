@@ -27,13 +27,13 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.test_case_utils.program.parse import parse_arguments
-from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
 

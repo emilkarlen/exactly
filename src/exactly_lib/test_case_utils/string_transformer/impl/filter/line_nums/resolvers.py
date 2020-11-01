@@ -13,12 +13,12 @@ from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums import range_expr
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import Range
 from exactly_lib.test_case_utils.validation_error_exception import ValidationErrorException
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util import collection
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import NodeRenderer

@@ -3,7 +3,7 @@ from typing import Sequence, Generic, Callable
 
 from exactly_lib.test_case_utils.interval.with_interval import WithIntInterval
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, MatcherStdTypeVisitor
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace, MODEL, MatcherStdTypeVisitor
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib.util.interval.w_inversion import intervals, combinations
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion

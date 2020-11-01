@@ -1,23 +1,16 @@
 import unittest
 
-from exactly_lib_test.actors import z_package_suite as actors
-from exactly_lib_test.common import z_package_suite as common
 from exactly_lib_test.default import z_package_suite as default
-from exactly_lib_test.definitions import z_package_suite as definitions
+
+from exactly_lib_test.actors import z_package_suite as actors
 from exactly_lib_test.execution import z_package_suite as execution
-from exactly_lib_test.help import z_package_suite as help
-from exactly_lib_test.instructions import z_package_suite as instructions
 from exactly_lib_test.processing import z_package_suite as processing
-from exactly_lib_test.section_document import z_package_suite as section_document
 from exactly_lib_test.symbol import z_package_suite as symbol
 from exactly_lib_test.test_case import z_package_suite as test_case
-from exactly_lib_test.test_case_file_structure import z_package_suite as test_case_file_structure
-from exactly_lib_test.test_case_utils import z_package_suite as test_case_utils
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.test_suite import z_package_suite as test_suite
-from exactly_lib_test.type_system import z_package_suite as type_system
-from exactly_lib_test.util import z_package_suite as util
+from exactly_lib_test.type_val_prims import z_package_suite as type_system
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:

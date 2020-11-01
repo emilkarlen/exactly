@@ -4,8 +4,8 @@ from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherModel
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcher, FilesMatcherModel
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg

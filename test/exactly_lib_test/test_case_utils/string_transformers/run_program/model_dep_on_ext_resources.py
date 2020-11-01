@@ -12,10 +12,10 @@ from exactly_lib_test.test_case_utils.string_models.test_resources import model_
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_string_transformer
 
 
 def suite() -> unittest.TestSuite:

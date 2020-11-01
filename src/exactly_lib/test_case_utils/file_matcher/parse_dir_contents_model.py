@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.file_matcher.impl import \
     dir_contents
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.integer import parse_integer
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 
 
 class Parser(ParserFromTokens[LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]]]):

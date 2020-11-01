@@ -8,10 +8,6 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
@@ -19,6 +15,10 @@ from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import details, renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.render import strings as string_rendering

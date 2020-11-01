@@ -23,10 +23,10 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
     IntegerMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

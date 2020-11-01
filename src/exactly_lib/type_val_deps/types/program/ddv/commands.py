@@ -3,13 +3,13 @@ from typing import Sequence, List
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
-from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.logic.program import commands
-from exactly_lib.type_system.logic.program.command import CommandDriver
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDriverDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
+from exactly_lib.type_val_prims.program import commands
+from exactly_lib.type_val_prims.program.command import CommandDriver
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.render import strings
 from exactly_lib.util.str_.str_constructor import ToStringObject

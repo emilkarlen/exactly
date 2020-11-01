@@ -8,14 +8,14 @@ from exactly_lib.test_case_utils.line_matcher import model_construction
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
-from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherAdv, LineMatcherDdv, LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithTreeStructureDescription
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -4,10 +4,10 @@ from abc import ABC, abstractmethod
 from typing import Generic, List, Sequence, Tuple, TypeVar, Optional, Callable
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree, renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -15,6 +15,7 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.symbol.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.matcher.test_resources.std_expr.configuration import MODEL, MatcherConfiguration
@@ -25,12 +26,11 @@ from exactly_lib_test.test_case_utils.test_resources.validation import Validatio
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.types import LOGIC_VALUE_TYPE_2_VALUE_TYPE
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result, \
-    trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result, \
+    trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 MatcherNameAndResult = Tuple[str, bool]

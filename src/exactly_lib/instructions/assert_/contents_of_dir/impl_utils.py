@@ -17,13 +17,13 @@ from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_conte
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
 

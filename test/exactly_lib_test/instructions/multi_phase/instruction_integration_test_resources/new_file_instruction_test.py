@@ -33,8 +33,6 @@ from exactly_lib_test.test_resources.programs.shell_commands import command_that
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    to_uppercase
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
@@ -44,6 +42,8 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.stri
     StringTransformerSdvConstantTestImpl
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    to_uppercase
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:

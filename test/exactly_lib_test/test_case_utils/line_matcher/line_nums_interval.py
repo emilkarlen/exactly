@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import line_nums_interval
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, FIRST_LINE_NUMBER
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher, FIRST_LINE_NUMBER
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib_test.test_case_utils.integer_matcher.test_resources import argument_building as im_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as args

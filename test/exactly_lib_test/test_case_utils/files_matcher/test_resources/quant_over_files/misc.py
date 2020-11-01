@@ -1,6 +1,6 @@
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 
 
 class FileMatcherThatMatchesAnyFileWhosNameStartsWith(MatcherImplBase[FileMatcherModel]):

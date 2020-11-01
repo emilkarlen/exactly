@@ -8,11 +8,11 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
-from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.render import combinators as rend_comb
 
 

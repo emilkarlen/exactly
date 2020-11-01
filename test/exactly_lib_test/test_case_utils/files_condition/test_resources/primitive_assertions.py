@@ -3,13 +3,13 @@ from pathlib import PurePosixPath
 from typing import Optional, Set, Mapping
 
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
-from exactly_lib_test.type_system.logic.test_resources.file_matcher import FileMatcherModelThatMustNotBeAccessed
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_prims.matcher.test_resources.file_matcher import FileMatcherModelThatMustNotBeAccessed
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def file_names_equals(expected: Set[PurePosixPath]

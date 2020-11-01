@@ -3,10 +3,10 @@ from typing import ContextManager
 from exactly_lib.test_case_utils.matcher.impls.run_program import sdv as run_pgm_sdv
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib.util.process_execution import file_ctx_managers
 

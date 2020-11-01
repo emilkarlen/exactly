@@ -21,10 +21,10 @@ from exactly_lib_test.test_case_utils.string_models.test_resources import model_
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import IntegerMatcherSymbolContext, \
     IntegerMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

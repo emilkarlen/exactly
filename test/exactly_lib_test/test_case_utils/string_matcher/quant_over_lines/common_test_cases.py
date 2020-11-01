@@ -28,10 +28,10 @@ from exactly_lib_test.test_case_utils.test_resources import validation as asrt_v
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import successful_matcher_with_validation, \
     LineMatcherSymbolContext, is_reference_to_line_matcher, \
     LineMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

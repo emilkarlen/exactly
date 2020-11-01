@@ -6,10 +6,10 @@ from exactly_lib.actors.util import parse_act_interpreter as sut
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.program.command import CommandDriver
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_prims.program.command import CommandDriver
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.dir_dep_value_assertions import \
     matches_dir_dependent_value
@@ -24,12 +24,12 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.sdv_assertions import matches_sdv
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
 

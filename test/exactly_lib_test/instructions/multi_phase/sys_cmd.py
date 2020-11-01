@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
@@ -36,10 +36,10 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 

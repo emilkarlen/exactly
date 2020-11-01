@@ -18,12 +18,12 @@ from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYM
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.resolving_helper import resolving_helper
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
     is_reference_to_line_matcher
+from exactly_lib_test.type_val_prims.matcher.test_resources import matcher_assertions as asrt_matcher
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 

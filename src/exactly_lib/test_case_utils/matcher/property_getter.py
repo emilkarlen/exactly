@@ -5,8 +5,8 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')

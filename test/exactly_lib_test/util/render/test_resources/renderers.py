@@ -1,4 +1,4 @@
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers
 
 

@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls import comparison_matcher as sut
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.std_type_visitor import MatcherStdTypeVisitorTestAcceptImpl, \
+from exactly_lib_test.type_val_prims.test_resources.std_type_visitor import MatcherStdTypeVisitorTestAcceptImpl, \
     assert_argument_satisfies__and_return
 
 

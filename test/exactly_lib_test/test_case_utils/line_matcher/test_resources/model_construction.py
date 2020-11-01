@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, Tuple, Optional
 
 from exactly_lib.test_case_utils.line_matcher import model_construction as sut
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.model_assertions import matches_lines
 from exactly_lib_test.test_resources.iterator import IteratorWCheckOfMaxNumRequestedElements

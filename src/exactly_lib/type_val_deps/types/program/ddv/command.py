@@ -4,10 +4,10 @@ from typing import Sequence, TypeVar, Generic
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.logic.program.command import Command, CommandDriver
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.program.ddv.argument import ArgumentsDdv
+from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
+from exactly_lib.type_val_prims.program.command import Command, CommandDriver
 
 PRIMITIVE = TypeVar('PRIMITIVE')
 

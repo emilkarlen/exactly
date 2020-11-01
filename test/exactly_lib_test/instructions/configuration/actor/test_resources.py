@@ -11,7 +11,7 @@ from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.actors.test_resources import integration_check, relativity_configurations
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation
@@ -29,7 +29,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.sequence_assertions import matches_elements_except_last
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
 
 def shell_command_syntax_for(command: str) -> str:

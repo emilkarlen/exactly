@@ -4,8 +4,8 @@ from typing import Callable
 from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.util.description_tree import renderers
 
 

@@ -46,14 +46,14 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    to_uppercase
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
     NON_EXISTING_SYSTEM_PROGRAM
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    to_uppercase
 
 
 def suite() -> unittest.TestSuite:

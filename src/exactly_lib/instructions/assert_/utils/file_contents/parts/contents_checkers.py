@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case_utils import file_properties, path_check
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.string_models.file_model import StringModelOfFile
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):

@@ -6,9 +6,9 @@ from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((config.NUM_FILES_CHECK_ARGUMENT,

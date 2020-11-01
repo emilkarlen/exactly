@@ -27,7 +27,7 @@ from exactly_lib.test_case_utils.matcher.impls import property_matcher_describer
 from exactly_lib.test_case_utils.matcher.impls.property_getters import PropertyGetterAdvConstant
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterDdv, PropertyGetter, PropertyGetterAdv
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherSdv
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure.document import SectionContents

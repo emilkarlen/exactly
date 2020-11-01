@@ -26,7 +26,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.replace
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
 
 
 def suite() -> unittest.TestSuite:

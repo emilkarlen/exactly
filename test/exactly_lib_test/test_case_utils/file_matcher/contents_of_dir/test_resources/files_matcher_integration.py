@@ -5,8 +5,8 @@ from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcher
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import FileMatcherArg
@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     PrimAndExeExpectation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, DirContents, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class NumFilesSetup:

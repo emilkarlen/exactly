@@ -10,8 +10,8 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -41,10 +41,10 @@ from exactly_lib_test.test_resources.matcher_argument import conjunction, Parent
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import matching_result
 from exactly_lib_test.type_val_deps.types.test_resources import files_matcher as files_matcher_test_impl
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
     FileMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.matcher.test_resources import matching_result
 
 
 def suite() -> unittest.TestSuite:

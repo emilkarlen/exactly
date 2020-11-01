@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.configuration.actor.test_resources import Arr
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 
 
 def suite() -> unittest.TestSuite:

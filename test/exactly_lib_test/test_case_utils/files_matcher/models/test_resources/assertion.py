@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Callable
 
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder

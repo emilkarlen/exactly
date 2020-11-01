@@ -3,13 +3,6 @@ from typing import Sequence, Optional, Callable
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition, FilesConditionSdv, FilesConditionDdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
@@ -22,6 +15,13 @@ from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcher
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

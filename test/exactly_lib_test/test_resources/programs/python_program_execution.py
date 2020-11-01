@@ -4,8 +4,8 @@ import sys
 import unittest
 from typing import List, Sequence
 
-from exactly_lib.type_system.logic.program.command import ProgramAndArguments, Command
-from exactly_lib.type_system.logic.program.commands import CommandDriverForExecutableFile
+from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
+from exactly_lib.type_val_prims.program.commands import ProgramAndArguments, Command
 from exactly_lib.util.process_execution.execution_elements import Executable
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os

@@ -1,18 +1,18 @@
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescriptionSdv, PRIMITIVE
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesCondition
-from exactly_lib.type_system.logic.files_matcher import FilesMatcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MODEL, MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcher
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
+from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
 

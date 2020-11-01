@@ -14,10 +14,10 @@ from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.textformat.structure import structures as docs

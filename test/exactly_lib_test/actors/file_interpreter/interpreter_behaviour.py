@@ -22,8 +22,8 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes, surrounded_by_soft_quotes

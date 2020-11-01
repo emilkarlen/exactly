@@ -8,8 +8,8 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
-from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -39,11 +39,11 @@ from exactly_lib_test.test_resources.value_assertions import process_result_asse
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
     PathSymbolContext
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 

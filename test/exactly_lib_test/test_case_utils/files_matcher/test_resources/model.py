@@ -2,12 +2,12 @@ from typing import Optional, Callable
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.files_matcher import models
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.dep_variants.sdv.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 

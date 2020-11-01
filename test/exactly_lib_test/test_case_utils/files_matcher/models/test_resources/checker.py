@@ -3,9 +3,9 @@ import unittest
 from typing import Callable, Sequence, List
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util import symbol_table
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.ds_action import \

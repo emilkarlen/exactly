@@ -16,8 +16,8 @@ from exactly_lib_test.test_case_utils.test_resources import glob_pattern
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.matcher_argument import NameRegexComponent
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class TestSyntax(configuration.TestCaseBase, ABC):

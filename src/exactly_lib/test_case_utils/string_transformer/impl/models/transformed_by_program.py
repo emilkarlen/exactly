@@ -2,10 +2,10 @@ from typing import IO
 
 from exactly_lib.test_case_utils.program_execution import command_processors
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndStderrFile

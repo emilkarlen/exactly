@@ -23,8 +23,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 

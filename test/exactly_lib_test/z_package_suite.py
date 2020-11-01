@@ -16,8 +16,8 @@ from exactly_lib_test.test_case_utils import z_package_suite as test_case_utils
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.test_suite import z_package_suite as test_suite
-from exactly_lib_test.type_system import z_package_suite as type_system
 from exactly_lib_test.type_val_deps import z_package_suite as type_val_deps
+from exactly_lib_test.type_val_prims import z_package_suite as type_system
 from exactly_lib_test.util import z_package_suite as util
 
 

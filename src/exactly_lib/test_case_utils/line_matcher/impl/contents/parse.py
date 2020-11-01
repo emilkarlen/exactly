@@ -6,17 +6,17 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.line_matcher.impl.contents.string_model import StringModel
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL
-from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcher
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherDdv, LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherAdv, StringMatcherDdv, StringMatcherSdv
+from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace, MODEL
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 

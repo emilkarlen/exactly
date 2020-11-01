@@ -15,16 +15,16 @@ from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MODEL, \
-    MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, \
+    MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
@@ -58,11 +58,11 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import sds_2_tc
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils, \
     symbol_structure_assertions as asrt_sym
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

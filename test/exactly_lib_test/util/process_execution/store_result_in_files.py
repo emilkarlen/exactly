@@ -3,8 +3,8 @@ import unittest
 
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.commands import CommandDriverForExecutableFile
+from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.util import exception
 from exactly_lib.util.process_execution import process_output_files, file_ctx_managers
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
@@ -38,9 +38,7 @@ class TestProcessorThatStoresResultInFilesInDir(unittest.TestCase):
             'program.py',
             py_programs.py_pgm_with_stdout_stderr_exit_code(exit_code=exit_code),
         )
-        with tmp_dir.tmp_dir(DirContents([
-            program_file
-        ])) as tmp_dir_path:
+        with tmp_dir.tmp_dir(DirContents([program_file])) as tmp_dir_path:
             executor = sut.ProcessorThatStoresResultInFilesInDir(COMMAND_EXECUTOR,
                                                                  tmp_dir_path,
                                                                  file_ctx_managers.dev_null(),

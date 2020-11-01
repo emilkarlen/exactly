@@ -3,7 +3,7 @@ from typing import Optional
 from exactly_lib.appl_env.command_executor import CommandExecutor
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 

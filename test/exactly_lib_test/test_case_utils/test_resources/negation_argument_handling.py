@@ -4,12 +4,12 @@ from typing import List, Sequence, TypeVar, Generic
 
 from exactly_lib.definitions import logic
 from exactly_lib.test_case.result import pfh
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.logic_types import ExpectationType, from_is_negated
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 class PassOrFail(Enum):

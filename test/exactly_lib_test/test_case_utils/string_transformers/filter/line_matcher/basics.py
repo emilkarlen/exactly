@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources import parse_source
@@ -28,11 +28,11 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.integra
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, \
-    line_matcher_from_predicates
 from exactly_lib_test.type_val_deps.types.test_resources import line_matcher
 from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
     LineMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.test_resources.primitives import is_identical_to, \
+    line_matcher_from_predicates
 
 
 def suite() -> unittest.TestSuite:

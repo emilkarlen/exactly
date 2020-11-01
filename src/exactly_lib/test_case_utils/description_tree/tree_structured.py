@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
 from exactly_lib.test_case_utils.description_tree.custom_details import WithTreeStructure
-from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription, StructureRenderer, \
+from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
+from exactly_lib.type_val_prims.description.tree_structured import WithNameAndTreeStructureDescription, \
+    StructureRenderer, \
     WithTreeStructureDescription
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

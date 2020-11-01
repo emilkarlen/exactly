@@ -3,8 +3,8 @@ from pathlib import PurePosixPath
 from typing import Optional, Mapping, Sequence
 
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases

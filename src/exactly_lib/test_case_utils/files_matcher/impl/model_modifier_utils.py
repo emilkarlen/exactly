@@ -8,13 +8,13 @@ from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv, PropertyGetterDdv, MODEL, T, \
     PropertyGetterAdv, PropertyGetter
-from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv, FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.symbol_table import SymbolTable
 

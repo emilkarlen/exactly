@@ -2,8 +2,8 @@ from abc import ABC
 from typing import Generic
 
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedNameAndTreeStructureDescriptionBase
-from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.logic.matcher_base_class import MODEL, MatcherWTrace
+from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace
 
 
 class MatcherImplBase(Generic[MODEL],

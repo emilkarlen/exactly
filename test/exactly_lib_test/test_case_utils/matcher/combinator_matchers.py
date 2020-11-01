@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers as sut
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.std_type_visitor import \
+from exactly_lib_test.type_val_prims.test_resources.std_type_visitor import \
     MatcherStdTypeVisitorTestAcceptImpl, assert_argument_satisfies__and_return
 
 

@@ -20,15 +20,15 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    delete_everything
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    delete_everything
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 

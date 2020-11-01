@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.description_tree import tree
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as tc
@@ -20,11 +20,11 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import valid
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result, \
-    trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
     StringMatcherSymbolContextOfPrimitiveConstant, \
     StringMatcherSymbolContext
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result, \
+    trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 MATCHER_NAME = ' '.join((line_matcher.CONTENTS_MATCHER_NAME,

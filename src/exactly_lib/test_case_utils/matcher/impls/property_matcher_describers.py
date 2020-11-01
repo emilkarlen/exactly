@@ -2,8 +2,8 @@ from typing import Sequence, List
 
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.matcher.property_matcher import PropertyMatcherDescriber
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matching_result import TraceRenderer, MatchingResult
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.matching_result import TraceRenderer, MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import NodeRenderer, NODE_DATA
 from exactly_lib.util.description_tree.tree import Node

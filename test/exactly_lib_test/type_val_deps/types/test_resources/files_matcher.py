@@ -4,10 +4,10 @@ from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
-from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherAdv, FilesMatcherDdv
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel, FilesMatcher
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

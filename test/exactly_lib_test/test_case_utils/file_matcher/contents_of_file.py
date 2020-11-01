@@ -21,15 +21,15 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    every_line_empty
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
     StringMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    every_line_empty
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

@@ -9,9 +9,9 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.err_msg import path_rendering
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.type_val_deps.types.string_or_path import string_or_path_ddvs
+from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import tree, details

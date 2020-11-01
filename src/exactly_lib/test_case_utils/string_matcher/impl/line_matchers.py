@@ -7,11 +7,11 @@ from exactly_lib.test_case_utils.line_matcher.model_construction import model_it
 from exactly_lib.test_case_utils.line_matcher.trace_rendering import LineMatcherLineRenderer
 from exactly_lib.test_case_utils.matcher.impls import quantifier_matchers
 from exactly_lib.test_case_utils.string_matcher import matcher_options
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier
 

@@ -1,9 +1,9 @@
 from typing import Sequence, List
 
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums import range_merge
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from . import models
 from .range_expr import Range, RangeVisitor, \
     LowerAndUpperLimitRange, UpperLimitRange, LowerLimitRange, \

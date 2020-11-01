@@ -4,10 +4,10 @@ from typing import List
 
 from exactly_lib.symbol.sdv_structure import SymbolContainer
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources.assertion import \
     FilesMatcherModelContentsAssertion

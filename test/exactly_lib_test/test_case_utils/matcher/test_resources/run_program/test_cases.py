@@ -1,8 +1,8 @@
 from typing import List, Dict, Sequence
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement

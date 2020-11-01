@@ -39,7 +39,6 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     PassOrFail, expectation_type_config__non_is_success
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, sym_link
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     equals_data_type_symbol_references
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
@@ -47,6 +46,7 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.asse
 from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
     is_reference_to_file_matcher, \
     FileMatcherSymbolContextOfPrimitiveConstant
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
 
 def suite() -> unittest.TestSuite:

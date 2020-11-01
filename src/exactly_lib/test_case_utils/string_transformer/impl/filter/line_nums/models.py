@@ -3,8 +3,8 @@ from typing import Iterator, List, Optional, Deque, Callable
 
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
-from exactly_lib.type_system.logic.impls.transformed_string_models import TransformedStringModelFromLines
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelFromLines
+from exactly_lib.type_val_prims.string_model import StringModel
 
 
 class Empty(TransformedStringModelFromLines):

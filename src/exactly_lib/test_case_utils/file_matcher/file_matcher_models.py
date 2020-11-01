@@ -2,8 +2,8 @@ import os
 import pathlib
 
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileTypeAccess
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel, FileTypeAccess
 
 
 class FileMatcherModelForDescribedPath(FileMatcherModel):

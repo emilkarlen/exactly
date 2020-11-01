@@ -20,8 +20,8 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.textformat.structure import structures as docs

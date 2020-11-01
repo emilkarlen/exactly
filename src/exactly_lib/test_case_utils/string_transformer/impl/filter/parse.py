@@ -15,9 +15,9 @@ from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.logic import line_matcher as line_matcher_type
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
+from exactly_lib.type_val_prims.matcher import line_matcher as line_matcher_type
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.parse import token_matchers
 from exactly_lib.util.str_ import str_constructor

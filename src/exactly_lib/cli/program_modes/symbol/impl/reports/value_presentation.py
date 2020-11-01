@@ -7,9 +7,6 @@ from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.description import DescriptionVisitor, DetailsDescription, NodeDescription
-from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
 from exactly_lib.type_val_deps.dep_variants.data.sdv_visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
@@ -17,6 +14,10 @@ from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_prims.description.logic_description import DescriptionVisitor, DetailsDescription, \
+    NodeDescription
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct

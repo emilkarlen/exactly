@@ -2,10 +2,10 @@ import unittest
 from typing import Generic, Type
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.description.details_structured import WithDetailsDescription
-from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicWithNodeDescriptionDdv, LogicDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
 from exactly_lib_test.test_case_utils.logic.test_resources import assertions as asrt_logic
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker

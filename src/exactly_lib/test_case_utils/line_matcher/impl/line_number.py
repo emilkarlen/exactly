@@ -8,10 +8,10 @@ from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import property_getters, \
     property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetterSdv
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.integer_matcher import IntegerMatcher
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.matcher.integer_matcher import IntegerMatcher
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.interval.w_inversion import intervals
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion

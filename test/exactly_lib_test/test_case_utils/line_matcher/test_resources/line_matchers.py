@@ -1,7 +1,7 @@
 from typing import List
 
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
-from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import ConstantMatcherWithCustomName
 
 

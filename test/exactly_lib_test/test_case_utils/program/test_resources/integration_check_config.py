@@ -1,8 +1,8 @@
 from typing import Generic
 
-from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import INPUT, OUTPUT, \
     CommonPropertiesConfiguration, Applier

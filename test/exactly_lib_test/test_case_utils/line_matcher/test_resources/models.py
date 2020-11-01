@@ -1,7 +1,7 @@
 from typing import Callable, List, Sequence
 
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine, FIRST_LINE_NUMBER
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import assertions
 from exactly_lib_test.test_case_utils.matcher.test_resources import integration_check as matcher_integration_check
 

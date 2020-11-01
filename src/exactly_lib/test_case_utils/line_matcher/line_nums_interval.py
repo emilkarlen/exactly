@@ -1,6 +1,6 @@
 from exactly_lib.test_case_utils.interval import matcher_interval
 from exactly_lib.test_case_utils.line_matcher import model_construction
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
 from exactly_lib.util.interval.int_interval import IntInterval
 
 

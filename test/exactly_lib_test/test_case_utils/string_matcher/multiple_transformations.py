@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.test_case_utils.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
-from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -17,13 +17,13 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import is_reference_to_string_matcher, \
     StringMatcherSymbolContext
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:

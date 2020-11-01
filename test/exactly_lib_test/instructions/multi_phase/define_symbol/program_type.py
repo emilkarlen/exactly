@@ -17,11 +17,11 @@ from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_
 from exactly_lib_test.test_case_utils.program.test_resources import program_sdvs
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
-    matches_py_source_on_cmd_line_program
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources.program_assertions import \
+    matches_py_source_on_cmd_line_program
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 

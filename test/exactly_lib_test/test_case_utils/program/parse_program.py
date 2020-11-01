@@ -5,9 +5,9 @@ from typing import Sequence, List, Callable
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.type_system.logic.program.command import CommandDriver
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_prims.program.command import CommandDriver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -30,13 +30,13 @@ from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_str_trans, string_transformers
-from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
-    command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerPrimitiveSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
+    program_assertions as asrt_pgm_val
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers, \
+    string_transformer_assertions as asrt_str_trans
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
 

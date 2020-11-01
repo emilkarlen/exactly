@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from ..util.actor_from_parts import parts
 from ...test_case_utils.string_models.factory import RootStringModelFactory
-from ...type_system.logic.program.program import Program
 
 
 class _ProgramExecutor(ABC):

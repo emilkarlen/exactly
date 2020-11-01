@@ -7,7 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.matcher.impls import comparison_matcher
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.interval.w_inversion.interval import IntIntervalWInversion
 from exactly_lib.util.name_and_value import NameAndValue
@@ -23,11 +23,11 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
-from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
-from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 from exactly_lib_test.util.interval.test_resources.interval_assertion import PosNeg, is_interval_for_eq, \
     is_interval_for_ne, is_interval_for_lt, is_interval_for_lte, is_interval_for_gt, is_interval_for_gte

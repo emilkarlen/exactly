@@ -1,4 +1,4 @@
-from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.process_execution.execution_elements import Executable
 
 

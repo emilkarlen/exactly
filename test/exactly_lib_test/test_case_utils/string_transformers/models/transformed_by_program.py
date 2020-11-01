@@ -7,19 +7,19 @@ from typing import Sequence, ContextManager
 
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.test_case_utils.string_transformer.impl.models import transformed_by_program as sut
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.commands import CommandDriverForExecutableFile
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.program.stdin import StdinData
-from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.program.commands import Command
+from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.program.stdin import StdinData
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
+from exactly_lib_test.type_val_prims.string_model.test_resources import model_checker
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:

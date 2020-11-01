@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, ContextManager
 
-from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 
 MODEL = TypeVar('MODEL')

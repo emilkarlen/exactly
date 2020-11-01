@@ -3,17 +3,17 @@ from typing import Sequence
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.program import program
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.program import Program
-from exactly_lib.type_system.logic.program.stdin import StdinData
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicWithNodeDescriptionDdv
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.program.ddv.stdin_data import StdinDataDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.program import program
+from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.type_val_prims.program.stdin import StdinData
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node

@@ -1,7 +1,7 @@
 from abc import ABC
 from pathlib import Path
 
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils import misc_utils
 
 

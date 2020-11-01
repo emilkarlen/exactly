@@ -13,9 +13,9 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
     argument_building as st_arg
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as arg_rend
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringIntConstantSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 
 
 class Case:

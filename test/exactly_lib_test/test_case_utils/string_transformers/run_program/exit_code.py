@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 
 
 def suite() -> unittest.TestSuite:

@@ -2,8 +2,8 @@ import pathlib
 import unittest
 
 from exactly_lib.appl_env import executable_factories as sut
-from exactly_lib.type_system.logic.program.command import Command
-from exactly_lib.type_system.logic.program.commands import CommandDriverForShell, \
+from exactly_lib.type_val_prims.program.commands import Command
+from exactly_lib.type_val_prims.program.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
 from exactly_lib_test.test_resources.test_utils import NIE

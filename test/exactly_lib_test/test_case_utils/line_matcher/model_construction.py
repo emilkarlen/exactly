@@ -2,7 +2,7 @@ import unittest
 from typing import List, Sequence
 
 from exactly_lib.test_case_utils.line_matcher import model_construction as sut
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
 from exactly_lib.util.interval import int_interval as ivs
 from exactly_lib.util.interval.int_interval import IntInterval
 from exactly_lib.util.interval.w_inversion import intervals as i_ivs

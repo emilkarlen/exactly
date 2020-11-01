@@ -3,10 +3,10 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, Callable, ContextManager, IO
 
-from exactly_lib.type_system.logic.impls import transformed_string_models
-from exactly_lib.type_system.logic.impls.transformed_string_models import TransformedStringModelBase
-from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_prims.impls import transformed_string_models
+from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelBase
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_transformer import StringTransformer
 
 
 class StringTransformerFromLinesTransformer(StringTransformer, ABC):

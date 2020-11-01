@@ -3,8 +3,8 @@ from typing import List, Callable
 
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import models as sut
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcherModel
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import IsRegularFileMatcher, \
     IsDirectoryMatcher, BaseNameStartsWithMatcher

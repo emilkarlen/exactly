@@ -14,11 +14,11 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources.integra
 from exactly_lib_test.test_resources.test_utils import InpExp
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_string_transformer
 
 IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS = IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 

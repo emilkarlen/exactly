@@ -16,16 +16,16 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import string_models
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
-    is_identity_transformer
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
-    arbitrary_non_identity, to_uppercase
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
+    is_identity_transformer
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
+    arbitrary_non_identity, to_uppercase
 
 
 def suite() -> unittest.TestSuite:

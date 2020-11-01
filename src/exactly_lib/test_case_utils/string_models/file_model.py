@@ -2,7 +2,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager, Iterator
 
-from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 

@@ -9,7 +9,6 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
-from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
@@ -17,6 +16,7 @@ from exactly_lib.type_val_deps.types.path.path_sdvs import constant
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -38,13 +38,13 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
-    string_transformer_assertions as asrt_line_transformer
-from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
-    command_assertions as asrt_command
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
+from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
+    program_assertions as asrt_pgm_val
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
+    string_transformer_assertions as asrt_line_transformer
 
 
 def suite() -> unittest.TestSuite:

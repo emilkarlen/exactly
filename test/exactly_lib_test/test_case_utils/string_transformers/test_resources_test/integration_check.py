@@ -9,7 +9,7 @@ from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import transformer_checker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:

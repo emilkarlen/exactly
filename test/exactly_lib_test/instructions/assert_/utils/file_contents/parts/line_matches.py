@@ -10,10 +10,10 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.os_services.os_services_access import new_for_current_os
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.string_model import StringModel
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     string_model_factory
@@ -21,7 +21,7 @@ from exactly_lib_test.test_case.test_resources.instruction_environment import fa
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
-from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, line_matcher_from_predicates
+from exactly_lib_test.type_val_prims.test_resources.primitives import is_identical_to, line_matcher_from_predicates
 
 
 def suite() -> unittest.TestSuite:

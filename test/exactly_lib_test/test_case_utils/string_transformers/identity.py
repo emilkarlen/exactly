@@ -9,8 +9,8 @@ from exactly_lib_test.test_case_utils.string_models.test_resources import model_
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check, \
     may_dep_on_ext_resources
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
-from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 
 

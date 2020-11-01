@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
+from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail
