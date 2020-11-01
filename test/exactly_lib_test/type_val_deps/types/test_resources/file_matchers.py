@@ -1,7 +1,5 @@
-from typing import Sequence
-
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator_sdvs
+from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
@@ -13,15 +11,3 @@ def file_matcher_constant_sdv(primitive: FileMatcher) -> FileMatcherSdv:
 
 def new_reference(name: str) -> FileMatcherSdv:
     return MatcherReferenceSdv(name, ValueType.FILE_MATCHER)
-
-
-def new_negation(operand: FileMatcherSdv) -> FileMatcherSdv:
-    return combinator_sdvs.Negation(operand)
-
-
-def new_conjunction(operands: Sequence[FileMatcherSdv]) -> FileMatcherSdv:
-    return combinator_sdvs.Conjunction(operands)
-
-
-def new_disjunction(operands: Sequence[FileMatcherSdv]) -> FileMatcherSdv:
-    return combinator_sdvs.Disjunction(operands)

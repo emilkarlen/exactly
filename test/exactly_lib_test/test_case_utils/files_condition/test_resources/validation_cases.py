@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.test_case_utils.file_matcher import sdvs as fm_sdvs
 from exactly_lib.test_case_utils.files_condition import files_conditions
 from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
@@ -11,6 +10,7 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.type_val_deps.types.test_resources import file_matchers as fm_sdvs
 from exactly_lib_test.type_val_deps.types.test_resources.files_condition import FilesConditionSymbolContext
 
 

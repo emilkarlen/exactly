@@ -5,7 +5,6 @@ from typing import Sequence, Pattern
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
@@ -22,6 +21,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
 from exactly_lib_test.type_val_deps.types.string.test_resources import string
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.file_matchers import file_matcher_constant_sdv
 from exactly_lib_test.type_val_prims.test_resources.primitives import FileMatcherTestImpl
 
 
