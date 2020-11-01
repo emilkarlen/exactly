@@ -27,12 +27,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.data.test_resources.path import path_or_string_reference_restrictions
-from exactly_lib_test.symbol.test_resources import file_matcher as asrt_file_matcher
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
-    FileMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.tcfs.test_resources.path_arguments import symbol_path_argument, \
     path_argument
@@ -56,6 +51,11 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_actions import \
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
+from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import path_or_string_reference_restrictions
+from exactly_lib_test.type_val_deps.types.test_resources import file_matcher as asrt_file_matcher
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
+    FileMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

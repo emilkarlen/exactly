@@ -5,7 +5,6 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.string_transformer.impl.filter.line_nums.range_expr import Range, SingleLineRange, \
     LowerLimitRange, UpperLimitRange, LowerAndUpperLimitRange
-from exactly_lib_test.symbol.test_resources.string import IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
     ExecutionExpectation, prim_asrt__constant, arrangement_w_tcds, arrangement_wo_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
@@ -18,6 +17,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
+    IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 
 IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS = IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
 

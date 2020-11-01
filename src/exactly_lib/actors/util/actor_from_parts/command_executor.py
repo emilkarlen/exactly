@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 from exactly_lib.appl_env.os_services import OsServices
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.util.file_utils.std import StdFiles
 from . import parts
 

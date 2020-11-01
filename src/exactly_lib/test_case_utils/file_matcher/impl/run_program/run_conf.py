@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.file_matcher.impl.run_program.arguments_generat
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration
 from exactly_lib.test_case_utils.string_transformer.impl.identity import IdentityStringTransformer
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
-from exactly_lib.type_system.logic.program.process_execution import command
+from exactly_lib.type_system.logic.program import command
 from exactly_lib.type_system.logic.program.program import Program
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib.util.process_execution import file_ctx_managers

@@ -7,9 +7,7 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext, StringIntConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.integer.test_resources.arguments_building import int_condition__expr
 from exactly_lib_test.test_case_utils.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
@@ -26,6 +24,10 @@ from exactly_lib_test.test_case_utils.matcher.test_resources.assertions import m
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext, \
+    StringIntConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+    IntegerMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

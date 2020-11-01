@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite.file_names import DEFAULT_SUITE_FILE
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import cl_arguments as symbol_args
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output

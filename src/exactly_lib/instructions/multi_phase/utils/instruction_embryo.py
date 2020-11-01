@@ -8,8 +8,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parsing import LocationAwareParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 
 T = TypeVar('T')
 

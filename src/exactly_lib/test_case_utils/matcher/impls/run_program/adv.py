@@ -1,6 +1,5 @@
 from typing import Generic
 
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import matcher
@@ -8,9 +7,12 @@ from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImp
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherAdv
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
+from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
 from exactly_lib.util.process_execution.executors import read_stderr_on_error
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result
 from . import trace

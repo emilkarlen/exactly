@@ -1,15 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
+from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.value_type import LogicValueType
-from exactly_lib_test.symbol.test_resources.symbols_setup import MatcherSymbolValueContext, MatcherTypeSymbolContext
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+    MatcherTypeSymbolContext
 
 MODEL = TypeVar('MODEL')
 

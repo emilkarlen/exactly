@@ -2,9 +2,8 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance, \
-    suite_for_instruction_documentation
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
     INVALID_SYNTAX_CASES
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import src2
@@ -12,8 +11,8 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:

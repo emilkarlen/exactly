@@ -1,0 +1,1 @@
+"""TCDS Directories Dependent Value"""

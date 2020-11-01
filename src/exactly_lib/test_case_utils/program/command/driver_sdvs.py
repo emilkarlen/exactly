@@ -1,11 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.program.command_sdv import CommandDriverSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.program import commands
-from exactly_lib.type_system.logic.program.command import CommandDriverDdv
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.program.ddv import commands
+from exactly_lib.type_val_deps.types.program.ddv.command import CommandDriverDdv
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandDriverSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

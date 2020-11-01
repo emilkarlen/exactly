@@ -3,11 +3,11 @@ from typing import Sequence
 from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import constant_ddv_validator
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, ValidationActual
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
 
 
 class ValidationCase:

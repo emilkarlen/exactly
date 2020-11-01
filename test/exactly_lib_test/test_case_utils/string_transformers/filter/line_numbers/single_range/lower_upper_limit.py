@@ -16,8 +16,7 @@ Test cases
 import unittest
 from typing import List
 
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers import test_resources as tr
@@ -29,6 +28,7 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.strings import WithToString
 from exactly_lib_test.test_resources.test_utils import InpExp, ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

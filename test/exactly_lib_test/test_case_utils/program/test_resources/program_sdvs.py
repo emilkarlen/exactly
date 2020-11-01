@@ -1,13 +1,13 @@
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.sdvs import command_program_sdv
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
-from exactly_lib_test.symbol.data.test_resources import string_sdvs
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib_test.test_case_utils.test_resources import command_sdvs as test_command_sdvs
+from exactly_lib_test.type_val_deps.types.string.test_resources import string_sdvs
 
 
 def arbitrary() -> ProgramSdv:

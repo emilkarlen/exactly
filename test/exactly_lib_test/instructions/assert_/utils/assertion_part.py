@@ -3,22 +3,22 @@ from typing import Sequence
 
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
-from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.sdv_validation import ConstantSuccessSdvValidator
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import pfh_exception
 from exactly_lib.test_case_utils.os_services import os_services_access as oss
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import ConstantSuccessSdvValidator
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 
 
 def suite() -> unittest.TestSuite:

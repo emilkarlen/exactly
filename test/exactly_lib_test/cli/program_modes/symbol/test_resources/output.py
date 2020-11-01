@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.misc_formatting import lines_content
 
 

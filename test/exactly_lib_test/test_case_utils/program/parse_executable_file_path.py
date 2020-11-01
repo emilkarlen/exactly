@@ -7,9 +7,6 @@ from exactly_lib.definitions.path import REL_symbol_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs import ddv_validators
@@ -18,12 +15,12 @@ from exactly_lib.test_case_utils.parse.parse_path import path_relativity_restric
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_path as sut
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators as tcds_pop
 from exactly_lib_test.test_case_utils.program.test_resources import parse_executable_file_path_cases as utils
 from exactly_lib_test.test_case_utils.program.test_resources.parse_executable_file_path_cases import \
@@ -43,6 +40,8 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -106,7 +105,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                  source=string_formatting.file_name(sys.executable),
                  expectation=
                  ExpectationOnExeFile(
-                     path_ddv=paths.absolute_file_name(sys.executable),
+                     path_ddv=path_ddvs.absolute_file_name(sys.executable),
                      expected_symbol_references=[],
                  ),
                  source_after_parse=asrt_source.is_at_end_of_line(1),
@@ -192,8 +191,8 @@ class TestParseWithSymbols(unittest.TestCase):
                  ),
                  expectation=
                  ExpectationOnExeFile(
-                     path_ddv=paths.stacked(file_symbol.ddv,
-                                            paths.constant_path_part(string_symbol.str_value)),
+                     path_ddv=path_ddvs.stacked(file_symbol.ddv,
+                                                path_ddvs.constant_path_part(string_symbol.str_value)),
                      expected_symbol_references=[reference_of_relativity_symbol,
                                                  reference_of_path_string_symbol_as_path_component],
                      symbol_for_value_checks=symbols,
@@ -219,14 +218,14 @@ class TestParseInvalidSyntax(unittest.TestCase):
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
     syntax_elements.PYTHON_EXECUTABLE_OPTION_STRING,
     validation_result=validation.expect_passes_all_validations(),
-    path_ddv=paths.absolute_file_name(sys.executable),
+    path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
 )
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfiguration(
     string_formatting.file_name(sys.executable),
     validation_result=validation.expect_passes_all_validations(),
-    path_ddv=paths.absolute_file_name(sys.executable),
+    path_ddv=path_ddvs.absolute_file_name(sys.executable),
     expected_symbol_references=[],
 )
 
@@ -235,7 +234,7 @@ _ABSOLUT_PATH_THAT_DOES_NOT_EXIST = str(non_existing_absolute_path('/absolute/pa
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_NON_EXISTING_FILE = TestCaseConfiguration(
     string_formatting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     validation_result=validation.expect_validation_pre_eds(False),
-    path_ddv=paths.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
+    path_ddv=path_ddvs.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     expected_symbol_references=[],
 )
 
@@ -295,7 +294,7 @@ class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
         expectation_on_exe_file = ExpectationOnExeFile(
-            path_ddv=paths.absolute_file_name(sys.executable),
+            path_ddv=path_ddvs.absolute_file_name(sys.executable),
             expected_symbol_references=[],
         )
 
@@ -313,7 +312,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         arguments_str = '{} remaining args'.format(string_formatting.file_name(non_existing_file_path_str))
 
         expectation_on_exe_file = ExpectationOnExeFile(
-            path_ddv=paths.absolute_file_name(non_existing_file_path_str),
+            path_ddv=path_ddvs.absolute_file_name(non_existing_file_path_str),
             expected_symbol_references=[],
         )
         validator_expectation = validation.Expectation(passes_pre_sds=False,
@@ -358,12 +357,12 @@ def _parse_and_check(put: unittest.TestCase,
 
 def path_of(rel_option: RelOptionType,
             path_suffix: str) -> PathDdv:
-    return paths.of_rel_option(rel_option, paths.constant_path_part(path_suffix))
+    return path_ddvs.of_rel_option(rel_option, path_ddvs.constant_path_part(path_suffix))
 
 
 def path_of_default_relativity(path_suffix: str) -> PathDdv:
-    return paths.of_rel_option(syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.default_option,
-                               paths.constant_path_part(path_suffix))
+    return path_ddvs.of_rel_option(syntax_elements.EXE_FILE_REL_OPTION_ARG_CONF.options.default_option,
+                                   path_ddvs.constant_path_part(path_suffix))
 
 
 def has_remaining_part_of_first_line(remaining_part: str) -> ValueAssertion[ParseSource]:

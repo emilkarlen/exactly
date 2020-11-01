@@ -4,10 +4,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
-from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     PrimAndExeExpectation
@@ -18,6 +15,9 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def argument_list_exe_case(command_line_arguments: List[str],

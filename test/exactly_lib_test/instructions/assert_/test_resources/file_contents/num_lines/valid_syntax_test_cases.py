@@ -6,16 +6,16 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     TestCaseBase
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer__usage
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
 from exactly_lib_test.test_case_utils.string_matcher.num_lines.test_resources import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer__usage
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

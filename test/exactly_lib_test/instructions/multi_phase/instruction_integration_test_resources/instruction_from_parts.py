@@ -8,23 +8,22 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_string_restriction
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    matches_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    equals_string_restriction
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    matches_symbol_reference_with_restriction_on_direct_target
 
 
 class Configuration(ConfigurationBase):

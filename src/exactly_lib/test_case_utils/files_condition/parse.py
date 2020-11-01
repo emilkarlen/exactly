@@ -4,8 +4,6 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.error_messages import MessageFactory
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -13,7 +11,9 @@ from exactly_lib.test_case_utils.files_condition import files_conditions
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
 from . import documentation

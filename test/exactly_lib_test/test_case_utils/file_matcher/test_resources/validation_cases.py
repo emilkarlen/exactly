@@ -2,10 +2,10 @@ from typing import Sequence, List
 
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
@@ -15,6 +15,7 @@ from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_valid
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationActual, \
     ValidationExpectationSvh, ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 
 
 class ValidationCaseSvh:

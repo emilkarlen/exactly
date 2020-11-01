@@ -1,12 +1,12 @@
-from exactly_lib.symbol.data import list_sdvs
-from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.data.list_sdv import ListSdv
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.path_check import PathCheckDdvValidator, PathCheckDdv
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.symbol_table import SymbolTable
 
 

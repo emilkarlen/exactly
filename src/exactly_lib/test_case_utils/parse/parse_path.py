@@ -15,25 +15,23 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv, PathPartSdv
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
-from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
-from exactly_lib.symbol.err_msg.restriction_failures import ErrorMessageForDirectReference
-from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
+from exactly_lib.symbol.value_type import DataValueType, ValueType
 from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.type_system.value_type import DataValueType, ValueType
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import OrReferenceRestrictions, \
+    OrRestrictionPart, ReferenceRestrictionsOnDirectAndIndirect, string_made_up_by_just_strings
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.sym_ref.restrictions import DataTypeReferenceRestrictions
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path import path_part_sdvs
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv, PathPartSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
@@ -166,7 +164,7 @@ def _with_explicit_relativity(path_argument: Token,
         path_argument_str = string_sdv.string_constant
         path_argument_path = pathlib.PurePath(path_argument_str)
         if path_argument_path.is_absolute():
-            return path_sdvs.constant(paths.absolute_file_name(path_argument_str))
+            return path_sdvs.constant(path_ddvs.absolute_file_name(path_argument_str))
         path_suffix = path_part_sdvs.from_constant_str(path_argument_str)
         return path_part_2_path_sdv(path_suffix)
     else:
@@ -179,10 +177,10 @@ def _just_string_argument(argument: str,
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
         #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
-        return path_sdvs.constant(paths.absolute_file_name(argument))
-    path_suffix = paths.constant_path_part(argument)
-    return path_sdvs.constant(paths.of_rel_option(conf.options.default_option,
-                                                  path_suffix))
+        return path_sdvs.constant(path_ddvs.absolute_file_name(argument))
+    path_suffix = path_ddvs.constant_path_part(argument)
+    return path_sdvs.constant(path_ddvs.of_rel_option(conf.options.default_option,
+                                                      path_suffix))
 
 
 def _just_argument_with_symbol_references(string_fragments: list,
@@ -202,8 +200,8 @@ def _just_argument_with_symbol_references(string_fragments: list,
 
 
 def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> PathSdv:
-    return path_sdvs.constant(paths.of_rel_option(conf.options.default_option,
-                                                  paths.empty_path_part()))
+    return path_sdvs.constant(path_ddvs.of_rel_option(conf.options.default_option,
+                                                      path_ddvs.empty_path_part()))
 
 
 def _raise_missing_arguments_exception(conf: _Conf):
@@ -264,8 +262,8 @@ class _PathSdvOfRelativityOptionAndSuffixSdv(PathSdv):
         self.path_suffix_sdv = path_suffix_sdv
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
-        return paths.of_rel_option(self.relativity,
-                                   self.path_suffix_sdv.resolve(symbols))
+        return path_ddvs.of_rel_option(self.relativity,
+                                       self.path_suffix_sdv.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -282,7 +280,7 @@ class _PathSdvOfAbsPathAndSuffixSdv(PathSdv):
             raise ValueError('abs_path_root is not absolute: ' + str(abs_path_root))
 
     def resolve(self, symbols: SymbolTable) -> PathDdv:
-        return paths.rel_abs_path(self.abs_path_root, self.path_suffix_sdv.resolve(symbols))
+        return path_ddvs.rel_abs_path(self.abs_path_root, self.path_suffix_sdv.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -329,7 +327,6 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
 
 def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,
                                                           container_of_illegal_symbol: SymbolContainer) -> TextRenderer:
-    value_restriction_failure = invalid_type_msg([ValueType.PATH, ValueType.STRING],
-                                                 name_of_failing_symbol,
-                                                 container_of_illegal_symbol)
-    return ErrorMessageForDirectReference(value_restriction_failure)
+    return invalid_type_msg([ValueType.PATH, ValueType.STRING],
+                            name_of_failing_symbol,
+                            container_of_illegal_symbol)

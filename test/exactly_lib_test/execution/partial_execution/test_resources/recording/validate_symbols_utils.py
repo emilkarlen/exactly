@@ -2,9 +2,8 @@ import unittest
 
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -15,10 +14,10 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    value_restriction_that_is_unconditionally_unsatisfied
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 class Configuration:

@@ -1,5 +1,4 @@
 from exactly_lib.definitions.entity import types, syntax_elements
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.expression import grammar, parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
 from exactly_lib.test_case_utils.string_transformer import names
@@ -8,6 +7,7 @@ from exactly_lib.test_case_utils.string_transformer.impl import replace, sequenc
     tcds_paths_replacement, strip_space
 from exactly_lib.test_case_utils.string_transformer.impl.filter import parse as parse_filter
 from exactly_lib.test_case_utils.string_transformer.impl.run_program import parse as parse_run
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue
 

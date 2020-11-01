@@ -9,14 +9,14 @@ from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.data import path_ddv
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddv
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -26,9 +26,6 @@ from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_L
 from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext
-from exactly_lib_test.symbol.test_resources.string import StringSymbolValueContext, StringConstantSymbolContext
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
@@ -37,6 +34,10 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
+from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolValueContext, \
+    StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -146,8 +147,8 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
-                            paths.of_rel_option(rel_opt.relativity,
-                                                paths.constant_path_part('file.txt'))),
+                            path_ddvs.of_rel_option(rel_opt.relativity,
+                                                    path_ddvs.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -174,8 +175,8 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     ),
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
-                            paths.of_rel_option(RelOptionType.REL_HDS_CASE,
-                                                paths.constant_path_part('file.txt'))),
+                            path_ddvs.of_rel_option(RelOptionType.REL_HDS_CASE,
+                                                    path_ddvs.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )

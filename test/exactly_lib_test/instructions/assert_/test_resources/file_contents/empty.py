@@ -7,8 +7,6 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
@@ -16,6 +14,8 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformati
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

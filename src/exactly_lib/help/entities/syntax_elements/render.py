@@ -11,7 +11,7 @@ from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
-from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat import utils as text_utils
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \

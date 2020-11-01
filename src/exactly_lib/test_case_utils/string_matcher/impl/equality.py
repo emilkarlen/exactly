@@ -4,8 +4,6 @@ import pathlib
 from typing import Iterable, Sequence, Callable, Tuple
 
 import exactly_lib.util.str_.read_lines
-from exactly_lib.symbol.data.string_or_path import StringOrPathSdv
-from exactly_lib.symbol.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -14,15 +12,19 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl.base_class import StringMatcherImplBase
-from exactly_lib.type_system.data.string_or_path_ddvs import StringOrPathDdv, StringOrPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic import string_model
-from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, MODEL
+from exactly_lib.type_system.logic.matcher_base_class import MODEL
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import PreOrPostSdsValidatorPrimitive
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPathDdv, StringOrPath
+from exactly_lib.type_val_deps.types.string_or_path.string_or_path_sdv import StringOrPathSdv
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils

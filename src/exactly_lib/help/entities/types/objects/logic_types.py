@@ -4,7 +4,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelp
 from exactly_lib.definitions.entity import types, syntax_elements, conf_params, concepts
 from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
-from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TP = TextParser({

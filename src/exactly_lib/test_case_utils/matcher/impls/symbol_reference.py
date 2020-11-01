@@ -1,11 +1,11 @@
 from typing import Sequence
 
-from exactly_lib.symbol import lookups
-from exactly_lib.symbol.logic.matcher import MatcherSdv, MODEL
-from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv, MODEL
+from exactly_lib.type_val_deps.sym_ref import symbol_lookup
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -14,11 +14,11 @@ class MatcherReferenceSdv(MatcherSdv[MODEL]):
     A :class:`MatcherSdv` that is a reference to a symbol
     """
     _TYPE_LOOKUP = {
-        ValueType.INTEGER_MATCHER: lookups.lookup_integer_matcher,
-        ValueType.LINE_MATCHER: lookups.lookup_line_matcher,
-        ValueType.FILE_MATCHER: lookups.lookup_file_matcher,
-        ValueType.FILES_MATCHER: lookups.lookup_files_matcher,
-        ValueType.STRING_MATCHER: lookups.lookup_string_matcher,
+        ValueType.INTEGER_MATCHER: symbol_lookup.lookup_integer_matcher,
+        ValueType.LINE_MATCHER: symbol_lookup.lookup_line_matcher,
+        ValueType.FILE_MATCHER: symbol_lookup.lookup_file_matcher,
+        ValueType.FILES_MATCHER: symbol_lookup.lookup_files_matcher,
+        ValueType.STRING_MATCHER: symbol_lookup.lookup_string_matcher,
     }
 
     def __init__(self,

@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.program_execution import file_transformation_utils as pgm_execution
 from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \

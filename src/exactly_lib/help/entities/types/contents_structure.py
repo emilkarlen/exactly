@@ -6,7 +6,7 @@ from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAM
 from exactly_lib.definitions.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.util.str_.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
 

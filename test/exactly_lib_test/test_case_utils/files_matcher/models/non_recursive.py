@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.files_matcher import models as sut
-from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import test_data

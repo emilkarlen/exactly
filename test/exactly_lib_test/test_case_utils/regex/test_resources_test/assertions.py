@@ -2,7 +2,6 @@ import re
 import unittest
 from typing import Sequence, Pattern
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator
 from exactly_lib.tcfs.dir_dependent_value import DirDependencies
@@ -10,10 +9,8 @@ from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.file_matcher.sdvs import file_matcher_constant_sdv
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.test_resources import string
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.regex.test_resources import assertions as sut
 from exactly_lib_test.test_case_utils.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl
 from exactly_lib_test.test_case_utils.test_resources import validation as asrt_validation
@@ -23,6 +20,9 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl
+from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
+from exactly_lib_test.type_val_deps.types.string.test_resources import string
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

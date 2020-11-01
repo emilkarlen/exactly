@@ -14,10 +14,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources import files_matcher as files_matcher_test_impl
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext, \
-    FileMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, file_matchers
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_matcher.models.test_resources import model_checker
@@ -45,6 +42,9 @@ from exactly_lib_test.test_resources.test_utils import NEA, NExArr, NIE, EA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import matching_result
+from exactly_lib_test.type_val_deps.types.test_resources import files_matcher as files_matcher_test_impl
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext, \
+    FileMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

@@ -6,28 +6,30 @@ from exactly_lib.cli.program_modes.symbol.impl.reports import individual as sut,
 from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import DefinitionsResolver, SymbolDefinitionInfo
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol import restriction
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref import restrictions
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
-from exactly_lib_test.symbol.data.test_resources import path, list_
-from exactly_lib_test.symbol.logic.test_resources.string_transformer import symbol_context as st_symbol_context
-from exactly_lib_test.symbol.test_resources import line_matcher, string_matcher, file_matcher, \
-    files_condition, program, string
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolValueContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolValueContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     to_uppercase
+from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
+from exactly_lib_test.type_val_deps.types.path.test_resources import path
+from exactly_lib_test.type_val_deps.types.string.test_resources import string
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import symbol_context as st_symbol_context
+from exactly_lib_test.type_val_deps.types.test_resources import file_matcher, files_condition, line_matcher, program, \
+    string_matcher
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.util.simple_textstruct.test_resources import structure_assertions as asrt_text_struct
 
 
@@ -109,7 +111,7 @@ class TestReferences(unittest.TestCase):
             string_matcher.string_matcher_sdv_constant_test_impl(
                 MatcherWithConstantResult(True),
                 [SymbolReference(referenced_symbol.name,
-                                 restriction.ValueTypeRestriction(ValueType.STRING))]),
+                                 restrictions.ValueTypeRestriction(ValueType.STRING))]),
         )
 
         symbol_definitions = [

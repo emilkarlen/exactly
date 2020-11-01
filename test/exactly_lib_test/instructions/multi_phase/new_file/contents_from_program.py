@@ -23,12 +23,7 @@ from exactly_lib_test.instructions.test_resources.parse_file_maker import \
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext, NON_EXISTING_SYSTEM_PROGRAM
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
@@ -53,6 +48,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     to_uppercase
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
+    NON_EXISTING_SYSTEM_PROGRAM
 
 
 def suite() -> unittest.TestSuite:

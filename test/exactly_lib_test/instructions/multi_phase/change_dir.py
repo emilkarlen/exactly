@@ -8,19 +8,18 @@ from exactly_lib.definitions import path as path_syntax
 from exactly_lib.instructions.multi_phase import change_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.tcfs.relativity_root import REL_SDS_RESOLVERS
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check, path_name_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
@@ -32,6 +31,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueIsNone
+from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 
@@ -61,8 +61,8 @@ class TestParse(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
-                                                    paths.constant_path_part(arguments))
+                expected_path = path_ddvs.of_rel_option(RelOptionType.REL_CWD,
+                                                        path_ddvs.constant_path_part(arguments))
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -92,8 +92,8 @@ class TestParse(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
-                                                    paths.constant_path_part(arguments.strip()))
+                expected_path = path_ddvs.of_rel_option(RelOptionType.REL_CWD,
+                                                        path_ddvs.constant_path_part(arguments.strip()))
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -105,8 +105,8 @@ class TestParse(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_path = paths.of_rel_option(RelOptionType.REL_CWD,
-                                                    paths.constant_path_part('expected argument'))
+                expected_path = path_ddvs.of_rel_option(RelOptionType.REL_CWD,
+                                                        path_ddvs.constant_path_part('expected argument'))
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -118,8 +118,8 @@ class TestParse(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
-                expected_path = paths.of_rel_option(RelOptionType.REL_TMP,
-                                                    paths.constant_path_part('subdir'))
+                expected_path = path_ddvs.of_rel_option(RelOptionType.REL_TMP,
+                                                        path_ddvs.constant_path_part('subdir'))
                 assertion = matches_path_sdv(expected_path, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -260,8 +260,8 @@ class CwdAssertion(ValueAssertionBase[TestCaseDs]):
                value: TestCaseDs,
                message_builder: MessageBuilder):
         expected = (
-            paths.simple_of_rel_option(self.expected_location,
-                                       self.expected_base_name)
+            path_ddvs.simple_of_rel_option(self.expected_location,
+                                           self.expected_base_name)
                 .value_of_any_dependency__d(value)
                 .primitive
         )
@@ -381,7 +381,7 @@ class TestFailingScenarios(TestCaseBase):
 
 
 def _path_of(relativity=RelOptionType.REL_ACT) -> PathDdv:
-    return paths.of_rel_option(relativity, paths.empty_path_part())
+    return path_ddvs.of_rel_option(relativity, path_ddvs.empty_path_part())
 
 
 def embryo_checker(is_after_act_phase: bool) -> embryo_check.Checker[Optional[TextRenderer]]:

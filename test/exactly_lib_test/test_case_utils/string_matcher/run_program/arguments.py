@@ -1,14 +1,15 @@
 import unittest
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
-from exactly_lib_test.symbol.test_resources.program import is_reference_to_program
 from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import test_cases
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    is_reference_to_data_type_symbol
+from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
 def suite() -> unittest.TestSuite:

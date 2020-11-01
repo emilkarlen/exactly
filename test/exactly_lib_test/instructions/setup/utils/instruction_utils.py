@@ -2,15 +2,14 @@ import unittest
 
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils.path_check import PathCheck
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_case_utils.file_properties import FileCheckThatEvaluatesTo
@@ -39,7 +38,7 @@ class TestInstruction(InstructionWithFileRefsBase):
 class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_sdv_of(paths.rel_hds_case(paths.constant_path_part('file.txt'))),
+            (PathCheck(_sdv_of(path_ddvs.rel_hds_case(path_ddvs.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(True)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
@@ -52,7 +51,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_sdv_of(paths.rel_hds_case(paths.constant_path_part('file.txt'))),
+            (PathCheck(_sdv_of(path_ddvs.rel_hds_case(path_ddvs.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(False)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
@@ -67,7 +66,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
 class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_sdv_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
+            (PathCheck(_sdv_of(path_ddvs.rel_cwd(path_ddvs.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(True)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
@@ -80,7 +79,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction(
-            (PathCheck(_sdv_of(paths.rel_cwd(paths.constant_path_part('file.txt'))),
+            (PathCheck(_sdv_of(path_ddvs.rel_cwd(path_ddvs.constant_path_part('file.txt'))),
                        FileCheckThatEvaluatesTo(False)),))
         with tcds_with_act_as_curr_dir() as path_resolving_env:
             tcds = path_resolving_env.tcds
@@ -100,7 +99,7 @@ def _env_from(sds: SandboxDs,
     ).build_post_sds()
 
 
-def _sdv_of(path: paths.PathDdv) -> PathSdv:
+def _sdv_of(path: path_ddvs.PathDdv) -> PathSdv:
     return path_sdvs.constant(path)
 
 

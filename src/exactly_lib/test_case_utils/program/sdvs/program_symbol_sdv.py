@@ -1,17 +1,17 @@
 from typing import Sequence
 
-from exactly_lib.symbol import lookups
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.logic.program.stdin_data_sdv import StdinDataSdv
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.accumulator import ProgramElementsSdvAccumulator
-from exactly_lib.type_system.logic.program.program import ProgramDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref import symbol_lookup
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
+from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_deps.types.program.sdv.stdin import StdinDataSdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -41,7 +41,7 @@ class ProgramSdvForSymbolReference(ProgramSdv):
         return [self._symbol_reference] + list(self._accumulated_elements.references)
 
     def resolve(self, symbols: SymbolTable) -> ProgramDdv:
-        program_of_symbol = lookups.lookup_program(symbols, self._symbol_name)
+        program_of_symbol = symbol_lookup.lookup_program(symbols, self._symbol_name)
         acc = self._accumulated_elements
         accumulated_program = program_of_symbol.new_accumulated(acc.stdin, acc.arguments, acc.transformations)
 

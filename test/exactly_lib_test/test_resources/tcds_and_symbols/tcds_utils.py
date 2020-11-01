@@ -4,9 +4,9 @@ from time import strftime, localtime
 from typing import ContextManager
 
 from exactly_lib import program_info
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, hds_populators, \

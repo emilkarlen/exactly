@@ -9,7 +9,8 @@ from exactly_lib.test_case_utils import glob_pattern
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv, FileMatcherModel
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.util.parse import token_matchers
 from . import sdv, defs, properties
 

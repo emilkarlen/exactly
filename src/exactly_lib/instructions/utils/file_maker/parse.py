@@ -1,14 +1,13 @@
 from exactly_lib.instructions.utils.file_maker.primitives import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_path import parse_path_from_token_parser
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import parse_transformation_option
-from exactly_lib.test_case_utils.string_transformer.impl import identity
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from . import defs

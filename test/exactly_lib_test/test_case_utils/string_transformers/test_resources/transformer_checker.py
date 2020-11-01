@@ -1,9 +1,10 @@
 import unittest
 
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.type_system.logic.string_model import StringModel
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib_test.test_case_utils.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
 from exactly_lib_test.test_case_utils.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \

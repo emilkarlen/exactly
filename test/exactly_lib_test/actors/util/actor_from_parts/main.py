@@ -3,11 +3,11 @@ import unittest
 from exactly_lib.actors.util.actor_from_parts import parts as sut
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.execution import phase_step
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, simple_success, \
@@ -18,12 +18,12 @@ from exactly_lib_test.actors.util.actor_from_parts.test_resources import ParserT
     ExecutorConstructorThatRaises, ValidatorConstructorThatRecordsStep, ExecutorConstructorThatRecordsStep, \
     _ExecutorConstructorForConstant, UnconditionallySuccessfulExecutor, ExecutorThat
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.tcfs.test_resources.paths import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 
 
 def suite() -> unittest.TestSuite:

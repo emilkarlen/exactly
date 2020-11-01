@@ -4,7 +4,7 @@ from typing import List, Sequence, Callable
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib_test.instructions.configuration.actor.test_resources import file_in_hds_act_dir, CheckHelper, \
     exe_file_in_interpreter_default_relativity_dir, is_exe_file_command_for_source_file
 from exactly_lib_test.tcfs.test_resources import hds_populators

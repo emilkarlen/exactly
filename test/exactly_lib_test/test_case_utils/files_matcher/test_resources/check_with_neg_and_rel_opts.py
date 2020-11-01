@@ -4,11 +4,10 @@ from abc import ABC
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
@@ -30,6 +29,7 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     SymbolsConfiguration, conf_rel_sds
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
+from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
 
 SOME_ACCEPTED_REL_OPT_CONFIGURATIONS = [
     conf_rel_sds(RelSdsOptionType.REL_ACT),

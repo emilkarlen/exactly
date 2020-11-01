@@ -1,9 +1,9 @@
 import pathlib
 from typing import Callable, TypeVar
 
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib_test.type_system.data.test_resources import described_path
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
 
 MODEL = TypeVar('MODEL')
 

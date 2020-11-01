@@ -4,7 +4,6 @@ from typing import List, Dict
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
@@ -21,6 +20,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

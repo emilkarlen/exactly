@@ -7,7 +7,6 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.ps_or_tp import parsers
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.hds import HomeDs
@@ -16,8 +15,9 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
-from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
+from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import details

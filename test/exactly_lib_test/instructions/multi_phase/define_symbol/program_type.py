@@ -3,17 +3,14 @@ import unittest
 from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
@@ -22,6 +19,9 @@ from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
@@ -84,7 +84,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             with self.subTest(argument_case.name):
                 expected_symbol_container = matches_container_of_logic_type(
                     LogicValueType.PROGRAM,
-                    sdv=sdv_type_assertions.matches_sdv_of_program_constant(
+                    sdv=matcher_sdv_type_assertions.matches_sdv_of_program_constant(
                         references=asrt.matches_sequence([
                             referred_symbol.reference_assertion
                         ]),

@@ -5,11 +5,11 @@ from contextlib import contextmanager
 from typing import ContextManager, List
 
 from exactly_lib.definitions import path
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.tcfs import tcds_symbols
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.string_transformer.impl import tcds_paths_replacement as sut
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_directory_structure

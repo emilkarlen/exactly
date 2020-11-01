@@ -11,10 +11,7 @@ from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources import parse_source
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources import line_matcher
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherSymbolContext, \
-    LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import validation_cases
@@ -33,6 +30,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, \
     line_matcher_from_predicates
+from exactly_lib_test.type_val_deps.types.test_resources import line_matcher
+from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import LineMatcherSymbolContext, \
+    LineMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

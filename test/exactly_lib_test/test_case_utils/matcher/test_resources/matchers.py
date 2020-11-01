@@ -3,7 +3,6 @@ from typing import Generic, Callable
 from typing import TypeVar, Sequence, List
 
 from exactly_lib.definitions import logic
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
@@ -12,11 +11,14 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.file_matcher import FileMatcherDdv, FileMatcher
-from exactly_lib.type_system.logic.impls import advs
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv, \
-    MatcherWTrace, MatcherStdTypeVisitor
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherStdTypeVisitor
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv
 from exactly_lib.util.description_tree import renderers, tree
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_single_string_text_for_test

@@ -2,9 +2,9 @@ import unittest
 from contextlib import contextmanager
 from typing import Iterator, Sequence, ContextManager
 
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.type_system.logic.impls import transformed_string_models as sut
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_model.test_resources import model_checker

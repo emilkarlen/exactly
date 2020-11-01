@@ -4,7 +4,7 @@ from typing import Optional, Sequence
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.path_validator import PathDdvValidatorBase
-from exactly_lib.type_system.data.path_ddv import DescribedPath
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.util.render.renderer import SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import LineElement

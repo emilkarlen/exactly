@@ -1,0 +1,18 @@
+from typing import Sequence
+
+from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
+from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.type_system.logic.program.stdin import StdinData
+from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPathDdv
+
+
+class StdinDataDdv(DirDependentValue[StdinData]):
+    def __init__(self, fragments: Sequence[StringOrPathDdv]):
+        self._fragments = fragments
+
+    @property
+    def fragments(self) -> Sequence[StringOrPathDdv]:
+        return self._fragments
+
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> StdinData:
+        return StdinData([f.value_of_any_dependency(tcds) for f in self._fragments])

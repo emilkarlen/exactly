@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import py_programs, \
@@ -14,6 +13,7 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources import integ
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

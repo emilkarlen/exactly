@@ -17,13 +17,13 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.instruction_parsers import InstructionParserThatConsumesCurrentLine
-from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.textformat.structure import document
@@ -35,7 +35,7 @@ from exactly_lib_test.common.test_resources import instruction_setup
 from exactly_lib_test.common.test_resources.text_doc_assertions import new_pre_formatted_str_for_test
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instrs
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions

@@ -3,6 +3,7 @@ from typing import Sequence
 from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.expression.parser import GrammarParsers
@@ -15,8 +16,7 @@ from exactly_lib.test_case_utils.files_matcher.impl import emptiness, num_files,
 from exactly_lib.test_case_utils.files_matcher.impl.matches import matches_non_full, matches_full
 from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import parse_quantified_matcher
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 

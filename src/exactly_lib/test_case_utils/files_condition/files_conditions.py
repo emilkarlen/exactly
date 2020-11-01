@@ -1,12 +1,12 @@
 from typing import Sequence, Tuple, Optional
 
-from exactly_lib.symbol import restriction, lookups
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.files_condition.structure import FilesConditionSdv, FilesConditionDdv
-from exactly_lib.type_system.data.string_ddv import StringDdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv, FileMatcherDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.sym_ref import restrictions, symbol_lookup
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv, FileMatcherSdv
+from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.functional import map_optional
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -56,7 +56,7 @@ class _ReferenceSdv(FilesConditionSdv):
         self._symbol_name = symbol_name
         self._references = (
             SymbolReference(symbol_name,
-                            restriction.ValueTypeRestriction(ValueType.FILES_CONDITION)),
+                            restrictions.ValueTypeRestriction(ValueType.FILES_CONDITION)),
         )
 
     @property
@@ -64,5 +64,5 @@ class _ReferenceSdv(FilesConditionSdv):
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
-        referenced_sdv = lookups.lookup_files_condition(symbols, self._symbol_name)
+        referenced_sdv = symbol_lookup.lookup_files_condition(symbols, self._symbol_name)
         return referenced_sdv.resolve(symbols)

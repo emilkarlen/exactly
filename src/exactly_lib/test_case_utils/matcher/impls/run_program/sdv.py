@@ -1,14 +1,15 @@
 from typing import Generic
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.matcher.impls import sdv_components
 from exactly_lib.test_case_utils.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv, MatcherAdv
-from exactly_lib.type_system.logic.program.program import ProgramDdv
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

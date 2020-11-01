@@ -16,11 +16,11 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
 from exactly_lib.processing import exit_values
+from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.parse import path_relativities
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
-from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser

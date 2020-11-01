@@ -1,10 +1,10 @@
 from abc import ABC
 from typing import TypeVar, Sequence, Generic
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.type_system.logic.matcher_base_class import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
 

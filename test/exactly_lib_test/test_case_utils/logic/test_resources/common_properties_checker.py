@@ -2,9 +2,9 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
-from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.type_system.logic.logic_base_class import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 PRIMITIVE = TypeVar('PRIMITIVE')

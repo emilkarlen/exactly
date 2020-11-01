@@ -10,9 +10,10 @@ from exactly_lib.test_case_utils.matcher.impls import sdv_components, combinator
 from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
 from exactly_lib.test_case_utils.os_services.os_services_access import new_for_current_os
 from exactly_lib.test_case_utils.string_matcher.impl import line_matchers
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
     string_model_factory

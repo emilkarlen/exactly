@@ -8,7 +8,7 @@ from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-from exactly_lib.type_system.value_type import DataValueType, ValueType
+from exactly_lib.symbol.value_type import DataValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.table import TableCell

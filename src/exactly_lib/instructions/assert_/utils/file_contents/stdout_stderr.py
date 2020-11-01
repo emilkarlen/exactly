@@ -16,13 +16,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
-from exactly_lib.symbol.logic.resolving_helper import resolving_helper__of_full_env
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
@@ -33,7 +27,12 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.program_execution.file_transformation_utils import \
     make_transformed_file_from_output_in_instruction_tmp_dir
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.resolving_helper import resolving_helper__of_full_env
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.render.renderer import Renderer
@@ -91,7 +90,7 @@ class Parser(ComparisonActualFileParser):
         self._checked_file_name = process_output_files.PROC_OUTPUT_FILE_NAMES[checked_file]
         self._default = actual_files.ConstructorForPath(
             path_sdvs.of_rel_option(RelOptionType.REL_RESULT,
-                                    paths.constant_path_part(self._checked_file_name)),
+                                    path_ddvs.constant_path_part(self._checked_file_name)),
             file_or_dir_contents_headers.target_name_of_proc_output_file_from_act_phase(checked_file),
             False,
         )
@@ -132,7 +131,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                                                                           self._checked_output,
                                                                           program)
         file_with_transformed_contents = path_sdvs.constant(
-            paths.absolute_path(result.path_of_file_with_transformed_contents)
+            path_ddvs.absolute_path(result.path_of_file_with_transformed_contents)
         )
 
         path_with_transformed_contents = (

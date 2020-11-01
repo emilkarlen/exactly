@@ -3,9 +3,8 @@ from typing import Sequence, List
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as fms_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.symbol_context import FilesMatcherSymbolContext
@@ -15,6 +14,7 @@ from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirAr
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 
 
 class IntegrationCheckWFilesMatcherHelperBase(ABC):

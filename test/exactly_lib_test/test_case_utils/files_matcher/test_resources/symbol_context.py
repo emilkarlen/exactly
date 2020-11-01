@@ -2,16 +2,18 @@ from typing import Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.matcher.impls import constant
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherSdv, FilesMatcher, FilesMatcherModel
-from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
-from exactly_lib_test.symbol.test_resources.symbols_setup import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION, \
-    MatcherSymbolValueContext, MatcherTypeSymbolContext
+from exactly_lib.type_system.logic.files_matcher import FilesMatcher, FilesMatcherModel
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.arguments_building import FilesMatcherArg
 from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
+    MatcherTypeSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 
 
 class FilesMatcherSymbolValueContext(MatcherSymbolValueContext[FilesMatcherModel]):

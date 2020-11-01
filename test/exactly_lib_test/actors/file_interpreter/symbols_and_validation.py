@@ -3,14 +3,13 @@ import sys
 import unittest
 
 from exactly_lib.actors import file_interpreter as sut
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -25,10 +24,7 @@ from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VA
 from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.instructions.configuration.actor.test_resources import ExecutedCommandAssertion
-from exactly_lib_test.symbol.data.test_resources.list_ import ListConstantSymbolContext
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators, path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -44,6 +40,10 @@ from exactly_lib_test.test_resources.value_assertions import process_result_asse
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources import command_assertions as asrt_command
+from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
+    PathSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.util.test_resources.py_program import \
     PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
@@ -211,7 +211,7 @@ class TestStringSymbolReferenceInInterpreter(unittest.TestCase):
         python_interpreter_symbol = PathSymbolContext.of_sdv(
             'PYTHON_INTERPRETER_SYMBOL',
             path_sdvs.constant(
-                paths.absolute_path(pathlib.Path(sys.executable))
+                path_ddvs.absolute_path(pathlib.Path(sys.executable))
             ),
         )
 
@@ -254,8 +254,8 @@ class TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(unittest.Te
 
         interpreter_with_non_existing_program_file = command_sdvs.for_executable_file(
             path_sdvs.constant(
-                paths.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
-                              paths.constant_path_part('non-existing'))),
+                path_ddvs.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
+                                  path_ddvs.constant_path_part('non-existing'))),
         )
 
         arrangement = Arrangement(
@@ -284,8 +284,8 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
 
         interpreter_with_program_that_is_a_dir = command_sdvs.for_executable_file(
             path_sdvs.constant(
-                paths.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
-                              paths.constant_path_part(a_dir.name))),
+                path_ddvs.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
+                                  path_ddvs.constant_path_part(a_dir.name))),
         )
 
         command_line = source_file
@@ -325,7 +325,7 @@ class TestValidationOfArguments(unittest.TestCase):
                 )
                 actor = sut.actor(
                     command_sdvs.for_executable_file(
-                        path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+                        path_sdvs.constant(path_ddvs.absolute_file_name(sys.executable)),
                         interpreter_arguments
                     )
                 )
@@ -471,7 +471,7 @@ class TestArgumentsOfInterpreterAndActAreConcatenated(unittest.TestCase):
         )
         actor = sut.actor(
             command_sdvs.for_executable_file(
-                path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+                path_sdvs.constant(path_ddvs.absolute_file_name(sys.executable)),
                 interpreter_arguments
             )
         )

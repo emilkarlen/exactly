@@ -1,7 +1,6 @@
 import pathlib
 import unittest
 
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as arg
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import parse_test_base_classes as test_case_utils
@@ -12,6 +11,7 @@ from exactly_lib_test.test_case_utils.regex.test_resources.assertions import is_
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

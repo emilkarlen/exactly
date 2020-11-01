@@ -5,8 +5,6 @@ from abc import ABC, abstractmethod
 from pathlib import PurePosixPath
 from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
-from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.tcfs import ddv_validators
@@ -17,10 +15,13 @@ from exactly_lib.test_case_utils.described_dep_val import LogicWithDetailsDescri
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.files_condition import syntax
 from exactly_lib.test_case_utils.matcher.impls import combinator_matchers
-from exactly_lib.type_system.data.string_ddv import StringDdv
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.file_matcher import FileMatcherAdv, FileMatcherDdv, FileMatcher
+from exactly_lib.type_system.logic.file_matcher import FileMatcher
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
+    ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv
+from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.description_tree.tree import Detail

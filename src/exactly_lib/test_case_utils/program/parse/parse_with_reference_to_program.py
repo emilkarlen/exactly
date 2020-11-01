@@ -4,10 +4,10 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.sdvs import program_symbol_sdv
 from exactly_lib.test_case_utils.program.sdvs.program_symbol_sdv import ProgramSdvForSymbolReference
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 
 
 def program_parser() -> Parser[ProgramSdv]:

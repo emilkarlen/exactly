@@ -3,21 +3,15 @@ import unittest
 from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.test_case_utils.string_transformer.names import REPLACE_TRANSFORMER_NAME, SEQUENCE_OPERATOR_NAME
-from exactly_lib.type_system.value_type import LogicValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_string_transformer_constant
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -26,6 +20,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import string_transformers
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import \
+    matches_sdv_of_string_transformer_constant
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 

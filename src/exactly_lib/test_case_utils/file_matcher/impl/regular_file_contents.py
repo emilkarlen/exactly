@@ -4,9 +4,10 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher.impl import file_contents_utils, model_constructor_sdv
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.string_models.factory import RootStringModelFactory
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 
 NAMES = file_contents_utils.NamesSetup(
     file_check_properties.REGULAR_FILE_CONTENTS,

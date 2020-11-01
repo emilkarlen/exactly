@@ -2,11 +2,9 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Iterator
 
-from exactly_lib.symbol.logic.matcher import MatcherSdv
-from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.logic.file_matcher import FileMatcher, FileMatcherModel
-from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
-    MatcherWTrace
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 
 
 class FileModel(ABC):
@@ -46,9 +44,3 @@ class FilesMatcherModel(ABC):
 
 
 FilesMatcher = MatcherWTrace[FilesMatcherModel]
-
-FilesMatcherAdv = MatcherAdv[FilesMatcherModel]
-
-FilesMatcherDdv = MatcherDdv[FilesMatcherModel]
-
-FilesMatcherSdv = MatcherSdv[FilesMatcherModel]

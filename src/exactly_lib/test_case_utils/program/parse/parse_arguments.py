@@ -3,8 +3,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import list_sdvs
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_path
@@ -12,6 +10,8 @@ from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.util.parse import token_matchers
 
 REL_OPTIONS_CONF = rel_opts_configuration.RelOptionsConfiguration(

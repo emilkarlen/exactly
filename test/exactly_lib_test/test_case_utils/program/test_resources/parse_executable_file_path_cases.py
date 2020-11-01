@@ -4,20 +4,18 @@ import unittest
 from typing import List, Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import command_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_path
-from exactly_lib.type_system.data.path_ddv import PathDdv
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
 from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
@@ -28,6 +26,9 @@ from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
 
 
 class RelativityConfiguration:

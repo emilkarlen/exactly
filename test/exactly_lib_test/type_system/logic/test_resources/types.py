@@ -1,4 +1,4 @@
-from exactly_lib.type_system.value_type import ValueType, LogicValueType
+from exactly_lib.symbol.value_type import ValueType, LogicValueType
 
 LOGIC_VALUE_TYPE_2_VALUE_TYPE = {
     LogicValueType.INTEGER_MATCHER: ValueType.INTEGER_MATCHER,

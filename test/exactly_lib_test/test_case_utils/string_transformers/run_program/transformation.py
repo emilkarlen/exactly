@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \
     MultiSourceExpectation, prim_asrt__constant
@@ -17,6 +16,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_system.logic.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer, string_transformers
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:

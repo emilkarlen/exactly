@@ -3,9 +3,6 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import list_sdvs, string_sdvs
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data.list_sdv import ElementSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs import ddv_validators
@@ -14,16 +11,16 @@ from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, Re
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
+from exactly_lib.type_val_deps.types.path import path_sdvs
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
@@ -40,6 +37,10 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    is_any_data_type_reference_restrictions
+from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Sequence, Callable
 
-from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.symbol.logic.logic_type_sdv import LogicSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs import ddv_validation
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.details_structured import WithDetailsDescription
 from exactly_lib.type_system.logic.description import DetailsDescription
-from exactly_lib.type_system.logic.impls.advs import ConstantAdv
-from exactly_lib.type_system.logic.logic_base_class import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.adv.advs import ConstantAdv
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable

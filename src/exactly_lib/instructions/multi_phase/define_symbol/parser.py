@@ -14,8 +14,8 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolDefinition, \
     SymbolDependentValue
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from . import type_setup

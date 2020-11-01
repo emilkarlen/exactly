@@ -9,11 +9,11 @@ from exactly_lib_test.section_document.element_parsers.optional_description_and_
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, \
     is_at_beginning_of_line
-from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:

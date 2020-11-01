@@ -4,9 +4,6 @@ from typing import Mapping, Optional
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib_test.symbol.test_resources.string import is_reference_to_string_made_up_of_just_strings, \
-    StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolsArrEx
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
@@ -15,6 +12,10 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__w_any_msg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.test_resources.symbols_setup import SymbolsArrEx
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
+    is_reference_to_string_made_up_of_just_strings, \
+    StringConstantSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 
 

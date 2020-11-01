@@ -6,12 +6,11 @@ from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.cli_syntax import option_parsing
 
 
@@ -58,6 +57,6 @@ def _parse_exe_path(tokens: TokenStream,
     token = tokens.head
     if token.is_plain and option_parsing.matches(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
-        return path_sdvs.constant(paths.absolute_file_name(sys.executable))
+        return path_sdvs.constant(path_ddvs.absolute_file_name(sys.executable))
     else:
         return parse_path.parse_path(tokens, conf=relativity)

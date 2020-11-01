@@ -24,17 +24,17 @@ from exactly_lib.instructions.utils.file_maker.primitives import FileMaker
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.err_msg import path_err_msgs
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreSds
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser

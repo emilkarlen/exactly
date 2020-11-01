@@ -1,12 +1,13 @@
 from pathlib import Path
 
-from exactly_lib.symbol.data.string_sdv import StringSdv
 from exactly_lib.test_case_utils.matcher import property_matcher
 from exactly_lib.test_case_utils.matcher.impls import matches_regex, matches_glob_pattern, \
     property_getters, property_matcher_describers
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 
 
 def reg_ex_sdv(property_getter: PropertyGetter[FileMatcherModel, str],

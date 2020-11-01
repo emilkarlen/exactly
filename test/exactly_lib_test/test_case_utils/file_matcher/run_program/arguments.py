@@ -3,14 +3,15 @@ from typing import List, Callable
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
-from exactly_lib_test.symbol.test_resources.program import is_reference_to_program
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as args
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import integration_check
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.argument_building import PathArgumentPositionArgument
 from exactly_lib_test.test_case_utils.matcher.test_resources.run_program import test_cases
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    is_reference_to_data_type_symbol
+from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
 def suite() -> unittest.TestSuite:

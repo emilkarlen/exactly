@@ -1,7 +1,7 @@
 from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolContainer, container_of_builtin
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 
 
 class BuiltinSymbol:

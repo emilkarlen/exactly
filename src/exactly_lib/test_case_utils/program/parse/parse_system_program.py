@@ -2,15 +2,15 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
+from exactly_lib.symbol.value_type import DataValueType
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.program.command.driver_sdvs import CommandDriverSdvForSystemProgram
 from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
-from exactly_lib.type_system.value_type import DataValueType
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.str_ import str_constructor
 
 

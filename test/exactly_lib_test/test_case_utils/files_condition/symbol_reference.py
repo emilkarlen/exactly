@@ -3,13 +3,11 @@ from pathlib import PurePosixPath
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_utils.files_condition import files_conditions
 from exactly_lib.test_case_utils.files_condition import parse as sut
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources import symbol_syntax
-from exactly_lib_test.symbol.test_resources.files_condition import FilesConditionSymbolContext, \
-    is_reference_to_files_condition
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.test_case_utils.files_condition.test_resources.integration_check import CHECKER
@@ -20,6 +18,8 @@ from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import 
 from exactly_lib_test.test_case_utils.logic.test_resources.symbol_ref_syntax import symbol_ref_syntax_cases
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.test_resources.files_condition import FilesConditionSymbolContext, \
+    is_reference_to_files_condition
 
 
 def suite() -> unittest.TestSuite:

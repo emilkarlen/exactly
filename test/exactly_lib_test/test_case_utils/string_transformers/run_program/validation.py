@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.program import is_reference_to_program
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import ParseExpectation
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as program_args
 from exactly_lib_test.test_case_utils.program.test_resources import validation_cases
@@ -9,6 +8,7 @@ from exactly_lib_test.test_case_utils.string_models.test_resources import model_
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.test_resources.program import is_reference_to_program
 
 
 def suite() -> unittest.TestSuite:

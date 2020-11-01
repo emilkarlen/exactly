@@ -11,10 +11,11 @@ from exactly_lib_test.execution.test_resources.execution_recording import phase_
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+    StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

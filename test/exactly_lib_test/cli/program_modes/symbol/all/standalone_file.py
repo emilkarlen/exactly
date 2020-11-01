@@ -5,18 +5,18 @@ from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.cli.program_modes.symbol.test_resources import sym_def_instruction as sym_def
 from exactly_lib_test.cli.program_modes.symbol.test_resources.source_type_checks import check_case_and_suite
 from exactly_lib_test.cli.program_modes.test_resources.test_with_files_in_tmp_dir import Arrangement
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesParseException
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

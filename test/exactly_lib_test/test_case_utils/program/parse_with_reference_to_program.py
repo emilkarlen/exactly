@@ -4,23 +4,22 @@ from typing import List, Sequence
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import path_sdvs, list_sdvs, string_sdvs
-from exactly_lib.symbol.data.path_sdvs import constant
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.paths import simple_of_rel_option
-from exactly_lib.type_system.logic.program.program import Program, ProgramAdv
+from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
+from exactly_lib.type_val_deps.types.path.path_sdvs import constant
+from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     sds_populator
 from exactly_lib_test.tcfs.test_resources import hds_populators
@@ -43,6 +42,9 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
     string_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
     command_assertions as asrt_command
+from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.types.test_resources import program as asrt_pgm
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -267,7 +269,7 @@ class TestResolving(unittest.TestCase):
         file_name = 'the exe file'
 
         def case(relativity: RelOptionType) -> ResolvingCase:
-            exe_path = paths.of_rel_option(relativity, paths.constant_path_part(file_name))
+            exe_path = path_ddvs.of_rel_option(relativity, path_ddvs.constant_path_part(file_name))
 
             def program_assertion(tcds: TestCaseDs) -> ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(

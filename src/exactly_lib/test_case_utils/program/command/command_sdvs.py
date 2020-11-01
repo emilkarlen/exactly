@@ -1,11 +1,12 @@
-from exactly_lib.symbol.data import list_sdvs, string_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.test_case_utils.program.command import driver_sdvs as drivers
-from exactly_lib.type_system.logic.program.process_execution.command import ProgramAndArguments
+from exactly_lib.type_system.logic.program.command import ProgramAndArguments
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 
 
 def for_shell(command_line: StringSdv,

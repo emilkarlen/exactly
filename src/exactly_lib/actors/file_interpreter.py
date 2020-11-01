@@ -12,13 +12,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.symbol.logic.resolving_environment import FullResolvingEnvironment
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
@@ -33,7 +27,13 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.test_case_utils.path_check import PathCheckValidator, PathCheck
 from exactly_lib.test_case_utils.program.parse import parse_arguments
-from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -3,8 +3,7 @@ from typing import Sequence, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.symbol.err_msg import error_messages
-from exactly_lib.symbol.err_msg import restriction_failures
+from exactly_lib.symbol.err_msg import error_messages, restriction_failures
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolReference, SymbolDefinition
 from exactly_lib.util.symbol_table import SymbolTable
 

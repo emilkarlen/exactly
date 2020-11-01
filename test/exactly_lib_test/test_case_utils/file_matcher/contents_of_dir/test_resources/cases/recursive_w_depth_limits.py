@@ -2,18 +2,15 @@ import itertools
 import unittest
 from typing import Sequence, Optional, List
 
-from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangement
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources.case_generator import \
     SingleCaseGenerator, ExecutionResult, RESULT__MATCHES, RecWLimArguments, ValidationFailure, \
@@ -35,6 +32,9 @@ from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, Dir, File
 from exactly_lib_test.test_resources.test_utils import NEA, NExArr
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
 
 
 class SymbolReferencesShouldBeReported(SingleCaseGenerator):

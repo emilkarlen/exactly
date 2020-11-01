@@ -4,7 +4,7 @@ from exactly_lib.definitions import path
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as file_matcher_syntax
@@ -15,9 +15,6 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building as string_matcher_syntax
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     argument_syntax as string_transformers_syntax
-from exactly_lib_test.test_resources import argument_renderer
-from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.strings import WithToString
 
 
 def src(s: str,

@@ -4,8 +4,8 @@ from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryo, T
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import SdvValidatorThat
 from exactly_lib_test.test_resources.actions import do_return, action_of, do_nothing
 

@@ -19,11 +19,11 @@ from exactly_lib_test.section_document.element_parsers.test_resources.parsing \
     import remaining_source
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import matches_sdv_of_line_matcher
 
 
 class Expectation:

@@ -3,15 +3,12 @@ from typing import Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.ddv_validation import ConstantDdvValidator
 from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as sut
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.line_matcher import successful_matcher_with_validation, \
-    LineMatcherSymbolContext, is_reference_to_line_matcher, \
-    LineMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import models as line_matcher_models
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.arguments_building import NOT_A_LINE_MATCHER
@@ -32,6 +29,9 @@ from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.test_resources.line_matcher import successful_matcher_with_validation, \
+    LineMatcherSymbolContext, is_reference_to_line_matcher, \
+    LineMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

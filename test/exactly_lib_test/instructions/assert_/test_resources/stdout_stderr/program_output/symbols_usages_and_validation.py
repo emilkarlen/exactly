@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
@@ -13,16 +13,16 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.utils import matches_reference
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh, pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import matcher_arguments
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    is_any_data_type_reference_restrictions
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
 
 
 def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unittest.TestSuite:

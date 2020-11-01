@@ -6,9 +6,6 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContext, \
-    IntegerMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.integer.test_resources.integer_sdv import \
     is_reference_to_symbol_in_expression
 from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases import \
@@ -25,6 +22,9 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     PassOrFail
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import IntegerMatcherSymbolContext, \
+    IntegerMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

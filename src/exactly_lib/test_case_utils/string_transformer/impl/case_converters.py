@@ -5,7 +5,6 @@ from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.section_document.element_parsers import token_stream_parsing
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.section_document.element_parsers.token_stream_parsing import TokenSyntaxSetup
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.string_transformer import names
@@ -15,6 +14,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_stri
 from exactly_lib.type_system.description.structure_building import StructureBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree.renderer import DetailsRenderer

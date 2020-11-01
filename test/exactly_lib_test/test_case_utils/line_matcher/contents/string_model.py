@@ -2,9 +2,9 @@ import unittest
 from contextlib import contextmanager
 from typing import ContextManager
 
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.test_case_utils.line_matcher.impl.contents import string_model as sut
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib_test.test_case_utils.string_models.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

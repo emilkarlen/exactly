@@ -1,13 +1,13 @@
 from typing import Sequence, Iterator
 
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.string_transformer import names, sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.textformat.structure.core import ParagraphItem

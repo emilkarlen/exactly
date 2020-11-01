@@ -1,14 +1,14 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
-    PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FilePropertiesCheck
 from exactly_lib.test_case_utils.path_validator import PathSdvValidatorBase, PathDdvValidatorBase
-from exactly_lib.type_system.data.path_ddv import DescribedPath, PathDdv
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+    PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath, PathDdv
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 
 
 class PathCheck:

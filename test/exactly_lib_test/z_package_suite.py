@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 from exactly_lib_test.test_resources_test import z_package_suite as test_resources_test
 from exactly_lib_test.test_suite import z_package_suite as test_suite
 from exactly_lib_test.type_system import z_package_suite as type_system
+from exactly_lib_test.type_val_deps import z_package_suite as type_val_deps
 from exactly_lib_test.util import z_package_suite as util
 
 
@@ -29,6 +30,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(common.suite())
     ret_val.addTest(test_case_file_structure.suite())
     ret_val.addTest(type_system.suite())
+    ret_val.addTest(type_val_deps.suite())
     ret_val.addTest(symbol.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())

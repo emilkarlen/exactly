@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.result import ExecutionFailureStatus
-from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import StringRestriction
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -15,13 +15,13 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
     PRE_SDS_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure, \
     ExpectedFailureForPhaseFailure
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
-from exactly_lib_test.symbol.data.test_resources.path import arbitrary_path_symbol_context
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
+from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
+from exactly_lib_test.type_val_deps.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import arbitrary_path_symbol_context
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:

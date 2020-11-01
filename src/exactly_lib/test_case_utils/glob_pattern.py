@@ -1,7 +1,7 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.parse import parse_string
-from ..symbol.data.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 
 
 def parse(token_parser: TokenParser) -> StringSdv:

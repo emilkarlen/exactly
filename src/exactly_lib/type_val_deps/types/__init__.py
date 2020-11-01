@@ -1,0 +1,7 @@
+"""
+Declares types and their dependencies.
+
+Note: The "types" here include the types that can be symbols,
+but also includes other entities that have dependencies like those types,
+but are cannot be symbols.
+"""

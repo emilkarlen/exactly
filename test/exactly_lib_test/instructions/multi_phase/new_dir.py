@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.instructions.multi_phase import new_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase.test_resources import \
@@ -29,7 +29,7 @@ from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import SdsAc
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_test import Arrangement, Expectation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
+from exactly_lib_test.type_val_deps.types.path.test_resources.path_part_assertions import equals_path_part_string
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 

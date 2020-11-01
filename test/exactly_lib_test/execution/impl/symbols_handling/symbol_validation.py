@@ -2,22 +2,23 @@ import pathlib
 import unittest
 from typing import Optional
 
+from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
 from exactly_lib.execution.impl import symbol_validation as sut
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
 from exactly_lib.symbol import sdv_structure as rs
-from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.value_restriction import ValueRestriction, ErrorMessageWithFixTip
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueRestriction
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.types.path import path_part_sdvs
+from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolContext
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

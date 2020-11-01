@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Generic, Sequence, Callable
 
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions import logic
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
@@ -10,9 +9,12 @@ from exactly_lib.test_case_utils.description_tree.tree_structured import WithCac
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
 from exactly_lib.type_system.description.tree_structured import WithTreeStructureDescription
-from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MatcherDdv, MODEL, MatcherAdv, T, \
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace, MODEL, T, \
     MatcherStdTypeVisitor
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.util.description_tree import renderers
 
 

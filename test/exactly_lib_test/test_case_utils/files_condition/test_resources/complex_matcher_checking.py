@@ -3,8 +3,9 @@ from pathlib import PurePosixPath
 from typing import List, Sequence, Tuple, Mapping, Optional
 
 from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher, FileMatcherSdv
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.file_matchers import FileMatcherTestImplBase
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive

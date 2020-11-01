@@ -13,15 +13,15 @@ from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving
 from exactly_lib.section_document.element_parsers import misc_utils
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_utils.program import top_lvl_error_msg_rendering
 from exactly_lib.test_case_utils.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.executors import read_stderr_on_error
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import ResultWithFiles

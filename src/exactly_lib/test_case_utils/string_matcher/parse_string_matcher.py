@@ -6,6 +6,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.documentation import texts
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
@@ -18,8 +19,7 @@ from exactly_lib.test_case_utils.string_matcher.impl import on_transformed
 from exactly_lib.test_case_utils.string_matcher.parse import emptieness, equality, line_matches, matches, num_lines, \
     run_program
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.name_and_value import NameAndValue

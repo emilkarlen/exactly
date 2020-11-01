@@ -6,7 +6,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.tcfs.test_resources import sds_populator
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import executor_for_dir_contents
 from exactly_lib_test.test_case_utils.file_matcher.contents_of_dir.test_resources import invalid_model, \
@@ -32,6 +31,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Di
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher
 from exactly_lib_test.util.simple_textstruct.test_resources import renderer_assertions as asrt_renderer
 
 

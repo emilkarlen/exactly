@@ -14,7 +14,7 @@ from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.type_system import TYPE_INFO_DICT
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs

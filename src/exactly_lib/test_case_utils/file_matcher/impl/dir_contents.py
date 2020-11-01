@@ -1,6 +1,5 @@
 from typing import Optional, Sequence
 
-from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import file_or_dir_contents
 from exactly_lib.definitions.test_case import file_check_properties
@@ -16,9 +15,12 @@ from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import Mode
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.test_case_utils.integer.integer_ddv import IntegerDdv
 from exactly_lib.test_case_utils.integer.integer_sdv import IntegerSdv
-from exactly_lib.type_system.logic.file_matcher import FileMatcherModel, FileMatcherSdv
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
-from exactly_lib.type_system.logic.impls import advs
+from exactly_lib.type_system.logic.file_matcher import FileMatcherModel
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
+from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import details

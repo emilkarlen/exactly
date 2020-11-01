@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 

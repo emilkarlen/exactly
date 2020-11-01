@@ -6,8 +6,6 @@ from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.integer_matcher import IntegerMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import expression
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import integration_check
@@ -26,6 +24,9 @@ from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling 
     PassOrFail
 from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, File
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.integer_matcher import \
+    IntegerMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

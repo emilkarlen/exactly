@@ -4,7 +4,7 @@ from exactly_lib.definitions import misc_texts, matcher_model
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.matcher.impls.run_program import documentation
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 

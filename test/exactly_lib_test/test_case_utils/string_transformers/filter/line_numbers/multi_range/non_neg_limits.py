@@ -10,8 +10,7 @@ Test cases
 import unittest
 from typing import List
 
-from exactly_lib_test.symbol.test_resources.string import StringIntConstantSymbolContext, StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.test_case_utils.string_models.test_resources import model_constructor
 from exactly_lib_test.test_case_utils.string_transformers.filter.line_numbers.multi_range import test_resources as tr
@@ -22,6 +21,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_building import to_, from_, from_to, \
     single
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringIntConstantSymbolContext, \
+    StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:

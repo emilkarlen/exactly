@@ -1,36 +1,37 @@
 import unittest
 from typing import List, Optional
 
+import exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_or_path
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.type_system.data.string_or_path_ddvs import SourceType
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.string_or_path import string_or_path_sdv
+from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
-from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as asrt_hd
-from exactly_lib_test.symbol.data.test_resources import string_assertions as asrt_string
-from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_path_sdv
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_data_type_symbol_references
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.test_case_utils.parse.test_resources import relativity_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     OptionStringConfigurationForRelativityOption
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources import concrete_path_parts
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.types.path.test_resources import concrete_path_parts
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.path.test_resources.sdv_assertions import matches_path_sdv
+from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as asrt_hd
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes_str
 
 
@@ -289,8 +290,8 @@ class TestFileRef(unittest.TestCase):
                 'following line',
             ])
         expectation = ExpectedFileRef(
-            path_ddv=paths.of_rel_option(sut.CONFIGURATION.options.default_option,
-                                         concrete_path_parts.fixed_path_parts(file_name)),
+            path_ddv=path_ddvs.of_rel_option(sut.CONFIGURATION.options.default_option,
+                                             concrete_path_parts.fixed_path_parts(file_name)),
             common=CommonExpectation(
                 symbol_references=[],
 
@@ -312,8 +313,8 @@ class TestFileRef(unittest.TestCase):
              'following line',
              ])
         expectation = ExpectedFileRef(
-            path_ddv=paths.of_rel_option(sut.CONFIGURATION.options.default_option,
-                                         concrete_path_parts.fixed_path_parts(file_name)),
+            path_ddv=path_ddvs.of_rel_option(sut.CONFIGURATION.options.default_option,
+                                             concrete_path_parts.fixed_path_parts(file_name)),
             common=CommonExpectation(
                 symbol_references=[],
 
@@ -376,9 +377,9 @@ class TestFileRef(unittest.TestCase):
             ])
         # EXPECTATION #
         expectation = ExpectedFileRef(
-            path_ddv=paths.of_rel_option(symbol_relativity,
-                                         concrete_path_parts.fixed_path_parts([symbol_path_suffix,
-                                                                               file_name])),
+            path_ddv=path_ddvs.of_rel_option(symbol_relativity,
+                                             concrete_path_parts.fixed_path_parts([symbol_path_suffix,
+                                                                                   file_name])),
             common=CommonExpectation(
                 symbol_references=[symbol.reference__path],
 
@@ -481,9 +482,10 @@ def _expect_string(put: unittest.TestCase,
                  'source type')
     put.assertFalse(actual.is_path,
                     'is_path')
-    assertion_on_here_doc = asrt_string.matches_primitive_string(asrt.equals(expectation.resolved_str),
-                                                                 expectation.common.symbol_references,
-                                                                 expectation.common.symbol_table)
+    assertion_on_here_doc = exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions.matches_primitive_string(
+        asrt.equals(expectation.resolved_str),
+        expectation.common.symbol_references,
+        expectation.common.symbol_table)
     assertion_on_here_doc.apply_with_message(put, actual.string_sdv,
                                              'string_sdv')
     _expect_common(put, source, actual,
@@ -492,7 +494,7 @@ def _expect_string(put: unittest.TestCase,
 
 def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
-                   actual_result: string_or_path.StringOrPathSdv,
+                   actual_result: string_or_path_sdv.StringOrPathSdv,
                    expectation: CommonExpectation):
     symbol_references_assertion = equals_data_type_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,

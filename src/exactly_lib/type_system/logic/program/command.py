@@ -1,55 +1,57 @@
+"""
+OS independent representation of something that is executable in process.
+
+Supports the different variants of executable things used by Exactly.
+"""
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic
+from typing import List, Sequence
 
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.dir_dependent_value import DirDependentValue
-from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.data.list_ddv import ListDdv
 from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.logic.program.argument import ArgumentsDdv
-from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
-
-PRIMITIVE = TypeVar('PRIMITIVE')
 
 
-class NonAppEnvDepComponentDdv(Generic[PRIMITIVE], DirDependentValue[PRIMITIVE], ABC):
-    @property
-    def validators(self) -> Sequence[DdvValidator]:
-        return ()
+class ProgramAndArguments:
+    def __init__(self,
+                 program: str,
+                 arguments: List[str]):
+        self.program = program
+        self.arguments = arguments
 
 
-class CommandDriverDdv(NonAppEnvDepComponentDdv[CommandDriver], ABC):
+class CommandDriver(ABC):
     @abstractmethod
-    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
         """:returns A new object on each invokation."""
         pass
 
 
-class CommandDdv(NonAppEnvDepComponentDdv[Command]):
+class Command:
+    """
+    Something that is executable in process.
+
+    Is translated to an Executable, for execution.
+    """
+
     def __init__(self,
-                 command_driver: CommandDriverDdv,
-                 arguments: ArgumentsDdv,
-                 ):
-        self._command_driver = command_driver
+                 driver: CommandDriver,
+                 arguments: List[str]):
+        super().__init__()
+        self._driver = driver
         self._arguments = arguments
-        self._validators = (
-                tuple(command_driver.validators)
-                +
-                tuple(arguments.validators)
+
+    def new_with_appended_arguments(self, tail_arguments: Sequence[str]) -> 'Command':
+        return Command(
+            self._driver,
+            self._arguments + list(tail_arguments)
         )
 
     def structure(self) -> StructureBuilder:
         """:returns A new object on each invokation."""
-        return self._command_driver.structure_for(self._arguments.arguments_list)
+        return self._driver.structure_for(self._arguments)
 
     @property
-    def validators(self) -> Sequence[DdvValidator]:
-        return self._validators
+    def driver(self) -> CommandDriver:
+        return self._driver
 
     @property
-    def command_driver(self) -> CommandDriverDdv:
-        return self._command_driver
-
-    def value_of_any_dependency(self, tcds: TestCaseDs) -> Command:
-        return Command(self._command_driver.value_of_any_dependency(tcds),
-                       self._arguments.value_of_any_dependency(tcds))
+    def arguments(self) -> List[str]:
+        return self._arguments

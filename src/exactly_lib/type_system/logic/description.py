@@ -7,10 +7,20 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 T = TypeVar('T')
 
 
+class DescriptionVisitor(Generic[T]):
+    @abstractmethod
+    def visit_node(self, description: 'NodeDescription') -> T:
+        pass
+
+    @abstractmethod
+    def visit_details(self, description: 'DetailsDescription') -> T:
+        pass
+
+
 class LogicValueDescription(ABC):
     """Gives a description of a value, useful for error message and structure reporting."""
 
-    def accept(self, visitor: 'DescriptionVisitor[T]') -> T:
+    def accept(self, visitor: DescriptionVisitor[T]) -> T:
         pass
 
 
@@ -21,7 +31,7 @@ class NodeDescription(LogicValueDescription, ABC):
     def structure(self) -> StructureRenderer:
         pass
 
-    def accept(self, visitor: 'DescriptionVisitor[T]') -> T:
+    def accept(self, visitor: DescriptionVisitor[T]) -> T:
         return visitor.visit_node(self)
 
 
@@ -32,15 +42,5 @@ class DetailsDescription(LogicValueDescription, ABC):
     def details(self) -> DetailsRenderer:
         pass
 
-    def accept(self, visitor: 'DescriptionVisitor[T]') -> T:
+    def accept(self, visitor: DescriptionVisitor[T]) -> T:
         return visitor.visit_details(self)
-
-
-class DescriptionVisitor(Generic[T]):
-    @abstractmethod
-    def visit_node(self, description: NodeDescription) -> T:
-        pass
-
-    @abstractmethod
-    def visit_details(self, description: DetailsDescription) -> T:
-        pass

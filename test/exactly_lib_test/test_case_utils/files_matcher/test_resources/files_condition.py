@@ -6,8 +6,7 @@ from exactly_lib.test_case_utils.files_matcher.impl.matches.common import \
     MATCHES_NON_FULL__STRUCTURE_NAME, MATCHES_FULL__STRUCTURE_NAME
 from exactly_lib.type_system.logic.files_matcher import FilesMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import file_matchers
 from exactly_lib_test.test_case_utils.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.test_case_utils.files_matcher.test_resources import arguments_building as args
@@ -20,6 +19,7 @@ from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 
 
 class MatcherCase:

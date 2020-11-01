@@ -2,10 +2,6 @@ import pathlib
 from abc import ABC
 from typing import List, Sequence
 
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.data.path_sdv import PathSdv
-from exactly_lib.symbol.data.path_sdv_impls.constant import PathConstantSdv
-from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.tcfs import path_relativity
 from exactly_lib.tcfs import relative_path_options
@@ -15,17 +11,15 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, PathRelativityVarian
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP, REL_NON_HDS_OPTIONS_MAP
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.concrete_path_parts import PathPartDdvAsFixedPath
-from exactly_lib.type_system.data.path_part import PathPartDdv
-from exactly_lib.type_system.data.paths import empty_path_part
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path.path_ddvs import empty_path_part
+from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
+from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsFixedPath
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
+from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_path_relativity_restriction
-from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    matches_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources import non_hds_populator
 from exactly_lib_test.tcfs.test_resources import path_arguments as path_args, sds_populator
@@ -41,6 +35,11 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    equals_path_relativity_restriction
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    matches_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 
 
 class SymbolsConfiguration:
@@ -242,14 +241,14 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
 
     def path_sdv_for_root_dir(self) -> PathSdv:
         return path_sdvs.constant(
-            paths.of_rel_option(self.relativity_option,
-                                empty_path_part())
+            path_ddvs.of_rel_option(self.relativity_option,
+                                    empty_path_part())
         )
 
     def path_sdv_for(self, file_name: str = '') -> PathSdv:
         return path_sdvs.constant(
-            paths.of_rel_option(self.relativity_option,
-                                _empty_or_fixed_path_part(file_name))
+            path_ddvs.of_rel_option(self.relativity_option,
+                                    _empty_or_fixed_path_part(file_name))
         )
 
     @property
@@ -391,12 +390,12 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
         return sds_populator.contents_in(self.relativity_sds, contents)
 
     def path_sdv_for_root_dir(self) -> PathSdv:
-        return PathConstantSdv(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                   empty_path_part()))
+        return PathConstantSdv(path_ddvs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                       empty_path_part()))
 
     def path_sdv_for(self, file_name: str = '') -> PathSdv:
-        return PathConstantSdv(paths.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                   _empty_or_fixed_path_part(file_name)))
+        return PathConstantSdv(path_ddvs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                                       _empty_or_fixed_path_part(file_name)))
 
 
 class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
@@ -408,8 +407,8 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         self.relativity = relativity
         self.symbol_name = symbol_name
         self.symbol_context = PathDdvSymbolContext(symbol_name,
-                                                   paths.of_rel_option(relativity,
-                                                                       paths.empty_path_part()),
+                                                   path_ddvs.of_rel_option(relativity,
+                                                                           path_ddvs.empty_path_part()),
                                                    )
 
     def reference_expectation_assertions(self) -> List[ValueAssertion[SymbolReference]]:

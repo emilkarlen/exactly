@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.integer.test_resources.validation_cases import \
     failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, \
@@ -14,6 +13,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import parse_check
 from exactly_lib_test.test_case_utils.test_resources import validation
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -4,6 +4,7 @@ from exactly_lib.definitions import matcher_model
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.comparators import ComparisonOperator
 from exactly_lib.test_case_utils.expression import grammar
@@ -14,8 +15,7 @@ from exactly_lib.test_case_utils.matcher import standard_expression_grammar
 from exactly_lib.test_case_utils.matcher.impls import comparison_matcher
 from exactly_lib.test_case_utils.matcher.impls.comparison_matcher import ComparisonMatcherSdv
 from exactly_lib.test_case_utils.matcher.impls.operand_object import ObjectSdvOfOperandSdv
-from exactly_lib.type_system.logic.integer_matcher import IntegerMatcherSdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.types.integer_matcher import IntegerMatcherSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.name_and_value import NameAndValue

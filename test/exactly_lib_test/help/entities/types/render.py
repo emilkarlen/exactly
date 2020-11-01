@@ -6,7 +6,7 @@ from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types import render as sut
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
-from exactly_lib.type_system.value_type import TypeCategory, ValueType
+from exactly_lib.symbol.value_type import TypeCategory, ValueType
 from exactly_lib.util.str_.name import a_name_with_plural_s
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs

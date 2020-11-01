@@ -11,7 +11,7 @@ from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_utils.os_services import os_services_access
-from exactly_lib.type_system.logic.program.process_execution.command import Command
+from exactly_lib.type_system.logic.program.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.actors.test_resources import integration_check, relativity_configurations
 from exactly_lib_test.actors.test_resources.integration_check import PostSdsExpectation

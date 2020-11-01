@@ -8,9 +8,6 @@ from exactly_lib.tcfs.dir_dependent_value import DirDependencies
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.util import symbol_table
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    is_any_data_type_reference_restrictions
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import is_reference_to_data_type_symbol
 from exactly_lib_test.tcfs.test_resources.dir_dep_value_assertions import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.tcfs.test_resources.paths import fake_tcds
@@ -19,6 +16,10 @@ from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_value_valid
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    is_any_data_type_reference_restrictions
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    is_reference_to_data_type_symbol
 
 
 def matches_regex_sdv(

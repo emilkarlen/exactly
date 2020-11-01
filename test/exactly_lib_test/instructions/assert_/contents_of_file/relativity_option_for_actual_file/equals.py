@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_path
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
@@ -15,12 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
     expectation_that_file_for_actual_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_path_relativity_restriction
-from exactly_lib_test.symbol.data.test_resources.path import PathDdvSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    matches_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
@@ -29,6 +24,11 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementPo
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
+    equals_path_relativity_restriction
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    matches_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:

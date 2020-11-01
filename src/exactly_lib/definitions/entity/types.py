@@ -4,7 +4,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossRef
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.str_.name import NameWithGender, NameWithGenderWithFormatting, \
     a_name_with_plural_s, an_name_with_plural_s
 

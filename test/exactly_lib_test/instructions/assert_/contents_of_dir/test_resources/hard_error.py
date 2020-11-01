@@ -7,7 +7,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources.text_doc_assertions import is_string_for_test_that_equals
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ExecutionExpectation, Expectation
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.files_matcher import is_reference_to_files_matcher__usage
 from exactly_lib_test.tcfs.test_resources.ds_construction import TcdsArrangementPostAct
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument, RelOptPathArgument
 from exactly_lib_test.tcfs.test_resources.tcds_populators import TcdsPopulatorForRelOptionType
@@ -21,6 +20,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Di
 from exactly_lib_test.test_resources.test_utils import NExArr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.test_resources.files_matcher import is_reference_to_files_matcher__usage
 
 
 class _HelperBase(ABC):

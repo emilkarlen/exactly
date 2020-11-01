@@ -2,12 +2,12 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, path_relativities
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.test_case_utils.program import syntax_elements as program_syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_system_program
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 
 SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = SHELL_KEYWORD
 _MISSING_INTERPRETER_MSG = 'Missing ' + syntax_elements.ACT_INTERPRETER_SYNTAX_ELEMENT.singular_name

@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.test_case_utils.files_matcher import parse_files_matcher as sut
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import FULL_AND_NON_FULL_CASES
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
 
 
 def suite() -> unittest.TestSuite:

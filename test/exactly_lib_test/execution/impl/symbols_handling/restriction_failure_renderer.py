@@ -1,14 +1,15 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
-    FailureOfIndirectReference
-from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
+from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
 from exactly_lib.symbol.err_msg import restriction_failures as sut
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import FailureOfDirectReference, \
+    FailureOfIndirectReference
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+    StringSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -12,7 +12,6 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     suite_for_cases
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.tcfs.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -27,6 +26,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_1st_value_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 class Configuration(ConfigurationBase):

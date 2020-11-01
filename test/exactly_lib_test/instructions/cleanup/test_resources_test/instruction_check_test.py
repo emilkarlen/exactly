@@ -6,16 +6,13 @@ import unittest
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     cleanup_phase_instruction_that
 from exactly_lib_test.instructions.cleanup.test_resources import instruction_check as sut
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
@@ -30,6 +27,10 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     sds_2_tcds_assertion
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    matches_data_type_symbol_reference
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -3,17 +3,14 @@ import sys
 import unittest
 
 from exactly_lib.actors.source_interpreter import actor as sut
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.command import command_sdvs, arguments_sdvs
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib_test.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.actors.test_resources import relativity_configurations, integration_check
 from exactly_lib_test.actors.test_resources.integration_check import Arrangement, Expectation, \
     check_execution, PostSdsExpectation
 from exactly_lib_test.actors.test_resources.validation_pre_or_post_sds import VALIDATION_CASES
-from exactly_lib_test.symbol.data.test_resources.path import ConstantSuffixPathDdvSymbolContext, PathSymbolContext
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_validation_fails__svh
@@ -21,6 +18,9 @@ from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext, \
+    PathSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:
@@ -111,7 +111,7 @@ class TestStringSymbolReferenceInInterpreter(unittest.TestCase):
         python_interpreter_symbol = PathSymbolContext.of_sdv(
             'PYTHON_INTERPRETER_SYMBOL',
             path_sdvs.constant(
-                paths.absolute_path(pathlib.Path(sys.executable))
+                path_ddvs.absolute_path(pathlib.Path(sys.executable))
             )
         )
 
@@ -153,8 +153,8 @@ class TestValidationShouldFailWhenInterpreterProgramFileDoesNotExist(unittest.Te
 
         interpreter_with_non_existing_program_file = command_sdvs.for_executable_file(
             path_sdvs.constant(
-                paths.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
-                              paths.constant_path_part('non-existing'))),
+                path_ddvs.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
+                                  path_ddvs.constant_path_part('non-existing'))),
         )
 
         arrangement = Arrangement(
@@ -183,8 +183,8 @@ class TestValidationShouldFailWhenInterpreterProgramFileIsADirectory(unittest.Te
 
         interpreter_with_program_that_is_a_dir = command_sdvs.for_executable_file(
             path_sdvs.constant(
-                paths.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
-                              paths.constant_path_part(a_dir.name))),
+                path_ddvs.rel_hds(relativity_configurations.INTERPRETER_FILE.relativity_option_rel_hds,
+                                  path_ddvs.constant_path_part(a_dir.name))),
         )
 
         arrangement = Arrangement(
@@ -219,7 +219,7 @@ class TestValidationOfInterpreterArguments(unittest.TestCase):
                 )
                 actor = sut.actor(
                     command_sdvs.for_executable_file(
-                        path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+                        path_sdvs.constant(path_ddvs.absolute_file_name(sys.executable)),
                         interpreter_arguments
                     )
                 )

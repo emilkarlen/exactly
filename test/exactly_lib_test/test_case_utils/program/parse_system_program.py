@@ -5,22 +5,20 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RelNonHdsOptionType, RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
-from exactly_lib.type_system.data import paths
 from exactly_lib.type_system.logic.program.program import Program
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.sdv_type_assertions import matches_sdv_of_program
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -35,6 +33,8 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
     string_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
     command_assertions as asrt_command
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import matches_sdv_of_program
 
 
 def suite() -> unittest.TestSuite:
@@ -114,8 +114,8 @@ class TestSuccessfulParse(unittest.TestCase):
 
         file_name = 'a-file.txt'
         default_relativity_of_existing_file = RelOptionType.REL_HDS_CASE
-        path = paths.of_rel_option(default_relativity_of_existing_file,
-                                   paths.constant_path_part(file_name))
+        path = path_ddvs.of_rel_option(default_relativity_of_existing_file,
+                                       path_ddvs.constant_path_part(file_name))
 
         argument_cases = [
             ArgumentsCase('no arguments', source_elements=[], expected_resolved_values=lambda tcds: [],

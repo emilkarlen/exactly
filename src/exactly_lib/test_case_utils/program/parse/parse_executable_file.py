@@ -1,7 +1,5 @@
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.command import command_sdvs
@@ -9,6 +7,8 @@ from exactly_lib.test_case_utils.program.parse import parse_arguments
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_path
 from exactly_lib.test_case_utils.program.sdvs import accumulator
 from exactly_lib.test_case_utils.program.sdvs.command_program_sdv import ProgramSdvForCommand
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 
 
 def parser_of_program(

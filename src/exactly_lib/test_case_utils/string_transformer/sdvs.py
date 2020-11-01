@@ -1,12 +1,13 @@
 from typing import Sequence, Callable
 
-from exactly_lib.symbol import lookups
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
-from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_system.logic import string_transformer_ddvs
-from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerDdv
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_deps.sym_ref import symbol_lookup
+from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction
+from exactly_lib.type_val_deps.types.string_transformer import ddvs
+from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -16,7 +17,7 @@ class StringTransformerSdvConstant(StringTransformerSdv):
     """
 
     def __init__(self, value: StringTransformer):
-        self._value = string_transformer_ddvs.StringTransformerConstantDdv(value)
+        self._value = ddvs.StringTransformerConstantDdv(value)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -79,7 +80,7 @@ class StringTransformerSdvReference(StringTransformerSdv):
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerDdv:
-        sdv = lookups.lookup_string_transformer(symbols, self._name_of_referenced_sdv)
+        sdv = symbol_lookup.lookup_string_transformer(symbols, self._name_of_referenced_sdv)
         return sdv.resolve(symbols)
 
     def __str__(self):

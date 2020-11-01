@@ -8,15 +8,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer__usage
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.string_matcher import is_reference_to_string_matcher__usage, \
-    StringMatcherSymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.symbol.test_resources.symbol_syntax import \
     NOT_A_VALID_SYMBOL_NAME_NOR_PRIMITIVE_GRAMMAR_ELEMENT_NAME
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
 from exactly_lib_test.tcfs.test_resources.sub_dir_of_sds_act import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building import args
@@ -25,6 +19,12 @@ from exactly_lib_test.test_case_utils.string_matcher.test_resources.transformati
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     every_line_empty
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer__usage
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import is_reference_to_string_matcher__usage, \
+    StringMatcherSymbolContext
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

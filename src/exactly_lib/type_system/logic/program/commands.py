@@ -1,69 +1,200 @@
-from typing import Sequence, List
+import pathlib
+from abc import ABC
+from typing import List, Generic, TypeVar
 
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
-from exactly_lib.type_system.data.list_ddv import ListDdv
-from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.type_system.data.string_ddv import StringDdv
+from exactly_lib.definitions.primitives import program
+from exactly_lib.test_case_utils.description_tree import custom_details
 from exactly_lib.type_system.description.structure_building import StructureBuilder
-from exactly_lib.type_system.logic.program.command import CommandDriverDdv
-from exactly_lib.type_system.logic.program.process_execution import commands
-from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
-from exactly_lib.util.description_tree import details
-from exactly_lib.util.render import strings
+from exactly_lib.type_system.logic.program.command import Command, ProgramAndArguments, CommandDriver
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib.util.description_tree import details, tree
+from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
 from exactly_lib.util.str_.str_constructor import ToStringObject
 
 
-class CommandDriverDdvForShell(CommandDriverDdv):
-    def __init__(self, command_line: StringDdv):
+class CommandDriverForShell(CommandDriver):
+    NAME = program.SHELL_COMMAND_TOKEN
+
+    def __init__(self, command_line: str):
         self._command_line = command_line
 
-    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
-        return commands.CommandDriverForShell.new_structure_builder_for(
-            strings.AsToStringObject(self._command_line.describer()),
-            _arguments_as_to_string_objects(arguments)
+    @staticmethod
+    def new_structure_builder_for(command_line: ToStringObject,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        ret_val = StructureBuilder(CommandDriverForShell.NAME).append_details(details.String(command_line))
+        if arguments:
+            ret_val.append_child(_ArgumentListRenderer(arguments))
+
+        return ret_val
+
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(self._command_line, arguments)
+
+    @property
+    def shell_command_line(self) -> str:
+        return self._command_line
+
+    def shell_command_line_with_args(self, arguments: List[str]) -> str:
+        return ' '.join([self._command_line] + arguments)
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._command_line)
+
+
+class CommandDriverWithArgumentList(CommandDriver, ABC):
+    pass
+
+
+class CommandDriverForSystemProgram(CommandDriverWithArgumentList):
+    _NAME = program.SYSTEM_PROGRAM_TOKEN
+
+    def __init__(self, program: str):
+        self._program = program
+
+    @staticmethod
+    def new_structure_builder_for(program: ToStringObject,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        return _structure_builder_w_argument_list(
+            CommandDriverForSystemProgram._NAME,
+            details.String(program),
+            arguments,
         )
 
-    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
-        return commands.CommandDriverForShell(self._command_line.value_of_any_dependency(tcds))
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(self._program, arguments)
+
+    @property
+    def program(self) -> str:
+        return self._program
+
+    def as_program_and_args(self, arguments: List[str]) -> ProgramAndArguments:
+        return ProgramAndArguments(self._program, arguments)
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._program)
 
 
-class CommandDriverDdvForExecutableFile(CommandDriverDdv):
-    def __init__(self, exe_file: PathDdv):
-        self._exe_file = exe_file
-        self._validators = (ExistingExecutableFileValidator(exe_file),)
+class CommandDriverForExecutableFile(CommandDriverWithArgumentList):
+    NAME = 'executable file'
 
-    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
-        return commands.CommandDriverForExecutableFile.new_structure_builder_for(
-            details.String(strings.AsToStringObject(self._exe_file.describer().value)),
-            _arguments_as_to_string_objects(arguments),
+    def __init__(self, executable_file: DescribedPath):
+        self._executable_file = executable_file
+
+    @staticmethod
+    def new_structure_builder_for(executable_file: DetailsRenderer,
+                                  arguments: List[ToStringObject]) -> StructureBuilder:
+        return _structure_builder_w_argument_list(
+            CommandDriverForExecutableFile.NAME,
+            executable_file,
+            arguments,
+        )
+
+    def structure_for(self, arguments: List[str]) -> StructureBuilder:
+        return self.new_structure_builder_for(
+            custom_details.path_primitive_details_renderer(self._executable_file.describer),
+            arguments,
         )
 
     @property
-    def validators(self) -> Sequence[DdvValidator]:
-        return self._validators
+    def executable_file(self) -> pathlib.Path:
+        return self._executable_file.primitive
 
-    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
-        return commands.CommandDriverForExecutableFile(self._exe_file.value_of_any_dependency__d(tcds))
+    def as_program_and_args(self, arguments: List[str]) -> ProgramAndArguments:
+        return ProgramAndArguments(str(self._executable_file.primitive), arguments)
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._executable_file)
 
 
-class CommandDriverDdvForSystemProgram(CommandDriverDdv):
-    def __init__(self, program: StringDdv):
-        self._program = program
+def system_program_command(program: str,
+                           arguments: List[str] = None) -> Command:
+    return Command(CommandDriverForSystemProgram(program),
+                   [] if arguments is None else arguments)
 
-    def structure_for(self, arguments: ListDdv) -> StructureBuilder:
-        return commands.CommandDriverForSystemProgram.new_structure_builder_for(
-            strings.AsToStringObject(self._program.describer()),
-            _arguments_as_to_string_objects(arguments),
+
+def executable_file_command(program_file: DescribedPath,
+                            arguments: List[str] = None) -> Command:
+    return Command(CommandDriverForExecutableFile(program_file),
+                   [] if arguments is None else arguments)
+
+
+def shell_command(command: str) -> Command:
+    return Command(CommandDriverForShell(command), [])
+
+
+class CommandDriverVisitor:
+    """
+    Visitor of :class:`CommandDriver`
+    """
+
+    def visit(self, value: CommandDriver):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value, CommandDriverForExecutableFile):
+            return self.visit_executable_file(value)
+        if isinstance(value, CommandDriverForSystemProgram):
+            return self.visit_system_program(value)
+        if isinstance(value, CommandDriverForShell):
+            return self.visit_shell(value)
+        raise TypeError('Unknown {}: {}'.format(CommandDriver, str(value)))
+
+    def visit_shell(self, command: CommandDriverForShell):
+        raise NotImplementedError()
+
+    def visit_executable_file(self, command: CommandDriverForExecutableFile):
+        raise NotImplementedError()
+
+    def visit_system_program(self, command: CommandDriverForSystemProgram):
+        raise NotImplementedError()
+
+
+T = TypeVar('T')
+
+
+class CommandDriverArgumentTypePseudoVisitor(Generic[T], ABC):
+    def visit(self, driver: CommandDriver) -> T:
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(driver, CommandDriverWithArgumentList):
+            return self.visit_with_argument_list(driver)
+        if isinstance(driver, CommandDriverForShell):
+            return self.visit_shell(driver)
+        raise TypeError('Unknown {}: {}'.format(CommandDriver, str(driver)))
+
+    def visit_shell(self, driver: CommandDriverForShell) -> T:
+        raise NotImplementedError()
+
+    def visit_with_argument_list(self, driver: CommandDriverWithArgumentList) -> T:
+        raise NotImplementedError()
+
+
+def _structure_builder_w_argument_list(name: str,
+                                       program: DetailsRenderer,
+                                       arguments: List[ToStringObject]) -> StructureBuilder:
+    ret_val = StructureBuilder(name)
+    ret_val.append_details(program)
+    if len(arguments) != 0:
+        ret_val.append_child(_ArgumentListRenderer(arguments))
+
+    return ret_val
+
+
+class _ArgumentListRenderer(NodeRenderer[None]):
+    NAME = 'arguments'
+
+    def __init__(self, arguments: List[ToStringObject]):
+        self._arguments = arguments
+
+    def render(self) -> tree.Node[None]:
+        return tree.Node(
+            self.NAME,
+            None,
+            [tree.StringDetail(argument)
+             for argument in self._arguments],
+            (),
         )
-
-    def value_of_any_dependency(self, tcds: TestCaseDs) -> CommandDriver:
-        return commands.CommandDriverForSystemProgram(self._program.value_of_any_dependency(tcds))
-
-
-def _arguments_as_to_string_objects(arguments: ListDdv) -> List[ToStringObject]:
-    return [
-        strings.AsToStringObject(argument.describer())
-        for argument in arguments.string_elements
-    ]

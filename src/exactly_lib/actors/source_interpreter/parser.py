@@ -1,12 +1,12 @@
 from typing import Sequence, List
 
 from exactly_lib.actors.util.actor_from_parts import parts
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case_utils.parse import parse_string
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 
 
 class InterpreterAndSourceInfo(SymbolUser):

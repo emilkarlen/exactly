@@ -2,18 +2,15 @@ import sys
 import unittest
 from typing import Sequence, List, Callable
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import names
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.logic.program.process_execution.command import CommandDriver
+from exactly_lib.type_system.logic.program.command import CommandDriver
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerPrimitiveSymbolContext
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, ParseExpectation, \
     Expectation, Arrangement, AssertionResolvingEnvironment, prim_asrt__constant, arrangement_w_tcds
@@ -37,6 +34,9 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
     string_transformer_assertions as asrt_str_trans, string_transformers
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val, \
     command_assertions as asrt_command
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerPrimitiveSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes
 
 
@@ -252,9 +252,9 @@ class TestWithoutExecution(unittest.TestCase):
 def _single_line_command_cases__w_argument_list() -> List[Case]:
     executable_file = fs.executable_file('executable-file', '')
     exe_file_relativity = rel_opt.conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
-    executable_file_ddv = paths.of_rel_option(exe_file_relativity.relativity,
-                                              paths.constant_path_part(executable_file.name)
-                                              )
+    executable_file_ddv = path_ddvs.of_rel_option(exe_file_relativity.relativity,
+                                                  path_ddvs.constant_path_part(executable_file.name)
+                                                  )
 
     system_program = 'the-system-program'
     program_sdv = program_sdvs.system_program(string_sdvs.str_constant(system_program))

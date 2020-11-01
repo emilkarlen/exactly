@@ -2,12 +2,13 @@ import unittest
 
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.test_case_utils.files_condition import parse as sut
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher
-from exactly_lib_test.symbol.test_resources.string import is_reference_to_string_made_up_of_just_strings
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
+    is_reference_to_string_made_up_of_just_strings
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher
 
 
 def suite() -> unittest.TestSuite:

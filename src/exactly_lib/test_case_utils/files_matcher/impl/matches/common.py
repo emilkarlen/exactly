@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import PurePath
 from typing import Callable, Sequence
 
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.symbol.logic.matcher import MatcherSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -14,11 +12,14 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.test_case_utils.files_matcher import config
 from exactly_lib.type_system.description.trace_building import TraceBuilder
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher, FilesMatcherAdv, \
-    FilesMatcherDdv
-from exactly_lib.type_system.logic.matcher_base_class import MatcherAdv, MatcherDdv, \
-    MatcherWTrace
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
+from exactly_lib.type_system.logic.matcher_base_class import MatcherWTrace
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherAdv, FilesMatcherDdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer

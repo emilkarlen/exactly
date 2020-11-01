@@ -5,8 +5,6 @@ from exactly_lib.common.report_rendering.description_tree import rendering__node
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.tcfs import ddv_validators
 from exactly_lib.tcfs.ddv_validation import DdvValidator
@@ -19,10 +17,13 @@ from exactly_lib.test_case_utils.err_msg import path_err_msgs, file_or_dir_conte
 from exactly_lib.test_case_utils.file_matcher.file_matcher_models import FileMatcherModelForDescribedPath
 from exactly_lib.test_case_utils.file_matcher.impl.model_constructor import ModelConstructor
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.type_system.data.path_ddv import DescribedPath
 from exactly_lib.type_system.description.trace_building import TraceBuilder
-from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcherSdv
+from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel
 from exactly_lib.type_system.logic.matching_result import MatchingResult
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
 

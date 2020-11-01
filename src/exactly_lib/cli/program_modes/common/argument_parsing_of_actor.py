@@ -4,10 +4,11 @@ from exactly_lib.actors.source_interpreter import actor
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.program_modes.common.shlex_arg_parse import shlex_split
 from exactly_lib.definitions.entity import actors
-from exactly_lib.symbol.data import list_sdvs, string_sdvs
-from exactly_lib.symbol.logic.program.arguments_sdv import ArgumentsSdv
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_utils.program.command import command_sdvs
+from exactly_lib.type_val_deps.types.list_ import list_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 
 

@@ -1,14 +1,13 @@
 import pathlib
 import unittest
 
-from exactly_lib_test.test_resources.test_utils import NIE
-from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
-
 from exactly_lib.appl_env import executable_factories as sut
-from exactly_lib.type_system.logic.program.process_execution.command import Command
-from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
+from exactly_lib.type_system.logic.program.command import Command
+from exactly_lib.type_system.logic.program.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
+from exactly_lib_test.test_resources.test_utils import NIE
+from exactly_lib_test.type_val_deps.types.path.test_resources.described_path import new_primitive
 
 
 def suite() -> unittest.TestSuite:

@@ -4,7 +4,7 @@ from exactly_lib.definitions.primitives import file_matcher
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.file_matcher.impl.run_program import arguments_generator
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.type_system.logic.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 
 
 def parse(token_parser: TokenParser) -> FileMatcherSdv:

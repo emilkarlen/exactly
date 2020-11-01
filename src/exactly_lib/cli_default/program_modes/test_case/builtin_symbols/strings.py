@@ -6,8 +6,8 @@ from exactly_lib.cli.builtin_symbol import BuiltinSymbol
 from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.entity import types
-from exactly_lib.symbol.data import string_sdvs
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

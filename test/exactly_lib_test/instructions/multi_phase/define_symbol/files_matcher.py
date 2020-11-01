@@ -4,14 +4,14 @@ from exactly_lib.instructions.multi_phase.define_symbol import parser as sut
 from exactly_lib.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol import lookups
+from exactly_lib.symbol.value_type import LogicValueType
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.files_matcher import models
 from exactly_lib.type_system.logic.files_matcher import FilesMatcherModel, FilesMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
-from exactly_lib.type_system.value_type import LogicValueType
+from exactly_lib.type_val_deps.sym_ref import symbol_lookup
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import matcher_helpers
@@ -20,9 +20,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.sour
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
     InstructionApplicationEnvironment
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.symbol.test_resources import sdv_type_assertions
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_syntax as fm_args
@@ -38,6 +36,8 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
+from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -75,7 +75,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
                 expected_container = matches_container_of_logic_type(
                     LogicValueType.FILES_MATCHER,
-                    sdv_type_assertions.matches_sdv_of_files_matcher()
+                    matcher_sdv_type_assertions.matches_sdv_of_files_matcher()
                 )
 
                 expectation = Expectation(
@@ -112,7 +112,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.FILES_MATCHER,
-            sdv_type_assertions.matches_sdv_of_files_matcher(
+            matcher_sdv_type_assertions.matches_sdv_of_files_matcher(
                 references=asrt.matches_sequence([
                     referenced_symbol.reference_assertion
                 ]),
@@ -149,7 +149,7 @@ class TestSuccessfulScenarios(unittest.TestCase):
 
         expected_container = matches_container_of_logic_type(
             LogicValueType.FILES_MATCHER,
-            sdv_type_assertions.matches_sdv_of_files_matcher()
+            matcher_sdv_type_assertions.matches_sdv_of_files_matcher()
         )
 
         not_num_files_beginning_with_a_eq_1_arg = self._not_num_files_beginning_with_a_eq_1_arg()
@@ -264,7 +264,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
 
     def _get_matcher(self, environment: InstructionApplicationEnvironment) -> FilesMatcher:
         ie = environment.instruction
-        sdv = lookups.lookup_files_matcher(ie.symbols, self.matcher_symbol_name)
+        sdv = symbol_lookup.lookup_files_matcher(ie.symbols, self.matcher_symbol_name)
 
         resolver = resolving_helper_for_instruction_env(environment.os_service, ie)
         return resolver.resolve_files_matcher(sdv)

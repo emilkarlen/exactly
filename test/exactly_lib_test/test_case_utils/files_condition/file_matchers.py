@@ -6,9 +6,7 @@ from exactly_lib.test_case_utils.files_condition.structure import FilesCondition
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder
-from exactly_lib_test.symbol.test_resources.file_matcher import is_reference_to_file_matcher, \
-    FileMatcherSymbolContext, FileMatcherSymbolContextOfPrimitiveConstant
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args, validation_cases
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import primitive_assertions as asrt_primitive
@@ -22,6 +20,8 @@ from exactly_lib_test.test_case_utils.test_resources.validation import pre_sds_v
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import is_reference_to_file_matcher, \
+    FileMatcherSymbolContext, FileMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

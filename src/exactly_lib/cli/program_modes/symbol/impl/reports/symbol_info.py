@@ -4,8 +4,8 @@ from typing import TypeVar, Generic, List, Iterator, Optional
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.type_system.value_type import ValueType
 
 SYMBOL_INFO = TypeVar('SYMBOL_INFO')
 

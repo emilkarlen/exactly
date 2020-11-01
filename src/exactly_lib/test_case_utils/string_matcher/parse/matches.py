@@ -7,7 +7,7 @@ from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.test_case_utils.string_matcher import matcher_options
 from exactly_lib.test_case_utils.string_matcher.impl import matches
-from exactly_lib.type_system.logic.string_matcher import StringMatcherSdv
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem

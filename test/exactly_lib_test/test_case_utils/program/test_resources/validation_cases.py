@@ -1,11 +1,10 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import string_sdvs
 from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvReference
+from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_wo_tcds, \
     PrimAndExeExpectation
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -15,6 +14,7 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
     validation_cases as str_trans_validation_cases
 from exactly_lib_test.test_case_utils.test_resources.validation import ValidationExpectationSvh, ValidationAssertions
 from exactly_lib_test.test_resources.test_utils import NExArr
+from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 
 
 class ValidationCase:

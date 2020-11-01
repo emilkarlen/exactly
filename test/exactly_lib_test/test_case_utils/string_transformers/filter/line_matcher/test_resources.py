@@ -3,8 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext, StringIntConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.integer_matcher.test_resources import symbol_reference as int_sym_refs
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, Expectation, \
@@ -15,6 +14,8 @@ from exactly_lib_test.test_case_utils.string_transformers.test_resources import 
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as arg_rend
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.type_system.logic.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
+    StringIntConstantSymbolContext
 
 
 class Case:

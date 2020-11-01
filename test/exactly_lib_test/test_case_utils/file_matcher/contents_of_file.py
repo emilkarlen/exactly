@@ -6,11 +6,6 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContextOfPrimitiveConstant
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import NonHdsPopulator
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
@@ -29,6 +24,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     every_line_empty
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
+    StringMatcherSymbolContextOfPrimitiveConstant
 
 
 def suite() -> unittest.TestSuite:

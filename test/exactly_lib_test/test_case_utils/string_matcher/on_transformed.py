@@ -6,12 +6,7 @@ from exactly_lib.test_case_utils.string_matcher import parse_string_matcher as s
 from exactly_lib.test_case_utils.string_transformer import names
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.string_matcher import StringMatcherSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, Expectation
 from exactly_lib_test.test_case_utils.string_matcher.test_resources import contents_transformation, integration_check, \
@@ -29,6 +24,11 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources import
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     delete_everything
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
+from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 
 

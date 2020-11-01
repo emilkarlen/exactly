@@ -14,8 +14,6 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
-from exactly_lib_test.symbol.data.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.symbol.test_resources.string import StringSymbolContext
 from exactly_lib_test.test_case_utils.integer_matcher.test_resources import parse_check, integration_check
 from exactly_lib_test.test_case_utils.interval.test_resources import with_interval as asrt_w_interval
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import Expectation, prim_asrt__constant
@@ -28,6 +26,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
 from exactly_lib_test.type_system.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
+from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 from exactly_lib_test.util.interval.test_resources.interval_assertion import PosNeg, is_interval_for_eq, \
     is_interval_for_ne, is_interval_for_lt, is_interval_for_lte, is_interval_for_gt, is_interval_for_gte

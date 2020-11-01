@@ -5,8 +5,8 @@ from exactly_lib.test_case_utils.matcher.impls import matches_regex, property_ge
 from exactly_lib.test_case_utils.matcher.property_getter import PropertyGetter
 from exactly_lib.test_case_utils.regex.regex_ddv import RegexSdv
 from exactly_lib.type_system.description.tree_structured import StructureRenderer
-from exactly_lib.type_system.logic.string_matcher import StringMatcherDdv, StringMatcherSdv
 from exactly_lib.type_system.logic.string_model import StringModel
+from exactly_lib.type_val_deps.types.string_matcher import StringMatcherDdv, StringMatcherSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 

@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherSymbolContext
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import argument_building as fm_args
 from exactly_lib_test.test_case_utils.files_condition.test_resources import arguments_building as fc_args
 from exactly_lib_test.test_case_utils.files_matcher.test_resources.files_condition import \
@@ -18,6 +17,7 @@ from exactly_lib_test.test_case_utils.test_resources.dir_arg_helper import DirAr
 from exactly_lib_test.test_resources.files.file_structure import Dir, File
 from exactly_lib_test.test_resources.test_utils import NExArr, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.test_resources.file_matcher import FileMatcherSymbolContext
 
 
 def suite() -> unittest.TestSuite:

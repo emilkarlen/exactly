@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 from exactly_lib_test.test_resources.test_utils import NEA
-from exactly_lib_test.type_system.data.test_resources import described_path
 from exactly_lib_test.type_system.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
 
 
 class TestCaseBase(unittest.TestCase):

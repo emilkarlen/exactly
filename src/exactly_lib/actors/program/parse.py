@@ -7,10 +7,10 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.section_document import parse_source
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.logic.program.program_sdv import ProgramSdv
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case_utils.program.parse import parse_program
+from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from ..common import relativity_configuration_of_action_to_check
 
 

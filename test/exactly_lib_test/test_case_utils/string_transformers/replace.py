@@ -9,8 +9,7 @@ from exactly_lib.test_case_utils.string_transformer import parse_string_transfor
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -28,6 +27,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_system.logic.string_model.test_resources.assertions import model_lines_lists_matches
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.util.test_resources import quoting
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes_str
 

@@ -1,8 +1,5 @@
 from typing import Iterator, Tuple
 
-from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
-from exactly_lib.symbol.logic.string_transformer import StringTransformerSdv
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case_utils.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
@@ -12,10 +9,13 @@ from exactly_lib.test_case_utils.string_transformer import sdvs
 from exactly_lib.test_case_utils.string_transformer.impl.models.transformed_string_models import \
     StringTransformerFromLinesTransformer
 from exactly_lib.type_system.description.tree_structured import StructureRenderer, WithTreeStructureDescription
-from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherAdv, LineMatcherDdv, \
-    LineMatcherSdv, LineMatcherLine
-from exactly_lib.type_system.logic.string_transformer import StringTransformerDdv, StringTransformer, \
-    StringTransformerAdv
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
+    ApplicationEnvironmentDependentValue
+from exactly_lib.type_val_deps.types.line_matcher import LineMatcherAdv, LineMatcherDdv, LineMatcherSdv
+from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 

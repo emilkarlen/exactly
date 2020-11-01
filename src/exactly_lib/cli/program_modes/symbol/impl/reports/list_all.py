@@ -4,7 +4,7 @@ from typing import Callable, List, Iterator, Sequence
 from exactly_lib.cli.program_modes.symbol.impl.report import ReportGenerator, Report, ReportBlock
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import SymbolDefinitionInfo, DefinitionsResolver
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.util.simple_textstruct import structure
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.str_.misc_formatting import inside_parens

@@ -5,15 +5,15 @@ from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.path_relativity import RelOptionType, DirectoryStructurePartition, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.tcfs.sds import SandboxDs
-from exactly_lib.type_system.data import paths
-from exactly_lib.type_system.data.impl.path.path_base import PathDdvWithPathSuffixAndIsNotAbsoluteBase
-from exactly_lib.type_system.data.path_ddv import PathDdv
-from exactly_lib.type_system.data.path_part import PathPartDdv
+from exactly_lib.type_val_deps.types.path import path_ddvs
+from exactly_lib.type_val_deps.types.path.impl.path_base import PathDdvWithPathSuffixAndIsNotAbsoluteBase
+from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 
 
 def path_test_impl(file_name: str = 'path_test_impl',
                    relativity: RelOptionType = RelOptionType.REL_RESULT) -> PathDdv:
-    return PathDdvTestImpl(relativity, paths.constant_path_part(file_name))
+    return PathDdvTestImpl(relativity, path_ddvs.constant_path_part(file_name))
 
 
 class PathDdvTestImpl(PathDdvWithPathSuffixAndIsNotAbsoluteBase):

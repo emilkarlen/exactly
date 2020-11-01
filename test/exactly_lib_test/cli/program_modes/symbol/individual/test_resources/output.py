@@ -2,8 +2,8 @@ from typing import List, Optional
 
 from exactly_lib.cli.program_modes.symbol.impl.reports import individual
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.cli.program_modes.symbol.test_resources import output
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as asrt_str
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

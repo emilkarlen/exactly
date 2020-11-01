@@ -1,30 +1,31 @@
 from pathlib import Path
 from typing import Optional, List, Sequence
 
-import exactly_lib.common.report_rendering.block_text_docs
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg import source_location
 from exactly_lib.common.err_msg.definitions import Blocks, single_str_block
+from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
+from exactly_lib.common.report_rendering import block_text_docs
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import type_system
+from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.symbol.data.value_restriction import ErrorMessageWithFixTip
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, \
     SymbolDependentValue
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.symbol.value_type import ValueType
 
 
 def duplicate_symbol_definition(already_defined_symbol: Optional[SourceLocationInfo],
                                 name: str) -> TextRenderer:
-    return exactly_lib.common.report_rendering.block_text_docs.major_blocks_of_string_blocks(
+    return block_text_docs.major_blocks_of_string_blocks(
         _duplicate_symbol_definition(already_defined_symbol,
                                      name)
     )
 
 
 def undefined_symbol(reference: SymbolReference) -> TextRenderer:
-    return exactly_lib.common.report_rendering.block_text_docs.major_blocks_of_string_blocks(
+    return block_text_docs.major_blocks_of_string_blocks(
         _undefined_symbol(reference))
 
 
@@ -57,9 +58,9 @@ def defined_at_line__err_msg_lines(definition_source: Optional[SourceLocationInf
         return rendering.blocks_as_lines(blocks)
 
 
-_WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
+_WHICH_IS_A_BUILTIN_SYMBOL = 'which is ' + all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.singular_determined
 
-_IS_A_BUILTIN_SYMBOL = 'is a builtin symbol'
+_IS_A_BUILTIN_SYMBOL = 'is ' + all_entity_types.BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.name.singular_determined
 
 
 def _is_a_builtin_symbol(symbol_name: str) -> str:
@@ -146,7 +147,7 @@ def _definition_source_blocks(definition_source: SourceLocationInfo) -> Blocks:
                                           definition_source.source_location_path)
 
 
-def _builtin_or_user_defined_source_blocks(definition_source: Optional[SourceLocationInfo]) -> Blocks:
+def builtin_or_user_defined_source_blocks(definition_source: Optional[SourceLocationInfo]) -> Blocks:
     if definition_source is None:
         return [
             single_str_block(_WHICH_IS_A_BUILTIN_SYMBOL)

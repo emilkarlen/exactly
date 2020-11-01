@@ -1,17 +1,17 @@
 import unittest
 
-from exactly_lib.symbol.data import list_sdvs as lrs
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
+from exactly_lib.type_val_deps.types.list_ import list_sdvs as lrs
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources import references
-from exactly_lib_test.symbol.data.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources import references
+from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 

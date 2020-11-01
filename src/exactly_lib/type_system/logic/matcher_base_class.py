@@ -1,13 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Sequence
 
-from exactly_lib.appl_env.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.appl_env.application_environment import ApplicationEnvironment
-from exactly_lib.tcfs import ddv_validation
-from exactly_lib.tcfs.ddv_validation import DdvValidator
-from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_system.description.tree_structured import WithNameAndTreeStructureDescription
-from exactly_lib.type_system.logic.logic_base_class import LogicWithNodeDescriptionDdv
 from exactly_lib.type_system.logic.matching_result import MatchingResult
 
 MODEL = TypeVar('MODEL')
@@ -42,26 +36,4 @@ class MatcherStdTypeVisitor(Generic[MODEL, T], ABC):
 
     @abstractmethod
     def visit_non_standard(self, matcher: MatcherWTrace[MODEL]) -> T:
-        pass
-
-
-class MatcherAdv(Generic[MODEL],
-                 ApplicationEnvironmentDependentValue[MatcherWTrace[MODEL]],
-                 ABC):
-    """Application Environment Dependent Matcher"""
-
-    @abstractmethod
-    def primitive(self, environment: ApplicationEnvironment) -> MatcherWTrace[MODEL]:
-        pass
-
-
-class MatcherDdv(Generic[MODEL],
-                 LogicWithNodeDescriptionDdv[MatcherWTrace[MODEL]],
-                 ABC):
-    @property
-    def validator(self) -> DdvValidator:
-        return ddv_validation.constant_success_validator()
-
-    @abstractmethod
-    def value_of_any_dependency(self, tcds: TestCaseDs) -> MatcherAdv[MODEL]:
         pass

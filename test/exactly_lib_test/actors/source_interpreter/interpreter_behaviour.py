@@ -4,10 +4,9 @@ from contextlib import contextmanager
 from typing import List, ContextManager
 
 from exactly_lib.actors.source_interpreter import actor as sut
-from exactly_lib.symbol.data import path_sdvs
-from exactly_lib.symbol.logic.program.command_sdv import CommandSdv
 from exactly_lib.test_case_utils.program.command import command_sdvs
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.actors.test_resources.action_to_check import \
     Configuration, suite_for_execution, TestCaseSourceSetup
@@ -82,7 +81,7 @@ class TestValidationErrorWhenInterpreterDoesNotExist(unittest.TestCase):
 def _command_for_non_existing_interpreter() -> CommandSdv:
     interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
     return command_sdvs.for_executable_file(
-        path_sdvs.constant(paths.absolute_path(interpreter_path))
+        path_sdvs.constant(path_ddvs.absolute_path(interpreter_path))
     )
 
 

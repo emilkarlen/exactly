@@ -2,10 +2,9 @@ import sys
 from contextlib import contextmanager
 from typing import List, ContextManager
 
-from exactly_lib.symbol.data import path_sdvs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case_utils.program.command import command_sdvs
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.actors.test_resources.action_to_check import Configuration, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
@@ -14,7 +13,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.util.test_resources import py_program
 
 COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = command_sdvs.for_executable_file(
-    path_sdvs.constant(paths.absolute_file_name(sys.executable)),
+    path_sdvs.constant(path_ddvs.absolute_file_name(sys.executable)),
 )
 
 

@@ -5,11 +5,7 @@ from exactly_lib.test_case_utils.string_transformer.impl.sequence import Sequenc
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.assertions import \
-    is_reference_to_string_transformer
-from exactly_lib_test.symbol.logic.test_resources.string_transformer.symbol_context import \
-    StringTransformerSymbolContext
-from exactly_lib_test.symbol.test_resources.symbols_setup import SymbolContext
+from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_case_utils.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
@@ -26,6 +22,10 @@ from exactly_lib_test.type_system.logic.string_transformer.test_resources.string
     is_identity_transformer
 from exactly_lib_test.type_system.logic.string_transformer.test_resources.string_transformers import \
     arbitrary_non_identity, to_uppercase
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
+    is_reference_to_string_transformer
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
+    StringTransformerSymbolContext
 
 
 def suite() -> unittest.TestSuite:

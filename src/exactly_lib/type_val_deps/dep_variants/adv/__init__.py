@@ -1,0 +1,1 @@
+"""Application Environment Dependent Value"""

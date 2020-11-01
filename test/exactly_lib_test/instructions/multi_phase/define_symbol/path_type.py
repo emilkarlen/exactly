@@ -6,13 +6,12 @@ from exactly_lib.instructions.multi_phase.define_symbol import type_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
-from exactly_lib.symbol.data import path_sdvs, path_part_sdvs
-from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import PathRelativityRestriction
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.data import paths
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction
+from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
+from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.embryo_checker import INSTRUCTION_CHECKER
@@ -20,15 +19,14 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources.sour
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.symbol.data.test_resources.path import PathSymbolValueContext, ConstantSuffixPathDdvSymbolContext, \
-    PathSymbolContext
-from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import \
-    assert_symbol_usages_is_singleton_list
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext, \
+    ConstantSuffixPathDdvSymbolContext, \
+    PathSymbolContext
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
@@ -92,7 +90,7 @@ class TestAssignmentRelativeSingleValidOption(unittest.TestCase):
                                               source,
                                               ArrangementWithSds(),
                                               Expectation(
-                                                  symbol_usages=assert_symbol_usages_is_singleton_list(
+                                                  symbol_usages=asrt.matches_singleton_sequence(
                                                       expected_defined_symbol.assert_matches_definition_of_sdv
                                                   ),
                                                   symbols_after_main=assert_symbol_table_is_singleton(
@@ -119,7 +117,7 @@ class TestAssignmentRelativeSingleDefaultOption(unittest.TestCase):
                 source,
                 ArrangementWithSds(),
                 Expectation(
-                    symbol_usages=assert_symbol_usages_is_singleton_list(
+                    symbol_usages=asrt.matches_singleton_sequence(
                         expected_defined_symbol.assert_matches_definition_of_sdv
                     ),
                     symbols_after_main=assert_symbol_table_is_singleton(
@@ -161,8 +159,8 @@ class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
             instruction_argument = src2(ValueType.PATH, 'name', '{rel_source_file} component')
             for source in equivalent_source_variants__with_source_check__consume_last_line(self, instruction_argument):
                 expected_path_sdv = path_sdvs.constant(
-                    paths.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
-                                       paths.constant_path_part('component')))
+                    path_ddvs.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
+                                           path_ddvs.constant_path_part('component')))
                 expected_symbol_value = PathSymbolValueContext.of_sdv(expected_path_sdv)
                 expected_symbol = PathSymbolContext('name', expected_symbol_value)
                 INSTRUCTION_CHECKER.check(
@@ -170,7 +168,7 @@ class TestAssignmentRelativeSourceFileLocation(unittest.TestCase):
                     source,
                     ArrangementWithSds(fs_location_info=fs_location_info),
                     Expectation(
-                        symbol_usages=assert_symbol_usages_is_singleton_list(
+                        symbol_usages=asrt.matches_singleton_sequence(
                             expected_symbol.assert_matches_definition_of_sdv
                         ),
                         symbols_after_main=assert_symbol_table_is_singleton(

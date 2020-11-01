@@ -1,11 +1,12 @@
 import itertools
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Sequence, Optional, List
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.type_system import value_type
-from exactly_lib.type_system.value_type import ValueType, TypeCategory, DataValueType, LogicValueType
+from exactly_lib.symbol import value_type
+from exactly_lib.symbol.value_type import ValueType, TypeCategory, DataValueType, LogicValueType
 from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.simple_textstruct.structure import MajorBlock
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable, Entry
 
 
@@ -40,10 +41,10 @@ class SymbolContainer(SymbolTableValue):
 
     def __init__(self,
                  value_sdv: SymbolDependentValue,
-                 value_type: ValueType,
+                 value_type_: ValueType,
                  source_location: Optional[SourceLocationInfo]):
         self._sdv = value_sdv
-        self._value_type = value_type
+        self._value_type = value_type_
         self._source_location = source_location
 
     @property
@@ -51,15 +52,17 @@ class SymbolContainer(SymbolTableValue):
         return self._source_location
 
     @property
-    def definition_source(self) -> LineSequence:
+    def definition_source(self) -> Optional[LineSequence]:
         """
         The source code of the definition of the value.
 
         :rtype None iff the symbol is built in.
         """
-        return None \
-            if self._source_location is None else \
-            self._source_location.source_location_path.location.source
+        return (None
+                if self._source_location is None
+                else
+                self._source_location.source_location_path.location.source
+                )
 
     @property
     def type_category(self) -> TypeCategory:
@@ -93,7 +96,12 @@ def container_of_builtin(value_type: ValueType, value_sdv: SymbolDependentValue)
 
 
 class Failure(ABC):
-    pass
+    @abstractmethod
+    def render(self,
+               failing_symbol: str,
+               symbols: SymbolTable,
+               ) -> Sequence[MajorBlock]:
+        pass
 
 
 class ReferenceRestrictions(ABC):

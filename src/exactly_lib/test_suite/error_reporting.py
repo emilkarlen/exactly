@@ -1,5 +1,7 @@
+import pathlib
+
 from exactly_lib.common import result_reporting as reporting
-from exactly_lib.common.err_msg.msg import minors, domain_objects, majors
+from exactly_lib.common.err_msg.msg import minors, majors
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.report_rendering.parts import source_location
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -9,8 +11,11 @@ from exactly_lib.test_suite.file_reading import exception as suite_exception
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError, SuiteReadError, SuiteReadErrorVisitor
 from exactly_lib.util.file_printer import FilePrinter
 from exactly_lib.util.render import combinators as comb
-from exactly_lib.util.render.renderer import SequenceRenderer
+from exactly_lib.util.render import combinators as rend_comb
+from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct.rendering import line_elements
+from exactly_lib.util.simple_textstruct.rendering import line_objects, component_renderers as comp_rend
+from exactly_lib.util.simple_textstruct.structure import LineElement
 from exactly_lib.util.simple_textstruct.structure import MajorBlock
 
 _SUITE_FILE_INCLUSION_CYCLE = 'The suite has already been included.'
@@ -96,6 +101,16 @@ class _GetReadErrorMessageLinesRenderer(SuiteReadErrorVisitor[TextRenderer]):
         return majors.of_minor(
             minors.header_and_message(
                 ex.error_message_header,
-                domain_objects.single_path(ex.reference),
+                _single_path(ex.reference),
             )
         )
+
+
+def _of_path(path: pathlib.Path) -> Renderer[LineElement]:
+    return comp_rend.LineElementR(
+        line_objects.PreFormattedString(path)
+    )
+
+
+def _single_path(path: pathlib.Path) -> SequenceRenderer[LineElement]:
+    return rend_comb.SingletonSequenceR(_of_path(path))

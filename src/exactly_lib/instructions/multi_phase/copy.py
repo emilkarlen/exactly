@@ -24,10 +24,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
     TokenParser
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import sdv_validation
-from exactly_lib.symbol.data.path_sdv import PathSdv
 from exactly_lib.symbol.sdv_structure import SymbolUsage
-from exactly_lib.symbol.sdv_validation import SdvValidator
 from exactly_lib.tcfs import path_relativity
 from exactly_lib.tcfs.ddv_validation import DdvValidator
 from exactly_lib.tcfs.path_relativity import RelOptionType
@@ -39,6 +36,9 @@ from exactly_lib.test_case_utils import path_check
 from exactly_lib.test_case_utils.parse import parse_path, rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RelOptionArgumentConfiguration
+from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
+from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable

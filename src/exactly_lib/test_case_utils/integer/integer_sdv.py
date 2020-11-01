@@ -1,8 +1,6 @@
 from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.symbol.data.string_sdv import StringSdv
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.test_case_utils import svh_exception
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandSdv
@@ -10,7 +8,9 @@ from exactly_lib.test_case_utils.integer.evaluate_integer import NotAnIntegerExc
 from exactly_lib.test_case_utils.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.test_case_utils.validation_error_exception import ValidationErrorException
 from exactly_lib.test_case_utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.type_system.data.string_ddv import StringDdv
+from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 

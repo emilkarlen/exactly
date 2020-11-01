@@ -1,12 +1,12 @@
 from typing import Sequence, TypeVar, Callable
 
 from exactly_lib.definitions import logic
-from exactly_lib.symbol.logic.matcher import MatcherSdv
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression.grammar_elements import OperatorDescriptionFromFunctions, \
     InfixOperatorDescriptionFromFunctions
 from exactly_lib.test_case_utils.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.document import SectionContents

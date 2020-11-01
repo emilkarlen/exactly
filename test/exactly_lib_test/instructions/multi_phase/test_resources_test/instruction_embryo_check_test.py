@@ -10,12 +10,12 @@ from exactly_lib.instructions.multi_phase.utils import instruction_embryo as emb
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import T
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelSdsOptionType
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
+from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.symbol_table import SymbolTable
@@ -27,9 +27,6 @@ from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo
     InstructionApplicationEnvironment
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_instruction import \
     instruction_embryo_that
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import matches_data_type_symbol_reference
-from exactly_lib_test.symbol.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.tcfs.test_resources import non_hds_populator, sds_populator
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
@@ -44,6 +41,10 @@ from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
+from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
+    matches_data_type_symbol_reference
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
 def suite() -> unittest.TestSuite:

@@ -3,11 +3,11 @@ from exactly_lib.cli.custom_symbol import CustomSymbolDocumentation
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.tcds_symbols import SYMBOL_DESCRIPTION
 from exactly_lib.symbol import sdv_structure
-from exactly_lib.symbol.data import path_sdvs
+from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs import relative_path_options
 from exactly_lib.tcfs import tcds_symbols
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

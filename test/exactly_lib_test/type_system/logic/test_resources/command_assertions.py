@@ -2,15 +2,15 @@ import pathlib
 import sys
 from typing import List, Sequence
 
-from exactly_lib.type_system.data.path_ddv import DescribedPath
-from exactly_lib.type_system.logic.program.process_execution.command import Command, CommandDriver
-from exactly_lib.type_system.logic.program.process_execution.commands import CommandDriverForShell, \
+from exactly_lib.type_system.logic.program.command import Command, CommandDriver
+from exactly_lib.type_system.logic.program.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \
     CommandDriverForExecutableFile
+from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_system.data.test_resources.described_path import new_primitive
+from exactly_lib_test.type_val_deps.types.path.test_resources.described_path import new_primitive
 
 
 def equals_executable_file_command_driver(expected: CommandDriverForExecutableFile
