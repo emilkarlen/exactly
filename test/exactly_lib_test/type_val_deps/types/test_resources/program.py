@@ -4,10 +4,10 @@ from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
+from exactly_lib_test.impls.types.program.test_resources.program_sdvs import \
+    arbitrary__without_symbol_references
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_case_utils.program.test_resources.program_sdvs import \
-    arbitrary__without_symbol_references
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \

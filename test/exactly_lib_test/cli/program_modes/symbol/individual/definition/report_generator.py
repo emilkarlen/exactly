@@ -5,19 +5,19 @@ from exactly_lib.cli.program_modes.symbol.impl.report import ReportBlock
 from exactly_lib.cli.program_modes.symbol.impl.reports import individual as sut, symbol_info
 from exactly_lib.cli.program_modes.symbol.impl.reports import value_presentation
 from exactly_lib.cli.program_modes.symbol.impl.reports.symbol_info import DefinitionsResolver, SymbolDefinitionInfo
+from exactly_lib.impls.types.matcher.impls.constant import MatcherWithConstantResult
+from exactly_lib.impls.types.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDefinition
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
-from exactly_lib.test_case_utils.matcher.impls.constant import MatcherWithConstantResult
-from exactly_lib.test_case_utils.string_transformer.sdvs import StringTransformerSdvConstant
 from exactly_lib.type_val_deps.sym_ref import restrictions
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.section_document.test_resources import source_location_assertions as asrt_source_loc
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolValueContext
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_sc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_

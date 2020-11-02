@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.actors.util import parse_act_interpreter
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.argument_rendering import path_syntax
@@ -10,7 +9,8 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation, \
     SyntaxElementDocumentation
 from exactly_lib.help.entities.utils import programs
-from exactly_lib.test_case_utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.impls.actors.util import parse_act_interpreter
+from exactly_lib.impls.types.path import relative_path_options_documentation as rel_path_doc
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

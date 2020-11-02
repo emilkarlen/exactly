@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.instructions.cleanup import define_symbol, change_dir, copy, \
+from exactly_lib.impls.instructions.cleanup import define_symbol, change_dir, copy, \
     env, run, new_file, new_dir, shell, sys_cmd
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(

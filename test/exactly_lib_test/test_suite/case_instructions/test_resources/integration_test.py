@@ -7,6 +7,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
@@ -17,7 +18,6 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.actor import Actor
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError

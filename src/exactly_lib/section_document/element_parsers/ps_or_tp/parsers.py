@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Callable
 
+from exactly_lib.impls.types.expression.grammar import Grammar, EXPR
 from exactly_lib.section_document.element_parsers import instruction_parser_exceptions
 from exactly_lib.section_document.element_parsers.ps_or_tp.parser import PARSE_RESULT, Parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_utils.expression.grammar import Grammar, EXPR
 
 T = TypeVar('T')
 

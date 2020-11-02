@@ -11,11 +11,11 @@ from exactly_lib.common.process_result_reporter import Environment, ProcessResul
 from exactly_lib.common.process_result_reporters import ProcessResultReporterWithInitialExitValueOutput
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile

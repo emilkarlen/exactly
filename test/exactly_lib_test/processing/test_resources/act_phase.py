@@ -1,5 +1,5 @@
-from exactly_lib.actors.program import actor as command_line_actor
 from exactly_lib.definitions.entity import actors
+from exactly_lib.impls.actors.program import actor as command_line_actor
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.file_utils.std import StdFiles

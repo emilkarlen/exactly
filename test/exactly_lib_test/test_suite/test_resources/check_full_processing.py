@@ -6,6 +6,7 @@ from exactly_lib import program_info
 from exactly_lib.common import instruction_setup
 from exactly_lib.definitions.test_suite import instruction_names
 from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
@@ -17,7 +18,6 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor

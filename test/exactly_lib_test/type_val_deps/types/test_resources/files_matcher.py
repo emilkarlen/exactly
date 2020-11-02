@@ -1,7 +1,7 @@
+from exactly_lib.impls.types.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.files_matcher.impl.base_class import FilesMatcherDdvImplBase, FilesMatcherImplBase
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator

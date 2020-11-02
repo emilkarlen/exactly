@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from exactly_lib.definitions import logic
+from exactly_lib.impls.types.regex import parse_regex
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.test_case_utils.regex import parse_regex
 from exactly_lib.util import collection
 from exactly_lib.util.parse import token
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer, Singleton, \

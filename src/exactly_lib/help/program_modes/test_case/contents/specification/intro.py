@@ -3,10 +3,10 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help import std_tags
+from exactly_lib.impls.types.condition import comparators
+from exactly_lib.impls.types.string_matcher.matcher_options import EQUALS_ARGUMENT
 from exactly_lib.processing import exit_values
 from exactly_lib.program_info import PROGRAM_NAME
-from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.string_matcher.matcher_options import EQUALS_ARGUMENT
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor

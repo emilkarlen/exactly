@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
+from exactly_lib.impls.types.program import syntax_elements as pgm_syntax_elements
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

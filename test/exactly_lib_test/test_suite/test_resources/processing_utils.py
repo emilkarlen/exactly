@@ -3,13 +3,13 @@ from typing import List, Dict
 
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, new_pass, new_skipped
 from exactly_lib.execution.result import ActionToCheckOutcome
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite import structure
 from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.execution.full_execution.test_resources.result_values import DUMMY_SDS, \

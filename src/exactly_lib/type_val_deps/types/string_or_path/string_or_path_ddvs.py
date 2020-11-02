@@ -1,10 +1,10 @@
 import enum
 from typing import Optional, Set
 
+from exactly_lib.impls.file_properties import FileType
 from exactly_lib.symbol.value_type import DataValueType
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
@@ -145,8 +145,8 @@ class StringOrPathDdv(MultiDependenciesDdv[StringOrPath]):
                                       ) -> DdvValidator:
         if not self.is_path:
             return ddv_validation.ConstantDdvValidator.new_success()
-        from exactly_lib.test_case_utils.path_check import PathCheckDdv, PathCheckDdvValidator
-        from exactly_lib.test_case_utils.file_properties import must_exist_as
+        from exactly_lib.impls.types.path.path_check import PathCheckDdv, PathCheckDdvValidator
+        from exactly_lib.impls.file_properties import must_exist_as
         frc = PathCheckDdv(self._path,
                            must_exist_as(file_type, follow_symlinks))
         return PathCheckDdvValidator(frc)

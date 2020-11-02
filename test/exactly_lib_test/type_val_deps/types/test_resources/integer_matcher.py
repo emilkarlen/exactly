@@ -1,15 +1,15 @@
 from typing import Optional
 
+from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_val_deps.types.integer_matcher import IntegerMatcherSdv
 from exactly_lib.type_val_prims.matcher.integer_matcher import IntegerMatcher
+from exactly_lib_test.impls.types.integer_matcher.test_resources.argument_building import IntegerMatcherArg
+from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_case_utils.integer_matcher.test_resources.argument_building import IntegerMatcherArg
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
 from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

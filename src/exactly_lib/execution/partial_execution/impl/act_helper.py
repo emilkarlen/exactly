@@ -1,11 +1,11 @@
 from typing import List
 
-from exactly_lib.actors.util import source_code_lines
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.impl import phase_step_execution
 from exactly_lib.execution.impl.phase_step_execution import PhaseStepFailureResultConstructor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import PhaseStepFailureException, ExecutionFailureStatus
+from exactly_lib.impls.actors.util import source_code_lines
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.actor import Actor, ActionToCheck, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

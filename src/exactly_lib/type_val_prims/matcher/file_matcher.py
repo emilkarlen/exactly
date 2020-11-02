@@ -1,7 +1,7 @@
 import os
 from abc import ABC, abstractmethod
 
-from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.impls.file_properties import FileType
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 

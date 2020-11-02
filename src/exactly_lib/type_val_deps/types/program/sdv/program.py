@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.test_case_utils.program.command import arguments_sdvs
+from exactly_lib.impls.types.program.command import arguments_sdvs
 from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramDdv
 from exactly_lib.type_val_deps.types.program.sdv import stdin

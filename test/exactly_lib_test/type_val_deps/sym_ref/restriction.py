@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.value_type import TypeCategory, ValueType
 from exactly_lib.type_val_deps.sym_ref import restrictions as sut
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.test_case_utils.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
+from exactly_lib_test.impls.types.files_matcher.test_resources import symbol_context as files_matcher_symbol_context
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_
 from exactly_lib_test.type_val_deps.types.path.test_resources import path
 from exactly_lib_test.type_val_deps.types.string.test_resources import string

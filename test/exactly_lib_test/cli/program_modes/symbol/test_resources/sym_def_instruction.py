@@ -7,10 +7,10 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.test_case.instructions.define_symbol import ANY_TYPE_INFO_DICT
-from exactly_lib.instructions.assert_ import define_symbol as define_symbol__assert
-from exactly_lib.instructions.before_assert import define_symbol as define_symbol__before_assert
-from exactly_lib.instructions.cleanup import define_symbol as define_symbol__cleanup
-from exactly_lib.instructions.setup import define_symbol as define_symbol__setup
+from exactly_lib.impls.instructions.assert_ import define_symbol as define_symbol__assert
+from exactly_lib.impls.instructions.before_assert import define_symbol as define_symbol__before_assert
+from exactly_lib.impls.instructions.cleanup import define_symbol as define_symbol__cleanup
+from exactly_lib.impls.instructions.setup import define_symbol as define_symbol__setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import model

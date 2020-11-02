@@ -1,19 +1,19 @@
 from typing import Sequence, Optional
 
+from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
 from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib_test.impls.types.matcher.test_resources import matchers
+from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
+from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_case_utils.matcher.test_resources import matchers
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \

@@ -7,7 +7,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions.primitives import program
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.impls.instructions.configuration.utils import actor_utils
 from exactly_lib.processing import exit_values
 from exactly_lib.util.file_utils.std import StdOutputFilesContents
 from exactly_lib_test.cli_default.test_resources.internal_main_program_runner import \

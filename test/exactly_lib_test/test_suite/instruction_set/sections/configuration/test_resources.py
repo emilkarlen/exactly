@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.impls.instructions.configuration.utils import actor_utils
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource

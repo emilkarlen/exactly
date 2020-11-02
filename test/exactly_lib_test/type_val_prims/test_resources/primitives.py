@@ -1,13 +1,13 @@
 from typing import Callable
 
-from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
+from exactly_lib.impls.types.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import tree
 from exactly_lib.util.description_tree.renderers import Constant
-from exactly_lib_test.test_case_utils.matcher.test_resources.matchers import MatcherTestImplBase
+from exactly_lib_test.impls.types.matcher.test_resources.matchers import MatcherTestImplBase
 from exactly_lib_test.util.render.test_resources import renderers
 
 

@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import List, Sequence
 
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_path import FILE_ARGUMENT_OPTION
-from exactly_lib.test_case_utils.parse.parse_here_document import DOCUMENT_MARKER_PREFIX
+from exactly_lib.impls.types.string.parse_here_document import DOCUMENT_MARKER_PREFIX
+from exactly_lib.impls.types.string_or_path.parse_string_or_path import FILE_ARGUMENT_OPTION
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
 from exactly_lib_test.test_resources import argument_renderer as args_rend

@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
+from exactly_lib.impls.file_properties import FileType, must_exist_as
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
-from exactly_lib.test_case_utils.file_properties import FileType, must_exist_as
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
@@ -73,8 +73,8 @@ class StringOrPathSdv(SymbolDependentValue):
                                       ) -> SdvValidator:
         if not self.is_path:
             return sdv_validation.ConstantSuccessSdvValidator()
-        from exactly_lib.test_case_utils.path_check import PathCheck
-        from exactly_lib.test_case_utils.path_check import PathCheckValidator
+        from exactly_lib.impls.types.path.path_check import PathCheck
+        from exactly_lib.impls.types.path.path_check import PathCheckValidator
         frc = PathCheck(self.path_sdv,
                         must_exist_as(file_type, follow_symlinks))
         return PathCheckValidator(frc)

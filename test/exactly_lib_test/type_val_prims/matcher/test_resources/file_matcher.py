@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.matcher.impls.impl_base_class import MatcherImplBase
+from exactly_lib.impls.types.matcher.impls.impl_base_class import MatcherImplBase
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel, FileTypeAccess
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult

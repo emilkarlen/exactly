@@ -5,6 +5,7 @@ from typing import List, Sequence
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import processors as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
@@ -17,7 +18,6 @@ from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.line_source import Line, single_line_sequence
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation

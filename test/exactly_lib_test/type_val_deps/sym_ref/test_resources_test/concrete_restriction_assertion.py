@@ -2,10 +2,10 @@ import unittest
 from typing import Optional
 
 from exactly_lib.common.err_msg.err_msg_w_fix_tip import ErrorMessageWithFixTip
+from exactly_lib.impls.types.path import parse_path, path_relativities
 from exactly_lib.symbol.sdv_structure import ReferenceRestrictions
 from exactly_lib.symbol.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.parse import parse_path, path_relativities
 from exactly_lib.type_val_deps.sym_ref import restrictions
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions, value_restrictions as vr
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions as r

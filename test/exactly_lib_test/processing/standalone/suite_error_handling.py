@@ -6,10 +6,10 @@ from exactly_lib.definitions.entity.directives import INCLUDING_DIRECTIVE_INFO
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import file_names, section_names
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.processing.standalone.test_resources.run_processor import capture_output_from_processor

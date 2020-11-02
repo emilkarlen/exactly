@@ -2,7 +2,7 @@ from abc import ABC
 from contextlib import contextmanager
 from typing import Callable, ContextManager, Iterator
 
-from exactly_lib.test_case_utils.string_models.model_from_lines import StringModelFromLinesBase
+from exactly_lib.impls.types.string_models.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 

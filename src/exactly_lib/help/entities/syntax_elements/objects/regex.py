@@ -3,7 +3,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
-from exactly_lib.test_case_utils.regex import parse_regex
+from exactly_lib.impls.types.regex import parse_regex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

@@ -1,8 +1,8 @@
 from typing import List, Optional, Sequence
 
 import exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions
+from exactly_lib.impls.types.string.parse_here_document import DOCUMENT_MARKER_PREFIX
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.test_case_utils.parse.parse_here_document import DOCUMENT_MARKER_PREFIX
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table

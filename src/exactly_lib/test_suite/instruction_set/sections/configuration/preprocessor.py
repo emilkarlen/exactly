@@ -7,7 +7,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
+from exactly_lib.impls.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
     extract_mandatory_arguments_after_eq
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.element_parsers.instruction_parsers import \

@@ -1,7 +1,7 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.instructions.assert_ import contents_of_dir
-from exactly_lib.instructions.assert_ import define_symbol, change_dir, \
+from exactly_lib.impls.instructions.assert_ import contents_of_dir
+from exactly_lib.impls.instructions.assert_ import define_symbol, change_dir, \
     contents_of_file, env, run, exitcode, new_file, new_dir, copy, \
     shell, existence_of_file, stdout, stderr, sys_cmd
 

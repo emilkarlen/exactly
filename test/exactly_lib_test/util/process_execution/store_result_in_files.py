@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.util import exception

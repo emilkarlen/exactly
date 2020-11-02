@@ -1,9 +1,9 @@
 from abc import ABC
 from typing import Sequence, TypeVar, Generic
 
+from exactly_lib.impls.types.program.command import arguments_sdvs
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references, \
     SymbolDependentValue
-from exactly_lib.test_case_utils.program.command import arguments_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv, CommandDriverDdv, NonAppEnvDepComponentDdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv

@@ -8,15 +8,14 @@ from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.result import ExecutionFailureStatus
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.actors.test_resources import python3
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -33,6 +32,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
+from exactly_lib_test.impls.actors.test_resources import python3
 from exactly_lib_test.tcfs.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.test_actions import execute_action_that_raises

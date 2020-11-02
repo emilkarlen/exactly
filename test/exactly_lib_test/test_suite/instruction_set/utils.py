@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib.test_suite.instruction_set import utils as sut
-from exactly_lib_test.test_case_utils.parse.test_resources.single_line_source_instruction_utils import \
+from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__consume_last_line, equivalent_source_variants
 
 

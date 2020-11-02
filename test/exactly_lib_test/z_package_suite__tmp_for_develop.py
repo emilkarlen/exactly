@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib_test.default import z_package_suite as default
 
-from exactly_lib_test.actors import z_package_suite as actors
 from exactly_lib_test.execution import z_package_suite as execution
+from exactly_lib_test.impls.actors import z_package_suite as actors
 from exactly_lib_test.processing import z_package_suite as processing
 from exactly_lib_test.symbol import z_package_suite as symbol
 from exactly_lib_test.test_case import z_package_suite as test_case

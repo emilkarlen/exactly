@@ -1,7 +1,7 @@
 from typing import Sequence, List
 
+from exactly_lib.impls.types.program.validators import ExistingExecutableFileValidator
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv

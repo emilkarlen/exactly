@@ -5,7 +5,7 @@ from typing import Iterator, Sequence, ContextManager
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.impls import transformed_string_models as sut
 from exactly_lib.type_val_prims.string_model import StringModel
-from exactly_lib_test.test_case_utils.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib_test.impls.types.string_models.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_model.test_resources import model_checker
 

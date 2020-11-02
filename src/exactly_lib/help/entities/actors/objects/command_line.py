@@ -1,6 +1,5 @@
 from typing import List
 
-from exactly_lib.actors import common as rel_opt_conf
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
@@ -12,8 +11,9 @@ from exactly_lib.help.entities.actors.objects.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render import doc_utils
+from exactly_lib.impls.actors import common as rel_opt_conf
+from exactly_lib.impls.types.path import relative_path_options_documentation
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case_utils.documentation import relative_path_options_documentation
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem

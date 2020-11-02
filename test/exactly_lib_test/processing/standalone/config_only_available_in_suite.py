@@ -7,6 +7,7 @@ from exactly_lib.cli.test_suite_def import TestSuiteDefinition
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.standalone import processor as sut
@@ -15,7 +16,6 @@ from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.str_ import str_constructor

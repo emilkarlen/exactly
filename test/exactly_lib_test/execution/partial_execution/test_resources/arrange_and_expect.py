@@ -7,10 +7,10 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case_utils.os_services import os_services_access
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver

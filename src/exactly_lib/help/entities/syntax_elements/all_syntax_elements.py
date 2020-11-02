@@ -3,13 +3,13 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import for_typ
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, type_program, symbol_name, symbol_reference, \
     integer, shell_command_line, act_interpreter, program_argument
-from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
-from exactly_lib.test_case_utils.files_condition import parse as parse_files_condition
-from exactly_lib.test_case_utils.files_matcher import parse_files_matcher
-from exactly_lib.test_case_utils.integer_matcher import parse_integer_matcher
-from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.string_matcher import parse_string_matcher
-from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
+from exactly_lib.impls.types.file_matcher import parse_file_matcher
+from exactly_lib.impls.types.files_condition import parse as parse_files_condition
+from exactly_lib.impls.types.files_matcher import parse_files_matcher
+from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
+from exactly_lib.impls.types.line_matcher import parse_line_matcher
+from exactly_lib.impls.types.string_matcher import parse_string_matcher
+from exactly_lib.impls.types.string_transformer import parse_string_transformer
 
 ALL_SYNTAX_ELEMENT_DOCS = (
 

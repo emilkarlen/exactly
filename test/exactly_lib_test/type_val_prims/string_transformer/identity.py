@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.impl import identity as sut
+from exactly_lib.impls.types.string_transformer.impl import identity as sut
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
 

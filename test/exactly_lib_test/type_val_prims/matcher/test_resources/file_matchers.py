@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.matcher.impls import constant
+from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 
 

@@ -1,6 +1,5 @@
 from typing import List
 
-from exactly_lib.actors.common import SHELL_COMMAND_MARKER
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
@@ -10,6 +9,7 @@ from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.render import see_also
+from exactly_lib.impls.actors.common import SHELL_COMMAND_MARKER
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.constructor import sections, paragraphs
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator

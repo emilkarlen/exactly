@@ -1,19 +1,19 @@
 from typing import Optional
 
+from exactly_lib.impls.types.path import parse_path
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, ReferenceRestrictions, SymbolDependentValue
 from exactly_lib.symbol.value_type import ValueType, DataValueType
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants
-from exactly_lib.test_case_utils.parse import parse_path
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.type_val_deps.types.string import string_sdvs
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
+from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources.arguments_building2 import StringMatcherArg
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest

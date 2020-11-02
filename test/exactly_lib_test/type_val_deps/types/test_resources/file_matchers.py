@@ -1,6 +1,6 @@
+from exactly_lib.impls.types.matcher.impls import sdv_components
+from exactly_lib.impls.types.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.test_case_utils.matcher.impls import sdv_components
-from exactly_lib.test_case_utils.matcher.impls.symbol_reference import MatcherReferenceSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 

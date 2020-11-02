@@ -13,9 +13,9 @@ from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.cli_default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.cli_default.test_resources.test_case_file_elements import phase_header_line
-from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import arguments_building as args
-from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.test_case_utils.string_matcher.test_resources import arguments_building2 as str_matcher_args
+from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources import arguments_building as args
+from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as str_matcher_args
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor

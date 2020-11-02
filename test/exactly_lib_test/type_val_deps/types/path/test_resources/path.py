@@ -1,13 +1,13 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.impls.types.path import parse_path
+from exactly_lib.impls.types.path.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.symbol.value_type import ValueType, DataValueType
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType, \
     SpecificPathRelativity
-from exactly_lib.test_case_utils.parse import parse_path
-from exactly_lib.test_case_utils.parse.path_relativities import ALL_REL_OPTION_VARIANTS
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction

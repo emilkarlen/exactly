@@ -1,9 +1,9 @@
 import unittest
 from typing import Sequence
 
+from exactly_lib.impls.types.matcher.impls import constant
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.test_case_utils.matcher.impls import constant
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.util.name_and_value import NameAndValue

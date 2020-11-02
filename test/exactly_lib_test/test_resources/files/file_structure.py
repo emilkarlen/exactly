@@ -2,7 +2,7 @@ import pathlib
 from abc import abstractmethod, ABC
 from typing import Sequence, List
 
-from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.impls.file_properties import FileType
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.test_resources.files import executable_files
 from exactly_lib_test.test_resources.files.file_utils import write_file

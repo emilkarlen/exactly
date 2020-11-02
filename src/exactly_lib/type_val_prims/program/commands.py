@@ -3,7 +3,7 @@ from abc import ABC
 from typing import List, Generic, TypeVar
 
 from exactly_lib.definitions.primitives import program
-from exactly_lib.test_case_utils.description_tree import custom_details
+from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
 from exactly_lib.type_val_prims.program.command import Command, ProgramAndArguments, CommandDriver
