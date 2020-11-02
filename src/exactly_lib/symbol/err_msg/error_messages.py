@@ -98,7 +98,7 @@ def _invalid_type_how_to_fix_lines(expected_value_types: Sequence[ValueType]) ->
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
 
     header = [
-        'Define a legal symbol using the {} instruction:'.format(def_name_emphasised),
+        'Define a valid symbol using the {} instruction:'.format(def_name_emphasised),
         '',
     ]
 
