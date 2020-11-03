@@ -9,6 +9,9 @@ from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.types.matcher.impls import sdv_components
 from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.impls.types.string_matcher.impl.base_class import StringMatcherImplBase
+from exactly_lib.impls.types.string_or_path.ddv import StringOrPathDdv
+from exactly_lib.impls.types.string_or_path.primitive import StringOrPath
+from exactly_lib.impls.types.string_or_path.sdv import StringOrPathSdv
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
@@ -17,8 +20,6 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPathDdv, StringOrPath
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_sdv import StringOrPathSdv
 from exactly_lib.type_val_prims import string_model
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

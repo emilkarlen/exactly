@@ -1,7 +1,3 @@
-"""
-FilesCondition - a set of file names, each with an optional `FileMatcher`.
-"""
-from abc import ABC, abstractmethod
 from pathlib import PurePosixPath
 from typing import Sequence, Optional, Tuple, Mapping, List, TypeVar, Generic
 
@@ -10,18 +6,21 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.files_condition import syntax
 from exactly_lib.impls.types.matcher.impls import combinator_matchers
+from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv, \
-    LogicWithDetailsDescriptionDdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMatcherDdv
+from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_deps.types.files_condition.ddv import FilesConditionAdv, FilesConditionDdv
+from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
+from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -33,7 +32,35 @@ from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class FilesCondition(WithDetailsDescription):
+class ConstantSdv(FilesConditionSdv):
+    def __init__(self, files: Sequence[Tuple[StringSdv, Optional[FileMatcherSdv]]]):
+        self._files = files
+        self._references = []
+        for file_name, mb_matcher in files:
+            self._references += file_name.references
+            if mb_matcher:
+                self._references += mb_matcher.references
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
+
+        def resolve_matcher(x: FileMatcherSdv) -> FileMatcherDdv:
+            return x.resolve(symbols)
+
+        def resolve_entry(file_name: StringSdv, matcher: Optional[FileMatcherSdv]
+                          ) -> Tuple[StringDdv, Optional[FileMatcherDdv]]:
+            return file_name.resolve(symbols), map_optional(resolve_matcher, matcher)
+
+        return _FilesConditionConstantDdv([
+            resolve_entry(fn, mb_matcher)
+            for fn, mb_matcher in self._files
+        ])
+
+
+class _FilesConditionConstant(FilesCondition):
     def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcher]]):
         self._files = files
         self._describer = _Describer(files)
@@ -47,7 +74,7 @@ class FilesCondition(WithDetailsDescription):
         return self._files
 
 
-class FilesConditionAdv(ApplicationEnvironmentDependentValue[FilesCondition]):
+class _FilesConditionConstantAdv(ApplicationEnvironmentDependentValue[FilesCondition]):
     def __init__(self, files: Mapping[PurePosixPath, Optional[FileMatcherAdv]]):
         self._files = files
 
@@ -55,13 +82,13 @@ class FilesConditionAdv(ApplicationEnvironmentDependentValue[FilesCondition]):
         def resolve_matcher(adv: FileMatcherAdv) -> FileMatcher:
             return adv.primitive(environment)
 
-        return FilesCondition({
+        return _FilesConditionConstant({
             path: map_optional(resolve_matcher, mb_matcher)
             for path, mb_matcher in self._files.items()
         })
 
 
-class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
+class _FilesConditionConstantDdv(FilesConditionDdv):
     def __init__(self, files: Sequence[Tuple[StringDdv, Optional[FileMatcherDdv]]]):
         helper = _DdvHelper(files)
         self._files = helper.files_as_map()
@@ -80,16 +107,10 @@ class FilesConditionDdv(LogicWithDetailsDescriptionDdv[FilesCondition]):
         def val_of_any_dep(matcher: FileMatcherDdv) -> FileMatcherAdv:
             return matcher.value_of_any_dependency(tcds)
 
-        return FilesConditionAdv({
+        return _FilesConditionConstantAdv({
             path: map_optional(val_of_any_dep, mb_matcher)
             for path, mb_matcher in self._files.items()
         })
-
-
-class FilesConditionSdv(LogicWithDetailsDescriptionSdv[FilesCondition], ABC):
-    @abstractmethod
-    def resolve(self, symbols: SymbolTable) -> FilesConditionDdv:
-        pass
 
 
 class _IsRelativePosixPath(DdvValidator):

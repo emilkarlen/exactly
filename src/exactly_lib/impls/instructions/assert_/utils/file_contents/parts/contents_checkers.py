@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.instructions.assert_.utils.assertion_part import AssertionPart, IdentityAssertionPart
@@ -9,6 +8,7 @@ from exactly_lib.impls.instructions.assert_.utils.file_contents.actual_files imp
 from exactly_lib.impls.types.path import path_check
 from exactly_lib.impls.types.string_models.file_model import StringModelOfFile
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_prims.string_model import StringModel
 

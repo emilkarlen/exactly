@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Any, Callable, TypeVar, Generic, List, Optional
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.exception.pfh_exception import translate_pfh_exception_to_pfh
 from exactly_lib.impls.instructions.utils import logic_type_resolving_helper
 from exactly_lib.impls.svh_validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference, \
     references_from_objects_with_symbol_references
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

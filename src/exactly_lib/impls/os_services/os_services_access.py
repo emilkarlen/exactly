@@ -1,8 +1,8 @@
 import os
 
-from exactly_lib.appl_env import executable_factories
-from exactly_lib.appl_env.command_executor import CommandExecutor
-from exactly_lib.appl_env.os_services import OsServices
+from exactly_lib.impls.program_execution import executable_factories
+from exactly_lib.test_case.command_executor import CommandExecutor
+from exactly_lib.test_case.os_services import OsServices
 
 
 class OsServicesError(Exception):

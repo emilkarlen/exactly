@@ -2,8 +2,8 @@ import unittest
 from pathlib import PurePosixPath
 from typing import List, Sequence, Tuple, Mapping, Optional
 
-from exactly_lib.impls.types.files_condition.structure import FilesCondition
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
+from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel, FileMatcher
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue

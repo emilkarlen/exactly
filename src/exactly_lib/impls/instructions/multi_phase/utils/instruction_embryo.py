@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, TypeVar, Generic
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parsing import LocationAwareParser
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator, ConstantSuccessSdvValidator
 

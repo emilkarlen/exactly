@@ -17,8 +17,8 @@ from exactly_lib.type_val_deps.types.path.impl import primitive_str_renderers, v
 from exactly_lib.type_val_deps.types.path.impl.described_w_handler import PathDescriberHandlerForDdv, \
     PathDescriberHandlerForPrimitive
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv, DescribedPath
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
+from exactly_lib.type_val_prims.path_describer import PathDescriberForDdv, PathDescriberForPrimitive
 from exactly_lib.util.render.renderer import Renderer
 
 

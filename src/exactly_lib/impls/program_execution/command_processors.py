@@ -1,9 +1,9 @@
 from pathlib import Path
 from typing import TypeVar, Callable
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.file_utils.std import StdFiles
 
 T = TypeVar('T')

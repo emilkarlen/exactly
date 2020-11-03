@@ -5,7 +5,7 @@ from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForDdv, \
+from exactly_lib.type_val_prims.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
 
 

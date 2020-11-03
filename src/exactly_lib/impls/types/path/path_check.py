@@ -4,9 +4,9 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.file_properties import FilePropertiesCheck
 from exactly_lib.impls.types.path.path_validator import PathSdvValidatorBase, PathDdvValidatorBase
-from exactly_lib.test_case.result import svh
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
+from exactly_lib.test_case.result import svh
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath, PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 

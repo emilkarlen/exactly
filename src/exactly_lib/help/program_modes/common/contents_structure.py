@@ -62,6 +62,7 @@ class SectionDocumentation:
     """
     Documentation about a section in a "section document".
     """
+
     @property
     def name(self) -> formatting.SectionName:
         return self.section_info.name

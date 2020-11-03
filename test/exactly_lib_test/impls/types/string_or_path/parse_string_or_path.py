@@ -4,7 +4,8 @@ from typing import List, Optional
 import exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.impls.types.string_or_path import parse_string_or_path as sut
+from exactly_lib.impls.types.string_or_path import parse_string_or_path as sut, sdv
+from exactly_lib.impls.types.string_or_path.primitive import SourceType
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -12,8 +13,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib.type_val_deps.types.string_or_path import string_or_path_sdv
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
@@ -494,7 +493,7 @@ def _expect_string(put: unittest.TestCase,
 
 def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
-                   actual_result: string_or_path_sdv.StringOrPathSdv,
+                   actual_result: sdv.StringOrPathSdv,
                    expectation: CommonExpectation):
     symbol_references_assertion = equals_data_type_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,

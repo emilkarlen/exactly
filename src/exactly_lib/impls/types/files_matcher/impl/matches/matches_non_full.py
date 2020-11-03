@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Optional, Mapping, List
 
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.types.files_condition.structure import FilesConditionSdv
 from exactly_lib.impls.types.files_matcher.impl.matches import common
+from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_prims.matcher.files_matcher import FileModel
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult

@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.appl_env import executable_factories as sut
+from exactly_lib.impls.program_execution import executable_factories as sut
 from exactly_lib.type_val_prims.program.commands import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForShell, \
     CommandDriverForSystemProgram, \

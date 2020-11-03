@@ -2,8 +2,8 @@ import pathlib
 import subprocess
 import sys
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.test_case.actor import Actor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.util.file_utils.std import StdFiles

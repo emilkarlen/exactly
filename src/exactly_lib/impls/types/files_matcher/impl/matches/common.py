@@ -4,8 +4,6 @@ from typing import Callable, Sequence
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.types.files_condition.structure import FilesCondition, FilesConditionAdv, FilesConditionDdv, \
-    FilesConditionSdv
 from exactly_lib.impls.types.files_matcher import config
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -14,6 +12,8 @@ from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.types.files_condition.ddv import FilesConditionAdv, FilesCondition, FilesConditionDdv
+from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherAdv, FilesMatcherDdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

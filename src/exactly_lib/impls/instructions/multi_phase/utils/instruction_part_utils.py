@@ -3,7 +3,6 @@ Utilities for helping with integrate multi-phase instruction into different phas
 """
 from typing import Generic
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import MainStepExecutorEmbryo, \
     InstructionEmbryo, InstructionEmbryoParser, T
@@ -12,6 +11,7 @@ from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import M
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 

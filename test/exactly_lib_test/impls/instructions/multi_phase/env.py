@@ -4,7 +4,7 @@ from exactly_lib.impls.instructions.multi_phase import env as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.str_.formatter import StringFormatter

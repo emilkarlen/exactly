@@ -11,7 +11,6 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.test_resources import integration_check
@@ -23,6 +22,7 @@ from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.tcfs.test_resources.ds_action import MkSubDirAndMakeItCurrentDirectory
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRaisesHardError
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

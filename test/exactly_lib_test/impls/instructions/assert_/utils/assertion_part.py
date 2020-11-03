@@ -1,12 +1,12 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.impls.os_services import os_services_access as oss
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import ConstantSuccessSdvValidator
 from exactly_lib.type_val_deps.sym_ref.restrictions import ValueTypeRestriction

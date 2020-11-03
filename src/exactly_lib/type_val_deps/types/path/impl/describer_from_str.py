@@ -1,7 +1,7 @@
 from typing import Optional, Callable
 
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForDdv, \
+from exactly_lib.type_val_prims.path_describer import PathDescriberForDdv, \
     PathDescriberForPrimitive
 from exactly_lib.util.render.renderer import Renderer
 

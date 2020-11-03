@@ -1,10 +1,10 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 
 
 class PreOrPostSdsSvhValidationForSuccessOrHardError:

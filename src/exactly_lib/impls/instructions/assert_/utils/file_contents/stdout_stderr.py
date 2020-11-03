@@ -1,6 +1,5 @@
 from typing import Sequence, List
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
@@ -25,6 +24,7 @@ from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation

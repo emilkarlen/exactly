@@ -6,11 +6,11 @@ from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.impls.instructions.configuration.actor.test_resources import Arrangement, Expectation, \
     check_actor_execution
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_proc_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

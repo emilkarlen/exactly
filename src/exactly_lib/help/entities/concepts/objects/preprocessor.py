@@ -5,7 +5,7 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
     HelpPredefinedContentsPart
-from exactly_lib.definitions.entity import syntax_elements, concepts
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.concepts import PREPROCESSOR_CONCEPT_INFO
 from exactly_lib.definitions.test_suite import instruction_names, section_infos
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation

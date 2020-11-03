@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.instructions.assert_.utils.file_contents.parts.file_assertion_part import \
@@ -8,6 +7,7 @@ from exactly_lib.impls.instructions.assert_.utils.file_contents.parts.file_asser
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import resolving_helper_for_instruction_env
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv

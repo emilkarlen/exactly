@@ -12,7 +12,7 @@ from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.tcfs.relativity_root import REL_SDS_RESOLVERS
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation

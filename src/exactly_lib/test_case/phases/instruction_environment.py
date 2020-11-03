@@ -4,7 +4,7 @@ from typing import Callable
 from exactly_lib.tcfs import sds as _sds
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.file_utils import ensure_file_existence
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace

@@ -4,10 +4,10 @@ from typing import Callable, Optional
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds, \
+    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
-    PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.types.test_resources.validation import Expectation, ValidationAssertions, \

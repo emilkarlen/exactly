@@ -11,8 +11,8 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDe
 from exactly_lib.type_val_deps.types.path.impl import describer_handlers, described_w_handler
 from exactly_lib.type_val_deps.types.path.impl.described_w_handler import PathDescriberHandlerForDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv, DescribedPath
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
+from exactly_lib.type_val_prims.path_describer import PathDescriberForDdv
 
 
 class PathDdvWithDescriptionBase(PathDdv, ABC):

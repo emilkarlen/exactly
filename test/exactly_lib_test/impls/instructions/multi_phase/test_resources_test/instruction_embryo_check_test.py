@@ -5,7 +5,6 @@ import pathlib
 import unittest
 from typing import Generic
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_embryo import T
 from exactly_lib.section_document.parse_source import ParseSource
@@ -14,6 +13,7 @@ from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelSdsOptionTy
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue

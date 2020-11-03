@@ -1,6 +1,5 @@
 from typing import Sequence, TypeVar, Callable
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.actors.common import relativity_configuration_of_action_to_check
@@ -19,6 +18,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case.actor import ParseException, Actor, ActionToCheck
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

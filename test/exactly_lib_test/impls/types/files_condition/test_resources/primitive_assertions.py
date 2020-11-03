@@ -2,7 +2,7 @@ import unittest
 from pathlib import PurePosixPath
 from typing import Optional, Set, Mapping
 
-from exactly_lib.impls.types.files_condition.structure import FilesCondition
+from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -22,18 +22,14 @@ def file_names_equals(expected: Set[PurePosixPath]
 
 def files_matches(expected: Mapping[PurePosixPath, ValueAssertion[Optional[FileMatcher]]]
                   ) -> ValueAssertion[FilesCondition]:
-    return asrt.sub_component(
-        'files',
-        FilesCondition.files.fget,
-        asrt.matches_mapping(expected)
-    )
+    return assert_files(asrt.matches_mapping(expected))
 
 
 def assert_files(expected: ValueAssertion[Mapping[PurePosixPath, Optional[FileMatcher]]]
                  ) -> ValueAssertion[FilesCondition]:
     return asrt.sub_component(
         'files',
-        FilesCondition.files.fget,
+        _get_files,
         expected
     )
 
@@ -62,3 +58,7 @@ class _MatcherGives(ValueAssertionBase[FileMatcher]):
             actual,
             message_builder.for_sub_component('application result')
         )
+
+
+def _get_files(x: FilesCondition) -> Mapping[PurePosixPath, Optional[FileMatcher]]:
+    return x.files

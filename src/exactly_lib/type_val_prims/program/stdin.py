@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPath
+from exactly_lib.impls.types.string_or_path.primitive import StringOrPath
 
 
 class StdinData(tuple):

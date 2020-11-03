@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import PathRelativityRestriction, \

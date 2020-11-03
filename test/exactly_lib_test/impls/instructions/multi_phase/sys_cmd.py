@@ -11,8 +11,6 @@ from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
-    CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.actors.program.test_resources import tmp_dir_in_path_with_files
@@ -31,6 +29,8 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import path_arguments
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments, \
+    CommandExecutorThatRaisesHardError, CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs import py_programs

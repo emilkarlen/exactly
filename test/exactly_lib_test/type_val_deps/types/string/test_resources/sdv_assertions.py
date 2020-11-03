@@ -2,7 +2,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolDependentValue, SymbolReference
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.types.string.string_sdv import StringFragmentSdv, StringSdv
 from exactly_lib.type_val_deps.types.string.string_sdv_impls import ConstantStringFragmentSdv, \
     SymbolStringFragmentSdv

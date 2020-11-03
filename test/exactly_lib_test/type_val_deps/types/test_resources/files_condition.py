@@ -1,10 +1,10 @@
 from typing import Optional
 
 from exactly_lib.impls.types.files_condition import files_conditions
-from exactly_lib.impls.types.files_condition.structure import FilesConditionSdv
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolUsage
 from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources.arguments_building import FilesConditionArg
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

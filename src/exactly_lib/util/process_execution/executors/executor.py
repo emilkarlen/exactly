@@ -1,7 +1,7 @@
 from abc import ABC
 
-from exactly_lib.appl_env.command_executor import CommandExecutor
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
+from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings

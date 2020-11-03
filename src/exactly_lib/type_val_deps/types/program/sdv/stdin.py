@@ -1,9 +1,9 @@
 from typing import Sequence
 
+from exactly_lib.impls.types.string_or_path.sdv import StringOrPathSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references, \
     ObjectWithSymbolReferences
 from exactly_lib.type_val_deps.types.program.ddv.stdin_data import StdinDataDdv
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_sdv import StringOrPathSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

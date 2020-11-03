@@ -5,7 +5,6 @@ import sys
 import unittest
 from typing import Dict
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
@@ -17,6 +16,7 @@ from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep

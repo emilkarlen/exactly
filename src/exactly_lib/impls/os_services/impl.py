@@ -2,11 +2,11 @@ import pathlib
 import shutil
 from typing import Mapping
 
-from exactly_lib.appl_env.command_executor import CommandExecutor
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.parts import failure_details
+from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.str_.str_constructor import ToStringObject

@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering.description_tree import rendering__node_bool
 from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.impls import file_properties
@@ -14,6 +13,7 @@ from exactly_lib.impls.types.file_matcher.impl.model_constructor import ModelCon
 from exactly_lib.impls.types.path import path_check, path_err_msgs
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators

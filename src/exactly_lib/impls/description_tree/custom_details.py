@@ -8,10 +8,11 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.condition import comparators
 from exactly_lib.impls.types.path import path_rendering
+from exactly_lib.impls.types.string_or_path import ddv as string_or_path_ddv
+from exactly_lib.impls.types.string_or_path import primitive as string_or_path_prim
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
-from exactly_lib.type_val_deps.types.string_or_path import string_or_path_ddvs
 from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description_tree import tree, details
@@ -154,7 +155,7 @@ def _render_string(x: ToStringObject) -> Detail:
 
 class StringOrPath(DetailsRenderer):
     def __init__(self,
-                 string_or_path: string_or_path_ddvs.StringOrPath,
+                 string_or_path: string_or_path_prim.StringOrPath,
                  ):
         self._string_or_path = string_or_path
 
@@ -177,7 +178,7 @@ class StringOrPath(DetailsRenderer):
 
 class StringOrPathDdv(DetailsRenderer):
     def __init__(self,
-                 string_or_path: string_or_path_ddvs.StringOrPathDdv,
+                 string_or_path: string_or_path_ddv.StringOrPathDdv,
                  ):
         self._string_or_path = string_or_path
 

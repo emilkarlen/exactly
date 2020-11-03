@@ -1,6 +1,5 @@
 from typing import Tuple, Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
@@ -15,6 +14,7 @@ from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolUsage, SymbolDefinition, \
     SymbolDependentValue
 from exactly_lib.symbol.value_type import ValueType
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable

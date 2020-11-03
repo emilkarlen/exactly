@@ -3,10 +3,10 @@ import unittest
 
 from exactly_lib.impls.instructions.configuration.utils import actor_utils
 from exactly_lib.impls.os_services import os_services_access
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.impls.instructions.configuration.actor.test_resources import Arrangement, Expectation, \
     check_actor_execution, ExecutedCommandAssertion
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.value_assertions import file_assertions as asrt_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command

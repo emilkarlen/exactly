@@ -1,12 +1,13 @@
 from typing import Sequence, Optional
 
 from exactly_lib.impls.file_properties import FileType, must_exist_as
+from exactly_lib.impls.types.string_or_path.ddv import StringOrPathDdv
+from exactly_lib.impls.types.string_or_path.primitive import SourceType
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentValue
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import StringOrPathDdv, SourceType
 from exactly_lib.util.symbol_table import SymbolTable
 
 

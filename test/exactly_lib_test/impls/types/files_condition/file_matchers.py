@@ -2,7 +2,7 @@ import unittest
 from pathlib import PurePosixPath
 from typing import Optional, Mapping, Sequence
 
-from exactly_lib.impls.types.files_condition.structure import FilesCondition
+from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.name_and_value import NameAndValue, NavBuilder

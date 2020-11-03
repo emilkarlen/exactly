@@ -1,7 +1,6 @@
 import os
 from typing import List, Callable
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
@@ -16,6 +15,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile

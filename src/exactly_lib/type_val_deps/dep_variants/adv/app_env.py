@@ -1,4 +1,4 @@
-from exactly_lib.appl_env.os_services import OsServices
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 

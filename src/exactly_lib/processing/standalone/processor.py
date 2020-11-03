@@ -1,4 +1,3 @@
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.process_result_reporter import ProcessResultReporter, Environment
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
@@ -10,6 +9,7 @@ from exactly_lib.processing.standalone import result_reporting
 from exactly_lib.processing.standalone.accessor_resolver import AccessorResolver
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_suite.file_reading.exception import SuiteParseError
 
 

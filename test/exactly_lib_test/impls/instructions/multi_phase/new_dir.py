@@ -4,7 +4,7 @@ from exactly_lib.impls.instructions.multi_phase import new_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \

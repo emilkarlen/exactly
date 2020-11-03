@@ -1,7 +1,6 @@
 import types
 import unittest
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_parts
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
@@ -9,6 +8,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect

@@ -1,9 +1,9 @@
 import pathlib
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.file_creation import FileTransformerHelper
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace

@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
@@ -14,18 +13,19 @@ from exactly_lib.impls.instructions.setup.utils.instruction_utils import Instruc
 from exactly_lib.impls.types.path.path_check import PathCheck
 from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.impls.types.string_or_path.doc import StringOrHereDocOrFile
+from exactly_lib.impls.types.string_or_path.primitive import SourceType
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
-from exactly_lib.type_val_deps.types.string_or_path.string_or_path_ddvs import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

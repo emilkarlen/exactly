@@ -1,6 +1,6 @@
 import os
 
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib_test.tcfs.test_resources.sds_populator import SdsSubDirResolver
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import TcdsAction
 

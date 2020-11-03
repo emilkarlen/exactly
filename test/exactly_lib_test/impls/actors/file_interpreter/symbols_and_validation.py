@@ -13,7 +13,6 @@ from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.impls.actors.file_interpreter.configuration import COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE
 from exactly_lib_test.impls.actors.test_resources import integration_check
@@ -32,6 +31,7 @@ from exactly_lib_test.tcfs.test_resources import hds_populators, path_arguments
 from exactly_lib_test.tcfs.test_resources.hds_populators import contents_in
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import Dir
 from exactly_lib_test.test_resources.programs import py_programs

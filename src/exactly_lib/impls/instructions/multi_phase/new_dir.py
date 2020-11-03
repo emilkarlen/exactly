@@ -1,6 +1,5 @@
 from typing import Sequence, List, Optional
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
@@ -18,8 +17,9 @@ from exactly_lib.impls.types.path import path_err_msgs, parse_path, relative_pat
 from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolUsage
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem

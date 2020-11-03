@@ -8,7 +8,7 @@ from exactly_lib.impls.types.condition.comparison_structures import OperandSdv
 from exactly_lib.impls.types.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.str_ import str_constructor

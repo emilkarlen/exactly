@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Any, Sequence, List
 
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
+from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.render.renderer import Renderer, SequenceRenderer
 from exactly_lib.util.simple_textstruct import structure as text_struct
 from exactly_lib.util.simple_textstruct.structure import MajorBlock, MinorBlock, LineElement

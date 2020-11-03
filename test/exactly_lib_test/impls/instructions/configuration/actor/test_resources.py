@@ -2,7 +2,6 @@ import pathlib
 import unittest
 from typing import Sequence, Callable, List
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.actors.util import parse_act_interpreter
 from exactly_lib.impls.instructions.configuration import actor as sut
 from exactly_lib.impls.os_services import os_services_access
@@ -10,10 +9,10 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.tcfs.tcds import TestCaseDs
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.impls.actors.test_resources import integration_check, relativity_configurations
 from exactly_lib_test.impls.actors.test_resources.integration_check import PostSdsExpectation
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -23,6 +22,7 @@ from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import ActorThatRaisesImplementationException
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File
 from exactly_lib_test.test_resources.process import SubProcessResult

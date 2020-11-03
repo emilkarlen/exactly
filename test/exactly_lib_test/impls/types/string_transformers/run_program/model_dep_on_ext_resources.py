@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.impls.os_services import os_services_access
-from exactly_lib_test.appl_env.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, \
     ExecutionExpectation, \
@@ -11,6 +10,7 @@ from exactly_lib_test.impls.types.string_models.test_resources import model_cons
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.command_executors import CommandExecutorThatJustReturnsConstant
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model

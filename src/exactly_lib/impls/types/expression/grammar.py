@@ -142,4 +142,3 @@ class Grammar(Generic[EXPR]):
             name_and_value.to_dict(infix_ops_of_precedence)
             for infix_ops_of_precedence in infix_operators_in_order_of_increasing_precedence
         ]
-

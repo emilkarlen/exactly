@@ -15,10 +15,10 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string import string_sdvs

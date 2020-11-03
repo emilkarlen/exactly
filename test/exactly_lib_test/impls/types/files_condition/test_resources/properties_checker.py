@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.impls.types.files_condition.structure import FilesCondition, FilesConditionSdv, \
-    FilesConditionDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.type_val_deps.types.files_condition.sdv import FilesCondition, FilesConditionSdv, \
+    FilesConditionDdv
 from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
     CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker
 from exactly_lib_test.impls.types.logic.test_resources.logic_type_checker import \

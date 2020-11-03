@@ -1,8 +1,8 @@
 import pathlib
 from abc import ABC, abstractmethod
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv

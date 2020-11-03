@@ -1,6 +1,6 @@
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.actors.source_interpreter import parser as pa
 from exactly_lib.impls.actors.util.actor_from_parts.command_executor import OsProcessExecutor
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv

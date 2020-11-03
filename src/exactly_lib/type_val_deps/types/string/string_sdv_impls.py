@@ -1,8 +1,8 @@
 from typing import Sequence
 
 from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolContainer
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv

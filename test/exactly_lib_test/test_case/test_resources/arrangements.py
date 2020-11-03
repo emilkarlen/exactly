@@ -1,8 +1,8 @@
 from typing import Optional
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.os_services import os_services_access
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

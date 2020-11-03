@@ -1,7 +1,7 @@
 import pathlib
 from abc import ABC, abstractmethod
 
-from exactly_lib.appl_env.command_executor import CommandExecutor
+from exactly_lib.test_case.command_executor import CommandExecutor
 
 
 class OsServices(ABC):

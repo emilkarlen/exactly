@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
-from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.impls.text_render import header_rendering, file_or_dir_contents_headers
 from exactly_lib.impls.types.path import path_rendering
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import instruction_environment as i
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator

@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_val_deps.types.path.impl.described_w_handler import PathDescriberHandlerForPrimitive
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
 from exactly_lib.util.render.combinators import ConstantR
 from exactly_lib.util.render.renderer import Renderer
 

@@ -11,7 +11,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelSdsOptionType, RelOptionType
-from exactly_lib.type_val_deps.envs.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.util.process_execution.execution_elements import with_environ
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation

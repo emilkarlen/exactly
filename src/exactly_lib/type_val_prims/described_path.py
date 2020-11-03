@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from exactly_lib.type_val_deps.types.path.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
 
 
 class DescribedPath(ABC):
