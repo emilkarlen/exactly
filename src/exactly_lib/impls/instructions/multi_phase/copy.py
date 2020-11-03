@@ -1,19 +1,20 @@
 import pathlib
 from typing import Sequence, List, Optional
 
-from exactly_lib.appl_env import exception_detection
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args, InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.common.report_rendering import text_docs
+from exactly_lib.common.report_rendering.parts import failure_details
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.impls import file_properties
+from exactly_lib.impls.exception import hard_error_transl
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -31,9 +32,9 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs import path_relativity
 from exactly_lib.tcfs.path_relativity import RelOptionType
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
@@ -170,11 +171,11 @@ class _CopySourceWithoutExplicitDestinationInstruction(TheInstructionEmbryoBase)
               ) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
         destination_container = pathlib.Path.cwd()
-        return exception_detection.return_success_or_hard_error(_install_into_directory,
-                                                                os_services,
-                                                                src_path,
-                                                                src_path.name,
-                                                                destination_container)
+        return hard_error_transl.return_success_or_hard_error(_install_into_directory,
+                                                              os_services,
+                                                              src_path,
+                                                              src_path.name,
+                                                              destination_container)
 
 
 class _CopySourceWithExplicitDestinationInstruction(TheInstructionEmbryoBase):
@@ -196,7 +197,7 @@ class _CopySourceWithExplicitDestinationInstruction(TheInstructionEmbryoBase):
         src_path = self._src_path(environment)
         dst_path = self.destination_path.resolve(environment.symbols).value_post_sds(environment.sds)
         main = _MainWithExplicitDestination(os_services, src_path, dst_path)
-        return exception_detection.return_success_or_hard_error(main)
+        return hard_error_transl.return_success_or_hard_error(main)
 
 
 class _MainWithExplicitDestination:
@@ -221,10 +222,12 @@ class _MainWithExplicitDestination:
                 err_msg = '{} file already exists but is not a directory: {}'.format(
                     instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
                     self.dst_path)
-                raise exception_detection.DetectedException(
-                    FailureDetails.new_constant_message(err_msg))
+                raise HardErrorException(
+                    failure_details.FailureDetailsRenderer(
+                        failure_details.FailureDetails.new_constant_message(err_msg))
+                )
         else:
-            self.os_services.make_dir_if_not_exists__detect_ex(self.dst_path.parent)
+            self.os_services.make_dir_if_not_exists(self.dst_path.parent)
             _install_into_directory(self.os_services,
                                     self.src_path,
                                     self.dst_path.name,
@@ -261,23 +264,25 @@ def _install_into_directory(os_services: OsServices,
                             dst_container_path: pathlib.Path):
     target = dst_container_path / dst_file_name
     if target.exists():
-        raise exception_detection.DetectedException(
-            FailureDetails.new_message(
-                text_docs.single_line(
-                    str_constructor.FormatMap(
-                        '{dst} already exists: {target}',
-                        {
-                            'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
-                            'target': target,
-                        }))
+        raise HardErrorException(
+            failure_details.FailureDetailsRenderer(
+                failure_details.FailureDetails.new_message(
+                    text_docs.single_line(
+                        str_constructor.FormatMap(
+                            '{dst} already exists: {target}',
+                            {
+                                'dst': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
+                                'target': target,
+                            }))
+                )
             )
         )
     src = str(src_file_path)
     dst = str(target)
     if src_file_path.is_dir():
-        os_services.copy_tree_preserve_as_much_as_possible__detect_ex(src, dst)
+        os_services.copy_tree__preserve_as_much_as_possible(src, dst)
     else:
-        os_services.copy_file_preserve_as_much_as_possible__detect_ex(src, dst)
+        os_services.copy_file__preserve_as_much_as_possible(src, dst)
 
 
 _MAIN_DESCRIPTION_REST = """\

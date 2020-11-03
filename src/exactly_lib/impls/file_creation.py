@@ -1,10 +1,8 @@
 import pathlib
 from typing import Optional, Any, Callable, TextIO
 
-from exactly_lib.appl_env.exception_detection import DetectedException
 from exactly_lib.appl_env.os_services import OsServices
 from exactly_lib.common.report_rendering import text_docs
-from exactly_lib.common.report_rendering.parts import failure_details as failure_details_rendering
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.types.path import path_err_msgs
 from exactly_lib.impls.types.string_models.file_model import StringModelOfFile
@@ -107,13 +105,11 @@ class FileTransformerHelper:
         input_model = self._model_of(src_path)
         try:
             output_model = transformer.transform(input_model)
-            self._os_services.copy_file__detect_ex(
+            self._os_services.copy_file(
                 output_model.as_file,
                 dst_path,
             )
             return None
-        except DetectedException as ex:
-            return failure_details_rendering.FailureDetailsRenderer(ex.failure_details)
         except HardErrorException as ex:
             return ex.error
 

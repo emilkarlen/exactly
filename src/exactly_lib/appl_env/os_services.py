@@ -16,28 +16,28 @@ class OsServices(ABC):
     def command_executor(self) -> CommandExecutor:
         pass
 
-    def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
+    def make_dir_if_not_exists(self, path: pathlib.Path):
         """
-        :raises DetectedException
-        """
-        raise NotImplementedError()
-
-    def copy_file_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
-        """
-        :raises DetectedException
+        :raises HardErrorException
         """
         raise NotImplementedError()
 
-    def copy_file__detect_ex(self, src: pathlib.Path, dst: pathlib.Path):
+    def copy_file__preserve_as_much_as_possible(self, src: str, dst: str):
+        """
+        :raises HardErrorException
+        """
+        raise NotImplementedError()
+
+    def copy_file(self, src: pathlib.Path, dst: pathlib.Path):
         """
         :param src: A readable regular file.
         :param dst: Will be overwritten if it exists.
-        :raises DetectedException
+        :raises HardErrorException
         """
         raise NotImplementedError()
 
-    def copy_tree_preserve_as_much_as_possible__detect_ex(self, src: str, dst: str):
+    def copy_tree__preserve_as_much_as_possible(self, src: str, dst: str):
         """
-        :raises DetectedException
+        :raises HardErrorException
         """
         raise NotImplementedError()
