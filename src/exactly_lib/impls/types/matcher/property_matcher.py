@@ -9,8 +9,8 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnviro
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MODEL, MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MODEL, MatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import TraceRenderer, MatchingResult

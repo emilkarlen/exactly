@@ -1,5 +1,5 @@
 from exactly_lib.symbol.sdv_structure import SymbolContainer
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv

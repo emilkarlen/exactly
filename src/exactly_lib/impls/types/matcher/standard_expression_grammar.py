@@ -6,7 +6,7 @@ from exactly_lib.impls.types.expression.grammar_elements import OperatorDescript
     InfixOperatorDescriptionFromFunctions
 from exactly_lib.impls.types.matcher.impls import combinator_sdvs, symbol_reference, parse_constant
 from exactly_lib.symbol.value_type import ValueType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.name import NameWithGenderWithFormatting
 from exactly_lib.util.textformat.structure.document import SectionContents

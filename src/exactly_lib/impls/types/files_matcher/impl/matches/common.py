@@ -10,8 +10,8 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.ddv import FilesConditionAdv, FilesCondition, FilesConditionDdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherAdv, FilesMatcherDdv

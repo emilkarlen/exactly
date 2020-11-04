@@ -34,9 +34,9 @@ from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWi
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import \
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import \
     matches_sdv_of_string_matcher
+from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import string_matcher_sdv_constant_test_impl, \
     StringMatcherSymbolContext
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes

@@ -7,7 +7,7 @@ from exactly_lib.impls.types.files_matcher import parse_files_matcher as sut
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.util.logic_types import Quantifier, ExpectationType

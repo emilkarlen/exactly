@@ -10,8 +10,8 @@ from exactly_lib.impls.types.matcher.impls import sdv_components
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv

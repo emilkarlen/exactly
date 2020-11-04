@@ -1,7 +1,7 @@
 from exactly_lib.impls.types.matcher.impls.run_program.run_conf import RunConfiguration, MODEL
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 
 
 def parse(

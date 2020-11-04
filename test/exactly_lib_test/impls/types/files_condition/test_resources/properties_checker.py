@@ -1,15 +1,15 @@
 import unittest
 
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesCondition, FilesConditionSdv, \
     FilesConditionDdv
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker
-from exactly_lib_test.impls.types.logic.test_resources.logic_type_checker import \
-    WithDetailsDescriptionExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+    CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+    WithDetailsDescriptionExecutionPropertiesChecker
 
 
 class FilesConditionPropertiesConfiguration(
@@ -35,7 +35,7 @@ class FilesConditionPropertiesConfiguration(
 class _SdvPropertiesChecker(CommonSdvPropertiesChecker[FilesCondition]):
     def check(self,
               put: unittest.TestCase,
-              actual: LogicSdv[FilesCondition],
+              actual: FullDepsSdv[FilesCondition],
               message_builder: MessageBuilder,
               ):
         asrt.is_instance(FilesConditionSdv).apply(

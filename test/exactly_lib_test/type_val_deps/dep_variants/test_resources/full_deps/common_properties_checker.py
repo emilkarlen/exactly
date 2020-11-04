@@ -2,8 +2,8 @@ import unittest
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
 
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
@@ -20,7 +20,7 @@ class CommonSdvPropertiesChecker(Generic[PRIMITIVE], ABC):
     @abstractmethod
     def check(self,
               put: unittest.TestCase,
-              actual: LogicSdv[PRIMITIVE],
+              actual: FullDepsSdv[PRIMITIVE],
               message_builder: MessageBuilder,
               ):
         pass
@@ -36,7 +36,7 @@ class CommonExecutionPropertiesChecker(Generic[PRIMITIVE, OUTPUT], ABC):
     @abstractmethod
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: LogicDdv[PRIMITIVE],
+                  actual: FullDepsDdv[PRIMITIVE],
                   message_builder: MessageBuilder,
                   ):
         pass

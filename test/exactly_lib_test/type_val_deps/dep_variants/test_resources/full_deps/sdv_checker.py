@@ -2,36 +2,36 @@ import unittest
 from typing import Generic, Type
 
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicWithNodeDescriptionDdv, LogicDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithNodeDescriptionDdv, FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
 from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
-from exactly_lib_test.impls.types.logic.test_resources import assertions as asrt_logic
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
-    CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+    CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.logic_structure_assertions import has_valid_description
+from exactly_lib_test.type_val_deps.types.test_resources import full_sdv_assertions as asrt_logic
 from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
 
 
 class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
                                 CommonSdvPropertiesChecker[PRIMITIVE]):
-    def __init__(self, expected_object_type: Type[LogicSdv]):
-        self._is_valid_sdv = asrt_logic.matches_logic_sdv_attributes(
+    def __init__(self, expected_object_type: Type[FullDepsSdv]):
+        self._is_valid_sdv = asrt_logic.matches_sdv_attributes(
             expected_object_type,
             asrt.is_sequence_of(asrt.is_instance(SymbolReference))
         )
 
     def check(self,
               put: unittest.TestCase,
-              actual: LogicSdv[PRIMITIVE],
+              actual: FullDepsSdv[PRIMITIVE],
               message_builder: MessageBuilder,
               ):
-        asrt.is_instance(LogicSdv).apply(put,
-                                         actual,
-                                         message_builder.for_sub_component('type'))
-        assert isinstance(actual, LogicSdv)  # Type info for IDE
+        asrt.is_instance(FullDepsSdv).apply(put,
+                                            actual,
+                                            message_builder.for_sub_component('type'))
+        assert isinstance(actual, FullDepsSdv)  # Type info for IDE
         self._is_valid_sdv.apply(put, actual, message_builder)
 
 
@@ -39,7 +39,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
                                                   CommonExecutionPropertiesChecker[
                                                       WithTreeStructureDescription, OUTPUT]):
     def __init__(self,
-                 expected_ddv_object_type: Type[LogicWithNodeDescriptionDdv],
+                 expected_ddv_object_type: Type[FullDepsWithNodeDescriptionDdv],
                  expected_primitive_object_type: Type[WithTreeStructureDescription],
                  application_output: ValueAssertion[OUTPUT],
                  ):
@@ -50,7 +50,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: LogicDdv[WithTreeStructureDescription],
+                  actual: FullDepsDdv[WithTreeStructureDescription],
                   message_builder: MessageBuilder,
                   ):
         asrt.is_instance(self._expected_ddv_object_type).apply(
@@ -126,7 +126,7 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: LogicDdv[WithDetailsDescription],
+                  actual: FullDepsDdv[WithDetailsDescription],
                   message_builder: MessageBuilder,
                   ):
         asrt.is_instance(self._expected_ddv_object_type).apply(

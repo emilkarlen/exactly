@@ -15,10 +15,10 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_ob
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
@@ -64,7 +64,7 @@ class AssertPathIsExistingDirectory(AssertionPart[FilesSource, FilesSource]):
 
 class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSource]):
     def __init__(self,
-                 model_constructor: LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]],
+                 model_constructor: FullDepsWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]],
                  files_matcher: FilesMatcherSdv,
                  ):
         def get_ddv_validator(symbols: SymbolTable) -> DdvValidator:
@@ -101,7 +101,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
         model_constructor = self._resolve_model_constructor(os_services, environment)
         model = self._get_model(model_constructor, path_to_check)
 
-        matcher = helper.resolve_files_matcher(self._files_matcher)
+        matcher = helper.resolve_matcher(self._files_matcher)
         try:
             result = matcher.matches_w_trace(model)
             if not result.value:
@@ -134,9 +134,7 @@ class FilesMatcherAsDirContentsAssertionPart(AssertionPart[FilesSource, FilesSou
                                    environment: InstructionEnvironmentForPostSdsStep,
                                    ) -> ModelConstructor[FilesMatcherModel]:
         resolver = resolving_helper_for_instruction_env(os_services, environment)
-        return resolver.resolve_logic_w_describer(
-            self._model_constructor
-        )
+        return resolver.resolve_full(self._model_constructor)
 
     @staticmethod
     def _get_model(model_constructor: ModelConstructor[FilesMatcherModel],

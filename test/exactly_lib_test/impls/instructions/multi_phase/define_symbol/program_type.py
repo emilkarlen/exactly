@@ -18,8 +18,8 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
 from exactly_lib_test.type_val_prims.program.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program
@@ -85,7 +85,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
             with self.subTest(argument_case.name):
                 expected_symbol_container = matches_container_of_logic_type(
                     LogicValueType.PROGRAM,
-                    sdv=matcher_sdv_type_assertions.matches_sdv_of_program_constant(
+                    sdv=type_sdv_assertions.matches_sdv_of_program_constant(
                         references=asrt.matches_sequence([
                             referred_symbol.reference_assertion
                         ]),

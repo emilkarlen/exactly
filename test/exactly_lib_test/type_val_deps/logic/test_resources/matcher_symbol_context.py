@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TypeVar, Generic, Optional
 
 from exactly_lib.section_document.source_location import SourceLocationInfo
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib_test.test_resources import matcher_argument as matcher_args
 from exactly_lib_test.test_resources.matcher_argument import MatcherArgument
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \

@@ -20,12 +20,12 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue, \
     ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv, \
-    LogicWithDetailsDescriptionDdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithDetailsDescriptionDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv, FileMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
@@ -75,7 +75,7 @@ CONTENTS_MATCHER_MODEL = TypeVar('CONTENTS_MATCHER_MODEL')
 
 def sdv(
         names: NamesSetup,
-        model_constructor: LogicWithDetailsDescriptionSdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+        model_constructor: FullDepsWithDetailsDescriptionSdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
         contents_matcher: MatcherSdv[CONTENTS_MATCHER_MODEL],
 ) -> FileMatcherSdv:
     def make_ddv(symbols: SymbolTable) -> FileMatcherDdv:
@@ -153,7 +153,7 @@ class _FileContentsMatcherAdv(FileMatcherAdvImplBase,
 class _FileContentsMatcherDdv(FileMatcherDdvImplBase):
     def __init__(self,
                  names: NamesSetup,
-                 model_constructor: LogicWithDetailsDescriptionDdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
+                 model_constructor: FullDepsWithDetailsDescriptionDdv[ModelConstructor[CONTENTS_MATCHER_MODEL]],
                  contents_matcher: MatcherDdv[CONTENTS_MATCHER_MODEL],
                  ):
         self._names = names

@@ -29,8 +29,8 @@ from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRe
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import matches_sdv_of_program
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import matches_sdv_of_program
 from exactly_lib_test.type_val_prims.program.test_resources import command_assertions as asrt_command, \
     program_assertions as asrt_pgm_val
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \

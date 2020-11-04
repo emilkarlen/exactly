@@ -9,8 +9,8 @@ from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.symbol.sdv_structure import SymbolDefinition, SymbolDependentValue
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
 from exactly_lib.type_val_deps.dep_variants.data.sdv_visitor import DataTypeSdvPseudoVisitor
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
@@ -43,8 +43,8 @@ class PresentationBlockConstructor:
         self._symbol_table.add_table(builtin_symbols)
 
     def block_for(self, sdv: SymbolDependentValue) -> ResolvedValuePresentationBlock:
-        if isinstance(sdv, LogicSdv):
-            return _of_logic_type(sdv.resolve(self._symbol_table))
+        if isinstance(sdv, FullDepsSdv):
+            return _of_full_deps(sdv.resolve(self._symbol_table))
         elif isinstance(sdv, DataTypeSdv):
             constructor = _DataTypeBlockConstructor(self._symbol_table)
             return constructor.visit(sdv)
@@ -67,7 +67,7 @@ class _DataTypeBlockConstructor(DataTypeSdvPseudoVisitor[ResolvedValuePresentati
         return _BlockForCustomRenderer(_ListRenderer(value.resolve(self.symbols).describer()))
 
 
-def _of_logic_type(ddv: LogicDdv) -> ResolvedValuePresentationBlock:
+def _of_full_deps(ddv: FullDepsDdv) -> ResolvedValuePresentationBlock:
     return ddv.description().accept(_LogicValueDescriptionRenderer())
 
 

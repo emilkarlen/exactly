@@ -17,8 +17,8 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator, DdvValidator
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
@@ -31,8 +31,6 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources import integration_check as sut
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
     Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant
-from exactly_lib_test.impls.types.logic.test_resources.logic_type_checker import \
-    WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import \
@@ -61,6 +59,8 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils, \
     symbol_structure_assertions as asrt_sym
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sym_asrt
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+    WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 

@@ -2,10 +2,10 @@ import unittest
 from typing import Callable, TypeVar
 
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependentValue
-from exactly_lib.type_val_deps.dep_variants.ddv.matcher_ddv import MatcherDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_prims.description.logic_description import LogicValueDescription, DescriptionVisitor, \
     DetailsDescription, \
     NodeDescription
@@ -25,7 +25,7 @@ def matches_logic_ddv(primitive_value: Callable[[TestCaseDs], ValueAssertion],
                       tcds: TestCaseDs = fake_tcds()
                       ) -> ValueAssertion[DirDependentValue]:
     return asrt.is_instance_with__many(
-        LogicDdv,
+        FullDepsDdv,
         [
             has_valid_description(),
             has_validator(),
@@ -48,7 +48,7 @@ def matches_matcher_ddv(primitive_value: Callable[[TestCaseDs], ValueAssertion[M
         ])
 
 
-def has_valid_description() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
+def has_valid_description() -> ValueAssertion[FullDepsDdv[PRIMITIVE]]:
     return asrt.sub_component(
         'description',
         _get_description,
@@ -56,7 +56,7 @@ def has_valid_description() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
     )
 
 
-def has_node_description() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
+def has_node_description() -> ValueAssertion[FullDepsDdv[PRIMITIVE]]:
     return asrt.sub_component(
         'description',
         _get_description,
@@ -71,7 +71,7 @@ def has_node_description() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
     )
 
 
-def has_validator() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
+def has_validator() -> ValueAssertion[FullDepsDdv[PRIMITIVE]]:
     return asrt.sub_component(
         'validator',
         _get_validator,
@@ -79,7 +79,7 @@ def has_validator() -> ValueAssertion[LogicDdv[PRIMITIVE]]:
     )
 
 
-def _get_description(ddv: LogicDdv):
+def _get_description(ddv: FullDepsDdv):
     return ddv.description()
 
 
@@ -87,7 +87,7 @@ def _get_node_description_structure(description: NodeDescription):
     return description.structure()
 
 
-def _get_validator(ddv: LogicDdv):
+def _get_validator(ddv: FullDepsDdv):
     return ddv.validator
 
 

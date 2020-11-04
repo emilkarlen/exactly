@@ -7,13 +7,13 @@ from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEn
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
-    Applier
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.impls.types.program.test_resources import integration_check_config
 from exactly_lib_test.impls.types.program.test_resources.assertions import ResultWithTransformationData
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+    Applier
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
 

@@ -5,16 +5,17 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue, \
     ApplicationEnvironment
-from exactly_lib.type_val_deps.dep_variants.chains import described_dep_val
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv, \
-    LogicWithDetailsDescriptionDdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps import w_details_impls as ddv_w_details_impls
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithDetailsDescriptionDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps import w_details_impls
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
 from ...string_models.factory import RootStringModelFactory
 
 
 def with_string_model_construction(make_constructor: Callable[[RootStringModelFactory], ModelConstructor[MODEL]],
-                                   ) -> LogicWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
+                                   ) -> FullDepsWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
     def make_primitive(environment: ApplicationEnvironment) -> ModelConstructor[MODEL]:
         factory = RootStringModelFactory(
             tmp_dir_file_spaces.std_tmp_dir_file_space(environment.tmp_files_space.new_path())
@@ -24,7 +25,7 @@ def with_string_model_construction(make_constructor: Callable[[RootStringModelFa
     def make_adv(tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[ModelConstructor[MODEL]]:
         return advs.AdvFromFunction(make_primitive)
 
-    def make_ddv(symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[ModelConstructor[MODEL]]:
-        return described_dep_val.DdvFromParts(make_adv)
+    def make_ddv(symbols: SymbolTable) -> FullDepsWithDetailsDescriptionDdv[ModelConstructor[MODEL]]:
+        return ddv_w_details_impls.DdvFromParts(make_adv)
 
-    return described_dep_val.SdvFromParts(make_ddv)
+    return w_details_impls.SdvFromParts(make_ddv)

@@ -5,13 +5,13 @@ from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransfo
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration, Applier
-from exactly_lib_test.impls.types.logic.test_resources.logic_type_checker import LogicSdvPropertiesChecker, \
-    WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.impls.types.string_models.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+    CommonPropertiesConfiguration, Applier
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import LogicSdvPropertiesChecker, \
+    WithTreeStructureExecutionPropertiesChecker
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 
 

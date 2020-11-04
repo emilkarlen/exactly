@@ -4,7 +4,7 @@ from abc import ABC
 from exactly_lib.impls.types.files_matcher.parse_files_matcher import parsers
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.impls.types.files_matcher.test_resources import arguments_building as args

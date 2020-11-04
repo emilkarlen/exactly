@@ -15,9 +15,9 @@ from exactly_lib_test.type_val_deps.data.test_resources.assertion_utils import \
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     equals_data_type_symbol_references, \
     equals_data_type_symbol_reference
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ddv_assertions import equals_list_ddv
 from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions import equals_string_ddv
-from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 
 
 def equals_list_sdv_element(expected: list_sdv.ElementSdv,
@@ -78,7 +78,7 @@ def equals_list_sdv(expected: ListSdv,
     def get_element_sdvs(x: ListSdv) -> Sequence[list_sdv.ElementSdv]:
         return x.elements
 
-    return matcher_sdv_type_assertions.matches_sdv_of_list(
+    return type_sdv_assertions.matches_sdv_of_list(
         equals_data_type_symbol_references(expected.references),
         equals_list_ddv(expected_resolved_value),
         asrt.sub_component('element SDVs',
@@ -92,10 +92,10 @@ def equals_list_sdv(expected: ListSdv,
 def matches_list_sdv(expected_resolved_value: ListDdv,
                      expected_symbol_references: ValueAssertion[Sequence[SymbolReference]],
                      symbols: Optional[SymbolTable] = None) -> ValueAssertion[SymbolDependentValue]:
-    return matcher_sdv_type_assertions.matches_sdv_of_list(expected_symbol_references,
-                                                           equals_list_ddv(
-                                                               expected_resolved_value),
-                                                           symbols=symbols)
+    return type_sdv_assertions.matches_sdv_of_list(expected_symbol_references,
+                                                   equals_list_ddv(
+                                                       expected_resolved_value),
+                                                   symbols=symbols)
 
 
 def equals_constant_list(expected_str_list: Iterable[str]) -> ValueAssertion[SymbolDependentValue]:

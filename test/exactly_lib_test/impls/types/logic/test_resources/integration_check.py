@@ -17,11 +17,9 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import \
-    CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation, AssertionResolvingEnvironment
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
@@ -34,6 +32,8 @@ from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
+    CommonPropertiesConfiguration, CommonExecutionPropertiesChecker, OUTPUT, INPUT, PRIMITIVE, Applier
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 
@@ -45,7 +45,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     """
 
     def __init__(self,
-                 parser: Parser[LogicSdv[PRIMITIVE]],
+                 parser: Parser[FullDepsSdv[PRIMITIVE]],
                  configuration: CommonPropertiesConfiguration[PRIMITIVE, INPUT, OUTPUT],
                  check_application_result_with_tcds: bool,
                  ):
@@ -58,7 +58,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self._check_application_result_with_tcds = check_application_result_with_tcds
 
     @property
-    def parser(self) -> Parser[LogicSdv[PRIMITIVE]]:
+    def parser(self) -> Parser[FullDepsSdv[PRIMITIVE]]:
         return self._parser
 
     def check(self,
@@ -254,11 +254,11 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                    symbol_references: ValueAssertion[Sequence[SymbolReference]],
                    ):
         message_builder = asrt.MessageBuilder('parsed object')
-        asrt.is_instance(LogicSdv).apply(put,
-                                         parsed_object,
-                                         message_builder.for_sub_component('object type'))
+        asrt.is_instance(FullDepsSdv).apply(put,
+                                            parsed_object,
+                                            message_builder.for_sub_component('object type'))
 
-        assert isinstance(parsed_object, LogicSdv)  # Type info for IDE
+        assert isinstance(parsed_object, FullDepsSdv)  # Type info for IDE
 
         self._configuration.new_sdv_checker().check(put,
                                                     parsed_object,
@@ -278,7 +278,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def __init__(self,
                  put: unittest.TestCase,
                  model_constructor: INPUT,
-                 parser: Parser[LogicSdv[PRIMITIVE]],
+                 parser: Parser[FullDepsSdv[PRIMITIVE]],
                  arrangement: Arrangement,
                  configuration: CommonPropertiesConfiguration[PRIMITIVE, INPUT, OUTPUT],
                  check_application_result_with_tcds: bool,
@@ -303,7 +303,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         matcher_sdv = self._parse(source)
         self._execution_checker.check(matcher_sdv)
 
-    def _parse(self, source: ParseSource) -> LogicSdv[PRIMITIVE]:
+    def _parse(self, source: ParseSource) -> FullDepsSdv[PRIMITIVE]:
         sdv = self.parser.parse(source)
 
         self.source_expectation.apply_with_message(
@@ -370,13 +370,13 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.hds = None
         self.tcds = None
 
-    def check(self, sut: LogicSdv[PRIMITIVE]):
+    def check(self, sut: FullDepsSdv[PRIMITIVE]):
         try:
             self._check(sut)
         except _CheckIsDoneException:
             pass
 
-    def _check(self, sut: LogicSdv[PRIMITIVE]):
+    def _check(self, sut: FullDepsSdv[PRIMITIVE]):
         message_builder = asrt.MessageBuilder('ddv')
         matcher_ddv = self._resolve_ddv(sut, message_builder)
 
@@ -414,10 +414,10 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
     def _dummy_tcds_setup(self) -> ContextManager[TestCaseDs]:
         yield self.FAKE_TCDS
 
-    def _check_with_hds(self, ddv: LogicDdv[PRIMITIVE]):
+    def _check_with_hds(self, ddv: FullDepsDdv[PRIMITIVE]):
         self._check_validation_pre_sds(ddv)
 
-    def _check_with_sds(self, ddv: LogicDdv[PRIMITIVE]) -> _ValueAssertionApplier:
+    def _check_with_sds(self, ddv: FullDepsDdv[PRIMITIVE]) -> _ValueAssertionApplier:
         self._check_validation_post_sds(ddv)
 
         full_resolving_env = FullResolvingEnvironment(
@@ -436,21 +436,21 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         return self._check_primitive(primitive, full_resolving_env)
 
     def _resolve_ddv(self,
-                     sdv: LogicSdv[PRIMITIVE],
+                     sdv: FullDepsSdv[PRIMITIVE],
                      message_builder: asrt.MessageBuilder,
-                     ) -> LogicDdv[PRIMITIVE]:
+                     ) -> FullDepsDdv[PRIMITIVE]:
         ddv = sdv.resolve(self.arrangement.symbols)
 
-        asrt.is_instance(LogicDdv).apply(self.put,
-                                         ddv,
-                                         message_builder)
+        asrt.is_instance(FullDepsDdv).apply(self.put,
+                                            ddv,
+                                            message_builder)
 
-        assert isinstance(ddv, LogicDdv)
+        assert isinstance(ddv, FullDepsDdv)
 
         return ddv
 
     def _resolve_primitive_value(self,
-                                 ddv: LogicDdv[PRIMITIVE],
+                                 ddv: FullDepsDdv[PRIMITIVE],
                                  application_environment: ApplicationEnvironment) -> PRIMITIVE:
         adv = ddv.value_of_any_dependency(self.tcds)
 
@@ -461,7 +461,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         )
         return adv.primitive(application_environment)
 
-    def _check_validation_pre_sds(self, matcher_ddv: LogicDdv[PRIMITIVE]):
+    def _check_validation_pre_sds(self, matcher_ddv: FullDepsDdv[PRIMITIVE]):
         validator = matcher_ddv.validator
         result = validator.validate_pre_sds_if_applicable(self.hds)
 
@@ -472,7 +472,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         if result is not None:
             raise _CheckIsDoneException()
 
-    def _check_validation_post_sds(self, matcher_ddv: LogicDdv[PRIMITIVE]):
+    def _check_validation_post_sds(self, matcher_ddv: FullDepsDdv[PRIMITIVE]):
         validator = matcher_ddv.validator
         result = validator.validate_post_sds_if_applicable(self.tcds)
 

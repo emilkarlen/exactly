@@ -17,9 +17,9 @@ from exactly_lib_test.test_resources import matcher_argument
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
-from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 
 
 class AssertApplicationOfMatcherInSymbolTable(ValueAssertionBase[InstructionApplicationEnvironment], ABC):
@@ -67,7 +67,7 @@ def check_matcher_should_be_parsed_as_full_expression(put: unittest.TestCase,
 
     expected_container = matches_container_of_logic_type(
         logic_value_type,
-        matcher_sdv_type_assertions.matches_sdv_of_file_matcher(
+        type_sdv_assertions.matches_sdv_of_file_matcher(
             references=expected_symbol_references,
             primitive_value=asrt.anything_goes(),
             symbols=SymbolContext.symbol_table_of_contexts(symbols)

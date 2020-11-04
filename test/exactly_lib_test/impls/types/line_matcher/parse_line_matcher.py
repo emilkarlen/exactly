@@ -22,7 +22,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import matches_sdv_of_line_matcher
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import matches_sdv_of_line_matcher
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 
 

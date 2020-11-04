@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_exceptions 
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_args
 from exactly_lib_test.impls.types.line_matcher.test_resources import models as line_matcher_models

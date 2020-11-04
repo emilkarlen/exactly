@@ -1,13 +1,13 @@
+from typing import TypeVar
+
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv, PRIMITIVE
-from exactly_lib.type_val_deps.dep_variants.sdv.matcher_sdv import MODEL, MatcherSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
+from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MODEL, MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv, FilesCondition
-from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
-from exactly_lib.type_val_prims.matcher.files_matcher import FilesMatcher
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.program.command import Command
@@ -15,6 +15,8 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.symbol_table import SymbolTable
+
+PRIMITIVE = TypeVar('PRIMITIVE')
 
 
 class LogicTypeResolvingHelper:
@@ -43,7 +45,7 @@ class LogicTypeResolvingHelper:
     def file_space(self) -> DirFileSpace:
         return self.application_environment.tmp_files_space
 
-    def resolve_logic_w_describer(self, sdv: LogicWithDetailsDescriptionSdv[PRIMITIVE]) -> PRIMITIVE:
+    def resolve_full(self, sdv: FullDepsSdv[PRIMITIVE]) -> PRIMITIVE:
         return (
             sdv.resolve(self.symbols)
                 .value_of_any_dependency(self.tcds)
@@ -51,30 +53,19 @@ class LogicTypeResolvingHelper:
         )
 
     def resolve_matcher(self, sdv: MatcherSdv[MODEL]) -> MatcherWTrace[MODEL]:
-        return (
-            sdv.resolve(self.symbols)
-                .value_of_any_dependency(self.tcds)
-                .primitive(self.application_environment)
-        )
+        return self.resolve_full(sdv)
 
     def resolve_program(self, sdv: ProgramSdv) -> Program:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
+        return self.resolve_full(sdv)
 
     def resolve_string_transformer(self, sdv: StringTransformerSdv) -> StringTransformer:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
+        return self.resolve_full(sdv)
 
     def resolve_program_command(self, sdv: ProgramSdv) -> Command:
-        return sdv.resolve(self.symbols).command.value_of_any_dependency(self.tcds)
+        return self.resolve_full(sdv)
 
     def resolve_files_condition(self, sdv: FilesConditionSdv) -> FilesCondition:
-        return sdv.resolve(self.symbols).value_of_any_dependency(self.tcds).primitive(self.application_environment)
-
-    def resolve_files_matcher(self, sdv: FilesMatcherSdv) -> FilesMatcher:
-        return (
-            sdv.resolve(self.symbols)
-                .value_of_any_dependency(self.tcds)
-                .primitive(self.application_environment)
-        )
+        return self.resolve_full(sdv)
 
     def apply(self, sdv: MatcherSdv[MODEL], model: MODEL) -> MatchingResult:
         return self.resolve_matcher(sdv).matches_w_trace(model)

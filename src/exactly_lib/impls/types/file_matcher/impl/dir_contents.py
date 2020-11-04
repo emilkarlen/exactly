@@ -13,12 +13,11 @@ from exactly_lib.symbol.sdv_structure import references_from_objects_with_symbol
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
-from exactly_lib.type_val_deps.dep_variants.chains import described_dep_val
-from exactly_lib.type_val_deps.dep_variants.chains.described_dep_val import LogicWithDetailsDescriptionSdv, \
-    sdv_of_constant_primitive, \
-    LogicWithDetailsDescriptionDdv
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithDetailsDescriptionDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps import w_details_impls
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_matcher import FilesMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
@@ -49,13 +48,13 @@ class _NonRecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
         return models.non_recursive(model.path)
 
 
-MODEL_CONSTRUCTOR__NON_RECURSIVE = sdv_of_constant_primitive(_NonRecursiveModelConstructor())
+MODEL_CONSTRUCTOR__NON_RECURSIVE = w_details_impls.sdv_of_constant_primitive(_NonRecursiveModelConstructor())
 
 
 def model_constructor__recursive(min_depth: Optional[IntegerSdv],
                                  max_depth: Optional[IntegerSdv],
-                                 ) -> LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]]:
-    def make_ddv(symbols: SymbolTable) -> LogicWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]:
+                                 ) -> FullDepsWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]]:
+    def make_ddv(symbols: SymbolTable) -> FullDepsWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]:
         def get_int_ddv(x: IntegerSdv) -> IntegerDdv:
             return x.resolve(symbols)
 
@@ -64,7 +63,7 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
             map_optional(get_int_ddv, max_depth),
         )
 
-    return described_dep_val.SdvFromParts(
+    return w_details_impls.SdvFromParts(
         make_ddv,
         references_from_objects_with_symbol_references(
             filter_not_none([min_depth, max_depth])
@@ -73,7 +72,7 @@ def model_constructor__recursive(min_depth: Optional[IntegerSdv],
 
 
 def dir_matches_files_matcher_sdv(
-        model_constructor: LogicWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]],
+        model_constructor: FullDepsWithDetailsDescriptionSdv[ModelConstructor[FilesMatcherModel]],
         contents_matcher: FilesMatcherSdv,
 ) -> FileMatcherSdv:
     return file_contents_utils.sdv(
@@ -104,7 +103,7 @@ class _RecursiveModelConstructor(ModelConstructor[FilesMatcherModel]):
                                 self._max_depth)
 
 
-class _RecursiveModelConstructorDdv(LogicWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]):
+class _RecursiveModelConstructorDdv(FullDepsWithDetailsDescriptionDdv[ModelConstructor[FilesMatcherModel]]):
     def __init__(self,
                  min_depth: Optional[IntegerDdv],
                  max_depth: Optional[IntegerDdv],

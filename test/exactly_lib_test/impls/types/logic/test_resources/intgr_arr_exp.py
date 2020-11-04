@@ -6,7 +6,6 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from exactly_lib_test.impls.types.logic.test_resources.common_properties_checker import OUTPUT, PRIMITIVE
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.tcfs.test_resources import tcds_populators, hds_populators, non_hds_populator
 from exactly_lib_test.tcfs.test_resources.ds_action import PlainTcdsAction
@@ -15,6 +14,8 @@ from exactly_lib_test.test_case.test_resources.act_result import ActResultProduc
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import OUTPUT, \
+    PRIMITIVE
 
 
 class Arrangement:

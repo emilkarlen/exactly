@@ -18,13 +18,13 @@ from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as as
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.type_sdv_assertions import \
+    matches_sdv_of_string_transformer_constant
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.container_assertions import matches_container_of_logic_type
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.type_val_deps.types.test_resources.matcher_sdv_type_assertions import \
-    matches_sdv_of_string_transformer_constant
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers, \
     string_transformer_assertions as asrt_string_transformer
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes

@@ -14,9 +14,9 @@ from exactly_lib_test.type_val_deps.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \
     equals_data_type_symbol_references
+from exactly_lib_test.type_val_deps.dep_variants.test_resources import type_sdv_assertions
 from exactly_lib_test.type_val_deps.types.string.test_resources.ddv_assertions import equals_string_ddv, \
     equals_string_fragment_ddv
-from exactly_lib_test.type_val_deps.types.test_resources import matcher_sdv_type_assertions
 
 
 def equals_string_fragment_sdv_with_exact_type(expected: StringFragmentSdv) -> ValueAssertion[StringFragmentSdv]:
@@ -47,7 +47,7 @@ def equals_string_sdv(expected: StringSdv,
     def get_fragment_sdvs(x: StringSdv) -> Sequence[StringFragmentSdv]:
         return x.fragments
 
-    return matcher_sdv_type_assertions.matches_sdv_of_string(
+    return type_sdv_assertions.matches_sdv_of_string(
         equals_data_type_symbol_references(expected.references),
         equals_string_ddv(expected_resolved_value),
         asrt.sub_component('fragment resolvers',

@@ -10,8 +10,8 @@ from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference, \
     ReferenceRestrictions, Failure, SymbolDependentValue
 from exactly_lib.symbol.value_type import DataValueType, ValueType, LogicValueType, DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
-from exactly_lib.type_val_deps.dep_variants.ddv.app_env_dep_ddv import LogicDdv
-from exactly_lib.type_val_deps.dep_variants.sdv.logic_type_sdv import LogicSdv
+from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
+from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions as sut, value_restrictions as vr
 from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueRestriction
 from exactly_lib.util.name_and_value import NameAndValue
@@ -676,7 +676,7 @@ class TestDataSymbolContext(DataTypeSymbolContext[DataTypeSdvForTest]):
         return self._value
 
 
-class LogicSdvForTest(LogicSdv):
+class FullDepsSdvForTest(FullDepsSdv):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
@@ -684,13 +684,13 @@ class LogicSdvForTest(LogicSdv):
     def references(self) -> Sequence[SymbolReference]:
         return self._references
 
-    def resolve(self, symbols: SymbolTable) -> LogicDdv:
+    def resolve(self, symbols: SymbolTable) -> FullDepsDdv:
         raise NotImplementedError('It is an error if this method is called')
 
 
-class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicSdvForTest]):
+class TestLogicSymbolValueContext(LogicSymbolValueContext[FullDepsSdvForTest]):
     def __init__(self,
-                 sdv: LogicSdvForTest,
+                 sdv: FullDepsSdvForTest,
                  logic_value_type: LogicValueType,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
                  ):
@@ -702,7 +702,7 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicSdvForTest]):
            logic_value_type: LogicValueType,
            definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
            ) -> 'TestLogicSymbolValueContext':
-        return TestLogicSymbolValueContext(LogicSdvForTest(references),
+        return TestLogicSymbolValueContext(FullDepsSdvForTest(references),
                                            logic_value_type,
                                            definition_source)
 
@@ -714,7 +714,7 @@ class TestLogicSymbolValueContext(LogicSymbolValueContext[LogicSdvForTest]):
         return self._value_type
 
 
-class TestLogicSymbolContext(LogicTypeSymbolContext[LogicSdvForTest]):
+class TestLogicSymbolContext(LogicTypeSymbolContext[FullDepsSdvForTest]):
     def __init__(self,
                  name: str,
                  value: TestLogicSymbolValueContext,
