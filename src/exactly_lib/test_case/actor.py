@@ -33,6 +33,8 @@ class ActionToCheck(SymbolUser):
         pre-sds validation of the source that this object represents.
 
         If success is not returned, then the test is aborted.
+
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()
 
@@ -43,6 +45,8 @@ class ActionToCheck(SymbolUser):
         post-setup validation of the source that this object represents.
 
         If success is not returned, then the test is aborted.
+
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()
 
@@ -56,6 +60,8 @@ class ActionToCheck(SymbolUser):
         An opportunity to prepare for execution.
 
         E.g. write the source code to file.
+
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()
 
@@ -68,6 +74,8 @@ class ActionToCheck(SymbolUser):
         Executed after prepare.
 
         :returns exit code of executed program, or error
+
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()
 

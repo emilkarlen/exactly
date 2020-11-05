@@ -83,16 +83,25 @@ class SetupPhaseInstruction(TestCaseInstructionWithSymbols):
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        :raises: :class:`HardErrorException`
+        """
         return svh.new_svh_success()
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        :raises: :class:`HardErrorException`
+        """
         return svh.new_svh_success()
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+        """
+        :raises: :class:`HardErrorException`
+        """
         return sh.new_sh_success()
 
 

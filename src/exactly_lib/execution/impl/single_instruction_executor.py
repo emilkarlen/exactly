@@ -5,6 +5,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.section_document.source_location import SourceLocationPath
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import failure_details
 from exactly_lib.test_case.result.failure_details import FailureDetails
@@ -112,6 +113,12 @@ def execute_element(executor: ControlledInstructionExecutor,
             ExecutionFailureStatus(fail_info.status.value),
             element.source_location_info.source_location_path,
             FailureDetails.new_message(fail_info.error_message))
+    except HardErrorException as ex:
+        return SingleInstructionExecutionFailure(
+            ExecutionFailureStatus.HARD_ERROR,
+            element.source_location_info.source_location_path,
+            FailureDetails.new_message(ex.error)
+        )
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             ExecutionFailureStatus.INTERNAL_ERROR,

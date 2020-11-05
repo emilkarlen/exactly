@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.test_case.phases.common import TestCaseInstruction
@@ -115,7 +116,7 @@ class ConfigForCleanupValidatePreSds(validate_pre_sds_utils.Configuration):
         return test.cleanup_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
-def _instruction_validation_invocations() -> list:
+def _instruction_validation_invocations() -> List[validate_pre_sds_utils.Configuration]:
     return [ConfigForSetupValidatePreSds(),
             ConfigForBeforeAssertValidatePreSds(),
             ConfigForAssertValidatePreSds(),

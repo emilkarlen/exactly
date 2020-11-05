@@ -3,10 +3,10 @@ import unittest
 from exactly_lib_test.execution.partial_execution.phase_step_sequence import \
     complete_successful, \
     symbol_validation_error, \
-    pre_sds_validation_error, \
-    validate_post_setup, \
+    validation_pre_sds_error, \
+    validation_post_setup_error, \
     other_scenarios, \
-    act_phase_handling_failure, \
+    act_phase_failure, \
     act_phase_symbol_handling, \
     action_to_check_output
 
@@ -15,9 +15,9 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(complete_successful.suite())
     ret_val.addTest(symbol_validation_error.suite())
-    ret_val.addTest(pre_sds_validation_error.suite())
-    ret_val.addTest(validate_post_setup.suite())
-    ret_val.addTest(act_phase_handling_failure.suite())
+    ret_val.addTest(validation_pre_sds_error.suite())
+    ret_val.addTest(validation_post_setup_error.suite())
+    ret_val.addTest(act_phase_failure.suite())
     ret_val.addTest(act_phase_symbol_handling.suite())
     ret_val.addTest(other_scenarios.suite())
     ret_val.addTest(action_to_check_output.suite())

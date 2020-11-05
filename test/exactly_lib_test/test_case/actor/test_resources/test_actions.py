@@ -38,6 +38,13 @@ def prepare_action_that_returns_hard_error_with_message(message: str):
     return f
 
 
+def prepare_action_that_raises(ex: Exception):
+    def f(*args, **kwargs) -> sh.SuccessOrHardError:
+        raise ex
+
+    return f
+
+
 def execute_action_that_returns_hard_error_with_message(message: str):
     def f(*args, **kwargs) -> ExitCodeOrHardError:
         return new_eh_hard_error(FailureDetails.new_constant_message(message))

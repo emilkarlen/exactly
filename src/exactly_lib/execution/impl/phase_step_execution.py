@@ -7,6 +7,7 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import PhaseStepFailure, ExecutionFailureStatus, PhaseStepFailureException
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
+from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.util import line_source
 
@@ -115,6 +116,10 @@ class PhaseStepFailureResultConstructor:
                                                     self._actor_name,
                                                     self._phase_source))
 
+    def hard_error(self, ex: HardErrorException) -> PhaseStepFailure:
+        return self.apply(ExecutionFailureStatus.HARD_ERROR,
+                          FailureDetails.new_message(ex.error))
+
     def internal_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(ExecutionFailureStatus.INTERNAL_ERROR,
                           FailureDetails.new_exception(ex))
@@ -142,16 +147,19 @@ def run_instructions_phase_step(step: PhaseStep,
 T = TypeVar('T')
 
 
-def execute_action_and_catch_internal_error_exception(action_that_raises_phase_step_failure_exception: Callable[[], T],
-                                                      failure_con: PhaseStepFailureResultConstructor
-                                                      ) -> T:
+def execute_action_and_catch_internal_error_exception(
+        action_that_raises_phase_step_or_hard_error_exception: Callable[[], T],
+        failure_con: PhaseStepFailureResultConstructor
+) -> T:
     """
     :raises PhaseStepFailureException
     """
-    # return action_that_raises_phase_step_failure_exception()  # DEBUG IMPLEMENTATION EXCEPTION
+    # return action_that_raises_phase_step_or_hard_error_exception()  # DEBUG IMPLEMENTATION EXCEPTION
     try:
-        return action_that_raises_phase_step_failure_exception()
+        return action_that_raises_phase_step_or_hard_error_exception()
     except PhaseStepFailureException:
         raise
+    except HardErrorException as ex:
+        raise PhaseStepFailureException(failure_con.hard_error(ex))
     except Exception as ex:
         raise PhaseStepFailureException(failure_con.internal_error(ex))

@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
@@ -94,7 +95,7 @@ class AssertConfig(utils.Configuration):
         return test.assert_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
-def _instruction_validation_invocations() -> list:
+def _instruction_validation_invocations() -> List[utils.Configuration]:
     return [
         SetupConfig(),
         BeforeAssertConfig(),

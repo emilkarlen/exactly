@@ -17,7 +17,7 @@ InstructionEnvPostSdsGetter = Iterator[InstructionEnvironmentForPostSdsStep]
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
-        -> PartialInstructionControlledFailureInfo:
+        -> Optional[PartialInstructionControlledFailureInfo]:
     if res.is_success:
         return None
     elif res.is_validation_error:

@@ -44,8 +44,8 @@ class TestSuccessfulScenarios(TestCaseBase):
         ]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=do_return(symbol_usages),
-                        act_executor_execute=execute_action_that_returns_exit_code(128)),
+                        atc_symbol_usages=do_return(symbol_usages),
+                        atc_execute=execute_action_that_returns_exit_code(128)),
             Expectation(
                 asrt_result.matches2(
                     None,
@@ -81,7 +81,7 @@ class TestFailingScenarios(TestCaseBase):
         symbol_usages_with_ref_to_undefined_symbol = [symbol_reference('undefined_symbol')]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
+                        atc_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
             Expectation(
                 asrt_result.matches2(
                     ExecutionFailureStatus.VALIDATION_ERROR,
@@ -100,7 +100,7 @@ class TestFailingScenarios(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=do_raise(test.ImplementationErrorTestException())),
+                        atc_symbol_usages=do_raise(test.ImplementationErrorTestException())),
             Expectation(
                 asrt_result.matches2(ExecutionFailureStatus.INTERNAL_ERROR,
                                      asrt_result.has_no_sds(),
@@ -128,7 +128,7 @@ class TestFailingScenarios(TestCaseBase):
         ]
         self._check(
             Arrangement(test_case,
-                        act_executor_symbol_usages=do_return(symbol_usages)),
+                        atc_symbol_usages=do_return(symbol_usages)),
             Expectation(
                 asrt_result.matches2(
                     ExecutionFailureStatus.VALIDATION_ERROR,

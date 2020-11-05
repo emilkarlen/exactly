@@ -24,6 +24,9 @@ class CleanupPhaseInstruction(TestCaseInstructionWithSymbols):
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        :raises: :class:`HardErrorException`
+        """
         return svh.new_svh_success()
 
     def main(self,
@@ -32,6 +35,7 @@ class CleanupPhaseInstruction(TestCaseInstructionWithSymbols):
              previous_phase: PreviousPhase) -> SuccessOrHardError:
         """
         :param previous_phase: The phase that was executed directly before the cleanup phase.
+        :raises: :class:`HardErrorException`
         """
         raise NotImplementedError()
 

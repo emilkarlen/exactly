@@ -1,7 +1,8 @@
-import types
 import unittest
+from typing import Callable, Sequence
 
 from exactly_lib.execution.partial_execution.result import PartialExeResult
+from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.result import sh, svh
@@ -23,47 +24,47 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
-                act_executor_parse=do_nothing,
-                act_executor_validate_post_setup=do_return(svh.new_svh_success()),
-                act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
-                act_executor_execute=execute_action_that_returns_exit_code(),
-                act_executor_validate_pre_sds=do_return(svh.new_svh_success()),
-                act_executor_symbol_usages=do_return([])
+                actor_parse=do_nothing,
+                atc_validate_post_setup=do_return(svh.new_svh_success()),
+                atc_prepare=prepare_action_that_returns(sh.new_sh_success()),
+                atc_execute=execute_action_that_returns_exit_code(),
+                atc_validate_pre_sds=do_return(svh.new_svh_success()),
+                atc_symbol_usages: Callable[[], Sequence[SymbolUsage]] = do_return([])
                 ):
         return tuple.__new__(cls, (test_case_generator,
-                                   act_executor_validate_post_setup,
-                                   act_executor_prepare,
-                                   act_executor_execute,
-                                   act_executor_validate_pre_sds,
-                                   act_executor_symbol_usages,
-                                   act_executor_parse))
+                                   atc_validate_post_setup,
+                                   atc_prepare,
+                                   atc_execute,
+                                   atc_validate_pre_sds,
+                                   atc_symbol_usages,
+                                   actor_parse))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
         return self[0]
 
     @property
-    def act_executor_validate_post_setup(self) -> types.FunctionType:
+    def atc_validate_post_setup(self) -> Callable:
         return self[1]
 
     @property
-    def act_executor_validate_pre_sds(self) -> types.FunctionType:
+    def atc_validate_pre_sds(self) -> Callable:
         return self[4]
 
     @property
-    def act_executor_prepare(self) -> types.FunctionType:
+    def atc_prepare(self) -> Callable:
         return self[2]
 
     @property
-    def act_executor_execute(self) -> types.FunctionType:
+    def atc_execute(self) -> Callable:
         return self[3]
 
     @property
-    def act_executor_symbol_usages(self) -> types.FunctionType:
+    def atc_symbol_usages(self) -> Callable:
         return self[5]
 
     @property
-    def act_executor_parse(self) -> types.FunctionType:
+    def actor_parse(self) -> Callable:
         return self[6]
 
 
@@ -134,16 +135,16 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      expectation: Expectation,
                                      dbg_do_not_delete_dir_structure=False):
     constant_actions_act = ActionToCheckThatRunsConstantActions(
-        symbol_usages_action=arrangement.act_executor_symbol_usages,
-        validate_pre_sds_action=arrangement.act_executor_validate_pre_sds,
-        validate_post_setup_action=arrangement.act_executor_validate_post_setup,
-        prepare_action=arrangement.act_executor_prepare,
-        execute_action=arrangement.act_executor_execute,
+        symbol_usages_action=arrangement.atc_symbol_usages,
+        validate_pre_sds_action=arrangement.atc_validate_pre_sds,
+        validate_post_setup_action=arrangement.atc_validate_post_setup,
+        prepare_action=arrangement.atc_prepare,
+        execute_action=arrangement.atc_execute,
     )
     actor = recording_actor.actor_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_act,
-        parse_action=arrangement.act_executor_parse,
+        parse_action=arrangement.actor_parse,
     )
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,

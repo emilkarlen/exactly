@@ -5,6 +5,7 @@ from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
+from exactly_lib_test.execution.partial_execution.test_resources.hard_error_ex import hard_error_ex
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -87,6 +88,29 @@ class TestHardError(TestCaseBase):
             ))
 
 
+class TestHardErrorException(TestCaseBase):
+    def runTest(self):
+        conf = self.configuration
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
+            .add(conf.phase,
+                 conf.instruction_that_raises(hard_error_ex('Error message from hard error exception')))
+        execute_test_case_with_recording(
+            self,
+            Arrangement(test_case),
+            Expectation(
+                asrt_result.matches2(
+                    ExecutionFailureStatus.HARD_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        conf.step,
+                        test_case.the_extra(conf.phase)[0].source,
+                        'Error message from hard error exception'),
+                ),
+                conf.expected_steps,
+            ))
+
+
 class TestImplementationError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
@@ -114,6 +138,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([TestValidationError(configuration),
                       TestHardError(configuration),
+                      TestHardErrorException(configuration),
                       TestImplementationError(configuration),
                       ])
     return ret_val

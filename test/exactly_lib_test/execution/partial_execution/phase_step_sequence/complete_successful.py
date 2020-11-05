@@ -24,7 +24,7 @@ class Test(TestCaseBase):
             with self.subTest(expected_exit_code=expected_exit_code):
                 self._check(
                     Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(),
-                                act_executor_execute=execute_action_that_returns_exit_code(expected_exit_code)),
+                                atc_execute=execute_action_that_returns_exit_code(expected_exit_code)),
                     Expectation(
                         asrt_result.matches2(
                             None,
