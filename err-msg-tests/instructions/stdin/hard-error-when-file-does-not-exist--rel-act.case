@@ -1,0 +1,6 @@
+# Gives VALIDATION_ERROR,
+# until validation of files post SDS is not reported correctly as HARD_ERROR.
+
+[setup]
+
+stdin = -file -rel-act non-existing.txt

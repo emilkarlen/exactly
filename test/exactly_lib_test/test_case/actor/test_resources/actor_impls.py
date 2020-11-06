@@ -6,6 +6,7 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.test_case.actor.test_resources import test_actions
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.execute_methods import BeforeExecuteMethod
 from exactly_lib_test.test_resources import actions
 
 
@@ -19,7 +20,7 @@ class ActorThatRunsConstantActions(Actor):
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
                  prepare_initial_action=actions.do_nothing,
                  execute_action=test_actions.execute_action_that_returns_exit_code(0),
-                 execute_initial_action=actions.do_nothing,
+                 execute_initial_action: BeforeExecuteMethod = actions.do_nothing,
                  apply_action_before_atc_is_constructed=actions.do_nothing):
         self.apply_action_before_atc_is_constructed = apply_action_before_atc_is_constructed
         self.parse_atc = parse_atc

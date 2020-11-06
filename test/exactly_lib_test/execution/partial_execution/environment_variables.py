@@ -135,6 +135,10 @@ class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
         if self.variable_name in os.environ:
             self.phases_that_contains_the_environment_variable.add(self.phase_step)
 
+    def as_arbitrary_initial_action(self, *args, **kwargs):
+        if self.variable_name in os.environ:
+            self.phases_that_contains_the_environment_variable.add(self.phase_step)
+
 
 class _RecorderOfExistenceOfGlobalEnvVar:
     def __init__(self, environment_variable_name: str):
@@ -179,7 +183,7 @@ def _actor_that_records_existence_of_var_in_global_env(
         validate_pre_sds_initial_action=recorder.for_step(step.ACT__VALIDATE_PRE_SDS),
         validate_post_setup_initial_action=recorder.for_step(step.ACT__VALIDATE_POST_SETUP),
         prepare_initial_action=recorder.for_step(step.ACT__PREPARE),
-        execute_initial_action=recorder.for_step(step.ACT__EXECUTE),
+        execute_initial_action=recorder.for_step(step.ACT__EXECUTE).as_arbitrary_initial_action,
     )
 
 

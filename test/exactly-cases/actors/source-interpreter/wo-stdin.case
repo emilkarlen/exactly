@@ -1,0 +1,18 @@
+[conf]
+
+actor = source -python
+
+[act]
+
+import sys
+
+for line in sys.stdin.readlines():
+    sys.stdout.write(line)
+
+[assert]
+
+exit-code == 0
+
+stdout empty
+
+stderr empty

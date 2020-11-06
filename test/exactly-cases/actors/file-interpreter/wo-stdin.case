@@ -1,0 +1,15 @@
+[conf]
+
+actor = file -python
+
+[act]
+
+print-stdin.py
+
+[assert]
+
+exit-code == 0
+
+stdout empty
+
+stderr empty

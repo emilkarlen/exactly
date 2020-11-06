@@ -45,6 +45,15 @@ def map_optional(f: Callable[[T], U], x: Optional[T]) -> Optional[U]:
     )
 
 
+def optional_as_list(x: Optional[T]) -> List[T]:
+    return (
+        []
+        if x is None
+        else
+        [x]
+    )
+
+
 def reduce_optional(f: Callable[[T], U], value_if_none: U, x: Optional[T]) -> U:
     return (
         value_if_none

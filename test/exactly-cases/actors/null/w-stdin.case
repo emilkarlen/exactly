@@ -1,0 +1,22 @@
+[conf]
+
+actor = null
+
+[setup]
+
+stdin = 'the stdin'
+
+[act]
+
+this
+should
+be
+ignored
+
+[assert]
+
+exit-code == 0
+
+stdout empty
+
+stderr empty

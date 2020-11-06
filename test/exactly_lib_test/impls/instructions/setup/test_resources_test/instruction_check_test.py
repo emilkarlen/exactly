@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     setup_phase_instruction_that
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check as sut
@@ -73,22 +74,18 @@ class TestSettingsBuilder(TestCaseBase):
         )
 
     def test_failure(self):
-        initial_settings_builder = SetupSettingsBuilder()
-        expected_contents = 'expected contents'
-        actual_contents = 'actual contents'
-        initial_settings_builder.stdin.contents = expected_contents
         with self.assertRaises(utils.TestError):
             self._check(
-                utils.ParserThatGives(InstructionThatSetsStdinToContents(actual_contents)),
+                utils.ParserThatGives(setup_phase_instruction_that()),
                 single_line_source(),
                 sut.Arrangement(
-                    initial_settings_builder=initial_settings_builder
+                    initial_settings_builder=SetupSettingsBuilder()
                 ),
                 sut.Expectation(
                     settings_builder=asrt.sub_component(
-                        'stdin.contents',
-                        lambda model: model.actual.stdin.contents,
-                        asrt.equals(expected_contents))
+                        'stdin',
+                        lambda model: model.actual.stdin,
+                        asrt.is_not_none)
                 ),
             )
 
@@ -266,15 +263,15 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
         return svh.new_svh_success()
 
 
-class InstructionThatSetsStdinToContents(SetupPhaseInstruction):
-    def __init__(self, contents: str):
-        self.contents = contents
+class InstructionThatSetsStdin(SetupPhaseInstruction):
+    def __init__(self, value_to_set: StringModel):
+        self.value_to_set = value_to_set
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.stdin.contents = self.contents
+        settings_builder.stdin = self.value_to_set
         return sh.new_sh_success()
 
 

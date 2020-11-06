@@ -1,4 +1,4 @@
-from typing import Sequence, Dict, Generic, Callable
+from typing import Sequence, Dict, Generic, Callable, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
@@ -12,8 +12,10 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.result import svh, eh
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.test_case.result import svh
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
+from exactly_lib_test.test_case.actor.test_resources.execute_methods import BeforeExecuteMethod, ExecuteFunction
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 
 
@@ -122,15 +124,17 @@ class _ExecutorConstructorForConstant(Generic[EXECUTABLE_OBJECT], sut.ExecutorCo
 class UnconditionallySuccessfulExecutor(sut.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles) -> int:
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
+                ) -> int:
         return 0
 
 
 class ExecutorThat(sut.Executor):
     def __init__(self,
                  prepare: Callable = do_nothing,
-                 execute_initial_action: Callable = do_nothing,
-                 execute: Callable = do_return(0),
+                 execute_initial_action: BeforeExecuteMethod = do_nothing,
+                 execute: ExecuteFunction = do_return(0),
                  ):
         self._prepare = prepare
         self._execute_initial_action = execute_initial_action
@@ -143,9 +147,11 @@ class ExecutorThat(sut.Executor):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles) -> eh.ExitCodeOrHardError:
-        self._execute_initial_action(environment, std_files)
-        return self._execute(environment, std_files)
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
+                ) -> int:
+        self._execute_initial_action(environment, stdin, output)
+        return self._execute(environment, stdin, output)
 
 
 class ValidatorThatRecordsSteps(sut.Validator):
@@ -178,7 +184,8 @@ class ExecutorThatRecordsSteps(sut.Executor):
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> int:
         self.recorder[phase_step.ACT__EXECUTE] = self.act_phase_source
         return 0

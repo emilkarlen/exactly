@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -8,7 +8,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 
 
@@ -45,7 +46,8 @@ class ActionToCheckWrapperThatRecordsSteps(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(environment, os_services, std_files)
+        return self.__wrapped.execute(environment, os_services, stdin, output)

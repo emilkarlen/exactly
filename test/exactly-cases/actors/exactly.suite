@@ -1,1 +1,6 @@
-*.case
+[suites]
+
+null
+file-interpreter
+source-interpreter
+command

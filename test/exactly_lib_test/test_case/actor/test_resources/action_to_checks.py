@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -9,8 +9,10 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources import test_actions
+from exactly_lib_test.test_case.actor.test_resources.execute_methods import BeforeExecuteMethod, ExecuteFunctionEh
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_nothing
 
@@ -31,7 +33,8 @@ class ActionToCheckThatJustReturnsSuccess(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
 
@@ -42,7 +45,7 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
                  before_wrapped_parse=do_nothing,
                  before_wrapped_validate=do_nothing,
                  before_wrapped_prepare=do_nothing,
-                 before_wrapped_execute=do_nothing,
+                 before_wrapped_execute: BeforeExecuteMethod = do_nothing,
                  before_wrapped_validate_pre_sds=do_nothing
                  ):
         self.__wrapped = wrapped
@@ -74,10 +77,11 @@ class ActionToCheckWrapperWithActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        self.before_wrapped_execute(environment, std_files)
-        return self.__wrapped.execute(environment, os_services, std_files)
+        self.before_wrapped_execute(environment, stdin, output)
+        return self.__wrapped.execute(environment, os_services, stdin, output)
 
 
 class ActionToCheckThatRunsConstantActions(ActionToCheck):
@@ -88,8 +92,8 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
                  validate_post_setup_initial_action=actions.do_nothing,
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
                  prepare_initial_action=actions.do_nothing,
-                 execute_action=test_actions.execute_action_that_returns_exit_code(0),
-                 execute_initial_action=actions.do_nothing,
+                 execute_action: ExecuteFunctionEh = test_actions.execute_action_that_returns_exit_code(0),
+                 execute_initial_action: BeforeExecuteMethod = actions.do_nothing,
                  symbol_usages_action=actions.do_return([])
                  ):
         self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
@@ -127,7 +131,8 @@ class ActionToCheckThatRunsConstantActions(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
-        self.__execute_initial_action(environment, std_files)
-        return self.__execute_action(environment, std_files)
+        self.__execute_initial_action(environment, stdin, output)
+        return self.__execute_action(environment, stdin, output)

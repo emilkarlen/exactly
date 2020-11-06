@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -10,7 +10,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
 class ParseException(Exception):
@@ -23,10 +24,6 @@ class ParseException(Exception):
 
 
 class ActionToCheck(SymbolUser):
-    """
-    Executes the ATC.
-    """
-
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         """
@@ -68,7 +65,8 @@ class ActionToCheck(SymbolUser):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         """
         Executed after prepare.

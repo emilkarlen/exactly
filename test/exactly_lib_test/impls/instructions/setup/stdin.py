@@ -6,20 +6,20 @@ from exactly_lib.definitions import path as path_syntax
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.definitions.path import REL_HDS_CASE_OPTION_NAME
 from exactly_lib.impls.instructions.setup import stdin as sut
-from exactly_lib.impls.types.string import parse_string
 from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
-from exactly_lib.type_val_deps.types.path import path_ddv
-from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_deps.types.string import string_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.test_case.phases import setup as setup_phase
+from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
-from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation, SettingsBuilderAssertionModel
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
@@ -30,14 +30,17 @@ from exactly_lib_test.section_document.test_resources.parse_source import argume
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.tcfs.test_resources.hds_populators import hds_case_dir_contents
+from exactly_lib_test.test_case.result.test_resources import sh_assertions as asrt_sh
 from exactly_lib_test.test_case.result.test_resources import svh_assertions
+from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
+from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
-from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathSymbolValueContext
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolValueContext, \
-    StringConstantSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 
 
 def suite() -> unittest.TestSuite:
@@ -46,6 +49,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToFile),
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToHereDoc),
         unittest.makeSuite(TestFailingInstructionExecution),
+        TestStringModelAsFileShouldRaiseHardErrorWhenFileDoNotExist(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -134,21 +138,23 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                 'SYMBOL',
                 sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
+        stdin_file = File('stdin.txt', 'contents of stdin / rel non-hds')
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_argument):
-                self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
+                self._run(assignment_of('{file_option} {relativity_option} {file_name}'.format(
                     file_option=option_syntax(parse_string_or_path.FILE_ARGUMENT_OPTION),
-                    relativity_option=rel_opt.option_argument),
+                    relativity_option=rel_opt.option_argument,
+                    file_name=stdin_file.name),
                     ['following line']),
                     Arrangement(
                         tcds_contents=rel_opt.populator_for_relativity_option_root(DirContents([
-                            File.empty('file.txt')])),
+                            stdin_file])),
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        settings_builder=AssertStdinFileIsSetToFile(
-                            path_ddvs.of_rel_option(rel_opt.relativity,
-                                                    path_ddvs.constant_path_part('file.txt'))),
+                        settings_builder=AssertStdinIsPresentWithContents(
+                            stdin_file.contents,
+                            may_depend_on_external_resources=True),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -162,74 +168,110 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                 'SYMBOL',
                 sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
+        stdin_file = File('stdin.txt', 'contents of stdin / rel hds')
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_argument):
-                self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
+                self._run(assignment_of('{file_option} {relativity_option} {file_name}'.format(
                     file_option=option_syntax(parse_string_or_path.FILE_ARGUMENT_OPTION),
-                    relativity_option=rel_opt.option_argument),
+                    relativity_option=rel_opt.option_argument,
+                    file_name=stdin_file.name),
                     ['following line']),
                     Arrangement(
                         hds_contents=hds_case_dir_contents(
-                            DirContents([File.empty('file.txt')])),
+                            DirContents([stdin_file])),
                         symbols=rel_opt.symbols.in_arrangement(),
                     ),
                     Expectation(
-                        settings_builder=AssertStdinFileIsSetToFile(
-                            path_ddvs.of_rel_option(RelOptionType.REL_HDS_CASE,
-                                                    path_ddvs.constant_path_part('file.txt'))),
+                        settings_builder=AssertStdinIsPresentWithContents(
+                            stdin_file.contents,
+                            may_depend_on_external_resources=True),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
 
 
+class TestStringModelAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseForParser):
+    def runTest(self):
+        # ARRANGE #
+        rel_opt = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
+        source_for_non_existing_file = assignment_of('{file_option} {relativity_option} non-existing-file.txt'.format(
+            file_option=option_syntax(parse_string_or_path.FILE_ARGUMENT_OPTION),
+            relativity_option=rel_opt.option_argument),
+        )
+        parser = sut.Parser()
+        proc_exe_arrangement = ProcessExecutionArrangement()
+        # ACT & ASSERT #
+        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source_for_non_existing_file)
+        self.assertIsInstance(instruction, SetupPhaseInstruction)
+        with tcds_with_act_as_curr_dir() as path_resolving_environment:
+            environment_builder = InstructionEnvironmentPostSdsBuilder.new_tcds(
+                path_resolving_environment.tcds,
+                SymbolTable.empty(),
+                proc_exe_arrangement.process_execution_settings,
+            )
+            instruction_environment = environment_builder.build_post_sds()
+            settings_builder = setup_phase.default_settings()
+
+            main_result = instruction.main(instruction_environment,
+                                           proc_exe_arrangement.os_services,
+                                           settings_builder)
+
+            asrt_sh.is_success().apply_with_message(self, main_result, 'main result')
+            actual_stdin = settings_builder.stdin
+            self.assertIsInstance(actual_stdin, StringModel, 'stdin should have been set')
+            assert actual_stdin is not None
+
+            with self.assertRaises(HardErrorException) as cm:
+                path = actual_stdin.as_file
+
+            asrt_text_doc.is_any_text().apply_with_message(self, cm.exception.error,
+                                                           'error message')
+
+
 class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
     def test_doc_without_symbol_references(self):
         content_line_of_here_doc = 'content line of here doc'
+        expected_stdin_contents = hd.contents_str_from_lines([content_line_of_here_doc])
         self._run(assignment_of(' <<MARKER  ',
                                 [content_line_of_here_doc,
                                  'MARKER',
                                  'following line']),
                   Arrangement(),
                   Expectation(
-                      settings_builder=AssertStdinIsSetToContents(
-                          string_sdvs.str_constant(hd.contents_str_from_lines([content_line_of_here_doc])),
+                      settings_builder=AssertStdinIsPresentWithContents(
+                          expected_stdin_contents,
+                          may_depend_on_external_resources=False,
                       ),
                       source=is_at_beginning_of_line(4)),
                   )
 
     def test_doc_with_symbol_references(self):
+        # ARRANGE #
         content_line_of_here_doc_template = 'content line of here doc with {symbol}'
-        here_doc_contents_template = hd.contents_str_from_lines([content_line_of_here_doc_template])
         symbol = StringConstantSymbolContext('symbol_name', 'the symbol value')
+        expected_stdin_contents = hd.contents_str_from_lines([
+            content_line_of_here_doc_template.format(symbol=symbol.str_value)
+        ])
         expected_symbol_references = asrt.matches_singleton_sequence(
             symbol.reference_assertion__any_data_type
         )
-        cases = [
-            NameAndValue('string value container',
-                         StringSymbolValueContext.of_constant('string symbol value').container
-                         ),
-            NameAndValue('path value container',
-                         PathSymbolValueContext.of_rel_opt_and_suffix(RelOptionType.REL_ACT, 'file-name.txt').container
-                         ),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
-                self._run(assignment_of(' <<MARKER  ',
-                                        [content_line_of_here_doc_template.format(
-                                            symbol=symbol.name__sym_ref_syntax),
-                                            'MARKER',
-                                            'following line']),
-                          Arrangement(
-                              symbols=symbol.symbol_table
-                          ),
-                          Expectation(
-                              settings_builder=AssertStdinIsSetToContents(
-                                  parse_string.string_sdv_from_string(
-                                      here_doc_contents_template.format(
-                                          symbol=symbol.name__sym_ref_syntax))),
-                              symbol_usages=expected_symbol_references,
-                              source=is_at_beginning_of_line(4)),
-                          )
+        # ACT & ASSERT #
+        self._run(
+            assignment_of(' <<MARKER  ',
+                          [content_line_of_here_doc_template.format(
+                              symbol=symbol.name__sym_ref_syntax),
+                              'MARKER',
+                              'following line']),
+            Arrangement(
+                symbols=symbol.symbol_table
+            ),
+            Expectation(
+                settings_builder=AssertStdinIsPresentWithContents(
+                    expected_stdin_contents,
+                    may_depend_on_external_resources=False),
+                symbol_usages=expected_symbol_references,
+                source=is_at_beginning_of_line(4)),
+        )
 
 
 class TestFailingInstructionExecution(TestCaseBaseForParser):
@@ -290,44 +332,25 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
 
-class AssertStdinFileIsSetToFile(ValueAssertionBase):
+class AssertStdinIsPresentWithContents(ValueAssertionBase[SettingsBuilderAssertionModel]):
     def __init__(self,
-                 expected_path: path_ddv.PathDdv):
-        self._expected_path = expected_path
+                 expected: str,
+                 may_depend_on_external_resources: bool
+                 ):
+        self._expectation = asrt_string_model.model_string_matches(
+            asrt.equals(expected),
+            asrt.equals(may_depend_on_external_resources),
+        )
 
     def _apply(self,
                put: unittest.TestCase,
-               value,
-               message_builder: asrt.MessageBuilder):
-        model = value
-        assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
-        put.assertIsNone(model.actual.stdin.contents,
-                         message_builder.apply('contents should not be set when using file'))
-        expected_file_name = self._expected_path.value_of_any_dependency(
-            model.environment.path_resolving_environment_pre_or_post_sds.tcds)
-        put.assertEqual(expected_file_name,
-                        model.actual.stdin.file_name,
-                        message_builder.apply('Name of stdin file in Setup Settings'))
-
-
-class AssertStdinIsSetToContents(ValueAssertionBase):
-    def __init__(self,
-                 expected_contents_sdv: StringSdv):
-        self.expected_contents_sdv = expected_contents_sdv
-
-    def _apply(self,
-               put: unittest.TestCase,
-               value,
-               message_builder: asrt.MessageBuilder):
-        model = value
-        assert isinstance(model, SettingsBuilderAssertionModel)  # Type info for IDE
-        put.assertIsNone(model.actual.stdin.file_name,
-                         message_builder.apply('file name should not be set when using here doc'))
-        expected_contents_str = self.expected_contents_sdv.resolve_value_of_any_dependency(
-            model.environment.path_resolving_environment_pre_or_post_sds)
-        put.assertEqual(expected_contents_str,
-                        model.actual.stdin.contents,
-                        message_builder.apply('stdin as contents'))
+               value: SettingsBuilderAssertionModel,
+               message_builder: asrt.MessageBuilder,
+               ):
+        stdin = value.actual.stdin
+        put.assertIsNotNone(stdin,
+                            message_builder.apply('stdin should be present'))
+        self._expectation.apply(put, stdin, message_builder)
 
 
 def assignment_of_list_of_args(arguments: List[str],

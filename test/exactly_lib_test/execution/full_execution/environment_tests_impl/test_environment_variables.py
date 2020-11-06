@@ -1,6 +1,6 @@
 import copy
 import unittest
-from typing import Dict
+from typing import Dict, Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
@@ -10,6 +10,8 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
@@ -45,7 +47,7 @@ class Test(FullExecutionTestCaseBase):
                 phase_step.ACT__PREPARE),
             execute_initial_action=_RecordEnvVars(
                 self.recorder,
-                phase_step.ACT__EXECUTE))
+                phase_step.ACT__EXECUTE).as_execute_initial_action)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(
@@ -169,5 +171,12 @@ class _ConfigurationPhaseActionThatSetsHdsActDirToParentParent:
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
+        self.recorder.set_phase_step_recording(self.my_phase_step,
+                                               copy.copy(environment.proc_exe_settings.environ))
+
+    def as_execute_initial_action(self,
+                                  environment: InstructionEnvironmentForPreSdsStep,
+                                  stdin: Optional[StringModel],
+                                  output: StdOutputFiles):
         self.recorder.set_phase_step_recording(self.my_phase_step,
                                                copy.copy(environment.proc_exe_settings.environ))

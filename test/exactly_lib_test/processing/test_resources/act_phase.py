@@ -1,8 +1,11 @@
+from typing import Optional
+
 from exactly_lib.definitions.entity import actors
 from exactly_lib.impls.actors.program import actor as command_line_actor
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
 from exactly_lib_test.test_case.actor.test_resources.actor_impls import \
@@ -21,9 +24,7 @@ def act_setup_that_prints_single_string_on_stdout(string_to_print: str) -> ActPh
 def act_setup_that_does_nothing() -> ActPhaseSetup:
     return ActPhaseSetup(
         'actor that does nothing',
-        ActorForConstantAtc(
-            ActionToCheckThatRunsConstantActions())
-    )
+        ActorForConstantAtc(ActionToCheckThatRunsConstantActions()))
 
 
 def command_line_actor_setup() -> ActPhaseSetup:
@@ -37,5 +38,6 @@ class PrintStringOnStdout:
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 std_files: StdFiles):
-        std_files.output.out.write(self.string_to_print)
+                 stdin: Optional[StringModel],
+                 output: StdOutputFiles):
+        output.out.write(self.string_to_print)

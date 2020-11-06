@@ -5,6 +5,7 @@ from typing import List, Optional, Sequence, ContextManager, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
+from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -16,7 +17,8 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
@@ -31,7 +33,8 @@ from exactly_lib_test.test_case.result.test_resources import failure_details_ass
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
-from exactly_lib_test.test_resources.process import capture_process_executor_result, SubProcessResult, ProcessExecutor
+from exactly_lib_test.test_resources.process import SubProcessResult, ProcessExecutor, \
+    capture_process_executor_result__wo_stdin, ProcessExecutorWoStdin
 from exactly_lib_test.test_resources.tcds_and_symbols.sds_env_utils import sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
@@ -292,16 +295,17 @@ class _Checker:
                  atc: ActionToCheck,
                  env: InstructionEnvironmentForPostSdsStep,
                  ):
-        process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+        process_executor = ProcessExecutorForProgramExecutorWoStdinThatRaisesIfResultIsNotExitCode(
             env,
             self._arrangement.process_execution.os_services,
-            atc)
+            atc,
+            self._stdin(env)
+        )
         error_msg_extra_info = ''
         sub_process_result = None
         try:
-            sub_process_result = capture_process_executor_result(process_executor,
-                                                                 env.sds.result.root_dir,
-                                                                 self._arrangement.stdin_contents)
+            sub_process_result = capture_process_executor_result__wo_stdin(process_executor,
+                                                                           env.sds.result.root_dir)
             step_result = new_eh_exit_code(sub_process_result.exitcode)
         except HardErrorResultError as ex:
             step_result = ex.result
@@ -318,6 +322,14 @@ class _Checker:
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
         self._expectation.after_execution.apply_with_message(self._put, env.tcds, 'after execution')
 
+    def _stdin(self, env: InstructionEnvironmentForPostSdsStep) -> Optional[StringModel]:
+        stdin_contents = self._arrangement.stdin_contents
+        if stdin_contents is None or not stdin_contents:
+            return None
+        else:
+            model_factory = RootStringModelFactory(env.tmp_dir__path_access.paths_access)
+            return model_factory.of_const_str(stdin_contents)
+
     def _check_symbols_after(self, atc: ActionToCheck, step: str):
         self._expectation.symbol_usages.apply_with_message(
             self._put,
@@ -327,3 +339,30 @@ class _Checker:
 
 class _CheckIsDoneException(Exception):
     pass
+
+
+class ProcessExecutorForProgramExecutorWoStdinThatRaisesIfResultIsNotExitCode(ProcessExecutorWoStdin):
+    """
+    An executor that raises HardErrorResultError if result is not an exit code.
+    """
+
+    def __init__(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 os_services: OsServices,
+                 atc: ActionToCheck,
+                 stdin: Optional[StringModel],
+                 ):
+        self.environment = environment
+        self.os_services = os_services
+        self.atc = atc
+        self.stdin = stdin
+
+    def execute(self, output: StdOutputFiles) -> int:
+        """
+         :raises HardErrorResultError: Return value from executor is not an exit code.
+        """
+        exit_code_or_hard_error = self.atc.execute(self.environment, self.os_services, self.stdin, output)
+        if exit_code_or_hard_error.is_exit_code:
+            return exit_code_or_hard_error.exit_code
+        raise HardErrorResultError(exit_code_or_hard_error,
+                                   exit_code_or_hard_error.failure_details)

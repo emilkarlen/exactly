@@ -1,0 +1,19 @@
+[conf]
+
+actor = file -python
+
+[setup]
+
+stdin = 'the stdin'
+
+[act]
+
+print-stdin.py
+
+[assert]
+
+exit-code == 0
+
+stdout equals 'the stdin'
+
+stderr empty

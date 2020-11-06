@@ -1,7 +1,6 @@
 import pathlib
-import subprocess
 from contextlib import contextmanager
-from typing import Optional, Callable
+from typing import Optional, Callable, ContextManager
 
 from exactly_lib.execution.impl.result import ActionThatRaisesPhaseStepFailureException
 from exactly_lib.execution.result import ActionToCheckOutcome, ExecutionFailureStatus, PhaseStepFailure, \
@@ -10,11 +9,11 @@ from exactly_lib.tcfs.sds import stdin_contents_file
 from exactly_lib.test_case.actor import ActionToCheck
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.setup import StdinConfiguration
-from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
+from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
+from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils import misc_utils
-from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 PhaseStepFailureConstructorType = Callable[[ExecutionFailureStatus, FailureDetails], PhaseStepFailure]
 
@@ -37,14 +36,14 @@ class ActionToCheckExecutor:
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
-                 stdin_configuration: StdinConfiguration,
+                 stdin: Optional[StringModel],
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.atc = atc
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
         self.os_services = os_services
         self.tcds = environment_for_other_steps.tcds
-        self.stdin_configuration = stdin_configuration
+        self._stdin = stdin
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
         self._action_to_check_outcome = None
@@ -82,7 +81,7 @@ class ActionToCheckExecutor:
 
     def execute(self, failure_con: PhaseStepFailureConstructorType) -> ActionThatRaisesPhaseStepFailureException:
         def action():
-            exit_code_or_hard_error = self._execute_with_stdin_handling()
+            exit_code_or_hard_error = self._do_execute()
             if not exit_code_or_hard_error.is_exit_code:
                 raise PhaseStepFailureException(
                     failure_con(ExecutionFailureStatus.HARD_ERROR,
@@ -91,35 +90,22 @@ class ActionToCheckExecutor:
 
         return action
 
-    def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
-        if self.stdin_configuration.has_custom_stdin:
-            file_name = self._custom_stdin_file_path()
-            return self._run_act_program_with_opened_stdin_file(file_name)
-        else:
-            return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
-
-    def _run_act_program_with_opened_stdin_file(self, file_name: pathlib.Path) -> ExitCodeOrHardError:
-        try:
-            with file_name.open() as f_stdin:
-                return self._run_act_program_with_stdin_file(f_stdin)
-        except IOError as ex:
-            return new_eh_hard_error(FailureDetails.new_exception(
-                ex,
-                'Failure to open stdin file: ' + str(file_name)))
-
-    def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
+    def _do_execute(self) -> ExitCodeOrHardError:
         with self._std_output_files() as std_output_files:
-            std_files = StdFiles(f_stdin, std_output_files)
-            return self._run_act_program_with_std_files(std_files)
+            return self._do_execute_w_output_files(std_output_files)
 
-    def _run_act_program_with_std_files(self,
-                                        std_files: StdFiles) -> ExitCodeOrHardError:
-        exit_code_or_hard_error = self.atc.execute(self.environment_for_other_steps, self.os_services, std_files)
+    def _do_execute_w_output_files(self, output: StdOutputFiles) -> ExitCodeOrHardError:
+        exit_code_or_hard_error = self.atc.execute(
+            self.environment_for_other_steps,
+            self.os_services,
+            self._stdin,
+            output,
+        )
         self._register_outcome(exit_code_or_hard_error)
         return exit_code_or_hard_error
 
     @contextmanager
-    def _std_output_files(self):
+    def _std_output_files(self) -> ContextManager[StdOutputFiles]:
         if self.exe_atc_and_skip_assertions is not None:
             yield self.exe_atc_and_skip_assertions
         else:
@@ -139,7 +125,7 @@ class ActionToCheckExecutor:
             f.write(str(exitcode))
 
     def _custom_stdin_file_path(self) -> pathlib.Path:
-        configuration = self.stdin_configuration
+        configuration = self._stdin
         if configuration.file_name is not None:
             return configuration.file_name
         else:

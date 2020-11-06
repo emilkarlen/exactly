@@ -1,0 +1,19 @@
+[conf]
+
+actor = command
+
+[setup]
+
+stdin = 'the stdin'
+
+[act]
+
+-python @[EXACTLY_HOME]@/print-stdin.py
+
+[assert]
+
+exit-code == 0
+
+stdout equals 'the stdin'
+
+stderr empty

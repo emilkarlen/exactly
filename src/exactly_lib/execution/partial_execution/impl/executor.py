@@ -88,7 +88,7 @@ class _PartialExecutor:
         self.conf_values = conf.conf_phase_values
         self._test_case = test_case
         self._setup_settings_builder = conf.setup_settings_builder
-        self._stdin_conf_from_setup = None
+        self._stdin_from_setup = None
         self._source_setup = None
         self._os_services = conf.exe_conf.os_services
         self._act_phase_executor = None
@@ -301,7 +301,7 @@ class _PartialExecutor:
                                             self._setup_settings_builder),
                                         self._test_case.setup_phase)
         finally:
-            self._stdin_conf_from_setup = self._setup_settings_builder.stdin.as_stdin_configuration
+            self._stdin_from_setup = self._setup_settings_builder.stdin
 
     def _setup__validate_post_setup(self):
         run_instructions_phase_step(phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -310,18 +310,19 @@ class _PartialExecutor:
                                     self._test_case.setup_phase)
 
     def _construct_act_phase_executor(self) -> ActionToCheckExecutor:
+        env_for_non_validate_steps = self._post_sds_environment(
+            self._phase_tmp_space_factory.for_phase__main(phase_identifier.ACT),
+            self.__post_sds_symbol_table,
+        )
         return ActionToCheckExecutor(
             self._action_to_check,
             self._post_sds_environment(
                 self._phase_tmp_space_factory.for_phase__validation(phase_identifier.ACT),
                 self._instruction_environment_pre_sds.symbols,
             ),
-            self._post_sds_environment(
-                self._phase_tmp_space_factory.for_phase__main(phase_identifier.ACT),
-                self.__post_sds_symbol_table,
-            ),
+            env_for_non_validate_steps,
             self._os_services,
-            self._stdin_conf_from_setup,
+            self._stdin_from_setup,
             self.exe_conf.exe_atc_and_skip_assertions,
         )
 

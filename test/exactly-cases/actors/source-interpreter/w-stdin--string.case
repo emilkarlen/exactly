@@ -1,0 +1,22 @@
+[conf]
+
+actor = source -python
+
+[setup]
+
+stdin = 'the stdin'
+
+[act]
+
+import sys
+
+for line in sys.stdin.readlines():
+    sys.stdout.write(line)
+
+[assert]
+
+exit-code == 0
+
+stdout equals 'the stdin'
+
+stderr empty

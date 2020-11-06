@@ -14,6 +14,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_assertions import is_sds_root_dir
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.execute_methods import ExecuteFunctionEh
 from exactly_lib_test.test_case.actor.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing
@@ -26,7 +27,7 @@ class Arrangement(tuple):
                 parse_action=do_nothing,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                 prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
-                execute_test_action=execute_action_that_returns_exit_code(),
+                execute_test_action: ExecuteFunctionEh = execute_action_that_returns_exit_code(),
                 act_executor_validate_pre_sds=validate_action_that_returns(svh.new_svh_success())):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
@@ -56,7 +57,7 @@ class Arrangement(tuple):
         return self[3]
 
     @property
-    def execute_test_action(self) -> types.FunctionType:
+    def execute_test_action(self) -> ExecuteFunctionEh:
         return self[4]
 
 

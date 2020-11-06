@@ -1,8 +1,9 @@
-from typing import Sequence, TypeVar, Callable
+from typing import Sequence, TypeVar, Callable, Optional
 
 from exactly_lib.definitions.test_case import actor as help_texts
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.actors.common import relativity_configuration_of_action_to_check
+from exactly_lib.impls.actors.util import std_files
 from exactly_lib.impls.actors.util.actor_from_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.impls.instructions.utils.logic_type_resolving_helper import full_resolving_env_for_instruction_env
@@ -34,7 +35,8 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_prims.program.command import Command
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(help_texts.FILE)
@@ -132,12 +134,14 @@ class _ActionToCheck(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         resolving_environment = full_resolving_env_for_instruction_env(os_services, environment)
         try:
             command = self._make_command(resolving_environment)
-            exit_code = os_services.command_executor.execute(command, environment.proc_exe_settings, std_files)
+            with std_files.of_optional_stdin(stdin, output) as std_files_:
+                exit_code = os_services.command_executor.execute(command, environment.proc_exe_settings, std_files_)
             return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))

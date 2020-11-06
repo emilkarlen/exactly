@@ -14,6 +14,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
     ListRecorder
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatRunsConstantActions
+from exactly_lib_test.test_case.actor.test_resources.execute_methods import ExecuteFunctionEh
 from exactly_lib_test.test_case.actor.test_resources.test_actions import \
     execute_action_that_returns_exit_code, \
     prepare_action_that_returns
@@ -27,7 +28,7 @@ class Arrangement(tuple):
                 actor_parse=do_nothing,
                 atc_validate_post_setup=do_return(svh.new_svh_success()),
                 atc_prepare=prepare_action_that_returns(sh.new_sh_success()),
-                atc_execute=execute_action_that_returns_exit_code(),
+                atc_execute: ExecuteFunctionEh = execute_action_that_returns_exit_code(),
                 atc_validate_pre_sds=do_return(svh.new_svh_success()),
                 atc_symbol_usages: Callable[[], Sequence[SymbolUsage]] = do_return([])
                 ):
@@ -56,7 +57,7 @@ class Arrangement(tuple):
         return self[2]
 
     @property
-    def atc_execute(self) -> Callable:
+    def atc_execute(self) -> ExecuteFunctionEh:
         return self[3]
 
     @property

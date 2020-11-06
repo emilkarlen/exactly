@@ -2,6 +2,7 @@
 Utilities to record an attribute associated to execution steps to a dictionary
 """
 import types
+from typing import Callable
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.test_case import test_case_doc
@@ -27,7 +28,7 @@ class PropertyRecorderBuilder:
         self.property_getter = property_getter
         self.recorder = recorder
 
-    def of_first_arg(self, key) -> types.FunctionType:
+    def of_first_arg(self, key) -> Callable:
         def ret_val(first_arg, *args, **kwargs):
             self.recorder[key] = self.property_getter(first_arg)
 

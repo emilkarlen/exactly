@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, TypeVar, Generic
+from typing import Sequence, TypeVar, Generic, Optional
 
 from exactly_lib.impls.svh_validators import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.symbol.sdv_structure import SymbolUsage
@@ -14,7 +14,8 @@ from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
 class Validator(ABC):
@@ -44,7 +45,8 @@ class Executor(ABC):
     @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> int:
         """
         :raises: :class:`HardErrorException`
@@ -207,10 +209,11 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         try:
-            exit_code = self._executor.execute(environment, std_files)
+            exit_code = self._executor.execute(environment, stdin, output)
             return eh.new_eh_exit_code(exit_code)
         except HardErrorException as ex:
             return eh.new_eh_hard_error(FailureDetails.new_message(ex.error))

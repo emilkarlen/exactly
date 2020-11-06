@@ -42,6 +42,14 @@ class ProcessExecutor:
         raise NotImplementedError()
 
 
+class ProcessExecutorWoStdin:
+    def execute(self, output: StdOutputFiles) -> int:
+        """
+        :return: exit code
+        """
+        raise NotImplementedError()
+
+
 class ProcessExecutorForSubProcess(ProcessExecutor):
     def __init__(self,
                  cmd_and_args: List[str]):
@@ -77,6 +85,18 @@ def capture_process_executor_result(executor: ProcessExecutor,
                 exitcode = executor.execute(StdFiles(f_stdin,
                                                      StdOutputFiles(f_stdout,
                                                                     f_stderr)))
+    return SubProcessResult(exitcode,
+                            contents_of_file(stdout_path),
+                            contents_of_file(stderr_path))
+
+
+def capture_process_executor_result__wo_stdin(executor: ProcessExecutorWoStdin,
+                                              tmp_dir: pathlib.Path) -> SubProcessResult:
+    stdout_path = tmp_dir / stdout_file_name
+    stderr_path = tmp_dir / stderr_file_name
+    with open(str(stdout_path), 'w') as f_stdout:
+        with open(str(stderr_path), 'w') as f_stderr:
+            exitcode = executor.execute(StdOutputFiles(f_stdout, f_stderr))
     return SubProcessResult(exitcode,
                             contents_of_file(stdout_path),
                             contents_of_file(stderr_path))

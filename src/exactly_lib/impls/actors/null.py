@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.impls.actors.util.actor_from_parts import parts
 from exactly_lib.impls.actors.util.actor_from_parts.parts import ExecutableObjectParser
@@ -8,7 +8,8 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.file_utils.std import StdFiles
+from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
 def actor() -> Actor:
@@ -31,7 +32,8 @@ class _Parser(ExecutableObjectParser):
 class _Executor(parts.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                std_files: StdFiles,
+                stdin: Optional[StringModel],
+                output: StdOutputFiles,
                 ) -> int:
         return 0
 
