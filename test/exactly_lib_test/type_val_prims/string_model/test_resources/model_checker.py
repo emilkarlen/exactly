@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import application_environment
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 ContentsGetter = Callable[[StringModel], str]
@@ -75,6 +76,7 @@ class Checker:
         self.model_constructor = model_constructor
         self.expectation = expectation
         self.get_dir_file_space = get_dir_file_space
+        self._structure_expectation = asrt_trace_rendering.matches_node_renderer()
 
     def check(self):
         self._check_may_depend_on_external_resources()
@@ -138,6 +140,10 @@ class Checker:
                                 ):
         # ARRANGE #
         with self.model_constructor.new_with(app_env) as model_to_check:
+            self._structure_expectation.apply(self.put,
+                                              model_to_check.structure(),
+                                              asrt.MessageBuilder('structure'))
+
             for case in contents_getters_cases:
                 # ACT #
                 try:

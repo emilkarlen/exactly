@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ExecutionExpectation, \
     prim_asrt__constant, ParseExpectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.test_case.test_resources.arrangements import ProcessExecutionArrangement

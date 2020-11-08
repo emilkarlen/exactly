@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.matcher.test_resources.run_program import test
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_assertions import \

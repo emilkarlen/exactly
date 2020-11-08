@@ -1,26 +1,43 @@
 from collections import deque
-from typing import Iterator, List, Optional, Deque, Callable
+from contextlib import contextmanager
+from typing import Iterator, List, Optional, Deque, Callable, ContextManager
 
+from exactly_lib.impls.types.string_model.model_from_lines import StringModelFromLinesBase
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
-from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelFromLines
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelFromLinesBase
+from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
-class Empty(TransformedStringModelFromLines):
+class Empty(StringModelFromLinesBase):
     def __init__(self, transformed: StringModel):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+        super().__init__()
+        self._transformed = transformed
 
-    @staticmethod
-    def _transform(lines: Iterator[str]) -> Iterator[str]:
-        return iter(())
+    def new_structure_builder(self) -> StringModelStructureBuilder:
+        return self._transformed.new_structure_builder()
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return self._transformed.may_depend_on_external_resources
+
+    @property
+    @contextmanager
+    def as_lines(self) -> ContextManager[Iterator[str]]:
+        yield iter(())
+
+    @property
+    def _tmp_file_space(self) -> DirFileSpace:
+        return self._transformed._tmp_file_space
 
 
-class SingleNonNegIntModel(TransformedStringModelFromLines):
+class StringModelWStructureOfTransformed(TransformedStringModelFromLinesBase):
+    def new_structure_builder(self) -> StringModelStructureBuilder:
+        return self._transformed.new_structure_builder()
+
+
+class SingleNonNegIntModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  zero_based_line_num: int,
@@ -43,7 +60,7 @@ class SingleNonNegIntModel(TransformedStringModelFromLines):
                 current += 1
 
 
-class SingleNegIntModel(TransformedStringModelFromLines):
+class SingleNegIntModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  neg_line_num: int,
@@ -69,7 +86,7 @@ class SingleNegIntModel(TransformedStringModelFromLines):
         yield pocket[0]
 
 
-class UpperNonNegLimitModel(TransformedStringModelFromLines):
+class UpperNonNegLimitModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  zero_based_upper_limit: int,
@@ -92,7 +109,7 @@ class UpperNonNegLimitModel(TransformedStringModelFromLines):
             current += 1
 
 
-class UpperNegLimitModel(TransformedStringModelFromLines):
+class UpperNegLimitModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  neg_line_num: int,
@@ -120,7 +137,7 @@ class UpperNegLimitModel(TransformedStringModelFromLines):
             yield pocket[0]
 
 
-class LowerNonNegLimitModel(TransformedStringModelFromLines):
+class LowerNonNegLimitModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  zero_based_lower_limit: int,
@@ -139,7 +156,7 @@ class LowerNonNegLimitModel(TransformedStringModelFromLines):
             yield line
 
 
-class LowerNegLimitModel(TransformedStringModelFromLines):
+class LowerNegLimitModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  neg_line_num: int,
@@ -163,7 +180,7 @@ class LowerNegLimitModel(TransformedStringModelFromLines):
             yield line
 
 
-class LowerNonNegUpperNonNegModel(TransformedStringModelFromLines):
+class LowerNonNegUpperNonNegModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  zero_based_lower_limit: int,
@@ -185,7 +202,7 @@ class LowerNonNegUpperNonNegModel(TransformedStringModelFromLines):
             yield line
 
 
-class LowerNonNegUpperNegModel(TransformedStringModelFromLines):
+class LowerNonNegUpperNegModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  zero_based_lower_limit: int,
@@ -227,7 +244,7 @@ class LowerNonNegUpperNegModel(TransformedStringModelFromLines):
         return left_to_consume == 0
 
 
-class LowerNegUpperNonNegModel(TransformedStringModelFromLines):
+class LowerNegUpperNonNegModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  neg_lower_limit: int,
@@ -265,7 +282,7 @@ class LowerNegUpperNonNegModel(TransformedStringModelFromLines):
             num_to_produce -= 1
 
 
-class LowerNegUpperNegModel(TransformedStringModelFromLines):
+class LowerNegUpperNegModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  neg_lower_limit: int,
@@ -362,12 +379,13 @@ class _TransformMethodOfSegments:
                 yield line
 
 
-class SegmentsModel(TransformedStringModelFromLines):
+class SegmentsModel(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  segments: SegmentsWithPositiveIncreasingValues,
                  ):
-        super().__init__(
+        StringModelWStructureOfTransformed.__init__(
+            self,
             _TransformMethodOfSegments(segments).transform,
             transformed,
             False,
@@ -375,7 +393,7 @@ class SegmentsModel(TransformedStringModelFromLines):
         self._segments = segments
 
 
-class MultipleRangesWNegativeValues(TransformedStringModelFromLines):
+class MultipleRangesWNegativeValues(StringModelWStructureOfTransformed):
     def __init__(self,
                  transformed: StringModel,
                  negatives: List[Range],

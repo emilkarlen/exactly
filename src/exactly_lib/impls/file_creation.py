@@ -4,7 +4,7 @@ from typing import Optional, Any, Callable, TextIO
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.types.path import path_err_msgs
-from exactly_lib.impls.types.string_models.file_model import StringModelOfFile
+from exactly_lib.impls.types.string_model import file_model
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
@@ -114,7 +114,7 @@ class FileTransformerHelper:
             return ex.error
 
     def _model_of(self, file: pathlib.Path) -> StringModel:
-        return StringModelOfFile(
+        return file_model.string_model_of_file__poorly_described(
             file,
             self._tmp_file_space.sub_dir_space(),
         )

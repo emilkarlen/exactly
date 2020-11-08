@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from exactly_lib.impls.actors.util import std_files
-from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
+from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
@@ -107,7 +107,7 @@ class _ExecutorWithTransformation(_ProgramExecutor):
 
         exit_code_from_command = self._execute_command_w_stdout_to_file(untransformed_stdout_path)
 
-        transformer_input = self._string_model_factory.of_file(untransformed_stdout_path)
+        transformer_input = self._string_model_factory.of_file__poorly_described(untransformed_stdout_path)
         transformer_output = self._program_w_trans.transformation.transform(transformer_input)
 
         transformer_output.write_to(self._atc_files.output.out)

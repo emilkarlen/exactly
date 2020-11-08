@@ -27,8 +27,8 @@ from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
 from exactly_lib_test.type_val_prims.matcher.test_resources.matcher_assertions import is_equivalent_to, ModelInfo
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
-from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.interval.test_resources.interval_assertion import PosNeg, is_interval_for_eq, \
     is_interval_for_ne, is_interval_for_lt, is_interval_for_lte, is_interval_for_gt, is_interval_for_gte
 

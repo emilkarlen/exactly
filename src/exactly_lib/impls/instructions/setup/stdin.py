@@ -12,7 +12,7 @@ from exactly_lib.impls import file_properties
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.impls.types.path.path_check import PathCheck
-from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
+from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.impls.types.string_or_path.doc import StringOrHereDocOrFile
 from exactly_lib.impls.types.string_or_path.primitive import SourceType
@@ -30,7 +30,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -142,7 +142,7 @@ class _InstructionForFile(InstructionWithFileRefsBase):
         described_path = self.stdin_contents.resolve(environment.symbols).value_of_any_dependency__d(environment.tcds)
 
         string_model_factory = RootStringModelFactory(environment.tmp_dir__path_access.paths_access)
-        stdin_wo_check_of_existence = string_model_factory.of_file(described_path.primitive)
+        stdin_wo_check_of_existence = string_model_factory.of_file__described(described_path)
         stdin_w_check_of_existence = _StringModelThatRaisesHardErrorIfFileIsInvalid(stdin_wo_check_of_existence,
                                                                                     described_path.describer)
 
@@ -161,9 +161,8 @@ class _StringModelThatRaisesHardErrorIfFileIsInvalid(StringModel):
         self._path_description = path_description
         self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
 
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self._checked._tmp_file_space
+    def new_structure_builder(self) -> StringModelStructureBuilder:
+        return self._checked.new_structure_builder()
 
     @property
     def may_depend_on_external_resources(self) -> bool:
@@ -178,6 +177,10 @@ class _StringModelThatRaisesHardErrorIfFileIsInvalid(StringModel):
     @property
     def as_lines(self) -> ContextManager[Iterator[str]]:
         return self._checked.as_lines
+
+    @property
+    def _tmp_file_space(self) -> DirFileSpace:
+        return self._checked._tmp_file_space
 
     def _do_check(self, path: Path):
         check_result = self._check.apply(path)

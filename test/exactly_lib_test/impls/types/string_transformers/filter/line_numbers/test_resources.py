@@ -7,7 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
     ExecutionExpectation, prim_asrt__constant, arrangement_w_tcds, arrangement_wo_tcds
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import StExpectation

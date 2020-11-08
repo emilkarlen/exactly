@@ -15,8 +15,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase, \
     MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import dir_dep_value_assertions as asrt_ddv
-from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions, \
+    rendering_assertions as asrt_trace_rendering
 
 PRIMITIVE = TypeVar('PRIMITIVE')
 

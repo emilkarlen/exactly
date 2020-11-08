@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from typing import ContextManager, Optional, Sequence
 
-from exactly_lib.impls.types.string_models import as_stdin
+from exactly_lib.impls.types.string_model import as_stdin
 from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 

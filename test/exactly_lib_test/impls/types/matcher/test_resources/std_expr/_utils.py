@@ -29,9 +29,9 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 from exactly_lib_test.type_val_deps.logic.test_resources.matcher_symbol_context import MatcherSymbolValueContext, \
     MatcherTypeSymbolContext
 from exactly_lib_test.type_val_deps.sym_ref.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result, \
-    trace_rendering_assertions as asrt_trace_rendering
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as asrt_trace_rendering
 
 MatcherNameAndResult = Tuple[str, bool]
 

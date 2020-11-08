@@ -13,8 +13,8 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.impls.os_services import os_services_access
-from exactly_lib.impls.types.string_models import as_stdin
-from exactly_lib.impls.types.string_models.file_model import StringModelOfFile
+from exactly_lib.impls.types.string_model import as_stdin
+from exactly_lib.impls.types.string_model import file_model
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
@@ -186,8 +186,8 @@ class TestExecute(unittest.TestCase):
         with tmp_dir(fs.DirContents([file_with_stdin_contents])) as abs_tmp_dir_path:
             absolute_name_of_file_to_redirect = abs_tmp_dir_path / file_with_stdin_contents.name
             setup_settings = setup.default_settings()
-            setup_settings.stdin = StringModelOfFile(absolute_name_of_file_to_redirect,
-                                                     DirFileSpaceThatMustNoBeUsed())
+            setup_settings.stdin = file_model.string_model_of_file__poorly_described(absolute_name_of_file_to_redirect,
+                                                                                     DirFileSpaceThatMustNoBeUsed())
             _check_contents_of_stdin_for_setup_settings(self,
                                                         setup_settings,
                                                         file_with_stdin_contents.contents)

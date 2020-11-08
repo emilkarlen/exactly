@@ -26,6 +26,14 @@ class StringOrPathDdv(MultiDependenciesDdv[StringOrPath]):
         self._string = string
         self._path = path
 
+    @staticmethod
+    def of_string(x: StringDdv) -> 'StringOrPathDdv':
+        return StringOrPathDdv(SourceType.STRING, x, None)
+
+    @staticmethod
+    def of_path(x: PathDdv) -> 'StringOrPathDdv':
+        return StringOrPathDdv(SourceType.PATH, None, x)
+
     @property
     def source_type(self) -> SourceType:
         return self._source_type

@@ -1,8 +1,8 @@
 import unittest
 from typing import List
 
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_models.test_resources.model_constructor import ModelConstructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

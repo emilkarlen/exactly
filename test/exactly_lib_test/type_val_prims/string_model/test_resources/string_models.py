@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager, Iterator, Sequence, List, IO, Callable
 
-from exactly_lib.impls.types.string_models.model_from_lines import StringModelFromLinesBase
+from exactly_lib.impls.types.string_model.model_from_lines import StringModelFromLinesBase
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -11,13 +11,14 @@ from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBe
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_model.test_resources.string_model_base import StringModelTestImplBase
 
 
 def string_model_that_must_not_be_used() -> StringModel:
     return StringModelThat.new_w_defaults_of_not_impl()
 
 
-class StringModelThatRaisesHardErrorException(StringModel):
+class StringModelThatRaisesHardErrorException(StringModelTestImplBase):
     def __init__(self, err_msg='hard error message'):
         self._err_msg = err_msg
 
@@ -50,7 +51,7 @@ class StringModelThatRaisesHardErrorException(StringModel):
         )
 
 
-class StringModelThat(StringModel):
+class StringModelThat(StringModelTestImplBase):
     def __init__(self,
                  tmp_file_space: Callable[[], DirFileSpace],
                  may_depend_on_external_resources: Callable[[], bool],
@@ -109,7 +110,7 @@ class StringModelThat(StringModel):
         self._write_to(output)
 
 
-class StringModelFromLines(StringModelFromLinesBase):
+class StringModelFromLines(StringModelFromLinesBase, StringModelTestImplBase):
     def __init__(self,
                  lines: Sequence[str],
                  tmp_file_space: DirFileSpace,

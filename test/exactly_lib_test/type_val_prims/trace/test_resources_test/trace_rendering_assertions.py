@@ -4,8 +4,8 @@ from exactly_lib.util.description_tree.tree import Node, Detail, DetailVisitor, 
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as sut
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

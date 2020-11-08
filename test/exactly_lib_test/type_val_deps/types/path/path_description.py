@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.tcfs import relative_path_options as rpo
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_deps.types.path import path_description as sut
+from exactly_lib.type_val_deps.types.path.impl import path_description as sut
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds

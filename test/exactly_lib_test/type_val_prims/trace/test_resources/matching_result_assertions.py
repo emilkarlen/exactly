@@ -5,8 +5,8 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Detail, Node
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_prims.trace.test_resources import trace_rendering_assertions as asrt_trace_rendering
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as asrt_trace_rendering
 
 
 def matches(value: ValueAssertion[bool] = asrt.is_instance(bool),

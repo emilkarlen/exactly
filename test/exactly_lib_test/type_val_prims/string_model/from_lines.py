@@ -3,9 +3,11 @@ from contextlib import contextmanager
 from typing import Iterator, Sequence, ContextManager
 
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.impls import transformed_string_models as sut
 from exactly_lib.type_val_prims.string_model import StringModel
-from exactly_lib_test.impls.types.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib.util.description_tree import renderers
+from exactly_lib_test.impls.types.string_model.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_model.test_resources import model_checker
 
@@ -65,7 +67,12 @@ class _ToUpperModelConstructor(model_checker.ModelConstructor):
             self.transformation,
             source_model,
             self.transformation_may_depend_on_external_resources,
+            _get_transformer_structure,
         )
+
+
+def _get_transformer_structure() -> StructureRenderer:
+    return renderers.header_only('the-transformer')
 
 
 def _transformer_function(lines: Iterator[str]) -> Iterator[str]:

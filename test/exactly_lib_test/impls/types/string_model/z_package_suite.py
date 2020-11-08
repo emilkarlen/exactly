@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.impls.types.string_models import model_from_lines_base, model_of_file
+from exactly_lib_test.impls.types.string_model import model_from_lines_base, model_of_file
 
 
 def suite() -> unittest.TestSuite:

@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
     FULL_MATCH_ARGUMENT
 from exactly_lib_test.impls.types.string_matcher.test_resources.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES, TRANSFORMER_OPTION_ALTERNATIVES_ELEMENTS
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \

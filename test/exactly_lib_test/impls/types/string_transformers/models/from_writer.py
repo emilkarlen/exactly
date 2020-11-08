@@ -4,9 +4,11 @@ from typing import Iterator, Sequence, IO, Callable, ContextManager
 
 from exactly_lib.impls.types.string_transformer.impl.models import transformed_string_models as sut
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.impls.transformed_string_models import StringTransFun
 from exactly_lib.type_val_prims.string_model import StringModel
-from exactly_lib_test.impls.types.string_models.test_resources.string_models import ModelFromLinesTestImpl
+from exactly_lib.util.description_tree import renderers
+from exactly_lib_test.impls.types.string_model.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_model.test_resources import model_checker
 
@@ -84,6 +86,7 @@ class _ModelConstructor(model_checker.ModelConstructor):
         yield sut.TransformedStringModelFromWriter(
             _TransformAndWriteToFile(app_env, self.transformation).write,
             source_model,
+            _get_transformer_structure,
         )
 
 
@@ -110,6 +113,7 @@ class _ModelConstructorWithWriterThatMustBeAppliedOnlyOnce(model_checker.ModelCo
                 _TransformAndWriteToFile(app_env, self.transformation).write
             ).write,
             source_model,
+            _get_transformer_structure,
         )
 
 
@@ -146,6 +150,10 @@ class _TransformAndWriteToFileThatMustBeInvokedOnlyOnce:
 
 def _transformer_function(lines: Iterator[str]) -> Iterator[str]:
     return map(str.upper, lines)
+
+
+def _get_transformer_structure() -> StructureRenderer:
+    return renderers.header_only('the-transformer')
 
 
 if __name__ == '__main__':

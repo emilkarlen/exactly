@@ -1,11 +1,12 @@
 from contextlib import contextmanager
 from typing import Sequence, ContextManager, Iterator
 
-from exactly_lib.impls.types.string_models import model_from_lines
+from exactly_lib.impls.types.string_model import model_from_lines
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+from exactly_lib_test.type_val_prims.string_model.test_resources.string_model_base import StringModelTestImplBase
 
 
-class ModelFromLinesTestImpl(model_from_lines.StringModelFromLinesBase):
+class ModelFromLinesTestImpl(model_from_lines.StringModelFromLinesBase, StringModelTestImplBase):
     def __init__(self,
                  raw_lines: Sequence[str],
                  tmp_file_space: DirFileSpace,

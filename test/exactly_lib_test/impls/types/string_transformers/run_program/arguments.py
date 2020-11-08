@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args, program_sdvs
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt

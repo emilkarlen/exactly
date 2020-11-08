@@ -13,7 +13,7 @@ from exactly_lib_test.impls.types.logic.test_resources.integration_check import 
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import StringMatcherSymbolValueContext, \
     StringMatcherSymbolContext
 

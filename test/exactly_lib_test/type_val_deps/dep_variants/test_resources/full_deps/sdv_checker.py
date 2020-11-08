@@ -12,7 +12,8 @@ from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common
     CommonSdvPropertiesChecker, PRIMITIVE, OUTPUT, CommonExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.logic_structure_assertions import has_valid_description
 from exactly_lib_test.type_val_deps.types.test_resources import full_sdv_assertions as asrt_logic
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as asrt_trace_rendering
 
 
 class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
@@ -165,12 +166,5 @@ class WithDetailsDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
                                           message_builder: MessageBuilder,
                                           actual: WithDetailsDescription,
                                           ):
-        details = actual.describer.render()
-
-        assertion = asrt.is_sequence_of(asrt_d_tree.is_any_detail())
-
-        assertion.apply(
-            put,
-            details,
-            message_builder.for_sub_component('sanity of description'),
-        )
+        expectation = asrt_trace_rendering.matches_details_renderer()
+        expectation.apply(put, actual.describer, message_builder.for_sub_component('details description'))

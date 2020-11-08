@@ -3,7 +3,7 @@ from exactly_lib.definitions.test_case import file_check_properties
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.types.file_matcher.impl import file_contents_utils, model_constructor_sdv
 from exactly_lib.impls.types.file_matcher.impl.model_constructor import ModelConstructor
-from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
+from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
@@ -21,7 +21,7 @@ class _ModelConstructor(ModelConstructor[StringModel]):
         self._factory = factory
 
     def make_model(self, model: FileMatcherModel) -> StringModel:
-        return self._factory.of_file(model.path.primitive)
+        return self._factory.of_file__described(model.path)
 
 
 def sdv(contents_matcher: StringMatcherSdv) -> FileMatcherSdv:

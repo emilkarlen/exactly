@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.integer_matcher.test_resources import symbol_r
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor as models
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor as models
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check, \
     argument_building as st_arg
 from exactly_lib_test.impls.types.test_resources import arguments_building as arg_rend

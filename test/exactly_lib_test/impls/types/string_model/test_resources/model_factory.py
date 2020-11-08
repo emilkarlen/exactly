@@ -3,7 +3,7 @@ import tempfile
 from contextlib import contextmanager
 from typing import ContextManager
 
-from exactly_lib.impls.types.string_models.factory import RootStringModelFactory
+from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
 

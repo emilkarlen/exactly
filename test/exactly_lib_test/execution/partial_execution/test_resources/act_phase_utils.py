@@ -3,7 +3,7 @@ import subprocess
 import sys
 from typing import Optional
 
-from exactly_lib.impls.types.string_models import as_stdin
+from exactly_lib.impls.types.string_model import as_stdin
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep

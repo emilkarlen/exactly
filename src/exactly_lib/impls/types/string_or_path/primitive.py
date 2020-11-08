@@ -25,6 +25,14 @@ class StringOrPath(tuple):
                                    file_value,
                                    source_type))
 
+    @staticmethod
+    def of_string(x: str) -> 'StringOrPath':
+        return StringOrPath(SourceType.STRING, x, None)
+
+    @staticmethod
+    def of_path(x: DescribedPath) -> 'StringOrPath':
+        return StringOrPath(SourceType.PATH, None, x)
+
     @property
     def value_type(self) -> DataValueType:
         """

@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.regex.test_resources import assertions as asrt_regex
 from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
 from exactly_lib_test.impls.types.regex.test_resources.validation_cases import failing_regex_validation_cases
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as arg, \
     integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources

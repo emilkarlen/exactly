@@ -25,7 +25,7 @@ from exactly_lib_test.impls.types.integer.test_resources.arguments_building impo
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.test_resources import matcher_assertions
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

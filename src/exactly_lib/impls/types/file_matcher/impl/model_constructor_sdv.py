@@ -11,7 +11,7 @@ from exactly_lib.type_val_deps.dep_variants.sdv.full_deps import w_details_impls
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
-from ...string_models.factory import RootStringModelFactory
+from ...string_model.factory import RootStringModelFactory
 
 
 def with_string_model_construction(make_constructor: Callable[[RootStringModelFactory], ModelConstructor[MODEL]],

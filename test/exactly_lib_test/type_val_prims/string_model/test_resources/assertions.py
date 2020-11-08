@@ -4,10 +4,13 @@ from pathlib import Path
 from typing import ContextManager, Iterator, IO, List, Sequence
 
 from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
     ValueAssertion
+from exactly_lib_test.type_val_prims.string_model.test_resources.string_model_base import StringModelTestImplBase
+from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 
 
 class StringModelLinesAreValidAssertion(ValueAssertionBase[StringModel]):
@@ -26,17 +29,13 @@ class StringModelLinesAreValidAssertion(ValueAssertionBase[StringModel]):
                 pass
 
 
-class StringModelThatThatChecksLines(StringModel):
+class StringModelThatThatChecksLines(StringModelTestImplBase):
     def __init__(self,
                  put: unittest.TestCase,
                  checked: StringModel,
                  ):
         self._put = put
         self._checked = checked
-
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self._checked._tmp_file_space
 
     @property
     def may_depend_on_external_resources(self) -> bool:
@@ -58,6 +57,10 @@ class StringModelThatThatChecksLines(StringModel):
 
     def write_to(self, output: IO):
         self._checked.write_to(output)
+
+    @property
+    def _tmp_file_space(self) -> DirFileSpace:
+        return self._checked._tmp_file_space
 
     def _check_and_return_iterator(self, lines: Iterator[str]) -> Iterator[str]:
         for line in lines:
@@ -98,6 +101,11 @@ def model_lines_lists_matches(expected: ValueAssertion[List[str]],
                               ) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
+            'structure',
+            _structure,
+            asrt_trace_rendering.matches_node_renderer(),
+        ),
+        asrt.sub_component(
             'may_depend_on_external_resources',
             _may_depend_on_external_resources,
             may_depend_on_external_resources,
@@ -124,6 +132,11 @@ def model_lines_lists_matches__check_just_as_lines(expected: List[str],
                                                    ) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
+            'structure',
+            _structure,
+            asrt_trace_rendering.matches_node_renderer(),
+        ),
+        asrt.sub_component(
             'as_lines',
             _line_list_from_as_lines,
             asrt.equals(expected),
@@ -135,6 +148,11 @@ def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]],
                                  may_depend_on_external_resources: ValueAssertion[bool],
                                  ) -> ValueAssertion[StringModel]:
     return asrt.and_([
+        asrt.sub_component(
+            'structure',
+            _structure,
+            asrt_trace_rendering.matches_node_renderer(),
+        ),
         asrt.sub_component(
             'may_depend_on_external_resources',
             _may_depend_on_external_resources,
@@ -163,6 +181,11 @@ def model_string_matches(expected: ValueAssertion[str],
                          ) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
+            'structure',
+            _structure,
+            asrt_trace_rendering.matches_node_renderer(),
+        ),
+        asrt.sub_component(
             'may_depend_on_external_resources',
             _may_depend_on_external_resources,
             may_depend_on_external_resources,
@@ -183,6 +206,10 @@ def model_string_matches(expected: ValueAssertion[str],
             expected,
         ),
     ])
+
+
+def _structure(model: StringModel) -> NodeRenderer:
+    return model.structure()
 
 
 def _may_depend_on_external_resources(model: StringModel) -> bool:

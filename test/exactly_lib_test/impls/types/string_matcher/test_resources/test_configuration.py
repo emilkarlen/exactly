@@ -8,7 +8,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check__for_expression_parser
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
-from exactly_lib_test.impls.types.string_models.test_resources.model_constructor import ModelConstructor
+from exactly_lib_test.impls.types.string_model.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     expectation_type_config__non_is_success, ExpectationTypeConfigForNoneIsSuccess
 

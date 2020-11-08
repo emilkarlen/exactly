@@ -2,10 +2,10 @@ import unittest
 from contextlib import contextmanager
 from typing import ContextManager
 
-from exactly_lib.impls.types.string_models import constant_str as sut
+from exactly_lib.impls.types.string_model import constant_str as sut
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_model import StringModel
-from exactly_lib_test.impls.types.string_models.test_resources.dir_file_space_getter import \
+from exactly_lib_test.impls.types.string_model.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_model.test_resources import model_checker

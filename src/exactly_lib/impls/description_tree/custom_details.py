@@ -288,6 +288,19 @@ class StringAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
         ]
 
 
+class StrRendererAsSingleLineWithMaxLenDetailsRenderer(DetailsRenderer):
+    def __init__(self, value: Renderer[str], max_chars_to_print: int = STRING__DEFAULT_DISPLAY_LEN):
+        self._value = value
+        self._max_chars_to_print = max_chars_to_print
+
+    def render(self) -> Sequence[Detail]:
+        renderer = StringAsSingleLineWithMaxLenDetailsRenderer(
+            self._value.render(),
+            self._max_chars_to_print,
+        )
+        return renderer.render()
+
+
 class StringPrefixAsSingleLineContinuationMarkerRenderer(DetailsRenderer):
     def __init__(self, value: str):
         self._value = value

@@ -4,7 +4,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source

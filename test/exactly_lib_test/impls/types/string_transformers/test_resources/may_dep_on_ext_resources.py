@@ -4,8 +4,8 @@ from typing import List
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_models.test_resources.model_constructor import ModelConstructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

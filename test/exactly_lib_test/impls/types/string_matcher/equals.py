@@ -24,7 +24,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.relativity_optio
     TestWithRelativityOptionAndNegationBase
 from exactly_lib_test.impls.types.string_matcher.test_resources.test_configuration import \
     TestWithNegationArgumentBase
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess

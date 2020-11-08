@@ -1,9 +1,9 @@
 import pathlib
 
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.types.path import path_description
-from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.util.render.renderer import Renderer
+from . import path_description
+from ..path_ddv import PathDdv
 
 
 class PathValueRelTcdsDir(Renderer[str]):

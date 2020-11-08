@@ -3,9 +3,10 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, Callable, ContextManager, IO
 
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.impls import transformed_string_models
 from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelBase
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 
 
@@ -22,7 +23,8 @@ class StringTransformerFromLinesTransformer(StringTransformer, ABC):
         return transformed_string_models.TransformedStringModelFromLines(
             self._transform,
             model,
-            self._transformation_may_depend_on_external_resources()
+            self._transformation_may_depend_on_external_resources(),
+            self.structure,
         )
 
 
@@ -30,10 +32,15 @@ class TransformedStringModelFromWriter(TransformedStringModelBase):
     def __init__(self,
                  write: Callable[[StringModel, IO], None],
                  transformed: StringModel,
+                 get_transformer_structure: Callable[[], StructureRenderer],
                  ):
         super().__init__(transformed)
         self._write = write
         self._file_created_on_demand = None
+        self._get_transformer_structure = get_transformer_structure
+
+    def new_structure_builder(self) -> StringModelStructureBuilder:
+        return self._transformed.new_structure_builder().with_transformed_by(self._get_transformer_structure())
 
     @property
     def may_depend_on_external_resources(self) -> bool:

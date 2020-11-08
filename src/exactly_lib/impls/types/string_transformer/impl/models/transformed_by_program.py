@@ -3,6 +3,7 @@ from typing import IO
 from exactly_lib.impls.program_execution import command_processors
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.string_model import StringModel
@@ -17,6 +18,9 @@ def transformed_by_command(transformer: Command,
                            environment: ApplicationEnvironment,
                            source_model: StringModel,
                            ) -> StringModel:
+    def _structure_of_command() -> StructureRenderer:
+        return transformer.structure().build()
+
     return transformed_string_models.TransformedStringModelFromWriter(
         _TransformationWriter(
             environment,
@@ -24,6 +28,7 @@ def transformed_by_command(transformer: Command,
             transformer,
         ).write,
         source_model,
+        _structure_of_command,
     )
 
 

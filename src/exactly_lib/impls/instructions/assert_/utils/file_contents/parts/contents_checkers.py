@@ -6,7 +6,7 @@ from exactly_lib.impls.instructions.assert_.utils.assertion_part import Assertio
 from exactly_lib.impls.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
 from exactly_lib.impls.types.path import path_check
-from exactly_lib.impls.types.string_models.file_model import StringModelOfFile
+from exactly_lib.impls.types.string_model import file_model
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
@@ -36,8 +36,8 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               os_services: OsServices,
               file_to_transform: ComparisonActualFile,
               ) -> StringModel:
-        return StringModelOfFile(
-            file_to_transform.path.primitive,
+        return file_model.string_model_of_file__described(
+            file_to_transform.path,
             environment.tmp_dir__path_access.paths_access,
         )
 

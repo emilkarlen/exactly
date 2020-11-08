@@ -36,6 +36,7 @@ class StringTransformerFromLinesTransformation(StringTransformer):
             self._transformation,
             model,
             self._transformation_may_depend_on_external_resources,
+            self.structure,
         )
 
     def structure(self) -> StructureRenderer:

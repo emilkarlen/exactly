@@ -23,9 +23,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.types.test_resources.string_matcher import \
     StringMatcherSymbolContextOfPrimitiveConstant, \
     StringMatcherSymbolContext
-from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result, \
-    trace_rendering_assertions as asrt_trace_rendering
-from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree
+from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
+from exactly_lib_test.util.description_tree.test_resources import described_tree_assertions as asrt_d_tree, \
+    rendering_assertions as asrt_trace_rendering
 
 MATCHER_NAME = ' '.join((line_matcher.CONTENTS_MATCHER_NAME,
                          syntax_elements.STRING_MATCHER_SYNTAX_ELEMENT.singular_name))

@@ -22,7 +22,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_buildi
     CommonArgumentsConstructor
 from exactly_lib_test.impls.types.string_matcher.test_resources.test_configuration import \
     TestCaseBase
-from exactly_lib_test.impls.types.string_models.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
 from exactly_lib_test.impls.types.test_resources import validation as asrt_validation
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.test_utils import NEA
