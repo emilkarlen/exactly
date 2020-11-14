@@ -13,6 +13,11 @@ class Arguments:
                  following_lines: Sequence[WithToString] = ()):
         self.first_line = str(first_line)
         self.following_lines = list(map(str, following_lines))
+        if '\n' in self.first_line:
+            raise ValueError('first_line contains new-line: {}'.format(repr(first_line)))
+        for following_line in self.following_lines:
+            if '\n' in following_line:
+                raise ValueError('following contains new-line: {}'.format(repr(following_line)))
 
     @staticmethod
     def empty() -> 'Arguments':
@@ -100,6 +105,11 @@ class ArgumentElements:
         """
         self._first_line = first_line
         self._following_lines = list(following_lines)
+        if '\n' in first_line:
+            raise ValueError('first_line contains new-line: {}'.format(repr(first_line)))
+        for following_line in following_lines:
+            if '\n' in following_line:
+                raise ValueError('following contains new-line: {}'.format(repr(following_line)))
 
     @staticmethod
     def new_with_following_lines_as_single_elements(first_line: List[WithToString],
