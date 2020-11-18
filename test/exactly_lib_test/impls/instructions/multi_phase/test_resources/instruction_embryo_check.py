@@ -14,6 +14,7 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions
@@ -21,8 +22,13 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
     equivalent_source_variants__with_source_check__consume_last_line
 from exactly_lib_test.impls.types.test_resources import validation as validation_utils
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, ValidationResultAssertion
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPostSdsBuilder
+from exactly_lib_test.test_resources.source import layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import LayoutSpec
+from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -144,6 +150,69 @@ class Checker(Generic[T]):
               expectation: Expectation[T],
               ):
         Executor(put, arrangement, expectation).execute(self.parser, source)
+
+    def check__abs_stx(self,
+                       put: unittest.TestCase,
+                       source: AbstractSyntax,
+                       arrangement: ArrangementWithSds,
+                       expectation_: Expectation[T],
+                       layout: LayoutSpec = LayoutSpec.of_default(),
+                       ):
+        self.check__token_sequence(put, source.tokenization(), arrangement, expectation_, layout)
+
+    def check__abs_stx__std_layouts_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            arrangement: ArrangementWithSds,
+            expectation_: Expectation[T],
+    ):
+        self.check__abs_stx__layout_and_source_variants(
+            put,
+            source,
+            arrangement,
+            expectation_,
+            layout.STANDARD_LAYOUT_SPECS,
+        )
+
+    def check__abs_stx__layout_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            arrangement: ArrangementWithSds,
+            expectation_: Expectation[T],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        self.check__token_sequence__layout_and_source_variants(
+            put,
+            source.tokenization(),
+            arrangement,
+            expectation_,
+            layouts,
+        )
+
+    def check__token_sequence(self,
+                              put: unittest.TestCase,
+                              source: TokenSequence,
+                              arrangement: ArrangementWithSds,
+                              expectation_: Expectation[T],
+                              layout: LayoutSpec = LayoutSpec.of_default(),
+                              ):
+        source = remaining_source(source.layout(layout))
+        Executor(put, arrangement, expectation_).execute(self.parser, source)
+
+    def check__token_sequence__layout_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: TokenSequence,
+            arrangement: ArrangementWithSds,
+            expectation_: Expectation[T],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        for layout_ in layouts:
+            with put.subTest(layout_.name):
+                source_str = source.layout(layout_.value)
+                self.check__w_source_variants(put, source_str, arrangement, expectation_)
 
     def check__w_source_variants(self,
                                  put: unittest.TestCase,

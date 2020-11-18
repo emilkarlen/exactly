@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
+from exactly_lib.util.name_and_value import NameAndValue
+
 
 class LayoutSpec:
     def __init__(self,
@@ -43,6 +45,12 @@ class LayoutAble(ABC):
     @abstractmethod
     def layout(self, spec: LayoutSpec) -> Sequence[str]:
         pass
+
+
+STANDARD_LAYOUT_SPECS = (
+    NameAndValue('default', LayoutSpec.of_default()),
+    NameAndValue('alternative', LayoutSpec.of_alternative()),
+)
 
 
 class _OptionalNewLine(LayoutAble):
