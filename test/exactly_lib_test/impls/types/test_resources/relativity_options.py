@@ -20,9 +20,11 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources import hds_populators
 from exactly_lib_test.tcfs.test_resources import non_hds_populator
 from exactly_lib_test.tcfs.test_resources import path_arguments as path_args, sds_populator
+from exactly_lib_test.tcfs.test_resources.abstract_syntax import RelativityAbsStx, PathWConstNameAbsStx
 from exactly_lib_test.tcfs.test_resources.dir_populator import HdsPopulator
 from exactly_lib_test.tcfs.test_resources.non_hds_populator import NonHdsPopulator
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
@@ -91,12 +93,20 @@ class OptionStringConfiguration:
     Configuration for the relativity option (for a path cli argument).
     """
 
-    def __init__(self, argument: ArgumentElementsRenderer):
+    def __init__(self,
+                 argument: ArgumentElementsRenderer,
+                 relativity_abs_stx: RelativityAbsStx,
+                 ):
         self._argument = argument
+        self._relativity_abs_stx = relativity_abs_stx
 
     @property
     def argument(self) -> ArgumentElementsRenderer:
         return self._argument
+
+    @property
+    def relativity_abs_stx(self) -> RelativityAbsStx:
+        return self._relativity_abs_stx
 
     @property
     def option_string(self) -> str:
@@ -112,12 +122,14 @@ class OptionStringConfiguration:
 
 class OptionStringConfigurationForDefaultRelativity(OptionStringConfiguration):
     def __init__(self):
-        super().__init__(argument_renderer.EmptyArgument())
+        super().__init__(argument_renderer.EmptyArgument(),
+                         path_abs_stx.DefaultRelativityAbsStx())
 
 
 class OptionStringConfigurationForRelativityOption(OptionStringConfiguration):
     def __init__(self, relativity: RelOptionType):
-        super().__init__(path_args.rel_option_type_arg(relativity))
+        super().__init__(path_args.rel_option_type_arg(relativity),
+                         path_abs_stx.OptionRelativityAbsStx(relativity))
         self._relativity = relativity
 
     @property
@@ -145,7 +157,8 @@ class OptionStringConfigurationForRelativityOptionRelSds(OptionStringConfigurati
 
 class OptionStringConfigurationForRelSymbol(OptionStringConfiguration):
     def __init__(self, symbol_name: str):
-        super().__init__(path_args.rel_symbol_arg(symbol_name))
+        super().__init__(path_args.rel_symbol_arg(symbol_name),
+                         path_abs_stx.SymbolRelativityAbsStx(symbol_name))
 
 
 class RelativityOptionConfiguration(ABC):
@@ -196,6 +209,12 @@ class RelativityOptionConfiguration(ABC):
 
     def path_argument_of_rel_name(self, file_name: str) -> PathArgument:
         return path_args.path_argument(file_name, self._cli_option.argument)
+
+    def path_abs_stx_of_name(self, file_name: str) -> PathWConstNameAbsStx:
+        return path_abs_stx.PathWConstNameAbsStx(
+            self._cli_option.relativity_abs_stx,
+            file_name,
+        )
 
     @property
     def option_argument_str(self) -> str:
