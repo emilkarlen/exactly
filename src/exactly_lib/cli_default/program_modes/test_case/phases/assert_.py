@@ -9,7 +9,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
         (instruction_names.EXIT_CODE_INSTRUCTION_NAME, exitcode.setup),
         (instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME, stdout.setup_for_stdout),
-        ('stderr', stderr.setup_for_stderr),
+        (instruction_names.CONTENTS_OF_STDERR_INSTRUCTION_NAME, stderr.setup_for_stderr),
         (instruction_names.CONTENTS_OF_EXPLICIT_FILE_INSTRUCTION_NAME, contents_of_file.setup),
         ('exists', existence_of_file.setup),
         (instruction_names.CONTENTS_OF_EXPLICIT_DIR_INSTRUCTION_NAME, contents_of_dir.setup),

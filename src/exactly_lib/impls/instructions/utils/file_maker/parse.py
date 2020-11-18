@@ -1,3 +1,4 @@
+from exactly_lib.definitions.primitives import string
 from exactly_lib.impls.instructions.utils.file_maker.primitives import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.impls.types.path.parse_path import parse_path_from_token_parser
@@ -45,7 +46,7 @@ def parse_file_maker(instruction_config: InstructionConfig,
         return _parse_file_maker_with_transformation(instruction_config,
                                                      parser)
     else:
-        if head_source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+        if head_source_string.startswith(string.HERE_DOCUMENT_MARKER_PREFIX):
             contents = parse_here_document.parse_as_last_argument_from_token_parser(True,
                                                                                     parser,
                                                                                     False)

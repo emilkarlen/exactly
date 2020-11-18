@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import List, Sequence
 
-from exactly_lib.impls.types.string.parse_here_document import DOCUMENT_MARKER_PREFIX
+from exactly_lib.definitions.primitives.string import HERE_DOCUMENT_MARKER_PREFIX
 from exactly_lib.impls.types.string_or_path.parse_string_or_path import FILE_ARGUMENT_OPTION
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.tcfs.test_resources.path_arguments import PathArgument
@@ -28,7 +28,7 @@ class HereDocument(ArgumentElementsRenderer, ABC):
 
     @property
     def elements(self) -> List[WithToString]:
-        return [DOCUMENT_MARKER_PREFIX + self.separator, '\n',
+        return [HERE_DOCUMENT_MARKER_PREFIX + self.separator, '\n',
                 self.contents_ended_w_new_line,
                 self.separator]
 

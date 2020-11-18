@@ -1,5 +1,6 @@
 from typing import Sequence, List
 
+from exactly_lib.definitions.primitives import string
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.strings import WithToString
@@ -225,17 +226,19 @@ def render_elements_line(line_elements: List) -> str:
     return ' '.join(map(str, line_elements))
 
 
-def string_as_elements(string: str) -> ArgumentElements:
-    return ArgumentElements([string])
+def string_as_elements(string_: str) -> ArgumentElements:
+    return ArgumentElements([string_])
 
 
 def here_document(lines: List[str],
                   marker: str = 'EOF') -> Arguments:
-    return Arguments('<<' + marker,
+    return Arguments(string.HERE_DOCUMENT_MARKER_PREFIX + marker,
                      lines + [marker])
 
 
 def here_document_as_elements(lines: List[str],
                               marker: str = 'EOF') -> ArgumentElements:
-    return ArgumentElements.new_with_following_lines_as_single_elements(['<<' + marker],
-                                                                        lines + [marker])
+    return ArgumentElements.new_with_following_lines_as_single_elements([
+        string.HERE_DOCUMENT_MARKER_PREFIX + marker],
+        lines + [marker],
+    )

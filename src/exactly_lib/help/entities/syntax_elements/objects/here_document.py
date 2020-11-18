@@ -2,20 +2,21 @@ from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
+from exactly_lib.definitions.primitives import string
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _MAIN_DESCRIPTION_REST = """\
 ```
-<<EOF
+{HERE_DOCUMENT_MARKER_PREFIX}{MARKER}
 first line
 ...
 last line
-EOF
+{MARKER}
 ```
 
 
-Any single-word string may be used instead of "EOF" as marker.
+Any single-word string may be used instead of "{MARKER}" as marker.
 What matters is that the maker at start and end of input
 matches.
 
@@ -25,6 +26,8 @@ matches.
 
 _TEXT_PARSER = TextParser({
     'Sym_refs_are_substituted': syntax_descriptions.symbols_are_substituted_in('the text'),
+    'HERE_DOCUMENT_MARKER_PREFIX': string.HERE_DOCUMENT_MARKER_PREFIX,
+    'MARKER': 'EOF',
 })
 
 DOCUMENTATION = syntax_element_documentation(None,

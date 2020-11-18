@@ -2,8 +2,11 @@ from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import directives, concepts
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
+from exactly_lib.definitions.primitives import string
 from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
+from exactly_lib.impls.types.condition import comparators
 from exactly_lib.impls.types.string_matcher import matcher_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
@@ -73,6 +76,13 @@ def _text_parser() -> TextParser:
         'file_inclusion_directive_in_text': formatting.keyword(directives.INCLUDING_DIRECTIVE_INFO.singular_name),
         'file_inclusion_directive': directives.INCLUDING_DIRECTIVE_INFO.singular_name,
         'shell_command': formatting.misc_name_with_formatting(misc_texts.SHELL_COMMAND),
+        'instruction__shell_cmd_line': instruction_names.SHELL_INSTRUCTION_NAME,
+        'instruction__stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
+        'instruction__stderr': instruction_names.CONTENTS_OF_STDERR_INSTRUCTION_NAME,
+        'instruction__exit_code': instruction_names.EXIT_CODE_INSTRUCTION_NAME,
+        'INT_EQUALS_OPERATOR': comparators.EQ.name,
+        'HERE_DOCUMENT_MARKER_PREFIX': string.HERE_DOCUMENT_MARKER_PREFIX,
+        'MARKER': 'EOF',
     })
 
 
@@ -97,7 +107,7 @@ This line marks the start the {phase[assert]} phase, for example:
 
 
 ```
-[assert]
+{phase[assert]:syntax}
 ```
 
 
@@ -121,17 +131,17 @@ Here, {instr[exit_code]} is executed before {instr[stderr]}:
 
 
 ```
-[assert]
+{phase[assert]:syntax}
 
-exit-code == 0
+{instruction__exit_code} {INT_EQUALS_OPERATOR} 0
 
-[act]
+{phase[act]:syntax}
 
 helloworld
 
-[assert]
+{phase[assert]:syntax}
 
-stderr {CONTENTS_EMPTY_ARGUMENT}
+{instruction__stderr} {CONTENTS_EMPTY_ARGUMENT}
 ```
 """
 
@@ -161,9 +171,9 @@ The exact syntax depends on the particular {instruction}.
 
 
 ```
-stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
+{instruction__stdout} {CONTENTS_EQUALS_ARGUMENT} {HERE_DOCUMENT_MARKER_PREFIX}{MARKER}
 Hello, World!
-EOF
+{MARKER}
 ```
 """
 
@@ -186,7 +196,7 @@ For example, a free text may be easier to understand than {shell_command:a}:
 
 'PATH should contain /usr/local/bin'
 
-$ tr ':' '\\n' < ../result/stdout | grep '^/usr/local/bin$'
+{instruction__shell_cmd_line} tr ':' '\\n' < ../result/stdout | grep '^/usr/local/bin$'
 ```
 
 
@@ -208,12 +218,12 @@ as in the {instr[stdout]} {instruction} here:
 
 
 ```
-stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
+{instruction__stdout} {CONTENTS_EQUALS_ARGUMENT} {HERE_DOCUMENT_MARKER_PREFIX}{MARKER}
 this assertion expects 4 lines of output
 {line_comment_char} this is the second line of the expected output
 
 the empty line above is part of the expected output
-EOF
+{MARKER}
 ```
 """
 

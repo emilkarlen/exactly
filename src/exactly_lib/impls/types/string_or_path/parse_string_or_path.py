@@ -2,6 +2,7 @@ import functools
 from typing import Tuple
 
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives import string
 from exactly_lib.impls.types.path import parse_path, path_relativities
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.string import parse_string, parse_here_document
@@ -55,7 +56,7 @@ def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser,
                                                consume_last_here_doc_line: bool = True
                                                ) -> Tuple[SourceType, StringSdv]:
     token_parser.require_head_token_has_valid_syntax()
-    if token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+    if token_parser.token_stream.head.source_string.startswith(string.HERE_DOCUMENT_MARKER_PREFIX):
         here_doc = parse_here_document.parse_as_last_argument_from_token_parser(True, token_parser,
                                                                                 consume_last_here_doc_line)
         return SourceType.HERE_DOC, here_doc

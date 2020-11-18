@@ -2,6 +2,7 @@ import re
 from typing import Optional
 
 from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.primitives.string import HERE_DOCUMENT_TOKEN_RE
 from exactly_lib.impls.types.string import parse_string
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -10,9 +11,6 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
-
-DOCUMENT_MARKER_PREFIX = '<<'
-DOCUMENT_TOKEN_RE = re.compile('(<<)([0-9a-zA-Z_-]+)')
 
 
 class HereDocumentContentsParsingException(SingleInstructionInvalidArgumentException):
@@ -64,7 +62,7 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
     first_token = token_parser.token_stream.head
     if first_token.is_quoted:
         return raise_not_a_here_doc_exception()
-    marker_match = re.fullmatch(DOCUMENT_TOKEN_RE, first_token.source_string)
+    marker_match = re.fullmatch(HERE_DOCUMENT_TOKEN_RE, first_token.source_string)
     if not marker_match:
         return raise_not_a_here_doc_exception()
     token_parser.consume_mandatory_token('impl: will succeed since because of check above')

@@ -1,5 +1,6 @@
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.primitives import string
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help import std_tags
@@ -33,6 +34,8 @@ class Documentation(SectionContentsConstructor):
             'exit_code_instruction': instruction_names.EXIT_CODE_INSTRUCTION_NAME,
             'executable_file': formatting.misc_name_with_formatting(misc_texts.EXECUTABLE_FILE),
             'console_style': std_tags.CONSOLE_TEXT,
+            'HERE_DOCUMENT_MARKER_PREFIX': string.HERE_DOCUMENT_MARKER_PREFIX,
+            'MARKER': 'EOF',
         })
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
@@ -56,9 +59,9 @@ A test case is written as a plain text file:
 
 {exit_code_instruction} {INT_EQUALS_OPERATOR} 0
 
-{stdout_instruction} {CONTENTS_EQUALS_ARGUMENT} <<EOF
+{stdout_instruction} {CONTENTS_EQUALS_ARGUMENT} {HERE_DOCUMENT_MARKER_PREFIX}{MARKER}
 Hello, World!
-EOF
+{MARKER}
 ```
 
 

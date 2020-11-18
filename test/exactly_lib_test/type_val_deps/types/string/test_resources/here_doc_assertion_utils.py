@@ -1,7 +1,7 @@
 from typing import List, Optional, Sequence
 
 import exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions
-from exactly_lib.impls.types.string.parse_here_document import DOCUMENT_MARKER_PREFIX
+from exactly_lib.definitions.primitives.string import HERE_DOCUMENT_MARKER_PREFIX
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -17,7 +17,7 @@ def contents_str_from_lines(lines_of_here_doc: Sequence[str]) -> str:
 def here_doc_lines(marker: str,
                    contents_lines: List[str],
                    first_line_start: str = '') -> List[str]:
-    return ([first_line_start + DOCUMENT_MARKER_PREFIX + marker] +
+    return ([first_line_start + HERE_DOCUMENT_MARKER_PREFIX + marker] +
             contents_lines +
             [marker]
             )
