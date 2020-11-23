@@ -17,7 +17,6 @@ from exactly_lib.type_val_deps.types.path.path_ddvs import empty_path_part
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsFixedPath
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
@@ -34,7 +33,7 @@ from exactly_lib_test.tcfs.test_resources.tcds_populators import \
     TcdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import argument_renderer
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
-from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources.concrete_restriction_assertion import \
@@ -70,10 +69,12 @@ class NamedFileConf:
                  name: str,
                  sdv: PathSdv,
                  cl_argument: PathArgument,
+                 abstract_syntax: PathWConstNameAbsStx,
                  ):
         self._name = name
         self._sdv = sdv
         self._cl_argument = cl_argument
+        self._abstract_syntax = abstract_syntax
 
     @property
     def name(self) -> str:
@@ -86,6 +87,13 @@ class NamedFileConf:
     @property
     def cl_argument(self) -> PathArgument:
         return self._cl_argument
+
+    @property
+    def abstract_syntax(self) -> PathWConstNameAbsStx:
+        return self._abstract_syntax
+
+    def file_with_contents(self, contents: str) -> File:
+        return File(self._name, contents)
 
 
 class OptionStringConfiguration:
@@ -168,7 +176,8 @@ class RelativityOptionConfiguration(ABC):
 
     def __init__(self,
                  cli_option: OptionStringConfiguration,
-                 symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
+                 symbols_configuration: SymbolsConfiguration = SymbolsConfiguration(),
+                 ):
         self._cli_option = cli_option
         self._symbols_configuration = symbols_configuration
         if not isinstance(cli_option, OptionStringConfiguration):
@@ -181,13 +190,20 @@ class RelativityOptionConfiguration(ABC):
         raise NotImplementedError('abstract method')
 
     @property
+    def exists_pre_sds(self) -> bool:
+        raise NotImplementedError()
+
+    @property
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
     def path_sdv_for_root_dir(self) -> PathSdv:
-        raise NotImplementedError('abstract method')
+        return self._path_sdv_for(empty_path_part())
 
-    def path_sdv_for(self, file_name: str = '') -> PathSdv:
+    def path_sdv_for(self, file_name: str) -> PathSdv:
+        return self._path_sdv_for(_empty_or_fixed_path_part(file_name))
+
+    def _path_sdv_for(self, path_suffix: PathPartDdv) -> PathSdv:
         raise NotImplementedError('abstract method')
 
     @property
@@ -201,7 +217,8 @@ class RelativityOptionConfiguration(ABC):
     def named_file_conf(self, file_name: str) -> NamedFileConf:
         return NamedFileConf(file_name,
                              self.path_sdv_for(file_name),
-                             self._cli_option.file_argument(file_name))
+                             self._cli_option.file_argument(file_name),
+                             self.path_abs_stx_of_name(file_name))
 
     @property
     def option_argument(self) -> ArgumentElementsRenderer:
@@ -223,10 +240,6 @@ class RelativityOptionConfiguration(ABC):
     @property
     def test_case_description(self) -> str:
         return str(self._cli_option)
-
-    @property
-    def exists_pre_sds(self) -> bool:
-        raise NotImplementedError()
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         raise NotImplementedError()
@@ -255,28 +268,22 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
         return self._relativity
 
     @property
-    def relativity_option(self) -> RelOptionType:
-        return self.relativity
-
-    def path_sdv_for_root_dir(self) -> PathSdv:
-        return path_sdvs.constant(
-            path_ddvs.of_rel_option(self.relativity_option,
-                                    empty_path_part())
-        )
-
-    def path_sdv_for(self, file_name: str = '') -> PathSdv:
-        return path_sdvs.constant(
-            path_ddvs.of_rel_option(self.relativity_option,
-                                    _empty_or_fixed_path_part(file_name))
-        )
-
-    @property
     def is_rel_cwd(self) -> bool:
         return self.relativity_option == RelOptionType.REL_CWD
 
     @property
     def exists_pre_sds(self) -> bool:
         return self.resolver.exists_pre_sds
+
+    @property
+    def relativity_option(self) -> RelOptionType:
+        return self.relativity
+
+    def _path_sdv_for(self, path_suffix: PathPartDdv) -> PathSdv:
+        return path_sdvs.constant(
+            path_ddvs.of_rel_option(self.relativity_option,
+                                    path_suffix)
+        )
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         return TcdsPopulatorForRelOptionType(self.relativity, contents)
@@ -315,7 +322,7 @@ class RelativityOptionConfigurationRelHds(RelativityOptionConfigurationForRelOpt
         return True
 
 
-class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration):
+class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration, ABC):
     def __init__(self,
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
@@ -344,7 +351,7 @@ class RelativityOptionConfigurationForRelNonHds(RelativityOptionConfiguration):
         raise NotImplementedError('abstract method')
 
 
-class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfigurationForRelNonHds):
+class RelativityOptionConfigurationForRelNonHdsImpl(RelativityOptionConfigurationForRelNonHds):
     def __init__(self,
                  relativity: RelNonHdsOptionType,
                  cli_option: OptionStringConfiguration,
@@ -361,6 +368,12 @@ class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfiguratio
     @property
     def is_rel_cwd(self) -> bool:
         return self.relativity_non_hds == RelNonHdsOptionType.REL_CWD
+
+    def _path_sdv_for(self, path_suffix: PathPartDdv) -> PathSdv:
+        return path_sdvs.constant(
+            path_ddvs.of_rel_option(self.relativity,
+                                    path_suffix)
+        )
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> TcdsPopulator:
         return TcdsPopulatorForRelOptionType(self.relativity, contents)
@@ -391,7 +404,7 @@ class RelativityOptionConfigurationForRelNonHdsBase(RelativityOptionConfiguratio
         return REL_NON_HDS_OPTIONS_MAP[self.relativity_non_hds].root_resolver.from_tcds(tds)
 
 
-class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHdsBase):
+class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHdsImpl):
     def __init__(self,
                  relativity: RelSdsOptionType,
                  cli_option: OptionStringConfiguration,
@@ -408,13 +421,11 @@ class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRel
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         return sds_populator.contents_in(self.relativity_sds, contents)
 
-    def path_sdv_for_root_dir(self) -> PathSdv:
-        return PathConstantSdv(path_ddvs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                       empty_path_part()))
-
-    def path_sdv_for(self, file_name: str = '') -> PathSdv:
-        return PathConstantSdv(path_ddvs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
-                                                       _empty_or_fixed_path_part(file_name)))
+    def _path_sdv_for(self, path_suffix: PathPartDdv) -> PathSdv:
+        return path_sdvs.constant(
+            path_ddvs.of_rel_option(rel_any_from_rel_sds(self.relativity_sds),
+                                    path_suffix)
+        )
 
 
 class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
@@ -467,13 +478,13 @@ def symbol_conf_rel_any(relativity: RelOptionType,
 
 
 def conf_rel_non_hds(relativity: RelNonHdsOptionType) -> RelativityOptionConfigurationForRelNonHds:
-    return RelativityOptionConfigurationForRelNonHdsBase(
+    return RelativityOptionConfigurationForRelNonHdsImpl(
         relativity,
         OptionStringConfigurationForRelativityOptionRelNonHds(relativity))
 
 
 def default_conf_rel_non_hds(relativity: RelNonHdsOptionType) -> RelativityOptionConfigurationForRelNonHds:
-    return RelativityOptionConfigurationForRelNonHdsBase(
+    return RelativityOptionConfigurationForRelNonHdsImpl(
         relativity,
         OptionStringConfigurationForDefaultRelativity())
 
@@ -482,7 +493,7 @@ def symbol_conf_rel_non_hds(relativity: RelNonHdsOptionType,
                             symbol_name: str,
                             accepted_relativities: PathRelativityVariants
                             ) -> RelativityOptionConfigurationForRelNonHds:
-    return RelativityOptionConfigurationForRelNonHdsBase(
+    return RelativityOptionConfigurationForRelNonHdsImpl(
         relativity,
         OptionStringConfigurationForRelSymbol(symbol_name),
         SymbolsConfigurationForSinglePathSymbol(path_relativity.rel_any_from_rel_non_hds(relativity),

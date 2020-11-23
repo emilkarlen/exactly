@@ -26,7 +26,7 @@ ModelConstructorFromRelOptConf = Callable[[RelativityOptionConfiguration], Model
 
 
 def model_with_rel_root_as_source_path(root_dir_of_dir_contents: RelativityOptionConfiguration) -> ModelConstructor:
-    return model_constructor__from_embryo__non_recursive(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for()))
+    return model_constructor__from_embryo__non_recursive(ModelEmbryo(root_dir_of_dir_contents.path_sdv_for_root_dir()))
 
 
 def model_with_source_path_as_sub_dir_of_rel_root(subdir: str) -> ModelConstructorFromRelOptConf:

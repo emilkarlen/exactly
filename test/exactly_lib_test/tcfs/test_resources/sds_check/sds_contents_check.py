@@ -64,7 +64,7 @@ def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDs],
 
 
 def non_hds_dir_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDs], pathlib.Path],
-                                 expected_contents: file_structure.DirContents) -> ValueAssertion:
+                                 expected_contents: file_structure.DirContents) -> ValueAssertionBase[SandboxDs]:
     return NonHdsDirContainsExactly(sds__2__root_dir_path, expected_contents)
 
 
