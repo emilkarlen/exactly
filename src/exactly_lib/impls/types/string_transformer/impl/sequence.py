@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.definitions.entity import types
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.expression.grammar_elements import InfixOperatorDescriptionFromFunctions
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
@@ -14,7 +14,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddvs import StringTransformerConstantDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithNodeDescription
 from exactly_lib.type_val_prims.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
@@ -22,7 +22,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+class SequenceStringTransformer(WithCachedNodeDescriptionBase, StringTransformer):
     NAME = names.SEQUENCE_OPERATOR_NAME
 
     def __init__(self, transformers: Sequence[StringTransformer]):
@@ -36,7 +36,7 @@ class SequenceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTr
         self._is_identity = len(self._non_identity_transformer_functions) == 0
 
     @staticmethod
-    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+    def new_structure_tree(operands: Sequence[WithNodeDescription]) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             SequenceStringTransformer.NAME,
             None,

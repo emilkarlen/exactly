@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Sequence
 
-from exactly_lib.type_val_prims.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNameAndNodeDescription
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 
 MODEL = TypeVar('MODEL')
 T = TypeVar('T')
 
 
-class MatcherWTrace(Generic[MODEL], WithNameAndTreeStructureDescription, ABC):
+class MatcherWTrace(Generic[MODEL], WithNameAndNodeDescription, ABC):
     @abstractmethod
     def matches_w_trace(self, model: MODEL) -> MatchingResult:
         pass

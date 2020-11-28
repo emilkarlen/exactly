@@ -3,7 +3,7 @@ from typing import Optional, Pattern, Match, Sequence
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.regex.regex_ddv import RegexDdv, RegexSdv
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -21,7 +21,7 @@ from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class MatchesRegex(WithCachedTreeStructureDescriptionBase,
+class MatchesRegex(WithCachedNodeDescriptionBase,
                    MatcherWTrace[str]
                    ):
     NAME = ' '.join((

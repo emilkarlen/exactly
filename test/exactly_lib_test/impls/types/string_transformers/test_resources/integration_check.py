@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.string_transformers.test_resources.transformer
     StringTransformerPropertiesConfiguration
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_prims.string_model.test_resources.assertions import model_lines_lists_matches
+from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
@@ -48,7 +48,7 @@ def expectation_of_successful_execution(output_lines: List[str],
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=model_lines_lists_matches(
+            main_result=asrt_string_model.matches__lines(
                 asrt.equals(output_lines),
                 may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
             ),

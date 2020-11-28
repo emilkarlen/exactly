@@ -6,14 +6,14 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib.util.symbol_table import SymbolTable
 
 MODEL = TypeVar('MODEL')
 T = TypeVar('T')
 
 
-class PropertyGetter(Generic[MODEL, T], WithTreeStructureDescription, ABC):
+class PropertyGetter(Generic[MODEL, T], WithNodeDescription, ABC):
     @abstractmethod
     def get_from(self, model: MODEL) -> T:
         """
@@ -28,7 +28,7 @@ class PropertyGetterAdv(Generic[MODEL, T], ABC):
         pass
 
 
-class PropertyGetterDdv(Generic[MODEL, T], WithTreeStructureDescription, ABC):
+class PropertyGetterDdv(Generic[MODEL, T], WithNodeDescription, ABC):
     @property
     def validator(self) -> DdvValidator:
         return ddv_validation.constant_success_validator()

@@ -1,5 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.files_matcher import config
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.matcher import property_matcher
@@ -35,7 +35,7 @@ class _Parser(ParserFromTokens[FilesMatcherSdv]):
 _PARSER = _Parser()
 
 
-class _PropertyGetter(PropertyGetter[FilesMatcherModel, int], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(PropertyGetter[FilesMatcherModel, int], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_NAME)
 

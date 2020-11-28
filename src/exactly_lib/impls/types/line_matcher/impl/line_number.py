@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.integer_matcher import parse_integer_matcher
 from exactly_lib.impls.types.interval import matcher_interval
 from exactly_lib.impls.types.matcher import property_matcher
@@ -41,7 +41,7 @@ def _operand_from_model_sdv() -> PropertyGetterSdv[LineMatcherLine, int]:
     )
 
 
-class _PropertyGetter(property_getters.PropertyGetter[LineMatcherLine, int], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(property_getters.PropertyGetter[LineMatcherLine, int], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_NAME)
 

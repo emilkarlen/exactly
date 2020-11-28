@@ -60,7 +60,7 @@ from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils
     symbol_structure_assertions as asrt_sym
 from exactly_lib_test.type_val_deps.data.test_resources import symbol_reference_assertions as sym_asrt
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
-    WithTreeStructureExecutionPropertiesChecker
+    WithNodeDescriptionExecutionPropertiesChecker
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 from exactly_lib_test.type_val_prims.trace.test_resources import matching_result_assertions as asrt_matching_result
 
@@ -87,8 +87,8 @@ class _CustomMatcherPropertiesConfiguration(MatcherPropertiesConfiguration):
         super().__init__()
         self._application_output = application_output
 
-    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[MatchingResult]:
-        return WithTreeStructureExecutionPropertiesChecker(
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[MatchingResult]:
+        return WithNodeDescriptionExecutionPropertiesChecker(
             MatcherDdv,
             MatcherWTrace,
             self._application_output,

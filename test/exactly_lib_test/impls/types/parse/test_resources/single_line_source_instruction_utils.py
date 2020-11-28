@@ -128,6 +128,14 @@ def equivalent_source_variants__with_source_check__for_expression_parser_2(
     ]
 
 
+def equivalent_source_variants__with_source_check__for_expression_parser_3(
+        original_source: str,
+) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:
+    return equivalent_source_variants__with_source_check__for_expression_parser_2(
+        Arguments.of_preformatted(original_source)
+    )
+
+
 def equivalent_source_variants__with_source_check__for_full_line_expression_parser(
         original_arguments: Arguments,
 ) -> List[NEA[ValueAssertion[ParseSource], ParseSource]]:

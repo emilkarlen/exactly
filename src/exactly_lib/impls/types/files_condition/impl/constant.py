@@ -19,7 +19,7 @@ from exactly_lib.type_val_deps.types.files_condition.ddv import FilesConditionAd
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher
 from exactly_lib.util.description_tree import details
@@ -146,7 +146,7 @@ _EMPTY_FILE_NAME = str_constructor.FormatMap(
     _FORMAT_MAP,
 )
 
-TSD = TypeVar('TSD', bound=WithTreeStructureDescription)
+TSD = TypeVar('TSD', bound=WithNodeDescription)
 
 
 class _Describer(Generic[TSD], DetailsRenderer):

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import ContextManager, Iterator, IO, Tuple, Sequence
 
 from exactly_lib.definitions.primitives import string_transformer
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription, StructureRenderer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.description_tree.renderer import DetailsRenderer, NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
@@ -44,7 +44,7 @@ class StringModelStructureBuilder:
         )
 
 
-class StringModel(WithTreeStructureDescription, ABC):
+class StringModel(WithNodeDescription, ABC):
     """Access to a string in various forms.
 
     The string is backed by a constant "string source".

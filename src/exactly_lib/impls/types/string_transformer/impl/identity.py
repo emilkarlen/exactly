@@ -1,6 +1,6 @@
 from typing import Sequence, Iterator
 
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.string_transformer import names, sdvs
 from exactly_lib.impls.types.string_transformer.impl.models.transformed_string_models import \
@@ -18,7 +18,7 @@ def parse_identity(parser: TokenParser) -> StringTransformerSdv:
     return IDENTITY_TRANSFORMER_SDV
 
 
-class IdentityStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
+class IdentityStringTransformer(WithCachedNodeDescriptionBase, StringTransformerFromLinesTransformer):
     @property
     def name(self) -> str:
         return names.IDENTITY_TRANSFORMER_NAME

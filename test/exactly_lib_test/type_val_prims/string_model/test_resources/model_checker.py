@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import application_environment
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_model.test_resources import properties_access
 from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
@@ -164,58 +165,12 @@ class Checker:
                                                              'contents - ' + case.name)
 
 
-class _GetContentsFromLinesWIteratorCheck:
-    def __init__(self, put: unittest.TestCase):
-        self._put = put
-
-    def get_contents(self, model: StringModel) -> str:
-        with model.as_lines as lines_iterator:
-            lines = list(lines_iterator)
-
-            lines_after_first_iteration = list(lines_iterator)
-            self._put.assertEqual([], lines_after_first_iteration,
-                                  'as_lines: lines after first iteration should be empty')
-            return ''.join(lines)
-
-
-def _get_contents_from_file(model: StringModel) -> str:
-    with model.as_file.open() as model_file:
-        return model_file.read()
-
-
-def _get_contents_from_str(model: StringModel) -> str:
-    return model.as_str
-
-
-def _get_contents_via_write_to(model: StringModel) -> str:
-    with tempfile.SpooledTemporaryFile(mode='r+') as output_file:
-        model.write_to(output_file)
-        output_file.seek(0)
-        return output_file.read()
-
-
-def _case__from_lines(put: unittest.TestCase) -> NameAndValue:
-    return NameAndValue('as_lines', _GetContentsFromLinesWIteratorCheck(put).get_contents)
-
-
-def _case__from_str() -> NameAndValue:
-    return NameAndValue('as_str', _get_contents_from_str)
-
-
-def _case__from_file() -> NameAndValue:
-    return NameAndValue('as_file', _get_contents_from_file)
-
-
-def _case__from_write_to() -> NameAndValue:
-    return NameAndValue('write_to', _get_contents_via_write_to)
-
-
 def contents_cases__first_access_is_not_write_to(put: unittest.TestCase,
                                                  ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
-    alternative_str = _case__from_str()
-    alternative_lines = _case__from_lines(put)
-    alternative_file = _case__from_file()
-    alternative_write_to = _case__from_write_to()
+    alternative_str = properties_access.case__from_str()
+    alternative_lines = properties_access.case__from_lines__w_iterator_check(put)
+    alternative_file = properties_access.case__from_file()
+    alternative_write_to = properties_access.case__from_write_to()
 
     alternatives_after_str = [
         alternative_lines,
@@ -245,10 +200,10 @@ def contents_cases__first_access_is_not_write_to(put: unittest.TestCase,
 def contents_cases(put: unittest.TestCase,
                    ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
     return _sequences_for_alternatives([
-        _case__from_str(),
-        _case__from_lines(put),
-        _case__from_file(),
-        _case__from_write_to(),
+        properties_access.case__from_str(),
+        properties_access.case__from_lines__w_iterator_check(put),
+        properties_access.case__from_file(),
+        properties_access.case__from_write_to(),
     ])
 
 

@@ -20,6 +20,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import Applicati
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, ParseExpectation, \
     ExecutionExpectation, PrimAndExeExpectation, Expectation, MultiSourceExpectation, AssertionResolvingEnvironment
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
@@ -27,8 +28,13 @@ from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instru
     equivalent_source_variants__with_source_check__for_expression_parser, \
     equivalent_source_variants__with_source_check__for_expression_parser_2, \
     equivalent_source_variants__with_source_check__for_full_line_expression_parser
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.tcfs.test_resources.ds_construction import tcds_with_act_as_curr_dir_3
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
+from exactly_lib_test.test_resources.source import layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import LayoutSpec
+from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.test_utils import NExArr, NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
@@ -76,6 +82,180 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                             self._check_application_result_with_tcds,
                                             expectation)
         checker.check(source)
+
+    def check__abs_stx(self,
+                       put: unittest.TestCase,
+                       source: AbstractSyntax,
+                       input_: INPUT,
+                       arrangement: Arrangement,
+                       expectation: Expectation[PRIMITIVE, OUTPUT],
+                       layout_: LayoutSpec = LayoutSpec.of_default(),
+                       ):
+        checker = _ParseAndExecutionChecker(put,
+                                            input_,
+                                            self._parser,
+                                            arrangement,
+                                            self._configuration,
+                                            self._check_application_result_with_tcds,
+                                            expectation)
+        checker.check(remaining_source(source.tokenization().layout(layout_)))
+
+    def check__abs_stx__layout_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        self.check__token_sequence__layout_and_source_variants(
+            put,
+            source.tokenization(),
+            input_,
+            arrangement,
+            expectation_,
+            layouts,
+        )
+
+    def check__abs_stx__std_layouts_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__abs_stx__layout_and_source_variants(
+            put,
+            source,
+            input_,
+            arrangement,
+            expectation_,
+            layout.STANDARD_LAYOUT_SPECS,
+        )
+
+    def check__abs_stx__wo_input__std_layouts_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__abs_stx__std_layouts_and_source_variants(
+            put,
+            source,
+            None,
+            arrangement,
+            expectation_,
+        )
+
+    def check__abs_stx__std_layouts_and_source_variants__full_line_parse(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__token_sequence__layout_and_source_variants__full_line_parse(
+            put,
+            source.tokenization(),
+            input_,
+            arrangement,
+            expectation_,
+            layout.STANDARD_LAYOUT_SPECS,
+        )
+
+    def check__abs_stx__wo_input__std_layouts_and_source_variants__full_line_parse(
+            self,
+            put: unittest.TestCase,
+            source: AbstractSyntax,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        self.check__abs_stx__std_layouts_and_source_variants__full_line_parse(
+            put,
+            source,
+            None,
+            arrangement,
+            expectation_,
+        )
+
+    def check__token_sequence__layout_and_source_variants(
+            self,
+            put: unittest.TestCase,
+            source: TokenSequence,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        for layout_case in layouts:
+            source_layout = source.layout(layout_case.value)
+            source_arguments = Arguments.of_preformatted(source_layout)
+            for source_case in equivalent_source_variants__with_source_check__for_expression_parser_2(source_arguments):
+                with put.subTest(layout=layout_case.name,
+                                 source=source_case.name):
+                    self._check__parse_source(
+                        put,
+                        source_case.actual,
+                        input_,
+                        arrangement,
+                        source_case.expected,
+                        expectation_,
+                    )
+
+    def check__token_sequence__layout_and_source_variants__full_line_parse(
+            self,
+            put: unittest.TestCase,
+            source: TokenSequence,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+            layouts: Sequence[NameAndValue[LayoutSpec]],
+    ):
+        for layout_case in layouts:
+            source_layout = source.layout(layout_case.value)
+            src_args = Arguments.of_preformatted(source_layout)
+            for source_case in equivalent_source_variants__with_source_check__for_full_line_expression_parser(src_args):
+                with put.subTest(layout=layout_case.name,
+                                 source=source_case.name):
+                    self._check__parse_source(
+                        put,
+                        source_case.actual,
+                        input_,
+                        arrangement,
+                        source_case.expected,
+                        expectation_,
+                    )
+
+    def _check__parse_source(
+            self,
+            put: unittest.TestCase,
+            parse_source: ParseSource,
+            input_: INPUT,
+            arrangement: Arrangement,
+            expectation__source: ValueAssertion[ParseSource],
+            expectation_: MultiSourceExpectation[PRIMITIVE, OUTPUT],
+    ):
+        # ACT #
+        actual = self._parser.parse(parse_source)
+        # ASSERT #
+        expectation__source.apply_with_message(put, parse_source, 'source after parse')
+        self._check_sdv(put, actual, expectation_.symbol_references)
+
+        checker = _ExecutionChecker(put,
+                                    input_,
+                                    arrangement,
+                                    expectation_.primitive,
+                                    expectation_.execution,
+                                    self._configuration.applier(),
+                                    self._configuration.new_execution_checker(),
+                                    self._check_application_result_with_tcds,
+                                    )
+        # ACT & ASSERT #
+        checker.check(actual)
 
     def check__w_source_variants(self,
                                  put: unittest.TestCase,

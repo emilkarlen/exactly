@@ -71,6 +71,16 @@ class Applier(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
         pass
 
 
+class ApplierThatDoesNothing(Generic[PRIMITIVE], Applier[PRIMITIVE, None, None]):
+    def apply(self,
+              put: unittest.TestCase,
+              message_builder: MessageBuilder,
+              primitive: PRIMITIVE,
+              resolving_environment: FullResolvingEnvironment,
+              input_: None) -> None:
+        return None
+
+
 class CommonPropertiesConfiguration(Generic[PRIMITIVE, INPUT, OUTPUT], ABC):
     """
     Defines properties of a single primitive type.

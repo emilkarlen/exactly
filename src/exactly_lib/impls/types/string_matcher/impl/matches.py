@@ -1,4 +1,4 @@
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.matcher import property_matcher
 from exactly_lib.impls.types.matcher.impls import matches_regex, property_getters, property_matcher_describers, \
     sdv_components
@@ -27,7 +27,7 @@ def sdv(is_full_match: bool,
     return sdv_components.MatcherSdvFromParts(contents_matcher.references, get_ddv)
 
 
-class _PropertyGetter(PropertyGetter[StringModel, str], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringModel, str], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only('contents')
 

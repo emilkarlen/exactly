@@ -34,15 +34,15 @@ class Case:
 
 class TestLayout(unittest.TestCase):
     def runTest(self):
-        opt_new_line = '<OPT-NEW-LINE>'
+        optional_new_line = '<OPTIONAL-NEW-LINE>'
         token_sep = '<TOKEN-SEPARATOR>'
         layout = LayoutSpec(
-            optional_new_line=(opt_new_line,),
+            optional_new_line=(optional_new_line,),
             symbol_reference_as_plain_symbol_name=False,
             token_separator=token_sep,
         )
         layout_formatter = StringFormatter({
-            'opt_nl': opt_new_line,
+            'optional_nl': optional_new_line,
             'token_sep': token_sep
         })
         cases = [
@@ -79,7 +79,7 @@ class TestLayout(unittest.TestCase):
             Case('{LayoutAble} objects should be rendered using their rendering method'.format(LayoutAble=LayoutAble),
                  [_LayoutAbleThatGivesOptionalNewLineStrings()],
                  layout,
-                 layout_formatter.format('{opt_nl}'),
+                 layout_formatter.format('{optional_nl}'),
                  ),
             Case('single empty layout-able',
                  [_ConstLayoutAble([])],

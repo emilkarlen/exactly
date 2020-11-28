@@ -1,6 +1,6 @@
 from typing import Iterator, Tuple
 
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.line_matcher import line_nums_interval
 from exactly_lib.impls.types.line_matcher import model_construction
 from exactly_lib.impls.types.string_transformer import sdvs
@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherAdv, LineMatcherDdv, LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithNodeDescription
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher, LineMatcherLine
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
@@ -66,7 +66,7 @@ class _FilterByLineMatcherDdvAdv(ApplicationEnvironmentDependentValue[StringTran
         return _FilterByLineMatcher(self._name, self._line_matcher.primitive(environment))
 
 
-class _FilterByLineMatcher(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
+class _FilterByLineMatcher(WithCachedNodeDescriptionBase, StringTransformerFromLinesTransformer):
     """
     Keeps lines matched by a given :class:`LineMatcher`,
     and discards lines not matched.
@@ -81,7 +81,7 @@ class _FilterByLineMatcher(WithCachedTreeStructureDescriptionBase, StringTransfo
         self._line_matcher = line_matcher
 
     @staticmethod
-    def new_structure_tree(name: str, line_matcher: WithTreeStructureDescription) -> StructureRenderer:
+    def new_structure_tree(name: str, line_matcher: WithNodeDescription) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             name,
             None,

@@ -1,4 +1,4 @@
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.string_transformer.impl.models import transformed_by_program
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
@@ -22,7 +22,7 @@ def transformer(name: str,
     )
 
 
-class _RunStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformer):
+class _RunStringTransformer(WithCachedNodeDescriptionBase, StringTransformer):
     def __init__(self,
                  name: str,
                  environment: ApplicationEnvironment,

@@ -6,7 +6,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.regex import parse_regex
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
@@ -123,7 +123,7 @@ class _Ddv(StringTransformerDdv):
                     self._replacement.value_of_any_dependency(tcds))
 
 
-class _ReplaceStringTransformer(WithCachedTreeStructureDescriptionBase, StringTransformerFromLinesTransformer):
+class _ReplaceStringTransformer(WithCachedNodeDescriptionBase, StringTransformerFromLinesTransformer):
     _PATTERN_HEADER = 'pattern ' + syntax_elements.REGEX_SYNTAX_ELEMENT.singular_name
     _REPLACEMENT_HEADER = 'replacement ' + syntax_elements.STRING_SYNTAX_ELEMENT.singular_name
 

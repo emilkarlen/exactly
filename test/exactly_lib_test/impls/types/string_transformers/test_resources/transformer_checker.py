@@ -10,8 +10,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
     CommonPropertiesConfiguration, Applier
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import LogicSdvPropertiesChecker, \
-    WithTreeStructureExecutionPropertiesChecker
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+    FullDepsSdvPropertiesChecker, \
+    WithNodeDescriptionExecutionPropertiesChecker
 from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
 
 
@@ -26,17 +27,17 @@ class StringTransformerPropertiesConfiguration(
     def applier(self) -> Applier[StringTransformer, ModelConstructor, StringModel]:
         return self._applier
 
-    def new_sdv_checker(self) -> LogicSdvPropertiesChecker[StringTransformer]:
-        return LogicSdvPropertiesChecker(StringTransformerSdv)
+    def new_sdv_checker(self) -> FullDepsSdvPropertiesChecker[StringTransformer]:
+        return FullDepsSdvPropertiesChecker(StringTransformerSdv)
 
-    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[StringModel]:
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[StringModel]:
         generic_model_check = (
             asrt.anything_goes()
             if self._avoid_model_evaluation
             else
             asrt_string_model.StringModelLinesAreValidAssertion()
         )
-        return WithTreeStructureExecutionPropertiesChecker(
+        return WithNodeDescriptionExecutionPropertiesChecker(
             StringTransformerDdv,
             StringTransformer,
             generic_model_check,

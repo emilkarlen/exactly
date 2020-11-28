@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Callable, Iterator, ContextManager, Sequenc
 
 from exactly_lib.definitions import logic
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
@@ -12,7 +12,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
-from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithNodeDescription
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.util.description_tree import details, renderers
@@ -72,14 +72,14 @@ class _ApplicationConf(Generic[MODEL, ELEMENT]):
 
 
 class _QuantifierBase(Generic[MODEL, ELEMENT],
-                      WithCachedTreeStructureDescriptionBase,
+                      WithCachedNodeDescriptionBase,
                       MatcherWTrace[MODEL],
                       ABC):
     def __init__(self,
                  quantifier: Quantifier,
                  conf: _ApplicationConf[MODEL, ELEMENT],
                  ):
-        WithCachedTreeStructureDescriptionBase.__init__(self)
+        WithCachedNodeDescriptionBase.__init__(self)
         self._conf = conf
         self._quantifier = quantifier
 
@@ -97,7 +97,7 @@ class _QuantifierBase(Generic[MODEL, ELEMENT],
     @staticmethod
     def new_structure_tree(quantifier: Quantifier,
                            element_rendering: ElementRendering,
-                           predicate: WithTreeStructureDescription) -> StructureRenderer:
+                           predicate: WithNodeDescription) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             _QuantifierBase.__name(quantifier, element_rendering),
             None,

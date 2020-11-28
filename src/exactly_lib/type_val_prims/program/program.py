@@ -1,6 +1,6 @@
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string_transformer
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.stdin import StdinData
@@ -10,7 +10,7 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.description_tree.tree import Node
 
 
-class Program(WithCachedTreeStructureDescriptionBase):
+class Program(WithCachedNodeDescriptionBase):
     def __init__(self,
                  command: Command,
                  stdin: StdinData,

@@ -8,7 +8,7 @@ from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.definitions import misc_texts, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements, concepts
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.exception import pfh_exception
 from exactly_lib.impls.instructions.assert_.utils import instruction_of_matcher
 from exactly_lib.impls.text_render.header_rendering import unexpected_attribute__major_block
@@ -96,7 +96,7 @@ class Parser(InstructionParser):
             )
 
 
-class _ExitCodeGetter(PropertyGetter[None, int], WithCachedTreeStructureDescriptionBase):
+class _ExitCodeGetter(PropertyGetter[None, int], WithCachedNodeDescriptionBase):
     def __init__(self, sds: SandboxDs):
         super().__init__()
         self._sds = sds

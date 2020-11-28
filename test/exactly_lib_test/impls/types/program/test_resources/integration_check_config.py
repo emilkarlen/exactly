@@ -9,8 +9,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import INPUT, \
     OUTPUT, \
     CommonPropertiesConfiguration, Applier
-from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import LogicSdvPropertiesChecker, \
-    WithTreeStructureExecutionPropertiesChecker
+from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
+    FullDepsSdvPropertiesChecker, \
+    WithNodeDescriptionExecutionPropertiesChecker
 
 
 class ProgramPropertiesConfiguration(Generic[INPUT, OUTPUT],
@@ -23,8 +24,8 @@ class ProgramPropertiesConfiguration(Generic[INPUT, OUTPUT],
     def applier(self) -> Applier[Program, ProcOutputFile, ResultWithTransformationData]:
         return self._applier
 
-    def new_sdv_checker(self) -> LogicSdvPropertiesChecker[Program]:
-        return LogicSdvPropertiesChecker(ProgramSdv)
+    def new_sdv_checker(self) -> FullDepsSdvPropertiesChecker[Program]:
+        return FullDepsSdvPropertiesChecker(ProgramSdv)
 
-    def new_execution_checker(self) -> WithTreeStructureExecutionPropertiesChecker[OUTPUT]:
-        return WithTreeStructureExecutionPropertiesChecker(ProgramDdv, Program, asrt.anything_goes())
+    def new_execution_checker(self) -> WithNodeDescriptionExecutionPropertiesChecker[OUTPUT]:
+        return WithNodeDescriptionExecutionPropertiesChecker(ProgramDdv, Program, asrt.anything_goes())

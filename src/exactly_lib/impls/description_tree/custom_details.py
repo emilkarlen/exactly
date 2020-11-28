@@ -11,7 +11,7 @@ from exactly_lib.impls.types.path import path_rendering
 from exactly_lib.impls.types.string_or_path import ddv as string_or_path_ddv
 from exactly_lib.impls.types.string_or_path import primitive as string_or_path_prim
 from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription, StructureRenderer
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive, PathDescriberForDdv
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -347,7 +347,7 @@ class TreeStructure(DetailsRenderer):
 
 
 class WithTreeStructure(DetailsRenderer):
-    def __init__(self, tree_structured: WithTreeStructureDescription):
+    def __init__(self, tree_structured: WithNodeDescription):
         self._tree_structured = tree_structured
 
     def render(self) -> Sequence[Detail]:

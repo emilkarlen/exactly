@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
                     symbol_references=asrt.is_empty_sequence,
                 ),
                 ExecutionExpectation(
-                    main_result=asrt_string_model.model_lines_lists_matches(
+                    main_result=asrt_string_model.matches__lines(
                         asrt.equals(model_content_lines),
                         may_depend_on_external_resources=asrt.equals(False),
                     )

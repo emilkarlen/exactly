@@ -5,7 +5,7 @@ from exactly_lib.util.description_tree.renderer import NodeRenderer
 StructureRenderer = NodeRenderer[None]
 
 
-class WithTreeStructureDescription(ABC):
+class WithNodeDescription(ABC):
     @abstractmethod
     def structure(self) -> StructureRenderer:
         """
@@ -16,7 +16,7 @@ class WithTreeStructureDescription(ABC):
         pass
 
 
-class WithNameAndTreeStructureDescription(WithTreeStructureDescription, ABC):
+class WithNameAndNodeDescription(WithNodeDescription, ABC):
     @property
     @abstractmethod
     def name(self) -> str:

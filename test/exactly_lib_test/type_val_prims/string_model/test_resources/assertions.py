@@ -1,14 +1,16 @@
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator, IO, List, Sequence
+from typing import ContextManager, Iterator, IO, Sequence
 
 from exactly_lib.type_val_prims.string_model import StringModel
-from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
     ValueAssertion
+from exactly_lib_test.type_val_prims.string_model.test_resources import properties_access
+from exactly_lib_test.type_val_prims.string_model.test_resources.properties_access import \
+    get_may_depend_on_external_resources
 from exactly_lib_test.type_val_prims.string_model.test_resources.string_model_base import StringModelTestImplBase
 from exactly_lib_test.util.description_tree.test_resources import rendering_assertions as asrt_trace_rendering
 
@@ -27,6 +29,19 @@ class StringModelLinesAreValidAssertion(ValueAssertionBase[StringModel]):
         with model_checker.as_lines as lines:
             for _ in lines:
                 pass
+
+
+class WithLinesCheck(ValueAssertionBase[StringModel]):
+    def __init__(self, on_checked_model: ValueAssertion[StringModel]):
+        self._on_checked_model = on_checked_model
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: StringModel,
+               message_builder: MessageBuilder,
+               ):
+        checked_model = StringModelThatThatChecksLines(put, value)
+        self._on_checked_model.apply(put, checked_model, message_builder)
 
 
 class StringModelThatThatChecksLines(StringModelTestImplBase):
@@ -96,161 +111,92 @@ class StringModelThatThatChecksLines(StringModelTestImplBase):
             self._put.fail('Non-last line: last char is not new-line: ' + repr(line))
 
 
-def model_lines_lists_matches(expected: ValueAssertion[List[str]],
-                              may_depend_on_external_resources: ValueAssertion[bool],
-                              ) -> ValueAssertion[StringModel]:
+def matches__lines(lines: ValueAssertion[Sequence[str]],
+                   may_depend_on_external_resources: ValueAssertion[bool],
+                   ) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.named(
+            'non-contents properties',
+            non_contents_assertion(may_depend_on_external_resources)
+        ),
+        asrt.named(
+            'contents',
+            WithLinesCheck(contents_variants_assertion__lines(lines))
+        ),
+    ])
+
+
+def matches__str(contents: ValueAssertion[str],
+                 may_depend_on_external_resources: ValueAssertion[bool],
+                 ) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.named(
+            'non-contents properties',
+            non_contents_assertion(may_depend_on_external_resources),
+        ),
+        asrt.named(
+            'contents',
+            WithLinesCheck(contents_variants_assertion__str(contents)),
+        ),
+    ])
+
+
+def matches__str__const(contents: str,
+                        may_depend_on_external_resources: bool,
+                        ) -> ValueAssertion[StringModel]:
+    return matches__str(asrt.equals(contents), asrt.equals(may_depend_on_external_resources))
+
+
+def matches__lines__check_just_as_lines(lines: Sequence[str],
+                                        ) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
             'structure',
-            _structure,
+            properties_access.get_structure,
+            asrt_trace_rendering.matches_node_renderer(),
+        ),
+        WithLinesCheck(
+            asrt.sub_component(
+                'as_lines',
+                properties_access.get_contents_from_as_lines,
+                asrt.equals(lines),
+            )
+        ),
+    ])
+
+
+def non_contents_assertion(may_depend_on_external_resources: ValueAssertion[bool]) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.sub_component(
+            'structure',
+            properties_access.get_structure,
             asrt_trace_rendering.matches_node_renderer(),
         ),
         asrt.sub_component(
             'may_depend_on_external_resources',
-            _may_depend_on_external_resources,
+            get_may_depend_on_external_resources,
             may_depend_on_external_resources,
         ),
-        asrt.sub_component(
-            'as_lines',
-            _line_list_from_as_lines,
-            expected,
-        ),
-        asrt.sub_component(
-            'as_str',
-            _line_sequence_from_as_str,
-            expected,
-        ),
-        asrt.sub_component(
-            'as_file',
-            _line_list_from_as_file,
-            expected,
-        ),
     ])
 
 
-def model_lines_lists_matches__check_just_as_lines(expected: List[str],
-                                                   ) -> ValueAssertion[StringModel]:
+def contents_variants_assertion__str(expected: ValueAssertion[str]) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
-            'structure',
-            _structure,
-            asrt_trace_rendering.matches_node_renderer(),
-        ),
-        asrt.sub_component(
-            'as_lines',
-            _line_list_from_as_lines,
-            asrt.equals(expected),
-        ),
+            variant.name,
+            variant.value,
+            expected,
+        )
+        for variant in properties_access.contents_cases__str()
     ])
 
 
-def model_lines_sequence_matches(expected: ValueAssertion[Sequence[str]],
-                                 may_depend_on_external_resources: ValueAssertion[bool],
-                                 ) -> ValueAssertion[StringModel]:
+def contents_variants_assertion__lines(expected: ValueAssertion[Sequence[str]]) -> ValueAssertion[StringModel]:
     return asrt.and_([
         asrt.sub_component(
-            'structure',
-            _structure,
-            asrt_trace_rendering.matches_node_renderer(),
-        ),
-        asrt.sub_component(
-            'may_depend_on_external_resources',
-            _may_depend_on_external_resources,
-            may_depend_on_external_resources,
-        ),
-        asrt.sub_component(
-            'as_lines',
-            _line_sequence_from_as_lines,
+            variant.name,
+            variant.value,
             expected,
-        ),
-        asrt.sub_component(
-            'as_str',
-            _line_sequence_from_as_str,
-            expected,
-        ),
-        asrt.sub_component(
-            'as_file',
-            _line_sequence_from_as_file,
-            expected,
-        ),
+        )
+        for variant in properties_access.contents_cases__lines_sequence()
     ])
-
-
-def model_string_matches(expected: ValueAssertion[str],
-                         may_depend_on_external_resources: ValueAssertion[bool],
-                         ) -> ValueAssertion[StringModel]:
-    return asrt.and_([
-        asrt.sub_component(
-            'structure',
-            _structure,
-            asrt_trace_rendering.matches_node_renderer(),
-        ),
-        asrt.sub_component(
-            'may_depend_on_external_resources',
-            _may_depend_on_external_resources,
-            may_depend_on_external_resources,
-        ),
-        asrt.sub_component(
-            'as_lines',
-            _str_from_as_lines,
-            expected,
-        ),
-        asrt.sub_component(
-            'as_str',
-            _str_from_as_str,
-            expected,
-        ),
-        asrt.sub_component(
-            'as_file',
-            _str_from_as_file,
-            expected,
-        ),
-    ])
-
-
-def _structure(model: StringModel) -> NodeRenderer:
-    return model.structure()
-
-
-def _may_depend_on_external_resources(model: StringModel) -> bool:
-    return model.may_depend_on_external_resources
-
-
-def _line_list_from_as_str(model: StringModel) -> List[str]:
-    return model.as_str.splitlines(keepends=True)
-
-
-def _line_list_from_as_lines(model: StringModel) -> List[str]:
-    with model.as_lines as lines:
-        return list(lines)
-
-
-def _line_sequence_from_as_lines(model: StringModel) -> Sequence[str]:
-    return _line_list_from_as_lines(model)
-
-
-def _line_sequence_from_as_str(model: StringModel) -> Sequence[str]:
-    return _line_list_from_as_str(model)
-
-
-def _str_from_as_str(model: StringModel) -> str:
-    return model.as_str
-
-
-def _str_from_as_lines(model: StringModel) -> str:
-    with model.as_lines as lines:
-        return ''.join(lines)
-
-
-def _line_list_from_as_file(model: StringModel) -> List[str]:
-    with model.as_file.open() as f:
-        return list(f.readlines())
-
-
-def _line_sequence_from_as_file(model: StringModel) -> Sequence[str]:
-    return _line_list_from_as_file(model)
-
-
-def _str_from_as_file(model: StringModel) -> str:
-    with model.as_file.open() as f:
-        return f.read()

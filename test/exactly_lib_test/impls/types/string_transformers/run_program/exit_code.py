@@ -43,7 +43,7 @@ class TestExitCodeInterpretation(unittest.TestCase):
             ignore_exit_code=True,
             execution_expectation=
             ExecutionExpectation(
-                main_result=asrt_string_model.model_string_matches(
+                main_result=asrt_string_model.matches__str(
                     asrt.equals(output.out),
                     may_depend_on_external_resources=asrt.equals(True),
                 )

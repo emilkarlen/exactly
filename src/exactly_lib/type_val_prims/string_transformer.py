@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-from exactly_lib.type_val_prims.description.tree_structured import WithNameAndTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNameAndNodeDescription
 from exactly_lib.type_val_prims.string_model import StringModel
 
 
-class StringTransformer(WithNameAndTreeStructureDescription, ABC):
+class StringTransformer(WithNameAndNodeDescription, ABC):
     """
     Transforms a sequence of lines, where each line is a string.
     """

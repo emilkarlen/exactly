@@ -1,6 +1,6 @@
 from typing import Sequence, Callable
 
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.matcher import property_matcher
 from exactly_lib.impls.types.matcher.impls import property_matcher_describers
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetterSdv, PropertyGetterDdv, MODEL, T, \
@@ -39,7 +39,7 @@ def matcher(configuration: Configuration,
 
 
 class _ModelGetter(PropertyGetter[FilesMatcherModel, FilesMatcherModel],
-                   WithCachedTreeStructureDescriptionBase):
+                   WithCachedNodeDescriptionBase):
 
     def __init__(self,
                  configuration: Configuration,

@@ -337,7 +337,7 @@ class AssertStdinIsPresentWithContents(ValueAssertionBase[SettingsBuilderAsserti
                  expected: str,
                  may_depend_on_external_resources: bool
                  ):
-        self._expectation = asrt_string_model.model_string_matches(
+        self._expectation = asrt_string_model.matches__str(
             asrt.equals(expected),
             asrt.equals(may_depend_on_external_resources),
         )

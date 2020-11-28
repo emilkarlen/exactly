@@ -11,7 +11,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace, MODEL, T, \
     MatcherStdTypeVisitor
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
@@ -30,7 +30,7 @@ class Negation(_CombinatorBase[MODEL]):
     NAME = logic.NOT_OPERATOR_NAME
 
     @staticmethod
-    def new_structure_tree(negated: WithTreeStructureDescription) -> StructureRenderer:
+    def new_structure_tree(negated: WithNodeDescription) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             Negation.NAME,
             None,
@@ -120,7 +120,7 @@ class Conjunction(_CombinatorBase[MODEL]):
     NAME = logic.AND_OPERATOR_NAME
 
     @staticmethod
-    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+    def new_structure_tree(operands: Sequence[WithNodeDescription]) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             Conjunction.NAME,
             None,
@@ -185,7 +185,7 @@ class Disjunction(_CombinatorBase[MODEL]):
     NAME = logic.OR_OPERATOR_NAME
 
     @staticmethod
-    def new_structure_tree(operands: Sequence[WithTreeStructureDescription]) -> StructureRenderer:
+    def new_structure_tree(operands: Sequence[WithNodeDescription]) -> StructureRenderer:
         return renderers.NodeRendererFromParts(
             Disjunction.NAME,
             None,

@@ -66,7 +66,7 @@ def check(put: unittest.TestCase, case: Case):
                 symbol_references=SymbolContext.references_assertion_of_contexts(case.symbols)
             ),
             execution=ExecutionExpectation(
-                main_result=asrt_string_model.model_lines_lists_matches__check_just_as_lines(case.expected_output_lines)
+                main_result=asrt_string_model.matches__lines__check_just_as_lines(case.expected_output_lines)
             ),
         )
     )

@@ -36,7 +36,7 @@ def expectation_of_successful_execution__check_only_as_lines(
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=assertions.model_lines_lists_matches__check_just_as_lines(
+            main_result=assertions.matches__lines__check_just_as_lines(
                 output_lines,
             ),
         ),

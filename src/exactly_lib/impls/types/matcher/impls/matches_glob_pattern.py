@@ -5,7 +5,7 @@ from typing import Callable
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import str_matcher
 from exactly_lib.impls.description_tree import custom_details
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.matcher.impls import sdv_components
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv import advs
@@ -75,7 +75,7 @@ class MatchesGlobPatternDdv(MatcherDdv[MODEL]):
         )
 
 
-class MatchesGlobPattern(WithCachedTreeStructureDescriptionBase,
+class MatchesGlobPattern(WithCachedNodeDescriptionBase,
                          MatcherWTrace[MODEL]
                          ):
     NAME = ' '.join((

@@ -1,13 +1,12 @@
 import unittest
 
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
-from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesCondition, FilesConditionSdv, \
     FilesConditionDdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
-    CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker
+    CommonPropertiesConfiguration, Applier, CommonSdvPropertiesChecker, ApplierThatDoesNothing
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.sdv_checker import \
     WithDetailsDescriptionExecutionPropertiesChecker
 
@@ -17,7 +16,7 @@ class FilesConditionPropertiesConfiguration(
                                   None,
                                   None]):
     def __init__(self):
-        self._applier = _UnusedApplier()
+        self._applier = ApplierThatDoesNothing()
 
     def applier(self) -> Applier[FilesCondition, None, None]:
         return self._applier
@@ -43,13 +42,3 @@ class _SdvPropertiesChecker(CommonSdvPropertiesChecker[FilesCondition]):
             actual,
             message_builder
         )
-
-
-class _UnusedApplier(Applier[FilesCondition, None, None]):
-    def apply(self,
-              put: unittest.TestCase,
-              message_builder: MessageBuilder,
-              primitive: FilesCondition,
-              resolving_environment: FullResolvingEnvironment,
-              input_: None) -> None:
-        return None

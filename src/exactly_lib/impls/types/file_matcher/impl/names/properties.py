@@ -2,14 +2,14 @@ from pathlib import Path
 from typing import Callable
 
 from exactly_lib.definitions.primitives import file_matcher
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 from exactly_lib.util.description_tree import renderers
 
 
-class NamePartPropertyGetterBase(WithCachedTreeStructureDescriptionBase):
+class NamePartPropertyGetterBase(WithCachedNodeDescriptionBase):
     def __init__(self,
                  matcher_name: str,
                  get_name_part_from_name: Callable[[str], str]
@@ -66,7 +66,7 @@ def get_suffix_from_name(name: str) -> str:
 
 
 class NameAsStrPropertyGetter(PropertyGetter[FileMatcherModel, str],
-                              WithCachedTreeStructureDescriptionBase):
+                              WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(file_matcher.NAME_MATCHER_NAME)
 
@@ -75,7 +75,7 @@ class NameAsStrPropertyGetter(PropertyGetter[FileMatcherModel, str],
 
 
 class NameAsPathPropertyGetter(PropertyGetter[FileMatcherModel, Path],
-                               WithCachedTreeStructureDescriptionBase):
+                               WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(file_matcher.NAME_MATCHER_NAME)
 
@@ -84,7 +84,7 @@ class NameAsPathPropertyGetter(PropertyGetter[FileMatcherModel, Path],
 
 
 class WholePathAsStrPropertyGetter(PropertyGetter[FileMatcherModel, str],
-                                   WithCachedTreeStructureDescriptionBase):
+                                   WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(file_matcher.WHOLE_PATH_MATCHER_NAME)
 
@@ -93,7 +93,7 @@ class WholePathAsStrPropertyGetter(PropertyGetter[FileMatcherModel, str],
 
 
 class WholePathAsPathPropertyGetter(PropertyGetter[FileMatcherModel, Path],
-                                    WithCachedTreeStructureDescriptionBase):
+                                    WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(file_matcher.WHOLE_PATH_MATCHER_NAME)
 

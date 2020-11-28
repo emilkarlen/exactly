@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDe
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
 from exactly_lib.type_val_prims.description.logic_description import LogicValueDescription, NodeDescription, \
     DetailsDescription
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription, StructureRenderer
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription, StructureRenderer
 from exactly_lib.util.description_tree import details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 
@@ -34,7 +34,7 @@ class FullDepsDdv(Generic[PRIMITIVE],
 
 class FullDepsWithNodeDescriptionDdv(Generic[PRIMITIVE],
                                      FullDepsDdv[PRIMITIVE],
-                                     WithTreeStructureDescription,
+                                     WithNodeDescription,
                                      ABC):
     """A :class:`LogicDdv` that can report its structure in terms of a node tree"""
 
@@ -55,7 +55,7 @@ class FullDepsWithDetailsDescriptionDdv(Generic[PRIMITIVE],
 
 
 class _DescriptionOfTreeStructure(NodeDescription):
-    def __init__(self, tree_structured: WithTreeStructureDescription):
+    def __init__(self, tree_structured: WithNodeDescription):
         self._tree_structured = tree_structured
 
     def structure(self) -> StructureRenderer:

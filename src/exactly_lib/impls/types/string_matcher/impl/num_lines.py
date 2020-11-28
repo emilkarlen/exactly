@@ -1,5 +1,5 @@
 from exactly_lib.definitions.entity import syntax_elements
-from exactly_lib.impls.description_tree.tree_structured import WithCachedTreeStructureDescriptionBase
+from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.matcher import property_matcher
 from exactly_lib.impls.types.matcher.impls import property_matcher_describers, property_getters
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetter, PropertyGetterSdv
@@ -22,7 +22,7 @@ def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:
     )
 
 
-class _PropertyGetter(PropertyGetter[StringModel, int], WithCachedTreeStructureDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringModel, int], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_NAME)
 

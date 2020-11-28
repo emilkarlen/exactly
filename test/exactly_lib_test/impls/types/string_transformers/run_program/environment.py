@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Dict
+from typing import List, Dict, Sequence, Mapping
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
@@ -73,7 +73,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                             'Environment: {}'.format(repr(environment)),
                             PrimAndExeExpectation(
                                 ExecutionExpectation(
-                                    main_result=asrt_string_model.model_lines_lists_matches(
+                                    main_result=asrt_string_model.matches__lines(
                                         _AssertLinesRepresentSubSetOfDict(environment),
                                         may_depend_on_external_resources=asrt.equals(True),
                                     )
@@ -98,7 +98,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                 )
 
 
-class _AssertLinesRepresentSubSetOfDict(ValueAssertionBase[List[str]]):
+class _AssertLinesRepresentSubSetOfDict(ValueAssertionBase[Sequence[str]]):
     def __init__(self, expected_sub_set: Dict[str, str]):
         self.expected_sub_set = expected_sub_set
 
@@ -119,7 +119,7 @@ class _AssertLinesRepresentSubSetOfDict(ValueAssertionBase[List[str]]):
                             val_msg)
 
     @staticmethod
-    def _dict_from_lines(key_val_lines: List[str]) -> Dict[str, str]:
+    def _dict_from_lines(key_val_lines: List[str]) -> Mapping[str, str]:
         key_val_list = [
             line.rstrip('\n').split('=', maxsplit=1)
             for line in key_val_lines

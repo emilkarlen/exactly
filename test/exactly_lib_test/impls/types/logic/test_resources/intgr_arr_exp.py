@@ -171,6 +171,19 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
         self.execution = execution
         self.primitive = primitive
 
+    @staticmethod
+    def of_prim(primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
+                parse: ParseExpectation = ParseExpectation(),
+                ) -> 'Expectation':
+        return Expectation(parse=parse,
+                           primitive=primitive)
+
+    @staticmethod
+    def of_prim__const(primitive: ValueAssertion[PRIMITIVE],
+                       parse: ParseExpectation = ParseExpectation(),
+                       ) -> 'Expectation':
+        return Expectation.of_prim(lambda env: primitive, parse)
+
     @property
     def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
         return PrimAndExeExpectation(
@@ -189,6 +202,16 @@ class MultiSourceExpectation(Generic[PRIMITIVE, OUTPUT]):
         self.symbol_references = symbol_references
         self.execution = execution
         self.primitive = primitive
+
+    @staticmethod
+    def of_prim(primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
+                ) -> 'MultiSourceExpectation':
+        return MultiSourceExpectation(primitive=primitive)
+
+    @staticmethod
+    def of_prim__const(primitive: ValueAssertion[PRIMITIVE],
+                       ) -> 'MultiSourceExpectation':
+        return MultiSourceExpectation.of_prim(lambda env: primitive)
 
     @property
     def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:

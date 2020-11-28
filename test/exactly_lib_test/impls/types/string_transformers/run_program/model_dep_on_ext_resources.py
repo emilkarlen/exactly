@@ -55,7 +55,7 @@ class TestMayDependOnExternalResourcesShouldBeFalseRegardlessOfSourceModel(unitt
                             symbol_references=program_symbol.references_assertion,
                         ),
                         ExecutionExpectation(
-                            main_result=asrt_string_model.model_lines_lists_matches(
+                            main_result=asrt_string_model.matches__lines(
                                 asrt.anything_goes(),
                                 may_depend_on_external_resources=asrt.equals(True),
                             )

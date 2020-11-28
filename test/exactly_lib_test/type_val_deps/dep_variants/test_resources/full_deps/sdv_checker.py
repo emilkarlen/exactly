@@ -5,7 +5,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsWithNodeDescriptionDdv, FullDepsDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_prims.description.details_structured import WithDetailsDescription
-from exactly_lib.type_val_prims.description.tree_structured import WithTreeStructureDescription
+from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder, ValueAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.full_deps.common_properties_checker import \
@@ -16,8 +16,8 @@ from exactly_lib_test.util.description_tree.test_resources import described_tree
     rendering_assertions as asrt_trace_rendering
 
 
-class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
-                                CommonSdvPropertiesChecker[PRIMITIVE]):
+class FullDepsSdvPropertiesChecker(Generic[PRIMITIVE],
+                                   CommonSdvPropertiesChecker[PRIMITIVE]):
     def __init__(self, expected_object_type: Type[FullDepsSdv]):
         self._is_valid_sdv = asrt_logic.matches_sdv_attributes(
             expected_object_type,
@@ -36,12 +36,12 @@ class LogicSdvPropertiesChecker(Generic[PRIMITIVE],
         self._is_valid_sdv.apply(put, actual, message_builder)
 
 
-class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
-                                                  CommonExecutionPropertiesChecker[
-                                                      WithTreeStructureDescription, OUTPUT]):
+class WithNodeDescriptionExecutionPropertiesChecker(Generic[OUTPUT],
+                                                    CommonExecutionPropertiesChecker[
+                                                        WithNodeDescription, OUTPUT]):
     def __init__(self,
                  expected_ddv_object_type: Type[FullDepsWithNodeDescriptionDdv],
-                 expected_primitive_object_type: Type[WithTreeStructureDescription],
+                 expected_primitive_object_type: Type[WithNodeDescription],
                  application_output: ValueAssertion[OUTPUT],
                  ):
         self._expected_ddv_object_type = expected_ddv_object_type
@@ -51,7 +51,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_ddv(self,
                   put: unittest.TestCase,
-                  actual: FullDepsDdv[WithTreeStructureDescription],
+                  actual: FullDepsDdv[WithNodeDescription],
                   message_builder: MessageBuilder,
                   ):
         asrt.is_instance(self._expected_ddv_object_type).apply(
@@ -60,7 +60,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
             message_builder.for_sub_component('object type'),
         )
 
-        assert isinstance(actual, WithTreeStructureDescription)  # Type info for IDE
+        assert isinstance(actual, WithNodeDescription)  # Type info for IDE
 
         self._structure_tree_of_ddv = actual.structure().render()
 
@@ -74,7 +74,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
 
     def check_primitive(self,
                         put: unittest.TestCase,
-                        actual: WithTreeStructureDescription,
+                        actual: WithNodeDescription,
                         message_builder: MessageBuilder,
                         ):
         asrt.is_instance(self._expected_primitive_object_type).apply(
@@ -93,7 +93,7 @@ class WithTreeStructureExecutionPropertiesChecker(Generic[OUTPUT],
 
     def _check_structure_of_primitive(self,
                                       put: unittest.TestCase,
-                                      actual: WithTreeStructureDescription,
+                                      actual: WithNodeDescription,
                                       message_builder: MessageBuilder,
                                       ):
         structure_tree_of_primitive = actual.structure().render()
