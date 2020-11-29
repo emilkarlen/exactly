@@ -1,5 +1,6 @@
+import enum
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import Sequence, AbstractSet
 
 from exactly_lib.util.name_and_value import NameAndValue
 
@@ -41,9 +42,17 @@ class LayoutSpec:
         return self._token_separator
 
 
+class TokenPosition(enum.Enum):
+    FIRST = 1
+    LAST = 2
+
+
 class LayoutAble(ABC):
     @abstractmethod
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
         pass
 
 
@@ -54,8 +63,25 @@ STANDARD_LAYOUT_SPECS = (
 
 
 class _OptionalNewLine(LayoutAble):
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
         return spec.optional_new_line
 
 
+class _NewLineIfNotFirstOrLast(LayoutAble):
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
+        return (
+            ['\n']
+            if len(position) == 0
+            else
+            []
+        )
+
+
 OPTIONAL_NEW_LINE = _OptionalNewLine()
+NEW_LINE_IF_NOT_FIRST_OR_LAST = _NewLineIfNotFirstOrLast()

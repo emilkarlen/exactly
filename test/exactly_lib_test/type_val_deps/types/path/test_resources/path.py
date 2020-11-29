@@ -21,6 +21,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_rel_symbol
 from exactly_lib.type_val_deps.types.path.path_sdv_impls.constant import PathConstantSdv
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
+from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathSymbolReferenceAbsStx
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
 from exactly_lib_test.type_val_deps.data.test_resources.symbol_context import DataSymbolValueContext, \
@@ -200,6 +201,10 @@ class PathSymbolContext(DataTypeSymbolContext[PathSdv]):
     @property
     def value(self) -> PathSymbolValueContext:
         return self._value
+
+    @property
+    def abs_stx_of_reference(self) -> PathSymbolReferenceAbsStx:
+        return PathSymbolReferenceAbsStx(self.name)
 
     def reference_sdv__path_or_string(self, default_relativity: RelOptionType) -> PathSdv:
         return path_sdvs.reference(self.reference__path_or_string, path_part_sdvs.empty(), default_relativity)

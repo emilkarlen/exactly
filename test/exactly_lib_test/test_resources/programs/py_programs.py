@@ -124,7 +124,7 @@ def single_line_pgm_that_prints_to_stderr(output: str) -> str:
 
 
 def single_line_pgm_that_prints_to(output_channel: ProcOutputFile, output: str) -> str:
-    return _SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE.format(channel=_CHANNEL_NAMES[output_channel],
+    return _SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE.format(channel=CHANNEL_NAMES[output_channel],
                                                                 str=output)
 
 
@@ -137,7 +137,7 @@ def single_line_pgm_that_prints_to_stderr_with_new_line(output: str) -> str:
 
 
 def single_line_pgm_that_prints_to_with_new_line(output_channel: ProcOutputFile, output: str) -> str:
-    return _SINGLE_LINE_PGM_THAT_PRINTS_WITH_NEW_LINE.format(channel=_CHANNEL_NAMES[output_channel],
+    return _SINGLE_LINE_PGM_THAT_PRINTS_WITH_NEW_LINE.format(channel=CHANNEL_NAMES[output_channel],
                                                              str=output)
 
 
@@ -153,7 +153,7 @@ _SINGLE_LINE_PGM_THAT_PRINTS_WITHOUT_NEW_LINE = 'import sys; sys.{channel}.write
 
 _SINGLE_LINE_PGM_THAT_PRINTS_WITH_NEW_LINE = 'import sys; sys.{channel}.write("""{str}\\n""")'
 
-_CHANNEL_NAMES = {
+CHANNEL_NAMES = {
     ProcOutputFile.STDOUT: 'stdout',
     ProcOutputFile.STDERR: 'stderr',
 }

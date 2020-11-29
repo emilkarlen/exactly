@@ -1,6 +1,9 @@
 from abc import ABC
+from typing import Sequence
 
+from exactly_lib.definitions.primitives import string_transformer
 from exactly_lib.impls.types.string_model import defs
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.source import token_sequences
@@ -31,8 +34,11 @@ class TransformedStringModelAbsStx(StringModelAbsStx):
     def tokenization(self) -> TokenSequence:
         return TokenSequence.concat([
             self.transformed.tokenization(),
-            TokenSequence.new_line(),
-            self.transformer.tokenization(),
+            TokenSequence.optional_new_line(),
+            token_sequences.OptionWMandatoryValue.of_option_name(
+                string_transformer.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
+                self.transformer.tokenization(),
+            ),
         ])
 
 
@@ -85,8 +91,15 @@ class TransformableAbsStxBuilder:
     def __init__(self, untransformed: TransformableStringModelAbsStx):
         self._untransformed = untransformed
 
-    def without_transformation(self) -> StringModelAbsStx:
+    def without_transformation(self) -> TransformableStringModelAbsStx:
         return self._untransformed
 
     def with_transformation(self, transformer: StringTransformerAbsStx) -> StringModelAbsStx:
         return TransformedStringModelAbsStx(self._untransformed, transformer)
+
+    def with_and_without_transformer_cases(self, transformer: StringTransformerAbsStx,
+                                           ) -> Sequence[NameAndValue[StringModelAbsStx]]:
+        return [
+            NameAndValue('without transformation', self.without_transformation()),
+            NameAndValue('with transformation', self.with_transformation(transformer)),
+        ]

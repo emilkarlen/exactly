@@ -1,9 +1,8 @@
-import itertools
 from abc import ABC, abstractmethod
-from typing import Union, Sequence, List
+from typing import Union, Sequence, List, AbstractSet
 
 from exactly_lib_test.test_resources.source import layout
-from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec
+from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec, TokenPosition
 
 Token = Union[LayoutAble, str]
 
@@ -72,21 +71,34 @@ def _fragments_for_fragment(token_separator: str, non_empty_fragment: str) -> Li
     )
 
 
+def _str_fragments_of_tokens(tokens: Sequence[Token], spec: LayoutSpec) -> Sequence[str]:
+    if len(tokens) == 0:
+        return []
+    elif len(tokens) == 1:
+        return _str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST, TokenPosition.LAST)))
+    else:
+        ret_val = []
+        ret_val += _str_fragments_of_token(tokens[0], spec, frozenset((TokenPosition.FIRST,)))
+        for token in tokens[1:-1]:
+            position = frozenset()
+            ret_val += _str_fragments_of_token(token, spec, position)
+        ret_val += _str_fragments_of_token(tokens[-1], spec, frozenset((TokenPosition.LAST,)))
+
+        return ret_val
+
+
 def _non_empty_str_fragments_of_tokens(tokens: Sequence[Token], spec: LayoutSpec) -> List[str]:
     return list(
         filter(
             _is_not_empty_string,
-            itertools.chain.from_iterable([
-                _str_fragments_of_token(token, spec)
-                for token in tokens
-            ])
+            _str_fragments_of_tokens(tokens, spec)
         )
     )
 
 
-def _str_fragments_of_token(token: Token, spec: LayoutSpec) -> Sequence[str]:
+def _str_fragments_of_token(token: Token, spec: LayoutSpec, position: AbstractSet[TokenPosition]) -> Sequence[str]:
     if isinstance(token, LayoutAble):
-        return token.layout(spec)
+        return token.layout(spec, position)
     else:
         return [token]
 

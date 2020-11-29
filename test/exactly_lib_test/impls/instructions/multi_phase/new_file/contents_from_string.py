@@ -1,45 +1,40 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.definitions import path as path_texts
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
+from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.arguments_building import \
-    complete_argument_elements, complete_arguments_with_explicit_contents
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
-    InvalidDestinationFileTestCasesData, \
-    TestCommonFailingScenariosDueToInvalidDestinationFileBase
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
-    TestCaseBase
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
+    ExplicitContentsVariantAbsStx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
+    check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
-    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse, \
-    AN_ALLOWED_DST_FILE_RELATIVITY
+    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, \
+    ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.impls.instructions.test_resources import parse_file_maker as file_maker_args
-from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import \
-    here_document_contents_arguments, \
-    string_contents_arguments
-from exactly_lib_test.impls.types.parse.test_resources import arguments_building as parse_args
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments, ArgumentElements
-from exactly_lib_test.impls.types.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
+from exactly_lib_test.impls.types.string_model.test_resources import abstract_syntax as string_model_abs_stx
+from exactly_lib_test.impls.types.string_model.test_resources.abstract_syntax import StringModelOfStringAbsStx
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
-    is_at_beginning_of_line
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
     non_hds_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.source import custom_abstract_syntax as custom_abs_stx
+from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt, value_assertion as asrt
+from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion as asrt_rest
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as string_abs_stx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
 
 
@@ -48,72 +43,58 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithConstantContents),
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSymbolReferences),
-        unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
     ])
 
 
-class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
-    def test_contents_from_string(self):
-        string_value = 'the_string_value'
-        expected_file = fs.File('a-file-name.txt', string_value)
-        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            dst_file = PathArgumentWithRelativity(expected_file.file_name,
-                                                  rel_opt_conf)
-            arguments = complete_argument_elements(dst_file,
-                                                   file_maker_args.string_contents_arguments(string_value))
-            with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
-                              first_line=arguments.first_line):
-                self._check(
-                    arguments.as_remaining_source,
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                    ),
-                    Expectation(
-                        main_result=IS_SUCCESS,
-                        side_effects_on_hds=f_asrt.dir_is_empty(),
-                        symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
-                                                                              fs.DirContents([expected_file])),
-                    ))
-
-    def test_string_on_separate_line(self):
+class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
+    def test_contents_from_string__w_dst_relativity_variants(self):
         # ARRANGE #
-        string_value = 'the_string_value'
-        expected_file = fs.File('a-file-name.txt', string_value)
-        rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
-        dst_file = PathArgumentWithRelativity(expected_file.file_name,
-                                              rel_opt_conf)
-        arguments = complete_arguments_with_explicit_contents(dst_file,
-                                                              parse_args.string_as_elements(string_value),
-                                                              with_file_maker_on_separate_line=True)
-        # ACT & ASSERT #
-        self._check(
-            arguments.as_remaining_source,
-            ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-            ),
-            Expectation(
-                main_result=IS_SUCCESS,
-                side_effects_on_hds=f_asrt.dir_is_empty(),
-                symbol_usages=asrt.is_empty_sequence,
-                main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
-                                                                      fs.DirContents([expected_file])),
-            ))
+        string_value = string_abs_stx.StringLiteralAbsStx('the_string_value')
+        expected_file = fs.File('a-file-name.txt', string_value.value)
+        for phase_is_after_act in [False, True]:
+            checker = integration_check.checker(phase_is_after_act)
+            for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
+                dst_path = rel_opt_conf.path_abs_stx_of_name(expected_file.name)
+                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    dst_path,
+                    string_model_abs_stx.StringModelOfStringAbsStx(string_value),
+                )
+                with self.subTest(relativity_option_string=rel_opt_conf.option_string,
+                                  phase_is_after_act=phase_is_after_act):
+                    # ACT & ASSERT #
+                    checker.check__abs_stx__std_layouts_and_source_variants(
+                        self,
+                        instruction_syntax,
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                        ),
+                        Expectation(
+                            main_result=IS_SUCCESS,
+                            side_effects_on_hds=f_asrt.dir_is_empty(),
+                            symbol_usages=asrt.is_empty_sequence,
+                            main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
+                                                                                  fs.DirContents([expected_file])),
+                        )
+                    )
 
     def test_contents_from_here_doc(self):
-        here_doc_line = 'single line in here doc'
-        expected_file_contents = here_doc_line + '\n'
-        expected_file = fs.File('a-file-name.txt', expected_file_contents)
-        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            dst_file = PathArgumentWithRelativity(expected_file.file_name,
-                                                  rel_opt_conf)
-            arguments = complete_argument_elements(dst_file,
-                                                   here_document_contents_arguments([here_doc_line]))
-            with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
-                              first_line=arguments.first_line):
-                self._check(
-                    arguments.as_remaining_source,
+        # ARRANGE #
+        string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
+        expected_file = fs.File('a-file-name.txt', string_value.value)
+        rel_opt_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
+        dst_path = rel_opt_conf.path_abs_stx_of_name(expected_file.name)
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            dst_path,
+            string_model_abs_stx.StringModelOfStringAbsStx(string_value),
+        )
+        for phase_is_after_act in [False, True]:
+            checker = integration_check.checker(phase_is_after_act)
+            with self.subTest(phase_is_after_act=phase_is_after_act):
+                # ACT & ASSERT #
+                checker.check__abs_stx__std_layouts_and_source_variants(
+                    self,
+                    instruction_syntax,
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
                     ),
@@ -121,117 +102,43 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                         main_result=IS_SUCCESS,
                         side_effects_on_hds=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_sequence,
-                        main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
-                                                                              fs.DirContents([expected_file])),
-                    ))
-
-    def test_contents_from_here_doc_on_separate_line(self):
-        here_doc_line = 'single line in here doc'
-        expected_file_contents = here_doc_line + '\n'
-        expected_file = fs.File('a-file-name.txt', expected_file_contents)
-        rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
-        dst_file = PathArgumentWithRelativity(expected_file.file_name,
-                                              rel_opt_conf)
-        arguments = complete_arguments_with_explicit_contents(dst_file,
-                                                              parse_args.here_document_as_elements([here_doc_line]),
-                                                              with_file_maker_on_separate_line=True)
-        self._check(
-            arguments.as_remaining_source,
-            ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-            ),
-            Expectation(
-                main_result=IS_SUCCESS,
-                side_effects_on_hds=f_asrt.dir_is_empty(),
-                symbol_usages=asrt.is_empty_sequence,
-                main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
-                                                                      fs.DirContents([expected_file])),
-            ))
+                        main_side_effects_on_sds=non_hds_dir_contains_exactly(
+                            rel_opt_conf.root_dir__non_hds,
+                            fs.DirContents([expected_file])
+                        ),
+                    )
+                )
 
 
-class TestSymbolReferences(TestCaseBase):
+class TestSymbolReferences(unittest.TestCase):
     def test_symbol_reference_in_dst_file_argument(self):
-        sub_dir_name = 'sub-dir'
-        symbol = ConstantSuffixPathDdvSymbolContext('symbol_name',
-                                                    RelOptionType.REL_ACT,
-                                                    sub_dir_name,
-                                                    ACCEPTED_RELATIVITY_VARIANTS)
-        here_doc_line = 'single line in here doc'
-        expected_file_contents = here_doc_line + '\n'
-        expected_file = fs.File('a-file-name.txt', expected_file_contents)
-        self._check(
-            remaining_source(
-                '{symbol_ref}/{file_name} = <<THE_MARKER'.format(
-                    symbol_ref=symbol_reference_syntax_for_name(symbol.name),
-                    file_name=expected_file.file_name,
-                ),
-                [here_doc_line,
-                 'THE_MARKER']),
-            ArrangementWithSds(
-                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                symbols=symbol.symbol_table,
-            ),
-            Expectation(
-                main_result=IS_SUCCESS,
-                symbol_usages=asrt.matches_singleton_sequence(symbol.reference_assertion),
-                main_side_effects_on_sds=dir_contains_exactly(
-                    symbol.rel_option_type,
-                    fs.DirContents([
-                        fs.Dir(sub_dir_name, [expected_file])])),
-            ))
+        dst_path_symbol = ConstantSuffixPathDdvSymbolContext('dst_path_symbol',
+                                                             RelOptionType.REL_ACT,
+                                                             'dst-file.txt',
+                                                             ACCEPTED_RELATIVITY_VARIANTS)
+        string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            dst_path_symbol.abs_stx_of_reference,
+            string_model_abs_stx.StringModelOfStringAbsStx(string_value),
+        )
 
-    def _test_symbol_reference_in_dst_file_and_contents(
+        expected_file = fs.File(dst_path_symbol.path_suffix, string_value.value)
+        integration_check.CHECKER__BEFORE_ACT.check__abs_stx(
             self,
-            symbol_ref_syntax_2_contents_arguments: Callable[[str], ArgumentElements],
-            symbol_value_2_expected_contents: Callable[[str], str]
-    ):
-        sub_dir_name = 'sub-dir'
-        file_symbol = ConstantSuffixPathDdvSymbolContext('file_symbol_name',
-                                                         RelOptionType.REL_ACT,
-                                                         sub_dir_name,
-                                                         ACCEPTED_RELATIVITY_VARIANTS)
-        contents_symbol = StringConstantSymbolContext('contents_symbol_name',
-                                                      'contents symbol value')
-
-        expected_file_contents = symbol_value_2_expected_contents(contents_symbol.str_value)
-
-        expected_file = fs.File('a-file-name.txt', expected_file_contents)
-
-        expected_symbol_references = [
-            file_symbol.reference_assertion,
-            contents_symbol.reference_assertion__any_data_type,
-        ]
-
-        symbol_table = SymbolContext.symbol_table_of_contexts([
-            file_symbol,
-            contents_symbol,
-        ])
-
-        contents_arguments = symbol_ref_syntax_2_contents_arguments(
-            symbol_reference_syntax_for_name(contents_symbol.name)).as_arguments
-
-        assert isinstance(contents_arguments, Arguments)
-
-        self._check(
-            remaining_source(
-                '{symbol_ref}/{file_name} {contents}'.format(
-                    symbol_ref=symbol_reference_syntax_for_name(file_symbol.name),
-                    file_name=expected_file.file_name,
-                    contents=contents_arguments.first_line
-                ),
-                contents_arguments.following_lines),
+            instruction_syntax,
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                symbols=symbol_table,
+                symbols=dst_path_symbol.symbol_table,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                symbol_usages=asrt.matches_sequence(expected_symbol_references),
+                symbol_usages=asrt.matches_singleton_sequence(dst_path_symbol.reference_assertion),
                 main_side_effects_on_sds=dir_contains_exactly(
-                    file_symbol.rel_option_type,
-                    fs.DirContents([
-                        fs.Dir(sub_dir_name, [expected_file])])),
-            ))
+                    dst_path_symbol.rel_option_type,
+                    fs.DirContents([expected_file])
+                ),
+            )
+        )
 
     def test_symbol_reference_in_file_argument_and_string(self):
         string_value_template = 'pre symbol {symbol} post symbol'
@@ -239,10 +146,9 @@ class TestSymbolReferences(TestCaseBase):
         def symbol_value_2_expected_contents(symbol_value: str) -> str:
             return string_value_template.format(symbol=symbol_value)
 
-        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> ArgumentElements:
+        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
             string_value = string_value_template.format(symbol=syntax)
-            unquoted = string_contents_arguments(SOFT_QUOTE_CHAR + string_value + SOFT_QUOTE_CHAR)
-            return unquoted
+            return string_abs_stx.StringLiteralAbsStx(string_value, QuoteType.SOFT)
 
         self._test_symbol_reference_in_dst_file_and_contents(symbol_ref_syntax_2_contents_arguments,
                                                              symbol_value_2_expected_contents)
@@ -253,121 +159,144 @@ class TestSymbolReferences(TestCaseBase):
         def symbol_value_2_expected_contents(symbol_value: str) -> str:
             return here_doc_line_template.format(symbol=symbol_value) + '\n'
 
-        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> ArgumentElements:
-            return here_document_contents_arguments([
+        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> StringAbsStx:
+            return string_abs_stx.StringHereDocAbsStx.of_lines__wo_new_lines([
                 here_doc_line_template.format(symbol=syntax)
             ])
 
         self._test_symbol_reference_in_dst_file_and_contents(symbol_ref_syntax_2_contents_arguments,
                                                              symbol_value_2_expected_contents)
 
+    def _test_symbol_reference_in_dst_file_and_contents(
+            self,
+            symbol_ref_syntax_2_contents_arguments: Callable[[str], StringAbsStx],
+            symbol_value_2_expected_contents: Callable[[str], str]
+    ):
+        sub_dir_symbol = ConstantSuffixPathDdvSymbolContext(
+            'sub_dir_symbol',
+            RelOptionType.REL_ACT,
+            'sub-dir',
+            ACCEPTED_RELATIVITY_VARIANTS,
+        )
+        contents_symbol = StringConstantSymbolContext(
+            'contents_symbol_name',
+            'contents symbol value',
+            default_restrictions=asrt_rest.is_any_data_type_reference_restrictions(),
+        )
 
-ARGUMENTS_CASES = [
-    here_document_contents_arguments(['contents line']),
-    string_contents_arguments('string_argument')
-]
+        expected_file_contents = symbol_value_2_expected_contents(contents_symbol.str_value)
 
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
-class TestFailingParse(unittest.TestCase):
+        symbols = [sub_dir_symbol, contents_symbol]
+        expected_symbol_references = SymbolContext.references_assertion_of_contexts(symbols)
+        symbol_table = SymbolContext.symbol_table_of_contexts(symbols)
 
-    def test_path_is_mandatory__with_option(self):
-        for argument_elements in ARGUMENTS_CASES:
-            arguments = argument_elements.as_arguments
-            with self.subTest(arguments.first_line):
-                source = remaining_source('{rel_option} {contents}'.format(
-                    rel_option=path_texts.REL_ACT_OPTION,
-                    contents=arguments.first_line),
-                    arguments.following_lines)
+        contents_arguments = symbol_ref_syntax_2_contents_arguments(
+            symbol_reference_syntax_for_name(contents_symbol.name))
 
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    just_parse(source)
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            path_abs_stx.PathStringAbsStx.of_plain_components(
+                [sub_dir_symbol.name__sym_ref_syntax, expected_file.name]
+            ),
+            StringModelOfStringAbsStx(contents_arguments),
+        )
 
-    def test_disallowed_relativities(self):
-        for relativity in DISALLOWED_RELATIVITIES:
-            for argument_elements in ARGUMENTS_CASES:
-                arguments = argument_elements.as_arguments
-                for following_lines in [[], ['following line']]:
-                    with self.subTest(relativity=str(relativity),
-                                      first_line=arguments.first_line,
-                                      following_lines=repr(following_lines)):
-                        option_conf = conf_rel_any(relativity)
-                        source = remaining_source(
-                            '{rel_opt} file-name {contents}'.format(rel_opt=option_conf.option_argument,
-                                                                    contents=arguments.first_line),
-                            arguments.following_lines + following_lines)
-                        with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            just_parse(source)
-
-    def test_fail_when_contents_is_missing(self):
-        arguments = 'expected-argument = '
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            source = remaining_source(arguments)
-            just_parse(source)
-
-    def test_fail_when_superfluous_arguments(self):
-        for argument_elements in ARGUMENTS_CASES:
-            arguments = argument_elements.as_arguments
-            with self.subTest(arguments.first_line):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    source = remaining_source('expected-argument = {contents} superfluous_argument'.format(
-                        contents=arguments.first_line),
-                        arguments.following_lines)
-                    just_parse(source)
-
-
-class TestParserConsumptionOfSource(TestCaseBase):
-    def test_last_line__contents(self):
-        for argument_elements in ARGUMENTS_CASES:
-            arguments = argument_elements.as_arguments
-            with self.subTest(arguments.first_line):
-                self._check(
-                    remaining_source(
-                        '{file_name} {hd_args}'.format(
-                            file_name='a-file-name.txt',
-                            hd_args=arguments.first_line,
-                        ),
-                        arguments.following_lines),
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                    ),
-                    Expectation(
-                        main_result=IS_SUCCESS,
-                        source=source_is_at_end,
-                    ),
-                )
-
-    def test_not_last_line__contents(self):
-        hd_args = here_document_contents_arguments([]).as_arguments
-        self._check(
-            remaining_source(
-                '{file_name} {hd_args}'.format(
-                    file_name='a-file-name.txt',
-                    hd_args=hd_args.first_line,
-                ),
-                hd_args.following_lines + ['following line']),
+        integration_check.CHECKER__AFTER_ACT.check__abs_stx(
+            self,
+            instruction_syntax,
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                symbols=symbol_table,
             ),
             Expectation(
                 main_result=IS_SUCCESS,
-                source=is_at_beginning_of_line(3),
+                symbol_usages=expected_symbol_references,
+                main_side_effects_on_sds=dir_contains_exactly(
+                    sub_dir_symbol.rel_option_type,
+                    fs.DirContents([
+                        fs.Dir(sub_dir_symbol.path_suffix, [expected_file])])),
+            ))
+
+
+class TestFailingParse(unittest.TestCase):
+    def test_disallowed_relativities(self):
+        # ARRANGE #
+        arguments_cases = [
+            NameAndValue(
+                'here doc',
+                string_model_abs_stx.StringModelOfStringAbsStx(
+                    string_abs_stx.StringHereDocAbsStx('contents line\n'))
             ),
+            NameAndValue(
+                'raw string',
+                string_model_abs_stx.StringModelOfStringAbsStx(
+                    string_abs_stx.StringLiteralAbsStx('raw_string_argument'))
+            ),
+            NameAndValue(
+                'quoted string',
+                string_model_abs_stx.StringModelOfStringAbsStx(
+                    string_abs_stx.StringLiteralAbsStx('quoted string argument', QuoteType.SOFT))
+            ),
+        ]
+        for relativity in DISALLOWED_RELATIVITIES:
+            relativity_conf = conf_rel_any(relativity)
+            for contents_case in arguments_cases:
+                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    relativity_conf.path_abs_stx_of_name('file-name'),
+                    contents_case.value,
+                )
+                with self.subTest(relativity=str(relativity),
+                                  contents=contents_case.name):
+                    # ACT & ASSERT #
+                    check_invalid_syntax__abs_stx(self, instruction_syntax)
+
+    def test_fail_when_contents_is_missing(self):
+        # ARRANGE #
+        missing_contents = instr_abs_stx.CustomExplicitContentsVariantAbsStx(TokenSequence.empty())
+        instruction_syntax = instr_abs_stx.InstructionAbsStx(
+            path_abs_stx.DefaultRelPathAbsStx('file-name'),
+            missing_contents,
         )
+        # ACT & ASSERT #
+        check_invalid_syntax__abs_stx(self, instruction_syntax)
+
+    def test_fail_when_superfluous_arguments(self):
+        # ARRANGE #
+        valid_instruction_syntax = instr_abs_stx.with_explicit_contents(
+            path_abs_stx.DefaultRelPathAbsStx('file-name'),
+            string_model_abs_stx.StringModelOfStringAbsStx(string_abs_stx.StringLiteralAbsStx('string')),
+        )
+        invalid_instruction_syntax = custom_abs_stx.SequenceAbstractSyntax([
+            valid_instruction_syntax,
+            custom_abs_stx.CustomAbstractSyntax.singleton('superfluous_argument')
+        ])
+        # ACT & ASSERT #
+        check_invalid_syntax__abs_stx(self, invalid_instruction_syntax)
 
 
-class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
-    def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
+class TestCommonFailingScenariosDueToInvalidDestinationFile(
+    common_test_cases.TestCommonFailingScenariosDueToInvalidDestinationFileBase):
+    def _file_contents_cases(self) -> common_test_cases.InvalidDestinationFileTestCasesData:
         file_contents_cases = [
             NameAndValue(
                 'contents of here doc',
-                here_document_contents_arguments(['contents'])
+                ExplicitContentsVariantAbsStx(
+                    string_model_abs_stx.StringModelOfStringAbsStx(
+                        string_abs_stx.StringHereDocAbsStx('contents\n')
+                    )
+                )
             ),
             NameAndValue(
                 'contents of string',
-                string_contents_arguments('contents')
+                ExplicitContentsVariantAbsStx(
+                    string_model_abs_stx.StringModelOfStringAbsStx(
+                        string_abs_stx.StringLiteralAbsStx('contents')
+                    )
+                )
             ),
         ]
 
-        return InvalidDestinationFileTestCasesData(
+        return common_test_cases.InvalidDestinationFileTestCasesData(
             file_contents_cases,
             empty_symbol_table())

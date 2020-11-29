@@ -19,12 +19,32 @@ def equivalent_source_variants__with_source_check__consume_last_line(put: unitte
 
     Assumes that the body of the loop parses using the given source.
     """
+    instruction_argument = instruction_argument.rstrip('\n')
     num_source_lines = len(instruction_argument.split('\n'))
     for following_lines, source_assertion in _source_variant_test_cases__multi_line(num_source_lines):
         with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
             yield source
             source_assertion.apply_with_message(put, source, 'source after parse')
+
+
+def equivalent_source_variants__with_source_check__consume_last_line_2(
+        instruction_argument: str,
+) -> List[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
+    """
+    Checks that the whole instruction_argument has been consumed,
+    and that the parser is positioned at the beginning of the following line.
+
+    Assumes that the body of the loop parses using the given source.
+    """
+    num_source_lines = len(instruction_argument.split('\n'))
+    return [
+        (
+            remaining_source(instruction_argument, following_lines),
+            source_assertion,
+        )
+        for following_lines, source_assertion in _source_variant_test_cases__multi_line(num_source_lines)
+    ]
 
 
 def equivalent_source_variants__with_source_check__multi_line(put: unittest.TestCase,

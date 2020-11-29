@@ -1,14 +1,11 @@
 from enum import Enum
 
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelNonHdsOptionType, \
     PathRelativityVariants
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds, \
     default_conf_rel_non_hds
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -23,7 +20,8 @@ DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_HDS_ACT,
 ]
 
-AN_ALLOWED_DST_FILE_RELATIVITY = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
+ARBITRARY_ALLOWED_SRC_FILE_RELATIVITY = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
+ARBITRARY_ALLOWED_DST_FILE_RELATIVITY = conf_rel_non_hds(RelNonHdsOptionType.REL_TMP)
 
 ALLOWED_DST_FILE_RELATIVITIES = [
     conf_rel_non_hds(RelNonHdsOptionType.REL_ACT),
@@ -41,8 +39,3 @@ ACCEPTED_RELATIVITY_VARIANTS = PathRelativityVariants({RelOptionType.REL_ACT,
 IS_FAILURE_OF_VALIDATION = validation.is_arbitrary_validation_failure()
 IS_FAILURE = asrt_text_doc.is_any_text()
 IS_SUCCESS = asrt.is_none
-
-
-def just_parse(source: ParseSource,
-               phase_is_after_act: bool = True):
-    sut.EmbryoParser(phase_is_after_act).parse(ARBITRARY_FS_LOCATION_INFO, source)

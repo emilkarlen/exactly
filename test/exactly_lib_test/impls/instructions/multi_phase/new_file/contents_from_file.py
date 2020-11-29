@@ -3,53 +3,48 @@ from typing import Sequence, Callable
 
 from exactly_lib.impls.instructions.multi_phase import new_file as sut
 from exactly_lib.impls.instructions.utils.file_maker import defs
-from exactly_lib.impls.types.string_transformer import names as str_trans_names
-from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStringTransformer
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.sdv_structure import SymbolReference
-from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelNonHdsOptionType, \
-    RelSdsOptionType
+from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelSdsOptionType, RelNonHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.arguments_building import \
-    source_of, complete_argument_elements
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
+    ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
-    TestCaseBase, \
-    TestCommonFailingScenariosDueToInvalidDestinationFileBase, InvalidDestinationFileTestCasesData
+    InvalidDestinationFileTestCasesData
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
+    check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import Step, \
-    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS, just_parse
+    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
     expectation
-from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import file_with_rel_opt_conf, \
-    accepted_non_hds_source_relativities, ALLOWED_SRC_FILE_RELATIVITIES, TransformableContentsConstructor
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import accepted_non_hds_source_relativities, \
+    ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT, allowed_src_file_relativities
+from exactly_lib_test.impls.types.string_model.test_resources import abstract_syntax as string_model_abs_stx
 from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
-from exactly_lib_test.impls.types.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
     conf_rel_sds
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
+from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_resources import argument_renderer as args
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import DirContents, sym_link, File, Dir
+from exactly_lib_test.test_resources.source import custom_abstract_syntax as custom_abs_stx
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer__usage
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
-    to_uppercase
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -59,7 +54,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestScenariosWithContentsFromFile(TestCaseBase):
+class TestScenariosWithContentsFromFile(unittest.TestCase):
     src_file_name = 'src-file.txt'
 
     src_file_variants = [
@@ -69,7 +64,6 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                      DirContents([Dir.empty(src_file_name)])),
         NameAndValue('file is a broken symlink',
                      DirContents([sym_link(src_file_name, 'non-existing-target-file')])),
-
     ]
 
     def test_symbol_usages(self):
@@ -77,11 +71,10 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         to_upper_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            to_uppercase(),
+            string_transformers.to_uppercase(),
         )
 
         src_file = fs.File('src-file.txt', 'contents of source file')
-        src_file_symbol__str = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
         src_file_rel_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
 
         expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
@@ -93,96 +86,85 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants,
         )
 
-        file_contents_arg = TransformableContentsConstructor(
-            file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol__str.name))
-        ).with_transformation(to_upper_transformer.name).as_arguments
-
-        # ACT & ASSERT #
-
         for phase_is_after_act in [False, True]:
+            checker = integration_check.checker(phase_is_after_act)
             src_file_rel_opt_arg_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
             src_file_symbol = ConstantSuffixPathDdvSymbolContext(
-                src_file_symbol__str.name,
+                'SRC_FILE_SYMBOL',
                 src_file_rel_conf.relativity_option,
-                src_file_symbol__str.value,
+                src_file.name,
                 src_file_rel_opt_arg_conf.options.accepted_relativity_variants,
             )
-
+            transformed_file_contents = string_model_abs_stx.TransformedStringModelAbsStx(
+                string_model_abs_stx.StringModelOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
+                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
+            )
+            instruction_syntax = instr_abs_stx.with_explicit_contents(
+                dst_file_symbol.abs_stx_of_reference,
+                transformed_file_contents,
+            )
             symbols = SymbolContext.symbol_table_of_contexts([
                 src_file_symbol,
                 dst_file_symbol,
                 to_upper_transformer,
             ])
 
-            source = remaining_source(
-                '{file_name} {content_arguments}'.format(
-                    file_name=dst_file_symbol.name__sym_ref_syntax,
-                    content_arguments=file_contents_arg.first_line
-                ),
-                file_contents_arg.following_lines)
-
             with self.subTest(phase_is_after_act=phase_is_after_act):
-                self._check(source,
-                            ArrangementWithSds(
-                                symbols=symbols,
-                                hds_contents=src_file_rel_conf.populator_for_relativity_option_root__hds(
-                                    DirContents([src_file]))
-                            ),
-                            Expectation(
-                                main_result=IS_SUCCESS,
-                                symbol_usages=asrt.matches_sequence([
-                                    dst_file_symbol.reference_assertion__path_or_string,
-                                    is_reference_to_string_transformer__usage(to_upper_transformer.name),
-                                    src_file_symbol.reference_assertion__path_or_string,
-                                ]),
-                            ),
-                            phase_is_after_act=phase_is_after_act
-                            )
+                # ACT & ASSERT #
+                checker.check__abs_stx__std_layouts_and_source_variants(
+                    self,
+                    instruction_syntax,
+                    ArrangementWithSds(
+                        symbols=symbols,
+                        hds_contents=src_file_rel_conf.populator_for_relativity_option_root__hds(
+                            DirContents([src_file]))
+                    ),
+                    Expectation(
+                        main_result=IS_SUCCESS,
+                        symbol_usages=asrt.matches_sequence([
+                            dst_file_symbol.reference_assertion__path_or_string,
+                            is_reference_to_string_transformer__usage(to_upper_transformer.name),
+                            src_file_symbol.reference_assertion__path_or_string,
+                        ]),
+                    ),
+                )
 
     def test_superfluous_arguments(self):
         # ARRANGE #
+        arbitrary_transformer_symbol = StringTransformerSymbolContext.of_arbitrary_value('TRANSFORMER_SYMBOL')
 
-        arbitrary_transformer = 'TRANSFORMER_SYMBOL'
+        src_file_relativity_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
 
-        src_file = PathArgumentWithRelativity('src-file.txt',
-                                              conf_rel_hds(RelHdsOptionType.REL_HDS_CASE))
-
-        file_contents_arguments_constructor = TransformableContentsConstructor(
-            file_with_rel_opt_conf(src_file.file_name, src_file.relativity)
+        file_contents_builder = string_model_abs_stx.TransformableAbsStxBuilder(
+            string_model_abs_stx.StringModelOfFileAbsStx(
+                src_file_relativity_conf.path_abs_stx_of_name('src-file.txt')
+            )
         )
 
         file_contents_cases = [
             NameAndValue(
                 'contents of existing file / without transformation',
-                file_contents_arguments_constructor.without_transformation()
+                file_contents_builder.without_transformation()
             ),
             NameAndValue(
                 'contents of existing file / with transformation',
-                file_contents_arguments_constructor.with_transformation(arbitrary_transformer)
+                file_contents_builder.with_transformation(arbitrary_transformer_symbol.abs_stx_of_reference)
             ),
         ]
 
-        for phase_is_after_act in [False, True]:
-            for file_contents_case in file_contents_cases:
-                optional_argument_elements = file_contents_case.value
-                assert isinstance(optional_argument_elements, ArgumentElements)  # Type info for IDE
-                optional_arguments = optional_argument_elements.as_arguments
-
-                with self.subTest(phase_is_after_act=phase_is_after_act,
-                                  file_contents_variant=file_contents_case.name,
-                                  first_line_argments=optional_arguments.first_line):
-                    source = remaining_source(
-                        '{dst_file_argument} {contents_arguments} superfluous_arg'.format(
-                            dst_file_argument='dst-file.txt',
-                            contents_arguments=optional_arguments.first_line,
-                        ),
-                        optional_arguments.following_lines)
-
-                    # ACT & ASSERT #
-                    with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        just_parse(source,
-                                   phase_is_after_act=phase_is_after_act)
+        for file_contents_case in file_contents_cases:
+            valid_instruction_syntax = instr_abs_stx.with_explicit_contents(
+                path_abs_stx.DefaultRelPathAbsStx('dst-file.txt'),
+                file_contents_case.value,
+            )
+            invalid_instruction_syntax = custom_abs_stx.SequenceAbstractSyntax([
+                valid_instruction_syntax,
+                custom_abs_stx.CustomAbstractSyntax.singleton('superfluous_argument')
+            ])
+            with self.subTest(file_contents_variant=file_contents_case.name):
+                # ACT & ASSERT #
+                check_invalid_syntax__abs_stx(self, invalid_instruction_syntax)
 
     def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_hds(self):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_hds(),
@@ -203,227 +185,159 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         src_file = fs.File('source-file.txt', 'contents of source file')
         expected_file = fs.File('a-file-name.txt', src_file.contents)
 
-        for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
-                file_contents_arg = TransformableContentsConstructor(
-                    file_with_rel_opt_conf(src_file.name, src_rel_opt_conf)
-                ).without_transformation().as_arguments
-
-                expected_non_hds_contents = self._expected_non_hds_contents(
-                    dst_rel_opt_conf,
-                    expected_file,
-                    src_rel_opt_conf,
-                    src_file)
-
-                with self.subTest(dst_relativity=dst_rel_opt_conf.option_argument,
-                                  src_relativity=src_rel_opt_conf.option_argument):
-                    # ACT & ASSERT #
-
-                    self._check(
-                        remaining_source(
-                            '{rel_opt} {file_name} {contents_arguments}'.format(
-                                rel_opt=dst_rel_opt_conf.option_argument,
-                                file_name=expected_file.file_name,
-                                contents_arguments=file_contents_arg.first_line
-                            ),
-                            file_contents_arg.following_lines),
-                        ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                            tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                                DirContents([src_file]))
-                        ),
-                        Expectation(
-                            main_result=IS_SUCCESS,
-                            symbol_usages=asrt.is_empty_sequence,
-                            main_side_effects_on_sds=expected_non_hds_contents,
-                        ))
-
-    def test_string_transformer_should_be_parsed_as_simple_expression(self):
-        # ARRANGE #
-        transformation_w_infix_op = args.BinaryOperator(
-            str_trans_names.SEQUENCE_OPERATOR_NAME,
-            [
-                args.SymbolReferenceWReferenceSyntax('str_trans_1'),
-                args.SymbolReferenceWReferenceSyntax('str_trans_2'),
-            ]
-        )
-        src_rel_opt_conf = conf_rel_sds(RelSdsOptionType.REL_ACT)
-        file_contents_arg = TransformableContentsConstructor(
-            file_with_rel_opt_conf('src-file', src_rel_opt_conf)
-        ).with_transformation(transformation_w_infix_op.as_str).as_arguments
-
         for phase_is_after_act in [False, True]:
-            parser = sut.parts_parser(phase_is_after_act)
-            source = remaining_source(
-                'dst-file-name {contents_arguments}'.format(
-                    contents_arguments=file_contents_arg.first_line
-                ),
-                file_contents_arg.following_lines,
-            )
-            with self.subTest(phase_is_after_act=phase_is_after_act):
-                # ACT & ASSERT #
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+            checker = integration_check.checker(phase_is_after_act)
+            for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
+                for src_rel_opt_conf in allowed_src_file_relativities(phase_is_after_act):
+                    file_contents_abs_stx = string_model_abs_stx.StringModelOfFileAbsStx(
+                        src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
+                    )
+                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                        dst_rel_opt_conf.path_abs_stx_of_name(expected_file.file_name),
+                        file_contents_abs_stx,
+                    )
+                    expected_non_hds_contents = self._expected_non_hds_contents(
+                        dst_rel_opt_conf,
+                        expected_file,
+                        src_rel_opt_conf,
+                        src_file)
 
-    def test_all_relativities__with_transformer(self):
+                    with self.subTest(phase_is_after_act=phase_is_after_act,
+                                      dst_relativity=dst_rel_opt_conf.option_argument,
+                                      src_relativity=src_rel_opt_conf.option_argument):
+                        # ACT & ASSERT #
+                        checker.check__abs_stx__std_layouts_and_source_variants(
+                            self,
+                            instruction_syntax,
+                            ArrangementWithSds(
+                                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                                tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                                    DirContents([src_file]))
+                            ),
+                            Expectation(
+                                main_result=IS_SUCCESS,
+                                symbol_usages=asrt.is_empty_sequence,
+                                main_side_effects_on_sds=expected_non_hds_contents,
+                            )
+                        )
+
+    def test__with_transformer(self):
         # ARRANGE #
-
         src_file = fs.File('source-file.txt', 'contents of source file')
         expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
 
-        to_upper_transformer = StringTransformerSymbolContext.of_primitive('TRANSFORMER_SYMBOL',
-                                                                           to_uppercase())
+        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
+            'TRANSFORMER_SYMBOL',
+            string_transformers.to_uppercase(),
+        )
+
+        src_rel_opt_conf = ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT[0]
+        dst_rel_opt_conf = conf_rel_non_hds(RelNonHdsOptionType.REL_ACT)
+
+        expected_non_hds_contents = self._expected_non_hds_contents(
+            dst_rel_opt_conf,
+            expected_file,
+            src_rel_opt_conf,
+            src_file,
+        )
+
+        transformed_file_contents_abs_stx = string_model_abs_stx.TransformedStringModelAbsStx(
+            string_model_abs_stx.StringModelOfFileAbsStx(
+                src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
+            ),
+            to_upper_transformer.abs_stx_of_reference,
+        )
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            dst_rel_opt_conf.path_abs_stx_of_name(expected_file.file_name),
+            transformed_file_contents_abs_stx,
+        )
+
         symbols = to_upper_transformer.symbol_table
 
-        for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
-                file_contents_arg = TransformableContentsConstructor(
-                    file_with_rel_opt_conf(src_file.name, src_rel_opt_conf)
-                ).with_transformation(to_upper_transformer.name).as_arguments
-                expected_non_hds_contents = self._expected_non_hds_contents(
-                    dst_rel_opt_conf,
-                    expected_file,
-                    src_rel_opt_conf,
-                    src_file)
+        for phase_is_after_act in [False, True]:
+            checker = integration_check.checker(phase_is_after_act)
+            with self.subTest(phase_is_after_act=phase_is_after_act):
+                # ACT & ASSERT #
+                checker.check__abs_stx__std_layouts_and_source_variants(
+                    self,
+                    instruction_syntax,
+                    ArrangementWithSds(
+                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                        tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                            DirContents([src_file])),
+                        symbols=symbols,
+                    ),
+                    Expectation(
+                        main_result=IS_SUCCESS,
+                        main_side_effects_on_sds=expected_non_hds_contents,
+                        symbol_usages=to_upper_transformer.usages_assertion,
+                    )
+                )
 
-                with self.subTest(dst_option_string=dst_rel_opt_conf.option_argument,
-                                  src_option_string=src_rel_opt_conf.option_argument):
-                    # ACT & ASSERT #
-
-                    self._check(
-                        remaining_source(
-                            '{rel_opt} {file_name} {contents_arguments}'.format(
-                                rel_opt=dst_rel_opt_conf.option_argument,
-                                file_name=expected_file.file_name,
-                                contents_arguments=file_contents_arg.first_line
-                            ),
-                            file_contents_arg.following_lines),
-                        ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                            tcds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                                DirContents([src_file])),
-                            symbols=symbols,
-                        ),
-                        Expectation(
-                            main_result=IS_SUCCESS,
-                            main_side_effects_on_sds=expected_non_hds_contents,
-                            symbol_usages=to_upper_transformer.usages_assertion,
-                        ))
+    def test_string_transformer_should_be_parsed_as_simple_expression(self):
+        # ARRANGE #
+        transformation_w_infix_op = str_trans_abs_stx.StringTransformerCompositionAbsStx(
+            [
+                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_1'),
+                str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_2'),
+            ],
+            within_parens=False,
+            allow_elements_on_separate_lines=False,
+        )
+        src_rel_opt_conf = conf_rel_sds(RelSdsOptionType.REL_ACT)
+        file_contents_arg = string_model_abs_stx.TransformedStringModelAbsStx(
+            string_model_abs_stx.StringModelOfFileAbsStx(
+                src_rel_opt_conf.path_abs_stx_of_name('src-file')
+            ),
+            transformation_w_infix_op
+        )
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            path_abs_stx.DefaultRelPathAbsStx('dst-file'),
+            file_contents_arg,
+        )
+        # ACT & ASSERT #
+        check_invalid_syntax__abs_stx(self, instruction_syntax)
 
     def test_validation_should_include_validation_of_string_transformer(self):
         # ARRANGE #
 
-        src_file = fs.File('source-file.txt', 'contents of source file')
-        expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
+        src_file = fs.File.empty('source-file.txt')
 
-        a_dst_rel_opt_conf = new_file_utils.AN_ALLOWED_DST_FILE_RELATIVITY
-        a_src_rel_opt_conf = ALLOWED_SRC_FILE_RELATIVITIES[0]
+        a_src_rel_opt_conf = ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT[0]
+        a_dst_rel_opt_conf = new_file_utils.ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 
         for failing_string_transformer_case in failing_validation_cases():
             failing_symbol_context = failing_string_transformer_case.value.symbol_context
 
-            file_contents_arg = TransformableContentsConstructor(
-                file_with_rel_opt_conf(src_file.name, a_src_rel_opt_conf)
-            ).with_transformation(failing_symbol_context.name).as_arguments
-
-            with self.subTest(failing_string_transformer_case.name):
-                # ACT & ASSERT #
-
-                self._check(
-                    remaining_source(
-                        '{rel_opt} {file_name} {contents_arguments_with_transformation}'.format(
-                            rel_opt=a_dst_rel_opt_conf.option_argument,
-                            file_name=expected_file.file_name,
-                            contents_arguments_with_transformation=file_contents_arg.first_line
-                        ),
-                        file_contents_arg.following_lines),
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                        tcds_contents=a_src_rel_opt_conf.populator_for_relativity_option_root(
-                            DirContents([src_file])),
-                        symbols=failing_symbol_context.symbol_table,
-                    ),
-                    expectation(
-                        validation=failing_string_transformer_case.value.expectation,
-                        symbol_usages=failing_symbol_context.references_assertion
-                    ))
-
-    def test_no_new_line_variants(self):
-        # ARRANGE #
-
-        identity_transformer = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER_SYMBOL',
-            IdentityStringTransformer()
-        )
-
-        symbols = identity_transformer.symbol_table
-
-        src_file = fs.File('src-file.txt', 'source file contents')
-        src_file_rel_opt_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
-
-        expected_dst_file = fs.File('dst-file.txt', src_file.contents)
-        dst_file_rel_opt_conf = conf_rel_non_hds(RelNonHdsOptionType.REL_ACT)
-
-        file_arguments_constructor = TransformableContentsConstructor(
-            file_with_rel_opt_conf(src_file.name,
-                                   src_file_rel_opt_conf,
-                                   with_new_line_after_source_type_option=True,
-                                   ),
-        )
-
-        text_on_line_after_instruction = ' text on line after instruction'
-
-        for with_file_maker_on_separate_line in [False, True]:
-            file_contents_cases = [
-                NameAndValue(
-                    'without transformation',
-                    file_arguments_constructor.without_transformation(
-                        with_file_maker_on_separate_line=with_file_maker_on_separate_line)
+            file_contents_arg = string_model_abs_stx.TransformedStringModelAbsStx(
+                string_model_abs_stx.StringModelOfFileAbsStx(
+                    a_src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
                 ),
-                NameAndValue(
-                    'with transformation',
-                    file_arguments_constructor.with_transformation(
-                        identity_transformer.name,
-                        with_file_maker_on_separate_line=with_file_maker_on_separate_line)
-                ),
-            ]
-            for file_contents_case in file_contents_cases:
-                optional_arguments_elements = file_contents_case.value
-                assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
-                optional_arguments = optional_arguments_elements.as_arguments
+                failing_symbol_context.abs_stx_of_reference
+            )
+            instruction_syntax = instr_abs_stx.with_explicit_contents(
+                a_dst_rel_opt_conf.path_abs_stx_of_name('dst-file'),
+                file_contents_arg,
+            )
 
-                with self.subTest(file_contents_variant=file_contents_case.name,
-                                  first_line_argments=optional_arguments.first_line,
-                                  with_file_maker_on_separate_line=with_file_maker_on_separate_line):
-                    source = remaining_source(
-                        '{rel_opt} {dst_file_name} {optional_arguments}'.format(
-                            rel_opt=dst_file_rel_opt_conf.option_argument,
-                            dst_file_name=expected_dst_file.name,
-                            optional_arguments=optional_arguments.first_line,
-                        ),
-                        optional_arguments.following_lines +
-                        [text_on_line_after_instruction]
-                    )
-
+            for phase_is_after_act in [False, True]:
+                checker = integration_check.checker(phase_is_after_act)
+                with self.subTest(transformer=failing_string_transformer_case.name,
+                                  phase_is_after_act=phase_is_after_act):
                     # ACT & ASSERT #
-
-                    self._check(source,
-                                ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                    tcds_contents=src_file_rel_opt_conf.populator_for_relativity_option_root(
-                                        DirContents([src_file])),
-                                    symbols=symbols,
-                                ),
-                                Expectation(
-                                    main_result=IS_SUCCESS,
-                                    symbol_usages=asrt.anything_goes(),
-                                    main_side_effects_on_sds=dst_file_rel_opt_conf.assert_root_dir_contains_exactly(
-                                        fs.DirContents([expected_dst_file])),
-                                    source=source_is_not_at_end(
-                                        remaining_part_of_current_line=asrt.equals(text_on_line_after_instruction)
-                                    )
-                                )
-                                )
+                    checker.check__abs_stx__std_layouts_and_source_variants(
+                        self,
+                        instruction_syntax,
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                            tcds_contents=a_src_rel_opt_conf.populator_for_relativity_option_root(
+                                DirContents([src_file])),
+                            symbols=failing_symbol_context.symbol_table,
+                        ),
+                        expectation(
+                            validation=failing_string_transformer_case.value.expectation,
+                            symbol_usages=failing_symbol_context.references_assertion
+                        ))
 
     @staticmethod
     def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
@@ -443,40 +357,44 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
         transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            to_uppercase(),
+            string_transformers.to_uppercase(),
         )
         symbols = transformer.symbol_table
 
-        dst_file = PathArgumentWithRelativity('dst-file.txt',
-                                              conf_rel_any(RelOptionType.REL_TMP))
+        dst_file_rel_conf = conf_rel_any(RelOptionType.REL_TMP)
 
-        expectation = self._expect_failure_in(step_of_expected_failure)
+        expectation_ = self._expect_failure_in(step_of_expected_failure)
 
         for phase_is_after_act in [False, True]:
+            checker = integration_check.checker(phase_is_after_act)
             for src_file_rel_conf in is_after_act_2_every_src_file_rel_conf(phase_is_after_act):
-                src_file = PathArgumentWithRelativity(self.src_file_name,
-                                                      src_file_rel_conf)
-                args_constructor = TransformableContentsConstructor(
-                    file_with_rel_opt_conf(self.src_file_name, src_file_rel_conf)
+                contents_builder = string_model_abs_stx.TransformableAbsStxBuilder(
+                    string_model_abs_stx.StringModelOfFileAbsStx(
+                        src_file_rel_conf.path_abs_stx_of_name(self.src_file_name)
+                    )
                 )
-                for src_file_variant in self.src_file_variants:
-                    for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
-                        arguments = complete_argument_elements(dst_file, contents_arguments).as_arguments
-                        source = source_of(arguments)
+                for actual_src_file_variant in self.src_file_variants:
+                    for contents_arguments in contents_builder.with_and_without_transformer_cases(
+                            transformer.abs_stx_of_reference):
+                        instruction_syntax = instr_abs_stx.with_explicit_contents(
+                            dst_file_rel_conf.path_abs_stx_of_name('dst-file.txt'),
+                            contents_arguments.value,
+                        )
                         with self.subTest(phase_is_after_act=phase_is_after_act,
-                                          relativity_of_src_path=src_file.relativity.option_argument,
-                                          first_line=arguments.first_line):
+                                          contents=contents_arguments.name,
+                                          relativity_of_src_path=src_file_rel_conf.option_argument):
                             # ACT & ASSERT #
-                            self._check(
-                                source,
+                            checker.check__abs_stx__std_layouts_and_source_variants(
+                                self,
+                                instruction_syntax,
                                 ArrangementWithSds(
                                     pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                    tcds_contents=src_file.relativity.populator_for_relativity_option_root(
-                                        src_file_variant.value),
+                                    tcds_contents=src_file_rel_conf.populator_for_relativity_option_root(
+                                        actual_src_file_variant.value),
                                     symbols=symbols,
                                 ),
-                                expectation,
-                                phase_is_after_act=phase_is_after_act)
+                                expectation_,
+                            )
 
     @staticmethod
     def _expected_non_hds_contents(dst_file_rel_opt_conf: RelativityOptionConfigurationForRelNonHds,
@@ -492,34 +410,40 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file]))
 
 
-class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
+class TestCommonFailingScenariosDueToInvalidDestinationFile(
+    common_test_cases.TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
             'TRANSFORMER_SYMBOL',
-            to_uppercase(),
+            string_transformers.to_uppercase(),
         )
 
         symbols = arbitrary_transformer.symbol_table
 
-        src_file = PathArgumentWithRelativity('src-file.txt',
-                                              conf_rel_hds(RelHdsOptionType.REL_HDS_CASE))
+        relativity_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
 
-        file_contents_arguments_constructor = TransformableContentsConstructor(
-            file_with_rel_opt_conf(src_file.file_name, src_file.relativity)
+        src_file = relativity_conf.path_abs_stx_of_name('src-file.txt')
+
+        contents_abs_stx_builder = string_model_abs_stx.TransformableAbsStxBuilder(
+            string_model_abs_stx.StringModelOfFileAbsStx(src_file)
         )
 
-        src_file_in_hds_contents = src_file.relativity.populator_for_relativity_option_root(
-            DirContents([File.empty(src_file.file_name)])
+        src_file_in_hds_contents = relativity_conf.populator_for_relativity_option_root(
+            DirContents([File.empty(src_file.name)])
         )
 
         file_contents_cases = [
             NameAndValue(
                 'contents of existing file / without transformation',
-                file_contents_arguments_constructor.without_transformation()
+                ExplicitContentsVariantAbsStx(
+                    contents_abs_stx_builder.without_transformation()
+                )
             ),
             NameAndValue(
                 'contents of existing file / with transformation',
-                file_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
+                ExplicitContentsVariantAbsStx(
+                    contents_abs_stx_builder.with_transformation(arbitrary_transformer.abs_stx_of_reference)
+                )
             ),
         ]
 

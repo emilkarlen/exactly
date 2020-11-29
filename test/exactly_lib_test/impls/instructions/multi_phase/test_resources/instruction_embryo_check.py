@@ -19,7 +19,7 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.test_resources import text_doc_assertions
 from exactly_lib_test.impls.types.parse.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check__consume_last_line
+    equivalent_source_variants__with_source_check__consume_last_line_2
 from exactly_lib_test.impls.types.test_resources import validation as validation_utils
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, ValidationResultAssertion
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -210,7 +210,7 @@ class Checker(Generic[T]):
             layouts: Sequence[NameAndValue[LayoutSpec]],
     ):
         for layout_ in layouts:
-            with put.subTest(layout_.name):
+            with put.subTest(layout=layout_.name):
                 source_str = source.layout(layout_.value)
                 self.check__w_source_variants(put, source_str, arrangement, expectation_)
 
@@ -220,19 +220,23 @@ class Checker(Generic[T]):
                                  arrangement: ArrangementWithSds,
                                  expectation: Expectation,
                                  ):
-        for source in equivalent_source_variants__with_source_check__consume_last_line(put, source):
-            Executor(put, arrangement, expectation).execute(self.parser, source)
+        for parse_source, source_asrt in equivalent_source_variants__with_source_check__consume_last_line_2(source):
+            with put.subTest(remaining_source=parse_source.remaining_source):
+                Executor(put, arrangement, expectation, source_asrt).execute(self.parser, parse_source)
 
 
 class Executor(Generic[T]):
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: ArrangementWithSds,
-                 expectation: Expectation[T]):
+                 expectation: Expectation[T],
+                 extra_source_expectation: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                 ):
         self.put = put
         self.arrangement = arrangement
         self.expectation = expectation
         self.message_builder = asrt.MessageBuilder()
+        self.extra_source_expectation = extra_source_expectation
 
     def execute(self,
                 parser: InstructionEmbryoParser,
@@ -241,6 +245,8 @@ class Executor(Generic[T]):
         asrt.is_instance(InstructionEmbryo).apply_with_message(self.put, instruction,
                                                                'Instruction class')
         self.expectation.source.apply_with_message(self.put, source, 'source')
+        self.extra_source_expectation.apply_with_message(self.put, source, 'source')
+
         assert isinstance(instruction, InstructionEmbryo)
         self.expectation.symbol_usages.apply_with_message(self.put,
                                                           instruction.symbol_usages,

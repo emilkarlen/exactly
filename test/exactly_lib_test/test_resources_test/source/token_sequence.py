@@ -1,8 +1,8 @@
 import unittest
-from typing import Sequence
+from typing import Sequence, AbstractSet
 
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.source.layout import LayoutSpec, LayoutAble
+from exactly_lib_test.test_resources.source.layout import LayoutSpec, LayoutAble, TokenPosition
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence, Token
 from exactly_lib_test.test_resources.string_formatting import StringFormatter
 from exactly_lib_test.test_resources.test_utils import NArrEx
@@ -131,6 +131,42 @@ class TestLayout(unittest.TestCase):
                  layout,
                  '\n\n',
                  ),
+            Case('token position / single token',
+                 [_LayoutAbleThatChecksTokenPositionArgument(
+                     self,
+                     {TokenPosition.FIRST, TokenPosition.LAST},
+                     ''),
+                 ],
+                 layout,
+                 '',
+                 ),
+            Case('token position / multiple tokens',
+                 [
+                     _LayoutAbleThatChecksTokenPositionArgument(
+                         self,
+                         {TokenPosition.FIRST},
+                         '',
+                     ),
+                     _LayoutAbleThatChecksTokenPositionArgument(
+                         self,
+                         set(),
+                         '',
+                     ),
+                     'string-token',
+                     _LayoutAbleThatChecksTokenPositionArgument(
+                         self,
+                         set(),
+                         '',
+                     ),
+                     _LayoutAbleThatChecksTokenPositionArgument(
+                         self,
+                         {TokenPosition.LAST},
+                         '',
+                     ),
+                 ],
+                 layout,
+                 'string-token',
+                 ),
         ]
         for case in cases:
             with self.subTest(case=case.name,
@@ -231,7 +267,10 @@ class _ConstTokSeqTestImpl(TokenSequence):
 
 
 class _LayoutAbleThatGivesOptionalNewLineStrings(LayoutAble):
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
         return spec.optional_new_line
 
 
@@ -239,7 +278,27 @@ class _ConstLayoutAble(LayoutAble):
     def __init__(self, values: Sequence[str]):
         self.values = values
 
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
+        return self.values
+
+
+class _LayoutAbleThatChecksTokenPositionArgument(LayoutAble):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 expected: AbstractSet[TokenPosition],
+                 values: Sequence[str]):
+        self.put = put
+        self.expected = expected
+        self.values = values
+
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
+        self.put.assertEqual(self.expected, position, 'token position')
         return self.values
 
 

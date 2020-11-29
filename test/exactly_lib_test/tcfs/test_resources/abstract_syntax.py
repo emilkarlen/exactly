@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Optional
+from typing import Optional, Sequence
 
 from exactly_lib.definitions import path as path_texts
 from exactly_lib.tcfs.path_relativity import RelOptionType
@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.source import tokens
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 from exactly_lib_test.type_val_deps.types.string.test_resources import abstract_syntax as str_abs_stx
-from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx
+from exactly_lib_test.type_val_deps.types.string.test_resources.abstract_syntax import StringAbsStx, StringLiteralAbsStx
 
 
 class RelativityAbsStx(AbstractSyntax, ABC):
@@ -52,6 +52,22 @@ class PathAbsStx(AbstractSyntax, ABC):
     pass
 
 
+class PathStringAbsStx(PathAbsStx):
+    def __init__(self, string: StringLiteralAbsStx):
+        self.string = string
+
+    @staticmethod
+    def of_plain_str(string: str) -> 'PathStringAbsStx':
+        return PathStringAbsStx(StringLiteralAbsStx(string))
+
+    @staticmethod
+    def of_plain_components(components: Sequence[str]) -> 'PathStringAbsStx':
+        return PathStringAbsStx.of_plain_str('/'.join(components))
+
+    def tokenization(self) -> TokenSequence:
+        return self.string.tokenization()
+
+
 class PathSymbolReferenceAbsStx(PathAbsStx):
     def __init__(self, symbol_name: str):
         self.symbol_name = symbol_name
@@ -86,7 +102,7 @@ class PathWConstNameAbsStx(PathWRelativityAbsStx, ABC):
                  quoting_: Optional[QuoteType] = None,
                  ):
         super().__init__(relativity,
-                         str_abs_stx.StringConstantAbsStx(name, quoting_),
+                         str_abs_stx.StringLiteralAbsStx(name, quoting_),
                          )
         self._name = name
 

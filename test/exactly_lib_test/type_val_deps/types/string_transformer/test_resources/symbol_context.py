@@ -11,6 +11,8 @@ from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.logic.test_resources.symbol_context import LogicSymbolValueContext, \
     LogicTypeSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.abstract_syntax import \
+    StringTransformerSymbolReferenceAbsStx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.assertions import \
     is_reference_to_string_transformer
 
@@ -94,6 +96,10 @@ class StringTransformerSymbolContext(LogicTypeSymbolContext[StringTransformerSdv
     @property
     def value(self) -> StringTransformerSymbolValueContext:
         return self._value
+
+    @property
+    def abs_stx_of_reference(self) -> StringTransformerSymbolReferenceAbsStx:
+        return StringTransformerSymbolReferenceAbsStx(self.name)
 
 
 class StringTransformerPrimitiveSymbolContext(StringTransformerSymbolContext):

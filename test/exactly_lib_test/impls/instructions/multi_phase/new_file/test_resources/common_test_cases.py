@@ -1,25 +1,19 @@
 import unittest
-from typing import Sequence, Iterable, Optional
+from typing import Sequence, Iterable
 
-from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType, RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.symbol_table import SymbolTable, Entry
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
+    ContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import IS_FAILURE
-from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
-    instruction_embryo_check as embryo_check
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
-    expectation
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import expectation
 from exactly_lib_test.impls.types.test_resources import validation as validation_utils
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_non_hds
-from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources import tcds_populators
 from exactly_lib_test.tcfs.test_resources.dir_populator import TcdsPopulator
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
@@ -31,28 +25,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import PathDdvSymbolContext
 
 
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               source: ParseSource,
-               arrangement: ArrangementWithSds,
-               expectation: Expectation[Optional[TextRenderer]],
-               phase_is_after_act: bool = True,
-               ):
-        parser = sut.EmbryoParser(phase_is_after_act)
-        embryo_check.check(self, parser, source, arrangement, expectation)
-
-    def _check_invalid_syntax(self,
-                              source: ParseSource,
-                              phase_is_after_act: bool = True,
-                              ):
-        parser = sut.EmbryoParser(phase_is_after_act)
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
-
-
 class InvalidDestinationFileTestCasesData:
     def __init__(self,
-                 file_contents_cases: Sequence[NameAndValue[ArgumentElements]],
+                 file_contents_cases: Sequence[NameAndValue[ContentsVariantAbsStx]],
                  symbols: SymbolTable,
                  pre_existing_files: TcdsPopulator = tcds_populators.empty(),
                  ):
@@ -61,7 +36,7 @@ class InvalidDestinationFileTestCasesData:
         self.pre_existing_files = pre_existing_files
 
 
-class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
+class TestCommonFailingScenariosDueToInvalidDestinationFileBase(unittest.TestCase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         raise NotImplementedError('abstract method')
 
@@ -78,101 +53,95 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
         ]
 
         for rel_opt_conf in dst_file_relativity_cases:
-
             non_hds_contents = rel_opt_conf.populator_for_relativity_option_root__non_hds(
                 dst_root_contents_before_execution)
+            dst_file = rel_opt_conf.path_abs_stx_of_name(dst_file_name)
 
             for file_contents_case in cases_data.file_contents_cases:
-                optional_arguments_elements = file_contents_case.value
-                optional_arguments = optional_arguments_elements.as_arguments
+                instruction_syntax = instr_abs_stx.InstructionAbsStx(
+                    dst_file,
+                    file_contents_case.value,
+                )
+                for phase_is_after_act in [False, True]:
+                    checker = integration_check.checker(phase_is_after_act)
 
-                with self.subTest(file_contents_variant=file_contents_case.name,
-                                  first_line_argments=optional_arguments.first_line,
-                                  dst_file_variant=rel_opt_conf.option_argument):
-                    source = remaining_source(
-                        '{relativity_option_arg} {dst_file_argument} {optional_arguments}'.format(
-                            relativity_option_arg=rel_opt_conf.option_argument,
-                            dst_file_argument=dst_file_name,
-                            optional_arguments=optional_arguments.first_line,
-                        ),
-                        optional_arguments.following_lines)
-
-                    # ACT & ASSERT #
-
-                    self._check(source,
-                                ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                                    tcds_contents=cases_data.pre_existing_files,
-                                    non_hds_contents=non_hds_contents,
-                                    symbols=cases_data.symbols,
-                                ),
-                                expectation(
-                                    main_result=IS_FAILURE,
-                                    symbol_usages=asrt.anything_goes(),
-                                )
-                                )
+                    with self.subTest(file_contents_variant=file_contents_case.name,
+                                      dst_file_variant=rel_opt_conf.option_argument,
+                                      phase_is_after_act=phase_is_after_act):
+                        # ACT & ASSERT #
+                        checker.check__abs_stx(
+                            self,
+                            instruction_syntax,
+                            ArrangementWithSds(
+                                pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
+                                tcds_contents=cases_data.pre_existing_files,
+                                non_hds_contents=non_hds_contents,
+                                symbols=cases_data.symbols,
+                            ),
+                            expectation(
+                                main_result=IS_FAILURE,
+                                symbol_usages=asrt.anything_goes(),
+                            )
+                        )
 
     def _check_cases_for_dst_file_setup__expect_pre_sds_validation_failure(
             self,
             dst_file_name: str,
             additional_symbols: Iterable[Entry] = (),
     ):
-
+        dst_file = path_abs_stx.DefaultRelPathAbsStx(dst_file_name)
         cases_data = self._file_contents_cases()
 
         for file_contents_case in cases_data.file_contents_cases:
-            optional_arguments_elements = file_contents_case.value
-            optional_arguments = optional_arguments_elements.as_arguments
+            instruction_syntax = instr_abs_stx.InstructionAbsStx(
+                dst_file,
+                file_contents_case.value,
+            )
 
             symbols = cases_data.symbols.copy()
             symbols.add_all(additional_symbols)
+            for phase_is_after_act in [False, True]:
+                checker = integration_check.checker(phase_is_after_act)
 
-            with self.subTest(file_contents_variant=file_contents_case.name,
-                              first_line_argments=optional_arguments.first_line):
-                source = remaining_source(
-                    '{dst_file_argument} {optional_arguments}'.format(
-                        dst_file_argument=dst_file_name,
-                        optional_arguments=optional_arguments.first_line,
-                    ),
-                    optional_arguments.following_lines)
-
-                # ACT & ASSERT #
-
-                self._check(source,
-                            ArrangementWithSds(
-                                symbols=symbols,
-                            ),
-                            expectation(
-                                validation=validation_utils.pre_sds_validation_fails__w_any_msg(),
-                                symbol_usages=asrt.anything_goes(),
-                            )
-                            )
+                with self.subTest(file_contents_variant=file_contents_case.name,
+                                  phase_is_after_act=phase_is_after_act):
+                    # ACT & ASSERT #
+                    checker.check__abs_stx(
+                        self,
+                        instruction_syntax,
+                        ArrangementWithSds(
+                            symbols=symbols,
+                        ),
+                        expectation(
+                            validation=validation_utils.pre_sds_validation_fails__w_any_msg(),
+                            symbol_usages=asrt.anything_goes(),
+                        )
+                    )
 
     def test_fail_WHEN_dst_file_is_existing_file(self):
-        dst_file_name = 'file.txt'
+        existing_dst_file = File.empty('file.txt')
         self._check_cases_for_dst_file_setup__w_relativity_options(
-            dst_file_name,
+            existing_dst_file.name,
             DirContents([
-                File.empty(dst_file_name)
+                existing_dst_file
             ]),
         )
 
     def test_fail_WHEN_dst_file_is_existing_dir(self):
-        dst_file_name = 'dst-dir'
+        existing_dst_dir = Dir.empty('dst-dir')
         self._check_cases_for_dst_file_setup__w_relativity_options(
-            dst_file_name,
+            existing_dst_dir.name,
             DirContents([
-                Dir.empty(dst_file_name)
+                existing_dst_dir
             ]),
         )
 
     def test_fail_WHEN_dst_file_is_existing_broken_symlink(self):
-        dst_file_name = 'dst-file'
+        existing_dst_broken_sym_link = fs.sym_link('dst-file', 'non-existing-symlink-target.txt')
         self._check_cases_for_dst_file_setup__w_relativity_options(
-            dst_file_name,
+            existing_dst_broken_sym_link.name,
             DirContents([
-                fs.sym_link(dst_file_name,
-                            'non-existing-symlink-target.txt')
+                existing_dst_broken_sym_link
             ]),
         )
 

@@ -8,52 +8,44 @@ from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import \
-    arguments_building as instr_args
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check, parse_check
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
+    ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
-    InvalidDestinationFileTestCasesData, \
-    TestCommonFailingScenariosDueToInvalidDestinationFileBase
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
-    TestCaseBase
+    InvalidDestinationFileTestCasesData
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
-    IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
+    IS_FAILURE, IS_SUCCESS, ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import \
-    TransformableContentsConstructor, output_from_program
-from exactly_lib_test.impls.types.parse.test_resources import arguments_building as arg
-from exactly_lib_test.impls.types.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.impls.types.program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.impls.types.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
+from exactly_lib_test.impls.types.string_model.test_resources import abstract_syntax as string_model_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources import validation
-from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources import path_arguments
-from exactly_lib_test.tcfs.test_resources.path_arguments import RelOptPathArgument
+from exactly_lib_test.tcfs.test_resources import abstract_syntax as path_abs_stx
 from exactly_lib_test.tcfs.test_resources.sds_check.sds_contents_check import \
-    non_hds_dir_contains_exactly, dir_contains_exactly
+    non_hds_dir_contains_exactly
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
-from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
-from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
-    SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR
-from exactly_lib_test.test_resources.test_utils import NIE
+from exactly_lib_test.test_resources.test_utils import NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.path.test_resources.path import ConstantSuffixPathDdvSymbolContext
+from exactly_lib_test.type_val_deps.types.program.test_resources import abstract_syntax as program_abs_stx
+from exactly_lib_test.type_val_deps.types.program.test_resources.abstract_syntax import \
+    TransformableProgramAbsStxBuilder, ProgramOfShellCommandLineAbsStx, ProgramAbsStx, TransformableProgramAbsStx
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringSymbolContext
+from exactly_lib_test.type_val_deps.types.string_transformer.test_resources import abstract_syntax as str_trans_abs_stx
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
     NON_EXISTING_SYSTEM_PROGRAM
-from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformers import \
-    to_uppercase
+from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
 def suite() -> unittest.TestSuite:
@@ -62,17 +54,16 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailDueInvalidSyntax),
         unittest.makeSuite(TestUnableToExecute),
         unittest.makeSuite(TestNonZeroExitCode),
-        unittest.makeSuite(TestSuccessfulScenariosWithDifferentSourceVariants),
         unittest.makeSuite(TestSuccessfulScenariosWithProgramFromDifferentChannels),
-        unittest.makeSuite(TestSymbolUsages),
-        unittest.makeSuite(TestFailingValidation),
+        TestSymbolUsages(),
+        TestFailingValidation(),
     ])
 
 
-class TestSymbolUsages(TestCaseBase):
-    def test_symbol_usages(self):
+class TestSymbolUsages(unittest.TestCase):
+    def runTest(self):
         # ARRANGE #
-        text_printed_by_shell_command_symbol = StringSymbolContext.of_constant('STRING_TO_PRINT_SYMBOL', 'hello_world')
+        text_printed_by_program = StringSymbolContext.of_constant('STRING_TO_PRINT_SYMBOL', 'hello world')
 
         dst_file_symbol = ConstantSuffixPathDdvSymbolContext(
             'DST_FILE_SYMBOL',
@@ -81,71 +72,80 @@ class TestSymbolUsages(TestCaseBase):
             sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants,
         )
 
-        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER_SYMBOL',
-            to_uppercase()
+        to_upper_transformer = TO_UPPER_TRANSFORMER_SYMBOL
+
+        transformed_program_output_contents_syntax = string_model_abs_stx.StringModelOfProgramAbsStx(
+            ProcOutputFile.STDOUT,
+            program_abs_stx.TransformedProgramAbsStx(
+                program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_string(
+                    py_programs.single_line_pgm_that_prints_to(
+                        ProcOutputFile.STDOUT,
+                        text_printed_by_program.name__sym_ref_syntax
+                    )
+                ),
+                to_upper_transformer.abs_stx_of_reference,
+            )
         )
-
-        transformed_shell_contents_arguments = TransformableContentsConstructor(
-            output_from_program(ProcOutputFile.STDOUT,
-                                pgm_args.shell_command(
-                                    shell_commands.command_that_prints_line_to_stdout(
-                                        text_printed_by_shell_command_symbol.name__sym_ref_syntax
-                                    ))
-                                )
-        ).with_transformation(to_upper_transformer.name).as_arguments
-
-        source = remaining_source(
-            '{file_name} {content_arguments}'.format(
-                file_name=dst_file_symbol.name__sym_ref_syntax,
-                content_arguments=transformed_shell_contents_arguments.first_line
-            ),
-            transformed_shell_contents_arguments.following_lines)
-
+        instruction_syntax = instr_abs_stx.with_explicit_contents(
+            dst_file_symbol.abs_stx_of_reference,
+            transformed_program_output_contents_syntax
+        )
         symbols = SymbolContext.symbol_table_of_contexts([
             dst_file_symbol,
-            text_printed_by_shell_command_symbol,
+            text_printed_by_program,
             to_upper_transformer,
         ])
 
         # ACT & ASSERT #
-
-        self._check(source,
-                    ArrangementWithSds(
-                        symbols=symbols,
-                    ),
-                    Expectation(
-                        main_result=IS_SUCCESS,
-                        symbol_usages=asrt.matches_sequence([
-                            dst_file_symbol.reference_assertion__path_or_string,
-                            text_printed_by_shell_command_symbol.reference_assertion__any_data_type,
-                            to_upper_transformer.reference_assertion,
-                        ]),
-                    )
-                    )
+        checker = integration_check.checker(False)
+        checker.check__abs_stx__std_layouts_and_source_variants(
+            self,
+            instruction_syntax,
+            ArrangementWithSds(
+                symbols=symbols,
+            ),
+            Expectation(
+                main_result=IS_SUCCESS,
+                symbol_usages=asrt.matches_sequence([
+                    dst_file_symbol.reference_assertion__path_or_string,
+                    text_printed_by_program.reference_assertion__any_data_type,
+                    to_upper_transformer.reference_assertion,
+                ]),
+            )
+        )
 
 
 class ProgramCase:
     def __init__(self,
                  name: str,
-                 source: ArgumentElements,
+                 source: TransformableProgramAbsStx,
                  expected_reference: List[ValueAssertion[SymbolReference]]):
         self.name = name
         self.source = source
         self.expected_references = expected_reference
 
 
-class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
+class ProgramAndSymbolsCase:
+    def __init__(self,
+                 name: str,
+                 syntax: ProgramAbsStx,
+                 additional_symbols: List[SymbolContext],
+                 adapt_expected_program_output: Callable[[str], str],
+                 ):
+        self.name = name
+        self.syntax = syntax
+        self.additional_symbols = additional_symbols
+        self.adapt_expected_program_output = adapt_expected_program_output
+
+
+class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase):
     def test_with_transformation(self):
         text_printed_by_program = 'the text printed by the program'
-        transformer = StringTransformerSymbolContext.of_primitive(
-            'TO_UPPER_CASE',
-            to_uppercase(),
-        )
+        transformer = TO_UPPER_TRANSFORMER_SYMBOL
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
-            make_arguments=lambda tcc: tcc.with_transformation(transformer.name),
+            make_arguments=lambda tcc: tcc.with_transformation(transformer.abs_stx_of_reference),
             additional_symbols={transformer.name: transformer.symbol_table_container},
             additional_symbol_references=[transformer.reference_assertion]
         )
@@ -163,7 +163,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
     def _test(self,
               text_printed_by_program: str,
               expected_file_contents: str,
-              make_arguments: Callable[[TransformableContentsConstructor], ArgumentElements],
+              make_arguments: Callable[[TransformableProgramAbsStxBuilder], ProgramAbsStx],
               additional_symbols: Dict[str, SymbolContainer],
               additional_symbol_references: List[ValueAssertion[SymbolReference]],
               ):
@@ -178,6 +178,19 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
                 program_sdvs.for_py_source_on_command_line(python_source)
             )
 
+            program_cases = [
+                ProgramCase(
+                    'python interpreter',
+                    program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_string(python_source),
+                    []
+                ),
+                ProgramCase(
+                    'symbol reference program',
+                    program_abs_stx.ProgramOfSymbolReferenceAbsStx(program_that_executes_py_source_symbol.name),
+                    [program_that_executes_py_source_symbol.reference_assertion],
+                ),
+            ]
+
             symbols_dict = {
                 program_that_executes_py_source_symbol.name:
                     program_that_executes_py_source_symbol.symbol_table_container,
@@ -185,40 +198,26 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
             symbols_dict.update(additional_symbols)
             symbols = SymbolTable(symbols_dict)
 
-            program_cases = [
-                ProgramCase('executable file',
-                            pgm_args.interpret_py_source_elements(python_source),
-                            []
-                            ),
-                ProgramCase('symbol reference program',
-                            arg.elements([
-                                pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
-                                    program_that_executes_py_source_symbol.name))
-                            ]),
-                            [program_that_executes_py_source_symbol.reference_assertion]
-                            ),
-            ]
-
             for program_case in program_cases:
-                program_contents_constructor = TransformableContentsConstructor(
-                    output_from_program(proc_output_file, program_case.source)
-                )
-                program_contents_arguments = make_arguments(program_contents_constructor)
+                program_syntax_builder = TransformableProgramAbsStxBuilder(program_case.source)
+                program_syntax = make_arguments(program_syntax_builder)
 
-                rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
-
-                source = arg.elements([rel_opt_conf.path_argument_of_rel_name(expected_file.name)]) \
-                    .followed_by(program_contents_arguments) \
-                    .as_remaining_source
+                rel_opt_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 
                 expected_symbol_references = program_case.expected_references + additional_symbol_references
 
+                instruction_syntax = instr_abs_stx.with_explicit_contents(
+                    rel_opt_conf.path_abs_stx_of_name(expected_file.name),
+                    string_model_abs_stx.StringModelOfProgramAbsStx(proc_output_file, program_syntax,
+                                                                    ignore_exit_code=False)
+                )
+
                 with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
                                   program=program_case.name,
-                                  remaining_source=source.remaining_source,
                                   output_channel=proc_output_file):
-                    self._check(
-                        source,
+                    integration_check.CHECKER__BEFORE_ACT.check__abs_stx__std_layouts_and_source_variants(
+                        self,
+                        instruction_syntax,
                         ArrangementWithSds(
                             symbols=symbols,
                         ),
@@ -228,155 +227,85 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
                             symbol_usages=asrt.matches_sequence(expected_symbol_references),
                             main_side_effects_on_sds=non_hds_dir_contains_exactly(rel_opt_conf.root_dir__non_hds,
                                                                                   fs.DirContents([expected_file])),
-                        ))
+                        )
+                    )
 
 
-class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
-    def test_contents_from_stdout_with_transformer(self):
-        text_printed_by_program = 'single line of output'
-        expected_file_contents = text_printed_by_program.upper() + '\n'
-        file_arg = RelOptPathArgument('a-file-name.txt', RelOptionType.REL_TMP)
-
-        expected_file = fs.File(file_arg.name, expected_file_contents)
-
-        to_upper_transformer = StringTransformerSymbolContext.of_primitive(
-            'TO_UPPER_CASE',
-            to_uppercase(),
-        )
-        symbols = to_upper_transformer.symbol_table
-
-        program_cases = [
-            NameAndValue(
-                'executable file',
-                pgm_args.program(pgm_args.interpret_py_source_line(
-                    py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program)),
-                    transformation=to_upper_transformer.name
-                )
-            ),
-            NameAndValue(
-                'shell command line',
-                pgm_args.program(pgm_args.shell_command_line(
-                    command_that_prints_line_to_stdout(text_printed_by_program)),
-                    transformation=to_upper_transformer.name
-                )
-            ),
-        ]
-
-        source_cases = [
-            NIE('no following lines',
-                asrt_source.source_is_at_end,
-                []
-                ),
-            NIE('empty following line',
-                asrt_source.is_at_beginning_of_line(3),
-                ['',
-                 '   following line with text']
-                ),
-            NIE('with following lines',
-                asrt_source.is_at_beginning_of_line(3),
-                ['following line']
-                ),
-        ]
-        for source_case in source_cases:
-            for program_case in program_cases:
-                program_contents_arguments = TransformableContentsConstructor(
-                    output_from_program(ProcOutputFile.STDOUT, program_case.value)
-                ).without_transformation().as_arguments
-
-                source = remaining_source(
-                    '{file_arg} {program_contents_arguments}'.format(
-                        file_arg=file_arg,
-                        program_contents_arguments=program_contents_arguments.first_line),
-                    program_contents_arguments.following_lines + source_case.input_value)
-
-                with self.subTest(program=program_case.name,
-                                  following_source=source_case.name,
-                                  remaining_source=source.remaining_source):
-                    self._check(
-                        source,
-                        ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                            symbols=symbols
-                        ),
-                        Expectation(
-                            main_result=IS_SUCCESS,
-                            side_effects_on_hds=f_asrt.dir_is_empty(),
-                            symbol_usages=asrt.matches_sequence([
-                                to_upper_transformer.reference_assertion,
-                            ]),
-                            main_side_effects_on_sds=dir_contains_exactly(file_arg.relativity_option,
-                                                                          fs.DirContents([expected_file])),
-                            source=source_case.expected_value
-                        ))
-
-
-class TestFailingValidation(TestCaseBase):
-    def test_validation_of_non_existing_file_pre_sds_fails(self):
+class TestFailingValidation(unittest.TestCase):
+    def runTest(self):
         # ARRANGE #
-        program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
-                                                                                RelOptionType.REL_HDS_CASE))
-        )
-        complete_arguments = instr_args.from_program('dst-file.txt',
-                                                     ProcOutputFile.STDOUT,
-                                                     program_with_ref_to_file_in_hds_ds)
-        # ACT & ASSERT #
-        self._check(complete_arguments.as_remaining_source,
-                    ArrangementWithSds(),
-                    embryo_check.expectation(validation=validation.pre_sds_validation_fails__w_any_msg()))
-
-    def test_validation_of_non_existing_file_post_sds_fails(self):
-        # ARRANGE #
-        program_with_ref_to_file_in_hds_ds = pgm_args.program(
-            pgm_args.interpret_py_source_file(path_arguments.RelOptPathArgument('non-existing-file',
-                                                                                RelOptionType.REL_ACT))
-        )
-        complete_arguments = instr_args.from_program('dst-file.txt',
-                                                     ProcOutputFile.STDOUT,
-                                                     program_with_ref_to_file_in_hds_ds)
-        # ACT & ASSERT #
-        self._check(complete_arguments.as_remaining_source,
-                    ArrangementWithSds(),
-                    embryo_check.expectation(validation=validation.post_sds_validation_fails__w_any_msg()))
-
-
-class TestUnableToExecute(TestCaseBase):
-    def test_WHEN_program_is_non_non_existing_system_command_THEN_result_SHOULD_be_error_message(self):
-        failing_program = pgm_args.system_program_argument_elements(NON_EXISTING_SYSTEM_PROGRAM)
-        transformer = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER',
-            to_uppercase(),
-        )
-        symbols = transformer.symbol_table
-
         cases = [
-            NameAndValue('without transformer',
-                         None),
-            NameAndValue('with transformer',
-                         transformer.name),
+            NArrEx(
+                'pre SDS validation failure',
+                RelOptionType.REL_HDS_CASE,
+                validation.pre_sds_validation_fails__w_any_msg(),
+            ),
+            NArrEx(
+                'post SDS validation failure',
+                RelOptionType.REL_ACT,
+                validation.post_sds_validation_fails__w_any_msg(),
+            ),
         ]
         for case in cases:
-            source = instr_args.from_program(
-                'dst-file.txt',
-                ProcOutputFile.STDOUT,
-                failing_program,
-                transformation=case.value,
-            ).as_remaining_source
+            program_with_ref_to_non_existing_file = program_abs_stx.ProgramOfExecutableFileCommandLineAbsStx(
+                path_abs_stx.RelOptPathAbsStx(case.arrangement, 'non-existing-file')
+            )
+            instruction_syntax = instr_abs_stx.with_explicit_contents(
+                path_abs_stx.DefaultRelPathAbsStx('dst-file'),
+                string_model_abs_stx.StringModelOfProgramAbsStx(ProcOutputFile.STDOUT,
+                                                                program_with_ref_to_non_existing_file,
+                                                                ignore_exit_code=False)
+            )
 
-            with self.subTest(case.name):
-                self._check(
-                    source,
-                    ArrangementWithSds(
-                        symbols=symbols,
-                    ),
-                    Expectation(
-                        source=asrt_source.source_is_at_end,
-                        symbol_usages=asrt.anything_goes(),
-                        main_result=IS_FAILURE,
-                    ))
+            # ACT & ASSERT #
+            for phase_is_after_act in [False, True]:
+                checker = integration_check.checker(phase_is_after_act)
+                with self.subTest(phase_is_after_act=phase_is_after_act,
+                                  step=case.name):
+                    checker.check__abs_stx__std_layouts_and_source_variants(
+                        self,
+                        instruction_syntax,
+                        ArrangementWithSds(),
+                        embryo_check.expectation(validation=case.expectation)
+                    )
 
 
-class TestNonZeroExitCode(TestCaseBase):
+class TestUnableToExecute(unittest.TestCase):
+    def test_WHEN_program_is_non_non_existing_system_command_THEN_result_SHOULD_be_error_message(self):
+        failing_program_builder = program_abs_stx.TransformableProgramAbsStxBuilder(
+            program_abs_stx.ProgramOfSystemCommandLineAbsStx.of_str(NON_EXISTING_SYSTEM_PROGRAM)
+        )
+        transformer = TO_UPPER_TRANSFORMER_SYMBOL
+        symbols = transformer.symbol_table
+
+        cases = failing_program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+
+        for transformation_case in cases:
+            instruction_syntax = instr_abs_stx.with_explicit_contents(
+                path_abs_stx.DefaultRelPathAbsStx('dst-file'),
+                string_model_abs_stx.StringModelOfProgramAbsStx(
+                    ProcOutputFile.STDOUT,
+                    transformation_case.value,
+                    ignore_exit_code=False)
+            )
+            for phase_is_after_act in [False, True]:
+                checker = integration_check.checker(phase_is_after_act)
+                with self.subTest(phase_is_after_act=phase_is_after_act,
+                                  transformation=transformation_case.name):
+                    checker.check__abs_stx__std_layouts_and_source_variants(
+                        self,
+                        instruction_syntax,
+                        ArrangementWithSds(
+                            symbols=symbols,
+                        ),
+                        Expectation(
+                            symbol_usages=asrt.anything_goes(),
+                            main_result=IS_FAILURE,
+                        )
+                    )
+
+
+class TestNonZeroExitCode(unittest.TestCase):
     def test_result_SHOULD_be_failure_WHEN_non_zero_exit_code_and_exit_code_is_not_ignored(self):
         self._check_exit_codes(
             exit_code_cases=[1, 69],
@@ -406,19 +335,30 @@ class TestNonZeroExitCode(TestCaseBase):
             ProcOutputFile.STDOUT: 'output on stdout',
             ProcOutputFile.STDERR: 'output on stderr',
         }
-        transformer = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER',
-            to_uppercase(),
+        transformer = TO_UPPER_TRANSFORMER_SYMBOL
+
+        sym_ref_program = program_abs_stx.ProgramOfSymbolReferenceAbsStx('PROGRAM_SYMBOL_NAME')
+        program_builder = program_abs_stx.TransformableProgramAbsStxBuilder(
+            program_abs_stx.ProgramOfSymbolReferenceAbsStx(sym_ref_program.symbol_name)
         )
-
-        py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
-
-        transformer_cases = [
-            NameAndValue('without transformer',
-                         None),
-            NameAndValue('with transformer',
-                         transformer.name),
+        program_cases = [
+            ProgramAndSymbolsCase(
+                'without transformation',
+                program_builder.without_transformation(),
+                [],
+                adapt_expected_program_output=lambda s: s
+            ),
+            ProgramAndSymbolsCase(
+                'with transformation',
+                program_builder.with_transformation(transformer.abs_stx_of_reference),
+                [transformer],
+                adapt_expected_program_output=str.upper
+            ),
         ]
+        program_builder.with_and_without_transformer_cases(transformer.abs_stx_of_reference)
+
+        py_file_rel_conf = rel_opt.conf_rel_any(RelOptionType.REL_HDS_CASE)
+        dst_file_rel_conf = ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 
         for output_file in ProcOutputFile:
             for exit_code in exit_code_cases:
@@ -430,43 +370,50 @@ class TestNonZeroExitCode(TestCaseBase):
                                ),
                                )
 
-                py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
+                py_file_conf = py_file_rel_conf.named_file_conf(py_file.name)
+                dst_file_conf = dst_file_rel_conf.named_file_conf(destination_file_name)
 
                 program_symbol = ProgramSymbolContext.of_sdv(
-                    'PROGRAM_SYMBOL_NAME',
+                    sym_ref_program.symbol_name,
                     program_sdvs.interpret_py_source_file_that_must_exist(py_file_conf.path_sdv)
                 )
-                symbol_contexts = [program_symbol, transformer]
 
-                for transformer_case in transformer_cases:
-                    with self.subTest(exit_code=exit_code):
-                        # ACT && ASSERT #
-                        self._check(
-                            source=instr_args.from_program(
-                                destination_file_name,
-                                output_file,
-                                program=pgm_args.symbol_ref_command_elements(program_symbol.name),
-                                ignore_exit_code=ignore_exit_code,
-                                transformation=transformer_case.value,
-                            ).as_remaining_source,
-                            arrangement=ArrangementWithSds(
-                                symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
-                                tcds_contents=py_file_rel_opt_conf.populator_for_relativity_option_root(
-                                    DirContents([py_file])
-                                )
-                            ),
-                            expectation=
-                            Expectation(
-                                source=asrt_source.source_is_at_end,
-                                symbol_usages=program_symbol.references_assertion,
-                                main_result=main_result,
-                                main_side_effects_on_sds=dir_contains_exactly(
-                                    RelOptionType.REL_ACT,
-                                    expected_output_dir_contents(
-                                        destination_file_name, program_output[output_file])
-                                )
-                            ),
-                        )
+                for program_case in program_cases:
+                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                        dst_file_conf.abstract_syntax,
+                        string_model_abs_stx.StringModelOfProgramAbsStx(
+                            output_file,
+                            program_case.syntax,
+                            ignore_exit_code=ignore_exit_code)
+                    )
+                    expected_program_output = program_case.adapt_expected_program_output(program_output[output_file])
+                    symbol_contexts = [program_symbol] + program_case.additional_symbols
+                    # ACT && ASSERT #
+                    for phase_is_after_act in [False, True]:
+                        checker = integration_check.checker(phase_is_after_act)
+                        with self.subTest(exit_code=exit_code,
+                                          output_file=output_file,
+                                          program=program_case.name,
+                                          phase_is_after_act=phase_is_after_act):
+                            checker.check__abs_stx__std_layouts_and_source_variants(
+                                self,
+                                instruction_syntax,
+                                ArrangementWithSds(
+                                    symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts),
+                                    tcds_contents=py_file_rel_conf.populator_for_relativity_option_root(
+                                        DirContents([py_file])
+                                    )
+                                ),
+                                Expectation(
+                                    symbol_usages=SymbolContext.usages_assertion_of_contexts(symbol_contexts),
+                                    main_result=main_result,
+                                    main_side_effects_on_sds=dst_file_rel_conf.assert_root_dir_contains_exactly(
+                                        expected_output_dir_contents(
+                                            dst_file_conf.name,
+                                            expected_program_output)
+                                    ),
+                                ),
+                            )
 
     @staticmethod
     def _dir_is_empty(file_name: str, contents_on_output_channel: str) -> DirContents:
@@ -478,29 +425,31 @@ class TestNonZeroExitCode(TestCaseBase):
 
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(
-    TestCommonFailingScenariosDueToInvalidDestinationFileBase):
+    common_test_cases.TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
-        arbitrary_transformer = StringTransformerSymbolContext.of_primitive(
-            'TRANSFORMER_SYMBOL',
-            to_uppercase(),
-        )
+        arbitrary_transformer = TO_UPPER_TRANSFORMER_SYMBOL
 
         symbols = arbitrary_transformer.symbol_table
 
-        shell_contents_arguments_constructor = TransformableContentsConstructor(
-            output_from_program(ProcOutputFile.STDOUT,
-                                pgm_args.shell_command(shell_commands.command_that_exits_with_code(0))
-                                )
+        shell_contents_arguments_constructor = TransformableProgramAbsStxBuilder(
+            ProgramOfShellCommandLineAbsStx.of_plain_string(
+                shell_commands.command_that_exits_with_code(0)
+            )
         )
 
         file_contents_cases = [
             NameAndValue(
                 'contents of output from shell command / without transformation',
-                shell_contents_arguments_constructor.without_transformation()
+                _mk_explicit_contents(
+                    shell_contents_arguments_constructor.without_transformation()
+                )
             ),
             NameAndValue(
                 'contents of output from shell command / with transformation',
-                shell_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
+                _mk_explicit_contents(
+                    shell_contents_arguments_constructor.with_transformation(
+                        arbitrary_transformer.abs_stx_of_reference)
+                )
             ),
         ]
 
@@ -509,22 +458,48 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
             symbols)
 
 
-class TestFailDueInvalidSyntax(TestCaseBase):
+class TestFailDueInvalidSyntax(unittest.TestCase):
     def test_superfluous_arguments(self):
+        program_w_superfluous_argument = program_abs_stx.TransformedProgramAbsStx(
+            program_abs_stx.ARBITRARY_TRANSFORMABLE_PROGRAM,
+            str_trans_abs_stx.StringTransformerCompositionAbsStx(
+                [
+                    str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_sym_1'),
+                    str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx('str_trans_sym_1'),
+                ],
+                within_parens=False,
+                allow_elements_on_separate_lines=False,
+            )
+        )
         for phase_is_after_act in [False, True]:
             for output_file in ProcOutputFile:
                 for ignore_exit_code in [False, True]:
+                    instruction_syntax = instr_abs_stx.with_explicit_contents(
+                        ARBITRARY_ALLOWED_DST_FILE_RELATIVITY.path_abs_stx_of_name('dst-file'),
+                        string_model_abs_stx.StringModelOfProgramAbsStx(
+                            output_file,
+                            program_w_superfluous_argument,
+                            ignore_exit_code=ignore_exit_code)
+                    )
                     with self.subTest(output_file=output_file,
                                       phase_is_after_act=phase_is_after_act,
                                       ignore_exit_code=ignore_exit_code):
-                        source = instr_args.from_program(
-                            'dst.txt',
-                            output_file,
-                            pgm_args.program_w_superfluous_args().as_argument_elements,
-                            ignore_exit_code=ignore_exit_code,
+                        parse_check.check_invalid_syntax__abs_stx(
+                            self,
+                            instruction_syntax,
                         )
-                        parse_source = source.as_remaining_source
-                        self._check_invalid_syntax(
-                            parse_source,
-                            phase_is_after_act,
-                        )
+
+
+TO_UPPER_TRANSFORMER_SYMBOL = StringTransformerSymbolContext.of_primitive(
+    'TO_UPPER_TRANSFORMER_SYMBOL',
+    string_transformers.to_uppercase(),
+)
+
+
+def _mk_explicit_contents(program: ProgramAbsStx) -> ExplicitContentsVariantAbsStx:
+    return ExplicitContentsVariantAbsStx(
+        string_model_abs_stx.StringModelOfProgramAbsStx(
+            ProcOutputFile.STDOUT,
+            program,
+        )
+    )

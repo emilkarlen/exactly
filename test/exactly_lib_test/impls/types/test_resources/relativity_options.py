@@ -233,6 +233,9 @@ class RelativityOptionConfiguration(ABC):
             file_name,
         )
 
+    def path_abs_stx_of_name__c(self, file_name_components: Sequence[str]) -> PathWConstNameAbsStx:
+        return self.path_abs_stx_of_name__c('/'.join(file_name_components))
+
     @property
     def option_argument_str(self) -> str:
         return str(self._cli_option.argument)

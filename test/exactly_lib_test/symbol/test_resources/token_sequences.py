@@ -1,7 +1,7 @@
-from typing import Sequence
+from typing import Sequence, AbstractSet
 
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec
+from exactly_lib_test.test_resources.source.layout import LayoutAble, LayoutSpec, TokenPosition
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence, Token
 
 
@@ -27,7 +27,10 @@ class _SymbolReferenceAsReferenceSyntax(LayoutAble):
     def __init__(self, symbol_name: str):
         self._symbol_name = symbol_name
 
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
         return (symbol_syntax.symbol_reference_syntax_for_name(self._symbol_name),)
 
 
@@ -35,7 +38,10 @@ class _SymbolReferenceAsEitherPlainNameOrReferenceSyntax(LayoutAble):
     def __init__(self, symbol_name: str):
         self._symbol_name = symbol_name
 
-    def layout(self, spec: LayoutSpec) -> Sequence[str]:
+    def layout(self,
+               spec: LayoutSpec,
+               position: AbstractSet[TokenPosition],
+               ) -> Sequence[str]:
         return (
             (self._symbol_name,)
             if spec.symbol_reference_as_plain_symbol_name

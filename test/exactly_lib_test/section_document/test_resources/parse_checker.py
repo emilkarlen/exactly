@@ -10,6 +10,8 @@ from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
+from exactly_lib_test.test_resources.source.layout import STANDARD_LAYOUT_SPECS
 
 
 class Checker:
@@ -26,6 +28,15 @@ class Checker:
         put.assertIsInstance(cx.exception.error_message,
                              str,
                              'error message')
+
+    def check_invalid_syntax__abs_stx(self,
+                                      put: unittest.TestCase,
+                                      source: AbstractSyntax,
+                                      ):
+        for layout_case in STANDARD_LAYOUT_SPECS:
+            parse_source = ParseSource(source.tokenization().layout(layout_case.value))
+            with put.subTest(layout=layout_case.name):
+                self.check_invalid_arguments(put, parse_source)
 
     def check_invalid_syntax_cases_for_expected_valid_token(self,
                                                             put: unittest.TestCase,

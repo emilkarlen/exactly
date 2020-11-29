@@ -13,7 +13,7 @@ from exactly_lib_test.impls.types.test_resources import arguments_building as ab
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration, \
     conf_rel_hds, conf_rel_sds, conf_rel_non_hds, default_conf_rel_non_hds
 
-ALLOWED_SRC_FILE_RELATIVITIES = [
+ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT = [
     conf_rel_hds(RelHdsOptionType.REL_HDS_CASE),
     conf_rel_hds(RelHdsOptionType.REL_HDS_ACT),
     conf_rel_sds(RelSdsOptionType.REL_ACT),
@@ -21,6 +21,15 @@ ALLOWED_SRC_FILE_RELATIVITIES = [
     conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
     default_conf_rel_non_hds(RelNonHdsOptionType.REL_CWD),
 ]
+
+
+def allowed_src_file_relativities(phase_is_after_act: bool) -> Sequence[RelativityOptionConfiguration]:
+    return (
+        ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT + [conf_rel_sds(RelSdsOptionType.REL_RESULT)]
+        if phase_is_after_act
+        else
+        ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT
+    )
 
 
 def empty_file_contents_arguments() -> ArgumentElements:
