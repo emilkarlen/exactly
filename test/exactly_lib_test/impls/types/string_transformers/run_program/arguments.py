@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant

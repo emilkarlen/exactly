@@ -7,7 +7,7 @@ from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,

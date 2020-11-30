@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.string_model.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

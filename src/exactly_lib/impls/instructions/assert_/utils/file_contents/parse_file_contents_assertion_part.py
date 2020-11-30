@@ -7,7 +7,7 @@ from exactly_lib.impls.instructions.assert_.utils.file_contents.parts.string_mat
     StringMatcherAssertionPart
 from exactly_lib.impls.types.string_matcher.parse_string_matcher import parsers
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 
 
 def parse(token_parser: TokenParser) -> AssertionPart[ComparisonActualFile, StringModel]:

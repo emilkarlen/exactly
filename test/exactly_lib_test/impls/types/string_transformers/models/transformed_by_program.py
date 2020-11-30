@@ -12,7 +12,7 @@ from exactly_lib.type_val_prims.program.commands import Command
 from exactly_lib.type_val_prims.program.commands import CommandDriverForExecutableFile
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.program.stdin import StdinData
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.string_model.test_resources.string_models import ModelFromLinesTestImpl
 from exactly_lib_test.test_resources.files import file_structure as fs

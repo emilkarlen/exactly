@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from exactly_lib.type_val_prims.description.tree_structured import WithNameAndNodeDescription
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 
 
 class StringTransformer(WithNameAndNodeDescription, ABC):

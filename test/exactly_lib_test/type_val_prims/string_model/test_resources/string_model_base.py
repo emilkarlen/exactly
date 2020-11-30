@@ -1,6 +1,7 @@
 from abc import ABC
 
-from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 
 
 class StringModelTestImplBase(StringModel, ABC):

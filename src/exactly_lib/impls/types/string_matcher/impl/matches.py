@@ -6,7 +6,7 @@ from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherDdv, StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 

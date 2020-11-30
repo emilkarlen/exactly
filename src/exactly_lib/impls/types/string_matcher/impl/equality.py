@@ -20,12 +20,12 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import PreOrPostSdsValidatorPrimitive
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
-from exactly_lib.type_val_prims import string_model
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model import string_model
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils

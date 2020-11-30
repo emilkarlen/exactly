@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr import test_cases
 from exactly_lib_test.impls.types.matcher.test_resources.std_expr.configuration import MatcherConfiguration

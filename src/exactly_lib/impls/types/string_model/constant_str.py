@@ -4,7 +4,7 @@ from typing import ContextManager, Iterator
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.string_model.model_from_lines import StringModelFromLinesBase
-from exactly_lib.type_val_prims.string_model import StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer

@@ -8,7 +8,7 @@ from exactly_lib.impls.types.string_model import file_model as sut
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.tcfs.test_resources import ds_construction, tcds_populators

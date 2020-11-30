@@ -15,7 +15,7 @@ from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases import setup as setup_phase
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation

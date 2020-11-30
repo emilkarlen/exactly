@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.definitions import logic
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree import tree
 from exactly_lib_test.impls.types.file_matcher.test_resources import parse_test_base_classes as tc
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_args

@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from typing import Callable, Sequence, List
 
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.name_and_value import NameAndValue
 

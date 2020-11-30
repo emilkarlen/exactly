@@ -3,7 +3,7 @@ from exactly_lib.type_val_prims.description.structure_building import StructureB
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 
 
 class EqualsConstant(StringMatcherImplBase):

@@ -4,7 +4,8 @@ from typing import Callable, ContextManager, Iterator
 
 from exactly_lib.impls.types.string_model.model_from_lines import StringModelFromLinesBase
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 StringTransFun = Callable[[Iterator[str]], Iterator[str]]

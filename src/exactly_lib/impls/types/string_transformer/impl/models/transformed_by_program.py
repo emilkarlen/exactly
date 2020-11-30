@@ -6,7 +6,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnviro
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.process_execution import file_ctx_managers, process_output_files
 from exactly_lib.util.process_execution.executors import store_result_in_files
 from exactly_lib.util.process_execution.executors.store_result_in_files import ExitCodeAndStderrFile

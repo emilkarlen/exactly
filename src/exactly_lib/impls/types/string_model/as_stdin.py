@@ -2,7 +2,7 @@ import subprocess
 from contextlib import contextmanager
 from typing import Optional, Sequence, ContextManager
 
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util import functional
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 

@@ -20,7 +20,7 @@ from exactly_lib.type_val_prims.description.tree_structured import StructureRend
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.symbol_table import SymbolTable

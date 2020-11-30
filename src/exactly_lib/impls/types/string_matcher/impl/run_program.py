@@ -6,7 +6,7 @@ from exactly_lib.impls.types.string_transformer.impl.identity import IdentityStr
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.program.program import Program
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.std import ProcessExecutionFile
 from exactly_lib.util.process_execution import file_ctx_managers
 

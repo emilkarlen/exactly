@@ -7,7 +7,7 @@ from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 
 NAMES = file_contents_utils.NamesSetup(
     file_check_properties.REGULAR_FILE_CONTENTS,

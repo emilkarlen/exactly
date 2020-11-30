@@ -5,7 +5,7 @@ from typing import ContextManager, Iterator, Sequence, List, IO, Callable
 
 from exactly_lib.impls.types.string_model.model_from_lines import StringModelFromLinesBase
 from exactly_lib.test_case.hard_error import HardErrorException
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib_test.common.test_resources import text_doc_assertions

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_val_prims import string_model as sut
+from exactly_lib.type_val_prims.string_model import string_model as sut
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
 from exactly_lib_test.util.str_ import read_lines

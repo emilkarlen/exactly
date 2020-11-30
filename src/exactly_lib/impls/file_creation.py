@@ -8,7 +8,7 @@ from exactly_lib.impls.types.string_model import file_model
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.file_utils.ensure_file_existence import ensure_directory_exists, \

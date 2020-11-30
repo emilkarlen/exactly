@@ -6,7 +6,8 @@ from exactly_lib.impls.types.string_model.model_from_lines import StringModelFro
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
 from exactly_lib.type_val_prims.impls.transformed_string_models import TransformedStringModelFromLinesBase
-from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 

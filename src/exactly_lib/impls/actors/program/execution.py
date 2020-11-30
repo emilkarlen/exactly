@@ -10,7 +10,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnviro
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.type_val_prims.program.program import Program
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from ..util.actor_from_parts import parts
 

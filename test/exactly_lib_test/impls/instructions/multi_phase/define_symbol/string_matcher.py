@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import lines_content

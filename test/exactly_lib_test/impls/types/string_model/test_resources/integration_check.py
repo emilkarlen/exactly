@@ -2,7 +2,7 @@ from typing import AbstractSet
 
 from exactly_lib.impls.types.string_model import parse
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib_test.impls.types.logic.test_resources import integration_check
 from exactly_lib_test.type_val_deps.types.string_model.test_resources.properties_checker import \
     StringModelPropertiesConfiguration

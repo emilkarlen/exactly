@@ -30,7 +30,8 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.textformat.textformat_parser import TextParser

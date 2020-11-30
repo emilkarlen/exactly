@@ -14,7 +14,7 @@ from exactly_lib.test_case.result import pfh
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.impls.types.string_model.test_resources.model_factory import \
     string_model_factory

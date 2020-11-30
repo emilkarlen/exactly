@@ -35,7 +35,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_prims.program.command import Command
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 

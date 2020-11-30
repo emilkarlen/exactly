@@ -1,5 +1,5 @@
 from exactly_lib.impls.instructions.assert_.utils.assertion_part import IdentityAssertionPart
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 
 
 class FileContentsAssertionPart(IdentityAssertionPart[StringModel]):

@@ -7,7 +7,8 @@ from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.type_val_deps.types.path import primitives
 from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_val_prims.string_model import StringModel, StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 

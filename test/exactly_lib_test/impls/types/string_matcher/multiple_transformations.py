@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.impls.types.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.impls.types.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation

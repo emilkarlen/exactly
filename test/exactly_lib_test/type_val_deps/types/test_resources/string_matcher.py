@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model import StringModel
+from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
