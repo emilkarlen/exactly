@@ -1,13 +1,13 @@
 from abc import ABC
 from typing import Optional, Sequence
 
-from exactly_lib.definitions.primitives import string
 from exactly_lib.util.parse.token import QuoteType
 from exactly_lib.util.str_ import misc_formatting
 from exactly_lib_test.symbol.test_resources import token_sequences as symbol_tok_seq
 from exactly_lib_test.test_resources.source import layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
+from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc
 from exactly_lib_test.util.test_resources import quoting
 
 
@@ -62,8 +62,7 @@ class StringHereDocAbsStx(StringAbsStx):
 
     def _doc_token(self) -> str:
         return ''.join([
-            string.HERE_DOCUMENT_MARKER_PREFIX,
-            self.marker,
+            here_doc.here_doc_start_token(self.marker),
             '\n',
             self.value,
             self.marker,

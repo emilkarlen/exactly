@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Mapping
 
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
@@ -41,6 +41,15 @@ sys.exit({exit_code})
 """.format(stdout=stdout_output,
            stderr=stderr_output,
            exit_code=exit_code)
+
+
+def py_pgm_with_stdout_stderr_exit_code_2(exit_code: int,
+                                          output: Mapping[ProcOutputFile, str]) -> str:
+    return py_pgm_with_stdout_stderr_exit_code(
+        output[ProcOutputFile.STDOUT],
+        output[ProcOutputFile.STDERR],
+        exit_code,
+    )
 
 
 def exit_with(exit_code: int = 0) -> str:

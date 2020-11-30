@@ -204,14 +204,29 @@ class MultiSourceExpectation(Generic[PRIMITIVE, OUTPUT]):
         self.primitive = primitive
 
     @staticmethod
+    def of_const(
+            symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
+            execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
+            primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
+    ) -> 'MultiSourceExpectation':
+        return MultiSourceExpectation(
+            symbol_references,
+            execution,
+            prim_asrt__constant(primitive),
+        )
+
+    @staticmethod
     def of_prim(primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
+                symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                 ) -> 'MultiSourceExpectation':
-        return MultiSourceExpectation(primitive=primitive)
+        return MultiSourceExpectation(symbol_references=symbol_references,
+                                      primitive=primitive)
 
     @staticmethod
     def of_prim__const(primitive: ValueAssertion[PRIMITIVE],
+                       symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                        ) -> 'MultiSourceExpectation':
-        return MultiSourceExpectation.of_prim(lambda env: primitive)
+        return MultiSourceExpectation.of_prim(lambda env: primitive, symbol_references)
 
     @property
     def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:

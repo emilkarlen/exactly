@@ -5,6 +5,7 @@ from typing import ContextManager, Iterator, IO, Sequence
 
 from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+from exactly_lib_test.test_case.test_resources.hard_error_assertion import RaisesHardError
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase, MessageBuilder, \
     ValueAssertion
@@ -161,6 +162,22 @@ def matches__lines__check_just_as_lines(lines: Sequence[str],
                 properties_access.get_contents_from_as_lines,
                 asrt.equals(lines),
             )
+        ),
+    ])
+
+
+def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[bool],
+                               ) -> ValueAssertion[StringModel]:
+    return asrt.and_([
+        asrt.named(
+            'non-contents properties',
+            non_contents_assertion(may_depend_on_external_resources),
+        ),
+        asrt.named(
+            'contents',
+            RaisesHardError(
+                properties_access.get_contents_from_as_lines
+            ),
         ),
     ])
 

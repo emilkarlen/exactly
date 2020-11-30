@@ -100,6 +100,22 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                                             expectation)
         checker.check(remaining_source(source.tokenization().layout(layout_)))
 
+    def check__abs_stx__wo_input(self,
+                                 put: unittest.TestCase,
+                                 source: AbstractSyntax,
+                                 arrangement: Arrangement,
+                                 expectation: Expectation[PRIMITIVE, OUTPUT],
+                                 layout_: LayoutSpec = LayoutSpec.of_default(),
+                                 ):
+        self.check__abs_stx(
+            put,
+            source,
+            None,
+            arrangement,
+            expectation,
+            layout_,
+        )
+
     def check__abs_stx__layout_and_source_variants(
             self,
             put: unittest.TestCase,

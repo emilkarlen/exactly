@@ -5,6 +5,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_model.ddv import StringModelDdv
 from exactly_lib.type_val_deps.types.string_model.sdv import StringModelSdv
+from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from . import ddvs
 
@@ -31,3 +32,21 @@ class PathStringModelSdv(StringModelSdv):
 
     def resolve(self, symbols: SymbolTable) -> StringModelDdv:
         return ddvs.PathStringModelDdv(self._path.resolve(symbols))
+
+
+class TransformedStringModelSdv(StringModelSdv):
+    def __init__(self,
+                 transformed: StringModelSdv,
+                 transformer: StringTransformerSdv,
+                 ):
+        self._transformed = transformed
+        self._transformer = transformer
+        self._references = tuple(self._transformed.references) + tuple(self._transformer.references)
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def resolve(self, symbols: SymbolTable) -> StringModelDdv:
+        return ddvs.TransformedStringModelDdv(self._transformed.resolve(symbols),
+                                              self._transformer.resolve(symbols))

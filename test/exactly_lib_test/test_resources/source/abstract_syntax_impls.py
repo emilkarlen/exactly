@@ -5,6 +5,17 @@ from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSynta
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
 
 
+class OptionallyOnNewLine(AbstractSyntax):
+    def __init__(self, syntax: AbstractSyntax):
+        self._syntax = syntax
+
+    def tokenization(self) -> TokenSequence:
+        return TokenSequence.concat([
+            TokenSequence.optional_new_line(),
+            self._syntax.tokenization(),
+        ])
+
+
 class DelegateAbsStx(AbstractSyntax):
     def __init__(self, delegate: AbstractSyntax):
         self._delegate = delegate

@@ -3,15 +3,15 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
-def assert_source(is_at_eof: ValueAssertion = asrt.anything_goes(),
-                  is_at_eol: ValueAssertion = asrt.anything_goes(),
-                  is_at_eol__except_for_space: ValueAssertion = asrt.anything_goes(),
-                  has_current_line: ValueAssertion = asrt.anything_goes(),
-                  current_line_number: ValueAssertion = asrt.anything_goes(),
-                  current_line_text: ValueAssertion = asrt.anything_goes(),
-                  column_index: ValueAssertion = asrt.anything_goes(),
-                  remaining_part_of_current_line: ValueAssertion = asrt.anything_goes(),
-                  remaining_source: ValueAssertion = asrt.anything_goes(),
+def assert_source(is_at_eof: ValueAssertion[bool] = asrt.anything_goes(),
+                  is_at_eol: ValueAssertion[bool] = asrt.anything_goes(),
+                  is_at_eol__except_for_space: ValueAssertion[bool] = asrt.anything_goes(),
+                  has_current_line: ValueAssertion[bool] = asrt.anything_goes(),
+                  current_line_number: ValueAssertion[int] = asrt.anything_goes(),
+                  current_line_text: ValueAssertion[str] = asrt.anything_goes(),
+                  column_index: ValueAssertion[int] = asrt.anything_goes(),
+                  remaining_part_of_current_line: ValueAssertion[str] = asrt.anything_goes(),
+                  remaining_source: ValueAssertion[str] = asrt.anything_goes(),
                   ) -> ValueAssertion[ParseSource]:
     return asrt.And([
         asrt.is_instance(ParseSource, 'Value to apply assertions on must be a {}'.format(ParseSource)),
@@ -65,10 +65,10 @@ source_is_at_end_with_optional_current_line = assert_source(is_at_eof=asrt.Boole
 
 
 def source_is_not_at_end(is_at_eol: ValueAssertion = asrt.anything_goes(),
-                         current_line_number: ValueAssertion = asrt.anything_goes(),
-                         current_line_text: ValueAssertion = asrt.anything_goes(),
-                         remaining_part_of_current_line: ValueAssertion = asrt.anything_goes(),
-                         remaining_source: ValueAssertion = asrt.anything_goes(),
+                         current_line_number: ValueAssertion[int] = asrt.anything_goes(),
+                         current_line_text: ValueAssertion[str] = asrt.anything_goes(),
+                         remaining_part_of_current_line: ValueAssertion[str] = asrt.anything_goes(),
+                         remaining_source: ValueAssertion[str] = asrt.anything_goes(),
                          ) -> ValueAssertion[ParseSource]:
     return assert_source(
         is_at_eof=asrt.is_false,
