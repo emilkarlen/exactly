@@ -1,5 +1,4 @@
 import pathlib
-import subprocess
 from typing import Optional, ContextManager
 
 from exactly_lib.impls.program_execution.command_processor import CommandProcessor
@@ -105,11 +104,13 @@ class ProcessorThatReadsStderrOnNonZeroExitCode(CommandProcessor[Result]):
                  executor: CommandExecutor,
                  tmp_file_space: DirFileSpace,
                  stdin: ContextManager[ProcessExecutionFile],
+                 stdout: ContextManager[ProcessExecutionFile],
                  stderr_msg_reader: TextFromFileReader,
                  ):
         self._executor = executor
         self._tmp_file_space = tmp_file_space
         self._stdin = stdin
+        self._stdout = stdout
         self._stderr_msg_reader = stderr_msg_reader
 
     def process(self,
@@ -122,16 +123,17 @@ class ProcessorThatReadsStderrOnNonZeroExitCode(CommandProcessor[Result]):
         """
         std_err_path = self._tmp_file_space.new_path('stderr')
         with std_err_path.open('w') as stderr_f:
-            with self._stdin as stdin_f:
-                exit_code = self._executor.execute(
-                    command,
-                    settings,
-                    StdFiles(
-                        stdin_f,
-                        StdOutputFiles(subprocess.DEVNULL,
-                                       stderr_f)
-                    ),
-                )
+            with self._stdout as stdout_f:
+                with self._stdin as stdin_f:
+                    exit_code = self._executor.execute(
+                        command,
+                        settings,
+                        StdFiles(
+                            stdin_f,
+                            StdOutputFiles(stdout_f,
+                                           stderr_f)
+                        ),
+                    )
 
         return Result(
             exit_code,

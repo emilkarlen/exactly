@@ -86,5 +86,5 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
 
 
 _OUTCOME__NON_ASSERT_PHASE = """\
-The result is {HARD_ERROR} if {COMMAND} exits with a non-zero exit code.
+The result is {HARD_ERROR} if {COMMAND} exits with a non-zero {EXIT_CODE}.
 """

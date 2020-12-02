@@ -13,6 +13,7 @@ from exactly_lib.type_val_prims.description.tree_structured import StructureRend
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.program.program import Program
+from exactly_lib.util.process_execution import file_ctx_managers
 from exactly_lib.util.process_execution.executors import read_stderr_on_error
 from exactly_lib.util.process_execution.executors.read_stderr_on_error import Result
 from . import trace
@@ -60,6 +61,7 @@ class Matcher(Generic[MODEL], MatcherImplBase[MODEL]):
             app_env.os_services.command_executor,
             app_env.tmp_files_space,
             self._run_conf.stdin(model),
+            file_ctx_managers.dev_null(),
             std_err_contents.STD_ERR_TEXT_READER,
         )
 

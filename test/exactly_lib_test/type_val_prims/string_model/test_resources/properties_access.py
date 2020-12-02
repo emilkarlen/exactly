@@ -81,6 +81,13 @@ _NON_LINES_CASES = [
     case__from_file(),
 ]
 
+ALL_CASES__WO_LINES_ITER_CHECK = [
+    case__from_str(),
+    case__from_write_to(),
+    case__from_lines(),
+    case__from_file(),
+]
+
 
 def contents_cases__str() -> Sequence[NameAndValue[Callable[[StringModel], str]]]:
     return [case__from_lines()] + _NON_LINES_CASES

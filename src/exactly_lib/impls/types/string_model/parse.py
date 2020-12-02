@@ -77,6 +77,12 @@ class _ProgramOutputParser:
     def parse(self, program_option: Token, token_parser: TokenParser) -> StringModelSdv:
         is_ignore_exit_code = token_parser.consume_optional_option(defs.IGNORE_EXIT_CODE)
         program = _PROGRAM_PARSER.parse_from_token_parser(token_parser)
+        return sdvs.ProgramOutputStringModelSdv(
+            program_option.string,
+            is_ignore_exit_code,
+            self._output_file_to_capture,
+            program,
+        )
 
 
 def _parse_here_doc(here_doc_start_token: Token, parser: TokenParser) -> StringModelSdv:

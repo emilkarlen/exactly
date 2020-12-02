@@ -56,6 +56,10 @@ class ProgramDdv(FullDepsWithNodeDescriptionDdv[Program]):
         return self._stdin
 
     @property
+    def has_transformations(self) -> bool:
+        return self._has_transformations
+
+    @property
     def transformation(self) -> StringTransformerDdv:
         return self._transformation
 

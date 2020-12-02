@@ -175,9 +175,15 @@ def contents_raises_hard_error(may_depend_on_external_resources: ValueAssertion[
         ),
         asrt.named(
             'contents',
-            RaisesHardError(
-                properties_access.get_contents_from_as_lines
-            ),
+            asrt.and_([
+                asrt.named(
+                    contents_case.name,
+                    RaisesHardError(
+                        contents_case.value
+                    )
+                )
+                for contents_case in properties_access.ALL_CASES__WO_LINES_ITER_CHECK
+            ]),
         ),
     ])
 

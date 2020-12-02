@@ -80,23 +80,17 @@ class Checker:
         self._structure_expectation = asrt_trace_rendering.matches_node_renderer()
 
     def check(self):
-        self._check_may_depend_on_external_resources()
-
-        cases = contents_cases(self.put)
-        for case in cases:
-            with self._app_env() as app_env:
-                with self.put.subTest(case.name):
-                    self._check_getters_sequence(
-                        app_env,
-                        case.value,
-                    )
-
-        self._check_line_sequence_is_valid()
+        self._check_cases(contents_cases(self.put))
 
     def check_with_first_access_is_not_write_to(self):
+        self._check_cases(contents_cases__first_access_is_not_write_to(self.put))
+
+    def check_2_seq_w_file_first_and_last(self):
+        self._check_cases(contents_cases__2_seq_w_file_first_and_last(self.put))
+
+    def _check_cases(self, cases: List[NameAndValue[List[NameAndValue[ContentsGetter]]]]):
         self._check_may_depend_on_external_resources()
 
-        cases = contents_cases__first_access_is_not_write_to(self.put)
         for case in cases:
             with self._app_env() as app_env:
                 with self.put.subTest(case.name):
@@ -205,6 +199,33 @@ def contents_cases(put: unittest.TestCase,
         properties_access.case__from_file(),
         properties_access.case__from_write_to(),
     ])
+
+
+def contents_cases__2_seq_w_file_first_and_last(put: unittest.TestCase,
+                                                ) -> List[NameAndValue[List[NameAndValue[ContentsGetter]]]]:
+    from_str = properties_access.case__from_str()
+    from_lines = properties_access.case__from_lines__w_iterator_check(put)
+    from_file = properties_access.case__from_file()
+    from_write_to = properties_access.case__from_write_to()
+
+    file_first = [
+        from_file,
+        from_str,
+        from_lines,
+        from_write_to,
+    ]
+
+    file_last = [
+        from_str,
+        from_lines,
+        from_write_to,
+        from_file,
+    ]
+
+    return [
+        _sequence_from_getters(file_first),
+        _sequence_from_getters(file_last),
+    ]
 
 
 def _sequence_from_getters(sequence: List[NameAndValue[ContentsGetter]],

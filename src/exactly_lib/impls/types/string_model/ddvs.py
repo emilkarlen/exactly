@@ -9,12 +9,15 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import PRIMITIVE
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
+from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
 from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_model.ddv import StringModelDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
 from exactly_lib.type_val_prims.string_model.string_model import StringModel
 from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from . import constant_str, file_model
+from .command_output import string_model as cmd_string_model
 from ...file_properties import FileType
 
 
@@ -58,6 +61,45 @@ class PathStringModelDdv(StringModelDdv):
         def make_primitive(environment: ApplicationEnvironment) -> StringModel:
             return file_model.string_model_of_file__described(
                 self._path.value_of_any_dependency__d(tcds),
+                environment.tmp_files_space,
+            )
+
+        return advs.AdvFromFunction(make_primitive)
+
+
+class CommandOutputStringModelDdv(StringModelDdv):
+    def __init__(self,
+                 structure_header: str,
+                 ignore_exit_code: bool,
+                 output_channel_to_capture: ProcOutputFile,
+                 command: CommandDdv,
+                 ):
+        self._structure_header = structure_header
+        self._ignore_exit_code = ignore_exit_code
+        self._output_channel_to_capture = output_channel_to_capture
+        self._command = command
+
+    def new_structure_builder(self) -> StringModelStructureBuilder:
+        return cmd_string_model.structure_builder_for(
+            self._structure_header,
+            self._ignore_exit_code,
+            self._command.structure().build(),
+        )
+
+    @property
+    def validator(self) -> DdvValidator:
+        return ddv_validators.all_of(self._command.validators)
+
+    def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
+        def make_primitive(environment: ApplicationEnvironment) -> StringModel:
+            command = self._command.value_of_any_dependency(tcds)
+            return cmd_string_model.string_model(
+                self._structure_header,
+                self._ignore_exit_code,
+                self._output_channel_to_capture,
+                command,
+                environment.process_execution_settings,
+                environment.os_services.command_executor,
                 environment.tmp_files_space,
             )
 
