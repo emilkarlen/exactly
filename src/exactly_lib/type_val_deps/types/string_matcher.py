@@ -1,8 +1,8 @@
 from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 
-StringMatcherAdv = MatcherAdv[StringModel]
-StringMatcherDdv = MatcherDdv[StringModel]
-StringMatcherSdv = MatcherSdv[StringModel]
+StringMatcherAdv = MatcherAdv[StringSource]
+StringMatcherDdv = MatcherDdv[StringSource]
+StringMatcherSdv = MatcherSdv[StringSource]

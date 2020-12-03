@@ -8,7 +8,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building2 import StringMatcherArg
@@ -50,7 +50,7 @@ def is_reference_to_string_matcher(name_of_matcher: str) -> ValueAssertion[Symbo
     )
 
 
-class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringModel]):
+class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringSource]):
     def __init__(self,
                  sdv: StringMatcherSdv,
                  definition_source: Optional[SourceLocationInfo] = ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION,
@@ -90,7 +90,7 @@ class StringMatcherSymbolValueContext(MatcherSymbolValueContext[StringModel]):
         return ValueType.STRING_MATCHER
 
 
-class StringMatcherSymbolContext(MatcherTypeSymbolContext[StringModel]):
+class StringMatcherSymbolContext(MatcherTypeSymbolContext[StringSource]):
     def __init__(self,
                  name: str,
                  value: StringMatcherSymbolValueContext,

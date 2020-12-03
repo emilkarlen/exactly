@@ -5,10 +5,10 @@ from exactly_lib_test.impls.types.string_transformers import \
 from exactly_lib_test.impls.types.string_transformers import tcds_paths_replacement, replace, \
     case_converters, sequence, identity
 from exactly_lib_test.impls.types.string_transformers.filter import z_package_suite as filter_
-from exactly_lib_test.impls.types.string_transformers.models import \
-    z_package_suite as models
 from exactly_lib_test.impls.types.string_transformers.run_program import \
     z_package_suite as run_program
+from exactly_lib_test.impls.types.string_transformers.sources import \
+    z_package_suite as models
 from exactly_lib_test.impls.types.string_transformers.strip import \
     z_package_suite as strip
 from exactly_lib_test.impls.types.string_transformers.test_resources_test import \

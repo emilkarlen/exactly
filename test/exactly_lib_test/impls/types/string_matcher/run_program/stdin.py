@@ -9,7 +9,7 @@ from exactly_lib_test.impls.types.program.test_resources import arguments_buildi
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as args
 from exactly_lib_test.impls.types.string_matcher.test_resources import integration_check
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents

@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.strip.test_resources import \
     no_leading_or_trailing_space_cases, only_leading_space_cases, trailing_new_lines_cases_w_leading_space
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args

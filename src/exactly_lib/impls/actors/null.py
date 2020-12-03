@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
@@ -32,7 +32,7 @@ class _Parser(ExecutableObjectParser):
 class _Executor(parts.Executor):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
         return 0

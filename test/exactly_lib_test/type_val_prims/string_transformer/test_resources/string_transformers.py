@@ -2,13 +2,13 @@ import itertools
 from typing import Callable, Sequence, Iterator
 
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.impls import transformed_string_models
-from exactly_lib.type_val_prims.impls.transformed_string_models import StringTransFun
+from exactly_lib.type_val_prims.impls import transformed_string_sources
+from exactly_lib.type_val_prims.impls.transformed_string_sources import StringTransFun
 from exactly_lib.type_val_prims.matcher import line_matcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 
 
 class StringTransformerFromLinesTransformation(StringTransformer):
@@ -31,8 +31,8 @@ class StringTransformerFromLinesTransformation(StringTransformer):
     def is_identity_transformer(self) -> bool:
         return self._is_identity
 
-    def transform(self, model: StringModel) -> StringModel:
-        return transformed_string_models.TransformedStringModelFromLines(
+    def transform(self, model: StringSource) -> StringSource:
+        return transformed_string_sources.TransformedStringSourceFromLines(
             self._transformation,
             model,
             self._transformation_may_depend_on_external_resources,
@@ -204,7 +204,7 @@ def add_line(line_wo_ending_new_line: str) -> StringTransformer:
 
 def model_access_raises_hard_error(hard_err_msg: str = 'hard error message') -> StringTransformer:
     return ConstantStringTransformerTestImpl(
-        string_models.StringModelThatRaisesHardErrorException(hard_err_msg)
+        string_sources.StringSourceThatRaisesHardErrorException(hard_err_msg)
     )
 
 
@@ -227,12 +227,12 @@ class ConstantStringTransformerTestImpl(StringTransformer):
     def structure(self) -> StructureRenderer:
         return renderers.header_only(self.name)
 
-    def __init__(self, result: StringModel):
+    def __init__(self, result: StringSource):
         self.result = result
 
     @property
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self, model: StringModel) -> StringModel:
+    def transform(self, model: StringSource) -> StringSource:
         return self.result

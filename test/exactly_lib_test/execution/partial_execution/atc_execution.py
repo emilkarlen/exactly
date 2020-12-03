@@ -13,8 +13,8 @@ from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.execution.result import ExecutionFailureStatus
 from exactly_lib.impls.os_services import os_services_access
-from exactly_lib.impls.types.string_model import as_stdin
-from exactly_lib.impls.types.string_model import file_model
+from exactly_lib.impls.types.string_source import as_stdin
+from exactly_lib.impls.types.string_source import file_source
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.test_case.actor import ActionToCheck, Actor, ParseException
@@ -25,7 +25,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBeUsed
 from exactly_lib.util.file_utils.misc_utils import preserved_cwd
 from exactly_lib.util.file_utils.std import StdOutputFiles
@@ -186,8 +186,9 @@ class TestExecute(unittest.TestCase):
         with tmp_dir(fs.DirContents([file_with_stdin_contents])) as abs_tmp_dir_path:
             absolute_name_of_file_to_redirect = abs_tmp_dir_path / file_with_stdin_contents.name
             setup_settings = setup.default_settings()
-            setup_settings.stdin = file_model.string_model_of_file__poorly_described(absolute_name_of_file_to_redirect,
-                                                                                     DirFileSpaceThatMustNoBeUsed())
+            setup_settings.stdin = file_source.string_source_of_file__poorly_described(
+                absolute_name_of_file_to_redirect,
+                DirFileSpaceThatMustNoBeUsed())
             _check_contents_of_stdin_for_setup_settings(self,
                                                         setup_settings,
                                                         file_with_stdin_contents.contents)
@@ -275,7 +276,7 @@ class _ActionToCheckThatRecordsCurrentDir(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output_files: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         self.cwd_registerer.register_cwd_for(phase_step.ACT__EXECUTE)
@@ -293,7 +294,7 @@ class _AtcThatExecutesPythonProgramFile(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         with as_stdin.of_optional(stdin) as stdin_f:
@@ -312,7 +313,7 @@ class _AtcThatReturnsConstantExitCode(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)

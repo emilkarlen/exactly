@@ -6,7 +6,7 @@ from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherDdv, StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -27,9 +27,9 @@ def sdv(is_full_match: bool,
     return sdv_components.MatcherSdvFromParts(contents_matcher.references, get_ddv)
 
 
-class _PropertyGetter(PropertyGetter[StringModel, str], WithCachedNodeDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringSource, str], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only('contents')
 
-    def get_from(self, model: StringModel) -> str:
+    def get_from(self, model: StringSource) -> str:
         return model.as_str

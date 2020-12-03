@@ -3,12 +3,12 @@ import subprocess
 import sys
 from typing import Optional
 
-from exactly_lib.impls.types.string_model import as_stdin
+from exactly_lib.impls.types.string_source import as_stdin
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.test_case.actor.test_resources.action_to_checks import \
     ActionToCheckThatJustReturnsSuccess
@@ -25,7 +25,7 @@ class AtcThatExecutesPythonProgramSource(ActionToCheckThatJustReturnsSuccess):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME

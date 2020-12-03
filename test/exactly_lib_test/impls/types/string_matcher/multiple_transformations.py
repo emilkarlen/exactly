@@ -3,14 +3,14 @@ import unittest
 from exactly_lib.impls.types.string_matcher import matcher_options, parse_string_matcher as sut
 from exactly_lib.impls.types.string_matcher.impl.base_class import StringMatcherImplBase
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import details
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.string_matcher.test_resources import test_configuration
 from exactly_lib_test.impls.types.string_matcher.test_resources import test_configuration as tc
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import args
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as str_trans_syntax
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     ExpectationTypeConfigForNoneIsSuccess
@@ -114,7 +114,7 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
     def name(self) -> str:
         return matcher_options.EQUALS_ARGUMENT
 
-    def matches_w_trace(self, model: StringModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringSource) -> MatchingResult:
         actual = model.as_str
         if self.expected == actual:
             return self._new_tb().build_result(True)

@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 
 
 class SetupSettingsBuilder:
@@ -14,11 +14,11 @@ class SetupSettingsBuilder:
         self.__stdin = None
 
     @property
-    def stdin(self) -> Optional[StringModel]:
+    def stdin(self) -> Optional[StringSource]:
         return self.__stdin
 
     @stdin.setter
-    def stdin(self, x: Optional[StringModel]):
+    def stdin(self, x: Optional[StringSource]):
         self.__stdin = x
 
 

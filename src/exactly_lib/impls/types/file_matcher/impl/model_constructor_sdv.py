@@ -11,13 +11,13 @@ from exactly_lib.type_val_deps.dep_variants.sdv.full_deps import w_details_impls
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsWithDetailsDescriptionSdv
 from exactly_lib.util.symbol_table import SymbolTable
 from .model_constructor import ModelConstructor, MODEL
-from ...string_model.factory import RootStringModelFactory
+from ...string_source.factory import RootStringSourceFactory
 
 
-def with_string_model_construction(make_constructor: Callable[[RootStringModelFactory], ModelConstructor[MODEL]],
-                                   ) -> FullDepsWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
+def with_string_source_construction(make_constructor: Callable[[RootStringSourceFactory], ModelConstructor[MODEL]],
+                                    ) -> FullDepsWithDetailsDescriptionSdv[ModelConstructor[MODEL]]:
     def make_primitive(environment: ApplicationEnvironment) -> ModelConstructor[MODEL]:
-        factory = RootStringModelFactory(
+        factory = RootStringSourceFactory(
             tmp_dir_file_spaces.std_tmp_dir_file_space(environment.tmp_files_space.new_path())
         )
         return make_constructor(factory)

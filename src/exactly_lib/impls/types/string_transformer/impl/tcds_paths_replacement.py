@@ -9,7 +9,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.impls.types.string_transformer import sdvs
-from exactly_lib.impls.types.string_transformer.impl.models.transformed_string_models import \
+from exactly_lib.impls.types.string_transformer.impl.sources.transformed_string_sources import \
     StringTransformerFromLinesTransformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.tcfs import tcds_symbols

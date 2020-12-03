@@ -2,7 +2,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import line_matcher
 from exactly_lib.impls.types.matcher.impls import sdv_components
 from exactly_lib.impls.types.matcher.impls.impl_base_class import MatcherImplBase
-from exactly_lib.impls.types.string_model.constant_str import StringModel
+from exactly_lib.impls.types.string_source.constant_str import StringSource
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
@@ -95,7 +95,7 @@ class _LineContentsMatcher(MatcherImplBase[LineMatcherLine]):
         return self.NAME
 
     def matches_w_trace(self, model: LineMatcherLine) -> MatchingResult:
-        string_matcher_model = StringModel(
+        string_matcher_model = StringSource(
             model[1],
             self._environment.tmp_files_space,
         )

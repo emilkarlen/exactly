@@ -7,14 +7,14 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     MultiSourceExpectation, prim_asrt__constant
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers, \
     string_transformer_assertions as asrt_string_transformer
 
@@ -68,7 +68,7 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
                     MultiSourceExpectation(
                         symbol_references=program_symbol.references_assertion,
                         execution=ExecutionExpectation(
-                            main_result=asrt_string_model.matches__lines(
+                            main_result=asrt_string_source.matches__lines(
                                 asrt.equals(expected_output_model_lines),
                                 may_depend_on_external_resources=asrt.equals(True),
                             )
@@ -130,7 +130,7 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
                     MultiSourceExpectation(
                         program_symbol.references_assertion,
                         ExecutionExpectation(
-                            main_result=asrt_string_model.matches__lines(
+                            main_result=asrt_string_source.matches__lines(
                                 asrt.equals(expected_output_model_lines),
                                 may_depend_on_external_resources=asrt.equals(True),
                             )

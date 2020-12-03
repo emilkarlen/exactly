@@ -15,7 +15,7 @@ from exactly_lib.tcfs.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases import setup as setup_phase
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -40,7 +40,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertionBase
 from exactly_lib_test.type_val_deps.types.string.test_resources import here_doc_assertion_utils as hd
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 
 
 def suite() -> unittest.TestSuite:
@@ -49,7 +49,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToFile),
         unittest.makeSuite(TestSuccessfulScenariosWithSetStdinToHereDoc),
         unittest.makeSuite(TestFailingInstructionExecution),
-        TestStringModelAsFileShouldRaiseHardErrorWhenFileDoNotExist(),
+        TestStringSourceAsFileShouldRaiseHardErrorWhenFileDoNotExist(),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -190,7 +190,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                 )
 
 
-class TestStringModelAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseForParser):
+class TestStringSourceAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseForParser):
     def runTest(self):
         # ARRANGE #
         rel_opt = rel_opt_conf.conf_rel_any(RelOptionType.REL_ACT)
@@ -218,7 +218,7 @@ class TestStringModelAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseFo
 
             asrt_sh.is_success().apply_with_message(self, main_result, 'main result')
             actual_stdin = settings_builder.stdin
-            self.assertIsInstance(actual_stdin, StringModel, 'stdin should have been set')
+            self.assertIsInstance(actual_stdin, StringSource, 'stdin should have been set')
             assert actual_stdin is not None
 
             with self.assertRaises(HardErrorException) as cm:
@@ -337,7 +337,7 @@ class AssertStdinIsPresentWithContents(ValueAssertionBase[SettingsBuilderAsserti
                  expected: str,
                  may_depend_on_external_resources: bool
                  ):
-        self._expectation = asrt_string_model.matches__str(
+        self._expectation = asrt_string_source.matches__str(
             asrt.equals(expected),
             asrt.equals(may_depend_on_external_resources),
         )

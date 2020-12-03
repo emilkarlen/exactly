@@ -10,7 +10,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.actor import Actor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
@@ -176,7 +176,7 @@ class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
 
     def as_execute_initial_action(self,
                                   environment: InstructionEnvironmentForPreSdsStep,
-                                  stdin: Optional[StringModel],
+                                  stdin: Optional[StringSource],
                                   output: StdOutputFiles):
         self.recorder.set_phase_step_recording(self.my_phase_step,
                                                copy.copy(environment.proc_exe_settings.environ))

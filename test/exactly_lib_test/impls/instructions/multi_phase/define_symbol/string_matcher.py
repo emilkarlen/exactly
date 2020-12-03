@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.type_val_deps.sym_ref import symbol_lookup
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.str_.misc_formatting import lines_content
@@ -25,7 +25,7 @@ from exactly_lib_test.impls.types.integer.test_resources.arguments_building impo
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building as arg_syntax
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import \
     ImplicitActualFileArgumentsConstructor
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.test_resources import matcher_assertions
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -256,7 +256,7 @@ class AssertApplicationOfMatcherInSymbolTable(matcher_helpers.AssertApplicationO
         resolver = resolving_helper_for_instruction_env(environment.os_service, ie)
         return resolver.resolve_matcher(matcher_sdv)
 
-    def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> StringModel:
+    def _new_model(self, environment: InstructionEnvironmentForPostSdsStep) -> StringSource:
         the_model_constructor = model_constructor.of_str(self.put, self.actual_model_contents)
         return the_model_constructor(model_constructor.resolving_env_w_custom_dir_space(environment.sds))
 

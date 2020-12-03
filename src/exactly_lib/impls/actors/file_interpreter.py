@@ -35,7 +35,7 @@ from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.command import CommandSdv
 from exactly_lib.type_val_prims.program.command import Command
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -134,7 +134,7 @@ class _ActionToCheck(ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         resolving_environment = full_resolving_env_for_instruction_env(os_services, environment)

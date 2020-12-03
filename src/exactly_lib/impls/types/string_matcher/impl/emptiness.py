@@ -5,7 +5,7 @@ from exactly_lib.impls.types.string_matcher.impl.base_class import StringMatcher
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import details, renderers
 
 
@@ -26,7 +26,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
     def _structure(self) -> StructureRenderer:
         return self.new_structure_tree()
 
-    def matches_w_trace(self, model: StringModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringSource) -> MatchingResult:
         first_line = self._first_line(model)
         if first_line != '':
             return (
@@ -40,7 +40,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
             return self._new_tb().build_result(True)
 
     @staticmethod
-    def _first_line(file_to_check: StringModel) -> str:
+    def _first_line(file_to_check: StringSource) -> str:
         with file_to_check.as_lines as lines:
             for line in lines:
                 return line

@@ -12,7 +12,7 @@ from exactly_lib.impls.types.regex import parse_regex
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
 from exactly_lib.impls.types.string import parse_string
 from exactly_lib.impls.types.string_transformer import names
-from exactly_lib.impls.types.string_transformer.impl.models.transformed_string_models import \
+from exactly_lib.impls.types.string_transformer.impl.sources.transformed_string_sources import \
     StringTransformerFromLinesTransformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.sdv_structure import SymbolReference, references_from_objects_with_symbol_references

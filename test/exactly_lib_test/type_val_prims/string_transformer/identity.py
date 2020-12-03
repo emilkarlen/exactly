@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.impls.types.string_transformer.impl import identity as sut
 from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
-from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 
 
 def suite() -> unittest.TestSuite:
@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
     def test_empty_list_of_lines(self):
         # ARRANGE #
         input_lines = []
-        model = string_models.of_lines__w_check_for_validity(self, input_lines)
+        model = string_sources.of_lines__w_check_for_validity(self, input_lines)
         transformer = sut.IdentityStringTransformer()
         # ACT #
 
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
         # ASSERT #
 
-        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
+        actual_lines = string_sources.as_lines_list__w_lines_validation(self, actual)
 
         expected_lines = []
 
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
             'here I am',
             'I am here',
         ])
-        model = string_models.of_lines__w_check_for_validity(self, input_lines)
+        model = string_sources.of_lines__w_check_for_validity(self, input_lines)
         transformer = sut.IdentityStringTransformer()
         # ACT #
 
@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
 
         # ASSERT #
 
-        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
+        actual_lines = string_sources.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(input_lines,
                          actual_lines)

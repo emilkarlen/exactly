@@ -7,7 +7,7 @@ from exactly_lib.impls.types.string_matcher import matcher_options
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
 
 _NAME = ' '.join((matcher_options.NUM_LINES_ARGUMENT,
@@ -22,11 +22,11 @@ def sdv(matcher: MatcherSdv[int]) -> StringMatcherSdv:
     )
 
 
-class _PropertyGetter(PropertyGetter[StringModel, int], WithCachedNodeDescriptionBase):
+class _PropertyGetter(PropertyGetter[StringSource, int], WithCachedNodeDescriptionBase):
     def _structure(self) -> StructureRenderer:
         return renderers.header_only(_NAME)
 
-    def get_from(self, model: StringModel) -> int:
+    def get_from(self, model: StringSource) -> int:
         ret_val = 0
         with model.as_lines as lines:
             for _ in lines:
@@ -34,7 +34,7 @@ class _PropertyGetter(PropertyGetter[StringModel, int], WithCachedNodeDescriptio
         return ret_val
 
 
-def _operand_from_model_sdv() -> PropertyGetterSdv[StringModel, int]:
+def _operand_from_model_sdv() -> PropertyGetterSdv[StringSource, int]:
     return property_getters.PropertyGetterSdvConstant(
         property_getters.PropertyGetterDdvConstant(
             _PropertyGetter(),

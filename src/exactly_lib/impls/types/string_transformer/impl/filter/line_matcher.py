@@ -4,7 +4,7 @@ from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDes
 from exactly_lib.impls.types.line_matcher import line_nums_interval
 from exactly_lib.impls.types.line_matcher import model_construction
 from exactly_lib.impls.types.string_transformer import sdvs
-from exactly_lib.impls.types.string_transformer.impl.models.transformed_string_models import \
+from exactly_lib.impls.types.string_transformer.impl.sources.transformed_string_sources import \
     StringTransformerFromLinesTransformer
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \

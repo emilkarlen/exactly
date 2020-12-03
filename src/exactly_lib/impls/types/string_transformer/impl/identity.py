@@ -3,7 +3,7 @@ from typing import Sequence, Iterator
 from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDescriptionBase
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.string_transformer import names, sdvs
-from exactly_lib.impls.types.string_transformer.impl.models.transformed_string_models import \
+from exactly_lib.impls.types.string_transformer.impl.sources.transformed_string_sources import \
     StringTransformerFromLinesTransformer
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

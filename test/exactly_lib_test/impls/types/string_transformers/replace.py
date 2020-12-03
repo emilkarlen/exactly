@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.regex.test_resources import assertions as asrt_regex
 from exactly_lib_test.impls.types.regex.test_resources.assertions import is_reference_to_valid_regex_string_part
 from exactly_lib_test.impls.types.regex.test_resources.validation_cases import failing_regex_validation_cases
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as arg, \
     integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
 from exactly_lib_test.util.test_resources import quoting
@@ -347,7 +347,7 @@ class TestApplication(unittest.TestCase):
                             symbol_references=asrt.is_empty_sequence,
                         ),
                         ExecutionExpectation(
-                            main_result=asrt_string_model.matches__lines(
+                            main_result=asrt_string_source.matches__lines(
                                 asrt.equals(lines_for(source_case.replacement)),
                                 may_depend_on_external_resources=asrt.equals(False),
                             )
@@ -377,7 +377,7 @@ class TestApplication(unittest.TestCase):
                                 symbol_references=asrt.is_empty_sequence,
                             ),
                             ExecutionExpectation(
-                                main_result=asrt_string_model.matches__lines(
+                                main_result=asrt_string_source.matches__lines(
                                     asrt.equals(lines_for(source_case.replacement)),
                                     may_depend_on_external_resources=asrt.equals(False),
                                 )

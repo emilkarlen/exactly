@@ -22,7 +22,7 @@ from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_
     expectation
 from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import accepted_non_hds_source_relativities, \
     ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT, allowed_src_file_relativities
-from exactly_lib_test.impls.types.string_model.test_resources import abstract_syntax as string_model_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
 from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
     failing_validation_cases
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
@@ -96,8 +96,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 src_file.name,
                 src_file_rel_opt_arg_conf.options.accepted_relativity_variants,
             )
-            transformed_file_contents = string_model_abs_stx.TransformedStringModelAbsStx(
-                string_model_abs_stx.StringModelOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
+            transformed_file_contents = string_source_abs_stx.TransformedStringSourceAbsStx(
+                string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
                 str_trans_abs_stx.StringTransformerSymbolReferenceAbsStx(to_upper_transformer.name)
             )
             instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -136,8 +136,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
 
         src_file_relativity_conf = conf_rel_hds(RelHdsOptionType.REL_HDS_CASE)
 
-        file_contents_builder = string_model_abs_stx.TransformableAbsStxBuilder(
-            string_model_abs_stx.StringModelOfFileAbsStx(
+        file_contents_builder = string_source_abs_stx.TransformableAbsStxBuilder(
+            string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_file_relativity_conf.path_abs_stx_of_name('src-file.txt')
             )
         )
@@ -189,7 +189,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             checker = integration_check.checker(phase_is_after_act)
             for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
                 for src_rel_opt_conf in allowed_src_file_relativities(phase_is_after_act):
-                    file_contents_abs_stx = string_model_abs_stx.StringModelOfFileAbsStx(
+                    file_contents_abs_stx = string_source_abs_stx.StringSourceOfFileAbsStx(
                         src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
                     )
                     instruction_syntax = instr_abs_stx.with_explicit_contents(
@@ -241,8 +241,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             src_file,
         )
 
-        transformed_file_contents_abs_stx = string_model_abs_stx.TransformedStringModelAbsStx(
-            string_model_abs_stx.StringModelOfFileAbsStx(
+        transformed_file_contents_abs_stx = string_source_abs_stx.TransformedStringSourceAbsStx(
+            string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
             ),
             to_upper_transformer.abs_stx_of_reference,
@@ -285,8 +285,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
             allow_elements_on_separate_lines=False,
         )
         src_rel_opt_conf = conf_rel_sds(RelSdsOptionType.REL_ACT)
-        file_contents_arg = string_model_abs_stx.TransformedStringModelAbsStx(
-            string_model_abs_stx.StringModelOfFileAbsStx(
+        file_contents_arg = string_source_abs_stx.TransformedStringSourceAbsStx(
+            string_source_abs_stx.StringSourceOfFileAbsStx(
                 src_rel_opt_conf.path_abs_stx_of_name('src-file')
             ),
             transformation_w_infix_op
@@ -309,8 +309,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         for failing_string_transformer_case in failing_validation_cases():
             failing_symbol_context = failing_string_transformer_case.value.symbol_context
 
-            file_contents_arg = string_model_abs_stx.TransformedStringModelAbsStx(
-                string_model_abs_stx.StringModelOfFileAbsStx(
+            file_contents_arg = string_source_abs_stx.TransformedStringSourceAbsStx(
+                string_source_abs_stx.StringSourceOfFileAbsStx(
                     a_src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
                 ),
                 failing_symbol_context.abs_stx_of_reference
@@ -368,8 +368,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         for phase_is_after_act in [False, True]:
             checker = integration_check.checker(phase_is_after_act)
             for src_file_rel_conf in is_after_act_2_every_src_file_rel_conf(phase_is_after_act):
-                contents_builder = string_model_abs_stx.TransformableAbsStxBuilder(
-                    string_model_abs_stx.StringModelOfFileAbsStx(
+                contents_builder = string_source_abs_stx.TransformableAbsStxBuilder(
+                    string_source_abs_stx.StringSourceOfFileAbsStx(
                         src_file_rel_conf.path_abs_stx_of_name(self.src_file_name)
                     )
                 )
@@ -424,8 +424,8 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(
 
         src_file = relativity_conf.path_abs_stx_of_name('src-file.txt')
 
-        contents_abs_stx_builder = string_model_abs_stx.TransformableAbsStxBuilder(
-            string_model_abs_stx.StringModelOfFileAbsStx(src_file)
+        contents_abs_stx_builder = string_source_abs_stx.TransformableAbsStxBuilder(
+            string_source_abs_stx.StringSourceOfFileAbsStx(src_file)
         )
 
         src_file_in_hds_contents = relativity_conf.populator_for_relativity_option_root(

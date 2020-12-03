@@ -7,7 +7,7 @@ from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import validation_cases
@@ -20,7 +20,7 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.asse
     is_reference_to_string_transformer
 from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symbol_context import \
     StringTransformerSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
     is_identity_transformer
@@ -245,11 +245,11 @@ class TestPrimitiveValue(unittest.TestCase):
             'second',
             'third',
         ])
-        model = string_models.of_lines__w_check_for_validity(self, input_lines)
+        model = string_sources.of_lines__w_check_for_validity(self, input_lines)
         # ACT #
         actual = transformer.transform(model)
         # ASSERT #
-        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
+        actual_lines = string_sources.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(input_lines,
                          actual_lines)
@@ -266,7 +266,7 @@ class TestPrimitiveValue(unittest.TestCase):
             'second',
             'third',
         ])
-        model = string_models.of_lines__w_check_for_validity(self, input_lines)
+        model = string_sources.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -280,7 +280,7 @@ class TestPrimitiveValue(unittest.TestCase):
             'THIRD',
         ])
 
-        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
+        actual_lines = string_sources.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(expected_output_lines,
                          actual_lines)
@@ -299,7 +299,7 @@ class TestPrimitiveValue(unittest.TestCase):
             'the',
             'input',
         ])
-        model = string_models.of_lines__w_check_for_validity(self, input_lines)
+        model = string_sources.of_lines__w_check_for_validity(self, input_lines)
 
         # ACT #
 
@@ -313,7 +313,7 @@ class TestPrimitiveValue(unittest.TestCase):
             '5',
         ])
 
-        actual_lines = string_models.as_lines_list__w_lines_validation(self, actual)
+        actual_lines = string_sources.as_lines_list__w_lines_validation(self, actual)
 
         self.assertEqual(expected_output_lines,
                          actual_lines)

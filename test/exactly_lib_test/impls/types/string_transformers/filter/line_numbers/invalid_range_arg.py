@@ -5,7 +5,7 @@ from exactly_lib_test.impls.types.integer.test_resources.validation_cases import
     failing_integer_validation_cases, IntegerValidationCase
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, \
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import \
     IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_building as args

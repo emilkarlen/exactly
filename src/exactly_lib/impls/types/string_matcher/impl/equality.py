@@ -24,8 +24,8 @@ from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
-from exactly_lib.type_val_prims.string_model import string_model
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source import string_source
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.file_utils import misc_utils
@@ -34,7 +34,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
-    def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringModel]:
+    def get_ddv(symbols: SymbolTable) -> MatcherDdv[StringSource]:
         expected_contents_ddv = expected_contents.resolve(symbols)
 
         return EqualityStringMatcherDdv(
@@ -45,7 +45,7 @@ def sdv(expected_contents: StringOrPathSdv) -> StringMatcherSdv:
     return sdv_components.MatcherSdvFromParts(expected_contents.references, get_ddv)
 
 
-class EqualityStringMatcherDdv(MatcherDdv[StringModel]):
+class EqualityStringMatcherDdv(MatcherDdv[StringSource]):
     def __init__(self,
                  expected_contents: StringOrPathDdv,
                  validator: DdvValidator,
@@ -115,7 +115,7 @@ class EqualityStringMatcher(StringMatcherImplBase):
             custom_details.StringOrPath(self._expected_contents),
         )
 
-    def matches_w_trace(self, model: StringModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringSource) -> MatchingResult:
         error_message = self._validator.validate_post_sds_if_applicable()
         if error_message:
             return (
@@ -139,7 +139,7 @@ class EqualityStringMatcher(StringMatcherImplBase):
 
 
 class _Applier:
-    def match(self, model: StringModel) -> MatchingResult:
+    def match(self, model: StringSource) -> MatchingResult:
         return (
             self._ext_deps(model)
             if model.may_depend_on_external_resources
@@ -147,10 +147,10 @@ class _Applier:
             self._no_ext_deps(model)
         )
 
-    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
+    def _no_ext_deps(self, model: StringSource) -> MatchingResult:
         raise NotImplementedError('abstract method')
 
-    def _ext_deps(self, model: StringModel) -> MatchingResult:
+    def _ext_deps(self, model: StringSource) -> MatchingResult:
         raise NotImplementedError('abstract method')
 
 
@@ -164,7 +164,7 @@ class _ApplierForExpectedOfString(_Applier):
         self._result_for_match = result_for_match
         self._expected = expected
 
-    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
+    def _no_ext_deps(self, model: StringSource) -> MatchingResult:
         actual = model.as_str
         files_are_equal = self._expected == actual
 
@@ -176,8 +176,8 @@ class _ApplierForExpectedOfString(_Applier):
                     custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual))
             ])
 
-    def _ext_deps(self, model: StringModel) -> MatchingResult:
-        actual_header, actual_may_be_longer = string_model.read_lines_as_str__w_minimum_num_chars(
+    def _ext_deps(self, model: StringSource) -> MatchingResult:
+        actual_header, actual_may_be_longer = string_source.read_lines_as_str__w_minimum_num_chars(
             _min_num_chars_to_read(self._expected),
             model,
         )
@@ -202,7 +202,7 @@ class _ApplierForExpectedOfPath(_Applier):
         self._build_result_for_no_match = build_result_for_no_match
         self._expected = expected
 
-    def _no_ext_deps(self, model: StringModel) -> MatchingResult:
+    def _no_ext_deps(self, model: StringSource) -> MatchingResult:
         actual = model.as_str
 
         expected_header, expected_may_be_longer = self._read_expected_header(_min_num_chars_to_read(actual))
@@ -217,7 +217,7 @@ class _ApplierForExpectedOfPath(_Applier):
                     custom_details.StringAsSingleLineWithMaxLenDetailsRenderer(actual))
             ])
 
-    def _ext_deps(self, model: StringModel) -> MatchingResult:
+    def _ext_deps(self, model: StringSource) -> MatchingResult:
         actual_file_path = model.as_file
 
         files_are_equal = self._do_compare(actual_file_path)

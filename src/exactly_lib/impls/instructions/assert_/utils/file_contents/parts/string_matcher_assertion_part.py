@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.render import combinators as rend_comb
 
 
@@ -31,7 +31,7 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                os_services: OsServices,
-               model: StringModel):
+               model: StringSource):
         resolver = resolving_helper_for_instruction_env(os_services, environment)
         string_matcher = resolver.resolve_matcher(self._string_matcher)
 
@@ -45,7 +45,7 @@ class StringMatcherAssertionPart(FileContentsAssertionPart):
 
     @staticmethod
     def _apply_matcher(matcher: StringMatcher,
-                       model: StringModel,
+                       model: StringSource,
                        ) -> MatchingResult:
         try:
             return matcher.matches_w_trace(model)

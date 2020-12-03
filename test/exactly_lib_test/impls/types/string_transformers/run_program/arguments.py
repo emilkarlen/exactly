@@ -3,12 +3,12 @@ from typing import List
 
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.tcfs.path_relativity import RelOptionType
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Arrangement, arrangement_w_tcds, \
     ParseExpectation, ExecutionExpectation, PrimAndExeExpectation, prim_asrt__constant
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args, program_sdvs
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
@@ -21,7 +21,7 @@ from exactly_lib_test.type_val_deps.data.test_resources.symbol_reference_asserti
     is_reference_to_data_type_symbol
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_ import ListSymbolContext
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
@@ -57,7 +57,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
         ]
 
         def arguments_case(command_line_arguments: List[str],
-                           ) -> NExArr[PrimAndExeExpectation[StringTransformer, StringModel],
+                           ) -> NExArr[PrimAndExeExpectation[StringTransformer, StringSource],
                                        Arrangement]:
             arg_list_symbol = ListSymbolContext.of_constants(
                 command_line_arg_list_symbol_name,
@@ -78,7 +78,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                 'Arguments: ' + repr(command_line_arguments),
                 PrimAndExeExpectation(
                     ExecutionExpectation(
-                        main_result=asrt_string_model.matches__lines(
+                        main_result=asrt_string_source.matches__lines(
                             expected_lines_on_stdout,
                             may_depend_on_external_resources=asrt.equals(True),
                         )

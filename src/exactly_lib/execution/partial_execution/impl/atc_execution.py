@@ -11,7 +11,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils import misc_utils
 from exactly_lib.util.file_utils.std import StdOutputFiles
 
@@ -36,7 +36,7 @@ class ActionToCheckExecutor:
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
-                 stdin: Optional[StringModel],
+                 stdin: Optional[StringSource],
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.atc = atc
         self.environment_for_validate_post_setup = environment_for_validate_post_setup

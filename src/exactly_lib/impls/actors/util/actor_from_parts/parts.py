@@ -14,7 +14,7 @@ from exactly_lib.test_case.result import sh, svh, eh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.test_case.result.failure_details import FailureDetails
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdOutputFiles
 
 
@@ -45,7 +45,7 @@ class Executor(ABC):
     @abstractmethod
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> int:
         """
@@ -209,7 +209,7 @@ class ActionToCheckFromParts(Generic[EXECUTABLE_OBJECT], ActionToCheck):
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 os_services: OsServices,
-                stdin: Optional[StringModel],
+                stdin: Optional[StringSource],
                 output: StdOutputFiles,
                 ) -> ExitCodeOrHardError:
         try:

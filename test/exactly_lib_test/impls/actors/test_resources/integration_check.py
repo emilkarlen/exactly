@@ -5,7 +5,7 @@ from typing import List, Optional, Sequence, ContextManager, Callable
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.execution import phase_step
-from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
+from exactly_lib.impls.types.string_source.factory import RootStringSourceFactory
 from exactly_lib.symbol.sdv_structure import SymbolUsage
 from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.tcfs.tcds import TestCaseDs
@@ -17,7 +17,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.result.failure_details import FailureDetails
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.std import StdFiles, StdOutputFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -322,12 +322,12 @@ class _Checker:
         self._check_symbols_after(atc, phase_step.STEP__ACT__EXECUTE)
         self._expectation.after_execution.apply_with_message(self._put, env.tcds, 'after execution')
 
-    def _stdin(self, env: InstructionEnvironmentForPostSdsStep) -> Optional[StringModel]:
+    def _stdin(self, env: InstructionEnvironmentForPostSdsStep) -> Optional[StringSource]:
         stdin_contents = self._arrangement.stdin_contents
         if stdin_contents is None or not stdin_contents:
             return None
         else:
-            model_factory = RootStringModelFactory(env.tmp_dir__path_access.paths_access)
+            model_factory = RootStringSourceFactory(env.tmp_dir__path_access.paths_access)
             return model_factory.of_const_str(stdin_contents)
 
     def _check_symbols_after(self, atc: ActionToCheck, step: str):
@@ -350,7 +350,7 @@ class ProcessExecutorForProgramExecutorWoStdinThatRaisesIfResultIsNotExitCode(Pr
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
                  atc: ActionToCheck,
-                 stdin: Optional[StringModel],
+                 stdin: Optional[StringSource],
                  ):
         self.environment = environment
         self.os_services = os_services

@@ -16,7 +16,7 @@ Test cases
 import unittest
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers import test_resources as tr
 from exactly_lib_test.impls.types.string_transformers.filter.line_numbers.test_resources import InputAndExpected, \
     IS_RANGE_EXPR_STR_REFERENCE_RESTRICTIONS

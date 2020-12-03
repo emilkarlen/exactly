@@ -6,7 +6,7 @@ from exactly_lib_test.impls.types.integer_matcher.test_resources import symbol_r
 from exactly_lib_test.impls.types.line_matcher.test_resources import arguments_building as lm_arg
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_wo_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor as models
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor as models
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check, \
     argument_building as st_arg
 from exactly_lib_test.impls.types.test_resources import arguments_building as arg_rend
@@ -15,7 +15,7 @@ from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import StringConstantSymbolContext, \
     StringIntConstantSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 
 
 class Case:
@@ -66,7 +66,7 @@ def check(put: unittest.TestCase, case: Case):
                 symbol_references=SymbolContext.references_assertion_of_contexts(case.symbols)
             ),
             execution=ExecutionExpectation(
-                main_result=asrt_string_model.matches__lines__check_just_as_lines(case.expected_output_lines)
+                main_result=asrt_string_source.matches__lines__check_just_as_lines(case.expected_output_lines)
             ),
         )
     )

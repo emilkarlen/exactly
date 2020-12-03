@@ -16,7 +16,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
     ParseExpectation, ExecutionExpectation, arrangement_wo_tcds, prim_asrt__any
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as st_args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \

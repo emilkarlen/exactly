@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     setup_phase_instruction_that
 from exactly_lib_test.impls.instructions.setup.test_resources import instruction_check as sut
@@ -264,7 +264,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
 
 
 class InstructionThatSetsStdin(SetupPhaseInstruction):
-    def __init__(self, value_to_set: StringModel):
+    def __init__(self, value_to_set: StringSource):
         self.value_to_set = value_to_set
 
     def main(self,

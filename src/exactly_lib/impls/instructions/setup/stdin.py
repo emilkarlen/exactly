@@ -12,10 +12,10 @@ from exactly_lib.impls import file_properties
 from exactly_lib.impls.file_properties import FileType
 from exactly_lib.impls.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.impls.types.path.path_check import PathCheck
-from exactly_lib.impls.types.string_model.factory import RootStringModelFactory
 from exactly_lib.impls.types.string_or_path import parse_string_or_path
 from exactly_lib.impls.types.string_or_path.doc import StringOrHereDocOrFile
 from exactly_lib.impls.types.string_or_path.primitive import SourceType
+from exactly_lib.impls.types.string_source.factory import RootStringSourceFactory
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
@@ -30,8 +30,8 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
-from exactly_lib.type_val_prims.string_model.structure_builder import StringModelStructureBuilder
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -120,8 +120,8 @@ class _InstructionForString(SetupPhaseInstruction):
         contents = self.stdin_contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
 
-        string_model_factory = RootStringModelFactory(environment.tmp_dir__path_access.paths_access)
-        settings_builder.stdin = string_model_factory.of_const_str(contents)
+        string_source_factory = RootStringSourceFactory(environment.tmp_dir__path_access.paths_access)
+        settings_builder.stdin = string_source_factory.of_const_str(contents)
 
         return sh.new_sh_success()
 
@@ -142,19 +142,19 @@ class _InstructionForFile(InstructionWithFileRefsBase):
              ) -> sh.SuccessOrHardError:
         described_path = self.stdin_contents.resolve(environment.symbols).value_of_any_dependency__d(environment.tcds)
 
-        string_model_factory = RootStringModelFactory(environment.tmp_dir__path_access.paths_access)
-        stdin_wo_check_of_existence = string_model_factory.of_file__described(described_path)
-        stdin_w_check_of_existence = _StringModelThatRaisesHardErrorIfFileIsInvalid(stdin_wo_check_of_existence,
-                                                                                    described_path.describer)
+        string_source_factory = RootStringSourceFactory(environment.tmp_dir__path_access.paths_access)
+        stdin_wo_check_of_existence = string_source_factory.of_file__described(described_path)
+        stdin_w_check_of_existence = _StringSourceThatRaisesHardErrorIfFileIsInvalid(stdin_wo_check_of_existence,
+                                                                                     described_path.describer)
 
         settings_builder.stdin = stdin_w_check_of_existence
 
         return sh.new_sh_success()
 
 
-class _StringModelThatRaisesHardErrorIfFileIsInvalid(StringModel):
+class _StringSourceThatRaisesHardErrorIfFileIsInvalid(StringSource):
     def __init__(self,
-                 checked: StringModel,
+                 checked: StringSource,
                  path_description: PathDescriberForPrimitive,
 
                  ):
@@ -162,7 +162,7 @@ class _StringModelThatRaisesHardErrorIfFileIsInvalid(StringModel):
         self._path_description = path_description
         self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
 
-    def new_structure_builder(self) -> StringModelStructureBuilder:
+    def new_structure_builder(self) -> StringSourceStructureBuilder:
         return self._checked.new_structure_builder()
 
     @property

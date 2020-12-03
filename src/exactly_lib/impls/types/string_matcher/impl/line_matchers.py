@@ -11,7 +11,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnviro
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcherLine
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
 from exactly_lib.util.logic_types import Quantifier
 
@@ -28,7 +28,7 @@ def sdv(quantifier: Quantifier, line_matcher_sdv: LineMatcherSdv) -> StringMatch
 @contextlib.contextmanager
 def _get_line_elements(tcds: TestCaseDs,
                        environment: ApplicationEnvironment,
-                       string_matcher_model: StringModel
+                       string_matcher_model: StringSource
                        ) -> ContextManager[Iterator[LineMatcherLine]]:
     with string_matcher_model.as_lines as lines:
         yield model_iter_from_file_line_iter(lines)

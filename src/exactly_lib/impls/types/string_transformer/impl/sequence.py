@@ -15,7 +15,7 @@ from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransfo
 from exactly_lib.type_val_deps.types.string_transformer.ddvs import StringTransformerConstantDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer, WithNodeDescription
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers
 from exactly_lib.util.symbol_table import SymbolTable
@@ -55,7 +55,7 @@ class SequenceStringTransformer(WithCachedNodeDescriptionBase, StringTransformer
     def is_identity_transformer(self) -> bool:
         return self._is_identity
 
-    def transform(self, model: StringModel) -> StringModel:
+    def transform(self, model: StringSource) -> StringSource:
         for transformer in self._non_identity_transformer_functions:
             model = transformer(model)
         return model

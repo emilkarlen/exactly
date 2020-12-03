@@ -1,7 +1,7 @@
 from abc import ABC
 
 from exactly_lib.definitions import instruction_arguments
-from exactly_lib_test.impls.types.string_model.test_resources.abstract_syntax import StringModelAbsStx
+from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceAbsStx
 from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.token_sequence import TokenSequence
@@ -17,7 +17,7 @@ class ImplicitlyEmptyContentsVariantAbsStx(ContentsVariantAbsStx):
 
 
 class ExplicitContentsVariantAbsStx(ContentsVariantAbsStx):
-    def __init__(self, contents: StringModelAbsStx):
+    def __init__(self, contents: StringSourceAbsStx):
         self._contents = contents
 
     def tokenization(self) -> TokenSequence:
@@ -56,7 +56,7 @@ class InstructionAbsStx(AbstractSyntax):
 
 
 def with_explicit_contents(destination: PathAbsStx,
-                           contents: StringModelAbsStx,
+                           contents: StringSourceAbsStx,
                            ) -> InstructionAbsStx:
     return InstructionAbsStx(destination, ExplicitContentsVariantAbsStx(contents))
 

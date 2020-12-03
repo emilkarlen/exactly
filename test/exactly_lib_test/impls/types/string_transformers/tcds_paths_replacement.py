@@ -26,7 +26,7 @@ from exactly_lib_test.tcfs.test_resources.sds_check.sds_utils import sandbox_dir
 from exactly_lib_test.test_resources.tcds_and_symbols.tcds_utils import \
     tcds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_prims.string_model.test_resources import string_models
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 
 
 def suite() -> unittest.TestSuite:
@@ -47,15 +47,15 @@ class TestMayDependOnExternalResourcesShouldBeThatOfSourceModel(
 
 def _transform_string_to_string(tcds: TestCaseDs, string_input: str) -> str:
     transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
-    model = string_models.of_string(string_input)
+    model = string_sources.of_string(string_input)
     output = transformer.transform(model)
     return output.as_str
 
 
 class TestIntegration(unittest.TestCase):
     def runTest(self):
-        def model(environment: FullResolvingEnvironment) -> string_models.StringModel:
-            return string_models.of_lines__w_check_for_validity(
+        def model(environment: FullResolvingEnvironment) -> string_sources.StringSource:
+            return string_sources.of_lines__w_check_for_validity(
                 self,
                 with_appended_new_lines([
                     str(environment.tcds.hds.case_dir),

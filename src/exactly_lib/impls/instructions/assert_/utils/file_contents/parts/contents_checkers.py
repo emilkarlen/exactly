@@ -6,11 +6,11 @@ from exactly_lib.impls.instructions.assert_.utils.assertion_part import Assertio
 from exactly_lib.impls.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
 from exactly_lib.impls.types.path import path_check
-from exactly_lib.impls.types.string_model import file_model
+from exactly_lib.impls.types.string_source import file_source
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 
 
 class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor, ComparisonActualFile]):
@@ -26,7 +26,7 @@ class FileConstructorAssertionPart(AssertionPart[ComparisonActualFileConstructor
                                         os_services)
 
 
-class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, StringModel]):
+class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, StringSource]):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
@@ -35,8 +35,8 @@ class ConstructFileToCheckAssertionPart(AssertionPart[ComparisonActualFile, Stri
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
               file_to_transform: ComparisonActualFile,
-              ) -> StringModel:
-        return file_model.string_model_of_file__described(
+              ) -> StringSource:
+        return file_source.string_source_of_file__described(
             file_to_transform.path,
             environment.tmp_dir__path_access.paths_access,
         )

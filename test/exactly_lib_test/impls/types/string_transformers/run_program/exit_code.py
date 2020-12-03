@@ -7,7 +7,7 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, ParseExpectation, \
     ExecutionExpectation, Expectation
 from exactly_lib_test.impls.types.program.test_resources import arguments_building as program_args, program_sdvs
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, DirConten
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 
 
 def suite() -> unittest.TestSuite:
@@ -43,7 +43,7 @@ class TestExitCodeInterpretation(unittest.TestCase):
             ignore_exit_code=True,
             execution_expectation=
             ExecutionExpectation(
-                main_result=asrt_string_model.matches__str(
+                main_result=asrt_string_source.matches__str(
                     asrt.equals(output.out),
                     may_depend_on_external_resources=asrt.equals(True),
                 )

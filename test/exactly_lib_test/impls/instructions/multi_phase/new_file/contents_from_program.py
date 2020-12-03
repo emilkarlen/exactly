@@ -20,7 +20,7 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.uti
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
-from exactly_lib_test.impls.types.string_model.test_resources import abstract_syntax as string_model_abs_stx
+from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
 from exactly_lib_test.impls.types.test_resources import relativity_options as rel_opt
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
@@ -74,7 +74,7 @@ class TestSymbolUsages(unittest.TestCase):
 
         to_upper_transformer = TO_UPPER_TRANSFORMER_SYMBOL
 
-        transformed_program_output_contents_syntax = string_model_abs_stx.StringModelOfProgramAbsStx(
+        transformed_program_output_contents_syntax = string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
             program_abs_stx.TransformedProgramAbsStx(
                 program_abs_stx.ProgramOfPythonInterpreterAbsStx.of_execute_python_src_string(
@@ -208,8 +208,8 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
 
                 instruction_syntax = instr_abs_stx.with_explicit_contents(
                     rel_opt_conf.path_abs_stx_of_name(expected_file.name),
-                    string_model_abs_stx.StringModelOfProgramAbsStx(proc_output_file, program_syntax,
-                                                                    ignore_exit_code=False)
+                    string_source_abs_stx.StringSourceOfProgramAbsStx(proc_output_file, program_syntax,
+                                                                      ignore_exit_code=False)
                 )
 
                 with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
@@ -252,9 +252,9 @@ class TestFailingValidation(unittest.TestCase):
             )
             instruction_syntax = instr_abs_stx.with_explicit_contents(
                 path_abs_stx.DefaultRelPathAbsStx('dst-file'),
-                string_model_abs_stx.StringModelOfProgramAbsStx(ProcOutputFile.STDOUT,
-                                                                program_with_ref_to_non_existing_file,
-                                                                ignore_exit_code=False)
+                string_source_abs_stx.StringSourceOfProgramAbsStx(ProcOutputFile.STDOUT,
+                                                                  program_with_ref_to_non_existing_file,
+                                                                  ignore_exit_code=False)
             )
 
             # ACT & ASSERT #
@@ -283,7 +283,7 @@ class TestUnableToExecute(unittest.TestCase):
         for transformation_case in cases:
             instruction_syntax = instr_abs_stx.with_explicit_contents(
                 path_abs_stx.DefaultRelPathAbsStx('dst-file'),
-                string_model_abs_stx.StringModelOfProgramAbsStx(
+                string_source_abs_stx.StringSourceOfProgramAbsStx(
                     ProcOutputFile.STDOUT,
                     transformation_case.value,
                     ignore_exit_code=False)
@@ -381,7 +381,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                 for program_case in program_cases:
                     instruction_syntax = instr_abs_stx.with_explicit_contents(
                         dst_file_conf.abstract_syntax,
-                        string_model_abs_stx.StringModelOfProgramAbsStx(
+                        string_source_abs_stx.StringSourceOfProgramAbsStx(
                             output_file,
                             program_case.syntax,
                             ignore_exit_code=ignore_exit_code)
@@ -476,7 +476,7 @@ class TestFailDueInvalidSyntax(unittest.TestCase):
                 for ignore_exit_code in [False, True]:
                     instruction_syntax = instr_abs_stx.with_explicit_contents(
                         ARBITRARY_ALLOWED_DST_FILE_RELATIVITY.path_abs_stx_of_name('dst-file'),
-                        string_model_abs_stx.StringModelOfProgramAbsStx(
+                        string_source_abs_stx.StringSourceOfProgramAbsStx(
                             output_file,
                             program_w_superfluous_argument,
                             ignore_exit_code=ignore_exit_code)
@@ -498,7 +498,7 @@ TO_UPPER_TRANSFORMER_SYMBOL = StringTransformerSymbolContext.of_primitive(
 
 def _mk_explicit_contents(program: ProgramAbsStx) -> ExplicitContentsVariantAbsStx:
     return ExplicitContentsVariantAbsStx(
-        string_model_abs_stx.StringModelOfProgramAbsStx(
+        string_source_abs_stx.StringSourceOfProgramAbsStx(
             ProcOutputFile.STDOUT,
             program,
         )

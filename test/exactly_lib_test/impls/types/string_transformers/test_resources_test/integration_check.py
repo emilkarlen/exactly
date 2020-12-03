@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.envs.resolving_environment import FullResolvingEnvironment
 from exactly_lib.util import symbol_table
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import transformer_checker
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -4,13 +4,13 @@ from typing import List, Sequence
 
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds, Expectation, \
     ParseExpectation, ExecutionExpectation, prim_asrt__constant
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
-from exactly_lib_test.impls.types.string_model.test_resources.model_constructor import ModelConstructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources.model_constructor import ModelConstructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.type_val_prims.string_model.test_resources import assertions as asrt_string_model
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
@@ -49,7 +49,7 @@ class TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase(unittest.TestCase, A
                                 symbol_references=asrt.is_empty_sequence
                             ),
                             ExecutionExpectation(
-                                main_result=asrt_string_model.matches__lines(
+                                main_result=asrt_string_source.matches__lines(
                                     self.expected_output_lines_for_model(),
                                     may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
                                 ),

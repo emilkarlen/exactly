@@ -14,10 +14,10 @@ from exactly_lib.test_case.result import pfh
 from exactly_lib.type_val_deps.types.line_matcher import LineMatcherSdv
 from exactly_lib.type_val_deps.types.string_matcher import StringMatcherSdv
 from exactly_lib.type_val_prims.matcher.line_matcher import LineMatcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.impls.types.string_model.test_resources.model_factory import \
-    string_model_factory
+from exactly_lib_test.impls.types.string_source.test_resources.source_factory import \
+    string_source_factory
 from exactly_lib_test.impls.types.test_resources.negation_argument_handling import \
     PassOrFail, pfh_expectation_type_config
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
@@ -52,7 +52,7 @@ class TestCaseBase(unittest.TestCase):
         environment = fake_post_sds_environment()
         os_services = new_for_current_os()
 
-        with string_model_factory() as model_factory:
+        with string_source_factory() as source_factory:
             # This test is expected to not create files using the above object,
             # but to be sure, one is used that creates and destroys temporary files.
             with tmp_file_containing(actual_file_contents) as actual_file_path:
@@ -60,7 +60,7 @@ class TestCaseBase(unittest.TestCase):
                     for expectation_type in ExpectationType:
                         with self.subTest(case=case.name,
                                           expectation_type=expectation_type):
-                            model = model_factory.of_file__poorly_described(actual_file_path)
+                            model = source_factory.of_file__poorly_described(actual_file_path)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)
@@ -74,7 +74,7 @@ class TestCaseBase(unittest.TestCase):
     def _check_cases_for_no_lines(
             self,
             get_assertion_part_function:
-            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[StringModel, pfh.PassOrFailOrHardError]],
+            Callable[[ExpectationType, LineMatcherSdv], AssertionPart[StringSource, pfh.PassOrFailOrHardError]],
             expected_result_when_positive_expectation: PassOrFail):
         empty_file_contents = ''
         environment = fake_post_sds_environment()
@@ -84,7 +84,7 @@ class TestCaseBase(unittest.TestCase):
             ('unconditionally true', MatcherWithConstantResult(True)),
             ('unconditionally false', MatcherWithConstantResult(False)),
         ]
-        with string_model_factory() as model_factory:
+        with string_source_factory() as source_factory:
             # This test is expected to not create files using the above object,
             # but to be sure, one is used that creates and destroys temporary files.
             with tmp_file_containing(empty_file_contents) as actual_file_path:
@@ -92,7 +92,7 @@ class TestCaseBase(unittest.TestCase):
                     for matcher_name, matcher in matchers:
                         with self.subTest(expectation_type=expectation_type,
                                           matcher_name=matcher_name):
-                            model = model_factory.of_file__poorly_described(actual_file_path)
+                            model = source_factory.of_file__poorly_described(actual_file_path)
                             matcher_sdv = sdv_components.matcher_sdv_from_constant_primitive(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_sdv)

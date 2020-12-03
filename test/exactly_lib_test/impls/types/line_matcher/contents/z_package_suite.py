@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib_test.impls.types.line_matcher.contents import parse, string_model
+from exactly_lib_test.impls.types.line_matcher.contents import parse, string_source
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        string_model.suite(),
+        string_source.suite(),
         parse.suite(),
     ])
 

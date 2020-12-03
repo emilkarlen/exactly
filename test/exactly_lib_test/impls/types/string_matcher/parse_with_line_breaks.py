@@ -8,7 +8,7 @@ from exactly_lib_test.impls.types.string_matcher.test_resources import test_conf
 from exactly_lib_test.impls.types.string_matcher.test_resources.arguments_building import SB
 from exactly_lib_test.impls.types.string_matcher.test_resources.test_configuration import \
     TestCaseBase
-from exactly_lib_test.impls.types.string_model.test_resources import model_constructor
+from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.impls.types.test_resources.matcher_assertions import is_arbitrary_matching_failure, \
     is_matching_success

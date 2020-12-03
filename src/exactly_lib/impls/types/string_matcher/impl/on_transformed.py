@@ -20,7 +20,7 @@ from exactly_lib.type_val_prims.description.tree_structured import StructureRend
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace
 from exactly_lib.type_val_prims.matcher.matching_result import MatchingResult
 from exactly_lib.type_val_prims.matcher.string_matcher import StringMatcher
-from exactly_lib.type_val_prims.string_model.string_model import StringModel
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib.util.description_tree import renderers, details
 from exactly_lib.util.symbol_table import SymbolTable
@@ -54,7 +54,7 @@ class StringMatcherWithTransformation(StringMatcherImplBase):
             (on_transformed,),
         )
 
-    def matches_w_trace(self, model: StringModel) -> MatchingResult:
+    def matches_w_trace(self, model: StringSource) -> MatchingResult:
         transformed_model = self._transformer.transform(model)
         result_on_transformed = self._on_transformed.matches_w_trace(transformed_model)
         return (
@@ -112,7 +112,7 @@ class StringMatcherWithTransformationDdv(StringMatcherDdvImplBase):
         )
 
 
-class StringMatcherWithTransformationSdv(MatcherSdv[StringModel]):
+class StringMatcherWithTransformationSdv(MatcherSdv[StringSource]):
     """
     A :class:`StringMatcherResolver` that transforms the model with a :class:`StringTransformerResolver`
     """
@@ -124,7 +124,7 @@ class StringMatcherWithTransformationSdv(MatcherSdv[StringModel]):
         self._transformer = transformer
         self._original = original
 
-    def resolve(self, symbols: SymbolTable) -> MatcherDdv[StringModel]:
+    def resolve(self, symbols: SymbolTable) -> MatcherDdv[StringSource]:
         return StringMatcherWithTransformationDdv(
             self._transformer.resolve(symbols),
             self._original.resolve(symbols),
