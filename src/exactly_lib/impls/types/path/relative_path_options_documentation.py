@@ -84,10 +84,12 @@ def _path_element_relativity_paragraphs(default_relativity: RelOptionType,
 
 
 def path_element_2(rel_options_conf: RelOptionArgumentConfiguration,
-                   custom_paragraphs: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
+                   custom_paragraphs_before: Sequence[ParagraphItem] = (),
+                   custom_paragraphs_after: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
     return path_element(rel_options_conf.argument_syntax_name,
                         rel_options_conf.options,
-                        custom_paragraphs)
+                        custom_paragraphs_before,
+                        custom_paragraphs_after)
 
 
 def path_element_3(rel_options_conf: RelOptionArgumentConfiguration,

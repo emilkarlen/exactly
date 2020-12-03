@@ -120,3 +120,9 @@ ACT_INTERPRETER_SYNTAX_ELEMENT = name_and_ref_target(
         phase_names.ACT
     )
 )
+
+STRING_SOURCE_SYNTAX_ELEMENT = name_and_ref_target(
+    'STRING-SOURCE',
+    'A {}, from various sources'.format(
+        types.STRING_TYPE_INFO.singular_name)
+)

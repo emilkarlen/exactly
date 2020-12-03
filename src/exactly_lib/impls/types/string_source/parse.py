@@ -1,3 +1,4 @@
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.types.path.parse_path import parse_path_from_token_parser
 from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string import parse_here_document
@@ -5,6 +6,7 @@ from exactly_lib.impls.types.string.parse_string import parse_string_from_token_
 from exactly_lib.impls.types.string_source import sdvs
 from exactly_lib.impls.types.string_transformer import parse_transformation_option
 from exactly_lib.section_document.element_parsers import token_stream_parsing
+from exactly_lib.section_document.element_parsers.ps_or_tp.parser import Parser
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
@@ -16,11 +18,15 @@ from . import defs
 from ..path.rel_opts_configuration import RelOptionsConfiguration, RelOptionArgumentConfiguration
 
 
+def default_parser_for(phase_is_after_act: bool) -> Parser[StringSourceSdv]:
+    return StringSourceParser(defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act).options)
+
+
 class StringSourceParser(ParserFromTokenParserBase[StringSourceSdv]):
     def __init__(self, accepted_file_relativities: RelOptionsConfiguration):
         super().__init__(False, False)
         self._variants_parser = token_stream_parsing.ParserOfMandatoryChoiceWithDefault2(
-            defs.SYNTAX_ELEMENT,
+            syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
             [
                 token_stream_parsing.TokenSyntaxSetup2(
                     token_matchers.is_option(defs.FILE_OPTION),
@@ -50,7 +56,7 @@ class _FileParser:
     def __init__(self, accepted_file_relativities: RelOptionsConfiguration):
         self._relativities_arg_conf = RelOptionArgumentConfiguration(
             accepted_file_relativities,
-            defs.SOURCE_FILE_ARGUMENT_NAME,
+            defs.SOURCE_FILE_ARGUMENT_NAME.name,
             True,
         )
 

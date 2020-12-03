@@ -43,7 +43,7 @@ def documentation() -> SyntaxElementDocumentation:
         [
             rel_path_doc.path_element_2(
                 PATH_OF_EXISTING_FILE_OPT_CONFIG,
-                _TEXT_PARSER.paras(path_syntax.the_path_of('an existing file.')))
+                _TEXT_PARSER.paras(path_syntax.the_path_of_an_existing_file(final_dot=True)))
 
         ],
         cross_reference_id_list([

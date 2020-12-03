@@ -14,12 +14,12 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.entity import syntax_elements, concepts
 from exactly_lib.impls import file_properties
 from exactly_lib.impls.exception import hard_error_transl
+from exactly_lib.impls.instructions import source_file_relativities
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.impls.instructions.utils import source_file_relativities
 from exactly_lib.impls.instructions.utils.documentation import src_dst
 from exactly_lib.impls.types.path import path_check, parse_path, rel_opts_configuration
 from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation, \

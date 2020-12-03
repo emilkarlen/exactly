@@ -1,6 +1,6 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.primitives import program as program_primitives
-from exactly_lib.impls.instructions.utils.source_file_relativities import src_rel_opt_arg_conf_for_phase2
+from exactly_lib.impls.instructions.source_file_relativities import src_rel_opt_arg_conf_for_phase2
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
