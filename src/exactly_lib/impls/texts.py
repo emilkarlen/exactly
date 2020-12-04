@@ -45,8 +45,8 @@ The result is {HARD_ERROR} if the {exit_code} is non-zero,
 unless {ignore_exit_code_option} is given.
 
 
-({NOTE} {ignore_exit_code_option} do not apply to {program:s} run by
-{string_transformer:s} applied via {PROGRAM}.)
+{NOTE} {ignore_exit_code_option} do not apply to {program:s} run by
+{string_transformer:s} applied via {PROGRAM}.
 
 
 {termination}

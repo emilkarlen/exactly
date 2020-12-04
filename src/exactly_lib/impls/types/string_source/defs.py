@@ -17,7 +17,7 @@ SOURCE_FILE_ARGUMENT_NAME = a.Named('SOURCE-FILE-PATH')
 
 def src_rel_opt_arg_conf_for_phase(phase_is_after_act: bool,
                                    ) -> RelOptionArgumentConfiguration:
-    return source_file_relativities.src_rel_opt_arg_conf_for_phase2(
+    return source_file_relativities.src_rel_opt_arg_conf_for_phase(
         RelOptionType.REL_CWD,
         SOURCE_FILE_ARGUMENT_NAME.name,
         phase_is_after_act,

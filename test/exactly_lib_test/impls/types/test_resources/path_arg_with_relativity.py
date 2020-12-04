@@ -1,4 +1,5 @@
 from exactly_lib_test.impls.types.test_resources.relativity_options import RelativityOptionConfiguration
+from exactly_lib_test.tcfs.test_resources.abstract_syntax import PathAbsStx
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
 
 
@@ -20,6 +21,10 @@ class PathArgumentWithRelativity:
     @property
     def argument_str(self) -> str:
         return self.relativity.option_argument_str + ' ' + self.file_name
+
+    @property
+    def argument_abs_stx(self) -> PathAbsStx:
+        return self._relativity.path_abs_stx_of_name(self._file_name)
 
     @property
     def as_argument_element(self) -> ArgumentElementsRenderer:

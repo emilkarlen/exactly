@@ -1,7 +1,7 @@
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
+from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 

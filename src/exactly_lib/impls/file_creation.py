@@ -1,5 +1,5 @@
 import pathlib
-from typing import Optional, Any, Callable, TextIO
+from typing import Optional, Callable, TextIO, TypeVar
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -20,48 +20,72 @@ def create_file(file_path: pathlib.Path,
     """
     :return: None iff success. Otherwise an error message.
     """
-    try:
-        if file_path.exists():
-            return 'File does already exist: {}'.format(file_path)
-    except NotADirectoryError:
-        return 'Part of path exists, but perhaps one in-the-middle-component is not a directory: %s' % str(file_path)
-    failure_message = ensure_parent_directory_does_exist_and_is_a_directory(file_path)
-    if failure_message is not None:
-        return failure_message
-    try:
-        with file_path.open('x') as f:
-            operation_on_open_file(f)
-    except IOError:
-        return 'Cannot create file: {}'.format(file_path)
-    return None
+
+    def render_error(message: str) -> str:
+        return message
+
+    def ensure_parent_path_is_existing_dir() -> Optional[str]:
+        return ensure_parent_directory_does_exist_and_is_a_directory(file_path)
+
+    return _create_file(file_path, ensure_parent_path_is_existing_dir, render_error, operation_on_open_file)
 
 
 def create_file__dp(path: DescribedPath,
-                    operation_on_open_file: Callable[[Any], None]) -> Optional[TextRenderer]:
+                    operation_on_open_file: Callable[[TextIO], None],
+                    ) -> Optional[TextRenderer]:
     """
     :return: None iff success. Otherwise an error message.
     """
 
-    def error(header: str) -> TextRenderer:
+    def render_error(header: str) -> TextRenderer:
         return path_err_msgs.line_header__primitive(
             header,
             path.describer,
         )
 
-    file_path = path.primitive
+    def ensure_parent_path_is_existing_dir() -> Optional[TextRenderer]:
+        return ensure_parent_path_does_exist_and_is_a_directory__dp(path)
+
+    return _create_file(path.primitive, ensure_parent_path_is_existing_dir, render_error, operation_on_open_file)
+
+
+ERR = TypeVar('ERR')
+
+
+def _create_file(file_path: pathlib.Path,
+                 ensure_parent_path_is_existing_dir: Callable[[], Optional[ERR]],
+                 error_renderer: Callable[[str], ERR],
+                 operation_on_open_file: Callable[[TextIO], None],
+                 ) -> Optional[ERR]:
+    """
+    :return: None iff success. Otherwise an error message.
+    """
     try:
-        if file_path.exists():
-            return error('File already exists')
+        file_path.lstat()
+        return error_renderer('File already exists')
     except NotADirectoryError:
-        return error('Part of path exists, but perhaps one in-the-middle-component is not a directory')
-    failure_message = ensure_parent_path_does_exist_and_is_a_directory__dp(path)
+        return error_renderer('Part of path exists, but perhaps one in-the-middle-component is not a directory')
+    except:
+        pass
+
+    failure_message = ensure_parent_path_is_existing_dir()
     if failure_message is not None:
         return failure_message
+
     try:
-        with file_path.open('x') as f:
-            operation_on_open_file(f)
-    except IOError:
-        return error('Cannot create file')
+        f = file_path.open('x')
+    except OSError as ex:
+        return error_renderer('Cannot create file\n' + str(ex))
+
+    try:
+        operation_on_open_file(f)
+    except:
+        f.close()
+        file_path.unlink()
+        raise
+    else:
+        f.close()
+
     return None
 
 

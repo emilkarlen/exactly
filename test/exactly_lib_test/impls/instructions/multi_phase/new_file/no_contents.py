@@ -11,10 +11,12 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abs
     ImplicitlyEmptyContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import DISALLOWED_DST_RELATIVITIES, \
+    ALLOWED_DST_FILE_RELATIVITIES
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import just_parse, \
     check_invalid_syntax, check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
-    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS
+    IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_any
@@ -49,7 +51,7 @@ class TestFailingParse(unittest.TestCase):
             just_parse(single_line_source(arguments))
 
     def test_disallowed_relativities(self):
-        for relativity in DISALLOWED_RELATIVITIES:
+        for relativity in DISALLOWED_DST_RELATIVITIES:
             with self.subTest(relativity=str(relativity)):
                 relativity_conf = conf_rel_any(relativity)
                 instruction_syntax = abs_stx.without_contents(relativity_conf.path_abs_stx_of_name('file-name'))

@@ -1,6 +1,6 @@
 import unittest
 from contextlib import contextmanager
-from typing import Callable, Sequence
+from typing import Callable, Sequence, Generic, TypeVar
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -9,13 +9,17 @@ from exactly_lib.section_document.section_element_parsing import LocationAwarePa
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_resources.argument_renderer import ArgumentElementsRenderer
+from exactly_lib_test.test_resources.source import layout as tokens_layout
 from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.source.layout import STANDARD_LAYOUT_SPECS
 
+T = TypeVar('T')
 
-class Checker:
-    def __init__(self, parser: LocationAwareParser):
+
+class Checker(Generic[T]):
+    def __init__(self, parser: LocationAwareParser[T]):
         self.parser = parser
 
     def check_invalid_arguments(self,
@@ -53,6 +57,17 @@ class Checker:
         actual = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         put.assertIsNotNone(actual,
                             'parsed object')
+
+    def parse__abs_stx(self,
+                       put: unittest.TestCase,
+                       source: AbstractSyntax,
+                       layout: tokens_layout.LayoutSpec = tokens_layout.LayoutSpec.of_default(),
+                       ) -> T:
+        parse_source = remaining_source(source.tokenization().layout(layout))
+        actual = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, parse_source)
+        put.assertIsNotNone(actual,
+                            'parsed object')
+        return actual
 
 
 @contextmanager

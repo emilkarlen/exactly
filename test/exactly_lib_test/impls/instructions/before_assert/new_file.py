@@ -3,12 +3,11 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.impls.instructions.before_assert import new_file as sut
 from exactly_lib_test.impls.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
-from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources import \
-    new_file_instruction_test
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import phase_instruction_test
 
 
 def suite() -> unittest.TestSuite:
-    return new_file_instruction_test.suite_for(TheConfiguration())
+    return phase_instruction_test.suite_for(TheConfiguration())
 
 
 class TheConfiguration(BeforeAssertConfigurationBase):

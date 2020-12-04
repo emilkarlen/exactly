@@ -1,30 +1,26 @@
 import unittest
 from typing import Sequence, Callable
 
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
-from exactly_lib.impls.instructions.utils.file_maker import defs
+from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut, defs
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType, RelOptionType, RelSdsOptionType, RelNonHdsOptionType
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import abstract_syntax as instr_abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import common_test_cases
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
-from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import utils as new_file_utils
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
     ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import \
+    ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT, accepted_src_file_relativities, accepted_non_hds_source_relativities, \
+    ALLOWED_DST_FILE_RELATIVITIES
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import Step, \
-    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS
-from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
-    expectation
-from exactly_lib_test.impls.instructions.test_resources.parse_file_maker import accepted_non_hds_source_relativities, \
-    ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT, allowed_src_file_relativities
+    IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS
+from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
-from exactly_lib_test.impls.types.string_transformers.test_resources.validation_cases import \
-    failing_validation_cases
 from exactly_lib_test.impls.types.test_resources.relativity_options import conf_rel_hds, every_conf_rel_hds, \
     conf_rel_non_hds, conf_rel_any, RelativityOptionConfigurationForRelNonHds, RelativityOptionConfiguration, \
     conf_rel_sds
@@ -88,13 +84,13 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
 
         for phase_is_after_act in [False, True]:
             checker = integration_check.checker(phase_is_after_act)
-            src_file_rel_opt_arg_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+            src_file_rel_opt_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
             src_file_symbol = ConstantSuffixPathDdvSymbolContext(
                 'SRC_FILE_SYMBOL',
                 src_file_rel_conf.relativity_option,
                 src_file.name,
-                src_file_rel_opt_arg_conf.options.accepted_relativity_variants,
+                src_file_rel_opt_conf.accepted_relativity_variants,
             )
             transformed_file_contents = string_source_abs_stx.TransformedStringSourceAbsStx(
                 string_source_abs_stx.StringSourceOfFileAbsStx(src_file_symbol.abs_stx_of_reference),
@@ -105,8 +101,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                 transformed_file_contents,
             )
             symbols = SymbolContext.symbol_table_of_contexts([
-                src_file_symbol,
                 dst_file_symbol,
+                src_file_symbol,
                 to_upper_transformer,
             ])
 
@@ -124,8 +120,8 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
                         main_result=IS_SUCCESS,
                         symbol_usages=asrt.matches_sequence([
                             dst_file_symbol.reference_assertion__path_or_string,
-                            is_reference_to_string_transformer__usage(to_upper_transformer.name),
                             src_file_symbol.reference_assertion__path_or_string,
+                            is_reference_to_string_transformer__usage(to_upper_transformer.name),
                         ]),
                     ),
                 )
@@ -188,7 +184,7 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         for phase_is_after_act in [False, True]:
             checker = integration_check.checker(phase_is_after_act)
             for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-                for src_rel_opt_conf in allowed_src_file_relativities(phase_is_after_act):
+                for src_rel_opt_conf in accepted_src_file_relativities(phase_is_after_act):
                     file_contents_abs_stx = string_source_abs_stx.StringSourceOfFileAbsStx(
                         src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
                     )
@@ -297,47 +293,6 @@ class TestScenariosWithContentsFromFile(unittest.TestCase):
         )
         # ACT & ASSERT #
         check_invalid_syntax__abs_stx(self, instruction_syntax)
-
-    def test_validation_should_include_validation_of_string_transformer(self):
-        # ARRANGE #
-
-        src_file = fs.File.empty('source-file.txt')
-
-        a_src_rel_opt_conf = ALLOWED_SRC_FILE_RELATIVITIES__BEFORE_ACT[0]
-        a_dst_rel_opt_conf = new_file_utils.ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
-
-        for failing_string_transformer_case in failing_validation_cases():
-            failing_symbol_context = failing_string_transformer_case.value.symbol_context
-
-            file_contents_arg = string_source_abs_stx.TransformedStringSourceAbsStx(
-                string_source_abs_stx.StringSourceOfFileAbsStx(
-                    a_src_rel_opt_conf.path_abs_stx_of_name(src_file.name)
-                ),
-                failing_symbol_context.abs_stx_of_reference
-            )
-            instruction_syntax = instr_abs_stx.with_explicit_contents(
-                a_dst_rel_opt_conf.path_abs_stx_of_name('dst-file'),
-                file_contents_arg,
-            )
-
-            for phase_is_after_act in [False, True]:
-                checker = integration_check.checker(phase_is_after_act)
-                with self.subTest(transformer=failing_string_transformer_case.name,
-                                  phase_is_after_act=phase_is_after_act):
-                    # ACT & ASSERT #
-                    checker.check__abs_stx__std_layouts_and_source_variants(
-                        self,
-                        instruction_syntax,
-                        ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_SDS_BUT_NOT_A_SDS_DIR,
-                            tcds_contents=a_src_rel_opt_conf.populator_for_relativity_option_root(
-                                DirContents([src_file])),
-                            symbols=failing_symbol_context.symbol_table,
-                        ),
-                        expectation(
-                            validation=failing_string_transformer_case.value.expectation,
-                            symbol_usages=failing_symbol_context.references_assertion
-                        ))
 
     @staticmethod
     def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:

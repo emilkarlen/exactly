@@ -40,10 +40,14 @@ class AssertConfigurationBase(ConfigurationBase):
 
     def expect_success(self,
                        main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+                       symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                       source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                       ):
         return Expectation(
+            source=source,
+            symbol_usages=symbol_usages,
             main_side_effects_on_sds=main_side_effects_on_sds,
-            symbol_usages=symbol_usages)
+        )
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text()

@@ -2,7 +2,7 @@ import unittest
 from typing import List, Callable, Dict, Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
+from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut
 from exactly_lib.symbol.sdv_structure import SymbolContainer, SymbolReference
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
@@ -15,8 +15,10 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abs
     ExplicitContentsVariantAbsStx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import \
+    ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
-    IS_FAILURE, IS_SUCCESS, ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
+    IS_FAILURE, IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check as embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.program.test_resources import program_sdvs
@@ -236,14 +238,14 @@ class TestFailingValidation(unittest.TestCase):
         # ARRANGE #
         cases = [
             NArrEx(
-                'pre SDS validation failure',
+                'pre SDS validation failure SHOULD cause validation error',
                 RelOptionType.REL_HDS_CASE,
-                validation.pre_sds_validation_fails__w_any_msg(),
+                embryo_check.expectation(validation=validation.pre_sds_validation_fails__w_any_msg()),
             ),
             NArrEx(
-                'post SDS validation failure',
+                'post SDS validation failure SHOULD cause main error',
                 RelOptionType.REL_ACT,
-                validation.post_sds_validation_fails__w_any_msg(),
+                embryo_check.expectation(main_result=IS_FAILURE),
             ),
         ]
         for case in cases:
@@ -256,7 +258,6 @@ class TestFailingValidation(unittest.TestCase):
                                                                   program_with_ref_to_non_existing_file,
                                                                   ignore_exit_code=False)
             )
-
             # ACT & ASSERT #
             for phase_is_after_act in [False, True]:
                 checker = integration_check.checker(phase_is_after_act)
@@ -266,7 +267,7 @@ class TestFailingValidation(unittest.TestCase):
                         self,
                         instruction_syntax,
                         ArrangementWithSds(),
-                        embryo_check.expectation(validation=case.expectation)
+                        case.expectation,
                     )
 
 

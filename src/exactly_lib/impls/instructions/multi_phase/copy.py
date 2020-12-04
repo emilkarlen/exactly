@@ -62,7 +62,7 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 
 
 def src_rel_opt_arg_conf_for_phase(phase_is_after_act: bool) -> RelOptionArgumentConfiguration:
-    return source_file_relativities.src_rel_opt_arg_conf_for_phase2(
+    return source_file_relativities.src_rel_opt_arg_conf_for_phase(
         RelOptionType.REL_HDS_CASE,
         instruction_arguments.SOURCE_PATH_ARGUMENT.name,
         phase_is_after_act

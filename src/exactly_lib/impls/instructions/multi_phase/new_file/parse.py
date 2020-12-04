@@ -11,15 +11,13 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.impls.instructions.multi_phase.new_file import defs
+from exactly_lib.impls.instructions.multi_phase.new_file import file_maker
 from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForTextRendererAsHardError
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.impls.instructions.utils.file_maker import defs
-from exactly_lib.impls.instructions.utils.file_maker.doc import FileContentsDocumentation
-from exactly_lib.impls.instructions.utils.file_maker.parse import InstructionConfig, parse_file_contents
-from exactly_lib.impls.instructions.utils.file_maker.primitives import FileMaker
 from exactly_lib.impls.types.path import path_err_msgs, parse_path, relative_path_options_documentation as rel_path_doc
 from exactly_lib.impls.types.path.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
@@ -52,10 +50,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
                  phase_is_after_act: bool):
         super().__init__(name, {})
         self._src_rel_opt_arg_conf = defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act)
-        self._file_contents_doc = FileContentsDocumentation(phase_is_after_act, defs.CONTENTS_ARGUMENT)
 
         self._tp = TextParser({
-            'CONTENTS': defs.CONTENTS_ARGUMENT,
+            'CONTENTS': syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.singular_name,
         })
 
     def single_line_description(self) -> str:
@@ -65,8 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _DST_PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
-        contents_arg = a.Single(a.Multiplicity.MANDATORY,
-                                a.Named(defs.CONTENTS_ARGUMENT))
+        contents_arg = syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.single_mandatory
         assignment_arg = a.Single(a.Multiplicity.MANDATORY,
                                   a.Constant(defs.CONTENTS_ASSIGNMENT_TOKEN))
         return [
@@ -77,29 +73,30 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase,
         ]
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
-        ret_val = [
+        return [
             rel_path_doc.path_element(_DST_PATH_ARGUMENT.name,
                                       REL_OPT_ARG_CONF.options,
                                       docs.paras(the_path_of('a non-existing file.'))),
         ]
-        ret_val += self._file_contents_doc.syntax_element_descriptions()
-
-        return ret_val
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
-        return [syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target] + self._file_contents_doc.see_also_targets()
+        return [
+            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.STRING_SOURCE_SYNTAX_ELEMENT.cross_reference_target
+        ]
 
 
-class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
+class _TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
     def __init__(self,
                  path_to_create: PathSdv,
-                 file_maker: FileMaker):
+                 file_maker_: file_maker.FileMaker,
+                 ):
         self._path_to_create = path_to_create
         self._validator = sdv_validation.all_of([
             _DstFileNameSdvValidator(path_to_create),
-            file_maker.validator,
+            file_maker_.validator,
         ])
-        self._file_maker = file_maker
+        self._file_maker = file_maker_
 
     @property
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -122,25 +119,21 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo[Optional[TextRenderer]]):
 
 class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo[Optional[TextRenderer]]):
     def __init__(self, phase_is_after_act: bool):
-        self._phase_is_after_act = phase_is_after_act
+        self._file_maker_parser = file_maker.FileMakerParser(
+            defs.src_rel_opt_arg_conf_for_phase(phase_is_after_act))
 
-    def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
+    def _parse(self, source: ParseSource) -> _TheInstructionEmbryo:
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as tokens:
             return self._parse_from_tokens(tokens)
 
-    def _parse_from_tokens(self, tokens: TokenParser) -> TheInstructionEmbryo:
+    def _parse_from_tokens(self, tokens: TokenParser) -> _TheInstructionEmbryo:
         path_to_create = parse_path.parse_path_from_token_parser(REL_OPT_ARG_CONF, tokens)
-        instruction_config = InstructionConfig(
-            defs.src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
-            defs.CONTENTS_ARGUMENT
-        )
-
-        file_maker = parse_file_contents(instruction_config, tokens)
+        file_maker_ = self._file_maker_parser.parse(tokens)
 
         tokens.report_superfluous_arguments_if_not_at_eol()
 
-        return TheInstructionEmbryo(path_to_create, file_maker)
+        return _TheInstructionEmbryo(path_to_create, file_maker_)
 
 
 class _DstFileNameSdvValidator(SdvValidator):

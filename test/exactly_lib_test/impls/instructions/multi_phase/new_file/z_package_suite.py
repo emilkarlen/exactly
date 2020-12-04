@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.impls.instructions.multi_phase import new_file as sut
+from exactly_lib.impls.instructions.multi_phase.new_file import parse as sut
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.impls.instructions.multi_phase.new_file import contents_from_file, no_contents, \
     contents_from_program, contents_from_string

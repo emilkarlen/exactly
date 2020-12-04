@@ -2,12 +2,33 @@ import unittest
 from typing import List, Tuple, Iterator, TypeVar
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.util import collection
+from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_resources.source import layout as tokens_layout
+from exactly_lib_test.test_resources.source.abstract_syntax import AbstractSyntax
 from exactly_lib_test.test_resources.test_utils import NEA, NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+
+
+class SourceCase(tuple):
+    def __new__(cls,
+                source: ParseSource,
+                expectation: ValueAssertion[ParseSource],
+                ):
+        return tuple.__new__(cls, (source,
+                                   expectation))
+
+    @property
+    def source(self) -> ParseSource:
+        return self[0]
+
+    @property
+    def expectation(self) -> ValueAssertion[ParseSource]:
+        return self[1]
 
 
 def equivalent_source_variants__with_source_check__consume_last_line(put: unittest.TestCase,
@@ -30,7 +51,7 @@ def equivalent_source_variants__with_source_check__consume_last_line(put: unitte
 
 def equivalent_source_variants__with_source_check__consume_last_line_2(
         instruction_argument: str,
-) -> List[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
+) -> List[Tuple[SourceCase]]:
     """
     Checks that the whole instruction_argument has been consumed,
     and that the parser is positioned at the beginning of the following line.
@@ -39,12 +60,47 @@ def equivalent_source_variants__with_source_check__consume_last_line_2(
     """
     num_source_lines = len(instruction_argument.split('\n'))
     return [
-        (
+        SourceCase(
             remaining_source(instruction_argument, following_lines),
             source_assertion,
         )
         for following_lines, source_assertion in _source_variant_test_cases__multi_line(num_source_lines)
     ]
+
+
+def equivalent_source_variants__with_source_check__consume_last_line__abs_stx(
+        syntax: AbstractSyntax,
+) -> List[NameAndValue[SourceCase]]:
+    """
+    Checks that the whole instruction_argument has been consumed,
+    and that the parser is positioned at the beginning of the following line.
+
+    Assumes that the body of the loop parses using the given source.
+    """
+    tokens = syntax.tokenization()
+
+    def cases_for(layout_case: NameAndValue[tokens_layout.LayoutSpec]
+                  ) -> List[NameAndValue[SourceCase]]:
+        source_str = tokens.layout(layout_case.value)
+        num_source_lines = len(source_str.split('\n'))
+        return [
+            NameAndValue(
+                'layout={}, following_lines={}'.format(
+                    layout_case.name,
+                    repr(following_lines)
+                ),
+                SourceCase(
+                    remaining_source(source_str, following_lines),
+                    source_assertion,
+                )
+            )
+            for following_lines, source_assertion in _source_variant_test_cases__multi_line(num_source_lines)
+        ]
+
+    return collection.concat_list([
+        cases_for(layout_case)
+        for layout_case in tokens_layout.STANDARD_LAYOUT_SPECS
+    ])
 
 
 def equivalent_source_variants__with_source_check__multi_line(put: unittest.TestCase,
@@ -64,9 +120,9 @@ def equivalent_source_variants__with_source_check__multi_line(put: unittest.Test
 
 def equivalent_source_variants_for_consume_until_end_of_last_line(
         arguments: Arguments
-) -> List[Tuple[ParseSource, ValueAssertion[ParseSource]]]:
+) -> List[Tuple[SourceCase]]:
     return [
-        (
+        SourceCase(
             arguments.followed_by_lines(extra_lines).as_remaining_source,
             assertion,
         )

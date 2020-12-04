@@ -6,6 +6,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.os_services.os_services_access import new_for_current_os
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.util.symbol_table import SymbolTable
@@ -57,7 +58,7 @@ class ConfigurationBase:
         return self.instruction_setup()
 
     @property
-    def parse_checker(self) -> parse_checker.Checker:
+    def parse_checker(self) -> parse_checker.Checker[Instruction]:
         return parse_checker.Checker(self.parser())
 
     def documentation(self) -> InstructionDocumentation:
@@ -78,7 +79,9 @@ class ConfigurationBase:
 
     def expect_success(self,
                        main_side_effects_on_sds: ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: ValueAssertion = asrt.is_empty_sequence):
+                       symbol_usages: ValueAssertion = asrt.is_empty_sequence,
+                       source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                       ):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,

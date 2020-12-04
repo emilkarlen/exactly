@@ -11,11 +11,12 @@ from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources imp
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources import integration_check
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.abstract_syntax import \
     ExplicitContentsVariantAbsStx
+from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.defs import DISALLOWED_DST_RELATIVITIES, \
+    ARBITRARY_ALLOWED_DST_FILE_RELATIVITY, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_DST_RELATIVITY_VARIANTS
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.parse_check import \
     check_invalid_syntax__abs_stx
 from exactly_lib_test.impls.instructions.multi_phase.new_file.test_resources.utils import \
-    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, \
-    ARBITRARY_ALLOWED_DST_FILE_RELATIVITY
+    IS_SUCCESS
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.impls.types.string_source.test_resources import abstract_syntax as string_source_abs_stx
 from exactly_lib_test.impls.types.string_source.test_resources.abstract_syntax import StringSourceOfStringAbsStx
@@ -115,7 +116,7 @@ class TestSymbolReferences(unittest.TestCase):
         dst_path_symbol = ConstantSuffixPathDdvSymbolContext('dst_path_symbol',
                                                              RelOptionType.REL_ACT,
                                                              'dst-file.txt',
-                                                             ACCEPTED_RELATIVITY_VARIANTS)
+                                                             ACCEPTED_DST_RELATIVITY_VARIANTS)
         string_value = string_abs_stx.StringHereDocAbsStx('single line in here doc\n')
         instruction_syntax = instr_abs_stx.with_explicit_contents(
             dst_path_symbol.abs_stx_of_reference,
@@ -176,7 +177,7 @@ class TestSymbolReferences(unittest.TestCase):
             'sub_dir_symbol',
             RelOptionType.REL_ACT,
             'sub-dir',
-            ACCEPTED_RELATIVITY_VARIANTS,
+            ACCEPTED_DST_RELATIVITY_VARIANTS,
         )
         contents_symbol = StringConstantSymbolContext(
             'contents_symbol_name',
@@ -239,7 +240,7 @@ class TestFailingParse(unittest.TestCase):
                     string_abs_stx.StringLiteralAbsStx('quoted string argument', QuoteType.SOFT))
             ),
         ]
-        for relativity in DISALLOWED_RELATIVITIES:
+        for relativity in DISALLOWED_DST_RELATIVITIES:
             relativity_conf = conf_rel_any(relativity)
             for contents_case in arguments_cases:
                 instruction_syntax = instr_abs_stx.with_explicit_contents(

@@ -106,6 +106,14 @@ class PathWConstNameAbsStx(PathWRelativityAbsStx, ABC):
                          )
         self._name = name
 
+    @staticmethod
+    def of_rel_opt(
+            relativity: RelOptionType,
+            name: str,
+            quoting_: Optional[QuoteType] = None,
+    ) -> 'PathWConstNameAbsStx':
+        return PathWConstNameAbsStx(OptionRelativityAbsStx(relativity), name, quoting_)
+
     @property
     def name(self) -> str:
         return self._name
