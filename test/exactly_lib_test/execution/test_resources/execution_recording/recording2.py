@@ -1,7 +1,6 @@
 """
 Utilities to record an attribute associated to execution steps to a dictionary
 """
-import types
 from typing import Callable
 
 from exactly_lib.execution import phase_step_simple as step
@@ -24,7 +23,7 @@ class PropertyRecorderBuilder:
     for different keys.
     """
 
-    def __init__(self, property_getter: types.FunctionType, recorder: dict):
+    def __init__(self, property_getter: Callable, recorder: dict):
         self.property_getter = property_getter
         self.recorder = recorder
 

@@ -264,6 +264,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         checker = _ExecutionChecker(put,
                                     input_,
                                     arrangement,
+                                    expectation_.adv,
                                     expectation_.primitive,
                                     expectation_.execution,
                                     self._configuration.applier(),
@@ -313,6 +314,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         checker = _ExecutionChecker(put,
                                     input_,
                                     arrangement,
+                                    expectation.adv,
                                     expectation.primitive,
                                     expectation.execution,
                                     self._configuration.applier(),
@@ -348,6 +350,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                 checker = _ExecutionChecker(put,
                                             input_,
                                             case.arrangement,
+                                            case.expected.adv,
                                             case.expected.primitive,
                                             case.expected.execution,
                                             self._configuration.applier(),
@@ -406,6 +409,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         checker = _ExecutionChecker(put,
                                     model_constructor,
                                     execution.arrangement,
+                                    execution.expected.adv,
                                     execution.expected.primitive,
                                     execution.expected.execution,
                                     self._configuration.applier(),
@@ -436,6 +440,7 @@ class IntegrationChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                         checker = _ExecutionChecker(put,
                                                     input_,
                                                     case.arrangement,
+                                                    case.expected.adv,
                                                     case.expected.primitive,
                                                     case.expected.execution,
                                                     self._configuration.applier(),
@@ -488,6 +493,7 @@ class _ParseAndExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self._execution_checker = _ExecutionChecker(put,
                                                     model_constructor,
                                                     arrangement,
+                                                    expectation.adv,
                                                     expectation.primitive,
                                                     expectation.execution,
                                                     configuration.applier(),
@@ -547,6 +553,8 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                  put: unittest.TestCase,
                  model_constructor: INPUT,
                  arrangement: Arrangement,
+                 adv: Callable[[AssertionResolvingEnvironment],
+                               ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]],
                  primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
                  execution: ExecutionExpectation[OUTPUT],
                  applier: Applier[PRIMITIVE, INPUT, OUTPUT],
@@ -558,6 +566,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
         self.model_constructor = model_constructor
         self.applier = applier
         self.arrangement = arrangement
+        self.adv = adv
         self.primitive = primitive
         self.execution = execution
         self.common_properties = common_properties
@@ -623,11 +632,15 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
                 self.arrangement.process_execution.os_services,
                 self.arrangement.process_execution.process_execution_settings,
                 tmp_file_spaces.tmp_dir_file_space_for_test(
-                    self.tcds.sds.internal_tmp_dir / 'application-tmp-dir')
+                    self.tcds.sds.internal_tmp_dir / 'application-tmp-dir'),
+                self.arrangement.mem_buff_size,
             ),
         )
 
-        primitive = self._resolve_primitive_value(ddv, full_resolving_env.application_environment)
+        adv = self._resolve_adv(ddv)
+        self._check_adv(adv, full_resolving_env)
+
+        primitive = self._resolve_primitive_value(adv, full_resolving_env.application_environment)
 
         return self._check_primitive(primitive, full_resolving_env)
 
@@ -645,9 +658,7 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
         return ddv
 
-    def _resolve_primitive_value(self,
-                                 ddv: FullDepsDdv[PRIMITIVE],
-                                 application_environment: ApplicationEnvironment) -> PRIMITIVE:
+    def _resolve_adv(self, ddv: FullDepsDdv[PRIMITIVE]) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         adv = ddv.value_of_any_dependency(self.tcds)
 
         asrt.is_instance(ApplicationEnvironmentDependentValue).apply_with_message(
@@ -655,6 +666,11 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
             adv,
             'adv',
         )
+        return adv
+
+    def _resolve_primitive_value(self,
+                                 adv: ApplicationEnvironmentDependentValue[PRIMITIVE],
+                                 application_environment: ApplicationEnvironment) -> PRIMITIVE:
         return adv.primitive(application_environment)
 
     def _check_validation_pre_sds(self, matcher_ddv: FullDepsDdv[PRIMITIVE]):
@@ -678,6 +694,16 @@ class _ExecutionChecker(Generic[PRIMITIVE, INPUT, OUTPUT]):
 
         if result is not None:
             raise _CheckIsDoneException()
+
+    def _check_adv(self,
+                   adv: ApplicationEnvironmentDependentValue[PRIMITIVE],
+                   resolving_env: FullResolvingEnvironment,
+                   ):
+        message_builder = asrt.MessageBuilder('adv')
+        env = AssertionResolvingEnvironment(resolving_env.tcds,
+                                            resolving_env.application_environment)
+        assertion = self.adv(env)
+        assertion.apply(self.put, adv, message_builder)
 
     def _check_primitive(self,
                          primitive: PRIMITIVE,

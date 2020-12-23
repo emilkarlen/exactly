@@ -39,13 +39,16 @@ class ExecutionConfiguration(tuple):
                 environ: Dict[str, str],
                 os_services: OsServices,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
+                mem_buff_size: int,
                 predefined_symbols: Optional[SymbolTable] = None,
-                exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
+                exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None,
+                ):
         return tuple.__new__(cls, (environ,
                                    sandbox_root_dir_resolver,
                                    symbol_table_from_none_or_value(predefined_symbols),
                                    exe_atc_and_skip_assertions,
-                                   os_services))
+                                   os_services,
+                                   mem_buff_size))
 
     @property
     def environ(self) -> Dict[str, str]:
@@ -80,3 +83,7 @@ class ExecutionConfiguration(tuple):
         and assertions should be skipped.
         """
         return self[3]
+
+    @property
+    def mem_buff_size(self) -> int:
+        return self[5]

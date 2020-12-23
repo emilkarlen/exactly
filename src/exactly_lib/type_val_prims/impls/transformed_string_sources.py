@@ -23,7 +23,8 @@ class TransformedStringSourceBase(StringSource, ABC):
         return self._transformed._tmp_file_space
 
 
-class TransformedStringSourceFromLinesBase(StringSourceFromLinesBase, TransformedStringSourceBase, ABC):
+class TransformedStringSourceFromLinesWFreezeOfTransformedBase(StringSourceFromLinesBase, TransformedStringSourceBase,
+                                                               ABC):
     def __init__(self,
                  transformation: StringTransFun,
                  transformed: StringSource,
@@ -39,6 +40,9 @@ class TransformedStringSourceFromLinesBase(StringSourceFromLinesBase, Transforme
         return (self._transformation_may_depend_on_external_resources or
                 self._transformed.may_depend_on_external_resources)
 
+    def freeze(self):
+        self._transformed.freeze()
+
     @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
@@ -46,29 +50,18 @@ class TransformedStringSourceFromLinesBase(StringSourceFromLinesBase, Transforme
             yield self._transformation(lines)
 
 
-class TransformedStringSourceFromLines(TransformedStringSourceFromLinesBase):
+class TransformedStringSourceFromLines(TransformedStringSourceFromLinesWFreezeOfTransformedBase):
     def __init__(self,
                  transformation: StringTransFun,
                  transformed: StringSource,
                  transformation_may_depend_on_external_resources: bool,
                  get_transformer_structure: Callable[[], StructureRenderer],
                  ):
-        TransformedStringSourceFromLinesBase.__init__(self,
-                                                      transformation,
-                                                      transformed,
-                                                      transformation_may_depend_on_external_resources)
+        TransformedStringSourceFromLinesWFreezeOfTransformedBase.__init__(self,
+                                                                          transformation,
+                                                                          transformed,
+                                                                          transformation_may_depend_on_external_resources)
         self._get_transformer_structure = get_transformer_structure
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return self._transformed.new_structure_builder().with_transformed_by(self._get_transformer_structure())
-
-    @property
-    def may_depend_on_external_resources(self) -> bool:
-        return (self._transformation_may_depend_on_external_resources or
-                self._transformed.may_depend_on_external_resources)
-
-    @property
-    @contextmanager
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        with self._transformed.as_lines as lines:
-            yield self._transformation(lines)

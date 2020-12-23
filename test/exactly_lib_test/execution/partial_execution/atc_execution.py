@@ -1,4 +1,5 @@
 import os
+import os
 import pathlib
 import subprocess
 import sys
@@ -332,6 +333,7 @@ def _execute(actor: Actor,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
+             mem_buff_size: int = 2 ** 10,
              ) -> PartialExeResult:
     if current_directory is None:
         current_directory = pathlib.Path.cwd()
@@ -342,7 +344,8 @@ def _execute(actor: Actor,
                 test_case,
                 ExecutionConfiguration(dict(os.environ),
                                        os_services_access.new_for_current_os(),
-                                       sandbox_root_name_resolver.for_test()),
+                                       sandbox_root_name_resolver.for_test(),
+                                       mem_buff_size),
                 ConfPhaseValues(NameAndValue('the actor', actor),
                                 hds),
                 setup_settings,

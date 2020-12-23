@@ -88,7 +88,8 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
         ])
         processor = sut.Processor(test_case_definition,
                                   os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
-                                  suite_conf_parser)
+                                  suite_conf_parser,
+                                  2 ** 10)
 
         suite_file = File(
             suite_file_name,

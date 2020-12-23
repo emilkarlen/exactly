@@ -16,14 +16,19 @@ class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  hds: HomeDs,
                  proc_exe_settings: ProcessExecutionSettings,
-                 symbols: SymbolTable = None):
-        self.__hds = hds
-        self.__symbols = SymbolTable() if symbols is None else symbols
+                 symbols: SymbolTable,
+                 mem_buff_size: int,
+                 ):
+        if symbols is None:
+            raise ValueError('symbols is None')
+        self._hds = hds
+        self._symbols = symbols
         self._proc_exe_settings = proc_exe_settings
+        self._mem_buff_size = mem_buff_size
 
     @property
     def hds(self) -> HomeDs:
-        return self.__hds
+        return self._hds
 
     @property
     def proc_exe_settings(self) -> ProcessExecutionSettings:
@@ -31,11 +36,15 @@ class InstructionEnvironmentForPreSdsStep:
 
     @property
     def symbols(self) -> SymbolTable:
-        return self.__symbols
+        return self._symbols
+
+    @property
+    def mem_buff_size(self) -> int:
+        return self._mem_buff_size
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPreSds:
-        return PathResolvingEnvironmentPreSds(self.__hds, self.__symbols)
+        return PathResolvingEnvironmentPreSds(self._hds, self._symbols)
 
 
 class TmpFileStorage:
@@ -70,15 +79,16 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
                  proc_exe_settings: ProcessExecutionSettings,
                  sds: _sds.SandboxDs,
                  tmp_dir_space: TmpFileStorage,
-                 symbols: SymbolTable = None,
+                 symbols: SymbolTable,
+                 mem_buff_size: int,
                  ):
-        super().__init__(hds, proc_exe_settings, symbols)
+        super().__init__(hds, proc_exe_settings, symbols, mem_buff_size)
         self._tmp_dir_space = tmp_dir_space
-        self.__sds = sds
+        self._sds = sds
 
     @property
     def sds(self) -> _sds.SandboxDs:
-        return self.__sds
+        return self._sds
 
     @property
     def tcds(self) -> TestCaseDs:
@@ -91,7 +101,7 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
     @property
     def path_resolving_environment(self) -> PathResolvingEnvironmentPostSds:
-        return PathResolvingEnvironmentPostSds(self.__sds, self.symbols)
+        return PathResolvingEnvironmentPostSds(self._sds, self.symbols)
 
     @property
     def path_resolving_environment_pre_or_post_sds(self) -> PathResolvingEnvironmentPreOrPostSds:

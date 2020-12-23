@@ -5,6 +5,7 @@ from typing import List, Any
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as sut
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
 def suite() -> unittest.TestSuite:
@@ -397,6 +398,17 @@ class TestAnd(unittest.TestCase):
                       sut.Constant(True)]
         sut.And(assertions).apply(self.put, 'value')
 
+    def test_two_element_list__with_stop_assertion__first(self):
+        assertions = [_AssertionThatRaisesStopAssertion(),
+                      sut.Constant(False)]
+        sut.And(assertions).apply(self.put, 'value')
+
+    def test_two_element_list__with_stop_assertion__last(self):
+        assertions = [sut.Constant(False),
+                      _AssertionThatRaisesStopAssertion()]
+        with self.assertRaises(TestException):
+            sut.And(assertions).apply(self.put, 'value')
+
 
 class TestOr(unittest.TestCase):
     def setUp(self):
@@ -439,6 +451,16 @@ class TestOr(unittest.TestCase):
     def test_two_element_list__true_true(self):
         assertions = [sut.Constant(True),
                       sut.Constant(True)]
+        sut.Or(assertions).apply(self.put, 'value')
+
+    def test_two_element_list__with_stop_assertion__first(self):
+        assertions = [_AssertionThatRaisesStopAssertion(),
+                      sut.Constant(False)]
+        sut.Or(assertions).apply(self.put, 'value')
+
+    def test_two_element_list__with_stop_assertion__last(self):
+        assertions = [sut.Constant(False),
+                      _AssertionThatRaisesStopAssertion()]
         sut.Or(assertions).apply(self.put, 'value')
 
 
@@ -678,6 +700,14 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
     put = unittest.TestCase()
     put.failureException = TestException
     return put
+
+
+class _AssertionThatRaisesStopAssertion(sut.ValueAssertionBase):
+    def _apply(self,
+               put: unittest.TestCase,
+               value,
+               message_builder: MessageBuilder):
+        raise sut.StopAssertion()
 
 
 if __name__ == '__main__':

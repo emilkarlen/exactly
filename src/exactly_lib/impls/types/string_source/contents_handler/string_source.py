@@ -16,6 +16,10 @@ class StringSourceViaContentsHandler(StringSource, ABC):
         pass
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return self._get_contents().may_depend_on_external_resources
+
+    @property
     def as_str(self) -> str:
         return self._get_contents().as_str
 

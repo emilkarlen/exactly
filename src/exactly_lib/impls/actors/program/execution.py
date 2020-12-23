@@ -70,6 +70,7 @@ class Executor(parts.Executor, ABC):
             self._os_services,
             environment.proc_exe_settings,
             environment.tmp_dir__path_access.paths_access,
+            environment.mem_buff_size,
         )
 
 

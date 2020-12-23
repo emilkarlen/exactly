@@ -51,6 +51,7 @@ def configuration_with_no_instructions_and_no_preprocessor() -> Configuration:
     return Configuration(test_case_definition_with_no_instructions_and_no_preprocessor(),
                          test_case_handling_setup(),
                          os_services_access.new_for_current_os(),
+                         2 ** 10,
                          is_keep_sandbox=False)
 
 

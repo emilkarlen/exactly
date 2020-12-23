@@ -33,6 +33,9 @@ class StringSource(StringSourceFromLinesBase):
     def may_depend_on_external_resources(self) -> bool:
         return False
 
+    def freeze(self):
+        pass
+
     @property
     def as_str(self) -> str:
         return self._contents
@@ -40,7 +43,7 @@ class StringSource(StringSourceFromLinesBase):
     @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
-        yield iter([self._contents])
+        yield iter(self._contents.splitlines(keepends=True))
 
     @property
     def _tmp_file_space(self) -> DirFileSpace:

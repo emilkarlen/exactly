@@ -30,7 +30,8 @@ from exactly_lib.util.render import combinators as rend_comb
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources import integration_check as sut
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import ParseExpectation, ExecutionExpectation, \
-    Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant
+    Expectation, TcdsArrangement, Arrangement, arrangement_wo_tcds, arrangement_w_tcds, prim_asrt__constant, \
+    adv_asrt__constant
 from exactly_lib_test.impls.types.matcher.test_resources import matchers
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import constant_model
 from exactly_lib_test.impls.types.matcher.test_resources.integration_check import \
@@ -429,6 +430,15 @@ class TestFailingExpectations(TestCaseBase):
                     validation=asrt_validation.post_sds_validation_fails(),
                 ),
             )
+        )
+
+    def test_fail_due_to_unsatisfied_assertion_on_adv(self):
+        self._check_raises_test_error__single_and_multi(
+            ConstantParser(_MATCHER_THAT_MATCHES),
+            Expectation(
+                execution=ExecutionExpectation(),
+                adv=adv_asrt__constant(asrt.fail('adv'))
+            ),
         )
 
     def test_fail_due_to_unsatisfied_assertion_on_primitive(self):

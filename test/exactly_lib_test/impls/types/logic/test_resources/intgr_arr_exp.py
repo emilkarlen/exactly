@@ -5,6 +5,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.impls.types.test_resources.validation import ValidationAssertions, all_validations_passes
 from exactly_lib_test.tcfs.test_resources import tcds_populators, hds_populators, non_hds_populator
@@ -22,7 +23,8 @@ class Arrangement:
     def __init__(self,
                  symbols: Optional[SymbolTable] = None,
                  tcds: Optional[TcdsArrangement] = None,
-                 process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement()
+                 process_execution: ProcessExecutionArrangement = ProcessExecutionArrangement(),
+                 mem_buff_size: int = 2 ** 10,
                  ):
         """
         :param tcds: Not None iff TCDS is used (and must thus be created)
@@ -30,6 +32,7 @@ class Arrangement:
         self.symbols = symbol_table_from_none_or_value(symbols)
         self.tcds = tcds
         self.process_execution = process_execution
+        self.mem_buff_size = mem_buff_size
 
 
 def arrangement_w_tcds(tcds_contents: tcds_populators.TcdsPopulator = tcds_populators.empty(),
@@ -101,7 +104,17 @@ class AssertionResolvingEnvironment:
         self.app_env = app_env
 
 
+MkAdvAssertion = Callable[
+    [AssertionResolvingEnvironment],
+    ValueAssertion[ApplicationEnvironmentDependentValue]
+]
+
+
 def prim_asrt__any(environment: AssertionResolvingEnvironment) -> ValueAssertion:
+    return asrt.anything_goes()
+
+
+def adv_asrt__any(environment: AssertionResolvingEnvironment) -> ValueAssertion[ApplicationEnvironmentDependentValue]:
     return asrt.anything_goes()
 
 
@@ -113,14 +126,26 @@ def prim_asrt__constant(primitive: ValueAssertion[PRIMITIVE]
     return ret_val
 
 
+def adv_asrt__constant(adv: ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]
+                       ) -> MkAdvAssertion:
+    def ret_val(environment: AssertionResolvingEnvironment,
+                ) -> ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]:
+        return adv
+
+    return ret_val
+
+
 class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
     def __init__(
             self,
             execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
             primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]] = prim_asrt__any,
+            adv: Callable[[AssertionResolvingEnvironment],
+                          ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]]] = adv_asrt__any,
     ):
         self.execution = execution
         self.primitive = primitive
+        self.adv = adv
 
     @staticmethod
     def of_exe(
@@ -134,7 +159,7 @@ class PrimAndExeExpectation(Generic[PRIMITIVE, OUTPUT]):
                 main_result=main_result,
                 is_hard_error=is_hard_error,
             ),
-            prim_asrt__any
+            prim_asrt__any,
         )
 
     @staticmethod
@@ -162,6 +187,7 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
             parse: ParseExpectation = ParseExpectation(),
             execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
             primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]] = prim_asrt__any,
+            adv: MkAdvAssertion = adv_asrt__any,
     ):
         """
         :param primitive: Expectation of custom properties of the primitive object,
@@ -170,6 +196,7 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
         self.parse = parse
         self.execution = execution
         self.primitive = primitive
+        self.adv = adv
 
     @staticmethod
     def of_prim(primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]],
@@ -188,7 +215,8 @@ class Expectation(Generic[PRIMITIVE, OUTPUT]):
     def prim_and_exe(self) -> PrimAndExeExpectation[PRIMITIVE, OUTPUT]:
         return PrimAndExeExpectation(
             self.execution,
-            self.primitive
+            self.primitive,
+            self.adv,
         )
 
 
@@ -198,21 +226,25 @@ class MultiSourceExpectation(Generic[PRIMITIVE, OUTPUT]):
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
             primitive: Callable[[AssertionResolvingEnvironment], ValueAssertion[PRIMITIVE]] = prim_asrt__any,
+            adv: MkAdvAssertion = adv_asrt__any,
     ):
         self.symbol_references = symbol_references
         self.execution = execution
         self.primitive = primitive
+        self.adv = adv
 
     @staticmethod
     def of_const(
             symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
             execution: ExecutionExpectation[OUTPUT] = ExecutionExpectation(),
             primitive: ValueAssertion[PRIMITIVE] = asrt.anything_goes(),
+            adv: ValueAssertion[ApplicationEnvironmentDependentValue[PRIMITIVE]] = asrt.anything_goes(),
     ) -> 'MultiSourceExpectation':
         return MultiSourceExpectation(
             symbol_references,
             execution,
             prim_asrt__constant(primitive),
+            adv_asrt__constant(adv),
         )
 
     @staticmethod

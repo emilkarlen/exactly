@@ -25,5 +25,6 @@ def full_resolving_env_for_instruction_env(os_services: OsServices,
             os_services,
             environment.proc_exe_settings,
             environment.tmp_dir__path_access.paths_access,
+            environment.mem_buff_size,
         ),
     )

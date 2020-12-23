@@ -32,6 +32,7 @@ def new_processor(setup_phase_instructions: Dict[str, InstructionParser],
     default_configuration = processors.Configuration(test_case_definition,
                                                      test_case_handling_setup_with_identity_preprocessor(),
                                                      os_services_access.new_for_current_os(),
+                                                     2 ** 10,
                                                      False,
                                                      sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
 

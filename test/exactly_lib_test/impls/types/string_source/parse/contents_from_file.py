@@ -58,7 +58,7 @@ class TestSuccessfulExecution(unittest.TestCase):
                     DirContents([src_file]))
             ),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__const(
+                asrt_string_source.matches__str__before_and_after_freeze__const(
                     src_file.contents,
                     may_depend_on_external_resources=True,
                 ),
@@ -98,7 +98,7 @@ class TestSuccessfulExecution(unittest.TestCase):
                 symbols=symbols,
             ),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__const(
+                asrt_string_source.matches__str__before_and_after_freeze__const(
                     expected_contents,
                     may_depend_on_external_resources=True,
                 ),
@@ -150,7 +150,7 @@ class TestSymbolReferences(unittest.TestCase):
                     DirContents([src_file]))
             ),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__const(
+                asrt_string_source.matches__str__before_and_after_freeze__const(
                     expected_contents,
                     may_depend_on_external_resources=True,
                 ),
@@ -321,7 +321,7 @@ class TestSyntax(unittest.TestCase):
                     ),
                     symbol_references=to_upper_transformer.references_assertion,
                 ),
-                primitive=asrt_string_source.matches__str__const(
+                primitive=asrt_string_source.matches__str__before_and_after_freeze__const(
                     expected_contents,
                     may_depend_on_external_resources=True,
                 )

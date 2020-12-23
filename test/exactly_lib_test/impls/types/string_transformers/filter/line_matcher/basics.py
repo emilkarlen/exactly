@@ -18,6 +18,7 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.string_matcher.test_resources import arguments_building2 as sm_args
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as st_args
+from exactly_lib_test.impls.types.string_transformers.test_resources import freeze_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \
     expectation_of_successful_execution, StExpectation
@@ -132,6 +133,7 @@ class TestFilesMatcherShouldBeParsedAsSimpleExpression(unittest.TestCase):
                 symbol_references=line_matcher__constant_false.references_assertion,
                 output_lines=[],
                 may_depend_on_external_resources=True,
+                frozen_may_depend_on_external_resources=asrt.anything_goes(),
                 is_identity_transformer=False,
             )
         )
@@ -404,6 +406,8 @@ def expectation_of_successful_filter_execution(output_lines: List[str],
     return integration_check.expectation_of_successful_execution(
         output_lines,
         True,
+        asrt.anything_goes(),
         symbol_references,
         False,
+        adv=freeze_check.single_access_of_source_model_after_freeze__that_is_not_freeze,
     )

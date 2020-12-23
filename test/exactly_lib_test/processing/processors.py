@@ -322,6 +322,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
         tc_definition,
         tc_handling_setup,
         os_services_access.new_for_current_os(),
+        2 ** 10,
         is_keep_sandbox=False,
     )
 

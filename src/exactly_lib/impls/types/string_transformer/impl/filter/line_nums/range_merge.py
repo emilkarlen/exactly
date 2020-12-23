@@ -13,6 +13,12 @@ class MergedRanges:
                  tail: Optional[int],
                  is_empty: bool,
                  ):
+        """
+        :param head: if present as n: the ranges include (neg infinity, n]
+        :param body:
+        :param tail: if present as n: the ranges include [n, pos infinity)
+        :param is_empty:
+        """
         self.head = head
         self.body = body
         self.tail = tail

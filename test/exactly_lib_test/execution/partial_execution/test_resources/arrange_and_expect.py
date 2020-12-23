@@ -26,11 +26,13 @@ class Arrangement:
                  actor: Actor,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
                  os_services: OsServices = os_services_access.new_for_current_os(),
+                 mem_buff_size: int = 2 ** 10,
                  ):
         self.test_case = test_case
         self.actor = actor
         self.initial_setup_settings = initial_setup_settings
         self.os_services = os_services
+        self.mem_buff_size = mem_buff_size
 
 
 class Expectation:
@@ -50,7 +52,8 @@ def execute_and_check(put: unittest.TestCase,
                 arrangement.test_case,
                 ExecutionConfiguration(dict(os.environ),
                                        arrangement.os_services,
-                                       sandbox_root_name_resolver.for_test()),
+                                       sandbox_root_name_resolver.for_test(),
+                                       arrangement.mem_buff_size),
                 ConfPhaseValues(NameAndValue('the actor', arrangement.actor),
                                 hds),
                 arrangement.initial_setup_settings,

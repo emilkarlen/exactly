@@ -1,13 +1,14 @@
-from typing import List, Sequence
+from typing import List, Sequence, Callable
 
 from exactly_lib.impls.types.string_transformer import parse_string_transformer
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.sdv_structure import SymbolReference
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.logic.test_resources import integration_check as logic_integration_check
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import Expectation, ParseExpectation, \
-    ExecutionExpectation, prim_asrt__constant
+    ExecutionExpectation, prim_asrt__constant, adv_asrt__any, AssertionResolvingEnvironment
 from exactly_lib_test.impls.types.string_transformers.test_resources.transformer_checker import \
     StringTransformerPropertiesConfiguration
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -39,21 +40,50 @@ CHECKER__PARSE_SIMPLE__WO_IMPLICIT_MODEL_EVALUATION = logic_integration_check.In
 
 def expectation_of_successful_execution(output_lines: List[str],
                                         may_depend_on_external_resources: bool,
+                                        frozen_may_depend_on_external_resources: ValueAssertion[bool],
                                         symbol_references: ValueAssertion[Sequence[SymbolReference]],
                                         is_identity_transformer: bool = False,
-                                        source: ValueAssertion[ParseSource] = asrt.anything_goes()) -> StExpectation:
+                                        source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                                        adv: Callable[
+                                            [AssertionResolvingEnvironment],
+                                            ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]
+                                        ] = adv_asrt__any,
+                                        ) -> StExpectation:
     return Expectation(
         ParseExpectation(
             source=source,
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=asrt_string_source.matches__lines(
+            main_result=asrt_string_source.matches__lines__pre_post_freeze(
                 asrt.equals(output_lines),
                 may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
+                frozen_may_depend_on_external_resources=frozen_may_depend_on_external_resources,
             ),
         ),
         prim_asrt__constant(
             asrt_string_transformer.is_identity_transformer(is_identity_transformer)
-        )
+        ),
+        adv,
+    )
+
+
+def expectation_of_successful_execution_2(output_lines: List[str],
+                                          may_depend_on_external_resources: bool,
+                                          symbol_references: ValueAssertion[Sequence[SymbolReference]],
+                                          is_identity_transformer: bool = False,
+                                          source: ValueAssertion[ParseSource] = asrt.anything_goes(),
+                                          adv: Callable[
+                                              [AssertionResolvingEnvironment],
+                                              ValueAssertion[ApplicationEnvironmentDependentValue[StringTransformer]]
+                                          ] = adv_asrt__any,
+                                          ) -> StExpectation:
+    return expectation_of_successful_execution(
+        output_lines,
+        may_depend_on_external_resources,
+        asrt.equals(may_depend_on_external_resources),
+        symbol_references,
+        is_identity_transformer,
+        source,
+        adv,
     )

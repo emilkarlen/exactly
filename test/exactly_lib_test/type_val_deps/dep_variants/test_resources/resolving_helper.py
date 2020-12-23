@@ -19,13 +19,15 @@ def resolving_helper(
         file_space: DirFileSpace = DirFileSpaceThatMustNoBeUsed(),
         os_services_: OsServices = os_services_access.new_for_current_os(),
         process_execution_settings: ProcessExecutionSettings = execution_elements.with_no_timeout(),
+        mem_buff_size: int = 2 ** 10,
 ) -> LogicTypeResolvingHelper:
     return LogicTypeResolvingHelper(
         (symbols if symbols is not None else empty_symbol_table()),
         tcds,
         ApplicationEnvironment(os_services_,
                                process_execution_settings,
-                               file_space),
+                               file_space,
+                               mem_buff_size),
     )
 
 

@@ -21,7 +21,7 @@ def transformed_by_command(transformer: Command,
     def _structure_of_command() -> StructureRenderer:
         return transformer.structure().build()
 
-    return transformed_string_sources.TransformedStringSourceFromWriter(
+    return transformed_string_sources.transformed_string_source_from_writer(
         _TransformationWriter(
             environment,
             ignore_exit_code,
@@ -29,6 +29,7 @@ def transformed_by_command(transformer: Command,
         ).write,
         source_model,
         _structure_of_command,
+        environment.mem_buff_size,
     )
 
 

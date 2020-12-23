@@ -1,4 +1,5 @@
 import os
+import os
 import unittest
 from typing import Optional
 
@@ -54,10 +55,13 @@ class Arrangement:
     def __init__(self,
                  test_case: TestCaseGeneratorForExecutionRecording,
                  actor: Actor,
-                 timeout_in_seconds: Optional[int] = None):
+                 timeout_in_seconds: Optional[int] = None,
+                 mem_buff_size: int = 2 ** 10,
+                 ):
         self.test_case_generator = test_case
         self.actor = actor
         self.timeout_in_seconds = timeout_in_seconds
+        self.mem_buff_size = mem_buff_size
 
 
 def arr_for_py3_source(test_case: TestCaseGeneratorForExecutionRecording,
@@ -91,6 +95,7 @@ def check(put: unittest.TestCase,
         exe_conf = ExecutionConfiguration(dict(os.environ),
                                           os_services_access.new_for_current_os(),
                                           sandbox_root_name_resolver.for_test(),
+                                          arrangement.mem_buff_size,
                                           exe_atc_and_skip_assertions=std_files)
         with home_directory_structure() as hds:
             conf_phase_values = ConfPhaseValues(NameAndValue('the actor', actor),

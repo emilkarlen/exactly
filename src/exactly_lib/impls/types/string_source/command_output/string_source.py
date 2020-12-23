@@ -1,10 +1,10 @@
 from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.definitions.primitives import program
 from exactly_lib.impls.description_tree import custom_details
+from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
 from exactly_lib.impls.types.string_source.contents_handler import handler_via_write_to
 from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
 from exactly_lib.impls.types.string_source.contents_handler.handler_via_file import ContentsHandlerViaFile
-from exactly_lib.impls.types.string_source.contents_handler.string_source import StringSourceViaContentsHandler
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
@@ -22,34 +22,47 @@ def string_source(structure_header: str,
                   command: Command,
                   proc_exe_settings: ProcessExecutionSettings,
                   command_executor: CommandExecutor,
+                  mem_buff_size: int,
                   tmp_file_space: DirFileSpace,
                   ) -> StringSource:
-    return _StringSource(
+    constructor_of_structure_builder = ConstructorOfStructureBuilder(
         structure_header,
+        ignore_exit_code,
+        command.structure_renderer(),
+    )
+    contents_handler = _contents_handler(
         ignore_exit_code,
         output_channel_to_capture,
         command,
-        _contents_handler(
-            ignore_exit_code,
-            output_channel_to_capture,
-            command,
-            proc_exe_settings,
-            command_executor,
-            tmp_file_space,
+        proc_exe_settings,
+        command_executor,
+        tmp_file_space,
+    )
+    return StringSourceWithCachedFrozen(
+        constructor_of_structure_builder.new_structure_builder,
+        contents_handler,
+        mem_buff_size,
+        process_output_files.PROC_OUTPUT_FILE_NAMES[output_channel_to_capture],
+    )
+
+
+class ConstructorOfStructureBuilder:
+    def __init__(self,
+                 structure_header: str,
+                 ignore_exit_code: bool,
+                 command: StructureRenderer,
+                 ):
+        self._structure_header = structure_header
+        self._ignore_exit_code = ignore_exit_code
+        self._command = command
+
+    def new_structure_builder(self) -> StringSourceStructureBuilder:
+        return StringSourceStructureBuilder(
+            self._structure_header,
+            (custom_details.optional_option(program.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
+                                            self._ignore_exit_code),),
+            (self._command,),
         )
-    )
-
-
-def structure_builder_for(structure_header: str,
-                          ignore_exit_code: bool,
-                          command: StructureRenderer,
-                          ) -> StringSourceStructureBuilder:
-    return StringSourceStructureBuilder(
-        structure_header,
-        (custom_details.optional_option(program.WITH_IGNORED_EXIT_CODE_OPTION_NAME,
-                                        ignore_exit_code),),
-        (command,),
-    )
 
 
 def _contents_handler(
@@ -101,32 +114,3 @@ def _writer(ignore_exit_code: bool,
         from . import exit_relevant
         return exit_relevant.StdoutWriter(command, proc_exe_settings, command_executor,
                                           std_err_contents.STD_ERR_TEXT_READER)
-
-
-class _StringSource(StringSourceViaContentsHandler):
-    def __init__(self,
-                 structure_header: str,
-                 ignore_exit_code: bool,
-                 output_channel_to_capture: ProcOutputFile,
-                 command: Command,
-                 contents: ContentsHandler,
-                 ):
-        self._structure_header = structure_header
-        self._ignore_exit_code = ignore_exit_code
-        self._output_channel_to_capture = output_channel_to_capture
-        self._command = command
-        self._contents = contents
-
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return structure_builder_for(
-            self._structure_header,
-            self._ignore_exit_code,
-            self._command.structure_renderer()
-        )
-
-    @property
-    def may_depend_on_external_resources(self) -> bool:
-        return True
-
-    def _get_contents(self) -> ContentsHandler:
-        return self._contents

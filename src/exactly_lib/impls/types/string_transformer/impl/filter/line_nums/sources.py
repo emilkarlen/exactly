@@ -1,14 +1,206 @@
+from abc import ABC, abstractmethod
 from collections import deque
 from contextlib import contextmanager
 from typing import Iterator, List, Optional, Deque, Callable, ContextManager
 
+from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
+from exactly_lib.impls.types.string_source.contents_handler import delegated_with_init
+from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
 from exactly_lib.impls.types.string_source.source_from_lines import StringSourceFromLinesBase
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
-from exactly_lib.type_val_prims.impls.transformed_string_sources import TransformedStringSourceFromLinesBase
+from exactly_lib.impls.types.string_transformer.impl.filter.string_sources import \
+    TransformedContentsHandlerViaAsLinesBase
+from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+
+
+def single_non_neg_int_source(mem_buff_size: int,
+                              transformer_description: Callable[[], StructureRenderer],
+                              source: StringSource,
+                              zero_based_line_num: int,
+                              ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _SingleNonNegIntTransformer(zero_based_line_num),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def single_neg_int_source(mem_buff_size: int,
+                          transformer_description: Callable[[], StructureRenderer],
+                          source: StringSource,
+                          neg_line_num: int,
+                          ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _SingleNegIntTransformer(neg_line_num),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def upper_non_neg_limit_source(mem_buff_size: int,
+                               transformer_description: Callable[[], StructureRenderer],
+                               source: StringSource,
+                               zero_based_upper_limit: int,
+                               ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _UpperNonNegLimitTransformer(zero_based_upper_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def upper_neg_limit_source(mem_buff_size: int,
+                           transformer_description: Callable[[], StructureRenderer],
+                           source: StringSource,
+                           neg_line_num: int,
+                           ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _UpperNegLimitTransformer(neg_line_num),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_non_neg_limit_source(mem_buff_size: int,
+                               transformer_description: Callable[[], StructureRenderer],
+                               source: StringSource,
+                               zero_based_lower_limit: int,
+                               ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNonNegLimitTransformer(zero_based_lower_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_neg_limit_source(mem_buff_size: int,
+                           transformer_description: Callable[[], StructureRenderer],
+                           source: StringSource,
+                           neg_line_num: int,
+                           ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNegLimitTransformer(neg_line_num),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_non_neg_upper_non_neg_source(mem_buff_size: int,
+                                       transformer_description: Callable[[], StructureRenderer],
+                                       source: StringSource,
+                                       zero_based_lower_limit: int,
+                                       zero_based_upper_limit: int,
+                                       ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNonNegUpperNonNegTransformer(zero_based_lower_limit, zero_based_upper_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_non_neg_upper_neg_source(mem_buff_size: int,
+                                   transformer_description: Callable[[], StructureRenderer],
+                                   source: StringSource,
+                                   zero_based_lower_limit: int,
+                                   neg_upper_limit: int,
+                                   ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNonNegUpperNegTransformer(zero_based_lower_limit, neg_upper_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_neg_upper_non_neg_source(mem_buff_size: int,
+                                   transformer_description: Callable[[], StructureRenderer],
+                                   source: StringSource,
+                                   neg_lower_limit: int,
+                                   zero_based_upper_limit: int,
+                                   ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNegUpperNonNegTransformer(neg_lower_limit, zero_based_upper_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def lower_neg_upper_neg_source(mem_buff_size: int,
+                               transformer_description: Callable[[], StructureRenderer],
+                               source: StringSource,
+                               neg_lower_limit: int,
+                               neg_upper_limit: int,
+                               ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _LowerNegUpperNegTransformer(neg_lower_limit, neg_upper_limit),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+class SegmentsWithPositiveIncreasingValues:
+    def __init__(self,
+                 head: Optional[int],
+                 body: List[FromTo],
+                 tail: Optional[int],
+                 ):
+        self.head = head
+        self.body = body
+        self.tail = tail
+
+
+def segments_source(mem_buff_size: int,
+                    transformer_description: Callable[[], StructureRenderer],
+                    source: StringSource,
+                    segments: SegmentsWithPositiveIncreasingValues,
+                    ) -> StringSource:
+    return _string_source_of_lines_transformer(
+        _TransformMethodOfSegments(segments),
+        transformer_description,
+        source,
+        mem_buff_size,
+    )
+
+
+def multiple_ranges_w_negative_values(
+        mem_buff_size: int,
+        transformer_description: Callable[[], StructureRenderer],
+        source: StringSource,
+        negatives: List[Range],
+        partial_partitioning: range_merge.Partitioning,
+) -> StringSource:
+    def new_structure_builder() -> StringSourceStructureBuilder:
+        return source.new_structure_builder().with_transformed_by(transformer_description())
+
+    def may_depend_on_external_resources_of_uninitialized() -> bool:
+        return source.may_depend_on_external_resources
+
+    def get_tmp_file_space() -> DirFileSpace:
+        return source._tmp_file_space
+
+    return StringSourceWithCachedFrozen(
+        new_structure_builder,
+        delegated_with_init.DelegatedContentsHandlerWithInit(
+            _HandlerResolverForMultipleRangesWNegativeValues(source, negatives, partial_partitioning).resolve,
+            may_depend_on_external_resources_of_uninitialized,
+            get_tmp_file_space,
+        ),
+        mem_buff_size,
+        None,
+    )
 
 
 class Empty(StringSourceFromLinesBase):
@@ -18,6 +210,9 @@ class Empty(StringSourceFromLinesBase):
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return self._transformed.new_structure_builder()
+
+    def freeze(self):
+        pass
 
     @property
     def may_depend_on_external_resources(self) -> bool:
@@ -33,24 +228,50 @@ class Empty(StringSourceFromLinesBase):
         return self._transformed._tmp_file_space
 
 
-class StringSourceWStructureOfTransformed(TransformedStringSourceFromLinesBase):
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return self._transformed.new_structure_builder()
+class _LinesTransformer(ABC):
+    @abstractmethod
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
+        pass
 
 
-class SingleNonNegIntSource(StringSourceWStructureOfTransformed):
+def _string_source_of_lines_transformer(
+        transformer: _LinesTransformer,
+        transformer_description: Callable[[], StructureRenderer],
+        source: StringSource,
+        mem_buff_size: int,
+) -> StringSource:
+    def new_structure_builder() -> StringSourceStructureBuilder:
+        return source.new_structure_builder().with_transformed_by(transformer_description())
+
+    return StringSourceWithCachedFrozen(
+        new_structure_builder,
+        _ContentsHandlerOfLinesTransformer(transformer, source),
+        mem_buff_size,
+        None,
+    )
+
+
+class _ContentsHandlerOfLinesTransformer(TransformedContentsHandlerViaAsLinesBase):
     def __init__(self,
-                 transformed: StringSource,
-                 zero_based_line_num: int,
+                 transformer: _LinesTransformer,
+                 source: StringSource,
                  ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+        super().__init__(source, None)
+        self._transformer = transformer
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return self._source.may_depend_on_external_resources
+
+    def _transform_lines(self, lines: Iterator[str]) -> Iterator[str]:
+        return self._transformer.transform(lines)
+
+
+class _SingleNonNegIntTransformer(_LinesTransformer):
+    def __init__(self, zero_based_line_num: int):
         self._zero_based_line_num = zero_based_line_num
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         requested = self._zero_based_line_num
         current = 0
         for line in lines:
@@ -61,20 +282,12 @@ class SingleNonNegIntSource(StringSourceWStructureOfTransformed):
                 current += 1
 
 
-class SingleNegIntSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 neg_line_num: int,
-                 ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+class _SingleNegIntTransformer(_LinesTransformer):
+    def __init__(self, neg_line_num: int):
         self._neg_line_num = neg_line_num
         self._pocket_size = abs(neg_line_num)
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         pocket = _filled_pocket(self._pocket_size, lines)
 
         if len(pocket) < self._pocket_size:
@@ -87,19 +300,11 @@ class SingleNegIntSource(StringSourceWStructureOfTransformed):
         yield pocket[0]
 
 
-class UpperNonNegLimitSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 zero_based_upper_limit: int,
-                 ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+class _UpperNonNegLimitTransformer(_LinesTransformer):
+    def __init__(self, zero_based_upper_limit: int):
         self._zero_based_upper_limit = zero_based_upper_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         limit = self._zero_based_upper_limit
         current = 0
 
@@ -110,19 +315,11 @@ class UpperNonNegLimitSource(StringSourceWStructureOfTransformed):
             current += 1
 
 
-class UpperNegLimitSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 neg_line_num: int,
-                 ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+class _UpperNegLimitTransformer(_LinesTransformer):
+    def __init__(self, neg_line_num: int):
         self._neg_line_num = neg_line_num
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         pocket_size = abs(self._neg_line_num)
         pocket = _filled_pocket(pocket_size, lines)
 
@@ -138,38 +335,22 @@ class UpperNegLimitSource(StringSourceWStructureOfTransformed):
             yield pocket[0]
 
 
-class LowerNonNegLimitSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 zero_based_lower_limit: int,
-                 ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+class _LowerNonNegLimitTransformer(_LinesTransformer):
+    def __init__(self, zero_based_lower_limit: int):
         self._zero_based_lower_limit = zero_based_lower_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         _skip(self._zero_based_lower_limit, lines)
 
         for line in lines:
             yield line
 
 
-class LowerNegLimitSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 neg_line_num: int,
-                 ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
+class _LowerNegLimitTransformer(_LinesTransformer):
+    def __init__(self, neg_line_num: int):
         self._neg_line_num = neg_line_num
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         pocket_size = abs(self._neg_line_num)
         pocket = _filled_pocket(pocket_size, lines)
 
@@ -181,21 +362,15 @@ class LowerNegLimitSource(StringSourceWStructureOfTransformed):
             yield line
 
 
-class LowerNonNegUpperNonNegSource(StringSourceWStructureOfTransformed):
+class _LowerNonNegUpperNonNegTransformer(_LinesTransformer):
     def __init__(self,
-                 transformed: StringSource,
                  zero_based_lower_limit: int,
                  zero_based_upper_limit: int,
                  ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
         self._zero_based_lower_limit = zero_based_lower_limit
         self._zero_based_upper_limit = zero_based_upper_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         _skip(self._zero_based_lower_limit, lines)
         num_requested = self._zero_based_upper_limit - self._zero_based_lower_limit + 1
 
@@ -203,21 +378,15 @@ class LowerNonNegUpperNonNegSource(StringSourceWStructureOfTransformed):
             yield line
 
 
-class LowerNonNegUpperNegSource(StringSourceWStructureOfTransformed):
+class _LowerNonNegUpperNegTransformer(_LinesTransformer):
     def __init__(self,
-                 transformed: StringSource,
                  zero_based_lower_limit: int,
                  neg_upper_limit: int,
                  ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
         self._zero_based_lower_limit = zero_based_lower_limit
         self._neg_upper_limit = neg_upper_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         upper_len = abs(self._neg_upper_limit)
 
         pocket = _filled_pocket(upper_len, lines)
@@ -245,21 +414,15 @@ class LowerNonNegUpperNegSource(StringSourceWStructureOfTransformed):
         return left_to_consume == 0
 
 
-class LowerNegUpperNonNegSource(StringSourceWStructureOfTransformed):
+class _LowerNegUpperNonNegTransformer(_LinesTransformer):
     def __init__(self,
-                 transformed: StringSource,
                  neg_lower_limit: int,
                  zero_based_upper_limit: int,
                  ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
         self._neg_lower_limit = neg_lower_limit
         self._zero_based_upper_limit = zero_based_upper_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         upper = self._zero_based_upper_limit
         lower_len = abs(self._neg_lower_limit)
 
@@ -283,24 +446,18 @@ class LowerNegUpperNonNegSource(StringSourceWStructureOfTransformed):
             num_to_produce -= 1
 
 
-class LowerNegUpperNegSource(StringSourceWStructureOfTransformed):
+class _LowerNegUpperNegTransformer(_LinesTransformer):
     def __init__(self,
-                 transformed: StringSource,
                  neg_lower_limit: int,
                  neg_upper_limit: int,
                  ):
         """
         neg_lower_limit < neg_upper_limit
         """
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
         self._neg_lower_limit = neg_lower_limit
         self._neg_upper_limit = neg_upper_limit
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
         lower_len = abs(self._neg_lower_limit)
         upper_len = abs(self._neg_upper_limit)
 
@@ -325,21 +482,8 @@ class LowerNegUpperNegSource(StringSourceWStructureOfTransformed):
             num_to_produce -= 1
 
 
-class SegmentsWithPositiveIncreasingValues:
-    def __init__(self,
-                 head: Optional[int],
-                 body: List[FromTo],
-                 tail: Optional[int],
-                 ):
-        self.head = head
-        self.body = body
-        self.tail = tail
-
-
-class _TransformMethodOfSegments:
-    def __init__(self,
-                 segments: SegmentsWithPositiveIncreasingValues,
-                 ):
+class _TransformMethodOfSegments(_LinesTransformer):
+    def __init__(self, segments: SegmentsWithPositiveIncreasingValues):
         self._segments = segments
 
     def transform(self, lines: Iterator[str]) -> Iterator[str]:
@@ -380,55 +524,46 @@ class _TransformMethodOfSegments:
                 yield line
 
 
-class SegmentsSource(StringSourceWStructureOfTransformed):
-    def __init__(self,
-                 transformed: StringSource,
-                 segments: SegmentsWithPositiveIncreasingValues,
-                 ):
-        StringSourceWStructureOfTransformed.__init__(
-            self,
-            _TransformMethodOfSegments(segments).transform,
-            transformed,
-            False,
-        )
-        self._segments = segments
+class _EmptyLinesTransformer(_LinesTransformer):
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
+        return ()
 
 
-class MultipleRangesWNegativeValues(StringSourceWStructureOfTransformed):
+class _EverythingLinesTransformer(_LinesTransformer):
+    def transform(self, lines: Iterator[str]) -> Iterator[str]:
+        return lines
+
+
+class _HandlerResolverForMultipleRangesWNegativeValues:
     def __init__(self,
-                 transformed: StringSource,
+                 source: StringSource,
                  negatives: List[Range],
                  partial_partitioning: range_merge.Partitioning,
                  ):
-        super().__init__(
-            self._transform,
-            transformed,
-            False,
-        )
-        self._transformed_model = transformed
+        self._source = source
         self._partial_partitioning = partial_partitioning
         self._negatives = negatives
-        self._transform_impl = self._transform__with_unknown_num_lines
 
-    def _transform(self, lines: Iterator[str]) -> Iterator[str]:
-        return self._transform_impl(lines)
+    def resolve(self) -> ContentsHandler:
+        self._source.freeze()
 
-    def _transform__with_unknown_num_lines(self, lines: Iterator[str]) -> Iterator[str]:
-        num_lines = self._num_lines_of_transformed_model()
+        num_lines = self._num_lines_of_source_model()
+        merged_ranges = self._ranges_corresponding_to(num_lines)
+        transformer = self._transform_method_for(merged_ranges)
+
+        return _ContentsHandlerOfLinesTransformer(transformer, self._source)
+
+    def _ranges_corresponding_to(self, num_lines: int) -> range_merge.MergedRanges:
         translated_negatives = range_merge.translate_neg_to_non_neg(self._negatives, num_lines)
         range_merge.partition(translated_negatives, self._partial_partitioning)
-        merged_ranges = range_merge.merge(self._partial_partitioning)
+        return range_merge.merge(self._partial_partitioning)
 
-        self._transform_impl = self._transform_method_for(merged_ranges)
-
-        return self._transform_impl(lines)
-
-    def _transform_method_for(self, merged_ranges: range_merge.MergedRanges,
-                              ) -> Callable[[Iterator[str]], Iterator[str]]:
+    @staticmethod
+    def _transform_method_for(merged_ranges: range_merge.MergedRanges) -> _LinesTransformer:
         if merged_ranges.is_empty:
-            return self._transform__empty
+            return _EmptyLinesTransformer()
         elif merged_ranges.is_everything():
-            return self._transform__everything
+            return _EverythingLinesTransformer()
         else:
             segments = SegmentsWithPositiveIncreasingValues(
                 merged_ranges.head,
@@ -436,24 +571,16 @@ class MultipleRangesWNegativeValues(StringSourceWStructureOfTransformed):
                 merged_ranges.tail,
             )
 
-            return _TransformMethodOfSegments(segments).transform
+            return _TransformMethodOfSegments(segments)
 
-    def _num_lines_of_transformed_model(self) -> int:
+    def _num_lines_of_source_model(self) -> int:
         n = 0
 
-        with self._transformed_model.as_lines as lines:
+        with self._source.as_lines as lines:
             for _ in lines:
                 n += 1
 
         return n
-
-    @staticmethod
-    def _transform__empty(lines: Iterator[str]) -> Iterator[str]:
-        return iter(())
-
-    @staticmethod
-    def _transform__everything(lines: Iterator[str]) -> Iterator[str]:
-        return lines
 
 
 def _limited(iterator: Iterator[str], size: int) -> Iterator[str]:

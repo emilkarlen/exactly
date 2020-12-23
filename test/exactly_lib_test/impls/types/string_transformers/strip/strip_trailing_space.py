@@ -10,7 +10,7 @@ from exactly_lib_test.impls.types.string_transformers.test_resources import argu
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \
-    expectation_of_successful_execution
+    expectation_of_successful_execution_2
 from exactly_lib_test.test_resources.test_utils import ArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -118,7 +118,7 @@ def _check(put: unittest.TestCase,
         Arguments(args.strip_trailing_space()),
         model_constructor.of_lines(put, input_lines),
         arrangement_w_tcds(),
-        expectation_of_successful_execution(
+        expectation_of_successful_execution_2(
             symbol_references=asrt.is_empty_sequence,
             output_lines=expected_lines,
             may_depend_on_external_resources=False,

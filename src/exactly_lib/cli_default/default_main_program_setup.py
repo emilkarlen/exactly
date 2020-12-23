@@ -1,3 +1,4 @@
+import io
 import sys
 
 from exactly_lib import program_info
@@ -22,7 +23,8 @@ def default_main_program() -> main_program.MainProgram:
                                                              ActPhaseParser()),
                                         builtin_symbols.ALL,
                                     ),
-                                    test_suite.test_suite_definition())
+                                    test_suite.test_suite_definition(),
+                                    io.DEFAULT_BUFFER_SIZE)
 
 
 def default_output() -> StdOutputFiles:

@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, List
+from typing import Optional, Sequence, List, Callable
 
 from exactly_lib.common.report_rendering import text_docs
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -11,7 +11,8 @@ from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.tcfs.hds import HomeDs
 from exactly_lib.tcfs.tcds import TestCaseDs
-from exactly_lib.type_val_deps.dep_variants.adv import advs
+from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validators
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
@@ -96,22 +97,36 @@ class _LineNumRangeTransformerDdv(StringTransformerDdv):
             reh.validator.range_after_validation
             for reh in self._range_expr_handlers
         ]
-        return advs.ConstantAdv(self._transformer_for(ranges))
+        return _LineNumRangeTransformerAdv(self._name, self.structure, ranges)
 
-    def _transformer_for(self, ranges: Sequence[Range]) -> StringTransformer:
-        structure_renderer = _StructureRenderer(self._name, ranges)
+
+class _LineNumRangeTransformerAdv(ApplicationEnvironmentDependentValue[StringTransformer]):
+    def __init__(self,
+                 name: str,
+                 structure_renderer: Callable[[], StructureRenderer],
+                 ranges: Sequence[Range],
+                 ):
+        self._name = name
+        self._structure_renderer = structure_renderer
+        self._ranges = ranges
+
+    def primitive(self, environment: ApplicationEnvironment) -> StringTransformer:
+        ranges = self._ranges
+
         return (
             transformers.SingleLineRangeTransformer(
                 self._name,
+                self._structure_renderer,
                 ranges[0],
-                structure_renderer
+                environment.mem_buff_size,
             )
             if len(ranges) == 1
             else
             transformers.MultipleLineRangesTransformer(
                 self._name,
+                self._structure_renderer,
                 ranges,
-                structure_renderer
+                environment.mem_buff_size,
             )
         )
 

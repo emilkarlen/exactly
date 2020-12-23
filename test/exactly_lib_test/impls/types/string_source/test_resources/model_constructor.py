@@ -71,7 +71,9 @@ def arbitrary(put: unittest.TestCase,
     return empty(put, may_depend_on_external_resources)
 
 
-def resolving_env_w_custom_dir_space(sds: SandboxDs) -> FullResolvingEnvironment:
+def resolving_env_w_custom_dir_space(sds: SandboxDs,
+                                     mem_buff_size: int = 2 ** 10,
+                                     ) -> FullResolvingEnvironment:
     return FullResolvingEnvironment(
         SymbolTable.empty(),
         fake_tcds(),
@@ -80,7 +82,8 @@ def resolving_env_w_custom_dir_space(sds: SandboxDs) -> FullResolvingEnvironment
             proc_exe_env_for_test(),
             tmp_file_spaces.tmp_dir_file_space_for_test(
                 sds.internal_tmp_dir / 'string-model-dir-for-test'
-            )
+            ),
+            mem_buff_size,
         )
     )
 

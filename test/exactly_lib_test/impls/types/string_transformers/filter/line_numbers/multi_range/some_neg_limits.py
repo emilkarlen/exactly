@@ -70,7 +70,7 @@ class TestSymbolReferences(unittest.TestCase):
             arrangement_w_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(symbols),
             ),
-            integration_check.expectation_of_successful_execution(
+            integration_check.expectation_of_successful_execution_2(
                 symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
                 output_lines=expected_output_lines,
                 may_depend_on_external_resources=False,
@@ -110,7 +110,7 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
             arrangement_w_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(symbols),
             ),
-            integration_check.expectation_of_successful_execution(
+            integration_check.expectation_of_successful_execution_2(
                 symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
                 output_lines=expected_output_lines,
                 may_depend_on_external_resources=False,
@@ -274,9 +274,6 @@ class TestModelWNumLines10(unittest.TestCase):
         [_TO_NEG, _TO_POS],
         [_FROM_NEG, _FROM_POS],
         [_FROM_NEG, _TO_AFTER_MAX],
-        [_FROM_TO__2_3, _TO_AFTER_MAX],
-        [_FROM_TO__2_3, _FROM_MAX],
-        [_FROM_TO__2_3, _FROM_AFTER_MAX],
         [_FROM_TO_NEG_NEG, _FROM_TO_POS_NEG],
         [_FROM_TO_POS_POS, _FROM_TO_NEG_POS],
         [_TO_NEG, _FROM_POS, _FROM_TO_NEG_POS, _FROM_TO_NEG_POS, _FROM_TO_POS_POS],

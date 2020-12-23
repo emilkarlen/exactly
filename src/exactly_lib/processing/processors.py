@@ -64,6 +64,7 @@ class Configuration:
                  test_case_definition: TestCaseDefinition,
                  default_handling_setup: TestCaseHandlingSetup,
                  os_services: OsServices,
+                 mem_buff_size: int,
                  is_keep_sandbox: bool,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
                  sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
@@ -71,6 +72,7 @@ class Configuration:
         self.default_handling_setup = default_handling_setup
         self.os_services = os_services
         self.test_case_definition = test_case_definition
+        self.mem_buff_size = mem_buff_size
         self.is_keep_sandbox = is_keep_sandbox
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
         self.sandbox_root_dir_resolver = sandbox_root_dir_resolver
@@ -79,6 +81,7 @@ class Configuration:
         return ExecutionConfiguration(self.test_case_definition.predefined_properties.environ,
                                       self.os_services,
                                       self.sandbox_root_dir_resolver,
+                                      self.mem_buff_size,
                                       self.test_case_definition.predefined_properties.predefined_symbols,
                                       self.exe_atc_and_skip_assertions)
 
@@ -205,5 +208,6 @@ class _Executor(processing_utils.Executor):
         return ExecutionConfiguration(ec.environ.copy(),
                                       ec.os_services,
                                       ec.sds_root_dir_resolver,
+                                      ec.mem_buff_size,
                                       ec.predefined_symbols.copy(),
                                       ec.exe_atc_and_skip_assertions)

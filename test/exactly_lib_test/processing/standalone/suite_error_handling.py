@@ -62,7 +62,8 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
-                                  conf_parser_with_no_instructions)
+                                  conf_parser_with_no_instructions,
+                                  2 ** 10)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
             execution_settings = TestCaseExecutionSettings(case_file.name_as_path,
@@ -119,7 +120,8 @@ class TestFileInclusionErrorInSuiteFile(unittest.TestCase):
 
         processor = sut.Processor(test_case_definition,
                                   os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
-                                  conf_parser_with_no_instructions)
+                                  conf_parser_with_no_instructions,
+                                  2 ** 10)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
             execution_settings = TestCaseExecutionSettings(case_file.name_as_path,
@@ -173,7 +175,8 @@ class TestReferenceToNonExistingTestCaseFileInSuiteShouldBeIgnored(unittest.Test
 
         processor = sut.Processor(test_case_definition,
                                   os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
-                                  conf_parser_with_no_instructions)
+                                  conf_parser_with_no_instructions,
+                                  2 ** 10)
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
             execution_settings = TestCaseExecutionSettings(case_file.name_as_path,

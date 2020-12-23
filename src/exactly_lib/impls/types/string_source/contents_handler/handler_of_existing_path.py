@@ -17,6 +17,10 @@ class ContentsHandlerOfExistingPath(ContentsHandler):
         self._tmp_file_space = tmp_file_space
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return True
+
+    @property
     def as_file(self) -> Path:
         return self._existing_regular_file_path
 

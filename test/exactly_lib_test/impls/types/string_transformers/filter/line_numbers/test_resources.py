@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.types.string.test_resources.string import \
     IS_STRING_MADE_UP_OF_JUST_STRINGS_REFERENCE_RESTRICTION
-from exactly_lib_test.type_val_prims.string_source.test_resources import assertions
+from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import \
     string_transformer_assertions as asrt_string_transformer
 
@@ -36,9 +36,7 @@ def expectation_of_successful_execution__check_only_as_lines(
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=assertions.matches__lines__check_just_as_lines(
-                output_lines,
-            ),
+            main_result=asrt_string_source.matches__lines__check_just_as_lines(output_lines),
         ),
         prim_asrt__constant(
             asrt_string_transformer.is_identity_transformer(False)
@@ -119,21 +117,22 @@ def check__w_access_of_all_model_properties(put: unittest.TestCase,
                                             input_and_expected: InputAndExpected,
                                             ):
     arguments = args.filter_line_nums__multi(range_expr)
-    for may_depend_on_external_resources in [False, True]:
-        with put.subTest(may_depend_on_external_resources=may_depend_on_external_resources):
+    for source_may_depend_on_external_resources in [False, True]:
+        with put.subTest(may_depend_on_external_resources=source_may_depend_on_external_resources):
             integration_check.CHECKER__PARSE_SIMPLE.check(
                 put,
                 arguments.as_remaining_source,
                 model_constructor.of_lines(
                     put,
                     input_and_expected.input,
-                    may_depend_on_external_resources=may_depend_on_external_resources,
+                    may_depend_on_external_resources=source_may_depend_on_external_resources,
                 ),
                 arrangement_w_tcds(),
                 integration_check.expectation_of_successful_execution(
                     symbol_references=asrt.is_empty_sequence,
                     output_lines=input_and_expected.expected,
-                    may_depend_on_external_resources=may_depend_on_external_resources,
+                    may_depend_on_external_resources=source_may_depend_on_external_resources,
+                    frozen_may_depend_on_external_resources=asrt.anything_goes(),
                     is_identity_transformer=False,
                 )
             )

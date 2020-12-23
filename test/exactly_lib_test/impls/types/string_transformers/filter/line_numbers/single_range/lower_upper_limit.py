@@ -80,7 +80,7 @@ class TestIntIsPyExprAndSourceConsumption(unittest.TestCase):
                 may_depend_on_external_resources=False
             ),
             arrangement_w_tcds(),
-            integration_check.expectation_of_successful_execution(
+            integration_check.expectation_of_successful_execution_2(
                 symbol_references=asrt.is_empty_sequence,
                 output_lines=expected_output_lines,
                 may_depend_on_external_resources=False,
@@ -118,7 +118,7 @@ class TestSymbolReferences(unittest.TestCase):
             arrangement_w_tcds(
                 symbols=SymbolContext.symbol_table_of_contexts(symbols),
             ),
-            integration_check.expectation_of_successful_execution(
+            integration_check.expectation_of_successful_execution_2(
                 symbol_references=SymbolContext.references_assertion_of_contexts(symbols),
                 output_lines=expected_output_lines,
                 may_depend_on_external_resources=False,

@@ -28,6 +28,7 @@ class MainProgram:
                  default_case_sandbox_root_dir_name_sdv: SandboxRootDirNameResolver,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
+                 mem_buff_size: int,
                  ):
 
         self._test_suite_definition = test_suite_definition
@@ -37,6 +38,7 @@ class MainProgram:
                 for bs in test_case_definition.builtin_symbols
             }
         )
+        self._mem_buff_size = mem_buff_size
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
@@ -79,7 +81,8 @@ class MainProgram:
 
         the_processor = processor.Processor(self._test_case_definition,
                                             _resolve_os_services(),
-                                            self._test_suite_definition.configuration_section_parser)
+                                            self._test_suite_definition.configuration_section_parser,
+                                            self._mem_buff_size)
         return processor.ProcessorExecutionReporter(the_processor, settings)
 
     def execute_test_suite(self,
@@ -93,6 +96,7 @@ class MainProgram:
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,
                                                          _resolve_os_services(),
+                                                         self._mem_buff_size,
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_sdv)
         processor = processing.Processor(default_configuration,

@@ -1,4 +1,5 @@
 import pathlib
+import pathlib
 import shutil
 import types
 import unittest
@@ -150,6 +151,7 @@ class Arrangement:
                  predefined_symbols: SymbolTable = None,
                  exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None,
                  os_services: OsServices = os_services_access.new_for_current_os(),
+                 mem_buff_size: int = 2 ** 10,
                  ):
         self.actor = actor
         self.os_services = os_services
@@ -158,6 +160,7 @@ class Arrangement:
         self.timeout_in_seconds = timeout_in_seconds
         self.predefined_symbols_or_none = predefined_symbols
         self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
+        self.mem_buff_size = mem_buff_size
 
 
 def test(put: unittest.TestCase,
@@ -207,6 +210,7 @@ def _execute(test_case: TestCase,
         ExecutionConfiguration(environ,
                                arrangement.os_services,
                                sandbox_root_name_resolver.for_test(),
+                               arrangement.mem_buff_size,
                                arrangement.predefined_symbols_or_none,
                                exe_atc_and_skip_assertions=arrangement.exe_atc_and_skip_assertions),
         ConfPhaseValues(NameAndValue('the actor', arrangement.actor),

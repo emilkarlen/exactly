@@ -68,9 +68,10 @@ class TestOutputModelShouldBeStdoutFromProgram(unittest.TestCase):
                     MultiSourceExpectation(
                         symbol_references=program_symbol.references_assertion,
                         execution=ExecutionExpectation(
-                            main_result=asrt_string_source.matches__lines(
+                            main_result=asrt_string_source.matches__lines__pre_post_freeze(
                                 asrt.equals(expected_output_model_lines),
                                 may_depend_on_external_resources=asrt.equals(True),
+                                frozen_may_depend_on_external_resources=asrt.anything_goes(),
                             )
                         ),
                         primitive=prim_asrt__constant(
@@ -130,9 +131,10 @@ class TestWhenProgramHasTransformerThenResultShouldBeCompositionOfProgramAndTran
                     MultiSourceExpectation(
                         program_symbol.references_assertion,
                         ExecutionExpectation(
-                            main_result=asrt_string_source.matches__lines(
+                            main_result=asrt_string_source.matches__lines__pre_post_freeze(
                                 asrt.equals(expected_output_model_lines),
                                 may_depend_on_external_resources=asrt.equals(True),
+                                frozen_may_depend_on_external_resources=asrt.anything_goes(),
                             )
                         ),
                         prim_asrt__constant(

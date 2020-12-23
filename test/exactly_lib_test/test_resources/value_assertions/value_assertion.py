@@ -61,6 +61,11 @@ def new_message_builder(message_header_or_none: str = None) -> MessageBuilder:
     return MessageBuilder('' if message_header_or_none is None else message_header_or_none)
 
 
+class StopAssertion(Exception):
+    """Raised by assertions to signal that no more assertions should be applied."""
+    pass
+
+
 class ValueAssertion(Generic[T]):
     def apply(self,
               put: unittest.TestCase,
@@ -190,21 +195,10 @@ class And(ValueAssertionBase[T]):
                message_builder: MessageBuilder):
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
-            assertion.apply(put, value, message_builder)
-
-
-class AllNamed(ValueAssertionBase[T]):
-    def __init__(self, assertions: Sequence[NameAndValue[ValueAssertion[T]]]):
-        self.assertions = assertions
-
-    def _apply(self,
-               put: unittest.TestCase,
-               value: T,
-               message_builder: MessageBuilder):
-        for name_and_assertion in self.assertions:
-            name_and_assertion.value.apply(put,
-                                           value,
-                                           message_builder.for_sub_component(name_and_assertion.name))
+            try:
+                assertion.apply(put, value, message_builder)
+            except StopAssertion:
+                return
 
 
 class Or(ValueAssertionBase[T]):
@@ -222,8 +216,11 @@ class Or(ValueAssertionBase[T]):
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
             try:
-                assertion.apply(put, value, message_builder)
-                return
+                try:
+                    assertion.apply(put, value, message_builder)
+                    return
+                except StopAssertion:
+                    return
             except put.failureException as ex:
                 failures.append('  ' + str(ex))
         put.fail(message_builder.apply('OR: ' + self.assertion_name) + ':' + os.linesep +
@@ -352,6 +349,34 @@ class Equals(ValueAssertionBase[T]):
                         message_builder.apply(self.message))
 
 
+class GreaterThan(ValueAssertionBase[T]):
+    def __init__(self,
+                 limit: T,
+                 message: str = None,
+                 ):
+        self.limit = limit
+        self.message = message
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: T,
+               message_builder: MessageBuilder):
+        put.assertGreater(value, self.limit,
+                          message_builder.apply(self.message))
+
+
+class Length(ValueAssertionBase[Sized]):
+    def __init__(self, expected: ValueAssertion[int]):
+        self.expected = expected
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: Sized,
+               message_builder: MessageBuilder):
+        self.expected.apply(put, len(value),
+                            message_builder.for_sub_component('length'))
+
+
 class _LenEquals(ValueAssertionBase[Sized]):
     def __init__(self,
                  expected: int,
@@ -390,6 +415,24 @@ class OnTransformed(ValueAssertionBase[T]):
                              message_builder)
 
 
+class AfterManipulation(ValueAssertionBase[T]):
+    def __init__(self,
+                 manipulator: Callable[[T], Any],
+                 assertion: ValueAssertion[U],
+                 ):
+        self.manipulator = manipulator
+        self.assertion = assertion
+
+    def _apply(self,
+               put: unittest.TestCase,
+               value: T,
+               message_builder: MessageBuilder):
+        self.manipulator(value)
+        self.assertion.apply(put,
+                             value,
+                             message_builder)
+
+
 def if_(condition: Callable[[T], bool],
         assertion: ValueAssertion[T]) -> ValueAssertion[T]:
     return _IfAssertion(condition, assertion)
@@ -423,11 +466,37 @@ def elem_at_index(element_name: str,
     )
 
 
+def sequence_elem_at_index(element_index: int,
+                           element_assertion: ValueAssertion[U]) -> ValueAssertion[T]:
+    """
+    Short cut for creating a SubComponentValueAssertion
+    """
+    return sub_component(
+        _element_at_index(element_index),
+        lambda x: x[element_index],
+        element_assertion,
+        '',
+    )
+
+
 def named(name: str,
           assertion: ValueAssertion[T]) -> ValueAssertion[T]:
     return sub_component(name,
                          lambda x: x,
                          assertion)
+
+
+def after_manipulation(manipulator: Callable[[T], Any],
+                       assertion: ValueAssertion[T],
+                       name: str = '',
+                       ) -> ValueAssertion[T]:
+    after_manip = AfterManipulation(manipulator, assertion)
+    return (
+        named(name, after_manip)
+        if name
+        else
+        after_manip
+    )
 
 
 def sub_component_many(component_name: str,
@@ -642,7 +711,7 @@ def sub_component_builder(component_name: str,
     return MessageBuilder(sub_component_header(component_name, super_message_builder, component_separator))
 
 
-def _component_index(i: int) -> str:
+def _element_at_index(i: int) -> str:
     return ''.join(('[', str(i), ']'))
 
 
@@ -680,7 +749,7 @@ class EveryElement(ValueAssertionBase[Sequence[T]]):
         head = self.message_head_constructor.apply(message_builder)
         element_index = 0
         for element in value:
-            element_message_builder = MessageBuilder(head + _component_index(element_index))
+            element_message_builder = MessageBuilder(head + _element_at_index(element_index))
             self.element_assertion.apply(put,
                                          element,
                                          element_message_builder)
@@ -690,7 +759,7 @@ class EveryElement(ValueAssertionBase[Sequence[T]]):
 class _MatchesSequence(ValueAssertionBase[Sequence[T]]):
     def __init__(self,
                  element_assertions: Sequence[ValueAssertion[T]],
-                 get_name: Callable[[int], str] = _component_index,
+                 get_name: Callable[[int], str] = _element_at_index,
                  ):
         self.element_assertions = element_assertions
         self._get_name = get_name
@@ -738,7 +807,7 @@ class _IsSequenceWithElementAtPos(ValueAssertionBase[Sequence[T]]):
                           self.index,
                           message_builder.apply('number of elements'))
         idx = self.index
-        element_message_builder = sub_component_builder(_component_index(idx),
+        element_message_builder = sub_component_builder(_element_at_index(idx),
                                                         message_builder,
                                                         component_separator='')
         self.element_assertion.apply(put,
@@ -761,7 +830,7 @@ class _EqualsSequence(ValueAssertionBase[Sequence[T]]):
                         len(self.expected),
                         message_builder.apply('Number of elements'))
         for idx, element in enumerate(value):
-            element_message_builder = sub_component_builder(_component_index(idx),
+            element_message_builder = sub_component_builder(_element_at_index(idx),
                                                             message_builder,
                                                             component_separator='')
             element_assertion = self.new_value_assertion_for_expected(self.expected[idx])
@@ -803,7 +872,9 @@ not_ = Not
 is_none = ValueIsNone()
 is_not_none = ValueIsNotNone()
 equals = Equals
+gt = GreaterThan
 len_equals = _LenEquals
+length = Length
 on_transformed = OnTransformed
 
 
@@ -929,7 +1000,11 @@ def or_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:
 
 
 def all_named(assertions: Sequence[NameAndValue[ValueAssertion[T]]]) -> ValueAssertion[T]:
-    return AllNamed(assertions)
+    return And([
+        named(assertion.name,
+              assertion.value)
+        for assertion in assertions
+    ])
 
 
 class _IfAssertion(ValueAssertionBase[T]):

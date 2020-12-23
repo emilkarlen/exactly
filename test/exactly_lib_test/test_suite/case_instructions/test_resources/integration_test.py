@@ -376,6 +376,7 @@ class TestBase(unittest.TestCase):
                 ActPhaseSetup('recording actor', self._phase_config().actor(recording_media)),
                 IDENTITY_PREPROCESSOR),
             os_services_access.new_for_current_os(),
+            2 ** 10,
             False,
             sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-')
         )

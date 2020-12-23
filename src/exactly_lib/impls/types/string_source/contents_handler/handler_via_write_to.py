@@ -20,13 +20,18 @@ class ContentsHandlerViaWriteTo(ContentsHandlerWithCachedPathFromWriteTo):
                  file_name: Optional[str] = None,
                  ):
         super().__init__(file_name)
-        self.__tmp_file_space = tmp_file_space
+        self._tmp_file_space = tmp_file_space
         self._writer = writer
+
+    @property
+    def may_depend_on_external_resources(self) -> bool:
+        return True
 
     @property
     def as_str(self) -> str:
         with self.as_file.open() as f:
-            return f.read()
+            ret_val = f.read()
+        return ret_val
 
     @property
     @contextmanager
@@ -35,8 +40,12 @@ class ContentsHandlerViaWriteTo(ContentsHandlerWithCachedPathFromWriteTo):
             yield lines
 
     def write_to(self, output: IO):
-        self._writer.write(self.__tmp_file_space, output)
+        if self._as_file_path is not None:
+            with self._as_file_path.open() as f_cached:
+                output.writelines(f_cached)
+        else:
+            self._writer.write(self._tmp_file_space, output)
 
     @property
     def tmp_file_space(self) -> DirFileSpace:
-        return self.__tmp_file_space
+        return self._tmp_file_space

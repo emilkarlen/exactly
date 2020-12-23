@@ -48,6 +48,9 @@ class StringSourceOfFile(StringSource):
             custom_details.path_primitive_details_renderer(self._describer)
         )
 
+    def freeze(self):
+        pass
+
     @property
     def may_depend_on_external_resources(self) -> bool:
         return True

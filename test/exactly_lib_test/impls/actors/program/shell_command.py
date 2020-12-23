@@ -7,10 +7,8 @@ from exactly_lib.impls.actors.program import actor as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.actor import ParseException
-from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import svh
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.impls.actors.program.test_resources import shell_command_source_line_for
 from exactly_lib_test.impls.actors.test_resources import \
     test_validation_for_single_line_source as single_line_source
@@ -20,6 +18,7 @@ from exactly_lib_test.impls.actors.test_resources.integration_check import \
     check_execution, Arrangement, Expectation, PostSdsExpectation
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPreSdsBuilder
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -42,10 +41,10 @@ class TestParsingAndValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.actor()
         self.hds = fake_hds()
-        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(
+        self.pre_sds_env = InstructionEnvironmentPreSdsBuilder(
             self.hds,
-            ProcessExecutionSettings.with_environ(dict(os.environ)),
-        )
+            environ=dict(os.environ),
+        ).build
 
     def test_parse_fails_when_command_is_empty(self):
         act_phase_instructions = [instr([shell_command_source_line_for(''), ])]

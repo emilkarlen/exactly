@@ -21,7 +21,7 @@ class Arrangement:
                  initial_settings_builder: SetupSettingsBuilder = None,
                  predefined_properties: PredefinedProperties = PredefinedProperties({}),
                  os_services: OsServices = os_services_access.new_for_current_os(),
-
+                 mem_buff_size: int = 2 ** 10,
                  ):
         self.test_case = test_case
         self.predefined_properties = predefined_properties
@@ -30,6 +30,7 @@ class Arrangement:
             initial_settings_builder = SetupSettingsBuilder()
         self.initial_settings_builder = initial_settings_builder
         self.os_services = os_services
+        self.mem_buff_size = mem_buff_size
 
 
 class Expectation:
@@ -45,6 +46,7 @@ def check(put: unittest.TestCase,
     exe_conf = ExecutionConfiguration(dict(os.environ),
                                       arrangement.os_services,
                                       sandbox_root_name_resolver.for_test(),
+                                      arrangement.mem_buff_size,
                                       arrangement.predefined_properties.predefined_symbols)
     result = execution.execute(
         exe_conf,

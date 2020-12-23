@@ -165,6 +165,9 @@ class _StringSourceThatRaisesHardErrorIfFileIsInvalid(StringSource):
     def new_structure_builder(self) -> StringSourceStructureBuilder:
         return self._checked.new_structure_builder()
 
+    def freeze(self):
+        pass
+
     @property
     def may_depend_on_external_resources(self) -> bool:
         return self._checked.may_depend_on_external_resources

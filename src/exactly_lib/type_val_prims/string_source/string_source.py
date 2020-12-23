@@ -32,6 +32,27 @@ class StringSource(WithNodeDescription, ABC):
         """Should (probably) not be overloaded."""
         return _StructureRendererOfStringSource(self)
 
+    @abstractmethod
+    def freeze(self):
+        """Freezes the contents of the model, to the contents generated
+        the first invocations of any of the contents getters.
+
+        For example, freezing an object guarantees that external processes (influencing the contents)
+        will only be invoked once after the call to this method.
+
+        The method should not generate contents by itself - to avoid generating
+        contents that is not needed.  The freezing just assures that the contents
+        will be generated once, and then "shared" by all of the contents getters.
+
+        The implementation should not involve any "external" resources (such as files and processes).
+
+        This method is an opportunity for optimizations, since it signals that
+        the object will be used multiple times.
+
+        The method can be invoked arbitrary number of times.
+        """
+        pass
+
     @property
     @abstractmethod
     def may_depend_on_external_resources(self) -> bool:
@@ -44,13 +65,15 @@ class StringSource(WithNodeDescription, ABC):
         access it using func:`as_str`, for example.
 
         The return value is allowed to vary over time - the source may become
-        independent on external resources by caching, e.g.
+        independent on external resources by freezing, caching, e.g.
 
         The name is intentionally vague, so that an implementation
         can give True, even if it cannot guarantee that there are
         such dependencies.
         The idea is that an implementation should give False iff
         it can guarantee that there are no (heavy) external resources.
+
+        :raises HardErrorException: Detected error
         """
         pass
 

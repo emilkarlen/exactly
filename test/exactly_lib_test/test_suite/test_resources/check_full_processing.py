@@ -90,6 +90,7 @@ def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup)
     return case_processing.Configuration(_DEFAULT_TEST_CASE_DEFINITION,
                                          test_case_handling_setup,
                                          os_services_access.new_for_current_os(),
+                                         2 ** 10,
                                          False)
 
 

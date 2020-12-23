@@ -16,7 +16,7 @@ from exactly_lib_test.impls.types.regex.test_resources.assertions import is_refe
 from exactly_lib_test.impls.types.regex.test_resources.validation_cases import failing_regex_validation_cases
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as arg, \
-    integration_check
+    integration_check, freeze_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import StExpectation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -347,11 +347,12 @@ class TestApplication(unittest.TestCase):
                             symbol_references=asrt.is_empty_sequence,
                         ),
                         ExecutionExpectation(
-                            main_result=asrt_string_source.matches__lines(
+                            main_result=asrt_string_source.matches__lines__pre_post_freeze__identical(
                                 asrt.equals(lines_for(source_case.replacement)),
                                 may_depend_on_external_resources=asrt.equals(False),
                             )
-                        )
+                        ),
+                        adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
                     )
                 )
 
@@ -377,11 +378,12 @@ class TestApplication(unittest.TestCase):
                                 symbol_references=asrt.is_empty_sequence,
                             ),
                             ExecutionExpectation(
-                                main_result=asrt_string_source.matches__lines(
+                                main_result=asrt_string_source.matches__lines__pre_post_freeze__identical(
                                     asrt.equals(lines_for(source_case.replacement)),
                                     may_depend_on_external_resources=asrt.equals(False),
                                 )
-                            )
+                            ),
+                            adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
                         )
                     )
 
@@ -472,9 +474,10 @@ def expectation_of_successful_replace_execution(
         output_lines: List[str],
         symbol_references: ValueAssertion[Sequence[SymbolReference]] = asrt.anything_goes(),
 ) -> StExpectation:
-    return integration_check.expectation_of_successful_execution(
+    return integration_check.expectation_of_successful_execution_2(
         output_lines,
         False,
         symbol_references,
         False,
+        adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
     )

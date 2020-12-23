@@ -6,11 +6,10 @@ from exactly_lib.execution.impl.single_instruction_executor import PartialContro
 from exactly_lib.execution.partial_execution.impl.symbol_validation import ValidateSymbolsExecutor
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
-from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPreSdsBuilder
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -167,24 +166,16 @@ class Expectation:
 
 
 def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
-    hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
+    return InstructionEnvironmentPreSdsBuilder.of_empty_env().build
 
 
 def env_with_singleton_symbol_table(symbol: SymbolContext) -> InstructionEnvironmentForPreSdsStep:
-    table = symbol.symbol_table
-    hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds,
-                                               ProcessExecutionSettings.with_empty_environ(),
-                                               symbols=table)
+    return InstructionEnvironmentPreSdsBuilder.of_empty_env(symbols=symbol.symbol_table).build
 
 
 def env_with_symbol_table(symbols: List[SymbolContext]) -> InstructionEnvironmentForPreSdsStep:
     symbols = SymbolContext.symbol_table_of_contexts(symbols)
-    hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds,
-                                               ProcessExecutionSettings.with_empty_environ(),
-                                               symbols=symbols)
+    return InstructionEnvironmentPreSdsBuilder.of_empty_env(symbols=symbols).build
 
 
 def symbol_of(name: str) -> StringSymbolContext:

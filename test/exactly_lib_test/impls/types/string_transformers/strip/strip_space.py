@@ -6,11 +6,11 @@ from exactly_lib_test.impls.types.parse.test_resources.arguments_building import
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.strip.test_resources import \
     no_leading_or_trailing_space_cases
-from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args
+from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args, freeze_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import may_dep_on_ext_resources
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \
-    expectation_of_successful_execution
+    expectation_of_successful_execution_2
 from exactly_lib_test.test_resources.test_utils import ArrEx, NArrEx
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -188,11 +188,12 @@ def _check(put: unittest.TestCase,
         Arguments(args.strip_space()),
         model_constructor.of_lines(put, input_lines),
         arrangement_w_tcds(),
-        expectation_of_successful_execution(
+        expectation_of_successful_execution_2(
             symbol_references=asrt.is_empty_sequence,
             output_lines=expected_lines,
             may_depend_on_external_resources=False,
             is_identity_transformer=False,
+            adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
         )
     )
 

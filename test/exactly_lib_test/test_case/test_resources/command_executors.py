@@ -1,3 +1,4 @@
+import unittest
 from typing import Optional
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
@@ -6,6 +7,7 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.std import StdFiles
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
+from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
 
 
 class CommandExecutorThatRecordsArguments(CommandExecutor):
@@ -21,6 +23,32 @@ class CommandExecutorThatRecordsArguments(CommandExecutor):
         self.command = command
         self.process_execution_settings = settings
         return 0
+
+
+class CommandExecutorWithMaxNumInvocations(CommandExecutor):
+    def __init__(self,
+                 put: unittest.TestCase,
+                 max_num_invocations: int,
+                 delegated: CommandExecutor,
+                 err_msg_header: str = '',
+                 ):
+        self._put = put
+        self._delegated = delegated
+
+        self._invocations_checker = MaxNumberOfTimesChecker(
+            put,
+            max_num_invocations,
+            'applications of CommandExecutor',
+            err_msg_header,
+        )
+
+    def execute(self,
+                command: Command,
+                settings: ProcessExecutionSettings,
+                files: StdFiles,
+                ) -> int:
+        self._invocations_checker.register()
+        return self._delegated.execute(command, settings, files)
 
 
 class CommandExecutorThatJustReturnsConstant(CommandExecutor):

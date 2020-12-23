@@ -24,12 +24,14 @@ class MainProgramConfig:
                  default_test_case_handling_setup: TestCaseHandlingSetup,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
-                 sandbox_root_dir_name_resolver: SandboxRootDirNameResolver = sandbox_root_name_resolver.for_test()
+                 sandbox_root_dir_name_resolver: SandboxRootDirNameResolver = sandbox_root_name_resolver.for_test(),
+                 mem_buff_size: int = 2 ** 10,
                  ):
         self.default_test_case_handling_setup = default_test_case_handling_setup
         self.test_case_definition = test_case_definition
         self.test_suite_definition = test_suite_definition
         self.sandbox_root_dir_name_resolver = sandbox_root_dir_name_resolver
+        self.mem_buff_size = mem_buff_size
 
 
 def main_program_config(
@@ -74,6 +76,7 @@ def main_program_from_config(config: MainProgramConfig) -> main_program.MainProg
         config.sandbox_root_dir_name_resolver,
         config.test_case_definition,
         config.test_suite_definition,
+        config.mem_buff_size,
     )
 
 
@@ -102,12 +105,15 @@ def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
                     test_suite_definition: TestSuiteDefinition,
                     default_test_case_handling_setup: TestCaseHandlingSetup,
                     sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
-                    sandbox_root_name_resolver.for_test()) -> main_program.MainProgram:
+                    sandbox_root_name_resolver.for_test(),
+                    mem_buff_size: int = 2 ** 10,
+                    ) -> main_program.MainProgram:
     return main_program.MainProgram(
         default_test_case_handling_setup,
         sandbox_root_dir_name_resolver,
         test_case_definition,
         test_suite_definition,
+        mem_buff_size,
     )
 
 

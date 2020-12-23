@@ -80,11 +80,11 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
         self._command = command
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return cmd_string_source.structure_builder_for(
+        return cmd_string_source.ConstructorOfStructureBuilder(
             self._structure_header,
             self._ignore_exit_code,
             self._command.structure().build(),
-        )
+        ).new_structure_builder()
 
     @property
     def validator(self) -> DdvValidator:
@@ -100,6 +100,7 @@ class CommandOutputStringSourceDdv(StringSourceDdv):
                 command,
                 environment.process_execution_settings,
                 environment.os_services.command_executor,
+                environment.mem_buff_size,
                 environment.tmp_files_space,
             )
 

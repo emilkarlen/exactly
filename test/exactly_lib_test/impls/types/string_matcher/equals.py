@@ -470,6 +470,7 @@ class _TestWhenMultipleInvocationsForModelWExtDepsThenPathForExpectedMustBeCreat
             self.proc_exe_arr.os_services,
             self.proc_exe_arr.process_execution_settings,
             dir_file_space__matcher,
+            2 ** 10,
         )
 
     @staticmethod

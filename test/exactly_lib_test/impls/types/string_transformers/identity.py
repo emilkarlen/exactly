@@ -7,7 +7,7 @@ from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arra
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_source.test_resources import model_constructor
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check, \
-    may_dep_on_ext_resources
+    may_dep_on_ext_resources, freeze_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
 from exactly_lib_test.type_val_prims.string_transformer.test_resources.string_transformer_assertions import \
@@ -49,11 +49,12 @@ class Test(unittest.TestCase):
                     symbol_references=asrt.is_empty_sequence,
                 ),
                 ExecutionExpectation(
-                    main_result=asrt_string_source.matches__lines(
+                    main_result=asrt_string_source.matches__lines__pre_post_freeze__identical(
                         asrt.equals(model_content_lines),
                         may_depend_on_external_resources=asrt.equals(False),
                     )
                 ),
-                prim_asrt__constant(is_identity_transformer(True))
+                prim_asrt__constant(is_identity_transformer(True)),
+                adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
             )
         )

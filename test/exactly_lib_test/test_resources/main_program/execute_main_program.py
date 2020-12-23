@@ -56,7 +56,8 @@ def execute_main_program(arguments: List[str],
                                                                 ActPhaseParser()),
                                            list(builtin_symbols),
                                        ),
-                                       test_suite_def)
+                                       test_suite_def,
+                                       2 ** 10)
 
     def action_with_stdout_files(stdout_files: StdOutputFiles) -> int:
         return program.execute(arguments, stdout_files)

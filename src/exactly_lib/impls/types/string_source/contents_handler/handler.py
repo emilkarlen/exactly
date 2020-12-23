@@ -14,6 +14,11 @@ class ContentsHandler(ABC):
 
     @property
     @abstractmethod
+    def may_depend_on_external_resources(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
     def as_str(self) -> str:
         pass
 

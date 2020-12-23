@@ -9,8 +9,12 @@ from exactly_lib.type_val_prims.impls.transformed_string_sources import StringTr
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
 from exactly_lib_test.impls.types.string_source.test_resources.string_sources import SourceFromLinesTestImpl
+from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_val_prims.string_source.test_resources import source_checker
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
+from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
+from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
+    SourceConstructorWAppEnvForTest
 
 
 def suite() -> unittest.TestSuite:
@@ -30,18 +34,18 @@ class TestTransformedByWriter(unittest.TestCase):
                 '123\n',
             ]
         )
-        expectation = source_checker.Expectation.equals(
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
             ''.join(_transformer_function(source_constructor.raw_lines)),
             may_depend_on_external_resources=asrt.equals(True),
+            frozen_may_depend_on_external_resources=asrt.anything_goes(),
         )
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
     def test_writer_SHOULD_not_be_invoked_after_file_path_has_been_requested(self):
         # ARRANGE #
@@ -54,66 +58,79 @@ class TestTransformedByWriter(unittest.TestCase):
                 '123\n',
             ]
         )
-        expectation = source_checker.Expectation.equals(
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
             ''.join(_transformer_function(source_constructor.raw_lines)),
             may_depend_on_external_resources=asrt.equals(True),
+            frozen_may_depend_on_external_resources=asrt.anything_goes(),
         )
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_first_access_is_not_write_to(expectation)
         # ACT & ASSERT #
-        checker.check_with_first_access_is_not_write_to()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
 
-class _SourceConstructor(source_checker.SourceConstructor):
+class _SourceConstructor(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  transformation: StringTransFun,
                  raw_lines: Sequence[str],
                  ):
+        super().__init__()
         self.transformation = transformation
         self.raw_lines = raw_lines
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         source_model = SourceFromLinesTestImpl(
             self.raw_lines,
             app_env.tmp_files_space,
         )
 
-        yield sut.TransformedStringSourceFromWriter(
+        yield sut.transformed_string_source_from_writer(
             _TransformAndWriteToFile(app_env, self.transformation).write,
             source_model,
             _get_transformer_structure,
+            app_env.mem_buff_size,
         )
 
 
-class _SourceConstructorWithWriterThatMustBeAppliedOnlyOnce(source_checker.SourceConstructor):
+class _SourceConstructorWithWriterThatMustBeAppliedOnlyOnce(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  put: unittest.TestCase,
                  transformation: StringTransFun,
                  raw_lines: Sequence[str],
                  ):
+        super().__init__()
         self.put = put
         self.transformation = transformation
         self.raw_lines = raw_lines
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         source_model = SourceFromLinesTestImpl(
             self.raw_lines,
             app_env.tmp_files_space,
         )
 
-        yield sut.TransformedStringSourceFromWriter(
+        yield sut.transformed_string_source_from_writer(
             _TransformAndWriteToFileThatMustBeInvokedOnlyOnce(
                 self.put,
-                _TransformAndWriteToFile(app_env, self.transformation).write
+                _TransformAndWriteToFile(app_env, self.transformation).write,
+                message_builder,
             ).write,
             source_model,
             _get_transformer_structure,
+            app_env.mem_buff_size,
         )
 
 
@@ -136,15 +153,15 @@ class _TransformAndWriteToFileThatMustBeInvokedOnlyOnce:
     def __init__(self,
                  put: unittest.TestCase,
                  writer: Callable[[StringSource, IO], None],
+                 message_builder: asrt.MessageBuilder,
                  ):
         self._put = put
         self._writer = writer
-        self._num_invocations = 0
+        self._max_num_invocations_counter = MaxNumberOfTimesChecker(put, 1, 'transform-and-write',
+                                                                    message_builder.apply(''))
 
     def write(self, source: StringSource, output: IO) -> None:
-        self._put.assertEqual(0, self._num_invocations)
-        self._num_invocations += 1
-
+        self._max_num_invocations_counter.register()
         self._writer(source, output)
 
 

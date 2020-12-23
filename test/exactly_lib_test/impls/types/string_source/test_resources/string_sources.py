@@ -18,6 +18,9 @@ class SourceFromLinesTestImpl(source_from_lines.StringSourceFromLinesBase, Strin
         self.lines = raw_lines
         self.tmp_file_space = tmp_file_space
 
+    def freeze(self):
+        pass
+
     @property
     def _tmp_file_space(self) -> DirFileSpace:
         return self.tmp_file_space

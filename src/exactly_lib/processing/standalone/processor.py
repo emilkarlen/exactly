@@ -17,10 +17,13 @@ class Processor:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  os_services: OsServices,
-                 suite_configuration_section_parser: SectionElementParser):
+                 suite_configuration_section_parser: SectionElementParser,
+                 mem_buff_size: int,
+                 ):
         self._test_case_definition = test_case_definition
         self._os_services = os_services
         self._suite_configuration_section_parser = suite_configuration_section_parser
+        self._mem_buff_size = mem_buff_size
 
     def process(self,
                 reporting_environment: Environment,
@@ -76,6 +79,7 @@ class Processor:
             self._test_case_definition.predefined_properties.environ,
             self._os_services,
             sandbox_root_dir_resolver,
+            self._mem_buff_size,
             self._test_case_definition.predefined_properties.predefined_symbols,
             result_reporter.execute_atc_and_skip_assertions()
         )

@@ -129,8 +129,7 @@ class CheckerOfConstInput:
                             do_check: Callable[[Case], None],
                             ):
         for case in cases:
-            with self._put.subTest(name=case.name,
-                                   args=[str(r) for r in case.range_args]):
+            with self._put.subTest(args=[str(r) for r in case.range_args]):
                 do_check(case)
 
     def _check_case__w_access_of_all_model_properties(self, case: Case):

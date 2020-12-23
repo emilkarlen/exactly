@@ -17,8 +17,11 @@ from exactly_lib.type_val_prims.string_transformer import StringTransformer
 from exactly_lib_test.impls.types.string_source.test_resources.string_sources import SourceFromLinesTestImpl
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_deps.types.path.test_resources import described_path
-from exactly_lib_test.type_val_prims.string_source.test_resources import source_checker
+from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
+from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
+    SourceConstructorWAppEnvForTest
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
@@ -45,18 +48,18 @@ class TestTransformedByCommand(unittest.TestCase):
                 ignore_exit_code=False,
                 exit_code=0
             )
-            expectation = source_checker.Expectation.equals(
+            expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
                 source_constructor.contents.upper(),
                 may_depend_on_external_resources=asrt.equals(True),
+                frozen_may_depend_on_external_resources=asrt.anything_goes(),
             )
             with self.subTest(ignore_exit_code=ignore_exit_code):
-                checker = source_checker.Checker(
-                    self,
-                    source_constructor,
-                    expectation,
-                )
+                assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
                 # ACT & ASSERT #
-                checker.check()
+                assertion.apply_without_message(
+                    self,
+                    multi_obj_assertions.SourceConstructors.of_common(source_constructor)
+                )
 
     def test_exit_code_non_0_and_ignore_exit_code(self):
         # ARRANGE #
@@ -69,18 +72,18 @@ class TestTransformedByCommand(unittest.TestCase):
             ignore_exit_code=True,
             exit_code=1
         )
-        expectation = source_checker.Expectation.equals(
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
             source_constructor.contents.upper(),
             may_depend_on_external_resources=asrt.equals(True),
+            frozen_may_depend_on_external_resources=asrt.anything_goes(),
         )
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
     def test_exit_code_non_0_and_not_ignore_exit_code(self):
         # ARRANGE #
@@ -93,15 +96,14 @@ class TestTransformedByCommand(unittest.TestCase):
             ignore_exit_code=False,
             exit_code=1
         )
-        expectation = source_checker.Expectation.hard_error()
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.hard_error()
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
 
 class TestTransformedByProgramWoTransformation(unittest.TestCase):
@@ -119,18 +121,18 @@ class TestTransformedByProgramWoTransformation(unittest.TestCase):
                 ignore_exit_code=False,
                 exit_code=0
             )
-            expectation = source_checker.Expectation.equals(
+            expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
                 source_constructor.contents.upper(),
                 may_depend_on_external_resources=asrt.equals(True),
+                frozen_may_depend_on_external_resources=asrt.anything_goes(),
             )
             with self.subTest(ignore_exit_code=ignore_exit_code):
-                checker = source_checker.Checker(
-                    self,
-                    source_constructor,
-                    expectation,
-                )
+                assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
                 # ACT & ASSERT #
-                checker.check()
+                assertion.apply_without_message(
+                    self,
+                    multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+                )
 
     def test_exit_code_non_0_and_ignore_exit_code(self):
         # ARRANGE #
@@ -143,18 +145,18 @@ class TestTransformedByProgramWoTransformation(unittest.TestCase):
             ignore_exit_code=True,
             exit_code=1
         )
-        expectation = source_checker.Expectation.equals(
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
             source_constructor.contents.upper(),
             may_depend_on_external_resources=asrt.equals(True),
+            frozen_may_depend_on_external_resources=asrt.anything_goes(),
         )
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
     def test_exit_code_non_0_and_not_ignore_exit_code(self):
         # ARRANGE #
@@ -167,15 +169,14 @@ class TestTransformedByProgramWoTransformation(unittest.TestCase):
             ignore_exit_code=False,
             exit_code=1
         )
-        expectation = source_checker.Expectation.hard_error()
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.hard_error()
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
 
 class TestTransformedByProgramWTransformation(unittest.TestCase):
@@ -196,18 +197,18 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
                 exit_code=0,
                 transformation_of_program=additional_transformer
             )
-            expectation = source_checker.Expectation.equals(
+            expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
                 expected,
                 may_depend_on_external_resources=asrt.equals(True),
+                frozen_may_depend_on_external_resources=asrt.anything_goes(),
             )
             with self.subTest(ignore_exit_code=ignore_exit_code):
-                checker = source_checker.Checker(
-                    self,
-                    source_constructor,
-                    expectation,
-                )
+                assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
                 # ACT & ASSERT #
-                checker.check()
+                assertion.apply_without_message(
+                    self,
+                    multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+                )
 
     def test_exit_code_non_0_and_ignore_exit_code(self):
         # ARRANGE #
@@ -218,9 +219,10 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
         ]
         additional_transformer = string_transformers.count_num_uppercase_characters()
         expected = '1\n2\n0\n'
-        expectation = source_checker.Expectation.equals(
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
             expected,
             may_depend_on_external_resources=asrt.equals(True),
+            frozen_may_depend_on_external_resources=asrt.anything_goes(),
         )
 
         source_constructor = _ToUpperProgramSourceConstructor(
@@ -230,13 +232,12 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             transformation_of_program=additional_transformer
         )
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
     def test_exit_code_non_0_and_not_ignore_exit_code(self):
         # ARRANGE #
@@ -250,30 +251,34 @@ class TestTransformedByProgramWTransformation(unittest.TestCase):
             exit_code=1,
             transformation_of_program=string_transformers.count_num_uppercase_characters()
         )
-        expectation = source_checker.Expectation.hard_error()
+        expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.hard_error()
 
-        checker = source_checker.Checker(
-            self,
-            source_constructor,
-            expectation,
-        )
+        assertion = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
         # ACT & ASSERT #
-        checker.check()
+        assertion.apply_without_message(
+            self,
+            multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+        )
 
 
-class _ToUpperCommandSourceConstructor(source_checker.SourceConstructor):
+class _ToUpperCommandSourceConstructor(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  raw_lines: Sequence[str],
                  ignore_exit_code: bool,
                  exit_code: int,
                  ):
+        super().__init__()
         self.raw_lines = raw_lines
         self.ignore_exit_code = ignore_exit_code
         self.exit_code = exit_code
         self.contents = ''.join(raw_lines)
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         with tempfile.TemporaryDirectory() as tmp_dir_name:
             tmp_dir_path = Path(tmp_dir_name)
 
@@ -290,13 +295,14 @@ class _ToUpperCommandSourceConstructor(source_checker.SourceConstructor):
             )
 
 
-class _ToUpperProgramSourceConstructor(source_checker.SourceConstructor):
+class _ToUpperProgramSourceConstructor(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  raw_lines: Sequence[str],
                  ignore_exit_code: bool,
                  exit_code: int,
                  transformation_of_program: StringTransformer = IdentityStringTransformer()
                  ):
+        super().__init__()
         self.raw_lines = raw_lines
         self.ignore_exit_code = ignore_exit_code
         self.exit_code = exit_code
@@ -304,7 +310,11 @@ class _ToUpperProgramSourceConstructor(source_checker.SourceConstructor):
         self.contents = ''.join(raw_lines)
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         with tempfile.TemporaryDirectory() as tmp_dir_name:
             tmp_dir_path = Path(tmp_dir_name)
 

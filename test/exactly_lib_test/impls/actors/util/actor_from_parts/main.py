@@ -9,7 +9,6 @@ from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPreSdsStep
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.actors.test_resources.integration_check import Arrangement, simple_success, \
     check_execution, Expectation
@@ -19,8 +18,8 @@ from exactly_lib_test.impls.actors.util.actor_from_parts.test_resources import P
     ExecutorConstructorThatRaises, ValidatorConstructorThatRecordsStep, ExecutorConstructorThatRecordsStep, \
     _ExecutorConstructorForConstant, UnconditionallySuccessfulExecutor, ExecutorThat
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.tcfs.test_resources.fake_ds import fake_hds
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
+from exactly_lib_test.test_case.test_resources.instruction_environment import InstructionEnvironmentPreSdsBuilder
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_val_deps.data.test_resources import concrete_restriction_assertion
@@ -168,5 +167,4 @@ class TestConstructor(unittest.TestCase):
 
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
-    hds = fake_hds()
-    return InstructionEnvironmentForPreSdsStep(hds, ProcessExecutionSettings.with_empty_environ())
+    return InstructionEnvironmentPreSdsBuilder.of_empty_env().build

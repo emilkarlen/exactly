@@ -209,7 +209,9 @@ class _PartialExecutor:
             ProcessExecutionSettings(self.conf_values.timeout_in_seconds,
                                      self.exe_conf.environ,
                                      ),
-            symbols)
+            symbols,
+            self.exe_conf.mem_buff_size,
+        )
 
     def _setup_post_sds_environment(self):
         self._construct_and_set_sds()
@@ -398,6 +400,7 @@ class _PartialExecutor:
             self.__sandbox_directory_structure,
             tmp_file_storage,
             symbols,
+            self.exe_conf.mem_buff_size,
         )
 
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:

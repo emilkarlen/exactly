@@ -12,7 +12,7 @@ from exactly_lib_test.impls.types.string_transformers.test_resources import argu
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import validation_cases
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \
-    expectation_of_successful_execution
+    expectation_of_successful_execution_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -68,7 +68,7 @@ class TestMayDependOnExternalResourcesShouldDependOnSequencedTransformersAndSour
                             arrangement_w_tcds(
                                 symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
                             ),
-                            expectation_of_successful_execution(
+                            expectation_of_successful_execution_2(
                                 output_lines=[],
                                 symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
                                 may_depend_on_external_resources=resulting_model_may_dep,
@@ -145,7 +145,7 @@ class ResultShouldBeCompositionOfSequencedTransformers(unittest.TestCase):
                     arrangement_w_tcds(
                         symbols=SymbolContext.symbol_table_of_contexts(symbol_contexts)
                     ),
-                    expectation_of_successful_execution(
+                    expectation_of_successful_execution_2(
                         output_lines=expected_output_lines,
                         symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
                         may_depend_on_external_resources=False,

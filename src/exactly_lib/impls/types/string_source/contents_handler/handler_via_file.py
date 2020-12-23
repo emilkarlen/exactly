@@ -24,6 +24,10 @@ class ContentsHandlerViaFile(ContentsHandlerWithCachedPath):
         self._file_creator = file_creator
 
     @property
+    def may_depend_on_external_resources(self) -> bool:
+        return True
+
+    @property
     def as_str(self) -> str:
         with self.as_file.open() as f:
             return f.read()

@@ -1,4 +1,5 @@
 import os
+import os
 import unittest
 from contextlib import contextmanager
 from typing import List, Optional, Sequence, ContextManager, Callable
@@ -58,12 +59,14 @@ class Arrangement:
                  ),
                  stdin_contents: str = '',
                  post_sds_action: PlainTcdsAction = PlainTcdsAction(),
+                 mem_buff_size: int = 2 ** 10,
                  ):
         self.symbol_table = symbol_table_from_none_or_value(symbol_table)
         self.hds_contents = hds_contents
         self.process_execution = process_execution
         self.stdin_contents = stdin_contents
         self.post_sds_action = post_sds_action
+        self.mem_buff_size = mem_buff_size
 
     @property
     def proc_exe_settings(self) -> ProcessExecutionSettings:
@@ -230,7 +233,8 @@ class _Checker:
             instruction_environment = InstructionEnvironmentForPreSdsStep(
                 hds,
                 self._arrangement.proc_exe_settings,
-                symbols=self._arrangement.symbol_table)
+                self._arrangement.symbol_table,
+                self._arrangement.mem_buff_size)
             yield instruction_environment
 
     @contextmanager

@@ -56,6 +56,7 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
     DUMMY_TEST_CASE_DEFINITION,
     test_case_handling_setup_with_identity_preprocessor(),
     os_services_access.new_for_cmd_exe(CommandExecutorThatJustReturnsConstant()),
+    2 ** 10,
     False,
 )
 

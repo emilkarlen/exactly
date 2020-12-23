@@ -49,6 +49,7 @@ class FullExecutionTestCaseBase:
         exe_conf = ExecutionConfiguration(self.__environ,
                                           self.__os_services,
                                           sandbox_root_name_resolver.for_test(),
+                                          2 ** 10,
                                           SymbolTable())
         configuration_builder = ConfigurationBuilder(initial_hds_dir_path,
                                                      initial_hds_dir_path,

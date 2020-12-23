@@ -14,8 +14,11 @@ from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBe
 from exactly_lib_test.tcfs.test_resources import ds_construction, tcds_populators
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_deps.types.path.test_resources import path_describer
-from exactly_lib_test.type_val_prims.string_source.test_resources import source_checker
+from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
+from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
+    SourceConstructorWAppEnvForTest
 
 
 def suite() -> unittest.TestSuite:
@@ -45,36 +48,40 @@ class TestPoorlyDescribed(unittest.TestCase):
 
 
 def _check(put: unittest.TestCase,
-           source_constructor: source_checker.SourceConstructor,
+           source_constructor: multi_obj_assertions.SourceConstructor,
            expected_contents: str):
     # ARRANGE #
-    expectation = source_checker.Expectation.equals(
+    expectation = multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.equals(
         expected_contents,
         may_depend_on_external_resources=asrt.equals(True),
+        frozen_may_depend_on_external_resources=asrt.equals(True),
     )
 
-    checker = source_checker.Checker(
-        put,
-        source_constructor,
-        expectation,
-        _dir_file_space_that_must_not_be_used_getter,
-    )
+    assertions = multi_obj_assertions.assertion_of_sequence_permutations(expectation)
     # ACT & ASSERT #
-    checker.check()
+    assertions.apply_without_message(
+        put,
+        multi_obj_assertions.SourceConstructors.of_common(source_constructor),
+    )
 
 
 @contextmanager
-def _dir_file_space_that_must_not_be_used_getter() -> ContextManager[DirFileSpace]:
+def _dir_file_space_that_must_not_be_used_getter(put: unittest.TestCase) -> ContextManager[DirFileSpace]:
     yield DirFileSpaceThatMustNoBeUsed()
 
 
-class _SourceConstructorWSingleTmpFileBase(source_checker.SourceConstructor):
+class _SourceConstructorWSingleTmpFileBase(SourceConstructorWAppEnvForTest):
     def __init__(self, contents: str):
+        super().__init__(_dir_file_space_that_must_not_be_used_getter)
         self.contents = contents
         self._file_with_contents = fs.File('model-file.txt', self.contents)
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         with tempfile.TemporaryDirectory() as tmp_dir_name:
             tmp_dir = Path(tmp_dir_name)
             fs.DirContents([self._file_with_contents]).write_to(tmp_dir)
@@ -114,8 +121,9 @@ class _SourceConstructorOfExplicitlyDescribed(_SourceConstructorWSingleTmpFileBa
         )
 
 
-class _SourceConstructorOfDescribed(source_checker.SourceConstructor):
+class _SourceConstructorOfDescribed(SourceConstructorWAppEnvForTest):
     def __init__(self, contents: str):
+        super().__init__(_dir_file_space_that_must_not_be_used_getter)
         self.contents = contents
         file_with_contents = fs.File('model-file.txt', self.contents)
         relativity = RelOptionType.REL_TMP
@@ -126,7 +134,11 @@ class _SourceConstructorOfDescribed(source_checker.SourceConstructor):
         )
 
     @contextmanager
-    def new_with(self, app_env: ApplicationEnvironment) -> ContextManager[StringSource]:
+    def new_with(self,
+                 put: unittest.TestCase,
+                 message_builder: MessageBuilder,
+                 app_env: ApplicationEnvironment,
+                 ) -> ContextManager[StringSource]:
         with ds_construction.tcds_with_act_as_curr_dir_2(tcds_contents=self._tcds_populator) as tcds:
             described_path = self._ddv.value_of_any_dependency__d(tcds)
             yield sut.string_source_of_file__described(

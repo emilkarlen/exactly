@@ -27,7 +27,8 @@ class TestCaseRunner(base.TestCaseRunner):
                                   os_services_access.new_for_cmd_exe(
                                       CommandExecutorThatJustReturnsConstant()
                                   ),
-                                  test_suite_definition.configuration_section_parser)
+                                  test_suite_definition.configuration_section_parser,
+                                  2 ** 10)
 
         execution_settings = TestCaseExecutionSettings(case_file,
                                                        case_file.parent,

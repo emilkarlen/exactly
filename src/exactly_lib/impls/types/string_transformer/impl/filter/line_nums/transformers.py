@@ -1,4 +1,4 @@
-from typing import Sequence, List
+from typing import Sequence, List, Callable
 
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
@@ -13,41 +13,45 @@ from .range_expr import Range, RangeVisitor, \
 class SingleLineRangeTransformer(StringTransformer):
     def __init__(self,
                  name: str,
+                 get_structure: Callable[[], StructureRenderer],
                  range_: Range,
-                 structure: StructureRenderer,
+                 mem_buff_size: int,
                  ):
         self._name = name
         self._range = range_
-        self._structure = structure
+        self._get_structure = get_structure
+        self._mem_buff_size = mem_buff_size
 
     @property
     def name(self) -> str:
         return self._name
 
     def structure(self) -> StructureRenderer:
-        return self._structure
+        return self._get_structure()
 
     def transform(self, model: StringSource) -> StringSource:
-        model_constructor = _SingleRangeSourceConstructor(model)
+        model_constructor = _SingleRangeSourceConstructor(model, self._get_structure, self._mem_buff_size)
         return self._range.accept(model_constructor)
 
 
 class MultipleLineRangesTransformer(StringTransformer):
     def __init__(self,
                  name: str,
+                 get_structure: Callable[[], StructureRenderer],
                  ranges: Sequence[Range],
-                 structure: StructureRenderer,
+                 mem_buff_size: int,
                  ):
-        self._ranges = ranges
         self._name = name
-        self._structure = structure
+        self._get_structure = get_structure
+        self._ranges = ranges
+        self._mem_buff_size = mem_buff_size
 
     @property
     def name(self) -> str:
         return self._name
 
     def structure(self) -> StructureRenderer:
-        return self._structure
+        return self._get_structure()
 
     def transform(self, model: StringSource) -> StringSource:
         output_of_non_neg_values = range_merge.Partitioning([], [], [])
@@ -59,8 +63,8 @@ class MultipleLineRangesTransformer(StringTransformer):
             self._model_for_non_negatives(model, output_of_non_neg_values)
         )
 
-    @staticmethod
-    def _model_for_non_negatives(model: StringSource,
+    def _model_for_non_negatives(self,
+                                 model: StringSource,
                                  non_neg_values: range_merge.Partitioning,
                                  ) -> StringSource:
         merged_ranges = range_merge.merge(non_neg_values)
@@ -70,7 +74,9 @@ class MultipleLineRangesTransformer(StringTransformer):
         elif merged_ranges.is_everything():
             return model
         else:
-            return sources.SegmentsSource(
+            return sources.segments_source(
+                self._mem_buff_size,
+                self._get_structure,
                 model,
                 sources.SegmentsWithPositiveIncreasingValues(
                     merged_ranges.head,
@@ -84,7 +90,9 @@ class MultipleLineRangesTransformer(StringTransformer):
                              negatives: List[Range],
                              output_of_non_neg_values: range_merge.Partitioning,
                              ) -> StringSource:
-        return sources.MultipleRangesWNegativeValues(
+        return sources.multiple_ranges_w_negative_values(
+            self._mem_buff_size,
+            self._get_structure,
             model,
             negatives,
             output_of_non_neg_values
@@ -92,17 +100,25 @@ class MultipleLineRangesTransformer(StringTransformer):
 
 
 class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
-    def __init__(self, source_model: StringSource):
+    def __init__(self,
+                 source_model: StringSource,
+                 transformer_description: Callable[[], StructureRenderer],
+                 mem_buff_size: int,
+                 ):
         self._source_model = source_model
+        self._transformer_description = transformer_description
+        self._mem_buff_size = mem_buff_size
 
     def visit_single_line(self, x: SingleLineRange) -> StringSource:
         line_num = x.line_number
         if line_num == 0:
             return sources.Empty(self._source_model)
         elif line_num > 0:
-            return sources.SingleNonNegIntSource(self._source_model, line_num - 1)
+            return sources.single_non_neg_int_source(self._mem_buff_size, self._transformer_description,
+                                                     self._source_model, line_num - 1)
         else:
-            return sources.SingleNegIntSource(self._source_model, line_num)
+            return sources.single_neg_int_source(self._mem_buff_size, self._transformer_description,
+                                                 self._source_model, line_num)
 
     def visit_upper_limit(self, x: UpperLimitRange) -> StringSource:
         limit = x.upper_limit
@@ -110,19 +126,24 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
         if limit == 0:
             return sources.Empty(self._source_model)
         elif limit > 0:
-            return sources.UpperNonNegLimitSource(self._source_model, limit - 1)
+            return sources.upper_non_neg_limit_source(self._mem_buff_size, self._transformer_description,
+                                                      self._source_model, limit - 1)
         else:
-            return sources.UpperNegLimitSource(self._source_model, limit)
+            return sources.upper_neg_limit_source(self._mem_buff_size, self._transformer_description,
+                                                  self._source_model, limit)
 
     def visit_lower_limit(self, x: LowerLimitRange) -> StringSource:
         limit = x.lower_limit
 
         if limit == 0:
-            return sources.LowerNonNegLimitSource(self._source_model, limit)
+            return sources.lower_non_neg_limit_source(self._mem_buff_size, self._transformer_description,
+                                                      self._source_model, limit)
         elif limit > 0:
-            return sources.LowerNonNegLimitSource(self._source_model, limit - 1)
+            return sources.lower_non_neg_limit_source(self._mem_buff_size, self._transformer_description,
+                                                      self._source_model, limit - 1)
         else:
-            return sources.LowerNegLimitSource(self._source_model, limit)
+            return sources.lower_neg_limit_source(self._mem_buff_size, self._transformer_description,
+                                                  self._source_model, limit)
 
     def visit_lower_and_upper_limit(self, x: LowerAndUpperLimitRange) -> StringSource:
         lower = x.lower_limit
@@ -149,22 +170,26 @@ class _SingleRangeSourceConstructor(RangeVisitor[StringSource]):
             lower -= 1
         upper -= 1
 
-        return sources.LowerNonNegUpperNonNegSource(self._source_model, lower, upper)
+        return sources.lower_non_neg_upper_non_neg_source(self._mem_buff_size, self._transformer_description,
+                                                          self._source_model, lower, upper)
 
     def _lower_and_upper__neg(self, lower: int, upper: int) -> StringSource:
         return (
             sources.Empty(self._source_model)
             if lower > upper
             else
-            sources.LowerNegUpperNegSource(self._source_model, lower, upper)
+            sources.lower_neg_upper_neg_source(self._mem_buff_size, self._transformer_description,
+                                               self._source_model, lower, upper)
         )
 
     def _lower_non_neg__upper_neg(self, lower: int, upper: int) -> StringSource:
         if lower > 0:
             lower -= 1
-        return sources.LowerNonNegUpperNegSource(self._source_model, lower, upper)
+        return sources.lower_non_neg_upper_neg_source(self._mem_buff_size, self._transformer_description,
+                                                      self._source_model, lower, upper)
 
     def _lower_neg__upper_non_neg(self, lower: int, upper: int) -> StringSource:
         if upper > 0:
             upper -= 1
-        return sources.LowerNegUpperNonNegSource(self._source_model, lower, upper)
+        return sources.lower_neg_upper_non_neg_source(self._mem_buff_size, self._transformer_description,
+                                                      self._source_model, lower, upper)

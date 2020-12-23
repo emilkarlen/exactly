@@ -14,10 +14,10 @@ from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib_test.impls.types.logic.test_resources.intgr_arr_exp import arrangement_w_tcds
 from exactly_lib_test.impls.types.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.impls.types.string_transformers.test_resources import argument_syntax as args, \
-    may_dep_on_ext_resources
+    may_dep_on_ext_resources, freeze_check
 from exactly_lib_test.impls.types.string_transformers.test_resources import integration_check
 from exactly_lib_test.impls.types.string_transformers.test_resources.integration_check import \
-    expectation_of_successful_execution
+    expectation_of_successful_execution_2
 from exactly_lib_test.impls.types.string_transformers.test_resources.replace_tcds_dirs import \
     ReplacedSymbolsFileContentsGeneratorForSubDirRelationshipBetweenHdsActAndCase, \
     ReplacedSymbolsFileContentsGeneratorWithAllReplacedVariables
@@ -78,11 +78,12 @@ class TestIntegration(unittest.TestCase):
             Arguments(args.tcds_path_replacement()),
             model,
             arrangement_w_tcds(),
-            expectation_of_successful_execution(
+            expectation_of_successful_execution_2(
                 symbol_references=asrt.is_empty_sequence,
                 output_lines=expected,
                 may_depend_on_external_resources=False,
                 is_identity_transformer=False,
+                adv=freeze_check.first_invoked_method_of_source_model__is_freeze,
             )
         )
 
