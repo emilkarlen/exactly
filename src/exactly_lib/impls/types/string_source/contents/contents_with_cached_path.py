@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional
+from typing import Optional, IO
 
-from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils import misc_utils
 
 
-class ContentsHandlerWithCachedPath(ContentsHandler, ABC):
+class StringSourceContentsWithCachedPath(StringSourceContents, ABC):
     """Caches the file path, when generated the first time."""
 
     def __init__(self):
@@ -23,7 +23,7 @@ class ContentsHandlerWithCachedPath(ContentsHandler, ABC):
         pass
 
 
-class ContentsHandlerWithCachedPathFromWriteTo(ContentsHandlerWithCachedPath, ABC):
+class ContentsWithCachedPathFromWriteToBase(StringSourceContentsWithCachedPath, ABC):
     """Caches the file path, when generated the first time.
 
     The file contents is generated via `write_to`.
@@ -40,3 +40,22 @@ class ContentsHandlerWithCachedPathFromWriteTo(ContentsHandlerWithCachedPath, AB
             self.write_to(f)
 
         return path
+
+
+class ContentsWithCachedPathFromAsLinesBase(ContentsWithCachedPathFromWriteToBase, ABC):
+    """Caches the file path, when generated the first time.
+
+    The contents is generated via `as_lines`.
+    """
+
+    def __init__(self, file_name: Optional[str] = None):
+        super().__init__(file_name)
+
+    @property
+    def as_str(self) -> str:
+        with self.as_lines as lines:
+            return ''.join(lines)
+
+    def write_to(self, output: IO):
+        with self.as_lines as lines:
+            output.writelines(lines)

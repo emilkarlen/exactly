@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.type_val_prims.string_source import string_source as sut
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_source_contents
 from exactly_lib_test.util.str_ import read_lines
 
 
@@ -23,13 +23,13 @@ class TestReadLinesAsStrWMinimumNumChars(unittest.TestCase):
                         string=read_case.string,
                         may_have_more_contents=read_case.may_have_more_contents,
                 ):
-                    source = string_sources.StringSourceThat.new_w_defaults_of_not_impl(
+                    contents = string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
                         as_lines=do_return(iter(case.arrangement))
                     )
                     # ACT #
                     contents, may_have_more = sut.read_lines_as_str__w_minimum_num_chars(
                         read_case.min_num_chars_to_read,
-                        source
+                        contents
                     )
                     # ASSERT #
                     self.assertEqual(read_case.string, contents,

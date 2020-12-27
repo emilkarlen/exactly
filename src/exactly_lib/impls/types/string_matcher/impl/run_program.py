@@ -17,7 +17,7 @@ def sdv(program: ProgramSdv) -> StringMatcherSdv:
 
 class _StringMatcherRunConfiguration(RunConfiguration[StringSource]):
     def stdin(self, model: StringSource) -> ContextManager[ProcessExecutionFile]:
-        path_of_file_with_model = model.as_file
+        path_of_file_with_model = model.contents().as_file
         return file_ctx_managers.open_file(path_of_file_with_model, 'r')
 
     def program_for_model(self, matcher_argument_program: Program, model: StringSource) -> Program:

@@ -3,9 +3,9 @@ import pathlib
 from contextlib import contextmanager
 from typing import Optional, IO, ContextManager, Iterator
 
-from exactly_lib.impls.types.string_source.contents_handler import handler_of_existing_path, handler_of_str
-from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
-from exactly_lib.impls.types.string_source.contents_handler.handler_via_write_to import Writer
+from exactly_lib.impls.types.string_source.contents import contents_of_existing_path, contents_of_str
+from exactly_lib.impls.types.string_source.contents.contents_via_write_to import Writer
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils import spooled_file
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
@@ -14,7 +14,7 @@ def frozen__from_write(mem_buff_size: int,
                        writer: Writer,
                        tmp_file_space: DirFileSpace,
                        file_name: Optional[str] = None,
-                       ) -> ContentsHandler:
+                       ) -> StringSourceContents:
     def get_unused_path() -> pathlib.Path:
         return tmp_file_space.new_path(file_name)
 
@@ -24,19 +24,19 @@ def frozen__from_write(mem_buff_size: int,
         writer.write(tmp_file_space, f)
 
         if f.is_mem_buff:
-            return handler_of_str.ContentsHandlerOfStr(f.mem_buff, file_name,
-                                                       tmp_file_space)
+            return contents_of_str.ContentsOfStr(f.mem_buff, file_name,
+                                                 tmp_file_space)
 
         else:
             mb_contents = _contents_of_file__if_fits_within_mem_buff(f, mem_buff_size)
 
             return (
-                handler_of_existing_path.ContentsHandlerOfExistingPath(f.path_of_file_on_disk,
-                                                                       tmp_file_space)
+                contents_of_existing_path.StringSourceContentsOfExistingPath(f.path_of_file_on_disk,
+                                                                             tmp_file_space)
                 if mb_contents is None
                 else
-                _ContentsHandlerOfConstStrAndExistingPath(mb_contents, f.path_of_file_on_disk,
-                                                          tmp_file_space)
+                _StringSourceContentsOfConstStrAndExistingPath(mb_contents, f.path_of_file_on_disk,
+                                                               tmp_file_space)
             )
 
 
@@ -55,7 +55,7 @@ def _size_of_file_on_disk(f: spooled_file.SpooledTextFile) -> int:
     return os.fstat(f.fileno()).st_size
 
 
-class _ContentsHandlerOfConstStrAndExistingPath(ContentsHandler):
+class _StringSourceContentsOfConstStrAndExistingPath(StringSourceContents):
     def __init__(self,
                  contents_as_str: str,
                  contents_as_existing_file: pathlib.Path,

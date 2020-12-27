@@ -3,13 +3,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, ContextManager, IO, Optional
 
-from exactly_lib.impls.types.string_source.contents_handler.handler_with_cached_path import \
-    ContentsHandlerWithCachedPath
+from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
+    StringSourceContentsWithCachedPath
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
-class TransformedContentsHandlerViaAsLinesBase(ContentsHandlerWithCachedPath, ABC):
+class TransformedContentsViaAsLinesBase(StringSourceContentsWithCachedPath, ABC):
     def __init__(self,
                  source: StringSource,
                  file_name: Optional[str],
@@ -35,7 +35,7 @@ class TransformedContentsHandlerViaAsLinesBase(ContentsHandlerWithCachedPath, AB
     @property
     @contextmanager
     def as_lines(self) -> ContextManager[Iterator[str]]:
-        with self._source.as_lines as lines:
+        with self._source.contents().as_lines as lines:
             yield self._transform_lines(lines)
 
     def write_to(self, output: IO):
@@ -44,7 +44,7 @@ class TransformedContentsHandlerViaAsLinesBase(ContentsHandlerWithCachedPath, AB
 
     @property
     def tmp_file_space(self) -> DirFileSpace:
-        return self._source._tmp_file_space
+        return self._source.contents().tmp_file_space
 
     def _to_file(self) -> Path:
         ret_val = self.tmp_file_space.new_path(self._file_name)

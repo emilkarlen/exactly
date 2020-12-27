@@ -32,4 +32,4 @@ class _PropertyGetter(PropertyGetter[StringSource, str], WithCachedNodeDescripti
         return renderers.header_only('contents')
 
     def get_from(self, model: StringSource) -> str:
-        return model.as_str
+        return model.contents().as_str

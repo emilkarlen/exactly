@@ -59,7 +59,7 @@ class FileMaker:
         string_source = resoling_helper.resolve_full(self._string_source)
 
         def write_sting_to_file(f: TextIO):
-            string_source.write_to(f)
+            string_source.contents().write_to(f)
 
         return file_creation.create_file__dp(dst_file, write_sting_to_file)
 

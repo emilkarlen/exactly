@@ -26,11 +26,11 @@ class ConstantStringStringSourceDdv(StringSourceDdv):
         self._string = string
 
     def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return constant_str.StringSource.structure_builder_for(self._string.describer())
+        return constant_str.FactoryOfStringSourceStructureBuilder(self._string.describer()).new()
 
     def value_of_any_dependency(self, tcds: TestCaseDs) -> ApplicationEnvironmentDependentValue[PRIMITIVE]:
         def make_primitive(environment: ApplicationEnvironment) -> StringSource:
-            return constant_str.StringSource(
+            return constant_str.string_source(
                 self._string.value_of_any_dependency(tcds),
                 environment.tmp_files_space,
             )

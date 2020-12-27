@@ -508,22 +508,22 @@ class TestParseSource(unittest.TestCase):
              lambda parse_source: parse_source.consume(1),
              lambda parse_source: parse_source.consume(2)
              ),
-            ('copy consumes current line/with existing following line',
+            ('copy_ consumes current line/with existing following line',
              ['abc', 'def'],
              lambda parse_source: None,
              lambda parse_source: parse_source.consume_current_line()
              ),
-            ('copy consumes current line/which is the last line',
+            ('copy_ consumes current line/which is the last line',
              ['abc'],
              lambda parse_source: None,
              lambda parse_source: parse_source.consume_current_line()
              ),
-            ('copy consumes num characters that stretches to the following line',
+            ('copy_ consumes num characters that stretches to the following line',
              ['123', '456'],
              lambda parse_source: None,
              lambda parse_source: parse_source.consume(5)
              ),
-            ('copy consumes all remaining characters',
+            ('copy_ consumes all remaining characters',
              ['123', '456'],
              lambda parse_source: None,
              lambda parse_source: parse_source.consume(7)

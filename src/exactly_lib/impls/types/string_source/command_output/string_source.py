@@ -2,12 +2,12 @@ from exactly_lib.common.err_msg import std_err_contents
 from exactly_lib.definitions.primitives import program
 from exactly_lib.impls.description_tree import custom_details
 from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
-from exactly_lib.impls.types.string_source.contents_handler import handler_via_write_to
-from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
-from exactly_lib.impls.types.string_source.contents_handler.handler_via_file import ContentsHandlerViaFile
+from exactly_lib.impls.types.string_source.contents import contents_via_write_to
+from exactly_lib.impls.types.string_source.contents.contents_via_file import ContentsViaFile
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.program.command import Command
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
@@ -30,7 +30,7 @@ def string_source(structure_header: str,
         ignore_exit_code,
         command.structure_renderer(),
     )
-    contents_handler = _contents_handler(
+    contents = _contents(
         ignore_exit_code,
         output_channel_to_capture,
         command,
@@ -40,7 +40,7 @@ def string_source(structure_header: str,
     )
     return StringSourceWithCachedFrozen(
         constructor_of_structure_builder.new_structure_builder,
-        contents_handler,
+        contents,
         mem_buff_size,
         process_output_files.PROC_OUTPUT_FILE_NAMES[output_channel_to_capture],
     )
@@ -65,17 +65,17 @@ class ConstructorOfStructureBuilder:
         )
 
 
-def _contents_handler(
+def _contents(
         ignore_exit_code: bool,
         output_channel_to_capture: ProcOutputFile,
         command: Command,
         proc_exe_settings: ProcessExecutionSettings,
         command_executor: CommandExecutor,
         tmp_file_space: DirFileSpace,
-) -> ContentsHandler:
+) -> StringSourceContents:
     if output_channel_to_capture is ProcOutputFile.STDERR and not ignore_exit_code:
         from . import exit_relevant
-        return ContentsHandlerViaFile(
+        return ContentsViaFile(
             tmp_file_space,
             exit_relevant.StderrFileCreator(
                 command,
@@ -85,7 +85,7 @@ def _contents_handler(
             ),
         )
     else:
-        return handler_via_write_to.ContentsHandlerViaWriteTo(
+        return contents_via_write_to.ContentsViaWriteTo(
             tmp_file_space,
             _writer(
                 ignore_exit_code,
@@ -103,7 +103,7 @@ def _writer(ignore_exit_code: bool,
             command: Command,
             proc_exe_settings: ProcessExecutionSettings,
             command_executor: CommandExecutor,
-            ) -> handler_via_write_to.Writer:
+            ) -> contents_via_write_to.Writer:
     if ignore_exit_code:
         from . import exit_ignored
         if output_channel_to_capture is ProcOutputFile.STDOUT:

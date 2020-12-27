@@ -4,17 +4,28 @@ from contextlib import contextmanager
 from typing import Iterator, List, Optional, Deque, Callable, ContextManager
 
 from exactly_lib.impls.types.string_source.cached_frozen import StringSourceWithCachedFrozen
-from exactly_lib.impls.types.string_source.contents_handler import delegated_with_init
-from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
-from exactly_lib.impls.types.string_source.source_from_lines import StringSourceFromLinesBase
+from exactly_lib.impls.types.string_source.contents import delegated_with_init
+from exactly_lib.impls.types.string_source.source_from_contents import StringSourceWConstantContents
+from exactly_lib.impls.types.string_source.source_from_lines import StringSourceContentsFromLinesBase
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums import range_merge
 from exactly_lib.impls.types.string_transformer.impl.filter.line_nums.range_expr import FromTo, Range
 from exactly_lib.impls.types.string_transformer.impl.filter.string_sources import \
-    TransformedContentsHandlerViaAsLinesBase
+    TransformedContentsViaAsLinesBase
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
+
+
+def empty(transformed: StringSource) -> StringSource:
+    def new_structure_builder() -> StringSourceStructureBuilder:
+        return transformed.new_structure_builder()
+
+    return StringSourceWConstantContents(
+        new_structure_builder,
+        _EmptyContents(transformed),
+    )
 
 
 def single_non_neg_int_source(mem_buff_size: int,
@@ -186,14 +197,14 @@ def multiple_ranges_w_negative_values(
         return source.new_structure_builder().with_transformed_by(transformer_description())
 
     def may_depend_on_external_resources_of_uninitialized() -> bool:
-        return source.may_depend_on_external_resources
+        return source.contents().may_depend_on_external_resources
 
     def get_tmp_file_space() -> DirFileSpace:
-        return source._tmp_file_space
+        return source.contents().tmp_file_space
 
     return StringSourceWithCachedFrozen(
         new_structure_builder,
-        delegated_with_init.DelegatedContentsHandlerWithInit(
+        delegated_with_init.DelegatedStringSourceContentsWithInit(
             _HandlerResolverForMultipleRangesWNegativeValues(source, negatives, partial_partitioning).resolve,
             may_depend_on_external_resources_of_uninitialized,
             get_tmp_file_space,
@@ -203,20 +214,14 @@ def multiple_ranges_w_negative_values(
     )
 
 
-class Empty(StringSourceFromLinesBase):
+class _EmptyContents(StringSourceContentsFromLinesBase):
     def __init__(self, transformed: StringSource):
         super().__init__()
         self._transformed = transformed
 
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return self._transformed.new_structure_builder()
-
-    def freeze(self):
-        pass
-
     @property
     def may_depend_on_external_resources(self) -> bool:
-        return self._transformed.may_depend_on_external_resources
+        return self._transformed.contents().may_depend_on_external_resources
 
     @property
     @contextmanager
@@ -224,8 +229,8 @@ class Empty(StringSourceFromLinesBase):
         yield iter(())
 
     @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self._transformed._tmp_file_space
+    def tmp_file_space(self) -> DirFileSpace:
+        return self._transformed.contents().tmp_file_space
 
 
 class _LinesTransformer(ABC):
@@ -245,13 +250,13 @@ def _string_source_of_lines_transformer(
 
     return StringSourceWithCachedFrozen(
         new_structure_builder,
-        _ContentsHandlerOfLinesTransformer(transformer, source),
+        _ContentsOfLinesTransformer(transformer, source),
         mem_buff_size,
         None,
     )
 
 
-class _ContentsHandlerOfLinesTransformer(TransformedContentsHandlerViaAsLinesBase):
+class _ContentsOfLinesTransformer(TransformedContentsViaAsLinesBase):
     def __init__(self,
                  transformer: _LinesTransformer,
                  source: StringSource,
@@ -261,7 +266,7 @@ class _ContentsHandlerOfLinesTransformer(TransformedContentsHandlerViaAsLinesBas
 
     @property
     def may_depend_on_external_resources(self) -> bool:
-        return self._source.may_depend_on_external_resources
+        return self._source.contents().may_depend_on_external_resources
 
     def _transform_lines(self, lines: Iterator[str]) -> Iterator[str]:
         return self._transformer.transform(lines)
@@ -544,14 +549,14 @@ class _HandlerResolverForMultipleRangesWNegativeValues:
         self._partial_partitioning = partial_partitioning
         self._negatives = negatives
 
-    def resolve(self) -> ContentsHandler:
+    def resolve(self) -> StringSourceContents:
         self._source.freeze()
 
         num_lines = self._num_lines_of_source_model()
         merged_ranges = self._ranges_corresponding_to(num_lines)
         transformer = self._transform_method_for(merged_ranges)
 
-        return _ContentsHandlerOfLinesTransformer(transformer, self._source)
+        return _ContentsOfLinesTransformer(transformer, self._source)
 
     def _ranges_corresponding_to(self, num_lines: int) -> range_merge.MergedRanges:
         translated_negatives = range_merge.translate_neg_to_non_neg(self._negatives, num_lines)
@@ -576,7 +581,7 @@ class _HandlerResolverForMultipleRangesWNegativeValues:
     def _num_lines_of_source_model(self) -> int:
         n = 0
 
-        with self._source.as_lines as lines:
+        with self._source.contents().as_lines as lines:
             for _ in lines:
                 n += 1
 

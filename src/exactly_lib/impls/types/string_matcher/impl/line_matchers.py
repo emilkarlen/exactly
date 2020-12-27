@@ -30,7 +30,7 @@ def _get_line_elements(tcds: TestCaseDs,
                        environment: ApplicationEnvironment,
                        string_matcher_model: StringSource
                        ) -> ContextManager[Iterator[LineMatcherLine]]:
-    with string_matcher_model.as_lines as lines:
+    with string_matcher_model.contents().as_lines as lines:
         yield model_iter_from_file_line_iter(lines)
 
 

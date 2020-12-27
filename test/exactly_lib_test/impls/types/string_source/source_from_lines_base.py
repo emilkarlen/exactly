@@ -6,7 +6,7 @@ from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnviro
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib_test.impls.types.string_source.test_resources.dir_file_space_getter import \
     dir_file_space_for_single_usage_getter
-from exactly_lib_test.impls.types.string_source.test_resources.string_sources import SourceFromLinesTestImpl
+from exactly_lib_test.impls.types.string_source.test_resources.string_sources import source_from_lines_test_impl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
@@ -53,7 +53,7 @@ class _SourceConstructor(SourceConstructorWAppEnvForTest):
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        yield SourceFromLinesTestImpl(self.lines, app_env.tmp_files_space)
+        yield source_from_lines_test_impl(self.lines, app_env.tmp_files_space)
 
 
 if __name__ == '__main__':

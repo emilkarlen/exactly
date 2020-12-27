@@ -19,7 +19,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_val_deps.dep_variants.test_resources import application_environment
 from exactly_lib_test.type_val_prims.program.test_resources import commands
-from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
+from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions
 from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import SourceConstructorsBuilder
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
@@ -93,7 +93,7 @@ class TestWhenProgramIsUnableToExecuteResultShouldBeHardError(unittest.TestCase)
                     )
                     assertion = multi_obj_assertions.assertion_of_2_seq_w_file_first_and_last(
                         multi_obj_assertions.ExpectationOnUnFrozenAndFrozen.hard_error(
-                            may_depend_on_external_resources=asrt_string_source.ext_dependencies_gives(True),
+                            may_depend_on_external_resources=asrt_str_src_contents.external_dependencies__const(True),
                         ),
                     )
                     # ACT & ASSERT #
@@ -170,10 +170,10 @@ class TestNonZeroExitCode(unittest.TestCase):
     def _contents_access_raises_hard_error(contents_on_output_channel: str,
                                            ) -> multi_obj_assertions.ExpectationOnUnFrozenAndFrozen:
         return multi_obj_assertions.ExpectationOnUnFrozenAndFrozen(
-            multi_obj_assertions.Expectation.hard_error(
-                may_depend_on_external_resources=asrt_string_source.ext_dependencies_gives(True),
+            asrt_str_src_contents.Expectation.hard_error(
+                may_depend_on_external_resources=asrt_str_src_contents.external_dependencies__const(True),
             ),
-            frozen_may_depend_on_external_resources=asrt_string_source.ext_dependencies_raises_hard_error()
+            frozen_may_depend_on_external_resources=asrt_str_src_contents.ext_dependencies_raises_hard_error()
         )
 
     @staticmethod

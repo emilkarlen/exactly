@@ -1,11 +1,11 @@
 from abc import ABC
 from pathlib import Path
 
-from exactly_lib.type_val_prims.string_source.string_source import StringSource
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils import misc_utils
 
 
-class StringSourceFromLinesBase(StringSource, ABC):
+class StringSourceContentsFromLinesBase(StringSourceContents, ABC):
     def __init__(self):
         self._as_file_path = None
 
@@ -16,7 +16,7 @@ class StringSourceFromLinesBase(StringSource, ABC):
         return self._as_file_path
 
     def _to_file(self) -> Path:
-        path = self._tmp_file_space.new_path()
+        path = self.tmp_file_space.new_path()
 
         with misc_utils.open_and_make_read_only_on_close__p(path, 'x') as f:
             with self.as_lines as lines:

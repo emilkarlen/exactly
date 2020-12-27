@@ -3,8 +3,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager, Iterator, IO
 
-from exactly_lib.impls.types.string_source.contents_handler.handler_with_cached_path import \
-    ContentsHandlerWithCachedPath
+from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
+    StringSourceContentsWithCachedPath
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
@@ -14,7 +14,7 @@ class FileCreator(ABC):
         pass
 
 
-class ContentsHandlerViaFile(ContentsHandlerWithCachedPath):
+class ContentsViaFile(StringSourceContentsWithCachedPath):
     def __init__(self,
                  tmp_file_space: DirFileSpace,
                  file_creator: FileCreator,

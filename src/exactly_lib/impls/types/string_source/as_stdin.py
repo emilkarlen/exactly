@@ -17,7 +17,7 @@ def of_sequence(stdin_sequence: Sequence[StringSource]) -> ContextManager[Proces
         yield subprocess.DEVNULL
     elif len(stdin_sequence) == 1:
         model = stdin_sequence[0]
-        as_file = model.as_file
+        as_file = model.contents().as_file
         with as_file.open() as f:
             yield f
     else:

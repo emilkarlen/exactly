@@ -4,10 +4,9 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager, Iterator, IO, Sequence
 
-import exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
-from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources import test_of_test_resources_util as test_utils
@@ -17,7 +16,8 @@ from exactly_lib_test.type_val_prims.string_source.test_resources import multi_o
     source_constructors
 from exactly_lib_test.type_val_prims.string_source.test_resources.multi_obj_assertions import SourceConstructor
 from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
-    SourceConstructorWAppEnvForTest
+    SourceConstructorWAppEnvForTest, DirFileSpaceGetter
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import StringSourceOfContents
 
 
 class StringSourceData:
@@ -32,25 +32,27 @@ class StringSourceData:
         self.may_depend_on_external_resources = may_depend_on_external_resources
 
 
-class _StringSourceOfContentsData(StringSource):
+def _string_source_of_contents_data(before_freeze: StringSourceData,
+                                    after_freeze: StringSourceData,
+                                    tmp_file_space: DirFileSpace,
+                                    ) -> StringSource:
+    return StringSourceOfContents(
+        _ContentsOfContentsData(before_freeze, tmp_file_space),
+        _ContentsOfContentsData(after_freeze, tmp_file_space),
+    )
+
+
+class _ContentsOfContentsData(StringSourceContents):
     def __init__(self,
-                 before_freeze: StringSourceData,
-                 after_freeze: StringSourceData,
+                 data: StringSourceData,
                  tmp_file_space: DirFileSpace,
                  ):
-        self._data = before_freeze
-        self._after_freeze = after_freeze
-        self.__tmp_file_space = tmp_file_space
-
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return StringSourceStructureBuilder('source of contents data', ())
-
-    def freeze(self):
-        self._data = self._after_freeze
+        self._data = data
+        self._tmp_file_space = tmp_file_space
 
     @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self.__tmp_file_space
+    def tmp_file_space(self) -> DirFileSpace:
+        return self._tmp_file_space
 
     @property
     def may_depend_on_external_resources(self) -> bool:
@@ -70,7 +72,7 @@ class _StringSourceOfContentsData(StringSource):
 
     @property
     def as_file(self) -> Path:
-        ret_val = self.__tmp_file_space.new_path('as-file')
+        ret_val = self._tmp_file_space.new_path('as-file')
         with ret_val.open('w') as f:
             f.write(self._data.data__as_file)
         return ret_val
@@ -80,7 +82,7 @@ class ConstructorOfStringSourceData(SourceConstructorWAppEnvForTest):
     def __init__(self,
                  before_freeze: StringSourceData,
                  after_freeze: StringSourceData,
-                 get_dir_file_space: exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors.DirFileSpaceGetter
+                 get_dir_file_space: DirFileSpaceGetter
                  = source_constructors.get_dir_file_space_with_existing_dir,
                  ):
         super().__init__(get_dir_file_space)
@@ -93,9 +95,9 @@ class ConstructorOfStringSourceData(SourceConstructorWAppEnvForTest):
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        yield _StringSourceOfContentsData(self.before_freeze,
-                                          self.after_freeze,
-                                          app_env.tmp_files_space)
+        yield _string_source_of_contents_data(self.before_freeze,
+                                              self.after_freeze,
+                                              app_env.tmp_files_space)
 
 
 def as_line_sequence(s: str) -> Sequence[str]:

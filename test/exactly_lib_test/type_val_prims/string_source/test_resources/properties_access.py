@@ -3,27 +3,32 @@ import tempfile
 import unittest
 from typing import Callable, Sequence, List
 
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree.renderer import NodeRenderer
 from exactly_lib.util.name_and_value import NameAndValue
 
-ContentsAsStrGetter = Callable[[StringSource], str]
-ContentsAsLinesGetter = Callable[[StringSource], Sequence[str]]
+ContentsAsStrGetter = Callable[[StringSourceContents], str]
+ContentsAsLinesGetter = Callable[[StringSourceContents], Sequence[str]]
 
 
 def get_structure(model: StringSource) -> NodeRenderer:
     return model.structure()
 
 
-def get_may_depend_on_external_resources(model: StringSource) -> bool:
+def get_may_depend_on_external_resources(model: StringSourceContents) -> bool:
     return model.may_depend_on_external_resources
+
+
+def get_string_source_contents(x: StringSource) -> StringSourceContents:
+    return x.contents()
 
 
 class GetContentsFromLinesWIteratorCheck:
     def __init__(self, put: unittest.TestCase):
         self._put = put
 
-    def get_contents(self, model: StringSource) -> str:
+    def get_contents(self, model: StringSourceContents) -> str:
         with model.as_lines as lines_iterator:
             lines = list(lines_iterator)
 
@@ -33,45 +38,45 @@ class GetContentsFromLinesWIteratorCheck:
             return ''.join(lines)
 
 
-def get_contents_from_file(model: StringSource) -> str:
+def get_contents_from_file(model: StringSourceContents) -> str:
     with model.as_file.open() as model_file:
         return model_file.read()
 
 
-def get_contents_from_str(model: StringSource) -> str:
+def get_contents_from_str(model: StringSourceContents) -> str:
     return model.as_str
 
 
-def get_contents_via_write_to(model: StringSource) -> str:
+def get_contents_via_write_to(model: StringSourceContents) -> str:
     with tempfile.SpooledTemporaryFile(max_size=2 ** 10, mode='r+') as output_file:
         model.write_to(output_file)
         output_file.seek(0)
         return output_file.read()
 
 
-def get_contents_from_as_lines__str(model: StringSource) -> str:
+def get_contents_from_as_lines__str(model: StringSourceContents) -> str:
     with model.as_lines as lines:
         return ''.join(lines)
 
 
-def get_contents_from_as_lines(model: StringSource) -> List[str]:
+def get_contents_from_as_lines(model: StringSourceContents) -> List[str]:
     with model.as_lines as lines:
         return list(lines)
 
 
-def case__from_lines() -> NameAndValue[Callable[[StringSource], str]]:
+def case__from_lines() -> NameAndValue[Callable[[StringSourceContents], str]]:
     return NameAndValue('as_lines', get_contents_from_as_lines__str)
 
 
-def case__from_str() -> NameAndValue[Callable[[StringSource], str]]:
+def case__from_str() -> NameAndValue[Callable[[StringSourceContents], str]]:
     return NameAndValue('as_str', get_contents_from_str)
 
 
-def case__from_file() -> NameAndValue[Callable[[StringSource], str]]:
+def case__from_file() -> NameAndValue[Callable[[StringSourceContents], str]]:
     return NameAndValue('as_file', get_contents_from_file)
 
 
-def case__from_write_to() -> NameAndValue[Callable[[StringSource], str]]:
+def case__from_write_to() -> NameAndValue[Callable[[StringSourceContents], str]]:
     return NameAndValue('write_to', get_contents_via_write_to)
 
 

@@ -2,7 +2,7 @@ import subprocess
 from abc import ABC, abstractmethod
 from typing import IO
 
-from exactly_lib.impls.types.string_source.contents_handler.handler_via_write_to import Writer
+from exactly_lib.impls.types.string_source.contents.contents_via_write_to import Writer
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.type_val_prims.program.command import Command
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace

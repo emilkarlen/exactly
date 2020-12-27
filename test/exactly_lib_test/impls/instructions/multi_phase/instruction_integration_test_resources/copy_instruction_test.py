@@ -3,9 +3,9 @@ from typing import Callable, List
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.util.name_and_value import NameAndValue
-from exactly_lib_test.impls.instructions.multi_phase.copy.test_resources import argument_syntax as args
-from exactly_lib_test.impls.instructions.multi_phase.copy.test_resources import case_definitions
-from exactly_lib_test.impls.instructions.multi_phase.copy.test_resources import defs
+from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import argument_syntax as args
+from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import case_definitions
+from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import defs
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources import \
     configuration as tc_configuration
 from exactly_lib_test.impls.instructions.multi_phase.instruction_integration_test_resources.configuration import \

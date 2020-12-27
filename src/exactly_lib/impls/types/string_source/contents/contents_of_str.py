@@ -1,12 +1,12 @@
 from contextlib import contextmanager
 from typing import Optional, ContextManager, Iterator, IO
 
-from exactly_lib.impls.types.string_source.contents_handler.handler_with_cached_path import \
-    ContentsHandlerWithCachedPathFromWriteTo
+from exactly_lib.impls.types.string_source.contents.contents_with_cached_path import \
+    ContentsWithCachedPathFromWriteToBase
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 
-class ContentsHandlerOfStr(ContentsHandlerWithCachedPathFromWriteTo):
+class ContentsOfStr(ContentsWithCachedPathFromWriteToBase):
     def __init__(self,
                  contents: str,
                  file_name: Optional[str],

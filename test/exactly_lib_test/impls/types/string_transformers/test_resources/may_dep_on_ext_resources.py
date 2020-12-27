@@ -49,7 +49,7 @@ class TestMayDepOnExtResourcesShouldBeThatOfSourceModelBase(unittest.TestCase, A
                                 symbol_references=asrt.is_empty_sequence
                             ),
                             ExecutionExpectation(
-                                main_result=asrt_string_source.matches__lines__pre_post_freeze__any_frozen_ext_deps(
+                                main_result=asrt_string_source.pre_post_freeze__matches_lines__any_frozen_ext_deps(
                                     self.expected_output_lines_for_model(),
                                     may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
                                 ),

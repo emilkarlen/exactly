@@ -78,7 +78,7 @@ class TestProgramArgumentsShouldBeGivenToProcess(unittest.TestCase):
                 'Arguments: ' + repr(command_line_arguments),
                 PrimAndExeExpectation(
                     ExecutionExpectation(
-                        main_result=asrt_string_source.matches__lines__pre_post_freeze(
+                        main_result=asrt_string_source.pre_post_freeze__matches_lines(
                             expected_lines_on_stdout,
                             may_depend_on_external_resources=asrt.equals(True),
                             frozen_may_depend_on_external_resources=asrt.anything_goes(),

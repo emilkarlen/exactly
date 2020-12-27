@@ -8,7 +8,7 @@ from exactly_lib.type_val_prims.description.tree_structured import StructureRend
 from exactly_lib.type_val_prims.impls.transformed_string_sources import StringTransFun
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.description_tree import renderers
-from exactly_lib_test.impls.types.string_source.test_resources.string_sources import SourceFromLinesTestImpl
+from exactly_lib_test.impls.types.string_source.test_resources.string_sources import source_from_lines_test_impl
 from exactly_lib_test.test_resources.recording import MaxNumberOfTimesChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -87,7 +87,7 @@ class _SourceConstructor(SourceConstructorWAppEnvForTest):
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        source_model = SourceFromLinesTestImpl(
+        source_model = source_from_lines_test_impl(
             self.raw_lines,
             app_env.tmp_files_space,
         )
@@ -117,7 +117,7 @@ class _SourceConstructorWithWriterThatMustBeAppliedOnlyOnce(SourceConstructorWAp
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        source_model = SourceFromLinesTestImpl(
+        source_model = source_from_lines_test_impl(
             self.raw_lines,
             app_env.tmp_files_space,
         )

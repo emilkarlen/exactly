@@ -142,7 +142,7 @@ class _Applier:
     def match(self, model: StringSource) -> MatchingResult:
         return (
             self._ext_deps(model)
-            if model.may_depend_on_external_resources
+            if model.contents().may_depend_on_external_resources
             else
             self._no_ext_deps(model)
         )
@@ -165,7 +165,7 @@ class _ApplierForExpectedOfString(_Applier):
         self._expected = expected
 
     def _no_ext_deps(self, model: StringSource) -> MatchingResult:
-        actual = model.as_str
+        actual = model.contents().as_str
         files_are_equal = self._expected == actual
 
         if files_are_equal:
@@ -179,7 +179,7 @@ class _ApplierForExpectedOfString(_Applier):
     def _ext_deps(self, model: StringSource) -> MatchingResult:
         actual_header, actual_may_be_longer = string_source.read_lines_as_str__w_minimum_num_chars(
             _min_num_chars_to_read(self._expected),
-            model,
+            model.contents(),
         )
         files_are_equal = self._expected == actual_header
 
@@ -203,7 +203,7 @@ class _ApplierForExpectedOfPath(_Applier):
         self._expected = expected
 
     def _no_ext_deps(self, model: StringSource) -> MatchingResult:
-        actual = model.as_str
+        actual = model.contents().as_str
 
         expected_header, expected_may_be_longer = self._read_expected_header(_min_num_chars_to_read(actual))
 
@@ -218,7 +218,7 @@ class _ApplierForExpectedOfPath(_Applier):
             ])
 
     def _ext_deps(self, model: StringSource) -> MatchingResult:
-        actual_file_path = model.as_file
+        actual_file_path = model.contents().as_file
 
         files_are_equal = self._do_compare(actual_file_path)
 

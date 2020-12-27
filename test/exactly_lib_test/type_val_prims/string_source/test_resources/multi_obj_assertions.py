@@ -5,14 +5,16 @@ from typing import List, ContextManager, Sequence
 
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.test_case.hard_error import HardErrorException
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
+from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import properties_access
-from exactly_lib_test.type_val_prims.string_source.test_resources.assertions import Expectation
+from exactly_lib_test.type_val_prims.string_source.test_resources.contents_assertions import Expectation
 from exactly_lib_test.type_val_prims.string_source.test_resources.properties_access import ContentsAsStrGetter
 
 
@@ -49,8 +51,8 @@ class SourceConstructors:
 class ExpectationOnUnFrozenAndFrozen:
     def __init__(self,
                  un_frozen: Expectation,
-                 frozen_may_depend_on_external_resources: ValueAssertion[StringSource]
-                 = asrt_string_source.ext_dependencies(asrt.is_instance(bool)),
+                 frozen_may_depend_on_external_resources: ValueAssertion[StringSourceContents]
+                 = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
                  ):
         self.un_frozen = un_frozen
         self.frozen_may_depend_on_external_resources = frozen_may_depend_on_external_resources
@@ -62,13 +64,13 @@ class ExpectationOnUnFrozenAndFrozen:
                ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
             Expectation.equals(contents, may_depend_on_external_resources),
-            asrt_string_source.ext_dependencies(frozen_may_depend_on_external_resources),
+            asrt_str_src_contents.external_dependencies(frozen_may_depend_on_external_resources),
         )
 
     @staticmethod
     def hard_error(expected: ValueAssertion[TextRenderer] = asrt_text_doc.is_any_text(),
-                   may_depend_on_external_resources: ValueAssertion[StringSource]
-                   = asrt_string_source.ext_dependencies(asrt.is_instance(bool)),
+                   may_depend_on_external_resources: ValueAssertion[StringSourceContents]
+                   = asrt_str_src_contents.external_dependencies(asrt.is_instance(bool)),
                    ) -> 'ExpectationOnUnFrozenAndFrozen':
         return ExpectationOnUnFrozenAndFrozen(
             Expectation.hard_error(expected, may_depend_on_external_resources),
@@ -122,13 +124,13 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
         self._non_contents_related(put, value, message_builder.for_sub_component('non-contents-related'))
         self._contents_related(put, value, message_builder.for_sub_component('contents-related'))
 
-    def _non_contents_related(self,
-                              put: unittest.TestCase,
+    @staticmethod
+    def _non_contents_related(put: unittest.TestCase,
                               constructor: SourceConstructor,
                               message_builder: MessageBuilder,
                               ):
         with constructor.new(put, message_builder) as string_source:
-            asrt_string_source.structure_assertion().apply(put, string_source, message_builder)
+            asrt_string_source.has_valid_structure_description().apply(put, string_source, message_builder)
 
     def _contents_related(self,
                           put: unittest.TestCase,
@@ -142,7 +144,7 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
                 self._contents_related__ext_deps_first(
                     put,
                     contents_access_sequence_case.value,
-                    string_source,
+                    string_source.contents(),
                     ext_dep_case_message_builder,
                 )
             ext_dep_case_message_builder = case_message_builder.for_sub_component('may-dep-on-ext-rsrc-last')
@@ -150,28 +152,28 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
                 self._contents_related__ext_deps_last(
                     put,
                     contents_access_sequence_case.value,
-                    string_source,
+                    string_source.contents(),
                     ext_dep_case_message_builder,
                 )
 
     def _contents_related__ext_deps_first(self,
                                           put: unittest.TestCase,
                                           contents_assertions: List[NameAndValue[ContentsAsStrGetter]],
-                                          string_source: StringSource,
+                                          contents: StringSourceContents,
                                           message_builder: MessageBuilder,
                                           ):
         try:
             self._expectation.may_depend_on_external_resources.apply(
                 put,
-                string_source,
+                contents,
                 message_builder,
             )
-            asrt_string_source.ContentsVariantsSequenceAssertion(
+            asrt_str_src_contents.ActualContentsVariantsSequenceAssertion(
                 self._expectation,
                 contents_assertions,
             ).apply(
                 put,
-                string_source,
+                contents,
                 message_builder,
             )
         except asrt.StopAssertion:
@@ -180,21 +182,21 @@ class _SourceWithContentsVariantsAssertion(asrt.ValueAssertionBase[SourceConstru
     def _contents_related__ext_deps_last(self,
                                          put: unittest.TestCase,
                                          contents_assertions: List[NameAndValue[ContentsAsStrGetter]],
-                                         string_source: StringSource,
+                                         contents: StringSourceContents,
                                          message_builder: MessageBuilder,
                                          ):
         try:
-            asrt_string_source.ContentsVariantsSequenceAssertion(
+            asrt_str_src_contents.ActualContentsVariantsSequenceAssertion(
                 self._expectation,
                 contents_assertions,
             ).apply(
                 put,
-                string_source,
+                contents,
                 message_builder,
             )
             self._expectation.may_depend_on_external_resources.apply(
                 put,
-                string_source,
+                contents,
                 message_builder,
             )
         except asrt.StopAssertion:

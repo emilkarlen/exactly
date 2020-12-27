@@ -34,6 +34,7 @@ from exactly_lib_test.type_val_deps.types.string_transformer.test_resources.symb
 from exactly_lib_test.type_val_deps.types.test_resources.program import ProgramSymbolContext, \
     NON_EXISTING_SYSTEM_PROGRAM
 from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
+from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents
 from exactly_lib_test.type_val_prims.string_transformer.test_resources import string_transformers
 
 
@@ -86,7 +87,7 @@ class TestSymbolReferences(unittest.TestCase):
                     text_printed_by_program.reference_assertion__any_data_type,
                     to_upper_transformer.reference_assertion,
                 ]),
-                primitive=asrt_string_source.matches__str__before_and_after_freeze__const_2(
+                primitive=asrt_string_source.pre_post_freeze__matches_str__const_2(
                     expected_output,
                     may_depend_on_external_resources=True,
                     frozen_may_depend_on_external_resources=asrt.anything_goes(),
@@ -198,7 +199,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(unittest.TestCase)
                         ),
                         MultiSourceExpectation.of_prim__const(
                             symbol_references=asrt.matches_sequence(expected_symbol_references),
-                            primitive=asrt_string_source.matches__str__before_and_after_freeze__const_2(
+                            primitive=asrt_string_source.pre_post_freeze__matches_str__const_2(
                                 expected_file_contents,
                                 may_depend_on_external_resources=True,
                                 frozen_may_depend_on_external_resources=asrt.anything_goes(),
@@ -276,11 +277,11 @@ class TestUnableToExecute(unittest.TestCase):
                         ),
                         MultiSourceExpectation.of_const(
                             symbol_references=asrt.anything_goes(),
-                            primitive=asrt_string_source.before_and_after_freeze_2(
-                                asrt_string_source.contents_raises_hard_error(
+                            primitive=asrt_string_source.pre_post_freeze(
+                                asrt_str_src_contents.contents_raises_hard_error(
                                     may_depend_on_external_resources=asrt.equals(True)
                                 ),
-                                asrt_string_source.contents_and_ext_dep_raises_hard_error(),
+                                asrt_str_src_contents.contents_raises_hard_error__including_ext_deps(),
                             ),
                         )
                     )
@@ -375,7 +376,7 @@ class TestNonZeroExitCode(unittest.TestCase):
                         ),
                         MultiSourceExpectation.of_const(
                             symbol_references=SymbolContext.references_assertion_of_contexts(symbol_contexts),
-                            primitive=asrt_string_source.matches__str__before_and_after_freeze__const_2(
+                            primitive=asrt_string_source.pre_post_freeze__matches_str__const_2(
                                 expected_program_output,
                                 may_depend_on_external_resources=True,
                                 frozen_may_depend_on_external_resources=asrt.anything_goes(),
@@ -483,16 +484,16 @@ class TestNonZeroExitCode(unittest.TestCase):
 
     @staticmethod
     def _contents_access_raises_hard_error(contents_on_output_channel: str) -> ValueAssertion[StringSource]:
-        return asrt_string_source.before_and_after_freeze_2(
-            asrt_string_source.contents_raises_hard_error(
+        return asrt_string_source.pre_post_freeze(
+            asrt_str_src_contents.contents_raises_hard_error(
                 may_depend_on_external_resources=asrt.equals(True)
             ),
-            asrt_string_source.contents_and_ext_dep_raises_hard_error(),
+            asrt_str_src_contents.contents_raises_hard_error__including_ext_deps(),
         )
 
     @staticmethod
     def _contents_is_output_from_program(contents_on_output_channel: str) -> ValueAssertion[StringSource]:
-        return asrt_string_source.matches__str__before_and_after_freeze__const_2(
+        return asrt_string_source.pre_post_freeze__matches_str__const_2(
             contents_on_output_channel,
             may_depend_on_external_resources=True,
             frozen_may_depend_on_external_resources=asrt.anything_goes(),

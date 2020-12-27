@@ -130,7 +130,7 @@ class FileTransformerHelper:
         try:
             output_model = transformer.transform(input_model)
             self._os_services.copy_file(
-                output_model.as_file,
+                output_model.contents().as_file,
                 dst_path,
             )
             return None

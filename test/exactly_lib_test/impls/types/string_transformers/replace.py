@@ -347,7 +347,7 @@ class TestApplication(unittest.TestCase):
                             symbol_references=asrt.is_empty_sequence,
                         ),
                         ExecutionExpectation(
-                            main_result=asrt_string_source.matches__lines__pre_post_freeze__identical(
+                            main_result=asrt_string_source.pre_post_freeze__matches_lines__identical(
                                 asrt.equals(lines_for(source_case.replacement)),
                                 may_depend_on_external_resources=asrt.equals(False),
                             )
@@ -378,7 +378,7 @@ class TestApplication(unittest.TestCase):
                                 symbol_references=asrt.is_empty_sequence,
                             ),
                             ExecutionExpectation(
-                                main_result=asrt_string_source.matches__lines__pre_post_freeze__identical(
+                                main_result=asrt_string_source.pre_post_freeze__matches_lines__identical(
                                     asrt.equals(lines_for(source_case.replacement)),
                                     may_depend_on_external_resources=asrt.equals(False),
                                 )

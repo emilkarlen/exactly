@@ -9,8 +9,8 @@ from exactly_lib.tcfs.sds import SandboxDs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
-from exactly_lib_test.impls.instructions.multi_phase.copy.test_resources import argument_syntax as args
-from exactly_lib_test.impls.instructions.multi_phase.copy.test_resources import case_definitions, defs
+from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import argument_syntax as args
+from exactly_lib_test.impls.instructions.multi_phase.copy_.test_resources import case_definitions, defs
 from exactly_lib_test.impls.instructions.multi_phase.test_resources import instruction_embryo_check
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation, \
     expectation

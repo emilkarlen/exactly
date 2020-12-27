@@ -41,7 +41,7 @@ class EmptinessStringMatcher(StringMatcherImplBase):
 
     @staticmethod
     def _first_line(file_to_check: StringSource) -> str:
-        with file_to_check.as_lines as lines:
+        with file_to_check.contents().as_lines as lines:
             for line in lines:
                 return line
         return ''

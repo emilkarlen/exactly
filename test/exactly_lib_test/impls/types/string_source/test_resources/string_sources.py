@@ -1,35 +1,20 @@
-from contextlib import contextmanager
-from typing import Sequence, ContextManager, Iterator
+from typing import Sequence
 
-from exactly_lib.impls.types.string_source import source_from_lines
+from exactly_lib.impls.types.string_source.source_from_contents import StringSourceWConstantContents
+from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
-from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_base import StringSourceTestImplBase
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_source_base
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_contents import \
+    StringSourceContentsFromLines
 
 
-class SourceFromLinesTestImpl(source_from_lines.StringSourceFromLinesBase, StringSourceTestImplBase):
-    def __init__(self,
-                 raw_lines: Sequence[str],
-                 tmp_file_space: DirFileSpace,
-                 ):
-        """
-        :param raw_lines: Alla lines but last must end with new-line.  Last line may be ended by new-line.
-        """
-        super().__init__()
-        self.lines = raw_lines
-        self.tmp_file_space = tmp_file_space
-
-    def freeze(self):
-        pass
-
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self.tmp_file_space
-
-    @property
-    def may_depend_on_external_resources(self) -> bool:
-        return False
-
-    @property
-    @contextmanager
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        yield iter(self.lines)
+def source_from_lines_test_impl(raw_lines: Sequence[str],
+                                tmp_file_space: DirFileSpace,
+                                may_depend_on_external_resources: bool = False,
+                                ) -> StringSource:
+    return StringSourceWConstantContents(
+        string_source_base.new_structure_builder,
+        StringSourceContentsFromLines(raw_lines,
+                                      tmp_file_space,
+                                      may_depend_on_external_resources),
+    )

@@ -2,13 +2,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import ContextManager, Iterator, IO
 
-from exactly_lib.impls.types.string_source.contents_handler.handler import ContentsHandler
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 
 BUFFER_SIZE = 2 ** 16
 
 
-class ContentsHandlerOfExistingPath(ContentsHandler):
+class StringSourceContentsOfExistingPath(StringSourceContents):
     def __init__(self,
                  existing_regular_file_path: Path,
                  tmp_file_space: DirFileSpace,

@@ -30,6 +30,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -156,35 +157,50 @@ class _StringSourceThatRaisesHardErrorIfFileIsInvalid(StringSource):
     def __init__(self,
                  checked: StringSource,
                  path_description: PathDescriberForPrimitive,
+                 ):
+        self._checked = checked
+        self._path_description = path_description
+        self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
+        self._contents = _ContentsThatRaisesHardErrorIfFileIsInvalid(checked,
+                                                                     path_description)
+
+    def new_structure_builder(self) -> StringSourceStructureBuilder:
+        return self._checked.new_structure_builder()
+
+    def contents(self) -> StringSourceContents:
+        return self._contents
+
+    def freeze(self):
+        pass
+
+
+class _ContentsThatRaisesHardErrorIfFileIsInvalid(StringSourceContents):
+    def __init__(self,
+                 checked: StringSource,
+                 path_description: PathDescriberForPrimitive,
 
                  ):
         self._checked = checked
         self._path_description = path_description
         self._check = file_properties.must_exist_as(FileType.REGULAR, follow_symlinks=True)
 
-    def new_structure_builder(self) -> StringSourceStructureBuilder:
-        return self._checked.new_structure_builder()
-
-    def freeze(self):
-        pass
-
     @property
     def may_depend_on_external_resources(self) -> bool:
-        return self._checked.may_depend_on_external_resources
+        return self._checked.contents().may_depend_on_external_resources
 
     @property
     def as_file(self) -> Path:
-        ret_val = self._checked.as_file
+        ret_val = self._checked.contents().as_file
         self._do_check(ret_val)
         return ret_val
 
     @property
     def as_lines(self) -> ContextManager[Iterator[str]]:
-        return self._checked.as_lines
+        return self._checked.contents().as_lines
 
     @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self._checked._tmp_file_space
+    def tmp_file_space(self) -> DirFileSpace:
+        return self._checked.contents().tmp_file_space
 
     def _do_check(self, path: Path):
         check_result = self._check.apply(path)

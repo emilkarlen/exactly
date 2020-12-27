@@ -36,7 +36,7 @@ class RootStringSourceFactory(ABC):
         )
 
     def of_const_str(self, contents: str) -> StringSource:
-        return constant_str.StringSource(
+        return constant_str.string_source(
             contents,
             self._tmp_file_space,
         )

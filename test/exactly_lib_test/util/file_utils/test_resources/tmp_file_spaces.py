@@ -29,7 +29,10 @@ class TmpFileSpaceThatAllowsSinglePathGeneration(DirFileSpaceThatMustNoBeUsed):
                  put: unittest.TestCase,
                  storage_dir: pathlib.Path,
                  path_name: str,
+                 message_header: str = ''
                  ):
+        super().__init__(message_header)
+        self._message_header = message_header
         self.put = put
         self.storage_dir = storage_dir
         self.path_name = path_name
@@ -37,7 +40,7 @@ class TmpFileSpaceThatAllowsSinglePathGeneration(DirFileSpaceThatMustNoBeUsed):
 
     def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
         if self._path_has_been_generated:
-            self.put.fail('The path has already been generated: {} (suffix "{}")'.format(
+            self.put.fail(self._message_header + ': The path has already been generated: {} (suffix "{}")'.format(
                 self.path_name,
                 name_suffix,
             ))

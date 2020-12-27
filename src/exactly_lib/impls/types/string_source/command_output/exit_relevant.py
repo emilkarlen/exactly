@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import IO, TextIO
 
 from exactly_lib.impls.types.program import top_lvl_error_msg_rendering
-from exactly_lib.impls.types.string_source.contents_handler.handler_via_file import FileCreator
-from exactly_lib.impls.types.string_source.contents_handler.handler_via_write_to import Writer
+from exactly_lib.impls.types.string_source.contents.contents_via_file import FileCreator
+from exactly_lib.impls.types.string_source.contents.contents_via_write_to import Writer
 from exactly_lib.test_case.command_executor import CommandExecutor
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_prims.program.command import Command

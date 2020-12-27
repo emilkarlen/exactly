@@ -111,7 +111,7 @@ class _ExecutorWithTransformation(_ProgramExecutor):
         transformer_input = self._string_source_factory.of_file__poorly_described(untransformed_stdout_path)
         transformer_output = self._program_w_trans.transformation.transform(transformer_input)
 
-        transformer_output.write_to(self._atc_files.output.out)
+        transformer_output.contents().write_to(self._atc_files.output.out)
 
         return exit_code_from_command
 

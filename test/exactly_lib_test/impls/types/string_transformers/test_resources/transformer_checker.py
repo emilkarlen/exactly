@@ -60,5 +60,5 @@ class _Applier(Applier[StringTransformer, ModelConstructor, StringSource]):
 
     def _mb_force_evaluation_of_model(self, model: StringSource):
         if self._force_evaluation_of_model:
-            with model.as_lines:
+            with model.contents().as_lines:
                 pass

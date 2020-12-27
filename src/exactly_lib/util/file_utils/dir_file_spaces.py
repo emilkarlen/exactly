@@ -92,14 +92,17 @@ class DirFileSpaceAsDirCreatedOnDemand(DirFileSpace):
 
 
 class DirFileSpaceThatMustNoBeUsed(DirFileSpace):
+    def __init__(self, msg_header: str = ''):
+        self._msg_header = msg_header
+
     def new_path(self, name_suffix: Optional[str] = None) -> pathlib.Path:
-        raise ValueError('must not be used')
+        raise ValueError(self._msg_header + ': must not be used')
 
     def new_path_as_existing_dir(self, name_suffix: Optional[str] = None) -> pathlib.Path:
-        raise ValueError('must not be used')
+        raise ValueError(self._msg_header + ': must not be used')
 
     def sub_dir_space(self, name_suffix: Optional[str] = None) -> DirFileSpace:
-        raise ValueError('must not be used')
+        raise ValueError(self._msg_header + ': must not be used')
 
 
 class DirFileSpaceThatDoNotCreateFiles(DirFileSpace):

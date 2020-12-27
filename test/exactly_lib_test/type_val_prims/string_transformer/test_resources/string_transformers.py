@@ -204,7 +204,7 @@ def add_line(line_wo_ending_new_line: str) -> StringTransformer:
 
 def model_access_raises_hard_error(hard_err_msg: str = 'hard error message') -> StringTransformer:
     return ConstantStringTransformerTestImpl(
-        string_sources.StringSourceThatRaisesHardErrorException(hard_err_msg)
+        string_sources.string_source_that_raises_hard_error_exception(hard_err_msg)
     )
 
 

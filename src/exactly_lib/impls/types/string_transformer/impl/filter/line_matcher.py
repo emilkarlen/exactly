@@ -6,7 +6,7 @@ from exactly_lib.impls.types.line_matcher import model_construction
 from exactly_lib.impls.types.string_source import cached_frozen
 from exactly_lib.impls.types.string_transformer import sdvs
 from exactly_lib.impls.types.string_transformer.impl.filter.string_sources import \
-    TransformedContentsHandlerViaAsLinesBase
+    TransformedContentsViaAsLinesBase
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
@@ -110,13 +110,13 @@ class _FilterByLineMatcher(WithCachedNodeDescriptionBase, StringTransformer):
 
         return cached_frozen.StringSourceWithCachedFrozen(
             new_structure_builder,
-            _ContentsHandlerViaAsLines(self._line_matcher, model, self._name),
+            _ContentsViaAsLines(self._line_matcher, model, self._name),
             self._mem_buff_size,
             None,
         )
 
 
-class _ContentsHandlerViaAsLines(TransformedContentsHandlerViaAsLinesBase):
+class _ContentsViaAsLines(TransformedContentsViaAsLinesBase):
     def __init__(self,
                  line_matcher: LineMatcher,
                  source: StringSource,

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from typing import ContextManager, IO
 
 from exactly_lib.impls.types.string_source import cached_frozen as sut
-from exactly_lib.impls.types.string_source.contents_handler import handler_of_str
+from exactly_lib.impls.types.string_source.contents import contents_of_str
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
@@ -162,7 +162,7 @@ class _SourceConstructorOfUnfrozenAsConstStr(SourceConstructorWAppEnvForTest):
                  ) -> ContextManager[StringSource]:
         yield sut.StringSourceWithCachedFrozen(
             _new_structure_builder,
-            handler_of_str.ContentsHandlerOfStr(
+            contents_of_str.ContentsOfStr(
                 self.contents,
                 None,
                 app_env.tmp_files_space,
@@ -186,7 +186,7 @@ class _SourceConstructorOfUnfrozenThatWritesViaFileNo(SourceConstructorWAppEnvFo
                  ) -> ContextManager[StringSource]:
         yield sut.StringSourceWithCachedFrozen(
             _new_structure_builder,
-            _ContentsHandlerThatAccessesFileNo(
+            _ContentsThatAccessesFileNo(
                 self.contents,
                 app_env.tmp_files_space,
             ),
@@ -195,7 +195,7 @@ class _SourceConstructorOfUnfrozenThatWritesViaFileNo(SourceConstructorWAppEnvFo
         )
 
 
-class _ContentsHandlerThatAccessesFileNo(handler_of_str.ContentsHandlerOfStr):
+class _ContentsThatAccessesFileNo(contents_of_str.ContentsOfStr):
     def __init__(self,
                  contents: str,
                  tmp_file_space: DirFileSpace,

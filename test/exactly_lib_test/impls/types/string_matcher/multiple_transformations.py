@@ -115,7 +115,7 @@ class EqualsMatcherTestImpl(StringMatcherImplBase):
         return matcher_options.EQUALS_ARGUMENT
 
     def matches_w_trace(self, model: StringSource) -> MatchingResult:
-        actual = model.as_str
+        actual = model.contents().as_str
         if self.expected == actual:
             return self._new_tb().build_result(True)
         else:

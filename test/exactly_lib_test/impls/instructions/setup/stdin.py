@@ -222,7 +222,7 @@ class TestStringSourceAsFileShouldRaiseHardErrorWhenFileDoNotExist(TestCaseBaseF
             assert actual_stdin is not None
 
             with self.assertRaises(HardErrorException) as cm:
-                path = actual_stdin.as_file
+                path = actual_stdin.contents().as_file
 
             asrt_text_doc.is_any_text().apply_with_message(self, cm.exception.error,
                                                            'error message')

@@ -29,7 +29,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
 
-        py_file = File('copy-stdin.py',
+        py_file = File('copy_-stdin.py',
                        py_programs.py_pgm_that_copies_stdin_to_stdout())
 
         py_file_rel_opt_conf = rel_opt.conf_rel_any(RelOptionType.REL_TMP)
@@ -65,7 +65,7 @@ class TestStdinShouldBeContentsOfModel(unittest.TestCase):
                     MultiSourceExpectation(
                         program_symbol.references_assertion,
                         ExecutionExpectation(
-                            main_result=asrt_string_source.matches__lines__pre_post_freeze(
+                            main_result=asrt_string_source.pre_post_freeze__matches_lines(
                                 asrt.equals(input_model_lines),
                                 may_depend_on_external_resources=asrt.equals(True),
                                 frozen_may_depend_on_external_resources=asrt.anything_goes(),

@@ -49,7 +49,7 @@ def _transform_string_to_string(tcds: TestCaseDs, string_input: str) -> str:
     transformer = sut.TcdsPathsReplacementStringTransformer('arbitrary custom', tcds)
     model = string_sources.of_string(string_input)
     output = transformer.transform(model)
-    return output.as_str
+    return output.contents().as_str
 
 
 class TestIntegration(unittest.TestCase):

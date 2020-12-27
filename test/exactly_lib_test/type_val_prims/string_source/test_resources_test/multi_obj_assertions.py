@@ -4,6 +4,7 @@ from typing import ContextManager
 
 from exactly_lib.test_case.hard_error import HardErrorException
 from exactly_lib.type_val_deps.dep_variants.adv.app_env import ApplicationEnvironment
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.util.file_utils.dir_file_space import DirFileSpace
 from exactly_lib.util.name_and_value import NameAndValue
@@ -11,13 +12,14 @@ from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_t
 from exactly_lib_test.test_resources import test_of_test_resources_util as test_utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as asrt_string_source
+from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as asrt_str_src_contents, \
+    string_source_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources import multi_obj_assertions as sut
 from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
 from exactly_lib_test.type_val_prims.string_source.test_resources.source_constructors import \
     SourceConstructorWAppEnvForTest
-from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import \
-    StringSourceThatRaisesHardErrorException
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_base import StringSourceTestImplBase
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_contents import StringSourceContentsData
 from exactly_lib_test.type_val_prims.string_source.test_resources_test import test_resources
 from exactly_lib_test.type_val_prims.string_source.test_resources_test.test_resources import StringSourceData, \
     ConstructorOfStringSourceData, check_variants
@@ -100,19 +102,19 @@ class TestExpectedHardErrorInContentsMethod(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
         data_that_raises_hard_error_in_contents_methods = (
-            string_sources.StringSourceDataHandler.new_w_defaults_of_hard_error(
+            StringSourceContentsData.new_w_defaults_of_hard_error(
                 may_depend_on_external_resources=True
             )
         )
 
-        source_constructor = _SourceConstructorForStringSourceOfDataHandlers(
+        source_constructor = _SourceConstructorForStringSourceOfContentsData(
             data_that_raises_hard_error_in_contents_methods,
             data_that_raises_hard_error_in_contents_methods,
         )
 
         expectation = sut.ExpectationOnUnFrozenAndFrozen.hard_error(
             asrt_text_doc.is_any_text(),
-            may_depend_on_external_resources=asrt_string_source.ext_dependencies(),
+            may_depend_on_external_resources=asrt_str_src_contents.external_dependencies(),
         )
 
         for checker_variant in check_variants(expectation):
@@ -131,23 +133,23 @@ class TestExpectedHardErrorExternalDependencies(unittest.TestCase):
             raise HardErrorException(asrt_text_doc.new_single_string_text_for_test('hard err msg'))
 
         data_that_raises_hard_error_in_contents_methods = (
-            string_sources.StringSourceDataHandler.of_constants_2(
+            StringSourceContentsData.of_constants_2(
                 contents='',
                 may_depend_on_external_resources=may_depend_on_external_resources
             )
         )
 
-        source_constructor = _SourceConstructorForStringSourceOfDataHandlers(
+        source_constructor = _SourceConstructorForStringSourceOfContentsData(
             data_that_raises_hard_error_in_contents_methods,
             data_that_raises_hard_error_in_contents_methods,
         )
 
         expectation = sut.ExpectationOnUnFrozenAndFrozen(
-            sut.Expectation(
+            asrt_str_src_contents.Expectation(
                 contents=asrt.anything_goes(),
-                may_depend_on_external_resources=asrt_string_source.ext_dependencies_raises_hard_error()
+                may_depend_on_external_resources=asrt_str_src_contents.ext_dependencies_raises_hard_error()
             ),
-            frozen_may_depend_on_external_resources=asrt_string_source.ext_dependencies_raises_hard_error(),
+            frozen_may_depend_on_external_resources=asrt_str_src_contents.ext_dependencies_raises_hard_error(),
         )
 
         for checker_variant in check_variants(expectation):
@@ -164,12 +166,12 @@ class TestUnexpectedHardErrorInContentsMethod(unittest.TestCase):
         # ARRANGE #
         contents = 'the contents'
         data_that_raises_hard_error_in_contents_methods = (
-            string_sources.StringSourceDataHandler.new_w_defaults_of_hard_error(
+            StringSourceContentsData.new_w_defaults_of_hard_error(
                 may_depend_on_external_resources=True
             )
         )
 
-        data_with_expected_data = string_sources.StringSourceDataHandler.of_constants(
+        data_with_expected_data = StringSourceContentsData.of_constants(
             contents,
             may_depend_on_external_resources=True,
         )
@@ -178,7 +180,7 @@ class TestUnexpectedHardErrorInContentsMethod(unittest.TestCase):
             NameAndValue(
                 'before freeze',
                 sut.SourceConstructors.of_common(
-                    _SourceConstructorForStringSourceOfDataHandlers(
+                    _SourceConstructorForStringSourceOfContentsData(
                         data_that_raises_hard_error_in_contents_methods,
                         data_with_expected_data,
                     )
@@ -187,7 +189,7 @@ class TestUnexpectedHardErrorInContentsMethod(unittest.TestCase):
             NameAndValue(
                 'after freeze',
                 sut.SourceConstructors.of_common(
-                    _SourceConstructorForStringSourceOfDataHandlers(
+                    _SourceConstructorForStringSourceOfContentsData(
                         data_with_expected_data,
                         data_that_raises_hard_error_in_contents_methods,
                     )
@@ -217,7 +219,7 @@ class TestHardErrorShouldNeverHappenInFreeze(unittest.TestCase):
 
         expectation = sut.ExpectationOnUnFrozenAndFrozen.hard_error(
             asrt_text_doc.is_any_text(),
-            may_depend_on_external_resources=asrt_string_source.ext_dependencies(),
+            may_depend_on_external_resources=asrt_str_src_contents.external_dependencies(),
         )
 
         for checker_variant in check_variants(expectation):
@@ -229,10 +231,10 @@ class TestHardErrorShouldNeverHappenInFreeze(unittest.TestCase):
                 )
 
 
-class _SourceConstructorForStringSourceOfDataHandlers(SourceConstructorWAppEnvForTest):
+class _SourceConstructorForStringSourceOfContentsData(SourceConstructorWAppEnvForTest):
     def __init__(self,
-                 before_freeze: string_sources.StringSourceDataHandler,
-                 after_freeze: string_sources.StringSourceDataHandler,
+                 before_freeze: StringSourceContentsData,
+                 after_freeze: StringSourceContentsData,
                  ):
         super().__init__()
         self._before_freeze = before_freeze
@@ -247,10 +249,9 @@ class _SourceConstructorForStringSourceOfDataHandlers(SourceConstructorWAppEnvFo
         def get_tmp_file_space() -> DirFileSpace:
             return app_env.tmp_files_space
 
-        yield string_sources.StringSourceOfDataHandlers(
-            get_tmp_file_space,
-            self._before_freeze,
-            self._after_freeze,
+        yield string_sources.StringSourceOfContents(
+            self._before_freeze.as_contents(get_tmp_file_space),
+            self._after_freeze.as_contents(get_tmp_file_space),
         )
 
 
@@ -264,10 +265,16 @@ class _SourceConstructorForStringWhoSFreezeRaisesHardError(SourceConstructorWApp
         yield _StringSourceWhoSFreezeRaisesHardError()
 
 
-class _StringSourceWhoSFreezeRaisesHardError(StringSourceThatRaisesHardErrorException):
+class _StringSourceWhoSFreezeRaisesHardError(StringSourceTestImplBase):
+    def __init__(self):
+        self._contents = string_source_contents.ContentsThatRaisesHardErrorException()
+
+    def contents(self) -> StringSourceContents:
+        return self._contents
+
     def freeze(self):
         raise HardErrorException(
-            asrt_text_doc.new_single_string_text_for_test('HARD_ERROR not allowed here')
+            asrt_text_doc.new_single_string_text_for_test('freeze not allowed here')
         )
 
 

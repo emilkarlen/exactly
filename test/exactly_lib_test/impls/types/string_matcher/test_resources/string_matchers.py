@@ -12,7 +12,7 @@ class EqualsConstant(StringMatcherImplBase):
         self._expected = expected
 
     def matches_w_trace(self, model: StringSource) -> MatchingResult:
-        actual = model.as_str
+        actual = model.contents().as_str
         return TraceBuilder(self.name).build_result(self._expected == actual)
 
     @property

@@ -28,7 +28,7 @@ class _PropertyGetter(PropertyGetter[StringSource, int], WithCachedNodeDescripti
 
     def get_from(self, model: StringSource) -> int:
         ret_val = 0
-        with model.as_lines as lines:
+        with model.contents().as_lines as lines:
             for _ in lines:
                 ret_val += 1
         return ret_val

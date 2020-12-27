@@ -95,8 +95,9 @@ def _invoke_freeze(string_source: StringSource, num_times: int):
 
 
 def _invoke_every_contents_method(string_source: StringSource):
+    contents = string_source.contents()
     for method_case in properties_access.ALL_CASES__WO_LINES_ITER_CHECK:
-        method_case.value(string_source)
+        method_case.value(contents)
 
 
 def _new_recorder() -> SequenceRecorder[StringSourceMethod]:

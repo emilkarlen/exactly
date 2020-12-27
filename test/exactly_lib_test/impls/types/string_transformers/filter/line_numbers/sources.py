@@ -38,7 +38,7 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                         # ACT & ASSERT #
                         freeze_check.check(
                             self,
-                            sut.Empty,
+                            sut.empty,
                             may_depend_on_external_resources,
                             num_initial_freeze_invocations,
                             tmp_file_space,
@@ -55,9 +55,9 @@ class TestUnconditionallyEmptyTransformations(unittest.TestCase):
                                                         tmp_file_space,
                                                         source_may_depend_on_external_resources)
                 # ACT #
-                string_source = sut.Empty(source_model)
+                string_source = sut.empty(source_model)
                 # ASSERT #
-                self.assertEqual(string_source.may_depend_on_external_resources,
+                self.assertEqual(string_source.contents().may_depend_on_external_resources,
                                  source_may_depend_on_external_resources)
 
 
@@ -95,7 +95,7 @@ class TestNonUnconditionallyEmptyTransformationsExceptMultipleRangesWNegativeVal
                     # ACT #
                     string_source = transformer_case.value(source_model)
                     # ASSERT #
-                    self.assertEqual(string_source.may_depend_on_external_resources,
+                    self.assertEqual(string_source.contents().may_depend_on_external_resources,
                                      source_may_depend_on_external_resources)
 
 
@@ -134,7 +134,7 @@ class TestMultipleRangesWNegativeValues(unittest.TestCase):
                     # ACT #
                     string_source = transformer_case.transformer(source_model)
                     # ASSERT #
-                    self.assertEqual(string_source.may_depend_on_external_resources,
+                    self.assertEqual(string_source.contents().may_depend_on_external_resources,
                                      source_may_depend_on_external_resources)
 
 

@@ -14,11 +14,12 @@ from exactly_lib_test.type_val_prims.string_source.test_resources.multi_obj_asse
     SourceConstructor
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 
-DirFileSpaceGetter = Callable[[unittest.TestCase], ContextManager[DirFileSpace]]
+DirFileSpaceGetter = Callable[[unittest.TestCase, MessageBuilder], ContextManager[DirFileSpace]]
 
 
 @contextmanager
-def get_dir_file_space_with_existing_dir(put: unittest.TestCase) -> ContextManager[DirFileSpace]:
+def get_dir_file_space_with_existing_dir(put: unittest.TestCase,
+                                         message_builder: MessageBuilder) -> ContextManager[DirFileSpace]:
     with tempfile.TemporaryDirectory(prefix='exactly') as tmp_dir_name:
         yield tmp_file_spaces.tmp_dir_file_space_for_test(Path(tmp_dir_name))
 
@@ -40,7 +41,7 @@ class SourceConstructorWAppEnvForTest(SourceConstructor, ABC):
 
     @contextmanager
     def new(self, put: unittest.TestCase, message_builder: MessageBuilder) -> ContextManager[StringSource]:
-        with self._get_dir_file_space(put) as dir_file_space:
+        with self._get_dir_file_space(put, message_builder) as dir_file_space:
             app_env = application_environment.application_environment_for_test(dir_file_space)
             with self.new_with(put, message_builder, app_env) as string_source:
                 yield string_source

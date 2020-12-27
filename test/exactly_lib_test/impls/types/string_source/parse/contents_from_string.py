@@ -38,7 +38,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__before_and_after_freeze__const(
+                asrt_string_source.pre_post_freeze__matches_str__const(
                     string_value.value,
                     may_depend_on_external_resources=False,
                 )
@@ -56,7 +56,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__before_and_after_freeze__const(
+                asrt_string_source.pre_post_freeze__matches_str__const(
                     string_value.value,
                     may_depend_on_external_resources=False,
                 )
@@ -72,7 +72,7 @@ class TestSuccessfulScenariosWithConstantContents(unittest.TestCase):
             OptionallyOnNewLine(string_source_syntax),
             arrangement_w_tcds(),
             MultiSourceExpectation.of_prim__const(
-                asrt_string_source.matches__str__before_and_after_freeze__const(
+                asrt_string_source.pre_post_freeze__matches_str__const(
                     string_value.value,
                     may_depend_on_external_resources=False,
                 )
@@ -100,7 +100,7 @@ class TestSymbolReferences(unittest.TestCase):
                 symbols=contents_symbol.symbol_table,
             ),
             Expectation.of_prim__const(
-                primitive=asrt_string_source.matches__str__before_and_after_freeze__const(
+                primitive=asrt_string_source.pre_post_freeze__matches_str__const(
                     contents_symbol.str_value,
                     may_depend_on_external_resources=False),
                 parse=ParseExpectation(
@@ -166,7 +166,7 @@ class TestSymbolReferences(unittest.TestCase):
                 symbols=symbol_table,
             ),
             Expectation.of_prim__const(
-                primitive=asrt_string_source.matches__str__before_and_after_freeze__const(
+                primitive=asrt_string_source.pre_post_freeze__matches_str__const(
                     expected_contents,
                     may_depend_on_external_resources=False),
                 parse=ParseExpectation(

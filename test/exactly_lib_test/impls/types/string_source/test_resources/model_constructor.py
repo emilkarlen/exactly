@@ -9,8 +9,9 @@ from exactly_lib.util.str_.misc_formatting import with_appended_new_lines
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.tcfs.test_resources.fake_ds import fake_tcds
 from exactly_lib_test.test_case.test_resources.os_services_that_raises import OsServicesThatRaises
-from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources
+from exactly_lib_test.type_val_prims.string_source.test_resources import string_sources, string_source_contents
 from exactly_lib_test.type_val_prims.string_source.test_resources.assertions import StringSourceThatThatChecksLines
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import StringSourceOfContents
 from exactly_lib_test.util.file_utils.test_resources import tmp_file_spaces
 from exactly_lib_test.util.process_execution.test_resources.proc_exe_env import proc_exe_env_for_test
 
@@ -125,7 +126,7 @@ class _ModelOfLines:
     def construct(self, environment: FullResolvingEnvironment) -> StringSource:
         return StringSourceThatThatChecksLines(
             self.put,
-            string_sources.StringSourceFromLines(
+            string_sources.string_source_from_lines(
                 self.lines,
                 environment.application_environment.tmp_files_space.sub_dir_space(),
                 self.may_depend_on_external_resources,
@@ -155,8 +156,10 @@ class _ModelOfOnlyAsLinesWithMaxInvocations:
     def construct(self, environment: FullResolvingEnvironment) -> StringSource:
         return StringSourceThatThatChecksLines(
             self.put,
-            string_sources.StringSourceThat.new_w_defaults_of_not_impl(
-                as_lines=self.get_lines,
+            StringSourceOfContents.of_identical(
+                string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
+                    as_lines=self.get_lines,
+                )
             )
         )
 
@@ -192,7 +195,9 @@ class _ModelOfOnlyAsLinesWithMax1InvocationAndMaxNumLinesFromIter:
     def construct(self, environment: FullResolvingEnvironment) -> StringSource:
         return StringSourceThatThatChecksLines(
             self.put,
-            string_sources.StringSourceThat.new_w_defaults_of_not_impl(
-                as_lines=self.get_lines,
+            StringSourceOfContents.of_identical(
+                string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
+                    as_lines=self.get_lines,
+                )
             )
         )

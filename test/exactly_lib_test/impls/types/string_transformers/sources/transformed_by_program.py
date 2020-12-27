@@ -14,7 +14,7 @@ from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.type_val_prims.program.stdin import StdinData
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_transformer import StringTransformer
-from exactly_lib_test.impls.types.string_source.test_resources.string_sources import SourceFromLinesTestImpl
+from exactly_lib_test.impls.types.string_source.test_resources.string_sources import source_from_lines_test_impl
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -282,7 +282,7 @@ class _ToUpperCommandSourceConstructor(SourceConstructorWAppEnvForTest):
         with tempfile.TemporaryDirectory() as tmp_dir_name:
             tmp_dir_path = Path(tmp_dir_name)
 
-            source_model = SourceFromLinesTestImpl(
+            source_model = source_from_lines_test_impl(
                 self.raw_lines,
                 app_env.tmp_files_space,
             )
@@ -318,7 +318,7 @@ class _ToUpperProgramSourceConstructor(SourceConstructorWAppEnvForTest):
         with tempfile.TemporaryDirectory() as tmp_dir_name:
             tmp_dir_path = Path(tmp_dir_name)
 
-            source_model = SourceFromLinesTestImpl(
+            source_model = source_from_lines_test_impl(
                 self.raw_lines,
                 app_env.tmp_files_space,
             )

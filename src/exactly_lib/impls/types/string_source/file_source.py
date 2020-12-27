@@ -1,12 +1,13 @@
-from contextlib import contextmanager
 from pathlib import Path
-from typing import ContextManager, Iterator
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.impls.description_tree import custom_details
+from exactly_lib.impls.types.string_source.contents.contents_of_existing_path import \
+    StringSourceContentsOfExistingPath
 from exactly_lib.type_val_deps.types.path import primitives
 from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
+from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource
 from exactly_lib.type_val_prims.string_source.structure_builder import StringSourceStructureBuilder
 from exactly_lib.util.description_tree.renderer import DetailsRenderer
@@ -34,7 +35,10 @@ class StringSourceOfFile(StringSource):
         """
         self._path = path
         self._describer = describer
-        self.__tmp_file_space = tmp_file_space
+        self._contents = StringSourceContentsOfExistingPath(
+            path,
+            tmp_file_space,
+        )
 
     @staticmethod
     def structure_builder_for(path: DetailsRenderer) -> StringSourceStructureBuilder:
@@ -48,28 +52,8 @@ class StringSourceOfFile(StringSource):
             custom_details.path_primitive_details_renderer(self._describer)
         )
 
+    def contents(self) -> StringSourceContents:
+        return self._contents
+
     def freeze(self):
         pass
-
-    @property
-    def may_depend_on_external_resources(self) -> bool:
-        return True
-
-    @property
-    def as_str(self) -> str:
-        with self._path.open() as f:
-            return f.read()
-
-    @property
-    def as_file(self) -> Path:
-        return self._path
-
-    @property
-    @contextmanager
-    def as_lines(self) -> ContextManager[Iterator[str]]:
-        with self.as_file.open() as lines:
-            yield lines
-
-    @property
-    def _tmp_file_space(self) -> DirFileSpace:
-        return self.__tmp_file_space

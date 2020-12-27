@@ -66,8 +66,9 @@ def _check(put: unittest.TestCase,
 
 
 @contextmanager
-def _dir_file_space_that_must_not_be_used_getter(put: unittest.TestCase) -> ContextManager[DirFileSpace]:
-    yield DirFileSpaceThatMustNoBeUsed()
+def _dir_file_space_that_must_not_be_used_getter(put: unittest.TestCase,
+                                                 message_builder: MessageBuilder) -> ContextManager[DirFileSpace]:
+    yield DirFileSpaceThatMustNoBeUsed(message_builder.apply('dir-file-space'))
 
 
 class _SourceConstructorWSingleTmpFileBase(SourceConstructorWAppEnvForTest):

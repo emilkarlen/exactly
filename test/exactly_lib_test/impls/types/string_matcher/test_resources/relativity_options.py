@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from typing import List, Callable
+from typing import List, Callable, Sequence
 
 from exactly_lib.tcfs.path_relativity import RelNonHdsOptionType
 from exactly_lib.tcfs.sds import SandboxDs
@@ -42,7 +42,7 @@ class TestWithRelativityOptionAndNegationBase(TestCaseBase):
 
 def suite_for__rel_opts__negations(
         relativity_options: List[RelativityOptionConfiguration],
-        test_cases: Callable[[RelativityOptionConfiguration, ExpectationType], unittest.TestCase]
+        test_cases: Sequence[Callable[[RelativityOptionConfiguration, ExpectationType], unittest.TestCase]]
 ) -> unittest.TestSuite:
     def suite_for_option(option_configuration: RelativityOptionConfiguration) -> unittest.TestSuite:
         not_negated = [tc(option_configuration, ExpectationType.POSITIVE)

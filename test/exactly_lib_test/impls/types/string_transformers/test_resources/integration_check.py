@@ -55,7 +55,7 @@ def expectation_of_successful_execution(output_lines: List[str],
             symbol_references=symbol_references
         ),
         ExecutionExpectation(
-            main_result=asrt_string_source.matches__lines__pre_post_freeze(
+            main_result=asrt_string_source.pre_post_freeze__matches_lines(
                 asrt.equals(output_lines),
                 may_depend_on_external_resources=asrt.equals(may_depend_on_external_resources),
                 frozen_may_depend_on_external_resources=frozen_may_depend_on_external_resources,

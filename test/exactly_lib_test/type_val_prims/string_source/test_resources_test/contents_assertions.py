@@ -7,9 +7,9 @@ from exactly_lib.util.file_utils.dir_file_spaces import DirFileSpaceThatMustNoBe
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources import test_of_test_resources_util
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.type_val_prims.string_source.test_resources import assertions as sut, string_sources, \
-    string_source_contents
-from exactly_lib_test.type_val_prims.string_source.test_resources.string_sources import StringSourceOfContents
+from exactly_lib_test.type_val_prims.string_source.test_resources import contents_assertions as sut
+from exactly_lib_test.type_val_prims.string_source.test_resources.string_source_contents import \
+    StringSourceContentsThat, StringSourceContentsFromLines
 
 
 def suite() -> unittest.TestSuite:
@@ -111,15 +111,13 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         value_from_wrapped_method = DirFileSpaceThatMustNoBeUsed()
 
-        wrapped = StringSourceOfContents.of_identical(
-            string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
-                tmp_file_space=do_return(value_from_wrapped_method),
-            )
+        wrapped = StringSourceContentsThat.new_w_defaults_of_not_impl(
+            tmp_file_space=do_return(value_from_wrapped_method),
         )
 
-        source = sut.StringSourceThatThatChecksLines(self, wrapped)
+        source = sut.StringSourceContentsThatThatChecksLines(self, wrapped)
         # ACT #
-        actual = source.contents().tmp_file_space
+        actual = source.tmp_file_space
         # ASSERT #
         self.assertIs(actual, value_from_wrapped_method)
 
@@ -127,30 +125,27 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         for value_from_wrapped_method in [False, True]:
             with self.subTest(value_from_wrapped_method=value_from_wrapped_method):
-                wrapped = StringSourceOfContents.of_identical(
-                    string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
-                        may_depend_on_external_resources=do_return(value_from_wrapped_method),
-                    )
+                wrapped = StringSourceContentsThat.new_w_defaults_of_not_impl(
+                    may_depend_on_external_resources=do_return(value_from_wrapped_method),
                 )
 
-                source = sut.StringSourceThatThatChecksLines(self, wrapped)
+                source = sut.StringSourceContentsThatThatChecksLines(self, wrapped)
                 # ACT #
-                actual = source.contents().may_depend_on_external_resources
+                actual = source.may_depend_on_external_resources
                 # ASSERT #
                 self.assertIs(actual, value_from_wrapped_method)
 
     def test_as_str_should_call_wrapped_method(self):
         # ARRANGE #
         value_from_wrapped_method = 'the str'
-        wrapped = StringSourceOfContents.of_identical(
-            string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
-                as_str=do_return(value_from_wrapped_method),
-            )
+
+        wrapped = StringSourceContentsThat.new_w_defaults_of_not_impl(
+            as_str=do_return(value_from_wrapped_method),
         )
 
-        source = sut.StringSourceThatThatChecksLines(self, wrapped)
+        source = sut.StringSourceContentsThatThatChecksLines(self, wrapped)
         # ACT #
-        actual = source.contents().as_str
+        actual = source.as_str
         # ASSERT #
         self.assertIs(actual, value_from_wrapped_method)
 
@@ -158,15 +153,13 @@ class TestModelChecker(unittest.TestCase):
         # ARRANGE #
         value_from_wrapped_method = Path('the path')
 
-        wrapped = StringSourceOfContents.of_identical(
-            string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
-                as_file=do_return(value_from_wrapped_method),
-            )
+        wrapped = StringSourceContentsThat.new_w_defaults_of_not_impl(
+            as_file=do_return(value_from_wrapped_method),
         )
 
-        source = sut.StringSourceThatThatChecksLines(self, wrapped)
+        source = sut.StringSourceContentsThatThatChecksLines(self, wrapped)
         # ACT #
-        actual = source.contents().as_file
+        actual = source.as_file
         # ASSERT #
         self.assertIs(actual, value_from_wrapped_method)
 
@@ -177,28 +170,26 @@ class TestModelChecker(unittest.TestCase):
         def write_to_of_wrapped(f: IO):
             self.assertIs(f, io_passed_to_wrapper)
 
-        wrapped = StringSourceOfContents.of_identical(
-            string_source_contents.StringSourceContentsThat.new_w_defaults_of_not_impl(
-                write_to=write_to_of_wrapped,
-            )
+        wrapped = StringSourceContentsThat.new_w_defaults_of_not_impl(
+            write_to=write_to_of_wrapped,
         )
 
-        source = sut.StringSourceThatThatChecksLines(self, wrapped)
+        source = sut.StringSourceContentsThatThatChecksLines(self, wrapped)
         # ACT & ASSERT #
-        source.contents().write_to(io_passed_to_wrapper)
+        source.write_to(io_passed_to_wrapper)
 
-    def _model_with_checker(self, input_lines: Sequence[str]) -> sut.StringSourceThatThatChecksLines:
-        return sut.StringSourceThatThatChecksLines(
+    def _model_with_checker(self, input_lines: Sequence[str]) -> sut.StringSourceContentsThatThatChecksLines:
+        return sut.StringSourceContentsThatThatChecksLines(
             self.put,
-            string_sources.string_source_from_lines(
+            StringSourceContentsFromLines(
                 input_lines,
                 DirFileSpaceThatMustNoBeUsed(),
             )
         )
 
 
-def _get_all_lines(model: sut.StringSourceThatThatChecksLines) -> List[str]:
-    with model.contents().as_lines as lines:
+def _get_all_lines(model: sut.StringSourceContentsThatThatChecksLines) -> List[str]:
+    with model.as_lines as lines:
         return list(lines)
 
 

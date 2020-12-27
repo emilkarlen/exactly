@@ -66,8 +66,8 @@ class _SourceConstructor(SourceConstructorWAppEnvForTest):
                  message_builder: MessageBuilder,
                  app_env: ApplicationEnvironment,
                  ) -> ContextManager[StringSource]:
-        yield sut.StringSource(self.contents,
-                               app_env.tmp_files_space)
+        yield sut.string_source(self.contents,
+                                app_env.tmp_files_space)
 
 
 if __name__ == '__main__':
