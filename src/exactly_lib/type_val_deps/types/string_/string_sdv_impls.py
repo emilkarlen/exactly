@@ -7,9 +7,9 @@ from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string import string_ddv as sv, strings_ddvs as csv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringFragmentSdv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import StrValueTransformer, TransformedStringFragmentDdv, \
+from exactly_lib.type_val_deps.types.string_ import string_ddv as sv, strings_ddvs as csv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringFragmentSdv
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import StrValueTransformer, TransformedStringFragmentDdv, \
     StringDdvFragmentDdv
 from exactly_lib.util.symbol_table import SymbolTable
 

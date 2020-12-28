@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
-from exactly_lib.type_val_deps.types.string import string_sdvs
-from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

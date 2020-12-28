@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_val_deps.sym_ref.data import reference_restrictions
 from exactly_lib.type_val_deps.types.list_ import list_sdv as lr, list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse import token as token_syntax
 from exactly_lib_test.impls.types.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX

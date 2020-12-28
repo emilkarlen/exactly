@@ -10,8 +10,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.sdv_structure import SymbolReference, ReferenceRestrictions
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
-from exactly_lib.type_val_deps.types.string import string_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv, StringFragmentSdv
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv, StringFragmentSdv
 from exactly_lib.util.parse.token import Token
 
 

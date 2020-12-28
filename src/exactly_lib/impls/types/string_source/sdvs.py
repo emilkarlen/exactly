@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_source.ddv import StringSourceDdv
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv

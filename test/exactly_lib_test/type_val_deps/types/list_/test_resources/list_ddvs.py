@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
 
 
 def empty_list_ddv() -> ListDdv:

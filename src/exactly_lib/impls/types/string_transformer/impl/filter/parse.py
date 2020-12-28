@@ -11,7 +11,7 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.line_matcher import parse_line_matcher
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType

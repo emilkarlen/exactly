@@ -6,7 +6,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDriverDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_prims.description.structure_building import StructureBuilder
 from exactly_lib.type_val_prims.program import commands
 from exactly_lib.type_val_prims.program.command import CommandDriver

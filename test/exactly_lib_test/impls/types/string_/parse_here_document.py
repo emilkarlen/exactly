@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.impls.types.string import parse_here_document as sut
+from exactly_lib.impls.types.string_ import parse_here_document as sut
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException

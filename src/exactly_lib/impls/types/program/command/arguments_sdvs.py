@@ -6,7 +6,7 @@ from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.symbol_table import SymbolTable
 
 

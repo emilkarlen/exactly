@@ -4,9 +4,9 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib.type_val_deps.types.string import strings_ddvs as ddvs
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_ import strings_ddvs as ddvs
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

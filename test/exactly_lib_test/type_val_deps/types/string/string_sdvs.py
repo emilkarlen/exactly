@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_val_deps.types.string import string_sdv_impls as impl
+from exactly_lib.type_val_deps.types.string_ import string_sdv_impls as impl
 from exactly_lib_test.type_val_deps.types.string.test_resources.sdv_assertions import \
     equals_string_fragment_sdv
 

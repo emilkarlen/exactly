@@ -7,9 +7,9 @@ from typing import Iterable
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string import string_sdv_impls as _impl
-from exactly_lib.type_val_deps.types.string.string_sdv import StringFragmentSdv, StringSdv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import StrValueTransformer
+from exactly_lib.type_val_deps.types.string_ import string_sdv_impls as _impl
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringFragmentSdv, StringSdv
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import StrValueTransformer
 
 
 def str_fragment(constant: str) -> StringFragmentSdv:

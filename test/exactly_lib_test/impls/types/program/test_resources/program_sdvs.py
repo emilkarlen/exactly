@@ -5,7 +5,7 @@ from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvF
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
 from exactly_lib.type_val_deps.types.program.sdv.arguments import ArgumentsSdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib_test.impls.types.test_resources import command_sdvs as test_command_sdvs
 from exactly_lib_test.type_val_deps.types.string.test_resources import string_sdvs
 

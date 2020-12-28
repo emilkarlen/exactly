@@ -3,7 +3,7 @@ from typing import TypeVar, Generic
 from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 
 T = TypeVar('T')
 

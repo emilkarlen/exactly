@@ -6,7 +6,7 @@ from exactly_lib.impls.types.program.parse import parse_program
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.tcfs.path_relativity import RelHdsOptionType
 from exactly_lib.type_val_deps.types.path import path_ddvs
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.command import CommandDriver
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.impls.types.logic.test_resources.integration_check import IntegrationChecker

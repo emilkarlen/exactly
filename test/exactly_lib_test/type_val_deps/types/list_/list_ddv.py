@@ -4,8 +4,8 @@ from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_val_deps.types.list_ import list_ddv as sut
 from exactly_lib.type_val_deps.types.path import path_ddvs
 from exactly_lib.type_val_deps.types.path.path_part_ddvs import PathPartDdvAsNothing
-from exactly_lib.type_val_deps.types.string import strings_ddvs as sv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string
+from exactly_lib.type_val_deps.types.string_ import strings_ddvs as sv
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \

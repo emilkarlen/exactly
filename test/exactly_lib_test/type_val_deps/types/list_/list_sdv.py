@@ -4,7 +4,7 @@ from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any
 from exactly_lib.type_val_deps.types.list_ import list_sdv as sut
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string, \
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string, \
     string_ddv_of_single_path
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

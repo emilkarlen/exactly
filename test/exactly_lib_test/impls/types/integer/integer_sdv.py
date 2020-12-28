@@ -4,9 +4,9 @@ from typing import Optional, Sequence
 from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.impls.exception.svh_exception import SvhValidationException
 from exactly_lib.impls.types.integer import integer_sdv as sut
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.impls.types.test_resources import validation
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

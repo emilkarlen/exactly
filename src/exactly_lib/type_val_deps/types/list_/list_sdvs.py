@@ -10,8 +10,8 @@ from typing import Iterable
 from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.types.list_ import list_sdv as _impl
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv, ElementSdv
-from exactly_lib.type_val_deps.types.string import string_sdvs as _string_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_ import string_sdvs as _string_sdvs
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 
 
 def empty() -> ListSdv:

@@ -10,7 +10,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import PRIMITIVE
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.program.ddv.command import CommandDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 from exactly_lib.type_val_deps.types.string_source.ddv import StringSourceDdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerDdv
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

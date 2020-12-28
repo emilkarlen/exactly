@@ -17,8 +17,8 @@ from exactly_lib.type_val_deps.types.file_matcher import FileMatcherAdv, FileMat
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.ddv import FilesConditionAdv, FilesConditionDdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_prims.description.tree_structured import WithNodeDescription
 from exactly_lib.type_val_prims.files_condition import FilesCondition
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcher

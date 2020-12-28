@@ -12,13 +12,13 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
 from exactly_lib.type_val_deps.types.files_condition.sdv import FilesConditionSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.str_ import str_constructor
 from . import documentation
 from ..expression.parser import GrammarParsers
-from ..string import parse_string
+from ..string_ import parse_string
 
 
 def parsers(must_be_on_current_line: bool = False) -> GrammarParsers[FilesConditionSdv]:

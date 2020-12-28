@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.tcfs.path_relativity import RelOptionType
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type, OrReferenceRestrictions
-from exactly_lib.type_val_deps.types.string import strings_ddvs as csv, string_sdv as sut, string_sdv_impls as impl
+from exactly_lib.type_val_deps.types.string_ import strings_ddvs as csv, string_sdv as sut, string_sdv_impls as impl
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -5,13 +5,13 @@ from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.primitives import string
 from exactly_lib.impls.types.path import parse_path, path_relativities
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.impls.types.string import parse_string, parse_here_document
+from exactly_lib.impls.types.string_ import parse_string, parse_here_document
 from exactly_lib.impls.types.string_or_path.primitive import SourceType
 from exactly_lib.impls.types.string_or_path.sdv import StringOrPathSdv
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv, StringFragmentDdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv, StringFragmentDdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.type_val_deps.dep_variants.test_resources.dir_dependent_value import \

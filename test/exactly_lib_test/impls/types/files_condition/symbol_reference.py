@@ -5,7 +5,7 @@ from exactly_lib.impls.types.files_condition import files_conditions
 from exactly_lib.impls.types.files_condition import parse as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib_test.impls.types.files_condition.test_resources import arguments_building as args
 from exactly_lib_test.impls.types.files_condition.test_resources import primitive_assertions as asrt_primitive
 from exactly_lib_test.impls.types.files_condition.test_resources.integration_check import CHECKER

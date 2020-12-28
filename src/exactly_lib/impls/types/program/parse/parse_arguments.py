@@ -4,7 +4,7 @@ from exactly_lib.impls.types.path import parse_path, rel_opts_configuration
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.impls.types.program import syntax_elements
 from exactly_lib.impls.types.program.command import arguments_sdvs
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException

@@ -13,8 +13,8 @@ from exactly_lib.type_val_deps.dep_variants.adv.matcher import MatcherAdv
 from exactly_lib.type_val_deps.dep_variants.ddv.matcher import MatcherDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.matcher import MatcherSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_prims.description.trace_building import TraceBuilder
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer
 from exactly_lib.type_val_prims.matcher.matcher_base_class import MODEL, MatcherWTrace

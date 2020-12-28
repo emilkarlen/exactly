@@ -10,7 +10,7 @@ from exactly_lib.type_val_deps.sym_ref.data.data_value_restriction import ValueR
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.types.path import path_sdvs
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdvs import str_constant
+from exactly_lib.type_val_deps.types.string_.string_sdvs import str_constant
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.type_val_deps.types.path.test_resources.simple_path import path_test_impl
 

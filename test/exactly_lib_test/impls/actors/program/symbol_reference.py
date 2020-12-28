@@ -6,7 +6,7 @@ from exactly_lib.impls.actors.program import actor as sut
 from exactly_lib.tcfs.path_relativity import RelOptionType, RelHdsOptionType
 from exactly_lib.test_case.actor import ParseException
 from exactly_lib.type_val_deps.types.path import path_sdvs
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.str_.misc_formatting import lines_content
 from exactly_lib_test.common.test_resources import text_doc_assertions as asrt_text_doc
 from exactly_lib_test.execution.test_resources import eh_assertions as asrt_eh

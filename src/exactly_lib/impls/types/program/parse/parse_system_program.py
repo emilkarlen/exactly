@@ -4,7 +4,7 @@ from exactly_lib.impls.types.program.command.driver_sdvs import CommandDriverSdv
 from exactly_lib.impls.types.program.parse import parse_arguments
 from exactly_lib.impls.types.program.sdvs import accumulator
 from exactly_lib.impls.types.program.sdvs.command_program_sdv import ProgramSdvForCommand
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.ps_or_tp.parsers import Parser, ParserFromTokenParserBase
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.value_type import DataValueType

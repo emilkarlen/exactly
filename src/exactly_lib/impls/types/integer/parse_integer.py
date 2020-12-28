@@ -9,12 +9,12 @@ from exactly_lib.impls.types.condition import parse as parse_condition
 from exactly_lib.impls.types.integer import integer_sdv
 from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator
 from exactly_lib.impls.types.integer.integer_sdv import IntegerSdv
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map, ParserFromTokens
 from exactly_lib.symbol.value_type import ValueType
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.str_ import str_constructor

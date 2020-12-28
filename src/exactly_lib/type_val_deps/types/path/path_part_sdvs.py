@@ -6,7 +6,7 @@ Import qualified!
 
 from exactly_lib.type_val_deps.types.path.path_sdv import PathPartSdv
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_part_sdvs as _impl
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 
 
 def empty() -> PathPartSdv:

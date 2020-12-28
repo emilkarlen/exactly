@@ -4,7 +4,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_ddv import DescribedPath
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

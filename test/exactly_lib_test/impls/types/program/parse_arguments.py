@@ -14,7 +14,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidat
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_sdv import ElementSdv
 from exactly_lib.type_val_deps.types.path import path_sdvs
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table

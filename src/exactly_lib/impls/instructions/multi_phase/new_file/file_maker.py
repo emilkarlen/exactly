@@ -15,7 +15,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_deps.types.string_source.sdv import StringSourceSdv
 from exactly_lib.type_val_prims.described_path import DescribedPath
 from exactly_lib.util.symbol_table import SymbolTable

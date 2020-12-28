@@ -5,7 +5,7 @@ from exactly_lib.type_val_deps.dep_variants.data.data_type_sdv import DataTypeSd
 from exactly_lib.type_val_deps.dep_variants.data.sdv_visitor import DataTypeSdvPseudoVisitor
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueAssertionBase
 from exactly_lib_test.type_val_deps.types.list_.test_resources.list_assertions import equals_list_sdv

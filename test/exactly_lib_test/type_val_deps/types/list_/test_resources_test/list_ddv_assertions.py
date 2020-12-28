@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_val_deps.types.string import strings_ddvs as csv
+from exactly_lib.type_val_deps.types.string_ import strings_ddvs as csv
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_val_deps.types.list_.test_resources import list_ddv_assertions as sut
 

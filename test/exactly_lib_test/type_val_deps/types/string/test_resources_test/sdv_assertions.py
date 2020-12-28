@@ -6,8 +6,8 @@ from exactly_lib.symbol.value_type import TypeCategory
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.type_val_deps.sym_ref.restrictions import TypeCategoryRestriction
-from exactly_lib.type_val_deps.types.string import string_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA

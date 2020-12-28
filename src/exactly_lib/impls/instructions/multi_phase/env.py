@@ -11,7 +11,7 @@ from exactly_lib.impls.instructions.multi_phase.utils import instruction_embryo 
 from exactly_lib.impls.instructions.multi_phase.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.impls.instructions.multi_phase.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -23,7 +23,7 @@ from exactly_lib.symbol.sdv_structure import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.instruction_environment import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.str_.formatter import StringFormatter
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

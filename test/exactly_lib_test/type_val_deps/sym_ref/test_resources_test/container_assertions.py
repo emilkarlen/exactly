@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.value_type import ValueType, TypeCategory, DataValueType, LogicValueType
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources import source_location
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails

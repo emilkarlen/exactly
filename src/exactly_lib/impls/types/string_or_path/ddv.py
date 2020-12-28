@@ -9,7 +9,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv import ddv_validation
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import MultiDependenciesDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
 
 
 class StringOrPathDdv(MultiDependenciesDdv[StringOrPath]):

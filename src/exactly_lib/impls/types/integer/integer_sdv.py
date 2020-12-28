@@ -9,8 +9,8 @@ from exactly_lib.impls.types.integer.evaluate_integer import NotAnIntegerExcepti
 from exactly_lib.impls.types.integer.integer_ddv import CustomIntegerValidator, IntegerDdv
 from exactly_lib.symbol.sdv_structure import SymbolReference, ObjectWithSymbolReferences
 from exactly_lib.test_case.path_resolving_env import PathResolvingEnvironmentPreSds
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
 

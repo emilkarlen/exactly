@@ -10,7 +10,7 @@ from exactly_lib.impls.description_tree.tree_structured import WithCachedNodeDes
 from exactly_lib.impls.types.expression import grammar
 from exactly_lib.impls.types.regex import parse_regex
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv, RegexDdv
-from exactly_lib.impls.types.string import parse_string
+from exactly_lib.impls.types.string_ import parse_string
 from exactly_lib.impls.types.string_transformer import names
 from exactly_lib.impls.types.string_transformer.impl.sources.transformed_string_sources import \
     StringTransformerFromLinesTransformer
@@ -20,8 +20,8 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.adv.app_env_dep_val import ApplicationEnvironment, \
     ApplicationEnvironmentDependentValue
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import DdvValidator
-from exactly_lib.type_val_deps.types.string.string_ddv import StringDdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringDdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_deps.types.string_transformer.ddv import StringTransformerAdv, StringTransformerDdv
 from exactly_lib.type_val_deps.types.string_transformer.sdv import StringTransformerSdv
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

@@ -6,7 +6,7 @@ from exactly_lib.symbol.value_type import ValueType, DataValueType
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
-from exactly_lib.type_val_deps.types.string.strings_ddvs import string_ddv_of_single_string
+from exactly_lib.type_val_deps.types.string_.strings_ddvs import string_ddv_of_single_string
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources.symbol_context import ARBITRARY_LINE_SEQUENCE_FOR_DEFINITION
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

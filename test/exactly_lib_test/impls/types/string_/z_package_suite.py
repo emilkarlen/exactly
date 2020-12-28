@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.impls.types.string import parse_string, parse_here_document
+from exactly_lib_test.impls.types.string_ import parse_string, parse_here_document
 
 
 def suite() -> unittest.TestSuite:

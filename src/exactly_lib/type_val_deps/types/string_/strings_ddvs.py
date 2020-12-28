@@ -5,7 +5,7 @@ from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DependenciesAwareDdv, DirDependencies
 from exactly_lib.type_val_deps.types.list_.list_ddv import ListDdv
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
-from exactly_lib.type_val_deps.types.string.string_ddv import StringFragmentDdv, StringDdv
+from exactly_lib.type_val_deps.types.string_.string_ddv import StringFragmentDdv, StringDdv
 from exactly_lib.util.render import strings, combinators as rend_comb
 from exactly_lib.util.render.renderer import Renderer
 

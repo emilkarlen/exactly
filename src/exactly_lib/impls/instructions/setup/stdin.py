@@ -28,7 +28,7 @@ from exactly_lib.test_case.phases.instruction_environment import InstructionEnvi
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_prims.path_describer import PathDescriberForPrimitive
 from exactly_lib.type_val_prims.string_source.contents import StringSourceContents
 from exactly_lib.type_val_prims.string_source.string_source import StringSource

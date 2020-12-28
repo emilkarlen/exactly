@@ -14,7 +14,7 @@ from exactly_lib_test.impls.types.parse import z_package_suite as parse
 from exactly_lib_test.impls.types.path import z_package_suite as path
 from exactly_lib_test.impls.types.program import z_package_suite as program
 from exactly_lib_test.impls.types.regex import z_package_suite as regex
-from exactly_lib_test.impls.types.string import z_package_suite as string
+from exactly_lib_test.impls.types.string_ import z_package_suite as string
 from exactly_lib_test.impls.types.string_matcher import z_package_suite as string_matcher
 from exactly_lib_test.impls.types.string_or_path import z_package_suite as string_or_path
 from exactly_lib_test.impls.types.string_source import z_package_suite as string_sources

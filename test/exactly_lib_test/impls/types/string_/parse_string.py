@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 
-from exactly_lib.impls.types.string import parse_string as sut
+from exactly_lib.impls.types.string_ import parse_string as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -12,8 +12,8 @@ from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     constant, symbol, Fragment
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.type_val_deps.sym_ref.data.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.type_val_deps.types.string import string_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdv import StringFragmentSdv, \
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringFragmentSdv, \
     StringSdv
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.impls.types.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX

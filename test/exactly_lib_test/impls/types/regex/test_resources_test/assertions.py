@@ -8,7 +8,7 @@ from exactly_lib.tcfs.path_relativity import DirectoryStructurePartition
 from exactly_lib.tcfs.tcds import TestCaseDs
 from exactly_lib.type_val_deps.dep_variants.ddv.ddv_validation import ConstantDdvValidator
 from exactly_lib.type_val_deps.dep_variants.ddv.dir_dependent_value import DirDependencies
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.impls.types.regex.test_resources import assertions as sut
 from exactly_lib_test.impls.types.regex.test_resources.regex_ddvs import RegexSdvConstantTestImpl

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.type_val_deps.types.list_ import list_sdvs
 from exactly_lib.type_val_deps.types.path import path_sdvs
-from exactly_lib.type_val_deps.types.string.string_sdvs import str_constant
+from exactly_lib.type_val_deps.types.string_.string_sdvs import str_constant
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.type_val_deps.data.test_resources import any_sdv_assertions as sut
 from exactly_lib_test.type_val_deps.data.test_resources import data_symbol_utils as su

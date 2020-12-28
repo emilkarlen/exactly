@@ -13,7 +13,7 @@ from exactly_lib.type_val_deps.dep_variants.ddv.full_deps.ddv import FullDepsDdv
 from exactly_lib.type_val_deps.dep_variants.sdv.full_deps.sdv import FullDepsSdv
 from exactly_lib.type_val_deps.types.list_.list_sdv import ListSdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_prims.description.logic_description import DescriptionVisitor, DetailsDescription, \
     NodeDescription
 from exactly_lib.type_val_prims.description.tree_structured import StructureRenderer

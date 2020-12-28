@@ -15,7 +15,7 @@ from exactly_lib.type_val_deps.types.path.path_ddvs import simple_of_rel_option
 from exactly_lib.type_val_deps.types.path.path_sdvs import constant
 from exactly_lib.type_val_deps.types.program.ddv.program import ProgramAdv
 from exactly_lib.type_val_deps.types.program.sdv.program import ProgramSdv
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.type_val_prims.program.program import Program
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE

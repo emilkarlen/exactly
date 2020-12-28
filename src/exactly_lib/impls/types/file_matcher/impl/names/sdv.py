@@ -6,7 +6,7 @@ from exactly_lib.impls.types.matcher.impls import matches_regex, matches_glob_pa
 from exactly_lib.impls.types.matcher.property_getter import PropertyGetter
 from exactly_lib.impls.types.regex.regex_ddv import RegexSdv
 from exactly_lib.type_val_deps.types.file_matcher import FileMatcherSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.type_val_prims.matcher.file_matcher import FileMatcherModel
 
 

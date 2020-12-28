@@ -7,7 +7,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference, SymbolDependentVal
 from exactly_lib.type_val_deps.dep_variants.sdv import sdv_validation
 from exactly_lib.type_val_deps.dep_variants.sdv.sdv_validation import SdvValidator
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.symbol_table import SymbolTable
 
 

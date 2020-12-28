@@ -4,7 +4,7 @@ from exactly_lib.symbol.sdv_structure import SymbolReference
 from exactly_lib.type_val_deps.sym_ref.data.reference_restrictions import is_any_data_type
 from exactly_lib.type_val_deps.types.path.path_part_ddv import PathPartDdv
 from exactly_lib.type_val_deps.types.path.path_sdv_impls import path_part_sdvs as sut
-from exactly_lib.type_val_deps.types.string import string_sdvs
+from exactly_lib.type_val_deps.types.string_ import string_sdvs
 from exactly_lib.util import symbol_table as st
 from exactly_lib.util.name_and_value import NameAndValue
 from exactly_lib_test.symbol.test_resources.symbol_context import SymbolContext

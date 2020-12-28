@@ -9,7 +9,7 @@ from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resource
     INSTRUCTION_CHECKER
 from exactly_lib_test.impls.instructions.multi_phase.define_symbol.test_resources.source_formatting import *
 from exactly_lib_test.impls.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
-from exactly_lib_test.impls.types.string.parse_string import string_sdv_from_fragments
+from exactly_lib_test.impls.types.string_.parse_string import string_sdv_from_fragments
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.test_resources.arrangements import ArrangementWithSds

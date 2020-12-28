@@ -7,7 +7,7 @@ from exactly_lib.common.report_rendering.text_doc import TextRenderer
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.impls.types.path.parse_relativity import parse_explicit_relativity_info
 from exactly_lib.impls.types.path.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.impls.types.string.parse_string import parse_string_sdv_from_token, \
+from exactly_lib.impls.types.string_.parse_string import parse_string_sdv_from_token, \
     parse_fragments_from_token, string_sdv_from_fragments
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -31,7 +31,7 @@ from exactly_lib.type_val_deps.types.path import path_ddvs, path_sdvs
 from exactly_lib.type_val_deps.types.path import path_part_sdvs
 from exactly_lib.type_val_deps.types.path.path_ddv import PathDdv
 from exactly_lib.type_val_deps.types.path.path_sdv import PathSdv, PathPartSdv
-from exactly_lib.type_val_deps.types.string.string_sdv import StringSdv
+from exactly_lib.type_val_deps.types.string_.string_sdv import StringSdv
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.str_ import str_constructor
 from exactly_lib.util.symbol_table import SymbolTable
